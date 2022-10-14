@@ -1,9 +1,12 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag("mod-filled", title: "Mod", aria_hidden: true, class: "mr-2") %>
-    Tags
+    <%= crayons_icon_tag("mod-filled", title: t("views.admin.users.overview.tag_mod.icon"), aria_hidden: true, class: "mr-2") %>
+    <%= t("views.admin.users.overview.tag_mod.subtitle") %>
   </h2>
-  <p class="color-secondary">Add a tag that this member can moderate. <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about tag moderation">Learn more</a></p>
+  <p class="color-secondary">
+    <%= t("views.admin.users.overview.tag_mod.desc") %>
+    <a href="https://admin.forem.com/docs/managing-your-community/tag-moderator-features" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="<%= t("views.admin.users.overview.tag_mod.aria_learn") %>"><%= t("views.admin.users.overview.learn") %></a>
+  </p>
 </header>
 
 <% moderated_tags = @user.roles.select { |role| role.name == "tag_moderator" } %>
@@ -14,7 +17,7 @@
       <li>
         <%# You can't currently remove a tag from this view %>
         <button class="c-pill cursor-default" aria-disabled="true" aria-describedby="tag-moderation-description" style="--icon-right-color: var(--color-secondary); --icon-right-color-hover: var(--accent-danger);" type="button">
-          <span class="screen-reader-only">Remove tag:</span>
+          <span class="screen-reader-only"><%= t("views.admin.users.overview.tag_mod.remove") %></span>
           #<%= role.resource_name.to_s %>
         </button>
       </li>
@@ -23,5 +26,5 @@
 <% end %>
 
 <div id="tag-moderation-description" class="crayons-notice crayons-notice--warning">
-  Adding tags for moderation is currently only possible through a particular <a href="<%= admin_tags_path %>" class="c-link c-link--branded">tag's page</a>, by providing the user's ID (<strong><%= @user.id %></strong>).
+  <%= t("views.admin.users.overview.tag_mod.notice_html", tag_page: link_to(t("views.admin.users.overview.tag_mod.tag_page"), admin_tags_path, class: "c-link c-link--branded"), user_id: tag.strong(@user.id)) %>
 </div>

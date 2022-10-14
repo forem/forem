@@ -17,28 +17,27 @@
           <h3 class="crayons-subtitle-3 mb-1">
             <%= link_to flag.reactable.path, class: "c-link" do %>
               <% if flag.reactable_type == "Article" %>
-                Post "<%= flag.reactable.title %>"
+                <%= t("views.admin.users.flags.type.article", title: flag.reactable.title) %>
               <% elsif flag.reactable_type == "User" %>
-                User's profile
+                <%= t("views.admin.users.flags.type.profile") %>
               <% elsif flag.reactable_type == "Comment" %>
-                Comment on "<%= flag.reactable.title %>"
+                <%= t("views.admin.users.flags.type.comment", title: flag.reactable.title) %>
               <% end %>
             <% end %>
           </h3>
           <p class="fs-s color-secondary">
-            Flagged by
-            <%= link_to flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded" %>
+            <%= t("views.admin.users.flags.origin_html", user: link_to(flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded")) %>
           </p>
         </div>
-        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= flag.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
-          <%= flag.created_at&.strftime("%b %e '%y") %>
+        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(flag.created_at, format: :admin_user) if flag.created_at %>">
+          <%= l(flag.created_at, format: :short_with_yy) %>
         </time>
       </article>
     <% end %>
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">No flags received against <%= @user.name %> yet.</h3>
-    <p class="color-secondary">Any flags received against <%= @user.name %> will be found here.</p>
+    <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.flags.empty1", user: @user.name) %></h3>
+    <p class="color-secondary"><%= t("views.admin.users.flags.empty2", user: @user.name) %></p>
   </div>
 <% end %>

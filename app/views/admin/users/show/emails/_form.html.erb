@@ -1,19 +1,19 @@
-<h2 class="crayons-subtitle-1">Send an email</h2>
-<p class="fs-m fw-normal mb-2">To: <%= @user.name %> (<%= @user.email %>)</p>
+<h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.send") %></h2>
+<p class="fs-m fw-normal mb-2"><%= t("views.admin.users.emails.to", user: @user.name, email: @user.email) %></p>
 <%= form_with url: send_email_admin_user_path(@user), local: true, class: "grid gap-4 pt-3" do |f| %>
   <%= f.hidden_field(:user_id, value: @user.id) %>
 
   <div class="crayons-field">
-    <%= f.label :email_subject, "Subject", class: "crayons-field__label" %>
-    <%= f.text_field :email_subject, class: "crayons-textfield", placeholder: "What do you want to say in the subject line?", required: true %>
+    <%= f.label :email_subject, t("views.admin.users.emails.subject"), class: "crayons-field__label" %>
+    <%= f.text_field :email_subject, class: "crayons-textfield", placeholder: t("views.admin.users.emails.subject_placeholder"), required: true %>
   </div>
 
   <div class="crayons-field">
-    <%= f.label :email_body, "Body", class: "crayons-field__label" %>
-    <%= f.text_area :email_body, class: "crayons-textfield", rows: "7", placeholder: "What do you want to say?", required: true %>
+    <%= f.label :email_body, t("views.admin.users.emails.body"), class: "crayons-field__label" %>
+    <%= f.text_area :email_body, class: "crayons-textfield", rows: "7", placeholder: t("views.admin.users.emails.body_placeholder"), required: true %>
   </div>
 
   <div>
-    <%= f.button "Send email", class: "c-btn c-btn--primary", type: "submit" %>
+    <%= f.button t("views.admin.users.emails.send_submit"), class: "c-btn c-btn--primary", type: "submit" %>
   </div>
 <% end %>

@@ -1,15 +1,15 @@
 <div class="js-filters-modal hidden">
     <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col h-100" do |f| %>
         <div class="flex justify-between items-center border-0 border-b-1 border-base-10 border-solid -mx-7 px-7 pb-2">
-            <h2 class="crayons-subtitle-2">Filters</h2>
-            <button type="button" class="js-clear-all-filters-btn c-btn">Clear filters</button>
+            <h2 class="crayons-subtitle-2"><%= t("views.admin.users.filters.heading") %></h2>
+            <button type="button" class="js-clear-all-filters-btn c-btn"><%= t("views.admin.users.filters.clear_filters") %></button>
         </div>
-        <p id="filters-description" class="mt-4 crayons-field__description">Members who match any of the selected filters will be displayed</p>
+        <p id="filters-description" class="mt-4 crayons-field__description"><%= t("views.admin.users.filters.desc") %></p>
         <div class="py-4">
             <details data-section="roles" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                     <span class="flex">
-                        Member roles
+                        <%= t("views.admin.users.filters.summary.roles") %>
                         <span class="js-filtered-indicator-roles relative ml-2 <%= params[:roles].blank? ? "hidden" : "" %>">
                             <span class="block absolute c-indicator c-indicator--info"></span>
                         </span>
@@ -17,31 +17,34 @@
                     <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
                 </summary>
                 <fieldset class="js-roles-fieldset pb-4 flex flex-col items-start">
-                    <legend class="screen-reader-only">Member roles</legend>
+                    <legend class="screen-reader-only"><%= t("views.admin.users.filters.legend.roles") %></legend>
                     <% initially_visible_roles = Constants::Role::SPECIAL_ROLES[0..5] %>
                     <% initially_hidden_roles = Constants::Role::SPECIAL_ROLES[6..] %>
                     <% initially_visible_roles.each_with_index do |role, index| %>
                         <div class="crayons-field crayons-field--checkbox">
                             <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{index}", checked: params[:roles]&.include?(role) }, role, false %>
-                            <%= f.label :roles, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= role %><% end %>
+                            <%= f.label :roles, for: "filter-role-#{index}", class: "crayons-field__label" do %><%= t("views.admin.users.roles.#{role}") %><% end %>
                         </div>
                     <% end %>
                     <div class="hidden js-initially-hidden-roles">
                          <% initially_hidden_roles.each_with_index do |role, index| %>
                         <div class="crayons-field crayons-field--checkbox">
                             <%= f.check_box :roles, { multiple: true, class: "crayons-checkbox", id: "filter-role-#{6 + index}", checked: params[:roles]&.include?(role) }, role, false %>
-                            <%= f.label :roles, for: "filter-role-#{6 + index}", class: "crayons-field__label" do %><%= role %><% end %>
+                            <%= f.label :roles, for: "filter-role-#{6 + index}", class: "crayons-field__label" do %><%= t("views.admin.users.roles.#{role}") %><% end %>
                         </div>
                     <% end %>
                     </div>
-                    <button type="button" class="js-expand-roles-btn c-btn mt-2" aria-label="See more roles" aria-pressed="false">See more roles</button>
-                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:roles].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-roles-fieldset" data-filter-indicator-selector=".js-filtered-indicator-roles" aria-label="Clear member roles filter">Clear filter</button>
+                    <button type="button" class="js-expand-roles-btn c-btn mt-2" aria-label="<%= t("views.admin.users.filters.aria_more_roles") %>" aria-pressed="false"><%= t("views.admin.users.filters.more_roles") %></button>
+                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:roles].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-roles-fieldset" data-filter-indicator-selector=".js-filtered-indicator-roles"
+                        aria-label="<%= t("views.admin.users.filters.clear_filter.aria_roles") %>">
+                        <%= t("views.admin.users.filters.clear_filter.text") %>
+                    </button>
                 </fieldset>
             </details>
             <details data-section="status" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                     <span class="flex">
-                        Status
+                        <%= t("views.admin.users.filters.summary.status") %>
                         <span class="js-filtered-indicator-statuses relative ml-2 <%= params[:statuses].blank? ? "hidden" : "" %>">
                             <span class="block absolute c-indicator c-indicator--info"></span>
                         </span>
@@ -49,20 +52,23 @@
                     <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
                 </summary>
                 <fieldset class="js-statuses-fieldset pb-4 flex flex-col items-start">
-                    <legend class="screen-reader-only">Status</legend>
+                    <legend class="screen-reader-only"><%= t("views.admin.users.filters.legend.status") %></legend>
                      <% filterable_statuses.each_with_index do |status, index| %>
                         <div class="crayons-field crayons-field--checkbox">
                             <%= f.check_box :statuses, { multiple: true, class: "crayons-checkbox", id: "filter-status-#{index}", checked: params[:statuses]&.include?(status) }, status, false %>
                             <%= f.label :statuses, for: "filter-status-#{index}", class: "crayons-field__label" do %><%= render "admin/users/index/status_indicator", status: status %><% end %>
                         </div>
                     <% end %>
-                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:statuses].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-statuses-fieldset" data-filter-indicator-selector=".js-filtered-indicator-statuses" aria-label="Clear statuses filter">Clear filter</button>
+                    <button type="button" class="js-clear-filter-btn c-btn <%= params[:statuses].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-statuses-fieldset" data-filter-indicator-selector=".js-filtered-indicator-statuses"
+                        aria-label="<%= t("views.admin.users.filters.clear_filter.aria_status") %>">
+                        <%= t("views.admin.users.filters.clear_filter.text") %>
+                    </button>
                 </fieldset>
             </details>
             <details data-section="joining-date" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                    <span class="flex">
-                        Joining date
+                        <%= t("views.admin.users.filters.summary.join") %>
                         <span class="js-filtered-indicator-joining-date relative ml-2 <%= params[:joining_start].blank? && params[:joining_end].blank? ? "hidden" : "" %>">
                             <span class="block absolute c-indicator c-indicator--info"></span>
                         </span>
@@ -76,7 +82,7 @@
             <details data-section="organizations" class="admin-details">
                 <summary class="py-4 flex justify-between text-uppercase color-base-60 fs-s">
                     <span class="flex">
-                        Organizations
+                        <%= t("views.admin.users.filters.summary.orgs") %>
                         <span class="js-filtered-indicator-organizations relative ml-2 <%= params[:organizations].blank? ? "hidden" : "" %>">
                             <span class="block absolute c-indicator c-indicator--info"></span>
                         </span>
@@ -84,7 +90,7 @@
                     <%= crayons_icon_tag("chevron-down", aria_hidden: true, class: "summary-icon") %>
                 </summary>
                 <fieldset class="js-organizations-fieldset pb-4 flex flex-col items-start">
-                    <legend class="screen-reader-only">Organizations</legend>
+                    <legend class="screen-reader-only"><%= t("views.admin.users.filters.legend.orgs") %></legend>
                         <% @organizations.each_with_index do |org, index| %>
                             <div class="crayons-field crayons-field--checkbox">
                                 <%= f.check_box :organizations, { multiple: true, class: "crayons-checkbox", id: "filter-org-#{index}", checked: params[:organizations]&.include?(org.id.to_s) }, org.id, false %>
@@ -92,13 +98,16 @@
                             </div>
                      <% end %>
                 </fieldset>
-                <button type="button" class="js-clear-filter-btn c-btn <%= params[:organizations].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-organizations-fieldset" data-filter-indicator-selector=".js-filtered-indicator-organizations" aria-label="Clear organizations filter">Clear filter</button>
+                <button type="button" class="js-clear-filter-btn c-btn <%= params[:organizations].blank? ? "hidden" : "" %>" data-checkbox-fieldset-selector=".js-organizations-fieldset" data-filter-indicator-selector=".js-filtered-indicator-organizations"
+                    aria-label="<%= t("views.admin.users.filters.clear_filter.aria_orgs") %>">
+                    <%= t("views.admin.users.filters.clear_filter.text") %>
+                </button>
 
             </details>
         </div>
         <div class="flex gap-2 mt-auto">
-            <button class="c-btn c-btn--primary grow-1" aria-describedby="filters-description">Apply filters</button>
-            <button type="button" class="js-filter-modal-cancel-btn c-btn grow-1">Cancel</button>
+            <button class="c-btn c-btn--primary grow-1" aria-describedby="filters-description"><%= t("views.admin.users.filters.submit") %></button>
+            <button type="button" class="js-filter-modal-cancel-btn c-btn grow-1"><%= t("views.admin.users.filters.cancel") %></button>
         </div>
     <% end %>
 </div>
