@@ -95,6 +95,30 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       get admin_user_path(user.id)
       expect(response.body).to include(report.feedback_type)
     end
+
+    it "displays unpublish all data from logs when it exists on unpublish_alls tab" do
+      article = create(:article, user: user, published: false)
+      create(:audit_log, user: admin, slug: "unpublish_all_articles",
+                         data: { target_article_ids: [article.id], target_user_id: user.id })
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response.body).to include("Unpublished by")
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+    end
+
+    it "displays a label if an unpublished post was republished" do
+      article = create(:article, user: user, published: true)
+      create(:audit_log, user: admin, slug: "unpublish_all_articles",
+                         data: { target_article_ids: [article.id], target_user_id: user.id })
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(response.body).to include("(was republished)")
+    end
+
+    it "displays nothing on unpublish_alls tab if it the log doesn't exist" do
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response).to be_successful
+      expect(response.body).not_to include("Unpublished by")
+    end
   end
 
   describe "POST /admin/member_manager/users/:id/banish" do
@@ -341,9 +365,11 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       create(:article, user: target_user, published: false)
       create(:comment, user: target_user, deleted: true)
 
-      sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
-        post unpublish_all_articles_admin_user_path(target_user.id)
-      end
+      expect do
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          post unpublish_all_articles_admin_user_path(target_user.id)
+        end
+      end.to change(AuditLog, :count).by(1)
 
       log = AuditLog.last
       expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
