@@ -1,7 +1,7 @@
 <div align="center">
   <br>
   <h1>Forem 🌱</h1>
-  <strong>To Empower Communities across the globe</strong>
+  <strong>To Empower Communities Across The Globe</strong>
 </div>
 <br>
 <p align="center">
