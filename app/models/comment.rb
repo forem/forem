@@ -341,7 +341,7 @@ class Comment < ApplicationRecord
   def published_article
     return unless commentable_type == "Article" && !commentable.published
 
-    errors.add(:commentable_id, I18n.t("models.comment.is_not_valid"))
+    errors.add(:commentable_id, I18n.t("models.comment.published_article"))
   end
 
   def user_mentions_in_markdown
