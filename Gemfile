@@ -120,7 +120,6 @@ group :development do
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "easy_translate", "~> 0.5.1" # Google translate tie-in to be used with i18n tasks
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
-  gem "foreman", "~> 0.87" # Process manager for applications with multiple components
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-rspec", "~> 4.7", require: false # Guard::Rspec includes a DSL for running tests on change
   gem "i18n-tasks", "~> 1.0.11" # Helpers to find and manage missing and unused translations
