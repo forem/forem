@@ -5,27 +5,17 @@ class HtmlVariant < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  has_many :html_variant_successes, dependent: :destroy
-  has_many :html_variant_trials, dependent: :destroy
-
   before_validation :strip_whitespace
 
   validates :group, inclusion: { in: GROUP_NAMES }
   validates :html, presence: true
   validates :name, uniqueness: true
-  validates :success_rate, presence: true
 
   validate  :no_edits
 
   before_save :prefix_all_images
 
   scope :relevant, -> { where(approved: true, published: true) }
-
-  def calculate_success_rate!
-    # x10 because we only capture every 10th
-    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0)
-    save!
-  end
 
   class << self
     def find_for_test(tags = [], group = "article_show_below_article_cta")

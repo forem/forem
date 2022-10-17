@@ -86,10 +86,6 @@ award_community_wellness_badges:
     - ""
     - award_community_wellness
     - ""
-remove_old_html_variant_data:
-  description: "Deletes old HTML variants (runs hourly on the 10th minute after the hour)"
-  cron: "10 * * * *"
-  class: "HtmlVariants::RemoveOldDataWorker"
 resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"
