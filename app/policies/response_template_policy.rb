@@ -31,9 +31,11 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def modify?
-    return true if mod_comment? && user_admin?
-
-    user_owner?
+    if user_owner?
+      true
+    else
+      mod_comment? && (user.admin? || user.super_moderator?)
+    end
   end
 
   alias update? modify?
