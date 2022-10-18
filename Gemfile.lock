@@ -595,7 +595,7 @@ GEM
     parser (3.1.2.1)
       ast (~> 2.4.1)
     patron (0.13.3)
-    pg (1.4.3)
+    pg (1.4.4)
     pg_query (2.1.4)
       google-protobuf (>= 3.19.2)
     pg_search (2.3.6)
