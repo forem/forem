@@ -31,7 +31,7 @@ class ResponseTemplatePolicy < ApplicationPolicy
   end
 
   def modify?
-    return true if mod_comment? && user_trusted?
+    return true if mod_comment? && user_admin?
 
     user_owner?
   end
