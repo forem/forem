@@ -5,12 +5,10 @@ module Admin
     def index
       relation = if params[:state] == "mine"
                    current_user.html_variants.order(created_at: :desc)
-                 elsif params[:state] == "admin"
-                   HtmlVariant.where(published: true, approved: false).order(created_at: :desc)
-                 elsif params[:state].present?
-                   HtmlVariant.where(published: true, approved: true, group: params[:state]).order(success_rate: :desc)
+                 elsif params[:state].present? && params[:state] != "admin"
+                   HtmlVariant.where(published: true, approved: true, group: params[:state]).order(created_at: :desc)
                  else
-                   HtmlVariant.where(published: true, approved: true).order(success_rate: :desc)
+                   HtmlVariant.where(published: true, approved: true).order(created_at: :desc)
                  end
 
       @html_variants = relation.includes(:user).page(params[:page]).per(30)

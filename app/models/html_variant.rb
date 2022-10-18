@@ -17,29 +17,6 @@ class HtmlVariant < ApplicationRecord
 
   scope :relevant, -> { where(approved: true, published: true) }
 
-  class << self
-    def find_for_test(tags = [], group = "article_show_below_article_cta")
-      tags_array = tags + ["", nil]
-      if rand(10) == 1 # 10% return completely random
-        find_random_for_test(tags_array, group)
-      else # 90% chance return one of the top posts
-        find_top_for_test(tags_array, group)
-      end
-    end
-
-    private
-
-    def find_top_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array)
-        .order(success_rate: :desc).limit(rand(1..20)).sample
-    end
-
-    def find_random_for_test(tags_array, group)
-      where(group: group, approved: true, published: true, target_tag: tags_array)
-        .order(Arel.sql("RANDOM()")).first
-    end
-  end
-
   private
 
   def no_edits
