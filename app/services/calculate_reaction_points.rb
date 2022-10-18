@@ -1,3 +1,4 @@
+# Reaction uses this class to calculate points before saving
 class CalculateReactionPoints
   DEFAULT_SCORE = 1.0
 
@@ -23,7 +24,7 @@ class CalculateReactionPoints
   def calculate_points
     base_points = reaction_category_score
 
-    # Ajust for certain states
+    # Adjust for certain states
     base_points = POINTS["invalid"] if status == "invalid"
     base_points /= POINTS["User"] if reactable_type == "User"
     base_points *= POINTS["confirmed"] if status == "confirmed"

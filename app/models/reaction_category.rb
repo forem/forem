@@ -2,27 +2,31 @@
 class ReactionCategory
   class << self
     def [](slug)
-      list[slug.to_sym]
+      hash[slug.to_sym]
     end
 
     def all_slugs
-      list.values.map(&:slug)
+      list.map(&:slug)
     end
 
     def negative_privileged
-      list.values.filter_map { |category| category.slug if category.privileged? && category.negative? }
+      list.filter_map { |category| category.slug if category.privileged? && category.negative? }
     end
 
     def public
-      list.values.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
+      list.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
     end
 
     def privileged
-      list.values.filter_map { |category| category.slug if category.privileged? }
+      list.filter_map { |category| category.slug if category.privileged? }
     end
 
     def list
-      @list ||= REACTION_CATEGORY_LIST.each_pair.to_h do |slug, category_or_attributes|
+      @list ||= hash.values
+    end
+
+    def hash
+      @hash ||= REACTION_CATEGORY_LIST.each_pair.to_h do |slug, category_or_attributes|
         as_category = if category_or_attributes.is_a?(ReactionCategory)
                         category_or_attributes
                       else
