@@ -11,20 +11,16 @@ Document.prototype.ready = new Promise((resolve) => {
 
 function saveTags() {}
 
-function loadForm() {
+function loadTagsField() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
 
-  render(<Tags onInput={saveTags} />, displayAdsTargetedTags);
+  if (displayAdsTargetedTags) {
+    render(<Tags onInput={saveTags} />, displayAdsTargetedTags);
+  }
 }
 
 document.ready.then(() => {
-  // To Fix: loadForm is getting called twice.
-  loadForm();
-  // window.InstantClick.on('change', () => {
-  if (document.getElementById('display-ad-form')) {
-    loadForm();
-  }
-  // });
+  loadTagsField();
 });
