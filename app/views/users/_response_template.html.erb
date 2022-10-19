@@ -4,7 +4,7 @@
       <%= response_template.title %>
     </div>
     <div class="flex">
-      <% if current_user.admin? || current_user.id == response_template.user_id %>
+      <% if policy(response_template).modify? %>
         <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('#{t('views.settings.extensions.comment.confirm', template: response_template.title)}');" } do %>
           <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.comment.remove") %></button>
         <% end %>
