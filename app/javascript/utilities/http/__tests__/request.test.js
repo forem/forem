@@ -1,5 +1,4 @@
 import fetch from 'jest-fetch-mock';
-// import { getCSRFToken } from '../csrfToken';
 import { request } from '@utilities/http';
 
 const csrfToken = 'this-is-a-csrf-token';
