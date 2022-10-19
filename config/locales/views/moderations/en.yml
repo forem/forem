@@ -19,7 +19,7 @@ en:
           icon: Adjust tags
           add: Add tag
           add_placeholder: Add a tag
-          reason: Reason for tag adjustment
+          reason: Reason for tag adjustment (optional)
           remove: Remove tag
           submit: Submit
         approve:
