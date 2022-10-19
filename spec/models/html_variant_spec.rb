@@ -11,7 +11,6 @@ RSpec.describe HtmlVariant, type: :model do
 
       it { is_expected.to validate_inclusion_of(:group).in_array(described_class::GROUP_NAMES) }
       it { is_expected.to validate_presence_of(:html) }
-      it { is_expected.to validate_presence_of(:success_rate) }
       it { is_expected.to validate_uniqueness_of(:name) }
     end
   end
