@@ -25,6 +25,10 @@ class ResponseTemplatePolicy < ApplicationPolicy
 
   alias create? index?
 
+  def admin_create?
+    user.admin? || user.super_moderator?
+  end
+
   # comes from comments_controller
   def moderator_create?
     user_moderator? && mod_comment?
