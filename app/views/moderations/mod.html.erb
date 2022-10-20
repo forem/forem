@@ -90,7 +90,7 @@
         <%= crayons_icon_tag("twemoji/suspicious", native: true, title: t("views.moderations.actions.suspicious")) %>
         <%= crayons_icon_tag(:checkmark, class: "reaction-checkmark", title: t("views.moderations.actions.checkmark")) %>
       </div>
-      <span class="vote-text"><%= t("views.moderations.actions.flag") %></span>
+      <span class="vote-text"><%= t("views.moderations.actions.flag", username: @moderatable.user.username) %></span>
     </button>
     <p>
       <%= t("views.moderations.actions.abusive.desc_html") %>

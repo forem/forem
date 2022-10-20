@@ -5,6 +5,9 @@ module Constants
 
       def self.details
         {
+          ahoy_tracking: {
+            description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
+          },
           contact_email: {
             description: I18n.t("lib.constants.settings.general.contact_email.description"),
             placeholder: "hello@example.com"

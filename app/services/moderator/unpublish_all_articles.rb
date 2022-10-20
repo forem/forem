@@ -1,3 +1,5 @@
+# Unpublish posts and delete comments w/ boolean attr (setting deleted: true) to allow revert
+# Create a corresponding audit_log record
 module Moderator
   class UnpublishAllArticles
     # @param target_user_id [Integer] the id of the user whose posts are being unpublished

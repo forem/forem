@@ -1,17 +1,16 @@
 <% name = @article.cached_user_name %>
 <div id="unpublish-post-modal" class="hidden">
   <p>
-    Once unpublished, this post will become invisible to the public
-    and only accessible to <%= name %>.
+    <%= t("views.moderations.actions.unpublish_post.modal_text1", username: name) %>
   </p>
-  <p>They can still re-publish the post if they are not suspended.</p>
+  <p><%= t("views.moderations.actions.unpublish_post.modal_text2", username: name) %></p>
   <div class="mt-4">
     <button
       destructive
       variant="primary"
       class="c-btn c-btn--primary c-btn--destructive"
       id="confirm-unpublish-post-action">
-      Unpublish post
+      <%= t("views.moderations.actions.unpublish") %>
     </button>
   </div>
 </div>

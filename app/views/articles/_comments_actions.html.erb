@@ -7,9 +7,10 @@
     </div>
   <% end %>
 
-  <% if @article.any_comments_hidden %>
+  <% unless all_comments_visible?(@article) %>
     <p class="fs-s color-base-60 mb-4">
-      <%= t("views.comments.hidden.text_html", info: link_to(t("views.comments.hidden.info"), "/faq")) %>
+      <%= t("views.comments.visible_signed_in.text_html", sign_in: link_to(t("views.comments.visible_signed_in.sign_in"), "/enter")) if any_hidden_negative_comments?(@article) %>
+      <%= t("views.comments.hidden.text_html", info: link_to(t("views.comments.hidden.info"), "/faq")) if @article.any_comments_hidden %>
     </p>
   <% end %>
 

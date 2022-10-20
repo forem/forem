@@ -25,7 +25,6 @@ module Articles
         new(config: config, **kwargs)
       end
 
-
       Config = Struct.new(
         :variant,
         :description,
@@ -259,6 +258,7 @@ module Articles
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
         # See Articles.published scope discussion regarding the query planner
         where_clauses += " AND articles.published_at < :now"
+        where_clauses += " AND articles.score >= 0" # We only want positive values here.
 
         # Without the compact, if we have `omit_article_ids: [nil]` we
         # have the following SQL clause: `articles.id NOT IN (NULL)`

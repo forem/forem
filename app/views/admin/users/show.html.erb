@@ -1,7 +1,7 @@
 <%= render "admin/users/show/profile" %>
 <%= render "admin/users/show/tabs" %>
 
-<% if  @current_tab == "overview" %>
+<% if @current_tab == "overview" %>
   <div class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/overview/stats" if @user.registered %>
 
@@ -50,8 +50,12 @@
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/reports/index" %>
   </section>
-<% else @current_tab == "flags" %>
+<% elsif @current_tab == "flags" %>
   <section class="crayons-card p-3 s:p-4 m:p-7">
     <%= render "admin/users/show/flags/index" %>
+  </section>
+<% elsif @current_tab == "unpublish_logs" %>
+  <section class="crayons-card p-3 s:p-4 m:p-7">
+    <%= render "admin/users/show/unpublish_logs/index" %>
   </section>
 <% end %>

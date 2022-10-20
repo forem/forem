@@ -50,8 +50,12 @@ module Api
 
       target_user = User.find(params[:id].to_i)
 
-      # Unpublish posts and delete comments w/ boolean attr to allow revert
       Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, @user.id)
+
+      note_content = params[:note].presence || "#{@user.username} requested unpublish all articles via API"
+
+      Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                  content: note_content, author: @user)
 
       render status: :no_content
     end

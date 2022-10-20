@@ -62,9 +62,7 @@ export const SampleTexts = () => (
   </div>
 );
 
-SampleTexts.story = {
-  name: 'sample texts',
-};
+SampleTexts.storyName = 'sample texts';
 
 export const DefaultLineHeight = () => (
   <div className="sample-texts">
@@ -81,7 +79,7 @@ export const DefaultLineHeight = () => (
   </div>
 );
 
-DefaultLineHeight.story = { name: 'default line height' };
+DefaultLineHeight.storyName = 'default line height';
 
 export const TightLineHeight = () => (
   <div className="sample-texts">
@@ -100,6 +98,4 @@ export const TightLineHeight = () => (
   </div>
 );
 
-TightLineHeight.story = {
-  name: 'tight line height',
-};
+TightLineHeight.storyName = 'tight line height';

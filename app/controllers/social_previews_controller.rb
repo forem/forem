@@ -19,39 +19,6 @@ class SocialPreviewsController < ApplicationController
     set_respond "social_previews/articles/#{template}"
   end
 
-  def user
-    @user = User.find(params[:id])
-    @tag_badges = Badge.where(id: @user.badge_achievements.select(:badge_id))
-    set_respond
-  end
-
-  def listing
-    @listing = Listing.find(params[:id]).decorate
-    set_respond
-  end
-
-  def organization
-    @user = Organization.find(params[:id])
-    @tag_badges = [] # Orgs don't have badges, but they could!
-    set_respond "user"
-  end
-
-  def tag
-    @tag = Tag.find(params[:id])
-    @compare_hex = Color::CompareHex.new([@tag.bg_color_hex || "#000000", @tag.text_color_hex || "#ffffff"])
-
-    set_respond
-  end
-
-  def comment
-    @comment = Comment.find(params[:id])
-
-    badge_ids = Tag.where(name: @comment.commentable&.decorate&.cached_tag_list_array).pluck(:badge_id)
-    @tag_badges = Badge.where(id: badge_ids)
-
-    set_respond
-  end
-
   private
 
   def set_respond(template = nil)
