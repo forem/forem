@@ -41,7 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         ci_node_total: [3]
-        ci_node_index: [0, 1, 2]
+        ci_node_index: [0]
 
     steps:
       - uses: actions/checkout@v3
@@ -53,9 +53,14 @@ jobs:
           cache: 'yarn'
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4-openssl-dev
       - name: Run bin/setup
         run: ./bin/setup
       - name: RSpec
+        env:
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
         run: |
           bundle exec rails db:create db:schema:load webpacker:compile
           bin/knapsack_pro_rspec
