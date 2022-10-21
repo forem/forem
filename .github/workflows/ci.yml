@@ -23,6 +23,8 @@ jobs:
     services:
       postgres:
         image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -59,9 +61,9 @@ jobs:
         env:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-          DATABASE_URL: postgres://postgres@localhost:5432/Forem_prod_test
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
           DATABASE_NAME: Forem_prod_test
-          DATABASE_URL_TEST: postgres://postgres@localhost:5432/Forem_test
+          DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
           DATABASE_NAME_TEST: Forem_test
         run: |
           bundle exec rails db:create db:schema:load webpacker:compile
