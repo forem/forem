@@ -444,6 +444,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_103855) do
   create_table "display_ad_events", force: :cascade do |t|
     t.string "category"
     t.string "context_type"
+    t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.datetime "updated_at", precision: nil, null: false

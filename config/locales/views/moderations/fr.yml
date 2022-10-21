@@ -19,7 +19,7 @@ fr:
           icon: Ajuster les étiquettes
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
-          reason: Raison de l'ajustement de l'étiquette
+          reason: Raison de l'ajustement de l'étiquette (optionnel)
           remove: Retirer l'étiquette
           submit: Soumettre
         approve:
@@ -113,6 +113,9 @@ fr:
           modal_text1: Une fois dépubliés, tous les articles de %{username} seront cachés et ne seront accessibles qu'à eux-mêmes.
           modal_text2: Si %{username} n'est pas suspendu, il peut toujours republier ses articles depuis son tableau de bord.
           modal_button: Dépublier tous les articles
+        unpublish_post:
+          modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
+          modal_text2: They can still re-publish the post if they are not suspended.
         vote_down: Faible qualité
         flag_to_admins: Signaler aux admins
         vote_up: Haute qualité

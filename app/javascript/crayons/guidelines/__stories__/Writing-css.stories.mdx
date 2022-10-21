@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
-import { Meta } from '@storybook/addon-docs/blocks';
+import { Meta } from '@storybook/addon-docs';
 
 <Meta title="Writing CSS" />
 
@@ -47,23 +47,22 @@ helpers as well as breakpoint variables I mentioned earlier.
 
 You can access all of the SCSS files in `app/assets/stylesheets` folder.
 
-|Folder/File|Description|
-|---|---|
-|`/base`| Contains some fundamental styling for layouts, resets and icons.|
-|`/components`| Contains separate SCSS file for each component.
-|—|—|
-|`/config`| Contains many configuration files.
-|`/config/_colors.scss`| Contains all color variables.
-|`/config/_generator.scss`| Contains SCSS mixins generating *all* of our utility classes.
-|`/config/_import.scss`| Contains helpers for SCSS as well as media breakpoints variables.
-|`/config/_variables.scss`| Contains all CSS native variables.
-
+| Folder/File               | Description                                                       |
+| ------------------------- | ----------------------------------------------------------------- |
+| `/base`                   | Contains some fundamental styling for layouts, resets and icons.  |
+| `/components`             | Contains separate SCSS file for each component.                   |
+| —                         | —                                                                 |
+| `/config`                 | Contains many configuration files.                                |
+| `/config/_colors.scss`    | Contains all color variables.                                     |
+| `/config/_generator.scss` | Contains SCSS mixins generating _all_ of our utility classes.     |
+| `/config/_import.scss`    | Contains helpers for SCSS as well as media breakpoints variables. |
+| `/config/_variables.scss` | Contains all CSS native variables.                                |
 
 There are other folders and top level files that we use, but they might be deprecated in the future. They are:
 
 - `crayons.scss` - this is one importing everything Crayons-related like
-    variables, components styling, utility classes etc.
+  variables, components styling, utility classes etc.
 - `views.scss` - this one contains views-specific styling. It is separated
-    from Crayons to make Crayons library DEV agnostic.
+  from Crayons to make Crayons library DEV agnostic.
 - `minimal.scss` - this one is actually one of the main stylesheets from
-    pre-Crayons era. It imports everything basically :).
+  pre-Crayons era. It imports everything basically :).
