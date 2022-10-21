@@ -114,8 +114,8 @@ fr:
           modal_text2: Si %{username} n'est pas suspendu, il peut toujours republier ses articles depuis son tableau de bord.
           modal_button: Dépublier tous les articles
         unpublish_post:
-          modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
-          modal_text2: They can still re-publish the post if they are not suspended.
+          modal_text1: Une fois dépublié, cet article sera invisible pour le public et accessible uniquement à %{username}.
+          modal_text2: Ils peuvent toujours republier l'article tant qu'ils ne sont pas suspendus.
         vote_down: Faible qualité
         flag_to_admins: Signaler aux admins
         vote_up: Haute qualité
