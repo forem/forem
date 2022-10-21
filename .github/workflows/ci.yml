@@ -19,6 +19,12 @@ jobs:
     timeout-minutes: 20
     env:
       RAILS_ENV: test
+      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
+      DATABASE_NAME: Forem_prod_test
+      DATABASE_URL_TEST: postgres://postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
 
     services:
       postgres:
@@ -58,13 +64,6 @@ jobs:
       - name: Run bin/setup
         run: ./bin/setup
       - name: RSpec
-        env:
-          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
-          DATABASE_NAME: Forem_prod_test
-          DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-          DATABASE_NAME_TEST: Forem_test
         run: |
           bundle exec rails db:create db:schema:load webpacker:compile
           bin/knapsack_pro_rspec
