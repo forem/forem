@@ -1,0 +1,61 @@
+name: CI - RSpec Tests
+# TODO
+# - code coverage
+# - cypress
+# - 
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: CI
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [3]
+        ci_node_index: [0, 1, 2]
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+      - name: Install PostgreSQL
+        run: sudo apt-get -yqq install libpq-dev
+      - name: Run bin/setup
+        run: ./bin/setup
+      - name: RSpec
+        run: |
+          bundle exec rails db:create db:schema:load webpacker:compile
+          bin/knapsack_pro_rspec
