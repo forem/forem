@@ -23,8 +23,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
-    it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
-    it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:page_views).dependent(:delete_all) }
