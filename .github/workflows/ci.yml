@@ -25,6 +25,10 @@ jobs:
         image: postgres
         env:
           POSTGRES_PASSWORD: postgres
+          DATABASE_URL: postgres://postgres@localhost:5432/Forem_prod_test
+          DATABASE_NAME: Forem_prod_test
+          DATABASE_URL_TEST: postgres://postgres@localhost:5432/Forem_test
+          DATABASE_NAME_TEST: Forem_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
