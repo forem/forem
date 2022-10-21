@@ -44,6 +44,8 @@ jobs:
         ci_node_index: [0]
 
     steps:
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - uses: ruby/setup-ruby@v1
         with:
@@ -53,8 +55,6 @@ jobs:
           cache: 'yarn'
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
-      - name: Install cURL Headers
-        run: sudo apt-get install libcurl4-openssl-dev
       - name: Run bin/setup
         run: ./bin/setup
       - name: RSpec
