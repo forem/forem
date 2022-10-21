@@ -5,14 +5,14 @@ module Rack
     ADMIN_API_CACHE_KEY = "rack_attack_admin_api_keys".freeze
     ADMIN_ROLES = %w[admin super_admin tech_admin].freeze
 
-    # Method that checks API Key from request and returns true if it belongs
-    # to an admin, false otherwise. It caches the result to avoid making a
-    # DB request on each API call
+    # Method that checks API Key from the request and returns true if it
+    # belongs to an admin, false otherwise
     def self.admin_api_key?(request)
       api_key = request.env["HTTP_API_KEY"]
       return false if api_key.nil?
 
-      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 12.hours) do
+      # Admin API Secrets are cached to avoid making DB queries on each request
+      admin_keys = Rails.cache.fetch(ADMIN_API_CACHE_KEY, expires_in: 24.hours) do
         ApiSecret.joins(user: :roles)
           .where(roles: { name: ADMIN_ROLES })
           .group("api_secrets.id")

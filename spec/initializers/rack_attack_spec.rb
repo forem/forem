@@ -8,9 +8,6 @@ describe Rack, ".attack", type: :request, throttle: true do
     allow(Honeycomb).to receive(:add_field)
 
     ENV["FASTLY_API_KEY"] = "12345"
-
-    # Ensure cached admin keys are cleared before tests
-    Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY)
   end
 
   after do

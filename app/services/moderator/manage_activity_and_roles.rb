@@ -99,6 +99,11 @@ module Moderator
       check_super_admin
       remove_negative_roles
       user.add_role(role)
+
+      # Clear cache key if the elevated role matches Rack::Attack bypass roles
+      return unless Rack::Attack::ADMIN_ROLES.include?(role.to_s)
+
+      Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY)
     end
 
     def check_super_admin
