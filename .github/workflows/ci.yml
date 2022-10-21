@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [3]
-        ci_node_index: [0, 1, 2]
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
 
     steps:
       - name: Install cURL Headers
