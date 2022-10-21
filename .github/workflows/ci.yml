@@ -72,7 +72,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run : bundle exec rails db:create db:schema:load webpacker:compile
+      - run: bundle exec rails db:test:prepare
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
       - name: RSpec
