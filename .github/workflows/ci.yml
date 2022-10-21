@@ -28,7 +28,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres
+        image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
@@ -61,8 +61,6 @@ jobs:
           cache: 'yarn'
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
-      - name: Run bin/setup
-        run: ./bin/setup
       - name: RSpec
         run: |
           bundle exec rails db:create db:schema:load webpacker:compile
