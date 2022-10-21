@@ -1,5 +1,4 @@
 require "dotenv/load"
-require "simplecov"
 require "active_support"
 require "active_support/testing/time_helpers"
 require "zonebie/rspec"

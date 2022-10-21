@@ -54,7 +54,7 @@ module Moderator
         noteable_id: @user.id,
         noteable_type: "User",
         reason: reason,
-        content: content,
+        content: content || "#{@admin.username} updated #{@user.username}",
       )
     end
 

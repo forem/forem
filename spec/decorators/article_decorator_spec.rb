@@ -83,18 +83,6 @@ RSpec.describe ArticleDecorator, type: :decorator do
     end
   end
 
-  describe "#comments_to_show_count" do
-    it "returns 25 if does not have a discuss tag" do
-      article.cached_tag_list = ""
-      expect(article.decorate.comments_to_show_count).to eq(25)
-    end
-
-    it "returns 75 if it does have a discuss tag" do
-      article.cached_tag_list = "discuss, python"
-      expect(article.decorate.comments_to_show_count).to eq(75)
-    end
-  end
-
   describe "#cached_tag_list_array" do
     it "returns no tags if the cached tag list is empty" do
       article.cached_tag_list = ""
