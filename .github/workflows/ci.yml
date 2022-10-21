@@ -53,16 +53,16 @@ jobs:
       - name: Install cURL Headers
         run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run : bundle exec rails db:create db:schema:load webpacker:compile
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
       - name: RSpec
         run: |
-          yarn install --frozen-lockfile
-          bundle exec rails db:create db:schema:load webpacker:compile
           bin/knapsack_pro_rspec
