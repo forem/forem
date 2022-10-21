@@ -9,7 +9,7 @@ class ApiSecret < ApplicationRecord
   validates :description, presence: true, length: { maximum: 300 }
   validate :user_api_secret_count
 
-  after_commit :clear_rack_attack_cache
+  after_create_commit :clear_rack_attack_cache
 
   private
 

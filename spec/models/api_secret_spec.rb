@@ -41,23 +41,5 @@ RSpec.describe ApiSecret, type: :model do
           .with(Rack::Attack::ADMIN_API_CACHE_KEY)
       end
     end
-
-    context "when ApiSecret is modified" do
-      it "clears the cache if it belongs to an admin" do
-        admin_secret = create(:api_secret, user: create(:user, :admin))
-        admin_secret.touch
-
-        # Expecting twice because of create & touch in this test scenario
-        expect(Rails.cache).to have_received(:delete)
-          .with(Rack::Attack::ADMIN_API_CACHE_KEY).exactly(2).times
-      end
-
-      it "doesn't clear the cache if it belongs to an admin" do
-        regular_secret = create(:api_secret)
-        regular_secret.touch
-        expect(Rails.cache).not_to have_received(:delete)
-          .with(Rack::Attack::ADMIN_API_CACHE_KEY)
-      end
-    end
   end
 end

@@ -106,6 +106,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     end
 
     it "doesn't Rack::Attack cache if assigned non-admin role to user" do
+      user.add_role(:comment_suspended)
       described_class.handle_user_roles(
         admin: admin,
         user: user,
