@@ -23,7 +23,7 @@ jobs:
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
-      DATABASE_URL_TEST: postgres://postgres@localhost:5432/Forem_test
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
       DATABASE_NAME_TEST: Forem_test
 
     services:
