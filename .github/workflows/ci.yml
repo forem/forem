@@ -63,5 +63,6 @@ jobs:
         run: sudo apt-get -yqq install libpq-dev
       - name: RSpec
         run: |
+          yarn install --frozen-lockfile
           bundle exec rails db:create db:schema:load webpacker:compile
           bin/knapsack_pro_rspec
