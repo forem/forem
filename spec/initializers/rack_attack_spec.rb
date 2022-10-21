@@ -8,6 +8,9 @@ describe Rack, ".attack", type: :request, throttle: true do
     allow(Honeycomb).to receive(:add_field)
 
     ENV["FASTLY_API_KEY"] = "12345"
+
+    # Ensure cached admin keys are cleared before tests
+    Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY)
   end
 
   after do
@@ -48,6 +51,20 @@ describe Rack, ".attack", type: :request, throttle: true do
         expect(new_ip_response).not_to eq(429)
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(7).times
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
+      end
+    end
+
+    it "doesn't throttle when API key provided belongs to admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => admin_api_key.secret }
+        valid_responses = Array.new(10).map do
+          get api_articles_path, headers: headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(10).times
       end
     end
   end
@@ -98,6 +115,26 @@ describe Rack, ".attack", type: :request, throttle: true do
         expect(new_api_response).not_to eq(429)
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(3).times
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
+      end
+    end
+
+    it "doesn't throttle api write endpoints when API key provided belongs to admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+      params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
+      admin_headers = {
+        "api-key" => admin_api_key.secret,
+        "content-type" => "application/json",
+        "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8"
+      }
+
+      Timecop.freeze do
+        valid_responses = Array.new(10).map do
+          post api_articles_path, params: params, headers: admin_headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(10).times
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", admin_api_key.secret).exactly(10).times
       end
     end
   end

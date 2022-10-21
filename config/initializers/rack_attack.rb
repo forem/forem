@@ -22,10 +22,6 @@ module Rack
       admin_keys.include?(api_key)
     end
 
-    def self.write_request?(request)
-      request.put? || request.post? || request.delete?
-    end
-
     class Request < ::Rack::Request
       def track_and_return_ip
         if ApplicationConfig["FASTLY_API_KEY"].present?
@@ -52,13 +48,15 @@ module Rack
 
     throttle("api_write_throttle", limit: 1, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
-      if api_endpoint && write_request?(request) && !admin_api_key?(request)
+      if api_endpoint && (request.put? || request.post? || request.delete?)
         Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
-        ip_address = request.track_and_return_ip
-        if request.env["HTTP_API_KEY"].present?
-          "#{ip_address}-#{request.env['HTTP_API_KEY']}"
-        elsif ip_address.present?
-          ip_address
+        unless admin_api_key?(request)
+          ip_address = request.track_and_return_ip
+          if request.env["HTTP_API_KEY"].present?
+            "#{ip_address}-#{request.env['HTTP_API_KEY']}"
+          elsif ip_address.present?
+            ip_address
+          end
         end
       end
     end
