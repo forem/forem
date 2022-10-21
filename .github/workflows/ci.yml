@@ -76,5 +76,6 @@ jobs:
       - name: Install PostgreSQL
         run: sudo apt-get -yqq install libpq-dev
       - name: RSpec
-        run: |
-          bin/knapsack_pro_rspec
+        env:
+          KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+        run: bin/knapsack_pro_rspec
