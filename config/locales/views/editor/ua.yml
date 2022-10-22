@@ -3,10 +3,10 @@ ua:
   views:
     editor:
       meta:
-        title: Редагувати пост
+        title: Редагувати допис
       heading:
-        new: Новий пост
-      create: Створити пост
+        new: Новий допис
+      create: Створити допис
       close:
         icon: Закрити
         title: Закрити редактор

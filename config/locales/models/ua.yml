@@ -2,65 +2,65 @@
 ua:
   models:
     api_secret:
-      api_limit_reached: API secret limit of 10 per user has been reached
+      api_limit_reached: Досягнуто ліміт секретних API в 10 на одного користувача
     application_record:
       uninferrable: Could not infer a decorator for %{class}.
     article:
-      a_post_by: Пост від %{user_name}
-      video_unpermitted: cannot be added by member without permission
-      video_processing: cannot be set to true if video is still processing
-      cannot_search_tags_for: 'Cannot search tags for: %{tag}'
-      cannot_search_tags_for_tags: 'Cannot search tags for: %{tags}'
-      unique_coauthor: co-author IDs must be unique
-      too_many_tags: exceed the maximum of 4 tags
-      is_too_long: is too long.
-      invalid_date: must be entered in DD/MM/YYYY format with current or past date
-      series_unpermitted: must be one you have permission to post to
-      invalid_coauthor: must be valid user IDs
-      same_author: must not be the same user as the author
-      must_not_have_spaces: must not have spaces
-      published: Published
-      unique_url: has already been taken. Email %{email} for further details.
-      future_or_current_published_at: only future or current published_at allowed when publishing an article
-      immutable_published_at: updating published_at for articles that have already been published is not allowed
+      a_post_by: Допис від %{user_name}
+      video_unpermitted: не може бути додано учасником без дозволу
+      video_processing: не може бути встановлено на true, якщо відео все ще обробляється
+      cannot_search_tags_for: 'Не вдається виконати пошук за тегами: %{tag}'
+      cannot_search_tags_for_tags: 'Не вдається виконати пошук за тегами: %{tags}'
+      unique_coauthor: ID співавтора повинне бути унікальними
+      too_many_tags: перевищувати максимум 4 мітки
+      is_too_long: занадто довгий.
+      invalid_date: необхідно вводити у форматі ДД/ММ/РР із зазначенням поточної або минулої дати
+      series_unpermitted: повинна бути такою, на яку ви маєте дозвіл на публікацію
+      invalid_coauthor: повинні бути дійсні ідентифікатори користувачів
+      same_author: не повинен бути тим самим користувачем, що і автор
+      must_not_have_spaces: не повинен мати пробілів
+      published: Опубліковано
+      unique_url: вже зайнято. Пишіть на пошту %{email} для подробиць.
+      future_or_current_published_at: допускаються тільки майбутні або поточні публікації
+      immutable_published_at: не допускається оновлення published_at для статей, які вже опубліковані
       mention_too_many:
-        one: You cannot mention more than %{count} users in a post!
-        other: You cannot mention more than %{count} users in a post!
+        one: В одному дописі не можна згадувати більше ніж %{count} користувачів!
+        other: Ви  не можете згадувати більше ніж %{count} користувачів на допис!
     broadcast:
-      single_active: You can only have one active announcement broadcast
+      single_active: Ви можете транслювати тільки одне активне оголошення
     comment:
       deleted: '[deleted]'
-      has_been_deleted: '%{type} has been deleted.'
+      has_been_deleted: '%{type} видалено.'
       hidden: '[hidden by post author]'
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
       type:
-        Article: Article
+        Article: Стаття
         item: item
-        PodcastEpisode: Podcast episode
+        PodcastEpisode: Випуск подкасту
       suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
       mention_too_many:
-        one: You cannot mention more than %{count} users in a comment!
-        other: You cannot mention more than %{count} users in a comment!
+        one: Ви  не можете згадувати більше ніж  %{count} користувача у коментарі!
+        other: Ви  не можете згадувати більше ніж %{count} користувачів у коментарі!
     feedback_message:
-      reported: '(you) previously reported this URL.'
+      reported: '(you) поскаржилися на це посилання'
     github_issue:
       issue_comment_not_found: Issue comment %{issue_id} not found
       issue_not_found: Issue %{issue_id} not found
     html_variant:
       no_edits: cannot change once published and approved
     identity:
-      no_email_msg: No email found. Please relink your %{provider} account to avoid errors.
+      no_email_msg: Пошту не знайдено. Please relink your %{provider} account to avoid errors.
     listing:
-      too_many_tags: exceed the maximum of 8 tags
-      too_many_linebreaks: has too many linebreaks. No more than 12 allowed.
-      image_not_allowed: is not allowed to include images.
-      liquid_not_allowed: is not allowed to include liquid tags.
+      too_many_tags: максимум 8 тегів
+      too_many_linebreaks: має занадто багато переносів рядка. Допускається не більше 12.
+      image_not_allowed: не дозволяється включати зображення.
+      liquid_not_allowed: не допускається включати рідкі теги.
     mention:
-      is_not_valid: is not valid.
+      is_not_valid: щось не так.
     organization:
-      integer_only: Integer only. No sign allowed.
-      reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
+      integer_only: Тільки цілі числа. Знаки не допускаються.
+      reserved_word: '%<value> - це зарезервоване слово. Зверніться до адміністраторів сайту за допомогою в реєстрації Вашої організації.'
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast:
@@ -68,24 +68,24 @@ ua:
     podcast_episode_appearance:
       provided_role_is_not_valid: provided role is not valid
     poll_skip:
-      cannot_vote_more_than_once: cannot vote more than once in one poll
+      cannot_vote_more_than_once: заборонено голосувати більше одного разу в одному опитуванні
     poll_vote:
-      cannot_vote_more_than_once: cannot vote more than once in one poll
+      cannot_vote_more_than_once: заборонено голосувати більше одного разу в одному опитуванні
     profile_pin:
-      only_five: cannot have more than five total pinned posts
-      pin_unpermitted: must have proper permissions for pin
+      only_five: заборонено мати більше п'яти загальних закріплених постів
+      pin_unpermitted: треба мати відповідні дозволи на пін
     rating_vote:
-      not_permitted: is not permitted to take this action.
+      not_permitted: не має права вчиняти такі дії.
     reaction:
-      is_not_valid: is not valid.
+      is_not_valid: не є дійсним.
     response_template:
-      user_nil_only: cannot have a user ID associated.
-      comment_markdown: Comment templates must use Markdown as its content type.
-      email_text: Email templates must use plain text or HTML as its content type.
-      limit_reached: Response template limit of 30 per user has been reached
+      user_nil_only: не може бути пов'язаний з ідентифікатором користувача.
+      comment_markdown: Шаблони коментарів повинні мати тип вмісту Markdown.
+      email_text: Шаблони електронних листів повинні використовувати звичайний текст або HTML як тип вмісту.
+      limit_reached: Вичерпано ліміт шаблонів відповідей - 30 на одного користувача
     settings:
       campaign:
-        share_your_project: Share your project
+        share_your_project: Поділіться своїм проектом
       community:
         message: may not include the "<" nor ">" character
         new_forem: New Forem

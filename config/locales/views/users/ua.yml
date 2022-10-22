@@ -55,8 +55,8 @@ ua:
         post:
           icon: Post
           text:
-            one: автор 1 посту
-            other: "автор %{count} постів"
+            one: автор 1 допису
+            other: "автор %{count} дописів"
         tag:
           icon: Tag
           text:

@@ -67,5 +67,5 @@ ua:
           text_html: <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
       home: Головна
-      create_post: Створити пост
+      create_post: Створити допис
       signout: Вийти
