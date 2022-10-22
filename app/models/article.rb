@@ -926,7 +926,7 @@ class Article < ApplicationRecord
 
   def title_to_slug
 	Cyrillizer.language = :ukrainian
-    "#{title.to_lat}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
+    "#{Cyrillizer.to_lat(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)
