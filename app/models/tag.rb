@@ -120,7 +120,7 @@ class Tag < ActsAsTaggableOn::Tag
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
-    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
+    ґerrors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\zцукенгшщзхїфівапролджєячсмитьбюґ/i)
   end
 
   # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
