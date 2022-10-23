@@ -32,7 +32,7 @@ class Tag < ActsAsTaggableOn::Tag
   # @see https://github.com/forem/forem/blob/72bb284ba73c3df8aa11525427b1dfa1ceba39df/lib/data_update_scripts/20211115154021_nullify_invalid_tag_fields.rb
   include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
-  HEX_COLOR_REGEXP = /\A#([а-яА-ЯёЁїЇєЄґҐa-zA-Z0-9]{6}|[а-яА-ЯёЁїЇєЄґҐa-zA-Z0-9]{3})\z/
+  HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
 
   belongs_to :badge, optional: true
 
@@ -120,7 +120,7 @@ class Tag < ActsAsTaggableOn::Tag
     # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
     # following regex with [:alnum:].
-    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\zцукенгшщзхїфівапролджєячсмитьбюґ/i)
+    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
   end
 
   # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
