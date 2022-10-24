@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: CI
+    name: RSpec
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [4]
-        ci_node_index: [0, 1, 2, 3]
+        ci_node_total: [3]
+        ci_node_index: [0, 1, 2]
 
     steps:
       - name: Install cURL Headers
@@ -79,3 +79,38 @@ jobs:
         env:
           KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
         run: bin/knapsack_pro_rspec
+
+
+  build:
+    name: Jest
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        id: cache-nodemodules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+      - run: |
+          yarn install --frozen-lockfile
+          yarn lint:frontend
+          yarn test --colors
+          yarn build-storybook
+  # - bundle exec bundle-audit check --update
+  # - bin/test-console-check
+  # - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
