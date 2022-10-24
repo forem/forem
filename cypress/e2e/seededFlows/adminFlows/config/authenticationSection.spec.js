@@ -83,7 +83,10 @@ describe('Authentication Section', () => {
 
         cy.get('@authSectionForm').findByText('Update Settings').click();
 
-        cy.get('.crayons-modal__box__body > ul > li')
+        cy.findByTestId('modal-container').as('modal');
+
+        cy.get('@modal')
+          .get('.admin-modal-content > ul > li')
           .contains('facebook')
           .should('be.visible');
       });

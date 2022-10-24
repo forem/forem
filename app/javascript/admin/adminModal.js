@@ -51,26 +51,26 @@ export const adminModal = function ({
   `;
 
   return showWindowModal({
-    document: window.parent.document,
+    document: window.document,
     title,
     modalContent: content,
     size: 'small',
     onOpen: () => {
-      window.parent.document
+      window.document
         .getElementById(`left-btn`)
         .addEventListener('click', () => {
           closeWindowModal();
           leftBtnAction();
         });
 
-      window.parent.document
+      window.document
         .getElementById(`right-btn`)
         .addEventListener('click', () => {
           closeWindowModal();
           rightBtnAction();
         });
 
-      window.parent.document
+      window.document
         .querySelector(`.crayons-modal__dismiss`)
         .addEventListener('click', () => {
           closeModalFunction();
