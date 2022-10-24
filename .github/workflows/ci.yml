@@ -1,4 +1,4 @@
-name: CI - RSpec Tests
+name: CI
 # TODO
 # - code coverage
 # - cypress
@@ -46,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [2]
-        ci_node_index: [0, 1]
+        ci_node_total: [3]
+        ci_node_index: [0, 1, 2]
 
     steps:
       - name: Install cURL Headers
