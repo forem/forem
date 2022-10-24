@@ -54,7 +54,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -83,7 +83,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn test --colors
       - run: yarn build-storybook
@@ -121,7 +121,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -177,7 +177,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
