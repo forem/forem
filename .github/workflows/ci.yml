@@ -58,7 +58,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          retore_keys: ${{ runner.os }}-node-modules-
+          retore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
@@ -90,7 +90,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          retore_keys: ${{ runner.os }}-node-modules-
+          retore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
