@@ -48,7 +48,8 @@
         <div class="ltag__user-subscription-tag__response-message crayons-notice fs-base w-100 hidden" aria-live="polite"></div>
       </div>
     </div>
-      <div class="user-subscription-confirmation-modal hidden crayons-modal__box__body">
+    <div class="user-subscription-confirmation-modal hidden">
+      <div class="crayons-modal__box__body">
         <p class="fs-base mb-4 mt-0">
           <%= t("views.liquids.user_subscription.confirm.text_html", community: community_name, username: tag.span(author_username, class: "ltag__user-subscription-tag__author-username fw-medium")) %>
         <p>
@@ -60,6 +61,7 @@
             <%= t("views.liquids.user_subscription.confirm.cancel_text") %>
           </button>
         </div>
+      </div>
     </div>
   </div>
 </div>
