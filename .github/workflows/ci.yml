@@ -94,11 +94,10 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
-      - run: |
-          yarn install --frozen-lockfile
-          yarn lint:frontend
-          yarn test --colors
-          yarn build-storybook
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint:frontend
+      - run: yarn test --colors
+      - run: yarn build-storybook
   # - bundle exec bundle-audit check --update
   # - bin/test-console-check
   # - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
