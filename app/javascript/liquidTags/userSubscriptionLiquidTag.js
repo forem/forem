@@ -1,31 +1,5 @@
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
-import {
-  closeWindowModal,
-  showWindowModal,
-  WINDOW_MODAL_ID,
-} from '@utilities/showModal';
 /* global userData  */
-
-const modalContents = new Map();
-
-/**
- * Helper function to handle finding and caching modal content. Since our Preact modal helper works by duplicating HTML content,
- * and our modals rely on IDs to label form controls, we remove the original hidden content from the DOM to avoid ID conflicts.
- *
- * @param {string} modalContentSelector The CSS selector used to identify the correct modal content
- */
-const getModalContents = (modalContentSelector) => {
-  if (!modalContents.has(modalContentSelector)) {
-    const modalContentElement =
-      window.parent.document.querySelector(modalContentSelector);
-    const modalContent = modalContentElement.innerHTML;
-
-    modalContentElement.remove();
-    modalContents.set(modalContentSelector, modalContent);
-  }
-
-  return modalContents.get(modalContentSelector);
-};
 
 function toggleSubscribeActionUI({
   tagContainer,
@@ -111,38 +85,31 @@ function initSignedInState(tagContainer, appleAuth = false) {
   tagContainer
     .querySelector('.ltag__user-subscription-tag__signed-in .crayons-btn')
     .addEventListener('click', () => {
-      showConfirmSubscribeModal();
+      window.Forem.showModal({
+        title: 'Confirm subscribe',
+        contentSelector:
+          '.user-subscription-confirmation-modal .crayons-modal__box__body',
+        overlay: true,
+        onOpen: () => {
+          // Attach listeners for cancel button and subscribe button
+          document
+            .querySelector(
+              '#window-modal .ltag__user-subscription-tag____cancel-btn',
+            )
+            .addEventListener('click', window.Forem.closeModal);
+
+          document
+            .querySelector(
+              '#window-modal .ltag__user-subscription-tag__confirmation-btn',
+            )
+            .addEventListener('click', confirmSubscribe);
+        },
+      });
     });
 }
 
-function showConfirmSubscribeModal() {
-  showWindowModal({
-    title: 'Confirm subscribe',
-    size: 'small',
-    modalContent: getModalContents(
-      '.user-subscription-confirmation-modal .crayons-modal__box__body',
-    ),
-    onOpen: () => {
-      // Attach listeners for cancel button and subscribe button
-      document
-        .querySelector(
-          `#${WINDOW_MODAL_ID} .ltag__user-subscription-tag____cancel-btn`,
-        )
-        .addEventListener('click', () => {
-          closeWindowModal();
-        });
-
-      document
-        .querySelector(
-          `#${WINDOW_MODAL_ID} .ltag__user-subscription-tag__confirmation-btn`,
-        )
-        .addEventListener('click', confirmSubscribe);
-    },
-  });
-}
-
 function confirmSubscribe() {
-  closeWindowModal();
+  window.Forem.closeModal();
   clearNotices();
 
   submitSubscription().then((response) => {
