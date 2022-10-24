@@ -40,7 +40,7 @@ jobs:
       fail-fast: false
       matrix:
         ci_node_total: [6]
-        ci_node_index: [0, 1, 2, 3, 4, 5]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6]
 
     steps:
       - name: Install cURL Headers
@@ -65,6 +65,7 @@ jobs:
         env:
           KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
         run: bin/knapsack_pro_rspec
+        if: ${{ matrix.ci_node_index < 6 }}
 
   jest:
     runs-on: ubuntu-latest
