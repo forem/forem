@@ -54,17 +54,11 @@ jobs:
         run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - name: Cache node modules
-        id: cache-nodemodules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+        uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          retore_keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
@@ -92,17 +86,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
-        id: cache-nodemodules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+        uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          retore_keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           cache: 'yarn'
