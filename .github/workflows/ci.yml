@@ -1,8 +1,4 @@
 name: CI
-# TODO
-# - code coverage
-# - cypress
-# - 
 
 on:
   push:
@@ -14,7 +10,6 @@ on:
 
 jobs:
   rspec:
-    name: RSpec
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -63,12 +58,13 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
-      - uses: ruby/setup-ruby@v1
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
-      - name: Install PostgreSQL
-        run: sudo apt-get -yqq install libpq-dev
+      # - name: Install PostgreSQL
+      #   run: sudo apt-get -yqq install libpq-dev
       - name: RSpec
         env:
           KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
@@ -76,7 +72,6 @@ jobs:
 
 
   jest:
-    name: Jest
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -95,9 +90,8 @@ jobs:
         with:
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
-      - run: yarn lint:frontend
       - run: yarn test --colors
       - run: yarn build-storybook
-  # - bundle exec bundle-audit check --update
-  # - bin/test-console-check
-  # - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
+
+# - bin/test-console-check
+# - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
