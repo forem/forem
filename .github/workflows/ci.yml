@@ -93,6 +93,10 @@ jobs:
     timeout-minutes: 20
     env:
       RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
+      DATABASE_NAME: Forem_prod_test
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
 
     services:
       postgres:
@@ -129,7 +133,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
       - run: bin/test-console-check
 
   cypress:
