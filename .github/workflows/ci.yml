@@ -16,6 +16,127 @@ jobs:
       RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [3]
+        ci_node_index: [0, 1, 2]
+
+    steps:
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4-openssl-dev
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rails db:test:prepare
+      - name: RSpec
+        env:
+          KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+        run: bin/knapsack_pro_rspec
+
+  jest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: yarn test --colors
+      - run: yarn build-storybook
+
+  build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Install cURL Headers
+        run: sudo apt-get install libcurl4-openssl-dev
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
+      - run: bin/test-console-check
+
+  cypress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
@@ -62,36 +183,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails db:test:prepare
-      # - name: Install PostgreSQL
-      #   run: sudo apt-get -yqq install libpq-dev
-      - name: RSpec
+      - run: bundle exec rails db:test:prepare assets:precompile
+      - run: yarn cypress install
+      - name: cypress
         env:
-          KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
-        run: bin/knapsack_pro_rspec
-
-
-  jest:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    env:
-      RAILS_ENV: test
-      NODE_ENV: test
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
-      - uses: actions/setup-node@v3
-        with:
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
-      - run: yarn test --colors
-      - run: yarn build-storybook
-
-# - bin/test-console-check
-# - NODE_ENV=production RAILS_ENV=production bundle exec rake assets:precompile
+          KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
+          KNAPSACK_PRO_TEST_FILE_PATTERN: "cypress/e2e/seededFlows/**/*.spec.js"
+        run: bin/knapsack_pro_cypress

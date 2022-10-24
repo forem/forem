@@ -1,4 +1,4 @@
-name: bundler-audit
+name: Bundler-audit
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  bundle-audit:
+  audit:
     runs-on: ubuntu-latest
 
     steps:
