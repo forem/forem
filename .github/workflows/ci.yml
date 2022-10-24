@@ -13,7 +13,7 @@ on:
       - main
 
 jobs:
-  build:
+  rspec:
     name: RSpec
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -81,7 +81,7 @@ jobs:
         run: bin/knapsack_pro_rspec
 
 
-  build:
+  jest:
     name: Jest
     runs-on: ubuntu-latest
     timeout-minutes: 20
