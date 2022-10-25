@@ -1,6 +1,8 @@
 name: CI
   # TODO
-  # node names are currently confusing on the non-seed E2E
+  # - node names are currently confusing on the non-seed E2E
+  # - what do I do about CD?
+  # - clean up unnecessary env variable
 
 on:
   push:
@@ -15,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      COVERAGE: true
       RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
@@ -26,11 +29,11 @@ jobs:
         image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        # options: >-
+        #   --health-cmd pg_isready
+        #   --health-interval 10s
+        #   --health-timeout 5s
+        #   --health-retries 5
         ports:
           - 5432:5432
       redis:
@@ -46,6 +49,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: codecov/codecov-action@v3
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -75,6 +79,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - uses: codecov/codecov-action@v3
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -105,19 +110,17 @@ jobs:
       GITHUB_SECRET: dummy
       # KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
       # KNAPSACK_PRO_LOG_LEVEL: info
-      # KNAPSACK_PRO_CI_NODE_TOTAL: 3
-      # COVERAGE_REPORTS_TOTAL: 4
 
     services:
       postgres:
         image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        # options: >-
+        #   --health-cmd pg_isready
+        #   --health-interval 10s
+        #   --health-timeout 5s
+        #   --health-retries 5
         ports:
           - 5432:5432
       redis:
@@ -158,11 +161,11 @@ jobs:
         image: postgres:13
         env:
           POSTGRES_PASSWORD: postgres
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        # options: >-
+        #   --health-cmd pg_isready
+        #   --health-interval 10s
+        #   --health-timeout 5s
+        #   --health-retries 5
         ports:
           - 5432:5432
       redis:
