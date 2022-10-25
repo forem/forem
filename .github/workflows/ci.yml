@@ -45,8 +45,6 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4]
 
     steps:
-      - name: Install cURL Headers
-        run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - name: Cache node modules
         uses: actions/cache@v3
@@ -128,8 +126,6 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Install cURL Headers
-        run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - name: Cache node modules
         uses: actions/cache@v3
@@ -181,8 +177,6 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5]
 
     steps:
-      - name: Install cURL Headers
-        run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - name: Cache node modules
         uses: actions/cache@v3
