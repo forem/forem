@@ -49,7 +49,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: codecov/codecov-action@v3
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -69,6 +68,7 @@ jobs:
         env:
           KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
         run: bin/knapsack_pro_rspec
+      - uses: codecov/codecov-action@v3
 
   jest:
     runs-on: ubuntu-latest
@@ -79,7 +79,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: codecov/codecov-action@v3
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -91,6 +90,7 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn test --colors
+      - uses: codecov/codecov-action@v3
       - run: yarn build-storybook
 
   build-test:
