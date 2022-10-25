@@ -41,8 +41,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [5]
-        ci_node_index: [0, 1, 2, 3, 4]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5]
 
     steps:
       - uses: actions/checkout@v3
@@ -173,8 +173,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [5]
-        ci_node_index: [0, 1, 2, 3, 4, 5]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6]
 
     steps:
       - uses: actions/checkout@v3
@@ -201,7 +201,7 @@ jobs:
           KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
           KNAPSACK_PRO_TEST_FILE_PATTERN: "cypress/e2e/seededFlows/**/*.spec.js"
         run: bin/knapsack_pro_cypress
-        if: ${{ matrix.ci_node_index < 5 }}
+        if: ${{ matrix.ci_node_index < 6 }}
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
-        if: ${{ matrix.ci_node_index == 5 }}
+        if: ${{ matrix.ci_node_index == 6 }}
