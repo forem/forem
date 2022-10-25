@@ -1,4 +1,5 @@
 class DisplayAd < ApplicationRecord
+  acts_as_taggable_on :tags
   resourcify
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_comments].freeze
