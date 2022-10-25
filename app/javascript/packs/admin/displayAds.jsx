@@ -9,7 +9,10 @@ Document.prototype.ready = new Promise((resolve) => {
   return null;
 });
 
-function saveTags() {}
+function saveTags(selectionString) {
+  document.getElementsByClassName('js-tags-textfield')[0].value =
+    selectionString;
+}
 
 function loadTagsField() {
   const displayAdsTargetedTags = document.getElementById(
