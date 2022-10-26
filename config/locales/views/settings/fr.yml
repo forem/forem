@@ -130,6 +130,7 @@ fr:
           remove: Remove
           save: Save template
           saved: Saved templates
+          trusted: Trusted user templates
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.

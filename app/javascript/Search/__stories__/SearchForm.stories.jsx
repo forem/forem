@@ -30,17 +30,13 @@ export default {
 
 export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;
 
-NoSearchTerm.story = {
-  name: 'no search term',
-};
+NoSearchTerm.storyName = 'no search term';
 
 export const WithSearchTerm = () => (
   <SearchForm {...commonProps} searchTerm="Hello" />
 );
 
-WithSearchTerm.story = {
-  name: 'with search term',
-};
+WithSearchTerm.storyName = 'with search term';
 
 export const WithFocus = () => (
   <FocusedForm>
@@ -48,6 +44,4 @@ export const WithFocus = () => (
   </FocusedForm>
 );
 
-WithFocus.story = {
-  name: 'with focus',
-};
+WithFocus.storyName = 'with focus';

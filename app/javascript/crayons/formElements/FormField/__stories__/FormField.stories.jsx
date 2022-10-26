@@ -21,6 +21,4 @@ export const RadioVariant = () => (
   </FormField>
 );
 
-RadioVariant.story = {
-  name: 'radio',
-};
+RadioVariant.storyName = 'radio';

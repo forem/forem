@@ -5,5 +5,8 @@
     <li><%= link_to "Emails", admin_user_path(@user.id, tab: :emails), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'emails'}", aria: @current_tab == "emails" ? { current: "page" } : {} %></li></li>
     <li><%= link_to "Reports", admin_user_path(@user.id, tab: :reports), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'reports'}", aria: @current_tab == "reports" ? { current: "page" } : {} %></li></li>
     <li><%= link_to "Flags", admin_user_path(@user.id, tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'flags'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li></li>
+    <% if @unpublish_all_data.exists? %>
+      <li><%= link_to "Unpublish All History", admin_user_path(@user.id, tab: :unpublish_logs), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if @current_tab == 'unpublish_logs'}", aria: @current_tab == "flags" ? { current: "page" } : {} %></li>
+    <% end %>
   </ul>
 </nav>

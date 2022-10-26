@@ -28,6 +28,12 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).to match_array(article)
         end
+
+        it "does not return negative scored articles", :aggregate_failures do
+          article = create(:article, score: -1)
+          expect(query_call).to be_a(ActiveRecord::Relation)
+          expect(query_call.to_a).not_to match_array(article)
+        end
       end
 
       describe "#featured_story_and_default_home_feed" do

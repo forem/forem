@@ -1175,6 +1175,8 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     before { Audit::Subscribe.listen listener }
 
+    after { Audit::Subscribe.forget listener }
+
     context "when unauthorized" do
       it "fails with no api key" do
         put path, headers: headers

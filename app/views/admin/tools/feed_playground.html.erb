@@ -1,0 +1,33 @@
+<h1>Feed Playground</h1>
+<div class="crayons-card p-6 my-6">
+  <%= form_tag feed_playground_admin_tools_path do %>
+    <div class="form-group">
+      <%= label_tag :config %>
+      <%= text_area_tag :config, params[:config], placeholder: '{"description": ..., "order_by": ..., etc.}', class: "block w-100 mb-4 rounded", style: "height: 300px" %>
+      <%= label_tag :username, "User" %>
+      <%= text_field_tag :username, params[:username] || current_user.username, placeholder: "sloan" %>
+      <%= label_tag :number_of_articles %>
+      <%= text_field_tag :number_of_articles, params[:number_of_articles] || 25, placeholder: "25" %>
+      <%= submit_tag("Preview feed") %>
+    </div>
+  <% end %>
+</div>
+
+<% if @user && @articles %>
+  <h1>Feed Preview for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
+  <div>
+    <% Follow.follower_tag(@user.id).includes(:followable).order("points DESC").each do |follow| %>
+      <a href="/t/<%= follow.followable.name %>" class="crayons-tag">
+        <span class="crayons-tag__prefix">#</span><%= follow.followable.name %>: <%= follow.points.round(3) %>
+      </a>
+    <% end %>
+  </div>
+
+  <div class="articles-list mt-4" id="articles-list">
+    <div class="substories" id="substories">
+      <% @articles.each do |article| %>
+        <%= render "articles/single_story", story: article.decorate, featured: article.main_image.present? %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -34,7 +34,7 @@ export const Default = () => (
   />
 );
 
-Default.story = { name: 'default' };
+Default.storyName = 'default';
 
 export const VideoArticleWithFlareTag = () => (
   <Article
@@ -47,4 +47,4 @@ export const VideoArticleWithFlareTag = () => (
   />
 );
 
-VideoArticleWithFlareTag.story = { name: 'video with flare tag' };
+VideoArticleWithFlareTag.storyName = 'video with flare tag';
