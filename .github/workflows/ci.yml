@@ -109,7 +109,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:13-alpine
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -149,7 +149,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:13
+        image: postgres:13-alpine
         env:
           POSTGRES_PASSWORD: postgres
         ports:
