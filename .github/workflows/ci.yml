@@ -100,7 +100,7 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
-      # KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
@@ -139,6 +139,7 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
       DATABASE_NAME_TEST: Forem_test
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
@@ -196,6 +197,7 @@ jobs:
       - run: echo "All done"
       - run: echo ${{ github.event.pull_request.head.ref }}
       - run: echo ${{ github.ref }}
+      - run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Report failure to Slack channel
         uses: slackapi/slack-github-action@v1
