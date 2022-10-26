@@ -196,11 +196,13 @@ jobs:
     steps:
       - run: echo "All done"
       - run: echo ${{ github.event.pull_request.head.ref }}
-      - run: echo ${{ github.ref }}
-      - run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Report failure to Slack channel
         uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            { "link": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
+        if: always() && github.ref == "refs/pull/18617/merge"
+          # && failure()
