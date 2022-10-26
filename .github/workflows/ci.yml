@@ -201,5 +201,4 @@ jobs:
           payload: { "status": "failed" }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: echo "this shouldn't run"
         if: github.ref == 'refs/heads/mac/dx/moving-to-github-action' && always()
