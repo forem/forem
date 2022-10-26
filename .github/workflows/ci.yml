@@ -197,8 +197,6 @@ jobs:
 
       - name: Report failure to Slack channel
         uses: slackapi/slack-github-action@v1
-        with:
-          payload: { "status": "failed" }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: github.ref == 'refs/heads/mac/dx/moving-to-github-action' && always()
