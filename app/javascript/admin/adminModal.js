@@ -58,22 +58,22 @@ export const adminModal = function ({
     onOpen: () => {
       window.document
         .getElementById(`left-btn`)
-        .addEventListener('click', () => {
+        .addEventListener('click', (event) => {
           closeWindowModal();
-          leftBtnAction();
+          leftBtnAction(event);
         });
 
       window.document
         .getElementById(`right-btn`)
-        .addEventListener('click', () => {
+        .addEventListener('click', (event) => {
           closeWindowModal();
-          rightBtnAction();
+          rightBtnAction(event);
         });
 
       window.document
         .querySelector(`.crayons-modal__dismiss`)
-        .addEventListener('click', () => {
-          closeModalFunction();
+        .addEventListener('click', (event) => {
+          closeModalFunction(event);
         });
     },
   });
