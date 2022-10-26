@@ -199,4 +199,4 @@ jobs:
         uses: slackapi/slack-github-action@v1
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: github.ref == 'refs/heads/mac/dx/moving-to-github-action' && always()
+        if: github.ref == 'refs/remotes/pull/18617/merge' && always()
