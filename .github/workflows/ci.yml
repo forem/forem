@@ -89,6 +89,7 @@ jobs:
         with:
           cache: yarn
       - run: yarn install --frozen-lockfile
+      - run: yarn lint:frontend
       - run: yarn test --colors
       - uses: codecov/codecov-action@v3
       - run: yarn build-storybook
