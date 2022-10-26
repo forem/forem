@@ -20,6 +20,12 @@
       <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: "Select...", class: "crayons-select" %>
     </div>
 
+    <% if FeatureFlag.enabled?(:display_ad_tags) %>
+      <div class="crayons-field">
+        <div id="display-ad-targeted-tags"></div>
+      </div>
+    <% end %>
+
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
         <legend class="crayons-field crayons-field__label pl-0">Display to user group</legend>
@@ -72,3 +78,7 @@
     </div>
   </div>
 </div>
+
+<% if FeatureFlag.enabled?(:display_ad_tags) %>
+  <%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>
+<% end %>

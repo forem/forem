@@ -4,19 +4,20 @@ import {
   setCommentSubscriptionStatus,
 } from '../commentSubscriptionUtilities';
 
-/* global globalThis */
+const csrfToken = 'this-is-a-csrf-token';
+jest.mock('../../utilities/http/csrfToken', () => ({
+  getCSRFToken: jest.fn(() => Promise.resolve(csrfToken)),
+}));
 
+/* global globalThis */
 describe('Comment Subscription Utilities', () => {
-  const csrfToken = 'this-is-a-csrf-token';
   const articleID = 26; // Just a random article ID.
 
   beforeAll(() => {
     globalThis.fetch = fetch;
-    globalThis.getCsrfToken = async () => csrfToken;
   });
   afterAll(() => {
     delete globalThis.fetch;
-    delete globalThis.getCsrfToken;
   });
 
   afterEach(() => {
