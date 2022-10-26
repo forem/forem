@@ -15,12 +15,23 @@ function saveTags(selectionString) {
 }
 
 function loadTagsField() {
+  let defaultValue = '';
+  const hiddenTagsField =
+    document.getElementsByClassName('js-tags-textfield')[0];
+
+  if (hiddenTagsField) {
+    defaultValue = hiddenTagsField.value.replaceAll(' ', ', ');
+  }
+
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
 
   if (displayAdsTargetedTags) {
-    render(<Tags onInput={saveTags} />, displayAdsTargetedTags);
+    render(
+      <Tags onInput={saveTags} defaultValue={defaultValue} />,
+      displayAdsTargetedTags,
+    );
   }
 }
 
