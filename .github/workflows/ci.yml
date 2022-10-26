@@ -204,5 +204,5 @@ jobs:
             { "link": ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always() && github.ref == "refs/pull/18617/merge"
+        if: always() && github.ref == 'refs/pull/18617/merge'
           # && failure()
