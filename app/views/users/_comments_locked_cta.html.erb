@@ -1,0 +1,21 @@
+<div class="crayons-card mt-2 m:mt-0 mb-2 m:p-8 p-4">
+  <div class="align-center">
+    <%= inline_svg_tag("comments_profile.svg", aria_hidden: true) %>
+  </div>
+  <h3 class="crayons-subtitle-3 mt-5 fs-l align-center">
+    Want to connect with <%= @user.name %>?
+  </h3>
+  <p class="align-center mt-1 color-base-60 fs-base">
+    Create an account to connect with <%= @user.name %>. You can also sign in below to proceed if you already have an account.
+  </p>
+  <div class="align-center mt-4">
+    <a href="/enter?state=new-user" data-tracking-id="ca_comment_section" data-tracking-source="comments_locked_cta" class="crayons-btn crayons-btn--l w-75">
+      Create Account
+    </a>
+  </div>
+  <div class="align-center mt-4">
+    <span>
+      Already have an account? <a href="/enter">Sign in</a>
+    </span>
+  </div>
+</div>
