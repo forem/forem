@@ -1842,10 +1842,10 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@etchteam/storybook-addon-css-variables-theme@^1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.2.1.tgz#291f94f73db0906530baca762f00c57316d2fd06"
-  integrity sha512-yPdtsrTaEKeW4QsH4+jsbwbRhE5VzXROaj0/z2z9r3NNRFzWYa5P6FA4a9CamQujvFZjIt/JBCAtczjEc8m8TA==
+"@etchteam/storybook-addon-css-variables-theme@^1.3.3":
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/@etchteam/storybook-addon-css-variables-theme/-/storybook-addon-css-variables-theme-1.3.3.tgz#13b86629b6493031c2a916323d6ee19648a32578"
+  integrity sha512-/D5kuCTRe2RUubP2a3iUAOKdyL+3B9PCcOOyH6XsJjNYXJWXODssr9C5+t3nsiGE6SG1+E+90mVtkQyhVYlXyA==
   dependencies:
     "@storybook/addons" "^6.2.9"
     "@storybook/api" "^6.2.9"
@@ -1858,10 +1858,10 @@
     memoizerific "^1.11.3"
     util-deprecate "^1.0.2"
 
-"@faker-js/faker@^7.5.0":
-  version "7.5.0"
-  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-7.5.0.tgz#8e8265f65f5b68d2a57886d59b03788eeb676264"
-  integrity sha512-8wNUCCUHvfvI0gQpDUho/3gPzABffnCn5um65F8dzQ86zz6dlt4+nmAA7PQUc8L+eH+9RgR/qzy5N/8kN0Ozdw==
+"@faker-js/faker@^7.6.0":
+  version "7.6.0"
+  resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-7.6.0.tgz#9ea331766084288634a9247fcd8b84f16ff4ba07"
+  integrity sha512-XK6BTq1NDMo9Xqw/YkYyGjSsg44fbNwYRx7QK2CuoQgyy+f1rrTDHoExVM5PsyXCtfl2vs2vVJ0MN0yN6LppRw==
 
 "@gar/promisify@^1.0.1":
   version "1.1.2"
@@ -3422,10 +3422,10 @@
     lz-string "^1.4.4"
     pretty-format "^27.0.2"
 
-"@testing-library/dom@^8.18.1":
-  version "8.18.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.18.1.tgz#80f91be02bc171fe5a3a7003f88207be31ac2cf3"
-  integrity sha512-oEvsm2B/WtcHKE+IcEeeCqNU/ltFGaVyGbpcm4g/2ytuT49jrlH9x5qRKL/H3A6yfM4YAbSbC0ceT5+9CEXnLg==
+"@testing-library/dom@^8.19.0":
+  version "8.19.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-8.19.0.tgz#bd3f83c217ebac16694329e413d9ad5fdcfd785f"
+  integrity sha512-6YWYPPpxG3e/xOo6HIWwB/58HukkwIVTOaZ0VwdMVjhRUX/01E4FtQbck9GazOOj7MXHc5RBzMrU86iBJHbI+A==
   dependencies:
     "@babel/code-frame" "^7.10.4"
     "@babel/runtime" "^7.12.5"

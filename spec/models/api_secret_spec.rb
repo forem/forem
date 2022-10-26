@@ -17,4 +17,29 @@ RSpec.describe ApiSecret, type: :model do
       expect(invalid_secret.errors.full_messages.join).to include("limit of 10 per user has been reached")
     end
   end
+
+  describe "Rack::Attack cache invalidation optimization" do
+    before do
+      cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
+      allow(Rails).to receive(:cache) { cache_db }
+
+      allow(Rails.cache).to receive(:delete)
+      allow(Rails.cache).to receive(:delete)
+        .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
+
+    context "when ApiSecret is created" do
+      it "clears the cache if it belongs to an admin" do
+        create(:api_secret, user: create(:user, :admin))
+        expect(Rails.cache).to have_received(:delete)
+          .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+      end
+
+      it "doesn't clear the cache if it belongs to an admin" do
+        create(:api_secret)
+        expect(Rails.cache).not_to have_received(:delete)
+          .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+      end
+    end
+  end
 end
