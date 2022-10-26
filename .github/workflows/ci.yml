@@ -1,6 +1,5 @@
 name: CI
   # TODO
-  # - what do I do about CD?
   # - clean up unnecessary env variable
   # - needs to send alert to slack when build set failed.
 
@@ -21,6 +20,7 @@ jobs:
       RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
       DATABASE_NAME_TEST: Forem_test
 
@@ -60,8 +60,6 @@ jobs:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
       - name: RSpec
-        env:
-          KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
 
@@ -96,8 +94,6 @@ jobs:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
       APP_PROTOCOL: http://
       APP_DOMAIN: localhost:3000
       HEROKU_APP_URL: practicaldev.herokuapp.com
@@ -105,7 +101,6 @@ jobs:
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
       # KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
-      # KNAPSACK_PRO_LOG_LEVEL: info
 
     services:
       postgres:
@@ -142,8 +137,6 @@ jobs:
     timeout-minutes: 20
     env:
       RAILS_ENV: test
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
-      DATABASE_NAME: Forem_prod_test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
       DATABASE_NAME_TEST: Forem_test
 
@@ -201,12 +194,12 @@ jobs:
 
     steps:
       - run: echo "All done"
+
       - name: Report failure to Slack channel
-        # uses: slackapi/slack-github-action@v1
-        # with:
-        #   channel-id: 'USER_ID'
-        #   slack-message: 'posting from a github action!'
-        # env:
-        #   SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: { "status": "failed" }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: echo "this shouldn't run"
-        if: github.ref == 'refs/heads/main' && failure() && always()
+        if: github.ref == 'refs/heads/mac/dx/moving-to-github-action' && always()
