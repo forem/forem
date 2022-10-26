@@ -561,6 +561,7 @@ article {
   --gif-btn-z-index: 2;
 
   width: fit-content;
+  width: -moz-fit-content;
 
   // Align styles of freezeframed animated images with normal image styles
   canvas {
