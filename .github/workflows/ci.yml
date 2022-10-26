@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  rspec:
+  RSpec:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -60,7 +60,7 @@ jobs:
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
 
-  jest:
+  Jest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -84,7 +84,7 @@ jobs:
       - uses: codecov/codecov-action@v3
       - run: yarn build-storybook
 
-  build-test:
+  Build-test:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -129,7 +129,7 @@ jobs:
           bundler-cache: true
       - run: bin/test-console-check
 
-  cypress:
+  Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -186,7 +186,7 @@ jobs:
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
         if: ${{ matrix.ci_node_index == 'non-seed' }}
 
-  CI-checker:
+  CI-status-report:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress, build-test]
 
