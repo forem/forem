@@ -3,19 +3,25 @@
     <%= inline_svg_tag("comments_profile.svg", aria_hidden: true) %>
   </div>
   <h3 class="crayons-subtitle-3 mt-5 fs-l align-center">
-    Want to connect with <%= @user.name %>?
+    <%= t("views.users.comments_locked_cta.title", user: @user.name) %>
   </h3>
   <p class="align-center mt-1 color-base-60 fs-base">
-    Create an account to connect with <%= @user.name %>. You can also sign in below to proceed if you already have an account.
+    <%= t("views.users.comments_locked_cta.description", user: @user.name) %>
   </p>
   <div class="align-center mt-4">
     <a href="/enter?state=new-user" class="crayons-btn crayons-btn--l w-75" data-tracking-id="ca_profile_comment_section_locked" data-tracking-source="comments_locked_cta">
-      Create Account
+      <%= t("views.users.comments_locked_cta.create_account") %>
     </a>
   </div>
   <div class="align-center mt-4">
     <span>
-      Already have an account? <a href="/enter" data-tracking-id="si_profile_comment_section_locked" data-tracking-source="comments_locked_cta">Sign in</a>
+      <%= t("views.users.comments_locked_cta.already_have_an_account") %>
+      <a
+        href="/enter"
+        data-tracking-id="si_profile_comment_section_locked"
+        data-tracking-source="comments_locked_cta">
+          <%= t("views.users.comments_locked_cta.sign_in") %>
+      </a>
     </span>
   </div>
 </div>
