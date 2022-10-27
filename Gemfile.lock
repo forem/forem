@@ -278,7 +278,7 @@ GEM
       faraday (~> 2.0)
     fastimage (2.2.6)
     fastly (3.0.2)
-    feedjira (3.2.1)
+    feedjira (3.2.2)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
     ferrum (0.12)
