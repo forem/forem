@@ -9,7 +9,7 @@ on:
   #   branches:
   #     - main
   workflow_run:
-    workflows: [CI]
+    workflows: ['CI / RSpec (6, 1)']
     types:
       - completed
   # remove this

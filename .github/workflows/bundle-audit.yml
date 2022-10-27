@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install cURL Headers
-        run: sudo apt-get install libcurl4-openssl-dev
       - uses: actions/checkout@v3
       - name: setup ruby
         uses: ruby/setup-ruby@v1
