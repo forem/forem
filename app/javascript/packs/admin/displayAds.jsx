@@ -45,11 +45,12 @@ function getDefaultTagValues() {
 
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
-  select.addEventListener('change', (event) => {
-    if (select.value === 'post_comments') {
-      showTagsField();
-    }
 
+  if (select.value === 'post_comments') {
+    showTagsField();
+  }
+
+  select.addEventListener('change', (event) => {
     if (event.target.value === 'post_comments') {
       showTagsField();
     } else {
