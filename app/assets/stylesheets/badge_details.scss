@@ -1,11 +1,25 @@
 .badge_details {
-  img {
+  .badge_image {
+    float: left;
+    overflow: hidden;
     width: 192px;
     height: 192px;
     object-fit: contain;
     aspect-ratio: 1 / 1;
-    background-color: #fafafa;
+    background-color: var(--card-secondary-bg);
     border-radius: 8px;
-    border: 1px solid #f5f5f5;
+    border: 1px solid var(--body-bg);
+  }
+
+  .badge_text_content {
+    overflow: hidden;
+    padding-left: 40px;
+  }
+
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 16px;
   }
 }
