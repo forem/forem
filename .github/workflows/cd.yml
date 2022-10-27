@@ -1,0 +1,26 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+  # remove this
+  pull_request:
+    branches:
+      - main
+  # remove this
+
+jobs:
+  Deploy:
+    needs: CI-status-report
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Login to heroku
+        uses: actions/checkout@v3
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku login
+      - run: git remote add heroku ${{ secrets.HEROKU_REMOTE }}
+      - run: git push heroku main
