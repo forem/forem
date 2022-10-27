@@ -2,6 +2,7 @@ class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
+  include TagListValidateable
   include UserSubscriptionSourceable
   include PgSearch::Model
 
@@ -768,12 +769,7 @@ class Article < ApplicationRecord
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
-    # check tags names aren't too long and don't contain non alphabet characters
-    tag_list.each do |tag|
-      new_tag = Tag.new(name: tag)
-      new_tag.validate_name
-      new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
-    end
+    validate_tag_name(tag_list)
   end
 
   def remove_tag_adjustments_from_tag_list

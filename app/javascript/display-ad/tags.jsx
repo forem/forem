@@ -8,7 +8,7 @@ import { TagAutocompleteSelection } from '@crayons/MultiSelectAutocomplete/TagAu
 import { MultiSelectAutocomplete } from '@crayons';
 
 /**
- * Tags for the article form. Allows users to search and select up to 4 tags.
+ * Tags for the display ads admin form. Allows users to search and select up to 10 tags.
  *
  * @param {Function} onInput Callback to sync selections to article form state
  * @param {string} defaultValue Comma separated list of any currently selected tags

@@ -137,4 +137,44 @@ RSpec.describe DisplayAd, type: :model do
       expect(described_class.search_ads("foo")).to eq([])
     end
   end
+
+  describe ".validate_tag" do
+    it "rejects more than 10 tags" do
+      eleven_tags = "one, two, three, four, five, six, seven, eight, nine, ten, eleven"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: eleven_tags).valid?).to be(false)
+    end
+
+    it "rejects tags with length > 30" do
+      tags = "'testing tag length with more than 30 chars', tag"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: tags).valid?).to be(false)
+    end
+
+    it "rejects tag with non-alphanumerics" do
+      expect do
+        build(:display_ad,
+              name: "This is an Ad",
+              body_markdown: "Ad Body",
+              placement_area: "post_comments",
+              tag_list: "c++").validate!
+      end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "always downcase tags" do
+      tags = "UPPERCASE, CAPITALIZE"
+      display_ad = create(:display_ad,
+                          name: "This is an Ad",
+                          body_markdown: "Ad Body",
+                          placement_area: "post_comments",
+                          tag_list: tags)
+      expect(display_ad.tag_list).to eq(tags.downcase.split(", "))
+    end
+  end
 end

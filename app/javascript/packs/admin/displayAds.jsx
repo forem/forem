@@ -9,15 +9,29 @@ Document.prototype.ready = new Promise((resolve) => {
   return null;
 });
 
-function saveTags() {}
+function saveTags(selectionString) {
+  document.getElementsByClassName('js-tags-textfield')[0].value =
+    selectionString;
+}
 
 function loadTagsField() {
+  let defaultValue = '';
+  const hiddenTagsField =
+    document.getElementsByClassName('js-tags-textfield')[0];
+
+  if (hiddenTagsField) {
+    defaultValue = hiddenTagsField.value.replaceAll(' ', ', ');
+  }
+
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
 
   if (displayAdsTargetedTags) {
-    render(<Tags onInput={saveTags} />, displayAdsTargetedTags);
+    render(
+      <Tags onInput={saveTags} defaultValue={defaultValue} />,
+      displayAdsTargetedTags,
+    );
   }
 }
 
