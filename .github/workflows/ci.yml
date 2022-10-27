@@ -1,0 +1,206 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  RSpec:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      COVERAGE: true
+      RAILS_ENV: test
+      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rails db:test:prepare
+      - name: RSpec
+        run: bin/knapsack_pro_rspec
+      - uses: codecov/codecov-action@v3
+
+  Jest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint:frontend
+      - run: yarn test --colors
+      - uses: codecov/codecov-action@v3
+      - run: yarn build-storybook
+
+  Build-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
+      DATABASE_NAME: Forem_prod_test
+      APP_PROTOCOL: http://
+      APP_DOMAIN: localhost:3000
+      HEROKU_APP_URL: practicaldev.herokuapp.com
+      SECRET_KEY_BASE: dummydummydummy
+      GITHUB_KEY: dummy
+      GITHUB_SECRET: dummy
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bin/test-console-check
+
+  Cypress:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RAILS_ENV: test
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rails db:test:prepare assets:precompile
+      - run: yarn cypress install
+      - name: cypress
+        env:
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
+          KNAPSACK_PRO_TEST_FILE_PATTERN: "cypress/e2e/seededFlows/**/*.spec.js"
+        run: bin/knapsack_pro_cypress
+        if: ${{ matrix.ci_node_index != 'non-seed' }}
+      - name: cypress non-seed
+        run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
+        if: ${{ matrix.ci_node_index == 'non-seed' }}
+
+  CI-status-report:
+    runs-on: ubuntu-latest
+    needs: [rspec, jest, cypress, build-test]
+
+    steps:
+      - run: echo "All done"
+      - run: echo ${{ github.event.pull_request.head.ref }}
+      - run: echo ${{ github.ref }}
+
+      - name: Report failure to Slack channel
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            { "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always() && github.ref == 'refs/heads/main' && failure()

@@ -68,7 +68,6 @@ gem "omniauth-google-oauth2", "~> 1.0" # OmniAuth strategy for Google OAuth2
 gem "omniauth-rails_csrf_protection", "~> 1.0" # Provides CSRF protection on OmniAuth request endpoint on Rails application.
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "parallel", "~> 1.22" # Run any kind of code in parallel processes
-gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with GitHub OAuth client
 gem "pg", "~> 1.4" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "pg_query", ">= 0.9.0" # Allows PGHero to analyze queries
 gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that take advantage of PostgreSQL's full text search
@@ -120,7 +119,6 @@ group :development do
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "easy_translate", "~> 0.5.1" # Google translate tie-in to be used with i18n tasks
   gem "erb_lint", "~> 0.0.37", require: false # ERB Linter tool
-  gem "foreman", "~> 0.87" # Process manager for applications with multiple components
   gem "guard", "~> 2.18", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-rspec", "~> 4.7", require: false # Guard::Rspec includes a DSL for running tests on change
   gem "i18n-tasks", "~> 1.0.11" # Helpers to find and manage missing and unused translations
@@ -142,7 +140,7 @@ group :development, :test do
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.8.1" # For loading ENV variables locally
   gem "faker", "~> 2.22" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.3.1" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 3.0" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+

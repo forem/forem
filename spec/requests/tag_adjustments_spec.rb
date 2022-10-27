@@ -8,7 +8,6 @@ RSpec.describe "TagAdjustments", type: :request do
     {
       tag_name: tag.name,
       article_id: article.id,
-      reason_for_adjustment: "Test #{rand(100)}",
       adjustment_type: "removal"
     }
   end
