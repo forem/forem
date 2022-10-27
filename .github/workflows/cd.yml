@@ -5,14 +5,17 @@ on:
     branches:
       - main
   # remove this
-  pull_request:
-    branches:
-      - main
+  # pull_request:
+  #   branches:
+  #     - main
+  workflow_run:
+    workflows: CI
+      types:
+        - completed
   # remove this
 
 jobs:
   Deployment:
-    needs: CI-status-report
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
