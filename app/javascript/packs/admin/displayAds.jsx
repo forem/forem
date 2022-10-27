@@ -35,6 +35,17 @@ function loadTagsField() {
   }
 }
 
+function hideAndClearTags() {
+  // console.log("hide and clear tasg")
+}
+
 document.ready.then(() => {
-  loadTagsField();
+  const select = document.getElementsByClassName('js-placement-area')[0];
+  select.addEventListener('change', (event) => {
+    if (event.target.value === 'post_comments') {
+      loadTagsField();
+    } else {
+      hideAndClearTags();
+    }
+  });
 });
