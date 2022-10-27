@@ -13,7 +13,6 @@ function saveTags(selectionString) {
   document.getElementsByClassName('js-tags-textfield')[0].value =
     selectionString;
 }
-
 function showTagsField() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
@@ -47,6 +46,10 @@ function getDefaultTagValues() {
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
   select.addEventListener('change', (event) => {
+    if (select.value === 'post_comments') {
+      showTagsField();
+    }
+
     if (event.target.value === 'post_comments') {
       showTagsField();
     } else {
