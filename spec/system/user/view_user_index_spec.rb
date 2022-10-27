@@ -5,67 +5,44 @@ RSpec.describe "User index", type: :system do
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
-  let!(:comment2) { create(:comment, user: user, commentable: other_article) }
   let(:organization) { create(:organization) }
 
   context "when user is unauthorized" do
+    before do
+      Timecop.freeze
+      visit "/#{user.username}"
+    end
+
+    after { Timecop.return }
+
     context "when 1 article" do
-      before do
-        Timecop.freeze
-        visit "/#{user.username}"
-      end
-
-      after { Timecop.return }
-
-      it "shows all proper elements", :aggregate_failures, js: true do
-        shows_header
-        shows_title
-        shows_articles
-        shows_comments
-        shows_comment_timestamp
-        shows_last_comments
-      end
-
-      def shows_header
+      it "shows_header", :aggregate_failures, js: true do
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button(I18n.t("core.follow"))
         end
       end
 
-      def shows_title
+      it "shows_title", :aggregate_failures, js: true do
         expect(page).to have_title("#{user.name} - #{Settings::Community.community_name}")
       end
 
-      def shows_articles
+      it "shows_articles", :aggregate_failures, js: true do
         within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
       end
 
-      def shows_comments
-        within("#substories div.profile-comment-card") do
-          expect(page).to have_content("Recent comments")
-          expect(page).to have_link(nil, href: comment.path)
-          expect(page).to have_link(nil, href: comment2.path)
-        end
-
-        within("#substories") do
-          expect(page).to have_selector(".profile-comment-card", count: 1)
-        end
-
-        within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
-          comment_date = comment.readable_publish_date.gsub("  ", " ")
-          expect(page).to have_selector(".comment-date", text: comment_date)
+      it "shows_comments_locked_cta", :aggregate_failures, js: true do
+        within("#comments-locked-cta") do
+          expect(page).to have_content("Want to connect with #{user.name}?")
         end
       end
 
-      def shows_comment_timestamp
-        within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
-          iso8601_date_time = /^((\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z)$/
-          timestamp = page.find(".comment-date time")[:datetime]
-          expect(timestamp).to match(iso8601_date_time)
+      it "hides_comments", :aggregate_failures, js: true do
+        within("#substories") do
+          expect(page).not_to have_content("Recent comments")
         end
       end
     end
@@ -73,9 +50,12 @@ RSpec.describe "User index", type: :system do
 
   context "when user has an organization membership" do
     before do
+      Timecop.freeze
       user.organization_memberships.create(organization: organization, type_of_user: "member")
       visit "/#{user.username}"
     end
+
+    after { Timecop.return }
 
     it "shows organizations", js: true do
       expect(page).to have_css(".spec-org-titles", text: "Organizations")
@@ -88,40 +68,41 @@ RSpec.describe "User index", type: :system do
       visit "/#{user.username}"
     end
 
-    it "shows all proper elements", :aggregate_failures, js: true do
-      shows_header
-      shows_articles
-      shows_comments
-      shows_last_comments
-    end
+    context "when user is logged in" do
+      it "shows_header", :aggregate_failures, js: true do
+        within("h1") { expect(page).to have_content(user.name) }
+        within(".profile-header__actions") do
+          expect(page).to have_button(I18n.t("core.edit_profile"))
+        end
+      end
 
-    def shows_header
-      within("h1") { expect(page).to have_content(user.name) }
-      within(".profile-header__actions") do
-        expect(page).to have_button(I18n.t("core.edit_profile"))
+      it "shows_articles", :aggregate_failures, js: true do
+        within(".crayons-story") do
+          expect(page).to have_content(article.title)
+          expect(page).not_to have_content(other_article.title)
+        end
+      end
+
+      it "shows_comments", :aggregate_failures, js: true do
+        within("#substories div.profile-comment-card") do
+          expect(page).to have_content("Recent comments")
+          expect(page).to have_link(nil, href: comment.path)
+        end
+      end
+
+      it "hides_comments_locked_cta", :aggregate_failures, js: true do
+        within("#substories") do
+          expect(page).not_to have_content("Want to connect with #{user.name}?")
+        end
       end
     end
 
-    def shows_articles
-      within(".crayons-story") do
-        expect(page).to have_content(article.title)
-        expect(page).not_to have_content(other_article.title)
+    def shows_last_comments
+      stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
+      visit "/#{user.username}"
+      within("#substories .profile-comment-card .pt-3 .fs-base") do
+        expect(page).to have_content("View last 1 Comment")
       end
-    end
-
-    def shows_comments
-      within("#substories div.profile-comment-card") do
-        expect(page).to have_content("Recent comments")
-        expect(page).to have_link(nil, href: comment.path)
-      end
-    end
-  end
-
-  def shows_last_comments
-    stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
-    visit "/#{user.username}"
-    within("#substories .profile-comment-card .pt-3 .fs-base") do
-      expect(page).to have_content("View last 1 Comment")
     end
   end
 end
