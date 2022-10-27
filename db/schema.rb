@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_03_103855) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_20_120850) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -578,22 +578,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_103855) do
     t.integer "watchers_count"
     t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
     t.index ["url"], name: "index_github_repos_on_url", unique: true
-  end
-
-  create_table "html_variant_successes", force: :cascade do |t|
-    t.bigint "article_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.bigint "html_variant_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
-  end
-
-  create_table "html_variant_trials", force: :cascade do |t|
-    t.bigint "article_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.bigint "html_variant_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -1381,10 +1365,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_03_103855) do
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
   add_foreign_key "github_repos", "users", on_delete: :cascade
-  add_foreign_key "html_variant_successes", "articles", on_delete: :nullify
-  add_foreign_key "html_variant_successes", "html_variants", on_delete: :cascade
-  add_foreign_key "html_variant_trials", "articles", on_delete: :nullify
-  add_foreign_key "html_variant_trials", "html_variants", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
