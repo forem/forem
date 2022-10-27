@@ -17,8 +17,10 @@ function showTagsField() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
+  displayAdsTargetedTags.classList.remove('hidden');
 
   const defaultTagValues = getDefaultTagValues();
+
   if (displayAdsTargetedTags) {
     render(
       <Tags onInput={saveTags} defaultValue={defaultTagValues} />,
@@ -27,8 +29,19 @@ function showTagsField() {
   }
 }
 
-function hideAndClearTags() {
-  // console.log("hide and clear tasg")
+function hideTagsField() {
+  const displayAdsTargetedTags = document.getElementById(
+    'display-ad-targeted-tags',
+  );
+
+  displayAdsTargetedTags.classList.add('hidden');
+}
+
+function clearTagList() {
+  const hiddenTagsField =
+    document.getElementsByClassName('js-tags-textfield')[0];
+
+  hiddenTagsField.value = ' ';
 }
 
 function getDefaultTagValues() {
@@ -54,7 +67,8 @@ document.ready.then(() => {
     if (event.target.value === 'post_comments') {
       showTagsField();
     } else {
-      hideAndClearTags();
+      hideTagsField();
+      clearTagList();
     }
   });
 });
