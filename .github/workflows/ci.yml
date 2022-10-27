@@ -10,7 +10,6 @@ on:
 
 jobs:
   RSpec:
-    needs: build-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -62,7 +61,6 @@ jobs:
       - uses: codecov/codecov-action@v3
 
   Jest:
-    needs: build-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -132,7 +130,6 @@ jobs:
       - run: bin/test-console-check
 
   Cypress:
-    needs: build-test
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
