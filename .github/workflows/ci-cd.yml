@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -204,3 +204,22 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always() && github.ref == 'refs/heads/main' && failure()
+
+  Deploy:
+    # if: ${{ github.event_name == 'push' && github.ref == "refs/heads/main" }}
+    runs-on: ubuntu-latest
+    needs: [CI-status-report]
+    environment: staging
+    concurrency: staging
+    timeout-minutes: 30
+
+    steps:
+      - run: echo ${{ github.event_name }}
+      - uses: actions/checkout@v3
+      - name: Login to heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku login
+      - run: git remote add heroku ${{ secrets.HEROKU_REMOTE }}
+      - run: git push heroku main
+
