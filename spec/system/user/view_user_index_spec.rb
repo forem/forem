@@ -64,9 +64,12 @@ RSpec.describe "User index", type: :system do
 
   context "when visiting own profile" do
     before do
+      Timecop.freeze
       sign_in user
       visit "/#{user.username}"
     end
+
+    after { Timecop.return }
 
     context "when user is logged in" do
       it "shows_header", :aggregate_failures, js: true do
@@ -97,7 +100,7 @@ RSpec.describe "User index", type: :system do
       end
     end
 
-    def shows_last_comments
+    it "shows_last_comments", :aggregate_failures, js: true do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/#{user.username}"
       within("#substories .profile-comment-card .pt-3 .fs-base") do
