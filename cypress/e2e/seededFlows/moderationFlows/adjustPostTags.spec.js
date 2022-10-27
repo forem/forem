@@ -18,7 +18,9 @@ describe('Adjust post tags', () => {
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
         cy.findByPlaceholderText('Add a tag').type('tag2');
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: 'Submit' }).click();
       });
 
@@ -36,7 +38,9 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
 
         cy.findByRole('button', { name: 'Submit' }).click();
@@ -46,22 +50,6 @@ describe('Adjust post tags', () => {
         cy.findByText('The #tag1 tag was removed.');
         cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
-    });
-
-    it('should not alter tags from a post if a reason is not specified', () => {
-      cy.findByRole('heading', { name: 'Tag test article' }).click();
-      cy.getIframeBody('.article-iframe').findByRole('link', {
-        name: /# tag1/,
-      });
-
-      cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
-
-        cy.findByRole('button', { name: 'Submit' }).click();
-      });
-
-      cy.findByTestId('snackbar').should('not.exist');
     });
   });
 
@@ -84,7 +72,9 @@ describe('Adjust post tags', () => {
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
         cy.findByPlaceholderText('Add a tag').type('tag2');
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: 'Submit' }).click();
       });
 
@@ -102,7 +92,9 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
 
         cy.findByRole('button', { name: 'Submit' }).click();
@@ -144,7 +136,9 @@ describe('Adjust post tags', () => {
           .should('have.attr', 'aria-expanded', 'true');
 
         cy.findByPlaceholderText('Add a tag').type('tag2');
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: 'Submit' }).click();
       });
 
@@ -168,7 +162,9 @@ describe('Adjust post tags', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
 
-        cy.findByPlaceholderText('Reason for tag adjustment').type('testing');
+        cy.findByPlaceholderText('Reason for tag adjustment (optional)').type(
+          'testing',
+        );
         cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
 
         cy.findByRole('button', { name: 'Submit' }).click();

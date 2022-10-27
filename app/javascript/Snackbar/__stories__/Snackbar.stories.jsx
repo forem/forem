@@ -45,6 +45,5 @@ export const SimulateAddingSnackbarItems = () => {
   );
 };
 
-SimulateAddingSnackbarItems.story = {
-  name: 'simulating adding multiple snackbar items',
-};
+SimulateAddingSnackbarItems.storyName =
+  'simulating adding multiple snackbar items';

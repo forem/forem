@@ -33,10 +33,6 @@ class ArticleDecorator < ApplicationDecorator
     end
   end
 
-  def comments_to_show_count
-    cached_tag_list_array.include?("discuss") ? 75 : 25
-  end
-
   def cached_tag_list_array
     (cached_tag_list || "").split(", ")
   end

@@ -94,6 +94,8 @@ fr:
             description: Used in signup modal.
             placeholder: We're a place where coders share, stay up-to-date and grow their careers.
         general:
+          ahoy_tracking:
+            description: Track visits and events - data is stored in your database. A restart is required for changes to this configuration to take effect.
           contact_email:
             description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
           credit:

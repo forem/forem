@@ -11,12 +11,8 @@ export default {
 
 export const DefaultArticle = () => <LoadingArticle />;
 
-DefaultArticle.story = {
-  name: 'default',
-};
+DefaultArticle.storyName = 'default';
 
 export const FeaturedLoading = () => <LoadingArticle version="featured" />;
 
-FeaturedLoading.story = {
-  name: 'featured',
-};
+FeaturedLoading.storyName = 'featured';
