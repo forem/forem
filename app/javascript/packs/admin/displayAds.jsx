@@ -14,22 +14,15 @@ function saveTags(selectionString) {
     selectionString;
 }
 
-function loadTagsField() {
-  let defaultValue = '';
-  const hiddenTagsField =
-    document.getElementsByClassName('js-tags-textfield')[0];
-
-  if (hiddenTagsField) {
-    defaultValue = hiddenTagsField.value.replaceAll(' ', ', ');
-  }
-
+function showTagsField() {
   const displayAdsTargetedTags = document.getElementById(
     'display-ad-targeted-tags',
   );
 
+  const defaultTagValues = getDefaultTagValues();
   if (displayAdsTargetedTags) {
     render(
-      <Tags onInput={saveTags} defaultValue={defaultValue} />,
+      <Tags onInput={saveTags} defaultValue={defaultTagValues} />,
       displayAdsTargetedTags,
     );
   }
@@ -39,11 +32,23 @@ function hideAndClearTags() {
   // console.log("hide and clear tasg")
 }
 
+function getDefaultTagValues() {
+  let defaultValue = '';
+  const hiddenTagsField =
+    document.getElementsByClassName('js-tags-textfield')[0];
+
+  if (hiddenTagsField) {
+    defaultValue = hiddenTagsField.value.replaceAll(' ', ', ');
+  }
+
+  return defaultValue;
+}
+
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
   select.addEventListener('change', (event) => {
     if (event.target.value === 'post_comments') {
-      loadTagsField();
+      showTagsField();
     } else {
       hideAndClearTags();
     }
