@@ -100,7 +100,7 @@ function submitAsModerator(responseTemplateId, parentId) {
 }
 
 const confirmMsg = `
-Are you sure you want to submit this comment as Sloan?
+Are you sure you want to submit this comment?
 
 It will be sent immediately and users will be notified.
 
