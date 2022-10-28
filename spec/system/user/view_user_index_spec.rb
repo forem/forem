@@ -14,31 +14,31 @@ RSpec.describe "User index", type: :system do
     end
 
     context "when 1 article" do
-      it "shows_header", :aggregate_failures, js: true do
+      it "shows header", :aggregate_failures, js: true do
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button(I18n.t("core.follow"))
         end
       end
 
-      it "shows_title", :aggregate_failures, js: true do
+      it "shows title", :aggregate_failures, js: true do
         expect(page).to have_title("#{user.name} - #{Settings::Community.community_name}")
       end
 
-      it "shows_articles", :aggregate_failures, js: true do
+      it "shows articles", :aggregate_failures, js: true do
         within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
       end
 
-      it "shows_comments_locked_cta", :aggregate_failures, js: true do
+      it "shows comments locked cta", :aggregate_failures, js: true do
         within("#comments-locked-cta") do
           expect(page).to have_content("Want to connect with #{user.name}?")
         end
       end
 
-      it "hides_comments", :aggregate_failures, js: true do
+      it "hides comments", :aggregate_failures, js: true do
         within("#substories") do
           expect(page).not_to have_content("Recent comments")
         end
@@ -81,7 +81,7 @@ RSpec.describe "User index", type: :system do
         end
       end
 
-      it "shows_comment_timestamp", :aggregate_failures, js: true do
+      it "shows comment timestamp", :aggregate_failures, js: true do
         within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
           iso8601_date_time = /^((\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z)$/
           timestamp = page.find(".comment-date time")[:datetime]
@@ -105,21 +105,21 @@ RSpec.describe "User index", type: :system do
         end
       end
 
-      it "shows_articles", :aggregate_failures, js: true do
+      it "shows articles", :aggregate_failures, js: true do
         within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
       end
 
-      it "shows_comments", :aggregate_failures, js: true do
+      it "shows comments", :aggregate_failures, js: true do
         within("#substories div.profile-comment-card") do
           expect(page).to have_content("Recent comments")
           expect(page).to have_link(nil, href: comment.path)
         end
       end
 
-      it "shows_comment_timestamp", :aggregate_failures, js: true do
+      it "shows comment timestamp", :aggregate_failures, js: true do
         within("#substories .profile-comment-card .profile-comment-row:first-of-type") do
           iso8601_date_time = /^((\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z)$/
           timestamp = page.find(".comment-date time")[:datetime]
@@ -127,14 +127,14 @@ RSpec.describe "User index", type: :system do
         end
       end
 
-      it "hides_comments_locked_cta", :aggregate_failures, js: true do
+      it "hides comments locked cta", :aggregate_failures, js: true do
         within("#substories") do
           expect(page).not_to have_content("Want to connect with #{user.name}?")
         end
       end
     end
 
-    it "shows_last_comments", :aggregate_failures, js: true do
+    it "shows last comments", :aggregate_failures, js: true do
       stub_const("CommentsHelper::MAX_COMMENTS_TO_RENDER", 1)
       visit "/#{user.username}"
       within("#substories .profile-comment-card .pt-3 .fs-base") do
