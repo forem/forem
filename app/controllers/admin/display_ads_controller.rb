@@ -58,7 +58,8 @@ module Admin
     private
 
     def display_ad_params
-      params.permit(:organization_id, :body_markdown, :placement_area, :published, :approved, :name, :display_to)
+      params.permit(:organization_id, :body_markdown, :placement_area, :published, :approved, :name, :display_to,
+                    :tag_list)
     end
 
     def authorize_admin
