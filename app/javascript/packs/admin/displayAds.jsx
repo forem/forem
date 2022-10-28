@@ -68,7 +68,7 @@ function defaultTagValues() {
     document.getElementsByClassName('js-tags-textfield')[0];
 
   if (hiddenTagsField) {
-    defaultValue = hiddenTagsField.value.replaceAll(' ', ', ');
+    defaultValue = hiddenTagsField.value;
   }
 
   return defaultValue;
