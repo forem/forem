@@ -21,5 +21,17 @@
         </div>
       </div>
     <% end %>
+    <% if @organization.users.any? %>
+      <div class="widget">
+        <div class="widget-body">
+          <%= crayons_icon_tag(:post, class: "mr-3 color-base", title: t("views.organizations.side.post.icon")) %>
+          <%= t "views.organizations.side.post.text", count: @stories.size %>
+        </div>
+        <div class="widget-body mt-4">
+          <%= crayons_icon_tag(:team, class: "mr-3 color-base", title: t("views.organizations.side.member.icon")) %>
+          <%= t "views.organizations.side.member.text", count: @organization.users.size %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>
