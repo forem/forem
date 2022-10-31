@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_20_120850) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_31_133328) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -456,6 +456,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_20_120850) do
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
     t.text "body_markdown"
+    t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "display_to", default: 0, null: false
@@ -467,6 +468,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_20_120850) do
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "email_authorizations", force: :cascade do |t|
