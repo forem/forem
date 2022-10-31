@@ -1,4 +1,4 @@
-describe('Display Ads', () => {
+describe('Delete Display Ads', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
