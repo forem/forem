@@ -1,0 +1,29 @@
+<% if @unpublish_all_data.exists? %>
+  <h2 class="fs-xl fw-normal mb-5">Unpublished by <%= link_to @unpublish_all_data.audit_log.user.username, @unpublish_all_data.audit_log.user.path %> on <%= @unpublish_all_data.audit_log.created_at.strftime("%Y-%m-%d, %H:%M") %></h3>
+  <div class="crayons-card p-6 mb-5">
+    <h4 class="mb-2">Posts:</h4>
+    <% @unpublish_all_data.target_articles.each do |article| %>
+      <div class="mb-1">
+        <%= link_to article.title, article.current_state_path %>
+        <a href="<%= article.path %>/edit" target="_blank" rel="noopener" class="c-link">Edit</a>
+        <% if article.published %>
+          <span class="color-base-60">(was republished)</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+  <div class="crayons-card p-6">
+    <h4 class="mb-2">Comments:</h4>
+    <% @unpublish_all_data.target_comments.each do |comment| %>
+      <div class="crayons-card p-3 mb-3">
+        <div class="color-base-80">
+          <%= truncate(strip_tags(comment.processed_html), length: 250).html_safe %>
+        </div>
+        <%= link_to "commentable", comment.commentable.current_state_path %>
+        <p class="fs-s">
+          Created at: <%= comment.created_at.strftime("%Y-%m-%d, %H:%M") %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% end %>

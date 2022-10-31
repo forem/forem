@@ -35,9 +35,7 @@ export const Podcast = () => (
   />
 );
 
-Podcast.story = {
-  name: 'podcast',
-};
+Podcast.storyName = 'podcast';
 
 export const PodcastEpisode = () => (
   <Article
@@ -50,4 +48,4 @@ export const PodcastEpisode = () => (
   />
 );
 
-PodcastEpisode.story = { name: 'podcast episode' };
+PodcastEpisode.storyName = 'podcast episode';

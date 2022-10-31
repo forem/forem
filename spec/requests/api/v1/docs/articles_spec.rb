@@ -129,6 +129,11 @@ will remain."
                   },
                   example: 1
 
+        parameter name: :note, in: :query, required: false,
+                  description: "Content for the note that's created along with unpublishing",
+                  schema: { type: :string },
+                  example: "Admin requested unpublishing all articles via API"
+
         response "204", "Article successfully unpublished" do
           let(:"api-key") { api_secret.secret }
           let(:id) { article.id }

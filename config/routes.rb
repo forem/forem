@@ -122,8 +122,6 @@ Rails.application.routes.draw do
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
-    resources :html_variant_trials, only: [:create]
-    resources :html_variant_successes, only: [:create]
     resources :tag_adjustments, only: %i[create destroy]
     resources :rating_votes, only: [:create]
     resources :page_views, only: %i[create update]
@@ -182,10 +180,6 @@ Rails.application.routes.draw do
     get "/internal/:path", to: redirect("/admin/%{path}")
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
-    get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
-    get "/social_previews/organization/:id", to: "social_previews#organization", as: :organization_social_preview
-    get "/social_previews/tag/:id", to: "social_previews#tag", as: :tag_social_preview
-    get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
 

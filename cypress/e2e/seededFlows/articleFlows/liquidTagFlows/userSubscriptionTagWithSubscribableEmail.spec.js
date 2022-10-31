@@ -31,7 +31,10 @@ describe('User subscription liquid tag - subscribable email', () => {
     }).should('have.length', 2);
 
     cy.findAllByRole('button', { name: 'Subscribe' }).last().click();
-    cy.getModal()
+
+    cy.findByTestId('modal-container').as('modal');
+
+    cy.get('@modal')
       .findByRole('button', { name: 'Confirm subscription' })
       .click();
 
@@ -43,7 +46,10 @@ describe('User subscription liquid tag - subscribable email', () => {
 
   it('cancels subscription action', () => {
     cy.findAllByRole('button', { name: 'Subscribe' }).last().click();
-    cy.getModal().findByRole('button', { name: 'Cancel' }).click();
+
+    cy.findByTestId('modal-container').as('modal');
+
+    cy.get('@modal').findByRole('button', { name: /Close/ }).click();
 
     cy.findAllByRole('button', { name: 'Subscribe' }).should('have.length', 2);
     cy.findByText(
@@ -57,7 +63,10 @@ describe('User subscription liquid tag - subscribable email', () => {
     });
 
     cy.findAllByRole('button', { name: 'Subscribe' }).last().click();
-    cy.getModal()
+
+    cy.findByTestId('modal-container').as('modal');
+
+    cy.get('@modal')
       .findByRole('button', { name: 'Confirm subscription' })
       .click();
 

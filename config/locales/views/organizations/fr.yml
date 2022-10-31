@@ -26,6 +26,17 @@ fr:
           devrel: Devrel
       stack: our stack
       story: our story
+      side:
+        post:
+            icon: Post
+            text:
+              one: 1 post published
+              other: "%{count} posts published"
+        member:
+          icon: Member
+          text:
+            one: 1 member
+            other: "%{count} members"
       support: Support email
       team: meet the team
       twitter:

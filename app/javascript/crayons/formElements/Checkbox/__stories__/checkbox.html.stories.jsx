@@ -12,29 +12,25 @@ export const Default = () => (
   <input type="checkbox" className="crayons-checkbox" />
 );
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';
 
 export const Checked = () => (
   <input type="checkbox" className="crayons-checkbox" checked />
 );
 
-Checked.story = { name: 'checked' };
+Checked.storyName = 'checked';
 
 export const Disabled = () => (
   <input type="checkbox" className="crayons-checkbox" disabled />
 );
 
-Disabled.story = { name: 'disabled' };
+Disabled.storyName = 'disabled';
 
 export const CheckedAndDisabled = () => (
   <input type="checkbox" className="crayons-checkbox" checked disabled />
 );
 
-CheckedAndDisabled.story = {
-  name: 'checked (disabled)',
-};
+CheckedAndDisabled.storyName = 'checked (disabled)';
 
 export const CheckboxWithLabel = () => (
   <div className="crayons-field crayons-field--checkbox">
@@ -45,7 +41,7 @@ export const CheckboxWithLabel = () => (
   </div>
 );
 
-CheckboxWithLabel.story = { name: 'checkbox with <label />' };
+CheckboxWithLabel.storyName = 'checkbox with <label />';
 
 export const CheckboxWithLabelAndDisabled = () => (
   <div className="crayons-field crayons-field--checkbox">
@@ -59,9 +55,8 @@ export const CheckboxWithLabelAndDisabled = () => (
   </div>
 );
 
-CheckboxWithLabelAndDisabled.story = {
-  name: 'checkbox with <label /> and description',
-};
+CheckboxWithLabelAndDisabled.storyName =
+  'checkbox with <label /> and description';
 
 export const CheckboxGroup = () => (
   <Fieldset>
@@ -101,6 +96,4 @@ export const CheckboxGroup = () => (
   </Fieldset>
 );
 
-CheckboxGroup.story = {
-  name: 'checkbox group',
-};
+CheckboxGroup.storyName = 'checkbox group';

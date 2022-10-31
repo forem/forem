@@ -200,7 +200,9 @@ RSpec.describe "ArticlesUpdate", type: :request do
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
       published_at_utc = draft.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
-      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 23:00")
+      draft.published_at.in_time_zone(attributes[:timezone])
+      expected_time = "#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 00:00"
+      expect(published_at_utc).to eq(expected_time)
       expect(draft.published).to be true
     end
 

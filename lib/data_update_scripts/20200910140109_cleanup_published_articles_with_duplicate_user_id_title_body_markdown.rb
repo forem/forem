@@ -65,15 +65,7 @@ module DataUpdateScripts
       # NotificationSubscription, Notification and RatingVote rows will be removed
       # Poll is ignored because it's related to the liquid tag inside the article, also user's can't use polls
       # TagAdjustment is ignored as there's likely no reason for article to have an adjustment moved over
-      models_with_a_direct_relation = [
-        HtmlVariantSuccess,
-        HtmlVariantSuccess,
-        HtmlVariantTrial,
-        PageView,
-      ]
-      models_with_a_direct_relation.each do |model_class|
-        model_class.where(article_id: articles_to_graft_ids).update_all(article_id: article_id)
-      end
+      PageView.where(article_id: articles_to_graft_ids).update_all(article_id: article_id)
 
       Comment
         .where(commentable_type: "Article", commentable_id: articles_to_graft_ids)

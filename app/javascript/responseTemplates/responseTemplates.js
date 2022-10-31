@@ -26,6 +26,7 @@ function buildHTML(response, typeOf) {
   if (typeOf === 'personal_comment') {
     return response
       .map((obj) => {
+        const content = obj.content.replaceAll('"', '&quot;');
         return `
           <div class="mod-response-wrapper flex mb-4">
             <div class="flex-1">
@@ -33,7 +34,7 @@ function buildHTML(response, typeOf) {
               <p>${obj.content}</p>
             </div>
             <div class="pl-2">
-              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${obj.content}">Insert</button>
+              <button class="crayons-btn crayons-btn--secondary crayons-btn--s insert-template-button" type="button" data-content="${content}">Insert</button>
             </div>
           </div>
         `;
@@ -43,6 +44,7 @@ function buildHTML(response, typeOf) {
   if (typeOf === 'mod_comment') {
     return response
       .map((obj) => {
+        const content = obj.content.replaceAll('"', '&quot;');
         return `
             <div class="mod-response-wrapper mb-4 flex">
               <div class="flex-1">
@@ -51,7 +53,7 @@ function buildHTML(response, typeOf) {
               </div>
               <div class="flex flex-nowrap pl-2">
                 <button class="crayons-btn crayons-btn--s crayons-btn--secondary moderator-submit-button m-1" type="submit" data-response-template-id="${obj.id}">Send as Mod</button>
-                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${obj.content}">Insert</button>
+                <button class="crayons-btn crayons-btn--s crayons-btn--outlined insert-template-button m-1" type="button" data-content="${content}">Insert</button>
               </div>
             </div>
           `;
@@ -98,7 +100,7 @@ function submitAsModerator(responseTemplateId, parentId) {
 }
 
 const confirmMsg = `
-Are you sure you want to submit this comment as Sloan?
+Are you sure you want to submit this comment?
 
 It will be sent immediately and users will be notified.
 

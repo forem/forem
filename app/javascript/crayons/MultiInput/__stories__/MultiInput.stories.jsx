@@ -43,6 +43,4 @@ Default.args = {
   showLabel: true,
 };
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';
