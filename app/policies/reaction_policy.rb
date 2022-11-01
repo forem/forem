@@ -3,7 +3,7 @@ class ReactionPolicy < ApplicationPolicy
   # We don't have a robust concept of a Privileged Reaction class, but instead must switch the
   # reaction permissions based on the given category.
   def self.policy_query_for(category:)
-    return :privileged_create? if Reaction::PRIVILEGED_CATEGORIES.include?(category)
+    return :privileged_create? if ReactionCategory[category.to_s]&.privileged?
 
     :create?
   end

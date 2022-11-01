@@ -107,19 +107,19 @@
         <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100"><%= t("views.dashboard.article.stats") %></a>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
+          <%= f.hidden_field :from_dashboard, value: 1 %>
 
           <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
             <%= t("views.dashboard.article.#{article.archived ? 'unarchive' : 'archive'}") %>
           </button>
         <% end %>
-
         <% if organization && org_admin %>
           <%= form_for(article, html: { class: "mt-4 pt-4 border-0 border-t-1 border-color-base-10 border-solid" }) do |f| %>
             <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
             <div class="crayons-field mb-4">
               <label for="user_id" class="crayons-field__label"><%= t("views.dashboard.article.author") %></label>
               <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select" } %>
-
+              <%= f.hidden_field :from_dashboard, value: 1 %>
             </div>
             <button type="submit" class="crayons-btn"><%= t("views.dashboard.article.save") %></button>
           <% end %>
