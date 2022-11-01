@@ -288,38 +288,6 @@ class Article < ApplicationRecord
       .tagged_with(tag_name)
   }
 
-  scope :cached_tagged_with, lambda { |tag|
-    case tag
-    when String, Symbol
-      # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
-      # word" and "end of word", respectively. They're similar to `\b` in Perl-
-      # compatible regexes (PCRE), but that matches at either end of a word.
-      # They're more comparable to how vim's `\<` and `\>` work.
-      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
-    when Array
-      tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
-    when Tag
-      cached_tagged_with(tag.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
-    end
-  }
-
-  scope :cached_tagged_with_any, lambda { |tags|
-    case tags
-    when String, Symbol
-      cached_tagged_with(tags)
-    when Array
-      tags
-        .map { |tag| cached_tagged_with(tag) }
-        .reduce { |acc, elem| acc.or(elem) }
-    when Tag
-      cached_tagged_with(tags.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tags.inspect}"
-    end
-  }
-
   # We usually try to avoid using Arel directly like this. However, none of the more
   # straight-forward ways of negating the above scope worked:
   # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
