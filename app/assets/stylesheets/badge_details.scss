@@ -12,7 +12,13 @@
     border-radius: 8px;
     border: 1px solid var(--body-bg);
 
+    @media (max-width: $breakpoint-s) {
+      float: none;
+      margin: 40px auto 0 auto;
+    }
+
     .badge-image {
+      margin: 0 auto;
       object-fit: contain;
       width: 70%;
       aspect-ratio: 1 / 1;
@@ -20,8 +26,42 @@
   }
 
   .badge_text_content {
+    display: flex;
+    flex-direction: column;
+    min-height: 192px;
     overflow: hidden;
     padding-left: 40px;
+
+    @media (max-width: $breakpoint-s) {
+      display: flex;
+      flex-direction: column;
+      margin-top: 40px;
+      padding-left: 0px;
+    }
+
+    .title {
+      color: var(--cta-color);
+
+      @media (max-width: $breakpoint-s) {
+        margin: 0 auto;
+      }
+    }
+
+    .description {
+      color: var(--card-color-tertiary);
+      margin-bottom: 16px;
+
+      @media (max-width: $breakpoint-s) {
+        text-align: center;
+      }
+    }
+
+    .got-it-btn {
+      display: block;
+      justify-content: flex-end;
+      margin-top: auto;
+      margin-bottom: 0px;
+    }
   }
 
   .close {
