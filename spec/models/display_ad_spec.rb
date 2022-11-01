@@ -82,6 +82,52 @@ RSpec.describe DisplayAd, type: :model do
       end
     end
 
+    context "when considering article_tags" do
+      it "will show the display ads that contain tags that match any of the article tags" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "linux, git, go")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[linux productivity]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show display ads that have no tags set" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[productivity java]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+        article_tags = %w[javascript]
+        expect(described_class.for_display("post_comments", false, article_tags)).to be_nil
+      end
+    end
+
     context "when display_to is set to 'logged_in' or 'logged_out'" do
       let!(:display_ad2) do
         create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_in")
