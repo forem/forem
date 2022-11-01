@@ -282,6 +282,7 @@ export default class ConfigController extends Controller {
       `${providerName}-enabled-indicator`,
     );
     authEnableButton.innerHTML = 'Enable';
+    authEnableButton.setAttribute('data-button-text', 'enable');
     authEnableButton.setAttribute('data-enable-auth', 'false');
     this.listAuthToBeEnabled(event);
     this.checkForAndGuardSoleAuthProvider();
