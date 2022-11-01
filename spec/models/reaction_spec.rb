@@ -9,7 +9,7 @@ RSpec.describe Reaction, type: :model do
     subject { build(:reaction, reactable: article, user: user) }
 
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to validate_inclusion_of(:category).in_array(Reaction::CATEGORIES) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(ReactionCategory.all_slugs.map(&:to_s)) }
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
   end
 
@@ -74,59 +74,6 @@ RSpec.describe Reaction, type: :model do
       article.update_column(:published, false)
       reaction = build(:reaction, user: user, reactable: article)
       expect(reaction).not_to be_valid
-    end
-
-    it "assigns 0 points if reaction is invalid" do
-      reaction.update(status: "invalid")
-      expect(reaction.points).to eq(0)
-    end
-
-    it "assigns extra 5 points if reaction is to comment on author's post" do
-      comment = create(:comment, commentable: article)
-      comment_reaction = create(:reaction, reactable: comment, user: user)
-      expect(comment_reaction.points).to eq(5.0)
-    end
-
-    it "does not extra 5 points if reaction is to comment on author's post" do
-      second_user = create(:user)
-      second_article = create(:article, user: second_user)
-      comment = create(:comment, commentable: second_article)
-      comment_reaction = create(:reaction, reactable: comment, user: user)
-      expect(comment_reaction.points).to eq(1)
-    end
-
-    it "assigns the correct points if reaction is confirmed" do
-      reaction_points = reaction.points
-      reaction.update(status: "confirmed")
-      expect(reaction.points).to eq(reaction_points * 2)
-    end
-
-    it "assigns fractional points to new users on create" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      reaction = create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(0.3)
-    end
-
-    it "Does not assign new fractional logic on re-save" do
-      reaction.save
-      original_points = reaction.points
-      reaction.user.update_column(:registered_at, 7.days.ago)
-      reaction.save
-      expect(reaction.points).to eq(original_points)
-    end
-
-    it "assigns full points to new users who is also trusted" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      newish_user.add_role(:trusted)
-      create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(1.0)
-    end
-
-    it "assigns full points to new users who is admin" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      newish_user.add_role(:admin)
-      create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(1.0)
     end
 
     context "when user is trusted" do

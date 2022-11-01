@@ -271,4 +271,46 @@ RSpec.describe "ArticlesUpdate", type: :request do
       expect(article.published_at).to be_within(1.minute).of(DateTime.parse(date_was))
     end
   end
+
+  context "when changing an author inside an organization" do
+    before do
+      user.add_role(:admin)
+      user.organization_memberships.create(organization: organization, type_of_user: "admin")
+    end
+
+    let(:draft) { create(:article, user: user2, published: false, organization: organization) }
+    let(:scheduled_article) do
+      create(:article, user: user2, published_at: 2.days.from_now, published: false, organization: organization)
+    end
+
+    it "changes an author" do
+      put "/articles/#{draft.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      draft.reload
+      expect(draft.user_id).to eq(user.id)
+    end
+
+    it "doesn't remove the published_at when changing author for a scheduled draft article" do
+      published_at_was = scheduled_article.published_at
+      put "/articles/#{scheduled_article.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      scheduled_article.reload
+      expect(scheduled_article.user_id).to eq(user.id)
+      expect(scheduled_article.published_at).to be_within(1.second).of(published_at_was)
+    end
+
+    it "doesn't remove published_at when changing author for a scheduled article" do
+      scheduled_article.update_column(:published, true)
+
+      published_at_was = scheduled_article.published_at
+      put "/articles/#{scheduled_article.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      scheduled_article.reload
+      expect(scheduled_article.user_id).to eq(user.id)
+      expect(scheduled_article.published_at).to be_within(1.second).of(published_at_was)
+    end
+  end
 end
