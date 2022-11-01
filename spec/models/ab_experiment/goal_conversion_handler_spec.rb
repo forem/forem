@@ -123,7 +123,10 @@ RSpec.describe AbExperiment::GoalConversionHandler do
 
       before do
         field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
+        Timecop.freeze(Time.current.utc.at_noon)
       end
+
+      after { Timecop.return }
 
       it "records a field test when user views a page", :aggregate_failures do
         create(:page_view, user_id: user.id)

@@ -412,7 +412,6 @@ seeder.create_if_none(HtmlVariant) do
     name: rand(100).to_s,
     group: "badge_landing_page",
     html: rand(1000).to_s,
-    success_rate: 0,
     published: true,
     approved: true,
     user_id: User.first.id,
