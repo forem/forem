@@ -1,7 +1,5 @@
-module TagListValidateable
+module Taggable
   extend ActiveSupport::Concern
-
-  # TODO: rename this module
 
   # rubocop:disable Metrics/BlockLength(RuboCop)
   included do
@@ -35,6 +33,15 @@ module TagListValidateable
       else
         raise TypeError, "Cannot search tags for: #{tags.inspect}"
       end
+    }
+
+    # We usually try to avoid using Arel directly like this. However, none of the more
+    # straight-forward ways of negating the above scope worked:
+    # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
+    # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
+    #    only works for simple conditions and returns an empty hash in this case.
+    scope :not_cached_tagged_with_any, lambda { |tags|
+      where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
     }
   end
   # rubocop:enable Metrics/BlockLength(RuboCop)

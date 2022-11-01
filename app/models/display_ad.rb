@@ -1,5 +1,5 @@
 class DisplayAd < ApplicationRecord
-  include TagListValidateable
+  include Taggable
   acts_as_taggable_on :tags
   resourcify
 
