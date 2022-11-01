@@ -1,36 +1,17 @@
 class Reaction < ApplicationRecord
-  BASE_POINTS = {
-    "vomit" => -50.0,
-    "thumbsup" => 5.0,
-    "thumbsdown" => -10.0
-  }.freeze
-
-  # The union of public and privileged categories
-  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
-
-  # These are the general category of reactions that anyone can choose
-  PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
-
-  # These are categories of reactions that administrators can select
-  PRIVILEGED_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
-  NEGATIVE_PRIVILEGED_CATEGORIES = %w[thumbsdown vomit].freeze
-
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
-
-  # Days to ramp up new user points weight
-  NEW_USER_RAMPUP_DAYS_COUNT = 10
 
   belongs_to :reactable, polymorphic: true
   belongs_to :user
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    PUBLIC_CATEGORIES.include?(model.category) ? "public_reactions_count" : "reactions_count"
+                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
-  scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
+  scope :public_category, -> { where(category: ReactionCategory.public.map(&:to_s)) }
 
   # Be wary, this is all things on the reading list, but for an end
   # user they might only see readinglist items that are published.
@@ -48,10 +29,10 @@ class Reaction < ApplicationRecord
       .or(comment_vomits.where(reactable_id: user.comment_ids))
       .or(user_vomits.where(user_id: user.id))
   }
-  scope :privileged_category, -> { where(category: PRIVILEGED_CATEGORIES) }
+  scope :privileged_category, -> { where(category: ReactionCategory.privileged.map(&:to_s)) }
   scope :for_user, ->(user) { where(reactable: user) }
 
-  validates :category, inclusion: { in: CATEGORIES }
+  validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
   validates :status, inclusion: { in: STATUSES }
   validates :user_id, uniqueness: { scope: %i[reactable_id reactable_type category] }
@@ -128,8 +109,9 @@ class Reaction < ApplicationRecord
     # @return [Array] Reactions that contain a contradictory category to the category that was passed in,
     # example, if we pass in a "thumbsup", then we return reactions that have have a thumbsdown or vomit
     def contradictory_mod_reactions(category:, reactable_id:, reactable_type:, user:)
-      contradictory_category = NEGATIVE_PRIVILEGED_CATEGORIES if category == "thumbsup"
-      contradictory_category = "thumbsup" if category.in?(NEGATIVE_PRIVILEGED_CATEGORIES)
+      negatives = ReactionCategory.negative_privileged.map(&:to_s)
+      contradictory_category = negatives if category == "thumbsup"
+      contradictory_category = "thumbsup" if category.in?(negatives)
 
       Reaction.where(reactable_id: reactable_id,
                      reactable_type: reactable_type,
@@ -153,10 +135,6 @@ class Reaction < ApplicationRecord
     (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
-  def vomit_on_user?
-    reactable_type == "User" && category == "vomit"
-  end
-
   def reaction_on_organization_article?
     reactable_type == "Article" && reactable.organization.present?
   end
@@ -165,8 +143,10 @@ class Reaction < ApplicationRecord
     reactable_type == "User" ? reactable : reactable.user
   end
 
-  def negative?
-    NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
+  delegate :negative?, :positive?, :visible_to_public?, to: :reaction_category, allow_nil: true
+
+  def reaction_category
+    ReactionCategory[category.to_sym]
   end
 
   private
@@ -200,21 +180,7 @@ class Reaction < ApplicationRecord
   end
 
   def assign_points
-    base_points = BASE_POINTS.fetch(category, 1.0)
-
-    # Ajust for certain states
-    base_points = 0 if status == "invalid"
-    base_points /= 2 if reactable_type == "User"
-    base_points *= 2 if status == "confirmed"
-
-    unless persisted? # Actions we only want to apply upon initial creation
-      # Author's comment reaction counts for more weight on to their own posts. (5.0 vs 1.0)
-      base_points *= 5 if positive_reaction_to_comment_on_own_article?
-
-      # New users will have their reaction weight gradually ramp by 0.1 from 0 to 1.0.
-      base_points *= new_user_adjusted_points if new_untrusted_user # New users get minimal reaction weight
-    end
-    self.points = user ? (base_points * user.reputation_modifier) : -5
+    self.points = CalculateReactionPoints.call(self)
   end
 
   def permissions
@@ -234,27 +200,13 @@ class Reaction < ApplicationRecord
     Slack::Messengers::ReactionVomit.call(reaction: self)
   end
 
-  def positive_reaction_to_comment_on_own_article?
-    BASE_POINTS.fetch(category, 1.0).positive? &&
-      reactable_type == "Comment" &&
-      reactable&.commentable&.user_id == user_id
-  end
-
-  def new_user_adjusted_points
-    ((Time.current - user.registered_at).seconds.in_days / NEW_USER_RAMPUP_DAYS_COUNT)
-  end
-
-  def new_untrusted_user
-    user.registered_at > NEW_USER_RAMPUP_DAYS_COUNT.days.ago && !user.trusted? && !user.any_admin?
-  end
-
   # @see AbExperiment::GoalConversionHandler
   def record_field_test_event
     # TODO: Remove once we know that this test is not over-heating the application.  That would be a
     # few days after the deploy to DEV of this change.
     return unless FeatureFlag.accessible?(:field_test_event_for_reactions)
     return if FieldTest.config["experiments"].nil?
-    return unless PUBLIC_CATEGORIES.include?(category)
+    return unless visible_to_public?
     return unless reactable.is_a?(Article)
     return unless user_id
 

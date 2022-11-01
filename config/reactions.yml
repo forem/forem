@@ -1,0 +1,23 @@
+---
+like:
+  position: 1
+  icon: later
+readinglist:
+  position: 2
+  icon: later
+unicorn:
+  position: 3
+  icon: later
+thumbsup:
+  privileged: true
+  score: 5.0
+thumbsdown:
+  privileged: true
+  score: -10.0
+vomit:
+  privileged: true
+  score: -50.0
+thinking:
+  published: false
+hands:
+  published: false
