@@ -1,3 +1,5 @@
+@import './config/import';
+
 .badge_details {
   .badge-image-container {
     display: flex;
@@ -12,16 +14,16 @@
     border-radius: 8px;
     border: 1px solid var(--body-bg);
 
-    @media (max-width: $breakpoint-s) {
-      float: none;
-      margin: 40px auto 0 auto;
-    }
-
     .badge-image {
       margin: 0 auto;
       object-fit: contain;
       width: 70%;
       aspect-ratio: 1 / 1;
+    }
+
+    @media (max-width: $breakpoint-s) {
+      float: none;
+      margin: 40px auto 0 auto;
     }
   }
 
@@ -41,8 +43,10 @@
 
     .title {
       color: var(--cta-color);
+      font-size: var(--fs-l);
 
       @media (max-width: $breakpoint-s) {
+        text-align: center;
         margin: 0 auto;
       }
     }
@@ -50,6 +54,7 @@
     .description {
       color: var(--card-color-tertiary);
       margin-bottom: 16px;
+      font-size: var(--fs-base);
 
       @media (max-width: $breakpoint-s) {
         text-align: center;
@@ -57,10 +62,13 @@
     }
 
     .got-it-btn {
-      display: block;
-      justify-content: flex-end;
+      align-self: flex-start;
       margin-top: auto;
-      margin-bottom: 0px;
+
+      @media (max-width: $breakpoint-s) {
+        align-self: auto;
+        margin-bottom: 16px;
+      }
     }
   }
 
@@ -69,5 +77,10 @@
     top: 0;
     right: 0;
     margin: 16px;
+    cursor: pointer;
+
+    .close_icon {
+      fill: var(--close-icon);
+    }
   }
 }
