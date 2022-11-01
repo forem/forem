@@ -1,10 +1,12 @@
 <div class="badge_details">
-  <img
-    class="badge_image"
-    src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
-    alt="<%= badge.title %> badge"
-    title="<%= badge.title %>"
-    loading="lazy" />
+  <div class="badge-image-container p-3">
+    <img
+      class="badge-image"
+      src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
+      alt="<%= badge.title %> badge"
+      title="<%= badge.title %>"
+      loading="lazy" />
+  </div>
 
   <div class="badge_text_content">
     <h4 class="fw-800 fs-l color-grey-800">Some Random long Text for testing purposes Some Random long Text for testing purposes <%= badge.title %></h4>

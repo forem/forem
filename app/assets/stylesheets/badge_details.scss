@@ -1,5 +1,7 @@
 .badge_details {
-  .badge_image {
+  .badge-image-container {
+    display: flex;
+    justify-content: center;
     float: left;
     overflow: hidden;
     width: 192px;
@@ -9,6 +11,12 @@
     background-color: var(--card-secondary-bg);
     border-radius: 8px;
     border: 1px solid var(--body-bg);
+
+    .badge-image {
+      object-fit: contain;
+      width: 70%;
+      aspect-ratio: 1 / 1;
+    }
   }
 
   .badge_text_content {
