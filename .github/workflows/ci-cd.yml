@@ -201,7 +201,7 @@ jobs:
 
       - name: Report failure to Slack channel
         uses: slackapi/slack-github-action@v1
-Staging        with:
+        with:
           payload: |
             { "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
         env:
