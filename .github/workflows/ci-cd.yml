@@ -209,7 +209,7 @@ jobs:
         if: failure() && github.ref == 'refs/heads/main'
 
   Deploy:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+    # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: [CI-status-report]
     environment: ${{ matrix.environment }}
@@ -219,7 +219,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        environment: [ Production ]
+        environment: [ Staging ]
 
     steps:
       - uses: actions/checkout@v3
@@ -228,3 +228,4 @@ jobs:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          branch: main
