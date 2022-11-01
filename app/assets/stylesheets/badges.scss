@@ -13,6 +13,7 @@
       cursor: pointer;
 
       .badge-image-container {
+        object-fit: contain;
         width: auto;
         display: flex;
         justify-content: center;
