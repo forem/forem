@@ -192,8 +192,9 @@ jobs:
     needs: [rspec, jest, cypress, build-test]
 
     steps:
-      - run: exit 0
-        if: always() && success()
+      - run: exit 1
+        if: failure() && always()
 
-      - run: exit 0
-        if: always() && failure()
+      - run: exit 1
+        if: success() && always()
+
