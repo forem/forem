@@ -55,7 +55,7 @@
         <%= f.text_area :content, value: content, class: "crayons-textfield" %>
       </div>
 
-      <% if current_user.has_trusted_role? && @response_template.new_record? %>
+      <% if policy(ResponseTemplate).admin_create? && @response_template.new_record? %>
         <div class="crayons-field">
           <fieldset>
             <legend class="screen-reader-only">Template type</legend>

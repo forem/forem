@@ -258,6 +258,19 @@ RSpec.describe "ResponseTemplate", type: :request do
 
       let(:response_template) { create :response_template, user: nil, type_of: "mod_comment" }
 
+      it "does not permit the action" do
+        title = "something else"
+        expect do
+          patch response_template_path(response_template.id), params: { response_template: { title: title } }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when signed-in as super_moderator user updating a mod_comment template" do
+      before { sign_in create(:user, :super_moderator) }
+
+      let(:response_template) { create :response_template, user: nil, type_of: "mod_comment" }
+
       it "successfully updates the response template" do
         title = "something else"
         patch response_template_path(response_template.id), params: { response_template: { title: title } }
