@@ -129,6 +129,22 @@ RSpec.describe DisplayAd, type: :model do
         article_tags = %w[javascript]
         expect(described_class.for_display("post_comments", false, article_tags)).to be_nil
       end
+
+      it "will show display ads with no tags set if there are no article tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+
+        display_ad_without_tags = create(:display_ad, organization_id: organization.id,
+                                                      placement_area: "post_comments",
+                                                      published: true,
+                                                      approved: true,
+                                                      cached_tag_list: "")
+
+        expect(described_class.for_display("post_comments", false)).to eq(display_ad_without_tags)
+      end
     end
 
     context "when display_to is set to 'logged_in' or 'logged_out'" do

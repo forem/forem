@@ -42,6 +42,10 @@ class DisplayAd < ApplicationRecord
       relation = display_ads_with_no_tags.or(display_ads_with_targeted_article_tags)
     end
 
+    if article_tags.blank?
+      relation = relation.where(cached_tag_list: "")
+    end
+
     relation = if user_signed_in
                  relation.where(display_to: %w[all logged_in])
                else
