@@ -4,6 +4,8 @@ RSpec.describe DisplayAd, type: :model do
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
+  it_behaves_like "Taggable"
+
   describe "validations" do
     describe "builtin validations" do
       subject { display_ad }
