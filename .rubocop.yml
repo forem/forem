@@ -2,3 +2,13 @@ require: standard
 
 inherit_gem:
   standard: config/base.yml
+
+AllCops:
+  Exclude:
+    - bin/**/*
+    - db/schema.rb
+    - db/migrate/*.rb
+    - node_modules/**/*
+    - tmp/**/*
+    - vendor/**/*
+    - .pryrc
