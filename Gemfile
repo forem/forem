@@ -1,5 +1,3 @@
-# coding: utf-8
-
 git_source(:github) { |name| "https://github.com/#{name}.git" }
 source "https://rubygems.org"
 ruby File.read(File.join(File.dirname(__FILE__), ".ruby-version")).strip
@@ -145,10 +143,8 @@ group :development, :test do
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
   gem "rswag-specs", "~> 2.5.1" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
-  gem "rubocop", "~> 1.33", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 2.12", require: false # Code style checking for RSpec files
+  gem "standard", "~> 1.16" # Standard - Ruby style guide, linter, and formatter
+  gem "rubocop-performance", "~> 1.14.0", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 end
 
