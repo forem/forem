@@ -6,7 +6,7 @@ RSpec.describe User, type: :model do
     Authentication::Authenticator.call(
       auth,
       current_user: signed_in_resource,
-      cta_variant: cta_variant,
+      cta_variant: cta_variant
     )
   end
 
@@ -109,7 +109,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
 
-      # rubocop:disable RSpec/NamedSubject
       it do
         expect(subject).to have_many(:affected_feedback_messages)
           .class_name("FeedbackMessage")
@@ -205,7 +204,6 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_presence_of(:spent_credits_count) }
       it { is_expected.to validate_presence_of(:subscribed_to_user_subscriptions_count) }
 
-      # rubocop:disable RSpec/NestedGroups
       context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
 
@@ -408,7 +406,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
+  describe "user registration", vcr: {cassette_name: "fastly_sloan"} do
     let(:user) { create(:user) }
 
     before do
@@ -495,7 +493,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
+    it "assigns multiple identities to the same user", :aggregate_failures, vcr: {cassette_name: "fastly_sloan"} do
       providers = Authentication::Providers.available
 
       users = []
@@ -600,7 +598,6 @@ RSpec.describe User, type: :model do
     end
 
     it "creates proper body class with defaults" do
-      # rubocop:disable Layout/LineLength
       classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
@@ -609,7 +606,6 @@ RSpec.describe User, type: :model do
     it "creates proper body class with sans serif config" do
       user.setting.config_font = "sans_serif"
 
-      # rubocop:disable Layout/LineLength
       classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
@@ -618,7 +614,6 @@ RSpec.describe User, type: :model do
     it "creates proper body class with open dyslexic config" do
       user.setting.config_font = "open_dyslexic"
 
-      # rubocop:disable Layout/LineLength
       classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
