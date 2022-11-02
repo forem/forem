@@ -13,6 +13,7 @@ RSpec.describe DisplayAd, type: :model do
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to have_many(:tags) }
     end
 
     it "allows sidebar_right" do
