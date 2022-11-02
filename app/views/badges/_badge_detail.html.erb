@@ -1,15 +1,19 @@
-<div class="badge_details grid grid-cols-1 gap-1 s:gap-8 s:grid-cols-2">
-  <img
-    class="flex flex-row p-3"
-    src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
-    alt="<%= badge.title %> badge"
-    title="<%= badge.title %>"
-    loading="lazy" />
-  <div class="flex flex-col justify-between items-start">
-    <div class="flex flex-col items-start">
-      <h4 class="fw-800 fs-l color-grey-800"><%= badge.title %></h4>
-      <p><%= badge.description %></p>
-    </div>
-    <button class="flex flex-row items-start c-btn c-btn--primary mt-4" onclick="window.Forem.closeModal()"><%= t("views.badges.gotit") %></button>
+<div class="badge_details">
+  <div class="badge-image-container p-3">
+    <img
+      class="badge-image"
+      src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
+      alt="<%= badge.title %> badge"
+      title="<%= badge.title %>"
+      loading="lazy" />
+  </div>
+
+  <div class="badge_text_content">
+    <h4 class="title fw-800 fs-l"><%= badge.title %></h4>
+    <p class="description"><%= badge.description %> <%= badge.description %></p>
+    <button class="got-it-btn items-start c-btn c-btn--primary" onclick="window.Forem.closeModal()"><%= t("views.badges.gotit") %></button>
+  </div>
+  <div class="close" onclick="window.Forem.closeModal()">
+    <%= inline_svg_tag("x.svg", aria_hidden: true, title: t("views.badges.icon_close"), class: "close_icon") %>
   </div>
 </div>

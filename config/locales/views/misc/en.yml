@@ -9,6 +9,7 @@ en:
         other: Show all %{count} badges
       heading: Badges
       desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
+      icon_close: Close
       gotit: Got it
     campaign:
       subtitle: Stories (%{count})
