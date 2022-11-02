@@ -45,7 +45,7 @@ FactoryBot.define do
         ---
         title: #{title if with_title}
         published: #{published}
-        #{"tags: #{tags}" if with_tags && tag_list.empty?}
+        #{"tags: #{tags}" if with_tags && tag_list.blank?}
         date: #{date if with_date}
         series: #{with_collection&.slug}
         canonical_url: #{canonical_url if with_canonical_url}
