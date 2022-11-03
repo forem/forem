@@ -51,6 +51,7 @@ within our community. ❤️
 - [Developer Documentation](#developer-documentation)
 - [Core team](#core-team)
 - [Vulnerability disclosure](#vulnerability-disclosure)
+- [Acknowledgements](#acknowledgements)
 - [License](#license)
 
 ## Community
@@ -135,7 +136,7 @@ Forem is the open source software which powers [DEV](https://dev.to).
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
-## Acknowledgments
+## Acknowledgements
 
 Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
 usage of their emojis.
