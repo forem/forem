@@ -190,11 +190,9 @@ jobs:
   CI-status-report:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress, build-test]
+    if: always()
 
     steps:
+      - run: echo ${{ jobs.rspec.conclusion }}
       - run: exit 1
-        if: failure() && always()
-
-      - run: exit 1
-        if: success() && always()
-
+        if: ${{ jobs.rspec.conclusion == 'failure' || jobs.jest.conclusion == 'failure' || jobs.jest.conclusion == 'failure' || jobs.cypress.conclusion == 'failure' || jobs.build-test.conclusion == 'failure' }}
