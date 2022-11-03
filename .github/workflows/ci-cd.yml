@@ -193,6 +193,7 @@ jobs:
     if: always()
 
     steps:
-      - run: echo ${{ jobs.rspec.conclusion }}
-      - run: exit 1
-        if: ${{ jobs.rspec.conclusion == 'failure' || jobs.jest.conclusion == 'failure' || jobs.jest.conclusion == 'failure' || jobs.cypress.conclusion == 'failure' || jobs.build-test.conclusion == 'failure' }}
+      - name: Decide whether the needed jobs succeeded or failed
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
