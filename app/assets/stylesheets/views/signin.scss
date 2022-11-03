@@ -14,8 +14,6 @@
       margin-right: var(--su-7);
     }
   }
-
- 
 }
 
 .authentication-widget {
@@ -31,6 +29,7 @@
 
   &__image {
     border-radius: var(--radius);
+    transform: rotate(-10deg);
     height: auto;
     width: 100%;
   }
