@@ -21,6 +21,7 @@ FactoryBot.define do
       with_collection { nil }
       past_published_at { Time.current }
     end
+
     co_author_ids { [] }
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
@@ -29,13 +30,22 @@ FactoryBot.define do
         URL.url(ActionController::Base.helpers.asset_path("#{rand(1..40)}.png"))
       end
     end
+
     experience_level_rating { rand(4..6) }
+    # The tags property in the markdown is a bit of a hack, and this entire factory needs refactoring.
+    # In the Tagglable spec we want to extract some common scopes from the article and display ad
+    # models and test them, hence we want to pass through the tag_list property.
+    # However, the body_markdown caters for the way that we associate tags for the v1 editor.
+    # Hence, in this test we default to the transient with_tags being set to true, but if we pass a tag_list through
+    # then we're making the assumption that it is the v2 editor and we do not want the tags on the body markdown.
+    # Ideally, we want to create a completely different body_markdown without the frontmatter depending on the version
+    # of the editor since we pass through different JSON based on the editor.
     body_markdown do
       <<~HEREDOC
         ---
         title: #{title if with_title}
         published: #{published}
-        tags: #{tags if with_tags}
+        #{"tags: #{tags}" if with_tags && tag_list.blank?}
         date: #{date if with_date}
         series: #{with_collection&.slug}
         canonical_url: #{canonical_url if with_canonical_url}
