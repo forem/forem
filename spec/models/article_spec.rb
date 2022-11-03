@@ -528,6 +528,12 @@ RSpec.describe Article, type: :model do
       expect(article2.valid?).to be true
     end
 
+    it "allows removing published_at when updating a scheduled draft" do
+      scheduled_draft = create(:article, published: false, published_at: 1.day.from_now)
+      scheduled_draft.published_at = nil
+      expect(scheduled_draft).to be_valid
+    end
+
     context "when unpublishing" do
       let!(:published_at_was) { article.published_at }
 
