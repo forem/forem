@@ -4,6 +4,8 @@ RSpec.describe DisplayAd, type: :model do
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
+  it_behaves_like "Taggable"
+
   describe "validations" do
     describe "builtin validations" do
       subject { display_ad }
@@ -13,6 +15,7 @@ RSpec.describe DisplayAd, type: :model do
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to have_many(:tags) }
     end
 
     it "allows sidebar_right" do
@@ -79,6 +82,68 @@ RSpec.describe DisplayAd, type: :model do
       it "returns published and approved ads" do
         display_ad.update!(published: true, approved: true)
         expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
+      end
+    end
+
+    context "when considering article_tags" do
+      it "will show the display ads that contain tags that match any of the article tags" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "linux, git, go")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[linux productivity]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show display ads that have no tags set" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[productivity java]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+        article_tags = %w[javascript]
+        expect(described_class.for_display("post_comments", false, article_tags)).to be_nil
+      end
+
+      it "will show display ads with no tags set if there are no article tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+
+        display_ad_without_tags = create(:display_ad, organization_id: organization.id,
+                                                      placement_area: "post_comments",
+                                                      published: true,
+                                                      approved: true,
+                                                      cached_tag_list: "")
+
+        expect(described_class.for_display("post_comments", false)).to eq(display_ad_without_tags)
       end
     end
 
