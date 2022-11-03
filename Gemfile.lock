@@ -273,7 +273,7 @@ GEM
       zlib (~> 2.1)
     faraday-http-cache (2.4.1)
       faraday (>= 0.8)
-    faraday-net_http (3.0.0)
+    faraday-net_http (3.0.1)
     faraday-retry (2.0.0)
       faraday (~> 2.0)
     fastimage (2.2.6)
@@ -564,10 +564,9 @@ GEM
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    omniauth-apple (1.2.0)
+    omniauth-apple (1.2.2)
       jwt
       omniauth-oauth2
-      rack-protection (~> 2.0)
     omniauth-facebook (9.0.0)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (2.0.1)
