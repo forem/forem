@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Reaction, type: :model do
+RSpec.describe Reaction do
   let(:user) { create(:user, registered_at: 20.days.ago) }
   let(:article) { create(:article, user: user) }
   let(:reaction) { build(:reaction, reactable: article, user: user) }
@@ -292,6 +292,23 @@ RSpec.describe Reaction, type: :model do
         reactable_type: "Article",
         user: moderator,
       ).first).to eq(reaction)
+    end
+  end
+
+  describe ".readinglist_for_user finds reactions from given user" do
+    before do
+      user.reactions.create(reactable: article, category: "readinglist")
+      comment = create(:comment)
+      user.reactions.create(reactable: comment, category: "readinglist")
+      article2 = create(:article)
+      user.reactions.create(reactable: article2, category: "like")
+
+      user2 = create(:user)
+      user2.reactions.create(reactable: article, category: "readinglist")
+    end
+
+    it "returns un-archived reactions on articles" do
+      expect(described_class.readinglist_for_user(user).pluck(:reactable_id)).to contain_exactly(article.id)
     end
   end
 end

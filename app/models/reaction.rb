@@ -31,6 +31,9 @@ class Reaction < ApplicationRecord
   }
   scope :privileged_category, -> { where(category: ReactionCategory.privileged.map(&:to_s)) }
   scope :for_user, ->(user) { where(reactable: user) }
+  scope :unarchived, -> { where.not(status: "archived") }
+  scope :from_user, ->(user) { where(user: user) }
+  scope :readinglist_for_user, ->(user) { readinglist.unarchived.only_articles.from_user(user) }
 
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
