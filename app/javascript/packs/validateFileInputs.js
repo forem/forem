@@ -101,7 +101,9 @@ function handleFileTypeError(
   if (fileTypeErrorHandler) {
     fileTypeErrorHandler();
   } else {
-    const errorMessage = `Invalid file format (${fileType}). Only ${permittedFileTypes.join(
+    const fileTypeBracketed =
+      fileType && fileType.length !== 0 ? ` (${fileType})` : '';
+    const errorMessage = `Invalid file format${fileTypeBracketed}. Only ${permittedFileTypes.join(
       ', ',
     )} files are permitted.`;
     addErrorMessage(errorMessage);
