@@ -74,7 +74,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".authentication-feed__card", count: 1)
+        expect(page).to have_selector("#in-feed-cta", count: 1)
 
         within("#main-content") do
           expect(page).to have_text(article.title)
@@ -92,7 +92,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta-count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".authentication-feed__card", count: 1)
+        expect(page).to have_selector("#in-feed-cta", count: 1)
 
         within("#main-content") do
           expect(page).to have_text(article.title)

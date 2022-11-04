@@ -3,76 +3,15 @@
 
 // Authentication Card in Feed
 .authentication-feed {
-  &__card {
-    display: grid;
-    grid-gap: var(--su-6);
-    padding: var(--su-6);
-    margin: var(--su-3);
-    background: rgba(var(--brand), 0.1);
-    color: var(--card-color);
+  &__image {
     border-radius: var(--radius);
-    border: 1px solid rgba(var(--brand), 0.1);
-
-    @media (min-width: $breakpoint-s) {
-      padding: var(--su-7);
-      margin: 0 0 var(--su-3) 0;
-    }
-  }
-
-  &__container {
-    @media (min-width: $breakpoint-s) {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-  }
-
-  &__image-container {
     width: var(--su-8);
     height: var(--su-8);
     margin-bottom: var(--su-2);
-
     @media (min-width: $breakpoint-s) {
       height: 80px;
       width: 80px;
       margin-right: var(--su-7);
-    }
-  }
-
-  &__image {
-    border-radius: var(--radius);
-    transform: rotate(-10deg);
-    height: auto;
-    width: 100%;
-  }
-
-  &__title {
-    color: var(--card-color);
-    font-size: var(--fs-2xl);
-    line-height: var(--lh-tight);
-
-    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
-    overflow-wrap: break-word;
-    overflow-wrap: anywhere;
-
-    @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-3xl);
-    }
-  }
-
-  &__description {
-    color: var(--card-color-secondary);
-  }
-
-  &__actions {
-    display: grid;
-    grid-gap: var(--su-1);
-
-    @media (min-width: $breakpoint-s) {
-      display: flex;
-      flex-direction: column;
-      width: max-content;
-      justify-self: center;
     }
   }
 }
