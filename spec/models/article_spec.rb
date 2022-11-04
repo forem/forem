@@ -927,7 +927,7 @@ RSpec.describe Article, type: :model do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
     end
 
-    it "returns articles ordered by organic_page_views_count" do
+    it "returns articles ordered by organic_page_views_past_month_count" do
       articles = described_class.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
     end
@@ -942,7 +942,7 @@ RSpec.describe Article, type: :model do
       expect(articles).to be_empty
     end
 
-    it "returns articles ordered by organic_page_views_count by tag" do
+    it "returns articles ordered by organic_page_views_past_month_count by tag" do
       articles = described_class.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end
