@@ -53,4 +53,17 @@
       </div>
     <% end %>
   <% end %>
+
+  <% cache(release_adjusted_cache_key("article-sidebar-display-ad-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+    <% sidebar_ad = DisplayAd.for_display("post_sidebar", user_signed_in?, @article.decorate.cached_tag_list_array) %>
+    <% if sidebar_ad %>
+      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget text-styles"
+           data-display-unit data-id="<%= sidebar_ad.id %>"
+           data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
+           data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
+           data-context-type="<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>">
+        <%= sidebar_ad.processed_html.html_safe %>
+      </div>
+    <% end %>
+  <% end %>
 </div>
