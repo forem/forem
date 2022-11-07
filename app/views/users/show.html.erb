@@ -129,7 +129,11 @@
   <main class="crayons-layout__content articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
-        <%= render "users/comments_section" %>
+        <% if user_signed_in? %>
+          <%= render "users/comments_section" %>
+        <% else %>
+          <%= render "users/comments_locked_cta" %>
+        <% end %>
       <% elsif @stories.any? || @comments.any? || @pinned_stories.any? %>
         <%= render "users/main_feed" %>
       <% end %>

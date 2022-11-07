@@ -151,6 +151,9 @@
   /* Select icon */
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
 
+  /* Icons */
+  --close-icon: rgb(var(--grey-400));
+
   /* Reactions */
   --reaction-like-color: rgb(var(--red-600));
   --reaction-like-bg: rgba(var(--red-600), 0.1);

@@ -159,6 +159,7 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+
     updated = Articles::Updater.call(@user, @article, article_params_json)
 
     respond_to do |format|
@@ -327,6 +328,12 @@ class ArticlesController < ApplicationController
       allowed_params << :organization_id
     end
 
+    manage_published_at_params
+
+    @article_params_json = params.require(:article).permit(allowed_params)
+  end
+
+  def manage_published_at_params
     time_zone_str = params["article"].delete("timezone")
 
     time = params["article"].delete("published_at_time")
@@ -336,11 +343,9 @@ class ArticlesController < ApplicationController
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
-    elsif params["article"]["version"] != "v1"
+    elsif params["article"]["version"] != "v1" && !params["article"]["from_dashboard"]
       params["article"]["published_at"] = nil
     end
-
-    @article_params_json = params.require(:article).permit(allowed_params)
   end
 
   def allowed_to_change_org_id?

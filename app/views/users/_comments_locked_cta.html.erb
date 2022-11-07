@@ -1,0 +1,27 @@
+<div id="comments-locked-cta" class="crayons-card mt-2 m:mt-0 mb-2 m:p-8 p-4">
+  <div class="align-center">
+    <%= inline_svg_tag("comments_profile.svg", aria_hidden: true) %>
+  </div>
+  <h3 class="crayons-subtitle-3 mt-5 fs-l align-center">
+    <%= t("views.users.comments_locked_cta.title", user: @user.name) %>
+  </h3>
+  <p class="align-center mt-1 color-base-60 fs-base">
+    <%= t("views.users.comments_locked_cta.description", user: @user.name) %>
+  </p>
+  <div class="align-center mt-4">
+    <a href="/enter?state=new-user" class="crayons-btn crayons-btn--l w-75" data-tracking-id="ca_profile_comment_section_locked" data-tracking-source="comments_locked_cta" data-no-instant>
+      <%= t("views.users.comments_locked_cta.create_account") %>
+    </a>
+  </div>
+  <div class="align-center mt-4">
+    <span>
+      <%= t("views.users.comments_locked_cta.already_have_an_account") %>
+      <a
+        href="/enter"
+        data-tracking-id="si_profile_comment_section_locked"
+        data-tracking-source="comments_locked_cta">
+          <%= t("views.users.comments_locked_cta.sign_in") %>
+      </a>
+    </span>
+  </div>
+</div>
