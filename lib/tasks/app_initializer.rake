@@ -1,6 +1,14 @@
 namespace :app_initializer do
   desc "Prepare Application on Boot Up"
   task setup: :environment do
+    puts "\n== Checking for hypershield =="
+    if ActiveRecord::Base.connection.schema_exists?("hypershield")
+      puts "\n== Hypershield found, Red alert, all hands to battle stations =="
+    else
+      puts "\n== Hypershield not found, init...  =="
+      ActiveRecord::Base.connection.execute("CREATE SCHEMA hypershield")
+    end
+
     puts "\n== Preparing database =="
     system("bin/rails db:prepare") || exit!(1)
     Rake::Task["db:migrate"].execute # it'll re-alphabetize the columns in `schema.rb`
@@ -19,11 +27,7 @@ namespace :app_initializer do
   end
 end
 
-if ENV["ENABLE_HYPERSHIELD"].present?
-  unless ActiveRecord::Base.connection.schema_exists?("hypershield")
-    ActiveRecord::Base.connection.execute("CREATE SCHEMA hypershield")
-  end
-  # enhance must be passed a block here to ensure that our hypershield task
+if ENV["ENABLE_HYPERSHIELD"].present? # enhance must be passed a block here to ensure that our hypershield task
   # runs AFTER db:prepare. Passing it as an argument will cause it to run BEFORE
   # https://ruby-doc.org/stdlib-2.0.0/libdoc/rake/rdoc/Rake/Task.html#method-i-enhance
   Rake::Task["db:prepare"].enhance do
