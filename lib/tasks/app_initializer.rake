@@ -20,6 +20,9 @@ namespace :app_initializer do
 end
 
 if ENV["ENABLE_HYPERSHIELD"].present?
+  unless ActiveRecord::Base.connection.schema_exists?("hypershield")
+    ActiveRecord::Base.connection.execute("CREATE SCHEMA hypershield")
+  end
   # enhance must be passed a block here to ensure that our hypershield task
   # runs AFTER db:prepare. Passing it as an argument will cause it to run BEFORE
   # https://ruby-doc.org/stdlib-2.0.0/libdoc/rake/rdoc/Rake/Task.html#method-i-enhance
