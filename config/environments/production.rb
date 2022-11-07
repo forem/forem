@@ -6,6 +6,15 @@ Rails.application.configure do
   # If we have not set this ENV var it means we haven't set the environment
   ENV["ENV_AVAILABLE"] = ENV["APP_DOMAIN"].present?.to_s
 
+  # config/environments/production.rb
+  config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+
+  if ENV["RAILS_LOG_TO_STDOUT"].present?
+    logger           = ActiveSupport::Logger.new($stdout)
+    logger.formatter = config.log_formatter
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
+  end
+
   if ENV["ENV_AVAILABLE"] == "false"
     # We still need _something_ here, but if booted without environment (aka asset precompile),
     # it shouldn't need to be the proper value
