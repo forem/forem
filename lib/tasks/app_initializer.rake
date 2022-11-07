@@ -5,7 +5,7 @@ namespace :app_initializer do
     if ActiveRecord::Base.connection.schema_exists?("hypershield")
       puts "\n== Hypershield found, Red alert, all hands to battle stations =="
     else
-      puts "\n== Hypershield not found, init...  =="
+      puts "\n== Hypershield not found, init...    =="
       ActiveRecord::Base.connection.execute("CREATE SCHEMA hypershield")
     end
 
