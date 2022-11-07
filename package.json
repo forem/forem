@@ -103,7 +103,7 @@
     "@babel/preset-env": "^7.19.4",
     "@etchteam/storybook-addon-css-variables-theme": "^1.3.3",
     "@github/time-elements": "3.1.2",
-    "@honeybadger-io/js": "^4.6.0",
+    "@honeybadger-io/js": "^4.6.2",
     "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.1.0",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",

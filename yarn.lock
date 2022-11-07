@@ -1924,7 +1924,7 @@
   dependencies:
     stacktrace-parser "^0.1.10"
 
-"@honeybadger-io/js@^4.6.0":
+"@honeybadger-io/js@^4.6.2":
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.6.0.tgz#ca192ca3222a6bb9f9046bb5f5fb0af6f272f889"
   integrity sha512-7eV99zBQRi8ZrbFDj97LdGWqbIU8vyNXFZsxSYefwye1tHnZSDqvAoZqukutrK34J5t5KzLNbZysYXofEP+Jbg==
