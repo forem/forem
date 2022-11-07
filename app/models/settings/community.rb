@@ -1,6 +1,7 @@
 module Settings
   class Community < Base
     self.table_name = :settings_communities
+    # just a comment
 
     setting :copyright_start_year,
             type: :integer,
