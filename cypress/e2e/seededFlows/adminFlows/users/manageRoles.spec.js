@@ -95,7 +95,7 @@ describe('Manage User Roles', () => {
         cy.findByRole('button', { name: 'Remove role: Trusted' }).should(
           'not.exist',
         );
-        checkUserStatus('Good Standing');
+        checkUserStatus('Good standing');
       });
 
       it('should not remove the Super Admin role', () => {
