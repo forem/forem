@@ -133,6 +133,7 @@
     "postcss": "^8.4.18",
     "postcss-cli": "^10.0.0",
     "postcss-import": "^15.0.0",
+    "postcss-preset-env": "^7.8.2",
     "postscribe": "^2.0.8",
     "preact": "^10.11.2",
     "prop-types": "^15.8.1",
