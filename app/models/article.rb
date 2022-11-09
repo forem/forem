@@ -790,10 +790,11 @@ class Article < ApplicationRecord
   def correct_published_at?
     return unless changes["published_at"]
 
-    # for drafts (that were never published before) or scheduled articles => allow future or current dates
+    # for drafts (that were never published before) or scheduled articles
+    # => allow future or current dates, or no published_at
     if !published_at_was || published_at_was > Time.current
       # for articles published_from_feed (exported from rss) we allow past published_at
-      if (!published_at || published_at < 15.minutes.ago) && !published_from_feed
+      if (published_at && published_at < 15.minutes.ago) && !published_from_feed
         errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
       end
     else
