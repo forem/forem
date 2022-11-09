@@ -4,7 +4,7 @@ module.exports = {
     require('postcss-import')({
       resolve: function(id, basedir) {
         if (id.startsWith('/assets/react-dates/')) {
-          return require('path').resolve(process.cwd(), "node_modules", id.replace("/assets/", ""));
+          return require('path').resolve(process.cwd(), "node_modules/react-dates/lib/css/_datepicker.css");
         } else {
           return require('path').resolve(basedir, id);
         }
