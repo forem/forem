@@ -11,10 +11,12 @@
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, 
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  initializeHamburgerMenu
 */
 
 function callInitializers() {
+  initializeHamburgerMenu();
   initializeBaseTracking();
   initializePaymentPointers();
   initializeCommentsPage();

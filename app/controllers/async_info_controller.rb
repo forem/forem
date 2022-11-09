@@ -37,6 +37,10 @@ class AsyncInfoController < ApplicationController
     }.to_json
   end
 
+  def hamburger
+    render :hamburger, layout: false
+  end
+
   # @note The `user_cache_key` uses `current_user` and this method assumes `@user` which is a
   #       decorated version of the user.  It would be nice if we were using the same "variable" for
   #       the cache key and for that which we cache.
