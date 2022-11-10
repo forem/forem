@@ -24,7 +24,7 @@ RSpec.describe "Organization index", type: :system do
       end
 
       it "shows the sidebar" do
-        within("div.sidebar-left") do
+        within("#sidebar-left") do
           expect(page).to have_content("Meet the team")
           expect(page).to have_link(nil, href: org_user.path)
         end
