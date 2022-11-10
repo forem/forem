@@ -285,7 +285,7 @@ function buildArticleHTML(article, currentUserId = null) {
           class="c-btn c-btn--icon-alone bookmark-button"
           data-reactable-id="${article.id}"
           data-article-author-id="${article.user_id}"
-          aria-label="Save to reading list">
+          aria-label="Save post ${article.title} to reading list">
           <span class="bm-initial">${saveSVG}</span>
           <span class="bm-success">${saveFilledSVG}</span>
         </button>

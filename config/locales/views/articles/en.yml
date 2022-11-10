@@ -62,8 +62,8 @@ en:
         one: '#discuss <img src="%{image}" />%{count}'
         other: '#discuss <img src="%{image}" />%{count}'
       save:
-        title: Save to reading list
-        aria_label: Save to reading list
+        title: "Save post %{title} to reading list"
+        aria_label: "Save post %{title} to reading list"
         initial: Save
         success: Saved
       scheduled:
