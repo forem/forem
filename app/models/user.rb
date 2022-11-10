@@ -304,9 +304,9 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
-      Reaction.readinglist.where(
-        user_id: id, reactable_type: "Article",
-      ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
+      readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
+      readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
   end
 

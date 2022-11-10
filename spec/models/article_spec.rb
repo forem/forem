@@ -514,19 +514,25 @@ RSpec.describe Article, type: :model do
       article2 = build(:article, published_at: 10.days.ago, published: true)
       expect(article2.valid?).to be false
       expect(article2.errors[:published_at])
-        .to include("only future or current published_at allowed when publishing an article")
+        .to include("only future or current published_at allowed")
     end
 
     it "doesn't allow recent published_at when publishing on create" do
       article2 = build(:article, published_at: 1.hour.ago, published: true)
       expect(article2.valid?).to be false
       expect(article2.errors[:published_at])
-        .to include("only future or current published_at allowed when publishing an article")
+        .to include("only future or current published_at allowed")
     end
 
     it "allows recent published_at when publishing on create" do
       article2 = build(:article, published_at: 5.minutes.ago, published: true)
       expect(article2.valid?).to be true
+    end
+
+    it "allows removing published_at when updating a scheduled draft" do
+      scheduled_draft = create(:article, published: false, published_at: 1.day.from_now)
+      scheduled_draft.published_at = nil
+      expect(scheduled_draft).to be_valid
     end
 
     context "when unpublishing" do
@@ -927,7 +933,7 @@ RSpec.describe Article, type: :model do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
     end
 
-    it "returns articles ordered by organic_page_views_count" do
+    it "returns articles ordered by organic_page_views_past_month_count" do
       articles = described_class.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
     end
@@ -942,7 +948,7 @@ RSpec.describe Article, type: :model do
       expect(articles).to be_empty
     end
 
-    it "returns articles ordered by organic_page_views_count by tag" do
+    it "returns articles ordered by organic_page_views_past_month_count by tag" do
       articles = described_class.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end

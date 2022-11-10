@@ -13,15 +13,6 @@ module Articles
       article = Article.find(article_id)
       google_page_views = article.page_views.where(referrer: GOOGLE_REFERRER)
       update_params = {}
-
-      organic_count = google_page_views.sum(:counts_for_number_of_views)
-      if organic_count > article.organic_page_views_count
-        update_params[:organic_page_views_count] = organic_count
-      end
-
-      past_week_count = sum_page_views(google_page_views, 1.week.ago)
-      update_params[:organic_page_views_past_week_count] = past_week_count
-
       past_month_count = sum_page_views(google_page_views, 1.month.ago)
       update_params[:organic_page_views_past_month_count] = past_month_count
 

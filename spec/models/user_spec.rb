@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe User, type: :model do
+RSpec.describe User do
   def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
     auth = OmniAuth.config.mock_auth[service_name]
     Authentication::Authenticator.call(
@@ -659,13 +659,18 @@ RSpec.describe User, type: :model do
       expect(user.reload.following_orgs_count).to eq(1)
     end
 
-    it "returns cached ids of articles that have been saved to their readinglist" do
+    it "returns cached ids of published articles that have been saved to their readinglist" do
       article = create(:article)
       article2 = create(:article)
+      article3 = create(:article)
+
       create(:reading_reaction, user: user, reactable: article)
       create(:reading_reaction, user: user, reactable: article2)
+      create(:reading_reaction, user: user, reactable: article3)
 
-      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
+      Articles::Unpublish.call(article2.user, article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
     end
   end
 
