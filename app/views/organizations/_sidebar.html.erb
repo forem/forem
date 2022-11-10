@@ -3,15 +3,15 @@
       here we're using the any?/find_each pattern to avoid loading possibly
       too many objects in memory %>
   <% if @organization.users.any? %>
-    <div class="widget">
+    <div class="crayons-card crayons-card--secondary org-sidebar-widget">
       <header class="crayons-card__header">
         <h3 class="crayons-subtitle-3">
           <%= t("views.organizations.team") %>
         </h3>
       </header>
-      <div class="widget-body">
+      <div class="org-sidebar-widget-body">
         <% @organization.users.find_each do |user| %>
-          <div class="widget-user-pic">
+          <div class="org-sidebar-widget-user-pic">
             <a href="/<%= user.username %>">
               <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
             </a>

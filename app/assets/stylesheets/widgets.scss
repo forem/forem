@@ -279,6 +279,36 @@
   }
 }
 
+.org-sidebar-widget {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
+  .org-sidebar-widget-body {
+    padding: 8px 16px 0px 16px;
+    overflow-wrap: break-word;
+    &.body-scrollable {
+      height: calc(100vh - 300px);
+      max-height: 390px;
+      overflow-y: scroll;
+    }
+    .org-sidebar-widget-user-pic {
+      display: inline-block;
+      img {
+        height: 48px;
+        width: 48px;
+        margin: 0 8px 8px 0;
+        border-radius: 100%;
+      }
+    }
+  }
+  a {
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+}
+
 // Sidebar sponsors
 .crayons-sponsorship-article {
   margin-bottom: 10px;
