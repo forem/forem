@@ -1,17 +1,14 @@
 <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-3 m:p-4 s:pl-4 m:pl-7 pr-4 flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>
   <% unless @last_email_verification_date %>
     <div>
-      <h2 class="crayons-subtitle-2">Email not verified</h2>
-      <p class="color-secondary"><%= @user.name %>'s email hasn't been verified yet.</p>
+      <h2 class="crayons-subtitle-2"><%= t("views.admin.users.emails.not_verified.subtitle") %></h2>
+      <p class="color-secondary"><%= t("views.admin.users.emails.not_verified.desc", user: @user.name) %></p>
     </div>
-    <%= f.button "Verify email address", class: "c-btn c-btn--secondary whitespace-nowrap" %>
+    <%= f.button t("views.admin.users.emails.verify"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
   <% else %>
     <p>
-      Last verified on
-      <time datetime="<%= @last_email_verification_date.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="fw-medium whitespace-nowrap">
-        <%= @last_email_verification_date.strftime("%b %e '%y, %H:%M") %>
-      </time>
+      <%= t("views.admin.users.emails.verified_html", time: tag.time(l(@last_email_verification_date, format: :email_verified), datetime: @last_email_verification_date.strftime("%Y-%m-%dT%H:%M:%S%z"), class: "fw-medium whitespace-nowrap")) %>
     </p>
-    <%= f.button "Reverify", class: "c-btn c-btn--secondary whitespace-nowrap" %>
+    <%= f.button t("views.admin.users.emails.reverify"), class: "c-btn c-btn--secondary whitespace-nowrap" %>
   <% end %>
 <% end %>

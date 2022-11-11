@@ -1,27 +1,24 @@
 <div class="flex flex-col h-100">
-  <h2 class="crayons-subtitle-1">Previous notes (<%= @notes.count %>)</h2>
+  <h2 class="crayons-subtitle-1"><%= t("views.admin.users.notes.previous", num: @notes.count) %></h2>
   <% if @notes.load.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2">No previous notes found for <%= @user.name %>.</h3>
-      <p class="color-secondary">Any notes added for <%= @user.name %> will be found here. </p>
+      <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.notes.empty1", user: @user.name) %></h3>
+      <p class="color-secondary"><%= t("views.admin.users.notes.empty2", user: @user.name) %></p>
     </div>
   <% else %>
     <div class="pt-3">
       <% @notes.each do |note| %>
         <% author = User.find(note.author_id).username %>
         <article class="c-list-item flex justify-between gap-4">
-          <h3 class="screen-reader-only">Note by <%= author %> on <%= note.created_at.strftime("%b %e '%y") %></h3>
+          <h3 class="screen-reader-only"><%= t("views.admin.users.notes.note_by", author: author, time: l(note.created_at, format: :short_with_yy)) %></h3>
           <div>
             <p><%= note.content %></p>
             <p class="fs-s color-secondary">
-              <%= note.reason.presence %>
-              <% if note.author_id.present? %>
-                by <span class="fw-medium"><%= author %></span>
-              <% end %>
+              <%= t("views.admin.users.notes.reason_by_html", reason: note.reason.presence, by: note.author_id.present? ? t("views.admin.users.notes.by_html", author: tag.span(author, class: "fw-medium")) : "") %>
             </p>
           </div>
-          <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= note.created_at.strftime("%Y-%m-%d, %H:%M") %>">
-            <%= note.created_at.strftime("%b %e '%y") %>
+          <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(note.created_at, format: :admin_user) %>">
+            <%= l(note.created_at, format: :short_with_yy) %>
           </time>
         </article>
       <% end %>

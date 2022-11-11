@@ -1,9 +1,9 @@
 <div class="flex flex-col h-100">
-  <h2 class="crayons-subtitle-1">Previous emails (<%= @user.email_messages.count %>)</h2>
+  <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.previous", num: @user.email_messages.count) %></h2>
   <% if @user.email_messages.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2">No previous emails found for <%= @user.name %>.</h3>
-      <p class="color-secondary">Any emails sent to <%= @user.email %> will be found here.</p>
+      <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.emails.empty1", user: @user.name) %></h3>
+      <p class="color-secondary"><%= t("views.admin.users.emails.empty2", email: @user.email) %></p>
     </div>
   <% else %>
     <div class="pt-3">
@@ -14,8 +14,8 @@
               <%= email.subject %>
             </a>
           </h3>
-          <time datetime="<%= email.sent_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= email.sent_at&.strftime("%Y-%m-%d, %H:%M") %>">
-            <%= email.sent_at&.strftime("%b %e '%y") %>
+          <time datetime="<%= email.sent_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(email.sent_at, format: :admin_user) if email.sent_at %>">
+            <%= l(email.sent_at, format: :short_with_yy) if email.sent_at %>
           </time>
         </article>
       <% end %>
