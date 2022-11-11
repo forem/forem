@@ -51,6 +51,8 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
+        resources :display_ads, only: %i[index show]
+
         draw :api
       end
 
