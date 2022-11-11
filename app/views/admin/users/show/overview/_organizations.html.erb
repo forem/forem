@@ -1,18 +1,23 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag(:team, title: "Organizations", aria_hidden: true, class: "mr-2") %>
-    Organizations
+    <%= crayons_icon_tag(:team, title: t("views.admin.users.overview.orgs.icon"), aria_hidden: true, class: "mr-2") %>
+    <%= t("views.admin.users.overview.orgs.subtitle") %>
   </h2>
-  <p class="color-secondary">Add this member to organizations in your community. <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#organization-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about organizations">Learn more</a></p>
+  <p class="color-secondary">
+    <%= t("views.admin.users.overview.orgs.desc") %>
+    <a href="https://admin.forem.com/docs/managing-your-community/organization-pages#organization-roles" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="<%= t("views.admin.users.overview.orgs.aria_learn") %>"><%= t("views.admin.users.overview.learn") %></a>
+  </p>
 </header>
 <% if @organization_memberships.load.empty? %>
   <div class="flex justify-between items-center gap-4">
-    <p>Not part of any organization yet.</p>
-    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="Add organization" data-modal-size="small" data-modal-content-selector="#add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">Add organization</button>
+    <p><%= t("views.admin.users.overview.orgs.empty") %></p>
+    <button class="c-btn c-btn--secondary whitespace-nowrap" type="button" data-modal-title="<%= t("views.admin.users.actions.add_org.heading") %>" data-modal-size="small" data-modal-content-selector="#add-organization" data-user-name="<%= @user.name %>" data-user-id="<%= @user.id %>">
+      <%= t("views.admin.users.overview.orgs.button") %>
+    </button>
   </div>
 <% else %>
 <%# Used for aria-describedby on input fields, placed here to avoid duplicate IDs when mapping over orgs %>
-<span class="screen-reader-only" id="edit-org-permission-description">You can assign <%= @user.name %> to be an Admin or a regular member.</span>
+<span class="screen-reader-only" id="edit-org-permission-description"><%= t("views.admin.users.actions.add_org.role_desc_html", user: @user.name) %></span>
   <% @organization_memberships.each do |org_membership| %>
     <div class="c-card c-card--interactive flex p-2 relative items-center mb-2 pl-3">
       <div class="flex items-center gap-2 flex-1">
@@ -23,17 +28,17 @@
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
             <%= org_membership.organization.name %>
           </a>
-          <span class="opacity-50">&bull;</span> <%= org_membership.type_of_user.capitalize %></span>
+          <span class="opacity-50">&bull;</span> <%= t("views.admin.users.overview.orgs.type.#{org_membership.type_of_user}") %></span>
         </h3>
       </div>
       <div class="c-card__revealable shrink-0">
-        <button type="button" class="c-btn c-btn--icon-alone" aria-label="Edit <%= org_membership.organization.name %> organization membership"
-          data-modal-title="Edit <%= @user.name %>'s role at an organization" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
+        <button type="button" class="c-btn c-btn--icon-alone" aria-label="<%= t("views.admin.users.overview.orgs.aria_edit", org: org_membership.organization.name) %>"
+          data-modal-title="<%= t("views.admin.users.actions.add_org.edit", user: @user.name) %>" data-modal-size="small" data-modal-content-selector="#edit-organization-<%= org_membership.organization.id %>">
           <%= crayons_icon_tag(:edit, class: "c-btn__icon", aria_hidden: true) %>
         </button>
         <%= form_with model: [:admin, org_membership], method: :delete, local: true, html: { class: "inline" } do |f| %>
-          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true), aria: { label: "Revoke #{org_membership.organization.name} organization membership" }, class: "c-btn c-btn--destructive c-btn--icon-alone",
-                                                                                      data: { confirm: "Are you sure you want to remove #{org_membership.user.name} from #{org_membership.organization.name}?" } %>
+          <%= f.button crayons_icon_tag(:x, class: "c-btn__icon", aria_hidden: true), aria: { label: t("views.admin.users.overview.orgs.aria_revoke", org: org_membership.organization.name) }, class: "c-btn c-btn--destructive c-btn--icon-alone",
+                                                                                      data: { confirm: t("views.admin.users.overview.orgs.revoke_confirm", user: org_membership.user.name, org: org_membership.organization.name) } %>
         <% end %>
       </div>
     </div>
@@ -41,22 +46,30 @@
     <div id="edit-organization-<%= org_membership.organization.id %>" class="hidden">
       <%= form_with model: [:admin, org_membership], method: :patch, local: true do |f| %>
         <div class="crayons-field mb-4">
-          <%= f.label "Role", class: "crayons-field__label", for: "edit_#{org_membership.organization.id}_type_of_user" %>
-          <p class="crayons-field__description">You can assign <%= @user.name %> to be an Admin or a regular member.</p>
-          <%= f.select :type_of_user, options_for_select(%w[member admin], selected: org_membership.type_of_user), {}, id: "edit_#{org_membership.organization.id}_type_of_user", class: "crayons-select", aria: { describedby: "edit-org-permission-description" } %>
+          <%= f.label t("views.admin.users.actions.add_org.role"), class: "crayons-field__label", for: "edit_#{org_membership.organization.id}_type_of_user" %>
+          <p class="crayons-field__description"><%= t("views.admin.users.actions.add_org.role_desc_html", user: @user.name) %></p>
+          <%= f.select(:type_of_user,
+                       options_for_select(
+                         { t("views.admin.users.actions.add_org.member") => "member", t("views.admin.users.actions.add_org.admin") => "admin" },
+                         selected: org_membership.type_of_user,
+                       ),
+                       {},
+                       id: "edit_#{org_membership.organization.id}_type_of_user",
+                       class: "crayons-select",
+                       aria: { describedby: "edit-org-permission-description" }) %>
         </div>
-        <%= f.button "Submit", class: "c-btn c-btn--primary", type: "submit" %>
+        <%= f.button t("views.admin.users.overview.orgs.submit"), class: "c-btn c-btn--primary", type: "submit" %>
       <% end %>
     </div>
   <% end %>
   <button
     class="c-btn c-btn--secondary whitespace-nowrap w-100"
     type="button"
-    data-modal-title="Add <%= @user.name %> to an organization"
+    data-modal-title="<%= t("views.admin.users.actions.add_org.add", user: @user.name) %>"
     data-modal-size="small"
     data-modal-content-selector="#add-organization"
     data-user-name="<%= @user.name %>"
-    data-user-id="<%= @user.id %>">Add organization</button>
+    data-user-id="<%= @user.id %>"><%= t("views.admin.users.overview.orgs.button") %></button>
 <% end %>
 
 <%= render "admin/users/modals/add_organization_modal" %>

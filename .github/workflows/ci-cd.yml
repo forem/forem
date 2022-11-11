@@ -128,6 +128,8 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: bundle exec rails assets:precompile
+      - run: yarn run postcss
       - run: bin/test-console-check
 
   Cypress:
