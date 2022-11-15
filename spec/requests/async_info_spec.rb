@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "AsyncInfo", type: :request do
+RSpec.describe "AsyncInfo" do
   let(:controller_instance) { AsyncInfoController.new }
 
   before do
@@ -28,6 +28,20 @@ RSpec.describe "AsyncInfo", type: :request do
         get "/async_info/base_data"
         expect(response.parsed_body.keys).to match_array(%w[broadcast creator param token user])
       end
+    end
+  end
+
+  describe "GET /async_info/navigation_links" do
+    before do
+      create_list(:navigation_link, 5)
+      create_list(:navigation_link, 5, :other_section_link)
+    end
+
+    it "responds with existing navigation links" do
+      get "/async_info/navigation_links"
+      expect(response.parsed_body.keys).to match_array(%w[default_nav_links other_nav_links])
+      expect(response.parsed_body["default_nav_links"].count).to eq(5)
+      expect(response.parsed_body["other_nav_links"].count).to eq(5)
     end
   end
 end

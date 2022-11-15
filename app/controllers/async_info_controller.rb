@@ -37,8 +37,13 @@ class AsyncInfoController < ApplicationController
     }.to_json
   end
 
-  def hamburger
-    render :hamburger, layout: false
+  def navigation_links
+    @navigation_links = Rails.cache.fetch("navigation_links", expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
+      {
+        default_nav_links: NavigationLink.default_section.ordered,
+        other_nav_links: NavigationLink.other_section.ordered
+      }
+    end
   end
 
   # @note The `user_cache_key` uses `current_user` and this method assumes `@user` which is a
