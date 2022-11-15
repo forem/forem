@@ -21,7 +21,7 @@ module EdgeCache
           URL.url("#{path}?i=i"),
         ]
       end
-      private_class_method :fastly_purge
+      private_class_method :urls
     end
   end
 end
