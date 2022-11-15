@@ -9,10 +9,8 @@ module EdgeCache
       end
 
       def self.fastly_purge(api_key, path)
-        fastly = ::Fastly.new(api_key: api_key)
-
         urls(path).map do |url|
-          fastly.purge(url)
+          HTTParty.post("https://api.fastly.com/purge/#{url}", headers: { "Fastly-Key" => api_key })
         end
       end
       private_class_method :fastly_purge
