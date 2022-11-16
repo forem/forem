@@ -1,10 +1,10 @@
 <% if @user.access_locked? %>
   <div class="crayons-notice crayons-notice--danger py-2 pr-2 mb-3 flex justify-between items-center">
     <p class="flex-1 flex">
-      <%= crayons_icon_tag(:lock, title: "Access locked", class: "mr-2") %>
-      This user has locked access.
+      <%= crayons_icon_tag(:lock, title: t("views.admin.users.profile.locked.icon"), class: "mr-2") %>
+      <%= t("views.admin.users.profile.locked.text") %>
     </p>
-    <%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block c-link--branded" %>
+    <%= link_to t("views.admin.users.profile.locked.unlock"), unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block c-link--branded" %>
   </div>
 <% end %>
 
@@ -23,28 +23,25 @@
       <%= render "admin/users/show/profile/actions" %>
     </div>
     <div class="fs-s mb-1 color-secondary">
-      @<%= @user.username %> <span class="opacity-50">&bull;</span> ID <%= @user.id %> <span class="opacity-50">&bull;</span>
+      @<%= @user.username %> <span class="opacity-50">&bull;</span> <%= t("views.admin.users.profile.id", userid: @user.id) %> <span class="opacity-50">&bull;</span>
       <% if @user.registered? %>
-        Member since
-        <time datetime="<%= @user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" title="<%= @user.created_at.strftime("%Y-%m-%d, %H:%M") %>">
-          <%= @user.created_at.strftime("%b %e '%y") %>
-        </time>
+        <%= t("views.admin.users.profile.since_html", time: tag.time(l(@user.created_at, format: :short_with_yy), datetime: @user.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"), title: l(@user.created_at, format: :admin_user))) %>
       <% else %>
-        <span class="color-accent-danger fw-medium">User has not accepted their invitation yet.</span>
+        <span class="color-accent-danger fw-medium"><%= t("views.admin.users.profile.not_member") %></span>
       <% end %>
     </div>
     <div>
       <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
         <li>
           <a href="mailto:<%= @user.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
-            <%= crayons_icon_tag(:email, title: "Email", class: "c-link__icon") %>
+            <%= crayons_icon_tag(:email, title: t("views.admin.users.profile.email"), class: "c-link__icon") %>
             <%= @user.email %>
           </a>
         </li>
         <% if @user.github_username %>
           <li>
             <a href="https://github.com/<%= @user.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:github, title: "GitHub") %>
+              <%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %>
               <%= @user.github_username %>
             </a>
           </li>
@@ -52,7 +49,7 @@
         <% if @user.twitter_username %>
           <li>
             <a href="https://twitter.com/<%= @user.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
-              <%= crayons_icon_tag(:twitter, title: "Twitter") %>
+              <%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %>
               <%= @user.twitter_username %>
             </a>
           </li>

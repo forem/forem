@@ -127,3 +127,4 @@ if (document.location.pathname === '/admin/creator_settings/new') {
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
+trackCreateAccountClicks('comments-locked-cta');

@@ -15,6 +15,8 @@ fr:
           icon: Edit username
           text_html: "%{start}Your username will be\_%{end}%{button}"
         submit: Create my account
+      already_have_an_account: Already have an account?
+      sign_in: Sign in
       login:
         aria_label: Log in
         text: Se connecter
@@ -73,7 +75,7 @@ fr:
         step_3: There is lots you can do as an admin, but there is a learning curve.
         step_4: Please reach out to the Forem team if you are unsure about anything!
         step_5: "For Empowering Community 🌱"
-      tagline: Log in to customize your experience and get involved.
+      tagline: We are a place where coders share, stay up-to-date and grow their careers.
       title:
-        text_html: <a href="/" class="c-link c-link--branded">%{name}</a> is a community of %{maybe_size}amazing %{label}
+        text_html: "%{name} is a community of %{maybe_size}amazing %{label}"
         size: "%{num} "

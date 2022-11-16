@@ -14,4 +14,21 @@ RSpec.describe EmailMessage, type: :model do
       expect(BulkSqlDelete).to have_received(:delete_in_batches).with(a_string_including("< 'a_time'"))
     end
   end
+
+  describe "#Handles html and non html content" do
+    it "return correct content with no html" do
+      email_message = create(:email_message, content: "Test")
+      expect(email_message.html_content).to eq("Test")
+    end
+
+    it "return correct content with html" do
+      email_message = create(:email_message, content: "<html>Test</html>")
+      expect(email_message.html_content).to eq("<html>Test</html>")
+    end
+
+    it "return correct content with nil" do
+      email_message = create(:email_message, content: nil)
+      expect(email_message.html_content).to eq("")
+    end
+  end
 end
