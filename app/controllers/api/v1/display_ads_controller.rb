@@ -33,6 +33,12 @@ module Api
         render json: { error: e }, status: :unprocessable_entity
       end
 
+      def destroy
+        @display_ad = DisplayAd.find(params[:id])
+        result = @display_ad.update(published: false)
+        render json: @display_ad, status: (result ? :ok : :unprocessable_entity)
+      end
+
       private
 
       def require_admin

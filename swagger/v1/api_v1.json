@@ -111,47 +111,47 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 11064,
-                    "title": "The Painted Veil172",
-                    "description": "Cliche fingerstache humblebrag. Small batch flannel fingerstache gastropub ennui bushwick. Craft beer...",
+                    "id": 11338,
+                    "title": "Cabbages and Kings172",
+                    "description": "Keytar listicle stumptown fanny pack. Seitan kogi thundercats readymade diy.  Literally gluten-free...",
                     "readable_publish_date": "Nov 21",
-                    "slug": "the-painted-veil172-2ail",
-                    "path": "/username381/the-painted-veil172-2ail",
-                    "url": "http://localhost:3000/username381/the-painted-veil172-2ail",
+                    "slug": "cabbages-and-kings172-100a",
+                    "path": "/username382/cabbages-and-kings172-100a",
+                    "url": "http://localhost:3000/username382/cabbages-and-kings172-100a",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-21T08:49:53Z",
+                    "published_timestamp": "2022-11-21T08:51:37Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "canonical_url": "http://localhost:3000/username381/the-painted-veil172-2ail",
-                    "created_at": "2022-11-21T08:49:53Z",
+                    "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                    "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                    "canonical_url": "http://localhost:3000/username382/cabbages-and-kings172-100a",
+                    "created_at": "2022-11-21T08:51:37Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-21T08:49:53Z",
-                    "last_comment_at": "2022-11-21T08:49:53Z",
+                    "published_at": "2022-11-21T08:51:37Z",
+                    "last_comment_at": "2022-11-21T08:51:37Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "discuss"
                     ],
                     "tags": "discuss",
                     "user": {
-                      "name": "Tari \"Carry\" \\:/ Schaefer",
-                      "username": "username381",
-                      "twitter_username": "twitter381",
-                      "github_username": "github381",
-                      "user_id": 21134,
+                      "name": "Dagny \"Saul\" \\:/ Marquardt",
+                      "username": "username382",
+                      "twitter_username": "twitter382",
+                      "github_username": "github382",
+                      "user_id": 21767,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21134/6f47467c-33b8-46fa-b0f2-80bb233cbc46.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21134/6f47467c-33b8-46fa-b0f2-80bb233cbc46.jpeg"
+                      "profile_image": "/uploads/user/profile_image/21767/a6c95fad-7f12-40af-85a8-c5190baf92b9.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/21767/a6c95fad-7f12-40af-85a8-c5190baf92b9.jpeg"
                     },
                     "organization": {
-                      "name": "Lemke and Sons",
-                      "username": "org66",
-                      "slug": "org66",
-                      "profile_image": "/uploads/organization/profile_image/1888/5ca825a9-61fc-43d9-a954-33d0c840a17b.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1888/5ca825a9-61fc-43d9-a954-33d0c840a17b.png"
+                      "name": "O'Conner Group",
+                      "username": "org67",
+                      "slug": "org67",
+                      "profile_image": "/uploads/organization/profile_image/2005/938bbbd7-a1a7-4d1f-9893-0afb61a9caf1.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2005/938bbbd7-a1a7-4d1f-9893-0afb61a9caf1.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -279,12 +279,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 236,
+                  "id": 250,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T14:49:54.564+06:00",
+                  "created_at": "2022-11-21T10:51:38.285+02:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -294,7 +294,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T14:49:54.564+06:00",
+                  "updated_at": "2022-11-21T10:51:38.285+02:00",
                   "tag_list": [
 
                   ]
@@ -427,22 +427,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 237,
+                  "id": 251,
                   "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 8",
+                  "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T14:49:54.714+06:00",
+                  "created_at": "2022-11-21T10:51:38.441+02:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 237",
-                  "organization_id": 1889,
+                  "name": "Display Ad 251",
+                  "organization_id": 2006,
                   "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 8</p>",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T14:49:54.717+06:00",
+                  "updated_at": "2022-11-21T10:51:38.444+02:00",
                   "tag_list": [
 
                   ]
@@ -501,21 +501,21 @@
               "application/json": {
                 "example": {
                   "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 9",
+                  "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 238",
-                  "organization_id": 1890,
+                  "name": "Display Ad 252",
+                  "organization_id": 2007,
                   "placement_area": "sidebar_left",
                   "published": false,
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 238,
+                  "id": 252,
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T14:49:54.886+06:00",
+                  "created_at": "2022-11-21T10:51:38.626+02:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T14:49:54.889+06:00",
+                  "updated_at": "2022-11-21T10:51:38.629+02:00",
                   "tag_list": [
 
                   ]
@@ -602,6 +602,79 @@
             }
           }
         }
+      },
+      "delete": {
+        "summary": "display ads",
+        "tags": [
+          "display ads"
+        ],
+        "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "published": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 13</p>",
+                  "cached_tag_list": "",
+                  "id": 255,
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 13",
+                  "clicks_count": 0,
+                  "created_at": "2022-11-21T10:51:38.851+02:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Display Ad 255",
+                  "organization_id": 2010,
+                  "placement_area": "sidebar_left",
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-11-21T10:51:38.854+02:00",
+                  "tag_list": [
+
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/reactions/toggle": {
@@ -656,8 +729,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1023,
-                  "reactable_id": 11068,
+                  "id": 1037,
+                  "reactable_id": 11342,
                   "reactable_type": "Article"
                 }
               }
@@ -729,8 +802,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1025,
-                  "reactable_id": 11070,
+                  "id": 1039,
+                  "reactable_id": 11344,
                   "reactable_type": "Article"
                 }
               }
