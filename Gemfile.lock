@@ -230,7 +230,7 @@ GEM
     easy_translate (0.5.1)
       thread
       thread_safe
-    email_validator (2.2.3)
+    email_validator (2.2.4)
       activemodel
     emoji_regex (3.2.3)
     equalizer (0.0.11)
