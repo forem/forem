@@ -15,10 +15,24 @@ module Api
         render json: @display_ad
       end
 
+      def create
+        @display_ad = DisplayAd.new(permitted_params)
+        result = @display_ad.save
+        render json: @display_ad, status: (result ? :ok : :unprocessable_entity)
+      rescue ArgumentError => e
+        # enums raise ArgumentError exceptions on unexpected inputs!
+        render json: { error: e }, status: :unprocessable_entity
+      end
+
       private
 
       def require_admin
         authorize DisplayAd, :access?, policy_class: InternalPolicy
+      end
+
+      def permitted_params
+        params.permit :approved, :body_markdown, :display_to, :name,
+                      :organization_id, :placement_area, :published
       end
     end
   end
