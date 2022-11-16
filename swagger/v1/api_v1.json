@@ -111,47 +111,47 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 10516,
-                    "title": "Oh! To be in England172",
-                    "description": "Vegan ethical distillery. Tumblr meh pop-up pug keytar sustainable irony ennui.  Bicycle rights chia...",
+                    "id": 11064,
+                    "title": "The Painted Veil172",
+                    "description": "Cliche fingerstache humblebrag. Small batch flannel fingerstache gastropub ennui bushwick. Craft beer...",
                     "readable_publish_date": "Nov 21",
-                    "slug": "oh-to-be-in-england172-5bif",
-                    "path": "/username380/oh-to-be-in-england172-5bif",
-                    "url": "http://localhost:3000/username380/oh-to-be-in-england172-5bif",
+                    "slug": "the-painted-veil172-2ail",
+                    "path": "/username381/the-painted-veil172-2ail",
+                    "url": "http://localhost:3000/username381/the-painted-veil172-2ail",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-21T08:40:32Z",
+                    "published_timestamp": "2022-11-21T08:49:53Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
-                    "social_image": "http://localhost:3000/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
-                    "canonical_url": "http://localhost:3000/username380/oh-to-be-in-england172-5bif",
-                    "created_at": "2022-11-21T08:40:32Z",
+                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "canonical_url": "http://localhost:3000/username381/the-painted-veil172-2ail",
+                    "created_at": "2022-11-21T08:49:53Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-21T08:40:32Z",
-                    "last_comment_at": "2022-11-21T08:40:32Z",
+                    "published_at": "2022-11-21T08:49:53Z",
+                    "last_comment_at": "2022-11-21T08:49:53Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "discuss"
                     ],
                     "tags": "discuss",
                     "user": {
-                      "name": "Basilia \"Joey\" \\:/ Cronin",
-                      "username": "username380",
-                      "twitter_username": "twitter380",
-                      "github_username": "github380",
-                      "user_id": 19873,
+                      "name": "Tari \"Carry\" \\:/ Schaefer",
+                      "username": "username381",
+                      "twitter_username": "twitter381",
+                      "github_username": "github381",
+                      "user_id": 21134,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/19873/e5d7c4dc-9e64-4c1d-9542-c7879034421c.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/19873/e5d7c4dc-9e64-4c1d-9542-c7879034421c.jpeg"
+                      "profile_image": "/uploads/user/profile_image/21134/6f47467c-33b8-46fa-b0f2-80bb233cbc46.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/21134/6f47467c-33b8-46fa-b0f2-80bb233cbc46.jpeg"
                     },
                     "organization": {
-                      "name": "Aufderhar-Bailey",
-                      "username": "org64",
-                      "slug": "org64",
-                      "profile_image": "/uploads/organization/profile_image/1659/4e6f68ae-7716-4878-a5d4-9c318e8f1897.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1659/4e6f68ae-7716-4878-a5d4-9c318e8f1897.png"
+                      "name": "Lemke and Sons",
+                      "username": "org66",
+                      "slug": "org66",
+                      "profile_image": "/uploads/organization/profile_image/1888/5ca825a9-61fc-43d9-a954-33d0c840a17b.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1888/5ca825a9-61fc-43d9-a954-33d0c840a17b.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -279,12 +279,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 213,
+                  "id": 236,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T13:40:32.908+05:00",
+                  "created_at": "2022-11-21T14:49:54.564+06:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -294,7 +294,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T13:40:32.908+05:00",
+                  "updated_at": "2022-11-21T14:49:54.564+06:00",
                   "tag_list": [
 
                   ]
@@ -427,22 +427,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 214,
+                  "id": 237,
                   "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 7",
+                  "body_markdown": "Hello _hey_ Hey hey 8",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T13:40:33.059+05:00",
+                  "created_at": "2022-11-21T14:49:54.714+06:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 214",
-                  "organization_id": 1660,
+                  "name": "Display Ad 237",
+                  "organization_id": 1889,
                   "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 7</p>",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 8</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T13:40:33.062+05:00",
+                  "updated_at": "2022-11-21T14:49:54.717+06:00",
                   "tag_list": [
 
                   ]
@@ -469,6 +469,135 @@
                   "error": "not found",
                   "status": 404
                 }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "display ads",
+        "tags": [
+          "display ads"
+        ],
+        "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 9",
+                  "display_to": "all",
+                  "name": "Display Ad 238",
+                  "organization_id": 1890,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
+                  "cached_tag_list": "",
+                  "id": 238,
+                  "clicks_count": 0,
+                  "created_at": "2022-11-21T14:49:54.886+06:00",
+                  "impressions_count": 0,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-11-21T14:49:54.889+06:00",
+                  "tag_list": [
+
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "int32",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": [
+                      "all",
+                      "logged_in",
+                      "logged_out"
+                    ],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  }
+                },
+                "required": [
+                  "name",
+                  "body_markdown",
+                  "placement_area"
+                ]
               }
             }
           }
@@ -527,8 +656,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 995,
-                  "reactable_id": 10520,
+                  "id": 1023,
+                  "reactable_id": 11068,
                   "reactable_type": "Article"
                 }
               }
@@ -600,8 +729,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 997,
-                  "reactable_id": 10522,
+                  "id": 1025,
+                  "reactable_id": 11070,
                   "reactable_type": "Article"
                 }
               }

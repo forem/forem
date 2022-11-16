@@ -24,6 +24,15 @@ module Api
         render json: { error: e }, status: :unprocessable_entity
       end
 
+      def update
+        @display_ad = DisplayAd.find(params[:id])
+        result = @display_ad.update(permitted_params)
+        render json: @display_ad, status: (result ? :ok : :unprocessable_entity)
+      rescue ArgumentError => e
+        # enums raise ArgumentError exceptions on unexpected inputs!
+        render json: { error: e }, status: :unprocessable_entity
+      end
+
       private
 
       def require_admin
