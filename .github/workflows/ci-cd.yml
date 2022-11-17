@@ -97,7 +97,7 @@ jobs:
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
           repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
-          path: .
+          path: /junit.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
