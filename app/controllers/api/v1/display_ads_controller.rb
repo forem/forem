@@ -18,7 +18,6 @@ module Api
       private
 
       def require_admin
-        # authorize :display_ad, :api?
         authorize DisplayAd, :access?, policy_class: InternalPolicy
       end
     end
