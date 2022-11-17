@@ -621,14 +621,12 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
-    self.reading_time = parsed_markdown.calculate_reading_time
-    self.processed_html = parsed_markdown.finalize
+    content = ContentRenderer.new(body_markdown, source: self, user: user)
+    self.reading_time = content.calculate_reading_time
+    self.processed_html = content.finalize
 
-    if parsed.front_matter.any?
-      evaluate_front_matter(parsed.front_matter)
+    if content.front_matter.any?
+      evaluate_front_matter(content.front_matter)
     elsif tag_list.any?
       set_tag_list(tag_list)
     end
