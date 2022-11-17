@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1835,
-                    "title": "If Not Now, When?172",
-                    "description": "Blue bottle pitchfork bespoke cred squid. Chartreuse fixie beard gastropub next level lomo.  Kale...",
-                    "readable_publish_date": "Nov 15",
-                    "slug": "if-not-now-when172-58p8",
-                    "path": "/username378/if-not-now-when172-58p8",
-                    "url": "http://localhost:3000/username378/if-not-now-when172-58p8",
+                    "id": 191,
+                    "title": "An Acceptable Time172",
+                    "description": "Shabby chic wayfarers normcore marfa carry. Schlitz kinfolk +1 kickstarter pitchfork cardigan 90's....",
+                    "readable_publish_date": "Nov 17",
+                    "slug": "an-acceptable-time172-25ik",
+                    "path": "/username378/an-acceptable-time172-25ik",
+                    "url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-15T09:02:40Z",
+                    "published_timestamp": "2022-11-17T09:30:31Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "canonical_url": "http://localhost:3000/username378/if-not-now-when172-58p8",
-                    "created_at": "2022-11-15T09:02:40Z",
+                    "cover_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                    "social_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                    "canonical_url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
+                    "created_at": "2022-11-17T09:30:31Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-15T09:02:40Z",
-                    "last_comment_at": "2022-11-15T09:02:40Z",
+                    "published_at": "2022-11-17T09:30:31Z",
+                    "last_comment_at": "2022-11-17T09:30:31Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Asha \"Macy\" \\:/ Lynch",
+                      "name": "Melaine \"Quinn\" \\:/ Goodwin",
                       "username": "username378",
                       "twitter_username": "twitter378",
                       "github_username": "github378",
-                      "user_id": 4151,
+                      "user_id": 386,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4151/6a0a96d4-5327-4f9a-a8cd-301475fda826.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4151/6a0a96d4-5327-4f9a-a8cd-301475fda826.jpeg"
+                      "profile_image": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg"
                     },
                     "organization": {
-                      "name": "Powlowski, Reichel and Bayer",
+                      "name": "Baumbach Group",
                       "username": "org60",
                       "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/776/c2e1743d-819f-43d6-a27c-b8cb81d341c7.png",
-                      "profile_image_90": "/uploads/organization/profile_image/776/c2e1743d-819f-43d6-a27c-b8cb81d341c7.png"
+                      "profile_image": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png",
+                      "profile_image_90": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -274,21 +274,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 109,
+                  "id": 10,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 5",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-15T19:02:40.703+10:00",
+                  "created_at": "2022-11-17T10:30:32.066+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 109",
-                  "organization_id": 777,
+                  "name": "Display Ad 10",
+                  "organization_id": 66,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
                   "published": false,
                   "success_rate": 0.0,
-                  "updated_at": "2022-11-15T19:02:40.706+10:00",
+                  "type_of": "in_house",
+                  "updated_at": "2022-11-17T10:30:32.069+01:00",
                   "tag_list": []
                 }
               }
@@ -361,8 +362,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 85,
-                  "reactable_id": 1839,
+                  "id": 1,
+                  "reactable_id": 195,
                   "reactable_type": "Article"
                 }
               }
@@ -424,8 +425,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 87,
-                  "reactable_id": 1841,
+                  "id": 3,
+                  "reactable_id": 197,
                   "reactable_type": "Article"
                 }
               }
