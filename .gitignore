@@ -92,6 +92,7 @@ app/javascript/generated_stories/
 cypress/videos
 cypress/screenshots
 cypress/logs
+cypress/results
 
 # PostCSS error log
 postcss_error.log
