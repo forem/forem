@@ -111,7 +111,7 @@ fr:
           title: This tag has negative follow weight
           text: Anti-follow
         default: Default 1.0
-        empty: "Follow tags to personalize your feed. You can explore popular tags <span><a href=%{link}>here</a></span>."
+        empty_html: "<span>Follow tags to personalize your feed. You can explore popular tags <a href=%{link}>here</a></span>."
         number:
           aria_label: "%{name} tag weight"
         update: Update Weights
