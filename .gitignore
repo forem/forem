@@ -112,3 +112,4 @@ doc/
 
 # spec reports
 /spec/reports
+/junit.xml
