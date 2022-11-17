@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_31_133328) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -467,6 +467,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_31_133328) do
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
+    t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
   end

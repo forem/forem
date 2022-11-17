@@ -14,6 +14,7 @@ class DisplayAd < ApplicationRecord
   SIDEBAR_WIDTH = 350
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+  enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy

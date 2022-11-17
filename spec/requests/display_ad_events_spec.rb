@@ -67,7 +67,7 @@ RSpec.describe "DisplayAdEvents", type: :request do
         }
 
         expect(ThrottledCall).to have_received(:perform)
-          .with(:display_ads_data_update, throttle_for: instance_of(ActiveSupport::Duration))
+          .with("display_ads_data_update-#{display_ad.id}", throttle_for: instance_of(ActiveSupport::Duration))
       end
     end
   end

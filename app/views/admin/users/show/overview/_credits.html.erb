@@ -1,18 +1,21 @@
 <header class="mb-4">
   <h2 class="crayons-subtitle-2 mb-1 flex items-center">
-    <%= crayons_icon_tag(:wallet, title: "Wallet", aria_hidden: true, class: "mr-2") %>
-    Credits
+    <%= crayons_icon_tag(:wallet, title: t("views.admin.users.overview.credits.icon"), aria_hidden: true, class: "mr-2") %>
+    <%= t("views.admin.users.overview.credits.subtitle") %>
   </h2>
-  <p class="color-secondary">Grant/remove credits to purchase classified listings. <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="Learn more about credits">Learn more</a></p>
+  <p class="color-secondary">
+    <%= t("views.admin.users.overview.credits.desc") %>
+    <a href="https://admin.forem.com/docs/advanced-customization/config/credits" rel="noopener noreferer" target="_blank" class="c-link c-link--branded" aria-label="<%= t("views.admin.users.overview.credits.aria_learn") %>"><%= t("views.admin.users.overview.learn") %></a>
+  </p>
 </header>
 <div class="flex justify-between items-center">
   <p data-testid="user-credits" class="fs-2xl fw-heavy"><%= @user.unspent_credits_count %></p>
   <button class="c-btn c-btn--secondary whitespace-nowrap" type="button"
-    data-modal-title="Adjust balance"
+    data-modal-title="<%= t("views.admin.users.actions.adjust_credit.heading") %>"
     data-modal-size="small"
     data-modal-content-selector="#adjust-balance"
     data-user-name="<%= @user.name %>"
     data-unspent-credits-count="<%= @user.unspent_credits_count %>"
-    data-form-action="<%= admin_user_path(@user) %>">Adjust balance</button>
+    data-form-action="<%= admin_user_path(@user) %>"><%= t("views.admin.users.overview.credits.button") %></button>
 </div>
 <%= render "admin/users/modals/adjust_credits_modal" %>
