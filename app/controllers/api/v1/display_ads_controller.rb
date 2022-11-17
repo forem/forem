@@ -1,7 +1,7 @@
 module Api
   module V1
     class DisplayAdsController < ApiController
-      before_action :authenticate!
+      before_action :authenticate_with_api_key!
       before_action :require_admin
 
       def index
