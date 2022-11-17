@@ -108,3 +108,6 @@ dump.rdb
 
 # generated yarddoc
 doc/
+
+# spec reports
+/spec/reports
