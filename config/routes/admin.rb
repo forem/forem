@@ -129,10 +129,11 @@ namespace :admin do
     resources :response_templates, only: %i[index new edit create update destroy]
     resources :secrets, only: %i[index]
     put "secrets", to: "secrets#update"
-    resources :sponsorships, only: %i[index edit update new create destroy]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+        get "feed_playground"
+        post "feed_playground"
       end
     end
 

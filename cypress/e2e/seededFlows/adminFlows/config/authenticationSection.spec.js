@@ -83,9 +83,97 @@ describe('Authentication Section', () => {
 
         cy.get('@authSectionForm').findByText('Update Settings').click();
 
-        cy.get('.crayons-modal__box__body > ul > li')
+        cy.findByTestId('modal-container').as('modal');
+
+        cy.get('@modal')
+          .get('.admin-modal-content > ul > li')
           .contains('facebook')
           .should('be.visible');
+      });
+    });
+
+    it('should display warning modal with multiple providers if keys are missing', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#apple-auth-btn').click();
+        cy.get('#facebook-auth-btn').click();
+
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
+        cy.findByTestId('modal-container').as('modal');
+
+        cy.get('@modal')
+          .get('.admin-modal-content > ul > li')
+          .contains('facebook')
+          .should('be.visible');
+
+        cy.get('@modal')
+          .get('.admin-modal-content > ul > li')
+          .contains('apple')
+          .should('be.visible');
+      });
+    });
+
+    it('closing warning modal should keep provider enabled', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').findByRole('button', { name: /Close/ }).click();
+
+        cy.get('@modal').should('not.exist');
+        cy.get('@authSectionForm').findByText('Facebook key').should('exist');
+      });
+    });
+
+    it('continue editing button of modal should keep provider enabled', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').findByText('Continue editing').click();
+
+        cy.get('@modal').should('not.exist');
+        cy.get('@authSectionForm').findByText('Facebook key').should('exist');
+      });
+    });
+
+    it('cancelling modal should reset providers', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#facebook-auth-btn').click();
+
+        cy.get('@authSectionForm').findByText('Update Settings').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').findByText('Cancel').click();
+
+        cy.get('@modal').should('not.exist');
+        cy.get('@authSectionForm')
+          .findAllByRole('button', { name: 'Enable' })
+          .should('have.length', 6);
       });
     });
 
@@ -130,6 +218,78 @@ describe('Authentication Section', () => {
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should('have.text', 'some error msg');
         });
+      });
+    });
+
+    it('should display warning modal when disabling a provider', () => {
+      cy.fixture('users/adminUser.json').as('user');
+
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#email-auth-enable-edit-btn').click();
+        cy.get('@authSectionForm').findByText('Disable').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').should('exist');
+      });
+    });
+
+    it('email-auth disable modal has correct header', () => {
+      cy.fixture('users/adminUser.json').as('user');
+
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#email-auth-enable-edit-btn').click();
+        cy.get('@authSectionForm').findByText('Disable').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal')
+          .findByText('Disable Email address registration')
+          .should('exist');
+      });
+    });
+
+    it('cancelling email-auth disable modal should close the modal', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#email-auth-enable-edit-btn').click();
+        cy.get('@authSectionForm').findByText('Disable').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').findByText('Cancel').click();
+
+        cy.get('@modal').should('not.exist');
+        cy.get('@authSectionForm').findByText('Disable').should('exist');
+      });
+    });
+
+    it('confirm disable button of email-auth disable modal should disable the auth', () => {
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then(() => {
+        cy.visit('/admin/customization/config');
+        cy.findByTestId('authSectionForm').as('authSectionForm');
+
+        cy.get('@authSectionForm').findByText('Authentication').click();
+        cy.get('#email-auth-enable-edit-btn').click();
+        cy.get('@authSectionForm').findByText('Disable').click();
+
+        cy.findByTestId('modal-container').as('modal');
+        cy.get('@modal').findByText('Confirm disable').click();
+
+        cy.get('@modal').should('not.exist');
+        cy.get('@authSectionForm')
+          .findAllByRole('button', { name: 'Enable' })
+          .should('have.length', 7);
       });
     });
   });

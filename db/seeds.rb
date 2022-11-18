@@ -412,7 +412,6 @@ seeder.create_if_none(HtmlVariant) do
     name: rand(100).to_s,
     group: "badge_landing_page",
     html: rand(1000).to_s,
-    success_rate: 0,
     published: true,
     approved: true,
     user_id: User.first.id,
@@ -574,20 +573,6 @@ seeder.create_if_none(Page) do
   end
 end
 Faker::Config.locale = loc
-
-##############################################################################
-
-seeder.create_if_none(Sponsorship) do
-  organizations = Organization.take(3)
-  organizations.each do |organization|
-    Sponsorship.create!(
-      organization: organization,
-      user: User.order(Arel.sql("RANDOM()")).first,
-      level: "silver",
-      blurb_html: Faker::Hacker.say_something_smart,
-    )
-  end
-end
 
 ##############################################################################
 

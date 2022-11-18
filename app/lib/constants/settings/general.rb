@@ -5,6 +5,9 @@ module Constants
 
       def self.details
         {
+          ahoy_tracking: {
+            description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
+          },
           contact_email: {
             description: I18n.t("lib.constants.settings.general.contact_email.description"),
             placeholder: "hello@example.com"
@@ -98,10 +101,6 @@ module Constants
           sidebar_tags: {
             description: I18n.t("lib.constants.settings.general.sidebar.description"),
             placeholder: I18n.t("lib.constants.settings.general.sidebar.placeholder")
-          },
-          sponsor_headline: {
-            description: I18n.t("lib.constants.settings.general.sponsor.description"),
-            placeholder: I18n.t("lib.constants.settings.general.sponsor.placeholder")
           },
           stripe_api_key: {
             description: I18n.t("lib.constants.settings.general.stripe_api.description"),

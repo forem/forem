@@ -3,30 +3,31 @@
     <div class="flex items-center gap-2 color-secondary">
       <%= crayons_icon_tag(:wallet) %>
       <p>
-        <span class="js-user-name"></span> currently has <span class="color-primary"><span class="js-unspent-credits-count"></span> credits</span>.
+        <%= t("views.admin.users.actions.adjust_credit.desc_html", user: tag.span(class: "js-user-name"), credits: tag.span(t("views.admin.users.actions.adjust_credit.credits_html", amount: tag.span(class: "js-unspent-credits-count")), class: "color-primary")) %>
       </p>
     </div>
     <div class="crayons-field">
-      <%= f.label :credit_action, "Adjust balance", class: "crayons-field__label" %>
+      <%= f.label :credit_action, t("views.admin.users.actions.adjust_credit.adjust"), class: "crayons-field__label" %>
       <div class="flex gap-2 items-center">
-        <%= f.select :credit_action, options_for_select(%w[Add]), {}, class: "js-credit-action crayons-select w-auto" %>
-        <%= f.text_field :credit_amount,
-                         type: "number",
-                         required: true,
-                         class: "js-credit-amount crayons-textfield w-auto",
-                         value: 1,
-                         size: 5,
-                         min: 1,
-                         max: 9999 %>
-      <%= f.label :credit_amount, "credits", class: "color-secondary flex-1", "aria-label": "Amount of credits to add or remove" %>
+        <%= t("views.admin.users.actions.adjust_credit.selector_html",
+              action: f.select(:credit_action, options_for_select({ t("views.admin.users.actions.adjust_credit.add") => "Add" }), {}, class: "js-credit-action crayons-select w-auto"),
+              amount: f.text_field(:credit_amount,
+                                   type: "number",
+                                   required: true,
+                                   class: "js-credit-amount crayons-textfield w-auto",
+                                   value: 1,
+                                   size: 5,
+                                   min: 1,
+                                   max: 9999),
+              credits: f.label(:credit_amount, t("views.admin.users.actions.adjust_credit.unit"), class: "color-secondary flex-1", "aria-label": t("views.admin.users.actions.adjust_credit.aria_credits"))) %>
       </div>
     </div>
     <div class="crayons-field">
-      <label for="balance-note" class="crayons-field__label">Add a note to this action:</label>
+      <label for="balance-note" class="crayons-field__label"><%= t("views.admin.users.actions.adjust_credit.note") %></label>
       <%= f.text_area :new_note, id: "balance-note", size: 50, required: true, class: "crayons-textfield" %>
     </div>
     <div>
-      <button type="submit" class="c-btn c-btn--primary">Adjust balance</button>
+      <button type="submit" class="c-btn c-btn--primary"><%= t("views.admin.users.actions.adjust_credit.submit") %></button>
     </div>
   <% end %>
 </div>

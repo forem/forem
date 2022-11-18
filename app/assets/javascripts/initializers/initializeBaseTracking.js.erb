@@ -130,39 +130,6 @@ function trackCustomImpressions() {
     var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
     var windowBigEnough =  window.innerWidth > 1023
 
-    // Sidebar HTML variant tracking
-    var stickyNav = document.getElementById('article-show-primary-sticky-nav');
-    var sidebarHTMLVariant = document.getElementById('html-variant-article-show-sidebar');
-    if (sidebarHTMLVariant && ArticleElement && tokenMeta && !isBot && windowBigEnough) {
-      var dataBody = {
-        html_variant_id: sidebarHTMLVariant.dataset.variantId,
-        article_id: ArticleElement.dataset.articleId,
-      };
-      var csrfToken = tokenMeta.getAttribute('content');
-      trackHTMLVariantTrial(dataBody, csrfToken)
-      var successLinks = stickyNav.querySelectorAll('a,button'); //track all links and button clicks within nav
-      for(var i = 0; i < successLinks.length; i++)
-      {
-        successLinks[i].addEventListener('click', function() { trackHtmlVariantSuccess(dataBody, csrfToken) });
-      }
-    }
-
-    // Below article HTML variant tracking
-    var belowArticleHTMLVariant = document.getElementById('html-variant-article-show-below-article');
-    if (belowArticleHTMLVariant && ArticleElement && tokenMeta && !isBot && windowBigEnough) {
-      var dataBody = {
-        html_variant_id: belowArticleHTMLVariant.dataset.variantId,
-        article_id: ArticleElement.dataset.articleId,
-      };
-      var csrfToken = tokenMeta.getAttribute('content');
-      trackHTMLVariantTrial(dataBody, csrfToken)
-      var successLinks = belowArticleHTMLVariant.querySelectorAll('a,button'); //track all links and button clicks within nav
-      for(var i = 0; i < successLinks.length; i++)
-      {
-        successLinks[i].addEventListener('click', function() { trackHtmlVariantSuccess(dataBody, csrfToken) });
-      }
-    }
-
     // page view
     if (ArticleElement && tokenMeta && !isBot) {
       // See https://github.com/forem/forem/blob/main/app/controllers/page_views_controller.rb
@@ -194,48 +161,7 @@ function trackCustomImpressions() {
       }, 15000)
     }
 
-    // display add
-    var displayAds = document.querySelectorAll('[data-display-unit]');
-    if (displayAds.length > 0
-      && tokenMeta
-      && !isBot
-      && windowBigEnough
-      && checkUserLoggedIn()) {
-        var csrfToken = tokenMeta.getAttribute('content');
-        displayAds.forEach(unit => {
-          trackAdImpression(csrfToken, unit);
-          unit.removeEventListener('click', trackAdClick, false );
-          unit.addEventListener('click', function(e) { trackAdClick(csrfToken, e.target) });
-        });
-      }
   }, 1800)
-}
-
-function trackHTMLVariantTrial(dataBody, csrfToken) {
-  var randomNumber = Math.floor(Math.random() * 10); // 1 in 10; Only track 1 in 10 impressions
-  if (randomNumber === 1) {
-    window.fetch('/html_variant_trials', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    });
-  }
-}
-
-function trackHtmlVariantSuccess(dataBody, csrfToken) {
-  window.fetch('/html_variant_successes', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-Token': csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(dataBody),
-    credentials: 'same-origin',
-  })
 }
 
 function trackPageView(dataBody, csrfToken) {
@@ -259,46 +185,4 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
     },
     credentials: 'same-origin',
   }).catch((error) => console.error(error))
-}
-
-function trackAdImpression(token, adBox) {
-  var dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
-      context_type: "<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>",
-      category: "<%= DisplayAdEvent::CATEGORY_IMPRESSION %>",
-    }
-  }
-  window.fetch('/display_ad_events', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-Token': token,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(dataBody),
-    credentials: 'same-origin',
-  }).catch((error) => console.error(error))
-}
-
-function trackAdClick(token, clickedElement) {
-  var adBox = clickedElement.closest('[data-display-unit]');
-  if (!adClicked) {
-    var dataBody = {
-      display_ad_event: {
-        display_ad_id: adBox.dataset.id,
-        context_type: "<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>",
-        category: "<%= DisplayAdEvent::CATEGORY_CLICK %>",
-      }
-    }
-    window.fetch('/display_ad_events', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': token,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    })
-  }
-  adClicked = true;
 }

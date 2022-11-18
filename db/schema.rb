@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -104,7 +104,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.boolean "featured", default: false
-    t.integer "featured_number"
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
@@ -158,7 +157,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
     t.index ["collection_id"], name: "index_articles_on_collection_id"
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["comments_count"], name: "index_articles_on_comments_count"
-    t.index ["featured_number"], name: "index_articles_on_featured_number"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true, where: "(published IS TRUE)"
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
@@ -446,6 +444,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   create_table "display_ad_events", force: :cascade do |t|
     t.string "category"
     t.string "context_type"
+    t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
     t.datetime "updated_at", precision: nil, null: false
@@ -457,6 +456,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
     t.text "body_markdown"
+    t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "display_to", default: 0, null: false
@@ -467,7 +467,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
+    t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
   end
 
   create_table "email_authorizations", force: :cascade do |t|
@@ -579,22 +581,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
     t.integer "watchers_count"
     t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
     t.index ["url"], name: "index_github_repos_on_url", unique: true
-  end
-
-  create_table "html_variant_successes", force: :cascade do |t|
-    t.bigint "article_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.bigint "html_variant_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_successes_on_html_variant_id_and_article_id"
-  end
-
-  create_table "html_variant_trials", force: :cascade do |t|
-    t.bigint "article_id"
-    t.datetime "created_at", precision: nil, null: false
-    t.bigint "html_variant_id"
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["html_variant_id", "article_id"], name: "index_html_variant_trials_on_html_variant_id_and_article_id"
   end
 
   create_table "html_variants", force: :cascade do |t|
@@ -1053,29 +1039,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
     t.index ["var"], name: "index_site_configs_on_var", unique: true
   end
 
-  create_table "sponsorships", force: :cascade do |t|
-    t.text "blurb_html"
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "expires_at", precision: nil
-    t.integer "featured_number", default: 0, null: false
-    t.text "instructions"
-    t.datetime "instructions_updated_at", precision: nil
-    t.string "level", null: false
-    t.bigint "organization_id"
-    t.bigint "sponsorable_id"
-    t.string "sponsorable_type"
-    t.string "status", default: "none", null: false
-    t.string "tagline"
-    t.datetime "updated_at", precision: nil, null: false
-    t.string "url"
-    t.bigint "user_id"
-    t.index ["level"], name: "index_sponsorships_on_level"
-    t.index ["organization_id"], name: "index_sponsorships_on_organization_id"
-    t.index ["sponsorable_id", "sponsorable_type"], name: "index_sponsorships_on_sponsorable_id_and_sponsorable_type"
-    t.index ["status"], name: "index_sponsorships_on_status"
-    t.index ["user_id"], name: "index_sponsorships_on_user_id"
-  end
-
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.bigint "article_id"
@@ -1405,10 +1368,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
   add_foreign_key "github_repos", "users", on_delete: :cascade
-  add_foreign_key "html_variant_successes", "articles", on_delete: :nullify
-  add_foreign_key "html_variant_successes", "html_variants", on_delete: :cascade
-  add_foreign_key "html_variant_trials", "articles", on_delete: :nullify
-  add_foreign_key "html_variant_trials", "html_variants", on_delete: :cascade
   add_foreign_key "html_variants", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "mentions", "users", on_delete: :cascade
@@ -1439,8 +1398,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_19_222729) do
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
-  add_foreign_key "sponsorships", "organizations"
-  add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade

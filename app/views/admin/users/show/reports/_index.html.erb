@@ -1,4 +1,4 @@
-<h2 class="crayons-subtitle-1">Reports submitted by <%= @user.name %> (<%= @related_reports.count %>)</h2>
+<h2 class="crayons-subtitle-1"><%= t("views.admin.users.reports.subtitle", user: @user.name, num: @related_reports.count) %></h2>
 
 <% unless @related_reports.empty? %>
   <div class="pt-3">
@@ -9,26 +9,26 @@
             <h3 class="crayons-subtitle-3 w-100 flex items-center justify-between">
               <span class="flex gap-3">
                 <a href="<%= admin_report_path(report.id) %>" class="c-link">
-                  <%= report.category.capitalize %>
+                  <%= t("views.admin.users.reports.category.#{report.category}", default: report.category.capitalize) %>
                 </a>
                 <span class="c-indicator c-indicator--relaxed  <%= "c-indicator--danger" if report.status.casecmp("open").zero? %> <%= "c-indicator--success" if report.status.casecmp("resolved").zero? %>">
-                  <%= report.status %>
+                  <%= t("views.admin.users.reports.status.#{report.status}", default: report.status) %>
                 </span>
               </span>
-              <time datetime="<%= report.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0 fw-normal" title="<%= report.created_at&.strftime("%Y-%m-%d, %H:%M") %>">
-                <%= report.created_at&.strftime("%b %e '%y") %>
+              <time datetime="<%= report.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0 fw-normal" title="<%= l(report.created_at, format: :admin_user) if report.created_at %>">
+                <%= l(report.created_at, format: :short_with_yy) if report.created_at %>
               </time>
             </h3>
           </header>
           <p class="mb-1"><%= report.message %></p>
-          <p class="fs-s color-secondary">For <a href="<%= report.reported_url %>" class="c-link" target="_blank" rel="noopener"><%= report.reported_url %></a></p>
+          <p class="fs-s color-secondary"><%= t("views.admin.users.reports.for_html", url: link_to(report.reported_url, report.reported_url, class: "c-link", target: "_blank", rel: "noopener")) %></p>
         </div>
       </article>
     <% end %>
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2">No comment or post has been reported yet.</h3>
-    <p class="color-secondary">Any comment or post reported by <%= @user.name %> will be found here.</p>
+    <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.reports.empty1") %></h3>
+    <p class="color-secondary"><%= t("views.admin.users.reports.empty2", user: @user.name) %></p>
   </div>
 <% end %>

@@ -14,12 +14,14 @@
               title: link_to(h(data["article"]["title"]), data["article"]["path"]),
             ) %>
       </p>
-      <div class="crayons-card crayons-card--secondary p-4 mb-4">
-        <p class="color-base-70">
-          <strong><%= t("views.notifications.tag.reason") %></strong>
-          <em><%= data["reason_for_adjustment"] %></em>
-        </p>
-      </div>
+      <% if data["reason_for_adjustment"].present? %>
+        <div class="crayons-card crayons-card--secondary p-4 mb-4">
+          <p class="color-base-70">
+            <strong><%= t("views.notifications.tag.reason") %></strong>
+            <em><%= data["reason_for_adjustment"] %></em>
+          </p>
+        </div>
+      <% end %>
       <% if removal %>
         <p class="mb-2"><%= t("views.notifications.tag.check_html", other: link_to(t("views.notifications.tag.other"), "/tags")) %></p>
       <% end %>

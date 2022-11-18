@@ -15,7 +15,6 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
-      it { is_expected.to have_many(:sponsorships).dependent(:destroy) }
       it { is_expected.to have_many(:unspent_credits).class_name("Credit") }
       it { is_expected.to have_many(:users).through(:organization_memberships) }
 
@@ -256,7 +255,7 @@ RSpec.describe Organization, type: :model do
 
         # Create an organization and article, verify the article has cached the initial profile
         # image of the organization.
-        original_org = create(:organization, profile_image: File.open(Rails.root.join("app/assets/images/1.png")))
+        original_org = create(:organization, profile_image: Rails.root.join("app/assets/images/1.png").open)
         article = create(:article, organization: original_org)
         expect(article.cached_organization.profile_image_url).to eq(original_org.profile_image_url)
 

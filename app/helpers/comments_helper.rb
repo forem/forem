@@ -2,6 +2,34 @@ module CommentsHelper
   MAX_COMMENTS_TO_RENDER = 250
   MIN_COMMENTS_TO_RENDER = 8
 
+  def any_negative_comments?(commentable)
+    commentable.comments.where("score < 0").any?
+  end
+
+  def any_hidden_negative_comments?(commentable)
+    !user_signed_in? && any_negative_comments?(commentable)
+  end
+
+  def all_comments_visible?(commentable)
+    !(commentable.any_comments_hidden || any_hidden_negative_comments?(commentable))
+  end
+
+  def article_comment_tree(article, count, order)
+    @article_comment_tree ||= begin
+      collection = Comment.tree_for(article, count, order)
+      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
+      collection
+    end
+  end
+
+  def podcast_comment_tree(episode)
+    @podcast_comment_tree ||= begin
+      collection = Comment.tree_for(episode, 12)
+      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
+      collection
+    end
+  end
+
   def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
       "root"
@@ -62,6 +90,17 @@ module CommentsHelper
     else
       I18n.t("helpers.comments_helper.nbsp_likes_html", count: comment.public_reactions_count)
     end
+  end
+
+  def contextual_comment_url(comment, article: nil)
+    # Liquid tag parsing doesn't have Devise/Warden (request middleware)
+    return URL.comment(comment) if request.env["warden"].nil?
+
+    # Logged in users should get the comment permalink
+    return URL.comment(comment) if user_signed_in?
+
+    # Logged out users should get the article URL with the comment anchor
+    URL.fragment_comment(comment, path: article&.path)
   end
 
   private

@@ -25,15 +25,21 @@ class ResponseTemplatePolicy < ApplicationPolicy
 
   alias create? index?
 
+  def admin_create?
+    user.admin? || user.super_moderator?
+  end
+
   # comes from comments_controller
   def moderator_create?
     user_moderator? && mod_comment?
   end
 
   def modify?
-    return true if mod_comment? && user_trusted?
-
-    user_owner?
+    if user_owner?
+      true
+    else
+      mod_comment? && (user.admin? || user.super_moderator?)
+    end
   end
 
   alias update? modify?

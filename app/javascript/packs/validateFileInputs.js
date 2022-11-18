@@ -1,3 +1,5 @@
+import { addSnackbarItem } from '../Snackbar';
+
 /**
  * @file Manages logic to validate file uploads client-side. In general, the
  * validations work by looping over input form fields with a type of file and
@@ -37,56 +39,38 @@ const PERMITTED_FILE_TYPES = ['image'];
 const MAX_FILE_NAME_LENGTH = 250;
 
 /**
- * Removes any pre-existing error messages from the DOM related to file
- * validation.
- *
- * @param {HTMLElement} fileInput - An input form field with type of file
- */
-function removeErrorMessage(fileInput) {
-  const errorMessage = fileInput.parentNode.querySelector(
-    'div.file-upload-error',
-  );
-
-  if (errorMessage) {
-    errorMessage.remove();
-  }
-}
-
-/**
  * Adds error messages in the form of a div with red text.
  *
- * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {string} msg - The error message to be displayed to the user
  *
  * @returns {HTMLElement} The error element that was added to the DOM
  */
-function addErrorMessage(fileInput, msg) {
-  const fileInputField = fileInput;
-  const error = document.createElement('div');
-  error.style.color = 'red';
-  error.innerHTML = msg;
-  error.classList.add('file-upload-error');
-
-  fileInputField.parentNode.append(error);
+function addErrorMessage(msg) {
+  if (top.addSnackbarItem) {
+    // The Comment editor's context (MarkdownToolbar component) doesn't have
+    // access to the Snackbar element in the DOM, so it needs to use `top`
+    top.addSnackbarItem({
+      message: msg,
+      addCloseButton: true,
+    });
+  } else {
+    // The Post editor (Toolbar component) doesn't have access to
+    // `top.addSnackbarItem` so we need to check to ensure if it's undefined
+    addSnackbarItem({
+      message: msg,
+      addCloseButton: true,
+    });
+  }
 }
 
 /**
  * Handles errors for files that are too large.
  *
  * @param {object} fileSizeErrorHandler - A custom function to be ran after the default error handling
- * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {number} fileSizeMb - The size of the file in MB
  * @param {?number} maxFileSizeMb - The max file size limit in MB
  */
-function handleFileSizeError(
-  fileSizeErrorHandler,
-  fileInput,
-  fileSizeMb,
-  maxFileSizeMb,
-) {
-  const fileInputField = fileInput;
-  fileInputField.value = null;
-
+function handleFileSizeError(fileSizeErrorHandler, fileSizeMb, maxFileSizeMb) {
   if (fileSizeErrorHandler) {
     fileSizeErrorHandler();
   } else {
@@ -98,7 +82,7 @@ function handleFileSizeError(
       errorMessage += ` The limit is ${maxFileSizeMb} MB.`;
     }
 
-    addErrorMessage(fileInput, errorMessage);
+    addErrorMessage(errorMessage);
   }
 }
 
@@ -106,26 +90,23 @@ function handleFileSizeError(
  * Handles errors for files that are not a valid format.
  *
  * @param {object} fileSizeErrorHandler - A custom function to be ran after the default error handling
- * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {string} fileType - The top level file type (i.e. image for image/png)
  * @param {string[]} permittedFileTypes - The top level file types (i.e. image for image/png) that are permitted
  */
 function handleFileTypeError(
   fileTypeErrorHandler,
-  fileInput,
   fileType,
   permittedFileTypes,
 ) {
-  const fileInputField = fileInput;
-  fileInputField.value = null;
-
   if (fileTypeErrorHandler) {
     fileTypeErrorHandler();
   } else {
-    const errorMessage = `Invalid file format (${fileType}). Only ${permittedFileTypes.join(
+    const fileTypeBracketed =
+      fileType && fileType.length !== 0 ? ` (${fileType})` : '';
+    const errorMessage = `Invalid file format${fileTypeBracketed}. Only ${permittedFileTypes.join(
       ', ',
     )} files are permitted.`;
-    addErrorMessage(fileInput, errorMessage);
+    addErrorMessage(errorMessage);
   }
 }
 
@@ -133,22 +114,17 @@ function handleFileTypeError(
  * Handles errors for files with names that are too long.
  *
  * @param {object} fileNameLengthErrorHandler - A custom function to be ran after the default error handling
- * @param {HTMLElement} fileInput - An input form field with type of file
  * @param {number} maxFileNameLength - The max number of characters permitted for a file name
  */
 function handleFileNameLengthError(
   fileNameLengthErrorHandler,
-  fileInput,
   maxFileNameLength,
 ) {
-  const fileInputField = fileInput;
-  fileInputField.value = null;
-
   if (fileNameLengthErrorHandler) {
     fileNameLengthErrorHandler();
   } else {
     const errorMessage = `File name is too long. It can't be longer than ${maxFileNameLength} characters.`;
-    addErrorMessage(fileInput, errorMessage);
+    addErrorMessage(errorMessage);
   }
 }
 
@@ -175,12 +151,7 @@ function validateFileSize(file, fileType, fileInput) {
   const isValidFileSize = fileSizeMb <= maxFileSizeMb;
 
   if (!isValidFileSize) {
-    handleFileSizeError(
-      fileSizeErrorHandler,
-      fileInput,
-      fileSizeMb,
-      maxFileSizeMb,
-    );
+    handleFileSizeError(fileSizeErrorHandler, fileSizeMb, maxFileSizeMb);
   }
 
   return isValidFileSize;
@@ -212,12 +183,7 @@ function validateFileType(file, fileType, fileInput) {
   const isValidFileType = permittedFileTypes.includes(fileType);
 
   if (!isValidFileType) {
-    handleFileTypeError(
-      fileTypeErrorHandler,
-      fileInput,
-      fileType,
-      permittedFileTypes,
-    );
+    handleFileTypeError(fileTypeErrorHandler, fileType, permittedFileTypes);
   }
 
   return isValidFileType;
@@ -244,11 +210,7 @@ function validateFileNameLength(file, fileInput) {
   const isValidFileNameLength = file.name.length <= maxFileNameLength;
 
   if (!isValidFileNameLength) {
-    handleFileNameLengthError(
-      fileNameLengthErrorHandler,
-      fileInput,
-      maxFileNameLength,
-    );
+    handleFileNameLengthError(fileNameLengthErrorHandler, maxFileNameLength);
   }
 
   return isValidFileNameLength;
@@ -267,7 +229,6 @@ function validateFileNameLength(file, fileInput) {
 function validateFileInput(fileInput) {
   let isValidFileInput = true;
 
-  removeErrorMessage(fileInput);
   const files = Array.from(fileInput.files);
 
   for (let i = 0; i < files.length; i += 1) {

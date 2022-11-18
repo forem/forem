@@ -10,6 +10,4 @@ export const Default = () => {
   return <Spinner />;
 };
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';

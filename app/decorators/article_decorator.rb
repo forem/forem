@@ -33,10 +33,6 @@ class ArticleDecorator < ApplicationDecorator
     end
   end
 
-  def comments_to_show_count
-    cached_tag_list_array.include?("discuss") ? 75 : 25
-  end
-
   def cached_tag_list_array
     (cached_tag_list || "").split(", ")
   end
@@ -113,7 +109,7 @@ class ArticleDecorator < ApplicationDecorator
 
   # Used in determining when to bust additional routes for an Article's comments
   def discussion?
-    cached_tag_list_array.include?("discuss") && featured_number.to_i > 35.hours.ago.to_i
+    cached_tag_list_array.include?("discuss") && published_at.to_i > 35.hours.ago.to_i
   end
 
   def pinned?

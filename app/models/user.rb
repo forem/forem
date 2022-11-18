@@ -68,7 +68,7 @@ class User < ApplicationRecord
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
-  has_many :display_ad_events, dependent: :delete_all
+  has_many :display_ad_events, dependent: :nullify
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
@@ -110,7 +110,6 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :devices, dependent: :delete_all
-  has_many :sponsorships, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -305,9 +304,9 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
-      Reaction.readinglist.where(
-        user_id: id, reactable_type: "Article",
-      ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
+      readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
+      readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
   end
 

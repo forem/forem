@@ -2,14 +2,14 @@
 <div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-4 xl:p-0">
   <header class="xl:p-7 pb-4 mx-2">
     <div class="flex flex-col l:flex-row justify-content-between l:items-center">
-    <h1 class="crayons-title">Members</h1>
+    <h1 class="crayons-title"><%= t("views.admin.users.heading") %></h1>
     </div>
     <%= render "admin/users/index/controls" %>
   </header>
     <%= render "admin/users/index/applied_filters" %>
     <!-- Responsive screen (breakpoints below XL) data view start -->
     <div class="block xl:hidden fs-s">
-      <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60">Members</h2>
+      <h2 class="member-data-heading fs-s py-2 -mx-4 px-6 color-base-60"><%= t("views.admin.users.table.compact_subtitle") %></h2>
       <ul class="list-none mx-2">
         <% @users.each do |user| %>
           <li class="py-4">
@@ -42,12 +42,12 @@
               <div class="flex justify-between items-end">
                 <dl class="flex gap-4">
                   <div>
-                    <dt class="color-base-60 fw-normal">Last activity</dt>
+                    <dt class="color-base-60 fw-normal"><%= t("views.admin.users.table.last_activity") %></dt>
                     <dd><%= format_last_activity_timestamp(user.last_activity) %></dd>
                   </div>
                   <div>
-                    <dt class="color-base-60 fw-normal">Joined on</dt>
-                    <dd><%= user.registered_at&.strftime("%d %b, %Y") %></dd>
+                    <dt class="color-base-60 fw-normal"><%= t("views.admin.users.table.joined_on") %></dt>
+                    <dd><%= l(user.registered_at, format: :members_with_year) if user.registered_at %></dd>
                   </div>
                 </dl>
                 <div>
@@ -65,11 +65,11 @@
     <table class="crayons-table crayons-table--minimal w-100 hidden xl:table">
       <thead class="member-data-heading">
         <tr>
-          <th scope="col" class="pl-7">Member</th>
-          <th scope="col">Status</th>
-          <th scope="col">Last activity & Joined on</th>
-          <th scope="col">Organizations</th>
-          <th scope="col" class="screen-reader-only">Actions</th>
+          <th scope="col" class="pl-7"><%= t("views.admin.users.table.heading.member") %></th>
+          <th scope="col"><%= t("views.admin.users.table.heading.status") %></th>
+          <th scope="col"><%= t("views.admin.users.table.heading.last_joined") %></th>
+          <th scope="col"><%= t("views.admin.users.table.heading.orgs") %></th>
+          <th scope="col" class="screen-reader-only"><%= t("views.admin.users.table.heading.actions") %></th>
         </tr>
       </thead>
       <tbody>
@@ -87,7 +87,7 @@
           <td>
             <%= format_last_activity_timestamp(user.last_activity) %>
             <p class="fs-xs color-base-60">
-              <%= user.registered_at&.strftime("%d %b, %Y") %>
+              <%= l(user.registered_at, format: :members_with_year) if user.registered_at %>
             </p>
           </td>
           <td>
@@ -103,28 +103,28 @@
 
     <% if @users.empty? %>
       <div class="align-center flex flex-col my-auto py-7" id="empty-state-message-id">
-        <p class="fs-xl fw-normal mb-2">No members found under these filters.</p>
-        <p class="color-secondary">Try broadening or removing the filters.</p>
+        <p class="fs-xl fw-normal mb-2"><%= t("views.admin.users.empty.text1") %></p>
+        <p class="color-secondary"><%= t("views.admin.users.empty.text2") %></p>
       </div>
     <% end %>
     <!-- XL screen data view end -->
 
     <div class="flex justify-end xl:p-7">
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "bottom" %>
+      <%= paginate @users, theme: "admin", scope: @users, label: t("views.admin.users.aria_paginate"), context: "bottom" %>
     </div>
 
     <div id="export-csv-modal" class="hidden">
       <div class="flex flex-col gap-4">
         <p>
-          Your data will be downloaded as a Comma Separated Values (.csv) file.
+          <%= t("views.admin.users.download.desc1") %>
         </p>
         <p>
-          Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.
+          <%= t("views.admin.users.download.desc2") %>
         </p>
         <div class="flex gap-2">
-          <%= link_to "Download", "#{export_admin_users_path}.csv", class: "c-cta c-cta--branded self-end" %>
+          <%= link_to t("views.admin.users.download.submit"), "#{export_admin_users_path}.csv", class: "c-cta c-cta--branded self-end" %>
           <button class="js-export-csv-modal-cancel crayons-btn crayons-btn--ghost">
-            Cancel
+            <%= t("views.admin.users.download.cancel") %>
           </button>
         </div>
       </div>

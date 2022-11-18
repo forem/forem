@@ -2,6 +2,7 @@ class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
+  include Taggable
   include UserSubscriptionSourceable
   include PgSearch::Model
 
@@ -104,8 +105,6 @@ class Article < ApplicationRecord
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
-  has_many :html_variant_successes, dependent: :nullify
-  has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
@@ -289,47 +288,6 @@ class Article < ApplicationRecord
       .tagged_with(tag_name)
   }
 
-  scope :cached_tagged_with, lambda { |tag|
-    case tag
-    when String, Symbol
-      # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
-      # word" and "end of word", respectively. They're similar to `\b` in Perl-
-      # compatible regexes (PCRE), but that matches at either end of a word.
-      # They're more comparable to how vim's `\<` and `\>` work.
-      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
-    when Array
-      tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
-    when Tag
-      cached_tagged_with(tag.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
-    end
-  }
-
-  scope :cached_tagged_with_any, lambda { |tags|
-    case tags
-    when String, Symbol
-      cached_tagged_with(tags)
-    when Array
-      tags
-        .map { |tag| cached_tagged_with(tag) }
-        .reduce { |acc, elem| acc.or(elem) }
-    when Tag
-      cached_tagged_with(tags.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tags.inspect}"
-    end
-  }
-
-  # We usually try to avoid using Arel directly like this. However, none of the more
-  # straight-forward ways of negating the above scope worked:
-  # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
-  # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
-  #    only works for simple conditions and returns an empty hash in this case.
-  scope :not_cached_tagged_with_any, lambda { |tags|
-    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
-  }
-
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
@@ -353,8 +311,8 @@ class Article < ApplicationRecord
            :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
-           :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :created_at, :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
+           :published_from_feed, :crossposted_at, :published_at, :created_at,
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
   }
 
   scope :sorting, lambda { |value|
@@ -608,7 +566,7 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
-      featured_number.to_i < 1_500_000_000 ||
+      published_at.to_i < 1_500_000_000 ||
       score < -1
   end
 
@@ -770,12 +728,7 @@ class Article < ApplicationRecord
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
-    # check tags names aren't too long and don't contain non alphabet characters
-    tag_list.each do |tag|
-      new_tag = Tag.new(name: tag)
-      new_tag.validate_name
-      new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
-    end
+    validate_tag_name(tag_list)
   end
 
   def remove_tag_adjustments_from_tag_list
@@ -837,10 +790,11 @@ class Article < ApplicationRecord
   def correct_published_at?
     return unless changes["published_at"]
 
-    # for drafts (that were never published before) or scheduled articles => allow future or current dates
+    # for drafts (that were never published before) or scheduled articles
+    # => allow future or current dates, or no published_at
     if !published_at_was || published_at_was > Time.current
       # for articles published_from_feed (exported from rss) we allow past published_at
-      if (!published_at || published_at < 15.minutes.ago) && !published_from_feed
+      if (published_at && published_at < 15.minutes.ago) && !published_from_feed
         errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
       end
     else
@@ -894,7 +848,6 @@ class Article < ApplicationRecord
   end
 
   def set_all_dates
-    set_featured_number
     set_crossposted_at
     set_last_comment_at
     set_nth_published_at
@@ -902,10 +855,6 @@ class Article < ApplicationRecord
 
   def set_published_date
     self.published_at = Time.current if published && published_at.blank?
-  end
-
-  def set_featured_number
-    self.featured_number = Time.current.to_i if featured_number.blank? && published
   end
 
   def set_crossposted_at
@@ -930,7 +879,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

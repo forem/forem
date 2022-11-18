@@ -95,6 +95,30 @@ RSpec.describe "/admin/member_manager/users", type: :request do
       get admin_user_path(user.id)
       expect(response.body).to include(report.feedback_type)
     end
+
+    it "displays unpublish all data from logs when it exists on unpublish_alls tab" do
+      article = create(:article, user: user, published: false)
+      create(:audit_log, user: admin, slug: "unpublish_all_articles",
+                         data: { target_article_ids: [article.id], target_user_id: user.id })
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response.body).to include("Unpublished by")
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+    end
+
+    it "displays a label if an unpublished post was republished" do
+      article = create(:article, user: user, published: true)
+      create(:audit_log, user: admin, slug: "unpublish_all_articles",
+                         data: { target_article_ids: [article.id], target_user_id: user.id })
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response.body).to include(CGI.escapeHTML(article.title))
+      expect(response.body).to include("(was republished)")
+    end
+
+    it "displays nothing on unpublish_alls tab if it the log doesn't exist" do
+      get "#{admin_user_path(user.id)}?tab=unpublish_logs"
+      expect(response).to be_successful
+      expect(response.body).not_to include("Unpublished by")
+    end
   end
 
   describe "POST /admin/member_manager/users/:id/banish" do
@@ -298,12 +322,65 @@ RSpec.describe "/admin/member_manager/users", type: :request do
   end
 
   describe "POST /admin/member_manager/users/:id/unpublish_all_articles" do
-    let(:user) { create(:user) }
+    let(:target_user) { create(:user) }
+    let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
+    let!(:target_comments) { create_list(:comment, 3, user: target_user) }
+
+    it "creates a corresponding note if note content passed" do
+      text = "The articles were not interesting"
+      expect do
+        post unpublish_all_articles_admin_user_path(target_user.id, note: { content: text })
+      end.to change(Note, :count).by(1)
+      note = target_user.notes.last
+      expect(note.content).to eq(text)
+      expect(note.reason).to eq("unpublish_all_articles")
+      expect(note.author_id).to eq(admin.id)
+    end
 
     it "unpublishes all articles" do
       allow(Moderator::UnpublishAllArticlesWorker).to receive(:perform_async)
-      post unpublish_all_articles_admin_user_path(user.id)
-      expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(user.id)
+      post unpublish_all_articles_admin_user_path(target_user.id)
+      expect(Moderator::UnpublishAllArticlesWorker).to have_received(:perform_async).with(target_user.id, admin.id,
+                                                                                          "moderator")
+    end
+
+    it "unpublishes users comments and posts" do
+      # User's articles are published and comments exist
+      expect(target_articles.map(&:published?)).to match_array([true, true, true])
+      expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+
+      sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+        post unpublish_all_articles_admin_user_path(target_user.id)
+      end
+
+      # Ensure article's aren't published and comments deleted
+      # (with boolean attribute so they can be reverted if needed)
+      expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
+      expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
+    end
+
+    it "creates a log record" do
+      Audit::Subscribe.listen :moderator
+
+      create(:article, user: target_user, published: false)
+      create(:comment, user: target_user, deleted: true)
+
+      expect do
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          post unpublish_all_articles_admin_user_path(target_user.id)
+        end
+      end.to change(AuditLog, :count).by(1)
+
+      log = AuditLog.last
+      expect(log.category).to eq(AuditLog::MODERATOR_AUDIT_LOG_CATEGORY)
+      expect(log.data["action"]).to eq("unpublish_all_articles")
+      expect(log.user_id).to eq(admin.id)
+
+      # These ids match the affected articles/comments and not the ones created above
+      expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
+      expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
+
+      Audit::Subscribe.forget :moderator
     end
   end
 

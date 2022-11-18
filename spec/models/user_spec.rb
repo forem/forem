@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe User, type: :model do
+RSpec.describe User do
   def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
     auth = OmniAuth.config.mock_auth[service_name]
     Authentication::Authenticator.call(
@@ -78,7 +78,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:delete_all) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:nullify) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
@@ -659,13 +659,18 @@ RSpec.describe User, type: :model do
       expect(user.reload.following_orgs_count).to eq(1)
     end
 
-    it "returns cached ids of articles that have been saved to their readinglist" do
+    it "returns cached ids of published articles that have been saved to their readinglist" do
       article = create(:article)
       article2 = create(:article)
+      article3 = create(:article)
+
       create(:reading_reaction, user: user, reactable: article)
       create(:reading_reaction, user: user, reactable: article2)
+      create(:reading_reaction, user: user, reactable: article3)
 
-      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
+      Articles::Unpublish.call(article2.user, article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
     end
   end
 

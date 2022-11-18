@@ -35,22 +35,22 @@ RSpec.describe ApplicationDecorator, type: :decorator do
   # as ApplicationDecorator is an abstract class, some tests also use an actual decorator
   describe ".decorate_collection" do
     before do
-      create(:sponsorship, level: :gold)
+      create(:article, approved: true)
     end
 
     it "receives an ActiveRecord relation and returns an array of decorated records" do
-      relation = Sponsorship.gold
+      relation = Article.approved
 
       decorated_collection = described_class.decorate_collection(relation)
-      expect(decorated_collection.map(&:class)).to eq([SponsorshipDecorator])
+      expect(decorated_collection.map(&:class)).to eq([ArticleDecorator])
       expect(decorated_collection.map(&:object)).to eq(relation.to_a)
     end
 
     it "receives an array and returns an array of decorated records" do
-      relation = Sponsorship.gold
+      relation = Article.approved
 
       decorated_collection = described_class.decorate_collection(relation.to_a)
-      expect(decorated_collection.map(&:class)).to eq([SponsorshipDecorator])
+      expect(decorated_collection.map(&:class)).to eq([ArticleDecorator])
       expect(decorated_collection.map(&:object)).to eq(relation.to_a)
     end
   end
