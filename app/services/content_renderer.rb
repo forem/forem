@@ -7,8 +7,8 @@ class ContentRenderer
 
   attr_reader :input, :source, :user
 
-  def initialize(input = "", source:, user:)
-    @input = input
+  def initialize(input, source:, user:)
+    @input = input || ""
     @source = source
     @user = user
   end
