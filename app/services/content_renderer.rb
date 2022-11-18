@@ -1,12 +1,33 @@
 class ContentRenderer
-  attr_accessor :fixed_markdown, :parsed, :processed_markdown
+  class_attribute :fixer, default: MarkdownProcessor::Fixer::FixAll
+  class_attribute :parser, default: FrontMatterParser::Parser.new(:md)
 
-  delegate :front_matter, to: :parsed
-  delegate :calculate_reading_time, :finalize, to: :processed_markdown
+  delegate :calculate_reading_time, :finalize, to: :processed
+  delegate :content, :front_matter, to: :parsed_input
 
-  def initialize(markdown, source:, user:)
-    self.fixed_markdown = MarkdownProcessor::Fixer::FixAll.call(markdown || "")
-    self.parsed = FrontMatterParser::Parser.new(:md).call(fixed_markdown)
-    self.processed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: source, user: user)
+  attr_reader :input, :source, :user
+
+  def initialize(input = "", source:, user:)
+    @input = input
+    @source = source
+    @user = user
+  end
+
+  def processed
+    @processed ||= MarkdownProcessor::Parser.new(content, source: source, user: user)
+  end
+
+  private
+
+  def fix(markdown)
+    fixer.call(markdown)
+  end
+
+  def parse(markdown)
+    parser.call(markdown)
+  end
+
+  def parsed_input
+    @parsed_input = parse(fix(input))
   end
 end

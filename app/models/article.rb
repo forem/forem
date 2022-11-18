@@ -620,13 +620,20 @@ class Article < ApplicationRecord
       .strip
   end
 
-  def evaluate_markdown
-    content = ContentRenderer.new(body_markdown, source: self, user: user)
-    self.reading_time = content.calculate_reading_time
-    self.processed_html = content.finalize
+  def processed_content
+    return @processed_content if @processed_content && !body_markdown_changed?
 
-    if content.front_matter.any?
-      evaluate_front_matter(content.front_matter)
+    @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
+  end
+
+  delegate :front_matter, to: :processed_content
+
+  def evaluate_markdown
+    self.reading_time = processed_content.calculate_reading_time
+    self.processed_html = processed_content.finalize
+
+    if front_matter.any?
+      evaluate_front_matter
     elsif tag_list.any?
       set_tag_list(tag_list)
     end
@@ -684,7 +691,7 @@ class Article < ApplicationRecord
     Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
-  def evaluate_front_matter(front_matter)
+  def evaluate_front_matter
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
@@ -692,7 +699,7 @@ class Article < ApplicationRecord
     self.published_at = front_matter["published_at"] if front_matter["published_at"]
     self.published_at ||= parse_date(front_matter["date"]) if published
 
-    set_main_image(front_matter)
+    set_main_image
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
 
     update_description = front_matter["description"].present? || front_matter["title"].present?
@@ -702,7 +709,7 @@ class Article < ApplicationRecord
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
   end
 
-  def set_main_image(front_matter)
+  def set_main_image
     # At one point, we have set the main_image based on the front matter. Forever will that now dictate the behavior.
     if main_image_from_frontmatter?
       self.main_image = front_matter["cover_image"]
