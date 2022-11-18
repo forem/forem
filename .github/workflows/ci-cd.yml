@@ -60,6 +60,15 @@ jobs:
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
+      - name: Upload test results to BuildPulse for flaky test detection
+        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        uses: Workshop64/buildpulse-action@master
+        with:
+          account: ${{ secrets.BUILDPULSE_ACCOUNT }}
+          repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
+          path: spec/reports
+          key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
+          secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
   Jest:
     runs-on: ubuntu-latest
@@ -82,6 +91,15 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint:frontend
       - run: yarn test --colors
+      - name: Upload test results to BuildPulse for flaky test detection
+        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        uses: Workshop64/buildpulse-action@master
+        with:
+          account: ${{ secrets.BUILDPULSE_ACCOUNT }}
+          repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
+          path: /junit.xml
+          key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
+          secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
       - run: yarn build-storybook
 
@@ -188,6 +206,16 @@ jobs:
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
         if: ${{ matrix.ci_node_index == 'non-seed' }}
+      - name: Upload test results to BuildPulse for flaky test detection
+        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        uses: Workshop64/buildpulse-action@master
+        with:
+          account: ${{ secrets.BUILDPULSE_ACCOUNT }}
+          repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
+          path: cypress/results
+          key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
+          secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
+
 
   CI-status-report:
     runs-on: ubuntu-latest

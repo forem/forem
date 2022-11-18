@@ -734,6 +734,8 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.11.1)
+    rspec_junit_formatter (0.6.0)
+      rspec-core (>= 2, < 4, != 2.12.0)
     rss (0.2.9)
       rexml
     rswag-specs (2.5.1)
@@ -1064,6 +1066,7 @@ DEPENDENCIES
   rpush-redis (~> 1.1)
   rspec-rails (~> 5.1)
   rspec-retry (~> 0.6)
+  rspec_junit_formatter (~> 0.6)
   rss (~> 0.2.9)
   rswag-specs (~> 2.5.1)
   rubocop (~> 1.33)

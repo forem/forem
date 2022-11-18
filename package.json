@@ -127,6 +127,7 @@
     "he": "^1.2.0",
     "i18n-js": "^4.1.1",
     "intersection-observer": "^0.12.2",
+    "jest-junit": "^14.0.1",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
     "moment": "^2.29.4",
