@@ -70,8 +70,5 @@ class AsyncInfoController < ApplicationController
         other_nav_links: NavigationLink.other_section.ordered
       }
     end
-    # respond_to do |format|
-    #   format.html { render template: "async_info_controller/navigation_links" }
-    # end
   end
 end

@@ -141,8 +141,10 @@ if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
 
-const editUsername = document.getElementsByClassName('js-hamburger-trigger')[0];
-editUsername.addEventListener('click', getNavigation);
+const hamburgerTrigger = document.getElementsByClassName(
+  'js-hamburger-trigger',
+)[0];
+hamburgerTrigger.addEventListener('click', getNavigation);
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
