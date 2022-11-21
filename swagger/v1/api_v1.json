@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1,
-                    "title": "Mr Standfast1",
-                    "description": "Fixie crucifix vegan vinyl cleanse stumptown. Ennui chicharrones actually heirloom taxidermy selfies...",
-                    "readable_publish_date": "Sep 3",
-                    "slug": "mr-standfast1-o1j",
-                    "path": "/username1/mr-standfast1-o1j",
-                    "url": "http://localhost:3000/username1/mr-standfast1-o1j",
+                    "id": 191,
+                    "title": "An Acceptable Time172",
+                    "description": "Shabby chic wayfarers normcore marfa carry. Schlitz kinfolk +1 kickstarter pitchfork cardigan 90's....",
+                    "readable_publish_date": "Nov 17",
+                    "slug": "an-acceptable-time172-25ik",
+                    "path": "/username378/an-acceptable-time172-25ik",
+                    "url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-09-02T19:24:23Z",
+                    "published_timestamp": "2022-11-17T09:30:31Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "canonical_url": "http://localhost:3000/username1/mr-standfast1-o1j",
-                    "created_at": "2022-09-02T19:24:24Z",
+                    "cover_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                    "social_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
+                    "canonical_url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
+                    "created_at": "2022-11-17T09:30:31Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-09-02T19:24:23Z",
-                    "last_comment_at": "2022-09-02T19:24:23Z",
+                    "published_at": "2022-11-17T09:30:31Z",
+                    "last_comment_at": "2022-11-17T09:30:31Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Lavona \"Lenna\" \\:/ Watsica",
-                      "username": "username1",
-                      "twitter_username": "twitter1",
-                      "github_username": "github1",
-                      "user_id": 1,
+                      "name": "Melaine \"Quinn\" \\:/ Goodwin",
+                      "username": "username378",
+                      "twitter_username": "twitter378",
+                      "github_username": "github378",
+                      "user_id": 386,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/1/4e030890-caa7-4c5b-836a-432e7b1bfdfc.jpeg"
+                      "profile_image": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg"
                     },
                     "organization": {
-                      "name": "Weimann-Toy",
-                      "username": "org1",
-                      "slug": "org1",
-                      "profile_image": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1/2df76e17-f420-434a-8027-2e90ebfb89bf.png"
+                      "name": "Baumbach Group",
+                      "username": "org60",
+                      "slug": "org60",
+                      "profile_image": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png",
+                      "profile_image_90": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -180,6 +180,16 @@
               "minimum": 1
             },
             "example": 1
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "description": "Content for the note that's created along with unpublishing",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Admin requested unpublishing all articles via API"
           }
         ],
         "responses": {
@@ -211,6 +221,105 @@
         }
       }
     },
+    "/api/display_ads": {
+      "get": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to retrieve a list of all display ads.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": []
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads/{id}": {
+      "get": {
+        "summary": "display ad",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 10,
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 5",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2022-11-17T10:30:32.066+01:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Display Ad 10",
+                  "organization_id": 66,
+                  "placement_area": "sidebar_left",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
+                  "published": false,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-11-17T10:30:32.069+01:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown DisplayAd ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
@@ -223,7 +332,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["like", "readinglist", "unicorn", "thinking", "hands"]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -254,7 +363,7 @@
                   "result": "create",
                   "category": "like",
                   "id": 1,
-                  "reactable_id": 5,
+                  "reactable_id": 195,
                   "reactable_type": "Article"
                 }
               }
@@ -286,7 +395,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["like", "readinglist", "unicorn", "thinking", "hands"]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -317,7 +426,7 @@
                   "result": "none",
                   "category": "like",
                   "id": 3,
-                  "reactable_id": 7,
+                  "reactable_id": 197,
                   "reactable_type": "Article"
                 }
               }
