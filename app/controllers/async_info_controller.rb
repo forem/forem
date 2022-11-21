@@ -1,6 +1,7 @@
 # @note No pundit policy. All actions are unrestricted.
 class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
+  layout false
 
   def base_data
     flash.discard(:notice)
@@ -60,5 +61,17 @@ class AsyncInfoController < ApplicationController
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__
     #{current_user&.blocking_others_count}__"
+  end
+
+  def navigation_links
+    @navigation_links = Rails.cache.fetch("navigation_links", expires_in: NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY.minutes) do
+      {
+        default_nav_links: NavigationLink.default_section.ordered,
+        other_nav_links: NavigationLink.other_section.ordered
+      }
+    end
+    # respond_to do |format|
+    #   format.html { render template: "async_info_controller/navigation_links" }
+    # end
   end
 end

@@ -82,11 +82,26 @@ if (memberMenu) {
   initializeMemberMenu(memberMenu, menuNavButton);
 }
 
+async function getNavigation() {
+  const response = await window.fetch(`/async_info/navigation_links`);
+  const htmlContent = await response.text();
+
+  const generatedElement = document.createElement('div');
+  generatedElement.innerHTML = htmlContent;
+
+  const placeholderElement = document.getElementsByClassName(
+    'js-dynamic-nav-layout',
+  )[0];
+  placeholderElement.appendChild(generatedElement);
+  initializeNav();
+}
+
 // Initialize when asset pipeline (sprockets) initializers have executed
 waitOnBaseData()
   .then(() => {
     InstantClick.on('change', () => {
-      initializeNav();
+      // initializeNav();
+      getNavigation();
     });
 
     if (Runtime.currentMedium() === 'ForemWebView') {
@@ -103,7 +118,8 @@ waitOnBaseData()
     Honeybadger.notify(error);
   });
 
-initializeNav();
+getNavigation();
+// initializeNav();
 
 async function loadCreatorSettings() {
   try {
@@ -124,6 +140,9 @@ async function loadCreatorSettings() {
 if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
+
+const editUsername = document.getElementsByClassName('js-hamburger-trigger')[0];
+editUsername.addEventListener('click', getNavigation);
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
