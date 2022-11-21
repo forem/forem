@@ -1,7 +1,6 @@
 # @note No pundit policy. All actions are unrestricted.
 class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
-  layout false
 
   def base_data
     flash.discard(:notice)
@@ -70,5 +69,6 @@ class AsyncInfoController < ApplicationController
         other_nav_links: NavigationLink.other_section.ordered
       }
     end
+    render layout: false
   end
 end

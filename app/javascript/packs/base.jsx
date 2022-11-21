@@ -83,25 +83,31 @@ if (memberMenu) {
 }
 
 async function getNavigation() {
-  const response = await window.fetch(`/async_info/navigation_links`);
-  const htmlContent = await response.text();
-
-  const generatedElement = document.createElement('div');
-  generatedElement.innerHTML = htmlContent;
-
   const placeholderElement = document.getElementsByClassName(
     'js-dynamic-nav-layout',
   )[0];
-  placeholderElement.appendChild(generatedElement);
-  initializeNav();
+
+  if (
+    document
+      .getElementsByClassName('js-dynamic-nav-layout')[0]
+      .innerHTML.trim() === ''
+  ) {
+    const response = await window.fetch(`/async_info/navigation_links`);
+    const htmlContent = await response.text();
+
+    const generatedElement = document.createElement('div');
+    generatedElement.innerHTML = htmlContent;
+
+    placeholderElement.appendChild(generatedElement);
+  }
 }
 
 // Initialize when asset pipeline (sprockets) initializers have executed
 waitOnBaseData()
   .then(() => {
     InstantClick.on('change', () => {
-      // initializeNav();
-      getNavigation();
+      initializeNav();
+      // getNavigation();
     });
 
     if (Runtime.currentMedium() === 'ForemWebView') {
@@ -118,8 +124,8 @@ waitOnBaseData()
     Honeybadger.notify(error);
   });
 
-getNavigation();
-// initializeNav();
+initializeNav();
+// getNavigation();
 
 async function loadCreatorSettings() {
   try {
