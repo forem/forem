@@ -24,8 +24,8 @@ en:
           tag: Tag
           media: Media
           devrel: Devrel
-      stack: our stack
-      story: our story
+      stack: Our stack
+      story: Our story
       side:
         post:
             icon: Post
@@ -38,6 +38,6 @@ en:
             one: 1 member
             other: "%{count} members"
       support: Support email
-      team: meet the team
+      team: Meet the team
       twitter:
         icon: Twitter logo
