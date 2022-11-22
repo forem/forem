@@ -577,7 +577,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "keeps published at when trying to set published_at" do
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at: 2022-12-05 18:00 +0300---\n\n"
         frontmatter_article.update(body_markdown: new_body_markdown)
         expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
       end
@@ -587,7 +587,7 @@ RSpec.describe Article, type: :model do
         time_str = scheduled_time.strftime("%d/%m/%Y %H:%M %z")
         scheduled_body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{time_str}\n---\n\n"
         frontmatter_scheduled_article = create(:article, body_markdown: scheduled_body_markdown)
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at: 2022-12-05 18:00 +0300---\n\n"
         frontmatter_scheduled_article.update(body_markdown: new_body_markdown)
         expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
       end
