@@ -686,12 +686,15 @@ class Article < ApplicationRecord
     Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
 
-    self.published_at = front_matter["published_at"] if front_matter["published_at"] unless published_changed? && !published
+    if !published_changed? && !published.nil? && (front_matter["published_at"])
+      self.published_at = front_matter["published_at"]
+    end
     self.published_at ||= parse_date(front_matter["date"]) if published
 
     set_main_image(front_matter)
@@ -703,6 +706,7 @@ class Article < ApplicationRecord
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   def set_main_image(front_matter)
     # At one point, we have set the main_image based on the front matter. Forever will that now dictate the behavior.
