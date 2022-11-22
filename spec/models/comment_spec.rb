@@ -8,10 +8,10 @@ RSpec.describe Comment, type: :model do
   include_examples "#sync_reactions_count", :article_comment
 
   describe "validations" do
-    subject() { comment }
+    subject { comment }
 
     describe "builtin validations" do
-      subject { build(:comment, user: user, commentable: article)}
+      subject { build(:comment, user: user, commentable: article) }
 
       it { is_expected.to belong_to(:user) }
       # it { is_expected.to belong_to(:commentable).optional }
@@ -44,7 +44,7 @@ RSpec.describe Comment, type: :model do
         subject.commentable = build(:article, published: false)
 
         expect(subject).not_to be_valid
-        expect(subject.errors.full_messages).to include 'Commentable is not a published article'
+        expect(subject.errors.full_messages).to include "Commentable is not a published article"
       end
 
       it "is invalid if commentable is an article and the discussion is locked" do
