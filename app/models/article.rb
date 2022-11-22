@@ -691,7 +691,7 @@ class Article < ApplicationRecord
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
 
-    self.published_at = front_matter["published_at"] if front_matter["published_at"]
+    self.published_at = front_matter["published_at"] if front_matter["published_at"] unless published_changed? && !published
     self.published_at ||= parse_date(front_matter["date"]) if published
 
     set_main_image(front_matter)
