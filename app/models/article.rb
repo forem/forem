@@ -622,6 +622,7 @@ class Article < ApplicationRecord
 
   def processed_content
     return @processed_content if @processed_content && !body_markdown_changed?
+    return unless user
 
     @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
   end
@@ -629,6 +630,8 @@ class Article < ApplicationRecord
   delegate :front_matter, to: :processed_content
 
   def evaluate_markdown
+    return unless processed_content
+
     self.reading_time = processed_content.calculate_reading_time
     self.processed_html = processed_content.finalize
 
@@ -639,7 +642,7 @@ class Article < ApplicationRecord
     end
 
     self.description = processed_description if description.blank?
-  rescue StandardError => e
+  rescue ContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
