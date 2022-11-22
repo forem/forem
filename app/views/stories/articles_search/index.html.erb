@@ -54,13 +54,23 @@
     <div class="articles-list crayons-layout__content" id="articles-list" data-follow-button-container="true">
       <div id="banner-section"></div>
       <div class="substories" id="substories">
-        <div class="p-9 align-center crayons-card">
-          <br />
-        </div>
       </div>
-      <div class="loading-articles" id="loading-articles">
-        <%= t("core.loading") %>
-      </div>
+      <template id="crayons-story-loading">
+          <div class="crayons-story" title="Loading posts...">
+            <div class="crayons-story__body">
+              <div class="crayons-story__top mb-3">
+                <div class="crayons-story__meta w-100">
+                  <div class="crayons-scaffold-loading mr-2 w-0 h-0 p-4 radius-full"></div>
+                  <div class="crayons-scaffold-loading w-25 h-0 py-2"></div>
+                </div>
+              </div>
+              <div class="crayons-story__indention">
+                <div class="crayons-scaffold-loading w-75 h-0 py-3 mb-2"></div>
+                <div class="crayons-scaffold-loading w-50 h-0 py-2 mb-8"></div>
+              </div>
+            </div>
+          </div>
+        </template>
     </div>
   </div>
 </main>

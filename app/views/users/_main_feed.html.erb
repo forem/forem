@@ -14,10 +14,18 @@
 <% if @stories.present? %>
   <%= render "articles/single_story", story: @stories.first, featured: false %>
   <% if @comments.present? %>
-    <%= render "users/comments_section" %>
+    <% if user_signed_in? %>
+      <%= render "users/comments_section" %>
+    <% else %>
+      <%= render "users/comments_locked_cta" %>
+    <% end %>
   <% end %>
   <%= render partial: "articles/single_story", collection: @stories[1, @stories.size], as: :story, locals: { featured: false } %>
   <div class="placeholder-div"></div>
 <% elsif @comments.present? %>
-  <%= render "users/comments_section" %>
+  <% if user_signed_in? %>
+    <%= render "users/comments_section" %>
+  <% else %>
+    <%= render "users/comments_locked_cta" %>
+  <% end %>
 <% end %>

@@ -23,8 +23,8 @@
         <th scope="col">Name</th>
         <th scope="col">Placement Area</th>
         <th scope="col">Display to User Group</th>
-        <th scope="col">Published</th>
-        <th scope="col">Approved</th>
+        <th scope="col">Type</th>
+        <th scope="col">Public?</th>
         <th scope="col">Success Rate</th>
       </tr>
     </thead>
@@ -34,8 +34,12 @@
             <td><%= link_to display_ad.name, edit_admin_display_ad_path(display_ad) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
             <td><%= display_ad.display_to %></td>
-            <td><%= display_ad.published %></td>
-            <td><%= display_ad.approved %></td>
+            <td><%= display_ad.type_of.titleize %></td>
+            <% if display_ad.published? && display_ad.approved? %>
+              <td><span class="crayons-icon" role="img" aria-label="Ad is published and approved">✅</span></td>
+            <% else %>
+              <td><span class="crayons-icon" role="img" aria-label="Ad is not published or approved">❌</span></td>
+            <% end %>
             <td><%= display_ad.success_rate %></td>
             <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
             <td>

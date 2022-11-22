@@ -1,0 +1,351 @@
+---
+en:
+  views:
+    admin:
+      users:
+        heading: Members
+        aria_paginate: Paginate users
+        table:
+          compact_subtitle: Members
+          joined_on: Joined on
+          last_activity: Last activity
+          heading:
+            member: Member
+            status: Status
+            last_joined: Last activity & Joined on
+            orgs: Organizations
+            actions: Actions
+        empty:
+          text1: No members found under these filters.
+          text2: Try broadening or removing the filters.
+        download:
+          aria_label: Download member data
+          heading: Download member data
+          desc1: Your data will be downloaded as a Comma Separated Values (.csv) file.
+          desc2: Values listed are Name, Username, Email address, Status, Joining date, Last activity, and Organizations.
+          submit: Download
+          cancel: Cancel
+          name: Name
+          username: Username
+          email: Email address
+          status: Status
+          join: Joining date
+          last_activity: Last activity
+          orgs: Organizations
+        search:
+          aria_expand: Expand search
+          aria_field: Search member by name, username or email
+          aria_label: Search
+          icon: search
+          placeholder: Search member...
+        filters:
+          aria_clear: Clear all filters
+          aria_label: Filter
+          aria_remove: "Remove filter: %{value}"
+          aria_more_roles: See more roles
+          heading: Filters
+          applied: Applied filters
+          join: Joining date
+          creation: Community creation
+          today: Today
+          clear: Clear all
+          clear_filter:
+            aria_roles: Clear member roles filter
+            aria_status: Clear statuses filter
+            aria_orgs: Clear organizations filter
+            text: Clear filter
+          clear_filters: Clear filters
+          desc: Members who match any of the selected filters will be displayed
+          summary:
+            roles: Member roles
+            status: Status
+            join: Joining date
+            orgs: Organizations
+          legend:
+            roles: Member roles
+            status: Status
+            orgs: Organizations
+          more_roles: See more roles
+          submit: Apply filters
+          cancel: Cancel
+        invite:
+          aria_email: "Invitation actions: %{email}"
+          resend: Resend invite
+          cancel: Cancel invite
+        actions:
+          assign_role:
+            text: Assign role
+            heading: Add role
+            role: Role
+            select: Select role
+            note: "Add a note to this action:"
+            submit: Add
+          add_org:
+            text: Add organization
+            heading: Add organization
+            add: Add %{user} to an organization
+            edit: Edit %{user}'s role at an organization
+            id: Organization ID
+            role: Role
+            role_desc_html: You can assign %{user} to be an Admin or a regular member.
+            admin: admin
+            member: member
+            submit: Add organization
+          adjust_credit:
+            text: Adjust credit balance
+            heading: Adjust balance
+            desc_html: "%{user} currently has %{credits}."
+            credits_html: "%{amount} credits"
+            adjust: Adjust balance
+            selector_html: "%{action}%{amount}%{credits}"
+            add: Add
+            unit: credits
+            aria_credits: Amount of credits to add or remove
+            note: "Add a note to this action:"
+            submit: Adjust balance
+          copy_email: Copy email address
+        danger:
+          desc1: This action is irreversible.
+          desc3: Be careful with this action.
+        banish:
+          heading: Banish %{user}
+          desc2_html: Once banished, we will delete all content created by %{user} and change their username to @spam_###.
+          notice_html: This is not a new user. Only Super Admins or Support Admins are allowed to banish %{user}.
+          submit_html: Banish %{user}
+        delete:
+          heading: Delete %{user}'s account
+          onsubmit: Are you sure? This actions is irreversible.
+          desc2: Once deleted, all data relating to %{user} will be removed from our database.
+          notice: Only Super Admins are allowed to delete users.
+          submit: Delete now
+        export:
+          heading: Export %{user}'s data
+          desc1_html: Choose between sending the exported data to either your Admin contact email, %{contact}, or to %{user}'s %{user_email} directly.
+          desc2: Exported data includes a user's posts and comments.
+          user_email: user email
+          to_admin: Export to Admin
+          to_user: Export to User
+          confirm: Are you sure you want to export this user's content to %{email}?
+        merge:
+          heading: Merge users
+          onsubmit: Are you sure? This is extremely destructive and irreversible. Merging will delete all the other users content and combine it with this user
+          desc2_html: Make sure you are currently on the page of the user you want to <strong>keep</strong>. Once merged, the account entered below will be merged and deleted.
+          id: User ID
+          submit: Merge and delete
+        social:
+          heading: Remove social accounts
+          desc_html: |
+            <p>Sometimes users encounter sign-in issues when they....</p>
+            <ol>
+              <li>create an account on %{community} with a social account, and</li>
+              <li>remove the original social account, and</li>
+              <li>attempt to sign in again using the same, removed social account.</li>
+            </ol>
+            <p>If this is the case, removing the social accounts below can help restore their social accounts. To verify if this is the case, follow steps 1 and 2 below. If verified, follow through all steps to restore their social accounts.</p>
+          howto:
+            subtitle: How to restore a social account
+            first_html: "Check their social account's UID via these third party tools: %{twitter_uid} and %{github_uid}"
+            twitter_uid: Twitter UID
+            github_uid: GitHub UID
+            second: Check whether or not it matches the corresponding UID below.
+            third: Remove the respective account if it doesn't match.
+            fourth: Ask the user to reauthorize their social account via %{app}
+          onsubmit: Are you sure? This should only be done as a solution for the listed example(s).
+          uid: "UID:"
+          username: "Username:"
+          no_data: No data available...
+          submit: Remove
+        unpublish:
+          heading: Unpublish all posts
+          onsubmit: Are you sure? All posts will be unavailable to the community.
+          text1_html: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
+          text2_html: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
+          note: "Note:"
+          note_placeholder: "Note text"
+          submit: Unpublish all posts
+        emails:
+          empty1: No previous emails found for %{user}.
+          empty2: Any emails sent to %{email} will be found here.
+          previous: Previous emails (%{num})
+          send: Send an email
+          to: "To: %{user} (%{email})"
+          subject: Subject
+          subject_placeholder: What do you want to say in the subject line?
+          body: Body
+          body_placeholder: What do you want to say?
+          send_submit: Send email
+          not_verified:
+            subtitle: Email not verified
+            desc: "%{user}'s email hasn't been verified yet."
+          verify: Verify email address
+          verified_html: Last verified on %{time}
+          reverify: Reverify
+        flags:
+          empty1: No flags received against %{user} yet.
+          empty2: Any flags received against %{user} will be found here.
+          type:
+            article: Post "%{title}"
+            comment: Comment on "%{title}"
+            profile: User's profile
+          origin_html: Flagged by %{user}
+        notes:
+          empty1: No previous notes found for %{user}.
+          empty2: Any notes added for %{user} will be found here.
+          previous: Previous notes (%{num})
+          note_by: Note by %{author} on %{time}
+          reason_by_html: "%{reason} %{by}"
+          by_html: by %{author}
+          write: Write a user note
+          note: Note
+          note_placeholder: Add a note...
+          submit: Submit
+        overview:
+          comments: Comments
+          posts: Posts
+          reactions: Reactions
+          followers: Followers
+          following: Following
+          badges: Badges
+          learn: Learn more
+          credits:
+            subtitle: Credits
+            aria_learn: Learn more about credits
+            icon: Wallet
+            desc: "Grant/remove credits to purchase classified listings. "
+            button: Adjust balance
+          orgs:
+            subtitle: Organizations
+            aria_edit: Edit %{org} organization membership
+            aria_learn: Learn more about organizations
+            aria_revoke: Revoke %{org} organization membership
+            icon: Organizations
+            desc: "Add this member to organizations in your community. "
+            empty: Not part of any organization yet.
+            button: Add organization
+            type:
+              admin: Admin
+              member: Member
+              guest: Guest
+            revoke_confirm: Are your sure you want to remove %{user} from %{org}?
+            submit: Submit
+          roles:
+            subtitle: Roles
+            aria_learn: Learn more about roles
+            icon: Roles
+            desc: "Grant this member permissions by assigning a role. "
+            empty: No roles assigned yet.
+            button: Assign role
+            locked: You can't remove this role.
+            remove: "Remove role:"
+            remove_confirm: Are you sure?
+            name:
+              admin: Admin
+              codeland_admin: Codeland Admin
+              comment_suspended: Comment Suspended
+              creator: Creator
+              mod_relations_admin: Mod Relations Admin
+              super_moderator: Super Moderator
+              podcast_admin: Podcast Admin
+              restricted_liquid_tag: Restricted Liquid Tag
+              single_resource_admin: Single Resource Admin
+              super_admin: Super Admin
+              support_admin: Support Admin
+              suspended: Suspended
+              tag_moderator: Tag Moderator
+              tech_admin: Tech Admin
+              trusted: Trusted
+              warned: Warned
+              workshop_pass: Workshop Pass
+          tag_mod:
+            subtitle: Tags
+            aria_learn: Learn more about tag moderation
+            icon: Mod
+            desc: "Add a tag that this member can moderate. "
+            remove: "Remove tag:"
+            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the user's ID (%{user_id}).
+            tag_page: tag's page
+        profile:
+          locked:
+            icon: Access locked
+            text: This user has locked access.
+            unlock: Unlock access
+          id: ID %{userid}
+          since_html: Member since %{time}
+          not_member: User has not accepted their invitation yet.
+          email: Email
+          github: GitHub
+          twitter: Twitter
+          visit: Visit profile
+          options:
+            icon: Options
+            export: Export data
+            merge: Merge users
+            unpublish: Unpublished all posts
+            remove_social: Remove social accounts
+            banish: Banish user
+            delete: Delete user
+        reports:
+          subtitle: Reports submitted by %{user} (%{num})
+          for_html: For %{url}
+          empty1: No comment or post has been reported yet.
+          empty2: Any comment or post reported by %{user} will be found here.
+          category:
+            rude or vulgar: Rude or vulgar
+            harrassment: Harrassment
+            spam: Spam
+            listings: Listings
+            other: Other
+          status:
+            Open: Open
+            Resolved: Resolved
+            Invalid: Invalid
+        unpublish_logs:
+          subtitle_html: Unpublished by %{user} on %{time}
+          posts: "Posts:"
+          edit: Edit
+          republished: (was republished)
+          comments: "Comments:"
+          commentable: commentable
+          created: "Created at: %{time}"
+        tabs:
+          overview: Overview
+          notes: Notes
+          emails: Emails
+          reports: Reports
+          flags: Flags
+          unpublish_logs: Unpublish All History
+        status_title: Current status
+        status_reader: "Current status:"
+        more_orgs:
+          one: + %{count}
+          other: + %{count}
+        roles:
+          Admin: Admin
+          Tech Admin: Tech Admin
+          Super Admin: Super Admin
+          Resource Admin: Resource Admin
+          "Resource Admin: Article": "Resource Admin: Article"
+          "Resource Admin: Badge": "Resource Admin: Badge"
+          "Resource Admin: BadgeAchievement": "Resource Admin: BadgeAchievement"
+          "Resource Admin: Broadcast": "Resource Admin: Broadcast"
+          "Resource Admin: Comment": "Resource Admin: Comment"
+          "Resource Admin: Config": "Resource Admin: Config"
+          "Resource Admin: DisplayAd": "Resource Admin: DisplayAd"
+          "Resource Admin: DataUpdateScript": "Resource Admin: DataUpdateScript"
+          "Resource Admin: FeedbackMessage": "Resource Admin: FeedbackMessage"
+          "Resource Admin: HtmlVariant": "Resource Admin: HtmlVariant"
+          "Resource Admin: ListingCategory": "Resource Admin: ListingCategory"
+          "Resource Admin: Page": "Resource Admin: Page"
+          "Resource Admin: Tag": "Resource Admin: Tag"
+          Super Moderator: Super Moderator
+        statuses:
+          Warned: Warned
+          Comment Suspended: Comment Suspended
+          Suspended: Suspended
+          Good Standing: Good Standing
+          Good standing: Good standing
+          Trusted: Trusted
+        identities:
+          facebook: Facebook
+          github: GitHub
+          twitter: Twitter

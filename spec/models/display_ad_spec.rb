@@ -4,6 +4,8 @@ RSpec.describe DisplayAd, type: :model do
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
+  it_behaves_like "Taggable"
+
   describe "validations" do
     describe "builtin validations" do
       subject { display_ad }
@@ -13,6 +15,7 @@ RSpec.describe DisplayAd, type: :model do
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to have_many(:tags) }
     end
 
     it "allows sidebar_right" do
@@ -82,6 +85,68 @@ RSpec.describe DisplayAd, type: :model do
       end
     end
 
+    context "when considering article_tags" do
+      it "will show the display ads that contain tags that match any of the article tags" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "linux, git, go")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[linux productivity]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show display ads that have no tags set" do
+        display_ad = create(:display_ad, organization_id: organization.id,
+                                         placement_area: "post_comments",
+                                         published: true,
+                                         approved: true,
+                                         cached_tag_list: "")
+
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "career")
+
+        article_tags = %w[productivity java]
+        expect(described_class.for_display("post_comments", false, article_tags)).to eq(display_ad)
+      end
+
+      it "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+        article_tags = %w[javascript]
+        expect(described_class.for_display("post_comments", false, article_tags)).to be_nil
+      end
+
+      it "will show display ads with no tags set if there are no article tags" do
+        create(:display_ad, organization_id: organization.id,
+                            placement_area: "post_comments",
+                            published: true,
+                            approved: true,
+                            cached_tag_list: "productivity")
+
+        display_ad_without_tags = create(:display_ad, organization_id: organization.id,
+                                                      placement_area: "post_comments",
+                                                      published: true,
+                                                      approved: true,
+                                                      cached_tag_list: "")
+
+        expect(described_class.for_display("post_comments", false)).to eq(display_ad_without_tags)
+      end
+    end
+
     context "when display_to is set to 'logged_in' or 'logged_out'" do
       let!(:display_ad2) do
         create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_in")
@@ -135,6 +200,46 @@ RSpec.describe DisplayAd, type: :model do
 
     it "returns empty when no match" do
       expect(described_class.search_ads("foo")).to eq([])
+    end
+  end
+
+  describe ".validate_tag" do
+    it "rejects more than 10 tags" do
+      eleven_tags = "one, two, three, four, five, six, seven, eight, nine, ten, eleven"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: eleven_tags).valid?).to be(false)
+    end
+
+    it "rejects tags with length > 30" do
+      tags = "'testing tag length with more than 30 chars', tag"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: tags).valid?).to be(false)
+    end
+
+    it "rejects tag with non-alphanumerics" do
+      expect do
+        build(:display_ad,
+              name: "This is an Ad",
+              body_markdown: "Ad Body",
+              placement_area: "post_comments",
+              tag_list: "c++").validate!
+      end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "always downcase tags" do
+      tags = "UPPERCASE, CAPITALIZE"
+      display_ad = create(:display_ad,
+                          name: "This is an Ad",
+                          body_markdown: "Ad Body",
+                          placement_area: "post_comments",
+                          tag_list: tags)
+      expect(display_ad.tag_list).to eq(tags.downcase.split(", "))
     end
   end
 end

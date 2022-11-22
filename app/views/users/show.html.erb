@@ -109,23 +109,6 @@
         <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
           <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger"><%= t("views.users.more", user: @user.username) %></button>
         </div>
-
-        <div class="crayons-modal align-left hidden">
-          <div class="crayons-modal__box">
-            <div class="crayons-modal__box__body">
-              <% if @user.setting.inbox_guidelines.present? %>
-                <p class="fw-bold mb-2">@<%= @user.username %>'s guidelines:</p>
-                <p class="mb-6"><%= @user.setting.inbox_guidelines %></p>
-              <% end %>
-              <form id="new-message-form" class="message-form mb-4" data-info='<%= DataInfo.to_json(object: @user, showChat: @user.setting.inbox_type) %>'>
-                <textarea id="new-message" rows="4" cols="70" placeholder="<%= t("views.users.send_pm.placeholder") %>" class="crayons-textfield"></textarea>
-                <button type="submit" class="submit-message crayons-btn"><%= t("views.users.send_pm.submit") %></button>
-              </form>
-              <p class="fs-s color-base-60"><%= t("views.users.send_pm.notice_html", code: link_to(t("views.users.send_pm.code"), "/code-of-conduct")) %></p>
-            </div>
-          </div>
-          <div class="crayons-modal__overlay"></div>
-        </div>
       </header>
     </div>
   </div>
@@ -146,7 +129,11 @@
   <main class="crayons-layout__content articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if params[:view] == "comments" %>
-        <%= render "users/comments_section" %>
+        <% if user_signed_in? %>
+          <%= render "users/comments_section" %>
+        <% else %>
+          <%= render "users/comments_locked_cta" %>
+        <% end %>
       <% elsif @stories.any? || @comments.any? || @pinned_stories.any? %>
         <%= render "users/main_feed" %>
       <% end %>

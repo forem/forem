@@ -19,7 +19,7 @@ en:
           icon: Adjust tags
           add: Add tag
           add_placeholder: Add a tag
-          reason: Reason for tag adjustment
+          reason: Reason for tag adjustment (optional)
           remove: Remove tag
           submit: Submit
         approve:
@@ -114,6 +114,9 @@ en:
           modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
           modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
           modal_button: Unpublish all posts
+        unpublish_post:
+          modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
+          modal_text2: They can still re-publish the post if they are not suspended.
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality

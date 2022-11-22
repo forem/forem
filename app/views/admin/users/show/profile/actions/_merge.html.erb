@@ -1,14 +1,14 @@
 <div id="merge-accounts">
   <%= form_for(@user, url: merge_admin_user_path(@user),
-                      html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? This is extremely destructive and irreversible. Merging will delete all the other users content and combine it with this user')", id: nil }) do |f| %>
-    <p>This action is irreversible.</p>
-    <p>Make sure you are currently on the page of the user you want to <strong>keep</strong>. Once merged, the account entered below will be merged and deleted.</p>
+                      html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('#{j t('views.admin.users.merge.onsubmit')}')", id: nil }) do |f| %>
+    <p><%= t("views.admin.users.danger.desc1") %></p>
+    <p><%= t("views.admin.users.merge.desc2_html") %></p>
     <div class="crayons-field mb-4">
-      <%= f.label :merge_user_id, "User ID", class: "crayons-field__label" %>
+      <%= f.label :merge_user_id, t("views.admin.users.merge.id"), class: "crayons-field__label" %>
       <%= f.text_field :merge_user_id, placeholder: "1234", class: "crayons-textfield", type: "number", inputmode: "numeric", aria: { describedby: "merge-user-description" } %>
     </div>
     <div>
-      <%= f.button "Merge and delete", class: "c-btn c-btn--destructive c-btn--primary", type: "submit" %>
+      <%= f.button t("views.admin.users.merge.submit"), class: "c-btn c-btn--destructive c-btn--primary", type: "submit" %>
     </div>
   <% end %>
 </div>

@@ -53,7 +53,7 @@ class ReactionHandler
   private
 
   def destroy_contradictory_mod_reactions
-    return unless category.in?(Reaction::PRIVILEGED_CATEGORIES)
+    return unless ReactionCategory[category].privileged?
 
     reactions = Reaction.contradictory_mod_reactions(
       category: category,
@@ -112,7 +112,7 @@ class ReactionHandler
       category: category
     }
     if (current_user&.any_admin? || current_user&.super_moderator?) &&
-        Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
+        ReactionCategory[category].negative?
       create_params[:status] = "confirmed"
     end
     Reaction.new(create_params)
@@ -141,7 +141,7 @@ class ReactionHandler
   end
 
   def sink_articles(reaction)
-    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
+    Moderator::SinkArticles.call(reaction.reactable_id) if vomit_on_user?
   end
 
   def send_notifications(reaction)
@@ -171,5 +171,9 @@ class ReactionHandler
 
   def noop_result
     Result.new category: category, action: "none", reaction: existing_reaction
+  end
+
+  def vomit_on_user?
+    reactable_type == "User" && category == "vomit"
   end
 end

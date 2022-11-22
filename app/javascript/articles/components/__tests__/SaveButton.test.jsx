@@ -22,10 +22,10 @@ it('should have no a11y violations', async () => {
 });
 
 it('should render button as bookmarked', () => {
-  const article = { class_name: 'Article', id: 1 };
+  const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { queryByRole } = render(<SaveButton article={article} isBookmarked />);
   const saveButton = queryByRole('button', {
-    name: 'Save to reading list',
+    name: `Save post ${article.title} to reading list`,
     pressed: true,
   });
 
@@ -33,12 +33,12 @@ it('should render button as bookmarked', () => {
 });
 
 it('should button as not being bookmarked', () => {
-  const article = { class_name: 'Article', id: 1 };
+  const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { queryByRole } = render(
     <SaveButton article={article} isBookmarked={false} />,
   );
   const saveButton = queryByRole('button', {
-    name: 'Save to reading list',
+    name: `Save post ${article.title} to reading list`,
     pressed: false,
   });
 
@@ -46,15 +46,17 @@ it('should button as not being bookmarked', () => {
 });
 
 it('should bookmark when it previously was not', async () => {
-  const article = { class_name: 'Article', id: 1 };
+  const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { getByRole, findByRole } = render(
     <SaveButton onClick={jest.fn()} article={article} isBookmarked={false} />,
   );
-  const saveButton = getByRole('button', { name: 'Save to reading list' });
+  const saveButton = getByRole('button', {
+    name: `Save post ${article.title} to reading list`,
+  });
   saveButton.click();
 
   const savedButton = await findByRole('button', {
-    name: 'Save to reading list',
+    name: `Save post ${article.title} to reading list`,
     pressed: true,
   });
 
@@ -62,19 +64,19 @@ it('should bookmark when it previously was not', async () => {
 });
 
 it('should unbookmark when it previously was bookmarked', async () => {
-  const article = { class_name: 'Article', id: 1 };
+  const article = { class_name: 'Article', id: 1, title: 'Article' };
   const { getByRole, findByRole } = render(
     <SaveButton onClick={jest.fn()} article={article} isBookmarked />,
   );
 
   const savedButton = getByRole('button', {
-    name: 'Save to reading list',
+    name: `Save post ${article.title} to reading list`,
     pressed: true,
   });
   savedButton.click();
 
   const saveButton = await findByRole('button', {
-    name: 'Save to reading list',
+    name: `Save post ${article.title} to reading list`,
     pressed: false,
   });
 

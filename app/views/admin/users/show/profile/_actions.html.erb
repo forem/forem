@@ -1,42 +1,42 @@
 <%= javascript_packs_with_chunks_tag "admin/editUser", defer: true %>
 <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
-  <%= link_to "Visit profile", @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
+  <%= link_to t("views.admin.users.profile.visit"), @user.path, class: "c-cta", target: "_blank", rel: "noopener" %>
   <div class="dropdown-trigger-container">
     <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
-      <%= crayons_icon_tag("overflow-vertical", title: "Options") %>
+      <%= crayons_icon_tag("overflow-vertical", title: t("views.admin.users.profile.options.icon")) %>
     </button>
     <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown">
       <ul class="p-0">
         <% if @user.access_locked? %>
-          <li><%= link_to "Unlock access", unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block" %></li>
+          <li><%= link_to t("views.admin.users.profile.locked.unlock"), unlock_access_admin_user_path(@user), method: :patch, class: "c-link c-link--block" %></li>
         <% end %>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Export <%= @user.name %>'s data" data-modal-size="small" data-modal-content-selector="#export-data">Export data</button></li>
-        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Merge users" data-modal-size="small" data-modal-content-selector="#merge-accounts">Merge users</button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.export.heading", user: @user.name) %>" data-modal-size="small" data-modal-content-selector="#export-data"><%= t("views.admin.users.profile.options.export") %></button></li>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.merge.heading") %>" data-modal-size="small" data-modal-content-selector="#merge-accounts"><%= t("views.admin.users.profile.options.merge") %></button></li>
         <% if @user.articles_count > 0 %>
           <li>
             <button type="button"
               class="c-btn w-100 align-left"
-              data-modal-title="Unpublish all posts"
+              data-modal-title="<%= t("views.admin.users.unpublish.heading") %>"
               data-modal-size="small"
               data-modal-content-selector="#unpublish-all-posts"
               data-form-action="<%= unpublish_all_articles_admin_user_path(@user) %>"
-              data-user-name="<%= @user.name %>">Unpublish all posts</button>
+              data-user-name="<%= @user.name %>"><%= t("views.admin.users.profile.options.unpublish") %></button>
           </li>
         <% end %>
         <% if @user.identities.any? %>
-          <li><button type="button" class="c-btn w-100 align-left" data-modal-title="Remove social accounts" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts">Remove social accounts</button></li>
+          <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.social.heading") %>" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts"><%= t("views.admin.users.profile.options.remove_social") %></button></li>
         <% end %>
         <li>
           <button type="button"
             class="c-btn c-btn--destructive w-100 align-left"
-            data-modal-title="Banish <%= @user.name %>"
+            data-modal-title="<%= t("views.admin.users.banish.heading", user: @user.name) %>"
             data-modal-size="small"
             data-modal-content-selector="#banish-for-spam"
             data-form-action="<%= banish_admin_user_path(@user) %>"
             data-user-name="<%= @user.name %>"
-            data-banishable-user="<%= @banishable_user %>">Banish user</button>
+            data-banishable-user="<%= @banishable_user %>"><%= t("views.admin.users.profile.options.banish") %></button>
         </li>
-        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-title="Delete <%= @user.name %>'s account" data-modal-size="small" data-modal-content-selector="#delete-user">Delete user</button></li>
+        <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-title="<%= t("views.admin.users.delete.heading", user: @user.name) %>" data-modal-size="small" data-modal-content-selector="#delete-user"><%= t("views.admin.users.profile.options.delete") %></button></li>
       </ul>
     </div>
   </div>

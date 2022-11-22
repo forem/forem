@@ -59,4 +59,16 @@ module.exports = {
   transformIgnorePatterns: [
     '/node_modules/(?!(preact|react-colorful|i18n-js)/)',
   ],
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        addFileAttribute: 'true',
+        ancestorSeparator: ' › ',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
+    ],
+  ],
 };
