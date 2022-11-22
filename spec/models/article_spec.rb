@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Article, type: :model do
+RSpec.describe Article do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate!
@@ -162,7 +162,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#canonical_url_must_not_have_spaces" do
-      let!(:article) { build :article, user: user }
+      let!(:article) { build(:article, user: user) }
 
       it "is valid without spaces" do
         valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
