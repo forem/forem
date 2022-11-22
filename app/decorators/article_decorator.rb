@@ -112,6 +112,11 @@ class ArticleDecorator < ApplicationDecorator
     cached_tag_list_array.include?("discuss") && published_at.to_i > 35.hours.ago.to_i
   end
 
+  def permit_adjacent_sponsors?
+    author_ids = [user_id] + co_author_ids
+    Users::Setting.where(user_id: author_ids).all?(&:permit_adjacent_sponsors)
+  end
+
   def pinned?
     return false unless persisted?
 
