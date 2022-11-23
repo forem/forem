@@ -84,14 +84,10 @@ if (memberMenu) {
 
 async function getNavigation() {
   const placeholderElement = document.getElementsByClassName(
-    'js-dynamic-nav-layout',
+    'js-navigation-links-container',
   )[0];
 
-  if (
-    document
-      .getElementsByClassName('js-dynamic-nav-layout')[0]
-      .innerHTML.trim() === ''
-  ) {
+  if (placeholderElement.innerHTML.trim() === '') {
     const response = await window.fetch(`/async_info/navigation_links`);
     const htmlContent = await response.text();
 
