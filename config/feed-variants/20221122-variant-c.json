@@ -1,7 +1,7 @@
 {
   "max_days_since_published": 15,
-  "description": "WIP.",
   "description": "Built off 20221107-variant-c but with heavier emphasis on matching tag points and softer score cap.",
+  "order_by": "final_order_by_random_weighted_to_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
     "daily_decay": {
