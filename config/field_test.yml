@@ -31,7 +31,7 @@ experiments:
   feed_strategy_starting_20221122:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
-    started_at: 2022-11-07
+    started_at: 2022-11-23
     variants:
       - 20221107-variant-c
       - 20221122-variant-a
