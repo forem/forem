@@ -14,7 +14,7 @@ describe('Create Display Ads', () => {
 
     it('should not show the tags field if the placement is not "Below the comment section"', () => {
       cy.findByRole('combobox', { name: 'Placement Area:' }).select(
-        'Sidebar Right',
+        'Sidebar Right (Home)',
       );
       cy.findByRole('input', { name: 'Targeted Tag(s)' }).should('not.exist');
     });
