@@ -34,6 +34,7 @@ fr:
       hidden: '[hidden by post author]'
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
+      published_article: is not a published article
       type:
         Article: Article
         item: item
