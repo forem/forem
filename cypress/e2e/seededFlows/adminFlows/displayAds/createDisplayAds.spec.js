@@ -12,7 +12,7 @@ describe('Create Display Ads', () => {
       });
     });
 
-    it('should not show the tags field if the placement is not "Below the comment section"', () => {
+    it('should not show the tags field if the placement is not one of the post page areas', () => {
       cy.findByRole('combobox', { name: 'Placement Area:' }).select(
         'Sidebar Right (Home)',
       );
@@ -25,5 +25,13 @@ describe('Create Display Ads', () => {
       );
       cy.findByLabelText('Targeted Tag(s)').should('exist');
     });
+
+    it('should show the tags field if the placement is "Sidebar Right (Individual Post)"', () => {
+      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+        'Sidebar Right (Individual Post)',
+      );
+      cy.findByLabelText('Targeted Tag(s)').should('exist');
+    });
+
   });
 });
