@@ -72,11 +72,11 @@ class UserDecorator < ApplicationDecorator
     end
   end
 
+  # <% moderated_tags = @user.roles.select { |role| role.name == "tag_moderator" } %>
   def config_body_class
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
-      "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
     body_class.join(" ")
