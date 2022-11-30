@@ -9,12 +9,8 @@
     "/api/articles": {
       "get": {
         "summary": "Published articles",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -71,11 +67,7 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": [
-                "fresh",
-                "rising",
-                "all"
-              ]
+              "enum": ["fresh", "rising", "all"]
             },
             "example": "fresh"
           },
@@ -111,47 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 11338,
-                    "title": "Cabbages and Kings172",
-                    "description": "Keytar listicle stumptown fanny pack. Seitan kogi thundercats readymade diy.  Literally gluten-free...",
-                    "readable_publish_date": "Nov 21",
-                    "slug": "cabbages-and-kings172-100a",
-                    "path": "/username382/cabbages-and-kings172-100a",
-                    "url": "http://localhost:3000/username382/cabbages-and-kings172-100a",
+                    "id": 22114,
+                    "title": "Rosemary Sutcliff172",
+                    "description": "Cronut pbr&amp;b stumptown craft beer. Plaid poutine flexitarian offal slow-carb chillwave.  Wolf...",
+                    "readable_publish_date": "Nov 30",
+                    "slug": "rosemary-sutcliff172-2e87",
+                    "path": "/username382/rosemary-sutcliff172-2e87",
+                    "url": "http://localhost:3000/username382/rosemary-sutcliff172-2e87",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-21T08:51:37Z",
+                    "published_timestamp": "2022-11-30T17:22:53Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                    "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                    "canonical_url": "http://localhost:3000/username382/cabbages-and-kings172-100a",
-                    "created_at": "2022-11-21T08:51:37Z",
+                    "cover_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
+                    "social_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
+                    "canonical_url": "http://localhost:3000/username382/rosemary-sutcliff172-2e87",
+                    "created_at": "2022-11-30T17:22:54Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-21T08:51:37Z",
-                    "last_comment_at": "2022-11-21T08:51:37Z",
+                    "published_at": "2022-11-30T17:22:53Z",
+                    "last_comment_at": "2022-11-30T17:22:53Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "discuss"
-                    ],
+                    "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Dagny \"Saul\" \\:/ Marquardt",
+                      "name": "Carmelita \"Jana\" \\:/ Hamill",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 21767,
+                      "user_id": 36602,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21767/a6c95fad-7f12-40af-85a8-c5190baf92b9.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21767/a6c95fad-7f12-40af-85a8-c5190baf92b9.jpeg"
+                      "profile_image": "/uploads/user/profile_image/36602/9b29fa6c-c3e1-4367-a1af-cc20a98c6e2d.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/36602/9b29fa6c-c3e1-4367-a1af-cc20a98c6e2d.jpeg"
                     },
                     "organization": {
-                      "name": "O'Conner Group",
+                      "name": "Luettgen Group",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2005/938bbbd7-a1a7-4d1f-9893-0afb61a9caf1.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2005/938bbbd7-a1a7-4d1f-9893-0afb61a9caf1.png"
+                      "profile_image": "/uploads/organization/profile_image/2581/4b8bcbba-cf00-44fc-b48d-e7b6675412b0.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2581/4b8bcbba-cf00-44fc-b48d-e7b6675412b0.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -175,9 +165,7 @@
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -236,18 +224,14 @@
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a list of all display ads.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [
-
-                ]
+                "example": []
               }
             }
           },
@@ -266,25 +250,21 @@
       },
       "post": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to create a new display ad.",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
                 "example": {
-                  "id": 250,
+                  "id": 533,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T10:51:38.285+02:00",
+                  "created_at": "2022-11-30T12:22:54.630-05:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -294,10 +274,8 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T10:51:38.285+02:00",
-                  "tag_list": [
-
-                  ]
+                  "updated_at": "2022-11-30T12:22:54.630-05:00",
+                  "tag_list": []
                 }
               }
             }
@@ -334,9 +312,7 @@
                   "success_rate": 0.0,
                   "type_of": "in_house",
                   "updated_at": null,
-                  "tag_list": [
-
-                  ]
+                  "tag_list": []
                 }
               }
             }
@@ -370,11 +346,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -384,16 +356,13 @@
                       "sidebar_left",
                       "sidebar_left_2",
                       "sidebar_right",
+                      "post_sidebar",
                       "post_comments"
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
@@ -403,9 +372,7 @@
     "/api/display_ads/{id}": {
       "get": {
         "summary": "display ad",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
         "parameters": [
           {
@@ -427,25 +394,23 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 251,
+                  "id": 534,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T10:51:38.441+02:00",
+                  "created_at": "2022-11-30T12:22:54.778-05:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 251",
-                  "organization_id": 2006,
+                  "name": "Display Ad 534",
+                  "organization_id": 2582,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T10:51:38.444+02:00",
-                  "tag_list": [
-
-                  ]
+                  "updated_at": "2022-11-30T12:22:54.780-05:00",
+                  "tag_list": []
                 }
               }
             }
@@ -476,9 +441,7 @@
       },
       "put": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
         "parameters": [
           {
@@ -503,22 +466,20 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 252",
-                  "organization_id": 2007,
+                  "name": "Display Ad 535",
+                  "organization_id": 2583,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 252,
+                  "id": 535,
                   "clicks_count": 0,
-                  "created_at": "2022-11-21T10:51:38.626+02:00",
+                  "created_at": "2022-11-30T12:22:54.955-05:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-21T10:51:38.629+02:00",
-                  "tag_list": [
-
-                  ]
+                  "updated_at": "2022-11-30T12:22:54.959-05:00",
+                  "tag_list": []
                 }
               }
             }
@@ -574,11 +535,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -588,26 +545,23 @@
                       "sidebar_left",
                       "sidebar_left_2",
                       "sidebar_right",
+                      "post_sidebar",
                       "post_comments"
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
         }
-      },
-      "delete": {
-        "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+      }
+    },
+    "/api/display_ads/{id}/unpublish": {
+      "put": {
+        "summary": "unpublish",
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
         "parameters": [
           {
@@ -624,33 +578,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "published": false,
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 13</p>",
-                  "cached_tag_list": "",
-                  "id": 255,
-                  "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 13",
-                  "clicks_count": 0,
-                  "created_at": "2022-11-21T10:51:38.851+02:00",
-                  "display_to": "all",
-                  "impressions_count": 0,
-                  "name": "Display Ad 255",
-                  "organization_id": 2010,
-                  "placement_area": "sidebar_left",
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2022-11-21T10:51:38.854+02:00",
-                  "tag_list": [
-
-                  ]
-                }
-              }
-            }
+          "204": {
+            "description": "no content"
           },
           "404": {
             "description": "not found",
@@ -680,9 +609,7 @@
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
         "parameters": [
           {
@@ -691,11 +618,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -713,11 +636,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -729,8 +648,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1037,
-                  "reactable_id": 11342,
+                  "id": 1228,
+                  "reactable_id": 22118,
                   "reactable_type": "Article"
                 }
               }
@@ -753,9 +672,7 @@
     "/api/reactions": {
       "post": {
         "summary": "create reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
         "parameters": [
           {
@@ -764,11 +681,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -786,11 +699,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -802,8 +711,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1039,
-                  "reactable_id": 11344,
+                  "id": 1230,
+                  "reactable_id": 22120,
                   "reactable_type": "Article"
                 }
               }
@@ -826,9 +735,7 @@
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
         "operationId": "unpublishUser",
         "parameters": [
@@ -877,9 +784,7 @@
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
         "operationId": "suspendUser",
         "parameters": [
@@ -934,9 +839,7 @@
   ],
   "security": [
     {
-      "api-key": [
-
-      ]
+      "api-key": []
     }
   ],
   "components": {

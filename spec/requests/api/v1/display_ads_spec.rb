@@ -100,12 +100,11 @@ RSpec.describe "Api::V1::DisplayAds" do
       end
     end
 
-    describe "DELETE /api/display_ads/:id" do
+    describe "PUT /api/display_ads/:id/unpublish" do
       it "unpublishes the display_ad" do
-        delete api_display_ad_path(@ad1.id), headers: auth_header
+        put unpublish_api_display_ad_path(@ad1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
-        expect(response.media_type).to eq("application/json")
         expect(@ad1.reload).not_to be_published
       end
     end

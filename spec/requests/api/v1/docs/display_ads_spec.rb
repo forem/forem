@@ -211,9 +211,11 @@ RSpec.describe "api/v1/display_ads" do
         end
       end
     end
+  end
 
-    describe "DELETE un-publish an ad" do
-      delete("display ads") do
+  path "/api/display_ads/{id}/unpublish" do
+    describe "PUT to unpublish an ad" do
+      put("unpublish") do
         tags "display ads"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to remove a display ad from rotation by un-publishing it.
@@ -232,7 +234,7 @@ RSpec.describe "api/v1/display_ads" do
                   },
                   example: 123
 
-        response(200, "successful") do
+        response(204, "no content") do
           let(:"api-key") { api_secret.secret }
           let(:id) { display_ad.id }
           add_examples
