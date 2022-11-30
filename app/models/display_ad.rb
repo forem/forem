@@ -3,10 +3,11 @@ class DisplayAd < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
 
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_comments].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_sidebar post_comments].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
-                                            "Sidebar Right",
+                                            "Sidebar Right (Home)",
+                                            "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
   MAX_TAG_LIST_SIZE = 10
@@ -14,6 +15,7 @@ class DisplayAd < ApplicationRecord
   SIDEBAR_WIDTH = 350
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
+  enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy

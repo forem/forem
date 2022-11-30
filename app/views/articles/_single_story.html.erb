@@ -153,8 +153,8 @@
             class="c-btn c-btn--icon-alone bookmark-button"
             data-reactable-id="<%= story.id %>"
             data-article-author-id="<%= story.user_id %>"
-            aria-label="<%= t("views.articles.save.aria_label") %>"
-            title="<%= t("views.articles.save.title") %>">
+            aria-label="<%= t("views.articles.save.aria_label", title: story.title) %>"
+            title="<%= t("views.articles.save.title", title: story.title) %>">
             <span class="bm-initial">
               <%= inline_svg_tag("small-save.svg", alt: "", aria_hidden: true) %>
             </span>

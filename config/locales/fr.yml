@@ -196,10 +196,14 @@ fr:
         other: est la mauvaise longueur (devrait être %{count} caractères)
   time:
     formats:
+      admin_user: "%Y-%m-%d, %H:%M"
       comment: "%B %d, %Y"
+      email_verified: "%b %e '%y, %H:%M"
       github: "%b %d, %Y"
       json: "%b %e, %Y"
       medium: "%b %-d, %Y"
+      members: "%d %b"
+      members_with_year: "%d %b, %Y"
       reddit: "%b %e '%y"
       short: "%-e %b"
       short_with_yy: "%-e %b '%y"

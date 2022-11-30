@@ -1,13 +1,13 @@
 <div role="group" aria-labelledby="applied-filters" class="js-applied-filters hidden m:flex flex-wrap items-center gap-2 mb-4 px-2 xl:px-7">
-    <h2 id="applied-filters" class="screen-reader-only">Applied filters</h2>
+    <h2 id="applied-filters" class="screen-reader-only"><%= t("views.admin.users.filters.applied") %></h2>
     <% params[:roles]&.each do |role| %>
         <button
             data-filter-key="roles[]"
             data-filter-value="<%= role %>"
-            aria-label="Remove filter: <%= role %>"
+            aria-label="<%= t("views.admin.users.filters.aria_remove", value: t("views.admin.users.roles.#{role}")) %>"
             class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
             type="button">
-            <%= role %>
+            <%= t("views.admin.users.roles.#{role}") %>
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
@@ -15,7 +15,7 @@
         <button
             data-filter-key="statuses[]"
             data-filter-value="<%= status %>"
-            aria-label="Remove filter: <%= status %>"
+            aria-label="<%= t("views.admin.users.filters.aria_remove", value: t("views.admin.users.statuses.#{status}")) %>"
             class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
             type="button">
             <%= render "admin/users/index/status_indicator", status: status %>
@@ -27,7 +27,7 @@
         <button
             data-filter-key="organizations[]"
             data-filter-value="<%= org_id %>"
-            aria-label="Remove filter: <%= org.name %>"
+            aria-label="<%= t("views.admin.users.filters.aria_remove", value: org.name) %>"
             class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
             type="button">
             <%= org.name %>
@@ -37,16 +37,16 @@
     <% if params[:joining_start].present? || params[:joining_end].present? %>
      <button
             data-filter-key="joining_date"
-            aria-label="Remove filter: Joining date"
+            aria-label="<%= t("views.admin.users.filters.aria_remove", value: t("views.admin.users.filters.join")) %>"
             class="c-pill c-pill--action-icon c-pill--action-icon--destructive"
             type="button">
-            <% start_date = params[:joining_start].presence || "Community creation" %>
-            <% end_date = params[:joining_end].presence || "Today" %>
+            <% start_date = params[:joining_start].presence || t("views.admin.users.filters.creation") %>
+            <% end_date = params[:joining_end].presence || t("views.admin.users.filters.today") %>
             <%= start_date %> - <%= end_date %>
             <%= crayons_icon_tag("x.svg", class: "c-pill__action-icon", aria_hidden: true) %>
         </button>
     <% end %>
     <% if params[:roles] || params[:organizations] || params[:joining_start].present? || params[:joining_end].present? || params[:statuses] %>
-        <button class="js-clear-filters-btn c-btn" aria-label="Clear all filters">Clear all</button>
+        <button class="js-clear-filters-btn c-btn" aria-label="<%= t("views.admin.users.filters.aria_clear") %>"><%= t("views.admin.users.filters.clear") %></button>
     <% end %>
 </div>

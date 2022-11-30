@@ -103,6 +103,13 @@
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             <%= t("views.actions.share.facebook.text") %>
           </a>
+          <a
+            target="_blank"
+            class="crayons-link crayons-link--block"
+            rel="noopener"
+            href="https://toot.kytta.dev/?text=<%= u article_url(@article) %>">
+            <%= t("views.actions.share.mastodon.text") %>
+          </a>
         </div>
 
         <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" sharetext="<%= @article.description %>" template="web-share-button">
