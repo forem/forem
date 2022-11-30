@@ -81,7 +81,7 @@ A more complete overview of our stack is available in
 [our docs](https://developers.forem.com/technical-overview/stack).
 
 To **launch Forem in Gitpod**, navigate to
-[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
+[https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/Adarshagupta/forem).
 
 ### Prerequisites
 
