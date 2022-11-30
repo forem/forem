@@ -402,10 +402,12 @@
           }
         }
         &:hover {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         &.active {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         // &.selected {}
       }
