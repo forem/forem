@@ -1,3 +1,5 @@
+@import '../config/import';
+
 .crayons-tooltip {
   &__content {
     position: absolute;
@@ -15,9 +17,13 @@
     transition-delay: 250ms;
     z-index: var(--z-popover);
     border-radius: var(--radius);
-    width: max-content;
+    width: auto;
     opacity: var(--opacity-0);
     pointer-events: none;
+    @media (min-width: $breakpoint-m) and (max-width: $breakpoint-l) {
+      font-size: var(--fs-xs);
+      padding: var(--su-1) var(--su-2);
+    }
   }
 
   .js-focus-visible &__activator.focus-visible:focus,
