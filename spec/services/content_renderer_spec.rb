@@ -1,6 +1,49 @@
 require "rails_helper"
 
 RSpec.describe ContentRenderer do
+  describe "#finalize" do
+    let(:markdown) { "hello, hey" }
+    let(:expected_result) { "<p>hello, hey</p>\n\n" }
+    let(:mock_fixer) { class_double MarkdownProcessor::Fixer::FixAll }
+    let(:mock_front_matter_parser) { instance_double FrontMatterParser::Parser }
+    let(:mock_processor) { class_double MarkdownProcessor::Parser }
+    let(:fixed_markdown) { :fixed_markdown }
+    let(:parsed_contents) { Struct.new(:content).new(:parsed_content) }
+    let(:processed_contents) { instance_double MarkdownProcessor::Parser }
+
+    # rubocop:disable RSpec/InstanceVariable
+    before do
+      allow(mock_fixer).to receive(:call).and_return(fixed_markdown)
+      allow(mock_front_matter_parser).to receive(:call).with(fixed_markdown).and_return(parsed_contents)
+      allow(mock_processor).to receive(:new).and_return(processed_contents)
+      allow(processed_contents).to receive(:finalize).and_return(expected_result)
+
+      @original_fixer = described_class.fixer
+      @original_parser = described_class.front_matter_parser
+      @original_processor = described_class.processor
+
+      described_class.fixer = mock_fixer
+      described_class.front_matter_parser = mock_front_matter_parser
+      described_class.processor = mock_processor
+    end
+
+    after do
+      described_class.fixer = @original_fixer
+      described_class.front_matter_parser = @original_parser
+      described_class.processor = @original_processor
+    end
+    # rubocop:enable RSpec/InstanceVariable
+
+    it "is the result of fixing, parsing, and processing" do
+      result = described_class.new(markdown, source: nil, user: nil).finalize
+      expect(result).to eq(expected_result)
+      expect(mock_fixer).to have_received(:call)
+      expect(mock_front_matter_parser).to have_received(:call).with(fixed_markdown)
+      expect(mock_processor).to have_received(:new)
+      expect(processed_contents).to have_received(:finalize)
+    end
+  end
+
   context "when markdown is valid" do
     let(:markdown) { "# Hey\n\nHi, hello there, what's up?" }
     let(:expected_result) { <<~RESULT }

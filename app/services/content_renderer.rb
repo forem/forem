@@ -1,6 +1,7 @@
 class ContentRenderer
   class_attribute :fixer, default: MarkdownProcessor::Fixer::FixAll
-  class_attribute :parser, default: FrontMatterParser::Parser.new(:md)
+  class_attribute :front_matter_parser, default: FrontMatterParser::Parser.new(:md)
+  class_attribute :processor, default: MarkdownProcessor::Parser
 
   class ContentParsingError < StandardError
   end
@@ -17,7 +18,7 @@ class ContentRenderer
   end
 
   def processed
-    @processed ||= MarkdownProcessor::Parser.new(content, source: source, user: user)
+    @processed ||= processor.new(content, source: source, user: user)
   # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
   rescue StandardError => e
     raise ContentParsingError, e.message
@@ -39,15 +40,15 @@ class ContentRenderer
     raise ContentParsingError, e.message
   end
 
-  def parse(markdown)
-    parser.call(markdown)
+  def parse_front_matter(markdown)
+    front_matter_parser.call(markdown)
   # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
   rescue StandardError => e
     raise ContentParsingError, e.message
   end
 
   def parsed_input
-    @parsed_input = parse(fix(input))
+    @parsed_input = parse_front_matter(fix(input))
   # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
   rescue StandardError => e
     raise ContentParsingError, e.message
