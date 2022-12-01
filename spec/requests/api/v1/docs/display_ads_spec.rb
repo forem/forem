@@ -58,7 +58,8 @@ RSpec.describe "api/v1/display_ads" do
             display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                           description: "Potentially limits visitors to whom the ad is visible" },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
-                              description: "Identifies which area of site layout the ad can appear in" }
+                              description: "Identifies which area of site layout the ad can appear in" },
+            tags: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" }
           },
           required: %w[name body_markdown placement_area]
         }
@@ -179,7 +180,8 @@ RSpec.describe "api/v1/display_ads" do
             display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                           description: "Potentially limits visitors to whom the ad is visible" },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
-                              description: "Identifies which area of site layout the ad can appear in" }
+                              description: "Identifies which area of site layout the ad can appear in" },
+            tags: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" }
           },
           required: %w[name body_markdown placement_area]
         }

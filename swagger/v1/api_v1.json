@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 22114,
-                    "title": "Rosemary Sutcliff172",
-                    "description": "Cronut pbr&amp;b stumptown craft beer. Plaid poutine flexitarian offal slow-carb chillwave.  Wolf...",
-                    "readable_publish_date": "Nov 30",
-                    "slug": "rosemary-sutcliff172-2e87",
-                    "path": "/username382/rosemary-sutcliff172-2e87",
-                    "url": "http://localhost:3000/username382/rosemary-sutcliff172-2e87",
+                    "id": 22388,
+                    "title": "The House of Mirth172",
+                    "description": "Bitters hoodie plaid. Artisan try-hard gentrify. Whatever stumptown shabby chic messenger bag...",
+                    "readable_publish_date": "Dec 1",
+                    "slug": "the-house-of-mirth172-1ifh",
+                    "path": "/username382/the-house-of-mirth172-1ifh",
+                    "url": "http://localhost:3000/username382/the-house-of-mirth172-1ifh",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-30T17:22:53Z",
+                    "published_timestamp": "2022-12-01T12:31:45Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
-                    "social_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
-                    "canonical_url": "http://localhost:3000/username382/rosemary-sutcliff172-2e87",
-                    "created_at": "2022-11-30T17:22:54Z",
+                    "cover_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
+                    "social_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
+                    "canonical_url": "http://localhost:3000/username382/the-house-of-mirth172-1ifh",
+                    "created_at": "2022-12-01T12:31:45Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-30T17:22:53Z",
-                    "last_comment_at": "2022-11-30T17:22:53Z",
+                    "published_at": "2022-12-01T12:31:45Z",
+                    "last_comment_at": "2022-12-01T12:31:45Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Carmelita \"Jana\" \\:/ Hamill",
+                      "name": "Desire \"Waylon\" \\:/ Nader",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 36602,
+                      "user_id": 37258,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/36602/9b29fa6c-c3e1-4367-a1af-cc20a98c6e2d.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/36602/9b29fa6c-c3e1-4367-a1af-cc20a98c6e2d.jpeg"
+                      "profile_image": "/uploads/user/profile_image/37258/8684a75a-f2cb-41d0-bc37-3ed1430cb5a1.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/37258/8684a75a-f2cb-41d0-bc37-3ed1430cb5a1.jpeg"
                     },
                     "organization": {
-                      "name": "Luettgen Group",
+                      "name": "Towne Inc",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2581/4b8bcbba-cf00-44fc-b48d-e7b6675412b0.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2581/4b8bcbba-cf00-44fc-b48d-e7b6675412b0.png"
+                      "profile_image": "/uploads/organization/profile_image/2717/36b77304-cabe-4994-b80d-536038a2140a.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2717/36b77304-cabe-4994-b80d-536038a2140a.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -259,12 +259,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 533,
+                  "id": 565,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-30T12:22:54.630-05:00",
+                  "created_at": "2022-12-01T14:31:46.555+02:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -274,7 +274,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-30T12:22:54.630-05:00",
+                  "updated_at": "2022-12-01T14:31:46.555+02:00",
                   "tag_list": []
                 }
               }
@@ -360,6 +360,10 @@
                       "post_comments"
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
                 "required": ["name", "body_markdown", "placement_area"]
@@ -394,22 +398,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 534,
+                  "id": 566,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-30T12:22:54.778-05:00",
+                  "created_at": "2022-12-01T14:31:46.697+02:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 534",
-                  "organization_id": 2582,
+                  "name": "Display Ad 566",
+                  "organization_id": 2718,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-30T12:22:54.780-05:00",
+                  "updated_at": "2022-12-01T14:31:46.700+02:00",
                   "tag_list": []
                 }
               }
@@ -466,19 +470,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 535",
-                  "organization_id": 2583,
+                  "name": "Display Ad 567",
+                  "organization_id": 2719,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 535,
+                  "id": 567,
                   "clicks_count": 0,
-                  "created_at": "2022-11-30T12:22:54.955-05:00",
+                  "created_at": "2022-12-01T14:31:46.871+02:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-30T12:22:54.959-05:00",
+                  "updated_at": "2022-12-01T14:31:46.874+02:00",
                   "tag_list": []
                 }
               }
@@ -549,6 +553,10 @@
                       "post_comments"
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
                 "required": ["name", "body_markdown", "placement_area"]
@@ -648,8 +656,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1228,
-                  "reactable_id": 22118,
+                  "id": 1242,
+                  "reactable_id": 22392,
                   "reactable_type": "Article"
                 }
               }
@@ -711,8 +719,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1230,
-                  "reactable_id": 22120,
+                  "id": 1244,
+                  "reactable_id": 22394,
                   "reactable_type": "Article"
                 }
               }
