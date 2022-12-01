@@ -70,6 +70,9 @@ function getPageEntries() {
   });
 }
 
+/**
+ * Initializes the left hand side hamburger menu
+ */
 function initializeNav() {
   const { currentPage } = document.getElementById('page-content').dataset;
   const menuTriggers = [...document.querySelectorAll('.js-hamburger-trigger')];
@@ -85,6 +88,9 @@ if (memberMenu) {
   initializeMemberMenu(memberMenu, menuNavButton);
 }
 
+/**
+ * Fetches the html for the navigation_links from an endpoint and dynamically insterts it in the DOM.
+ */
 async function getNavigation() {
   const placeholderElement = document.getElementsByClassName(
     'js-navigation-links-container',
