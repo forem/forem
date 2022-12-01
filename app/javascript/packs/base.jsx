@@ -75,7 +75,9 @@ function getPageEntries() {
  */
 function initializeNav() {
   const { currentPage } = document.getElementById('page-content').dataset;
-  const menuTriggers = [...document.querySelectorAll('.js-hamburger-trigger')];
+  const menuTriggers = [
+    ...document.querySelectorAll('.js-hamburger-trigger, .hamburger a'),
+  ];
 
   setCurrentPageIconLink(currentPage, getPageEntries());
   initializeMobileMenu(menuTriggers);
