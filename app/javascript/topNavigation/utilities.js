@@ -42,7 +42,7 @@ export function isTouchDevice() {
 /**
  * Initializes the member navigation menu events.
  *
- * @param {HTMLElement} memberTopMenu The member menu in the top navigation.
+ * @param {HTMLElement} memberTopMenu The member menu in the top right navigation.
  * @param {HTMLElement} menuNavButton The button to activate the member navigation menu.
  */
 export function initializeMemberMenu(memberTopMenu, menuNavButton) {
