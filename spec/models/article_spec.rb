@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Article, type: :model do
+RSpec.describe Article do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate!
@@ -162,7 +162,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#canonical_url_must_not_have_spaces" do
-      let!(:article) { build :article, user: user }
+      let!(:article) { build(:article, user: user) }
 
       it "is valid without spaces" do
         valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
@@ -577,8 +577,9 @@ RSpec.describe Article, type: :model do
       end
 
       it "keeps published at when trying to set published_at" do
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at: 2022-05-12 18:00 +0300---\n\n"
         frontmatter_article.update(body_markdown: new_body_markdown)
+        frontmatter_article.reload
         expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
       end
 
@@ -587,8 +588,9 @@ RSpec.describe Article, type: :model do
         time_str = scheduled_time.strftime("%d/%m/%Y %H:%M %z")
         scheduled_body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{time_str}\n---\n\n"
         frontmatter_scheduled_article = create(:article, body_markdown: scheduled_body_markdown)
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
         frontmatter_scheduled_article.update(body_markdown: new_body_markdown)
+        frontmatter_scheduled_article.reload
         expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
       end
     end
