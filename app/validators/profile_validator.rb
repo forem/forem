@@ -17,7 +17,7 @@ class ProfileValidator < ActiveModel::Validator
     # instances, so it should be safe to validate. The method itself also guards
     # against the field's absence.
     record.errors.add(:summary, I18n.t("validators.profile_validator.too_long"),
-message: "bio is too long") if summary_too_long?(record)
+                      message: "bio is too long") if summary_too_long?(record)
 
     ProfileField.all.each do |field|
       attribute = field.attribute_name
