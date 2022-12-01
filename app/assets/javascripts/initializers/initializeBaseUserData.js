@@ -115,9 +115,7 @@ function setCurrentUserToNavBar(user) {
 function setShieldIconVisibility(user){
   const moderatorForTags = user.moderator_for_tags
   if(user.admin || moderatorForTags.length > 0){
-    document
-      .getElementsByClassName('trusted-visible-block')[0]
-      .classList.remove('hidden');
+    document.getElementById('mod-shield-icon')?.classList.remove('hidden');
   }
 }
 
