@@ -9,12 +9,8 @@
     "/api/articles": {
       "get": {
         "summary": "Published articles",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -71,11 +67,7 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": [
-                "fresh",
-                "rising",
-                "all"
-              ]
+              "enum": ["fresh", "rising", "all"]
             },
             "example": "fresh"
           },
@@ -111,47 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 243,
-                    "title": "This Lime Tree Bower172",
-                    "description": "Plaid franzen tote bag tofu dreamcatcher austin. Aesthetic pbr&amp;b 3 wolf moon mixtape. Kickstarter...",
-                    "readable_publish_date": "Nov 22",
-                    "slug": "this-lime-tree-bower172-13d4",
-                    "path": "/username378/this-lime-tree-bower172-13d4",
-                    "url": "http://localhost:3000/username378/this-lime-tree-bower172-13d4",
+                    "id": 191,
+                    "title": "The Cricket on the Hearth172",
+                    "description": "Banjo biodiesel 8-bit semiotics diy blue bottle helvetica. You probably haven't heard of them...",
+                    "readable_publish_date": "Dec 1",
+                    "slug": "the-cricket-on-the-hearth172-37n0",
+                    "path": "/username378/the-cricket-on-the-hearth172-37n0",
+                    "url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-22T15:41:20Z",
+                    "published_timestamp": "2022-12-01T14:54:49Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
-                    "social_image": "http://localhost:3000/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
-                    "canonical_url": "http://localhost:3000/username378/this-lime-tree-bower172-13d4",
-                    "created_at": "2022-11-22T15:41:20Z",
+                    "cover_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "social_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "canonical_url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
+                    "created_at": "2022-12-01T14:54:49Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-22T15:41:20Z",
-                    "last_comment_at": "2022-11-22T15:41:20Z",
+                    "published_at": "2022-12-01T14:54:49Z",
+                    "last_comment_at": "2022-12-01T14:54:49Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "discuss"
-                    ],
+                    "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Candis \"Brady\" \\:/ Weimann",
+                      "name": "Charity \"Yong\" \\:/ Jast",
                       "username": "username378",
                       "twitter_username": "twitter378",
                       "github_username": "github378",
-                      "user_id": 470,
+                      "user_id": 379,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/470/8d5ebdf8-aa20-48e9-b0ef-028cfacbe26f.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/470/8d5ebdf8-aa20-48e9-b0ef-028cfacbe26f.jpeg"
+                      "profile_image": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg"
                     },
                     "organization": {
-                      "name": "Hansen-Turner",
+                      "name": "Mayert LLC",
                       "username": "org60",
                       "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/86/d8bc51d9-ed07-4efd-9806-10901c0e488c.png",
-                      "profile_image_90": "/uploads/organization/profile_image/86/d8bc51d9-ed07-4efd-9806-10901c0e488c.png"
+                      "profile_image": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png",
+                      "profile_image_90": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -172,12 +162,53 @@
         }
       }
     },
+    "/api/articles/me/all": {
+      "get": {
+        "summary": "User's all articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -236,18 +267,14 @@
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a list of all display ads.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [
-
-                ]
+                "example": []
               }
             }
           },
@@ -268,9 +295,7 @@
     "/api/display_ads/{id}": {
       "get": {
         "summary": "display ad",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
         "parameters": [
           {
@@ -297,20 +322,18 @@
                   "body_markdown": "Hello _hey_ Hey hey 5",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-22T16:41:21.333+01:00",
+                  "created_at": "2022-12-01T15:54:50.529+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Display Ad 5",
-                  "organization_id": 87,
+                  "organization_id": 61,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-22T16:41:21.336+01:00",
-                  "tag_list": [
-
-                  ]
+                  "updated_at": "2022-12-01T15:54:50.531+01:00",
+                  "tag_list": []
                 }
               }
             }
@@ -343,9 +366,7 @@
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
         "parameters": [
           {
@@ -354,11 +375,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -376,11 +393,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -393,7 +406,7 @@
                   "result": "create",
                   "category": "like",
                   "id": 1,
-                  "reactable_id": 247,
+                  "reactable_id": 195,
                   "reactable_type": "Article"
                 }
               }
@@ -416,9 +429,7 @@
     "/api/reactions": {
       "post": {
         "summary": "create reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
         "parameters": [
           {
@@ -427,11 +438,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -449,11 +456,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -466,7 +469,7 @@
                   "result": "none",
                   "category": "like",
                   "id": 3,
-                  "reactable_id": 249,
+                  "reactable_id": 197,
                   "reactable_type": "Article"
                 }
               }
@@ -489,16 +492,17 @@
     "/api/users/{id}": {
       "get": {
         "summary": "A User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
         "operationId": "getUser",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -511,9 +515,7 @@
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
         "operationId": "unpublishUser",
         "parameters": [
@@ -562,9 +564,7 @@
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
         "operationId": "suspendUser",
         "parameters": [
@@ -619,9 +619,7 @@
   ],
   "security": [
     {
-      "api-key": [
-
-      ]
+      "api-key": []
     }
   ],
   "components": {
