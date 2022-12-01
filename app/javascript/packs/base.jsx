@@ -64,15 +64,10 @@ function getPageEntries() {
 
 function initializeNav() {
   const { currentPage } = document.getElementById('page-content').dataset;
-  const menuTriggers = [
-    ...document.querySelectorAll(
-      '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
-    ),
-  ];
-  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
+  const menuTriggers = [...document.querySelectorAll('.js-hamburger-trigger')];
 
   setCurrentPageIconLink(currentPage, getPageEntries());
-  initializeMobileMenu(menuTriggers, moreMenus);
+  initializeMobileMenu(menuTriggers);
 }
 
 const memberMenu = document.getElementById('crayons-header__menu');
