@@ -9,6 +9,14 @@ import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 
+Document.prototype.ready = new Promise((resolve) => {
+  if (document.readyState !== 'loading') {
+    return resolve();
+  }
+  document.addEventListener('DOMContentLoaded', () => resolve());
+  return null;
+});
+
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   preactImport: undefined,
@@ -98,7 +106,6 @@ waitOnBaseData()
   .then(() => {
     InstantClick.on('change', () => {
       initializeNav();
-      // getNavigation();
     });
 
     if (Runtime.currentMedium() === 'ForemWebView') {
@@ -115,8 +122,8 @@ waitOnBaseData()
     Honeybadger.notify(error);
   });
 
+// we need to call initializeNav here for the initial page load
 initializeNav();
-// getNavigation();
 
 async function loadCreatorSettings() {
   try {
@@ -138,10 +145,12 @@ if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
 
-const hamburgerTrigger = document.getElementsByClassName(
-  'js-hamburger-trigger',
-)[0];
-hamburgerTrigger.addEventListener('click', getNavigation);
+document.ready.then(() => {
+  const hamburgerTrigger = document.getElementsByClassName(
+    'js-hamburger-trigger',
+  )[0];
+  hamburgerTrigger.addEventListener('click', getNavigation);
+});
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
