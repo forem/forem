@@ -163,6 +163,9 @@
   --reaction-save-bg: rgba(var(--indigo-600), 0.1);
   --reaction-comment-color: rgb(var(--yellow-500));
   --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
+
+  /* Code */
+  --code-inline-bg: rgb(var(--black), 0.1);
 }
 
 :root {

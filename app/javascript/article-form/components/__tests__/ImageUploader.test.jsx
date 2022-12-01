@@ -108,7 +108,7 @@ describe('<ImageUploader />', () => {
 
       waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
-      expect(await findByTitle(/copy markdown for image/i)).toBeInTheDocument();
+      expect(await findByTitle(/Copy/i)).toBeInTheDocument();
 
       expect(getByDisplayValue(/fake-link.jpg/i)).toBeInTheDocument();
     });
@@ -189,7 +189,7 @@ describe('<ImageUploader />', () => {
       );
       fireEvent(document, event);
 
-      expect(await findByTitle(/copy markdown for image/i)).toBeInTheDocument();
+      expect(await findByTitle(/Copy/i)).toBeInTheDocument();
     });
   });
 
