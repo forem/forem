@@ -69,6 +69,9 @@ class AsyncInfoController < ApplicationController
         other_nav_links: NavigationLink.other_section.ordered
       }
     end
+
+    # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
+    # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false
   end
 end
