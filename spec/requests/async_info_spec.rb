@@ -41,7 +41,7 @@ RSpec.describe "AsyncInfo" do
     it "returns the correct 'default' navigation links" do
       default_navigation_link = create(:navigation_link)
       get "/async_info/navigation_links"
-      expect(response.body).to include(default_navigation_link.name)
+      expect(response.body).to include CGI.escapeHTML(default_navigation_link.name)
       expect(response.body).to include(default_navigation_link.url)
       expect(response.body).to include(default_navigation_link.icon)
     end
@@ -51,7 +51,7 @@ RSpec.describe "AsyncInfo" do
       other_navigation_link.other_section!
 
       get "/async_info/navigation_links"
-      expect(response.body).to include(other_navigation_link.name)
+      expect(response.body).to include CGI.escapeHTML(other_navigation_link.name)
       expect(response.body).to include(other_navigation_link.url)
       expect(response.body).to include(other_navigation_link.icon)
     end
