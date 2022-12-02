@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 22388,
-                    "title": "The House of Mirth172",
-                    "description": "Bitters hoodie plaid. Artisan try-hard gentrify. Whatever stumptown shabby chic messenger bag...",
-                    "readable_publish_date": "Dec 1",
-                    "slug": "the-house-of-mirth172-1ifh",
-                    "path": "/username382/the-house-of-mirth172-1ifh",
-                    "url": "http://localhost:3000/username382/the-house-of-mirth172-1ifh",
+                    "id": 22664,
+                    "title": "The Far-Distant Oxus172",
+                    "description": "Church-key ennui swag polaroid sustainable pop-up cray. Scenester readymade 3 wolf moon kinfolk...",
+                    "readable_publish_date": "Dec 2",
+                    "slug": "the-far-distant-oxus172-oil",
+                    "path": "/username382/the-far-distant-oxus172-oil",
+                    "url": "http://localhost:3000/username382/the-far-distant-oxus172-oil",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-01T12:31:45Z",
+                    "published_timestamp": "2022-12-02T14:12:26Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                    "social_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                    "canonical_url": "http://localhost:3000/username382/the-house-of-mirth172-1ifh",
-                    "created_at": "2022-12-01T12:31:45Z",
+                    "cover_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
+                    "social_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
+                    "canonical_url": "http://localhost:3000/username382/the-far-distant-oxus172-oil",
+                    "created_at": "2022-12-02T14:12:26Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-01T12:31:45Z",
-                    "last_comment_at": "2022-12-01T12:31:45Z",
+                    "published_at": "2022-12-02T14:12:26Z",
+                    "last_comment_at": "2022-12-02T14:12:26Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Desire \"Waylon\" \\:/ Nader",
+                      "name": "Lucius \"Kaylene\" \\:/ Kuhlman",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 37258,
+                      "user_id": 37900,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/37258/8684a75a-f2cb-41d0-bc37-3ed1430cb5a1.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/37258/8684a75a-f2cb-41d0-bc37-3ed1430cb5a1.jpeg"
+                      "profile_image": "/uploads/user/profile_image/37900/00e3877b-a811-44d3-a940-4f62a7656ac2.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/37900/00e3877b-a811-44d3-a940-4f62a7656ac2.jpeg"
                     },
                     "organization": {
-                      "name": "Towne Inc",
+                      "name": "Mitchell Inc",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2717/36b77304-cabe-4994-b80d-536038a2140a.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2717/36b77304-cabe-4994-b80d-536038a2140a.png"
+                      "profile_image": "/uploads/organization/profile_image/2843/bd04c003-732c-4146-99b9-88b5dcb17322.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2843/bd04c003-732c-4146-99b9-88b5dcb17322.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -259,12 +259,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 565,
+                  "id": 588,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-01T14:31:46.555+02:00",
+                  "created_at": "2022-12-02T15:12:27.163+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -274,7 +274,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-01T14:31:46.555+02:00",
+                  "updated_at": "2022-12-02T15:12:27.163+01:00",
                   "tag_list": []
                 }
               }
@@ -398,22 +398,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 566,
+                  "id": 589,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-01T14:31:46.697+02:00",
+                  "created_at": "2022-12-02T15:12:27.336+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 566",
-                  "organization_id": 2718,
+                  "name": "Display Ad 589",
+                  "organization_id": 2844,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-01T14:31:46.700+02:00",
+                  "updated_at": "2022-12-02T15:12:27.339+01:00",
                   "tag_list": []
                 }
               }
@@ -470,19 +470,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 567",
-                  "organization_id": 2719,
+                  "name": "Display Ad 590",
+                  "organization_id": 2845,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 567,
+                  "id": 590,
                   "clicks_count": 0,
-                  "created_at": "2022-12-01T14:31:46.871+02:00",
+                  "created_at": "2022-12-02T15:12:27.696+01:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-01T14:31:46.874+02:00",
+                  "updated_at": "2022-12-02T15:12:27.701+01:00",
                   "tag_list": []
                 }
               }
@@ -656,8 +656,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1242,
-                  "reactable_id": 22392,
+                  "id": 1256,
+                  "reactable_id": 22668,
                   "reactable_type": "Article"
                 }
               }
@@ -719,8 +719,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1244,
-                  "reactable_id": 22394,
+                  "id": 1258,
+                  "reactable_id": 22670,
                   "reactable_type": "Article"
                 }
               }
@@ -736,6 +736,26 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "A User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
           }
         }
       }
