@@ -127,8 +127,6 @@ namespace :admin do
   scope :advanced do
     resources :broadcasts
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :secrets, only: %i[index]
-    put "secrets", to: "secrets#update"
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
