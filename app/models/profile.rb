@@ -2,6 +2,7 @@
 #        :delete for the relationship.  That means no before/after
 #        destroy callbacks will be called on this object.
 class Profile < ApplicationRecord
+  extend ActiveModel::Translation
   belongs_to :user
 
   validates :user_id, uniqueness: true
