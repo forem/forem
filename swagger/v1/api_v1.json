@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 22664,
-                    "title": "The Far-Distant Oxus172",
-                    "description": "Church-key ennui swag polaroid sustainable pop-up cray. Scenester readymade 3 wolf moon kinfolk...",
+                    "id": 23864,
+                    "title": "A Time to Kill172",
+                    "description": "Pabst chia pork belly cronut keffiyeh. Green juice plaid single-origin coffee bitters locavore yolo...",
                     "readable_publish_date": "Dec 2",
-                    "slug": "the-far-distant-oxus172-oil",
-                    "path": "/username382/the-far-distant-oxus172-oil",
-                    "url": "http://localhost:3000/username382/the-far-distant-oxus172-oil",
+                    "slug": "a-time-to-kill172-1ef0",
+                    "path": "/username382/a-time-to-kill172-1ef0",
+                    "url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-02T14:12:26Z",
+                    "published_timestamp": "2022-12-02T15:14:53Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
-                    "social_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
-                    "canonical_url": "http://localhost:3000/username382/the-far-distant-oxus172-oil",
-                    "created_at": "2022-12-02T14:12:26Z",
+                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "canonical_url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
+                    "created_at": "2022-12-02T15:14:53Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-02T14:12:26Z",
-                    "last_comment_at": "2022-12-02T14:12:26Z",
+                    "published_at": "2022-12-02T15:14:53Z",
+                    "last_comment_at": "2022-12-02T15:14:53Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Lucius \"Kaylene\" \\:/ Kuhlman",
+                      "name": "Melanie \"Sammy\" \\:/ Greenfelder",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 37900,
+                      "user_id": 39729,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/37900/00e3877b-a811-44d3-a940-4f62a7656ac2.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/37900/00e3877b-a811-44d3-a940-4f62a7656ac2.jpeg"
+                      "profile_image": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg"
                     },
                     "organization": {
-                      "name": "Mitchell Inc",
+                      "name": "Stanton, Gottlieb and Windler",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2843/bd04c003-732c-4146-99b9-88b5dcb17322.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2843/bd04c003-732c-4146-99b9-88b5dcb17322.png"
+                      "profile_image": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -150,6 +150,49 @@
                     }
                   }
                 ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/all": {
+      "get": {
+        "summary": "User's all articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -259,12 +302,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 588,
+                  "id": 604,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T15:12:27.163+01:00",
+                  "created_at": "2022-12-02T14:14:54.700-01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -274,7 +317,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T15:12:27.163+01:00",
+                  "updated_at": "2022-12-02T14:14:54.700-01:00",
                   "tag_list": []
                 }
               }
@@ -398,22 +441,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 589,
+                  "id": 605,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T15:12:27.336+01:00",
+                  "created_at": "2022-12-02T14:14:54.845-01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 589",
-                  "organization_id": 2844,
+                  "name": "Display Ad 605",
+                  "organization_id": 2969,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T15:12:27.339+01:00",
+                  "updated_at": "2022-12-02T14:14:54.848-01:00",
                   "tag_list": []
                 }
               }
@@ -470,19 +513,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 590",
-                  "organization_id": 2845,
+                  "name": "Display Ad 606",
+                  "organization_id": 2970,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 590,
+                  "id": 606,
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T15:12:27.696+01:00",
+                  "created_at": "2022-12-02T14:14:55.054-01:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T15:12:27.701+01:00",
+                  "updated_at": "2022-12-02T14:14:55.057-01:00",
                   "tag_list": []
                 }
               }
@@ -656,8 +699,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1256,
-                  "reactable_id": 22668,
+                  "id": 1282,
+                  "reactable_id": 23868,
                   "reactable_type": "Article"
                 }
               }
@@ -719,8 +762,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1258,
-                  "reactable_id": 22670,
+                  "id": 1284,
+                  "reactable_id": 23870,
                   "reactable_type": "Article"
                 }
               }
@@ -750,7 +793,10 @@
           {
             "name": "id",
             "in": "path",
-            "required": true
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
