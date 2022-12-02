@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "Api::V1::Docs::Users", type: :request do
+RSpec.describe "Api::V1::Docs::Users" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
@@ -28,7 +28,7 @@ or by the user's username.
 For complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser"
         operationId "getUser"
         produces "application/json"
-        parameter name: :id, in: :path, required: true
+        parameter name: :id, in: :path, required: true, type: :string
 
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
