@@ -445,14 +445,9 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
-    begin
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError, Psych::DisallowedClass
-      # if frontmatter is invalid, still render editor with errors instead of 500ing
-      true
-    end
+    front_matter.any? && front_matter["title"].present?
+  rescue ContentRenderer::ContentParsingError
+    true
   end
 
   def class_name
