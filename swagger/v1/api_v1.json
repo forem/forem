@@ -104,44 +104,44 @@
                   {
                     "type_of": "article",
                     "id": 191,
-                    "title": "An Acceptable Time172",
-                    "description": "Shabby chic wayfarers normcore marfa carry. Schlitz kinfolk +1 kickstarter pitchfork cardigan 90's....",
-                    "readable_publish_date": "Nov 17",
-                    "slug": "an-acceptable-time172-25ik",
-                    "path": "/username378/an-acceptable-time172-25ik",
-                    "url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
+                    "title": "The Cricket on the Hearth172",
+                    "description": "Banjo biodiesel 8-bit semiotics diy blue bottle helvetica. You probably haven't heard of them...",
+                    "readable_publish_date": "Dec 1",
+                    "slug": "the-cricket-on-the-hearth172-37n0",
+                    "path": "/username378/the-cricket-on-the-hearth172-37n0",
+                    "url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-17T09:30:31Z",
+                    "published_timestamp": "2022-12-01T14:54:49Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "social_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "canonical_url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
-                    "created_at": "2022-11-17T09:30:31Z",
+                    "cover_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "social_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "canonical_url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
+                    "created_at": "2022-12-01T14:54:49Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-17T09:30:31Z",
-                    "last_comment_at": "2022-11-17T09:30:31Z",
+                    "published_at": "2022-12-01T14:54:49Z",
+                    "last_comment_at": "2022-12-01T14:54:49Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Melaine \"Quinn\" \\:/ Goodwin",
+                      "name": "Charity \"Yong\" \\:/ Jast",
                       "username": "username378",
                       "twitter_username": "twitter378",
                       "github_username": "github378",
-                      "user_id": 386,
+                      "user_id": 379,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg"
+                      "profile_image": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg"
                     },
                     "organization": {
-                      "name": "Baumbach Group",
+                      "name": "Mayert LLC",
                       "username": "org60",
                       "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png",
-                      "profile_image_90": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png"
+                      "profile_image": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png",
+                      "profile_image_90": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -150,6 +150,49 @@
                     }
                   }
                 ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/all": {
+      "get": {
+        "summary": "User's all articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -274,22 +317,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 10,
+                  "id": 5,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 5",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-11-17T10:30:32.066+01:00",
+                  "created_at": "2022-12-01T15:54:50.529+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 10",
-                  "organization_id": 66,
+                  "name": "Display Ad 5",
+                  "organization_id": 61,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-11-17T10:30:32.069+01:00",
+                  "updated_at": "2022-12-01T15:54:50.531+01:00",
                   "tag_list": []
                 }
               }
@@ -442,6 +485,29 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "A User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
           }
         }
       }

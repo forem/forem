@@ -3,8 +3,9 @@ require "swagger_helper"
 
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
+# rubocop:disable Layout/LineLength
 
-RSpec.describe "Api::V1::Docs::Articles", type: :request do
+RSpec.describe "Api::V1::Docs::Articles" do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss", published: true) }
@@ -102,6 +103,43 @@ belonging to the requested collection, ordered by ascending publication date.",
     end
   end
 
+  describe "GET /articles/me" do
+    path "/api/articles/me/all" do
+      get "User's all articles" do
+        tags "articles"
+        description "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.
+
+\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
+
+It will return both published and unpublished articles with pagination.
+
+Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.
+
+By default a page will contain 30 articles."
+        operationId "getUserArticles"
+        produces "application/json"
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
+
+        response "200", "A List of the authenticated user's Articles" do
+          let(:"api-key") { api_secret.secret }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "PUT /articles/:id/unpublish" do
     before do
       user.add_role(:admin)
@@ -172,4 +210,5 @@ will remain."
   end
   # rubocop:enable RSpec/VariableName
   # rubocop:enable RSpec/EmptyExampleGroup
+  # rubocop:enable Layout/LineLength
 end
