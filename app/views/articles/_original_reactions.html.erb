@@ -1,0 +1,44 @@
+<%= render partial: "articles/reaction_button",
+           locals: {
+             category: :like,
+             description: t("views.reactions.like.title"),
+             image_path: "heart.svg",
+             image_active_path: "heart-filled.svg",
+             aria_label: t("views.reactions.like.aria_label")
+           } %>
+
+<% if FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments) %>
+  <button
+    id="reaction-butt-comment"
+    aria-label="<%= t("views.articles.jump_to_comments.aria_label") %>"
+    aria-pressed="false"
+    class="crayons-reaction crayons-reaction--comment crayons-tooltip__activator relative"
+    data-category="comment">
+      <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+        <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
+      </span>
+      <span class="crayons-reaction__count" id="reaction-number-comment"><%= @article.comments_count %></span>
+
+      <span data-testid="tooltip" class="crayons-tooltip__content">
+        <%= t("views.articles.jump_to_comments.label") %>
+      </span>
+  </button>
+<% else %>
+  <%= render partial: "articles/reaction_button",
+             locals: {
+               category: :unicorn,
+               description: t("views.reactions.unicorn.title"),
+               image_path: "unicorn.svg",
+               image_active_path: "unicorn-filled.svg",
+               aria_label: t("views.reactions.unicorn.aria_label")
+             } %>
+<% end %>
+
+<%= render partial: "articles/reaction_button",
+           locals: {
+             category: :readinglist,
+             description: t("views.reactions.readingList.title"),
+             image_path: "save.svg",
+             image_active_path: "save-filled.svg",
+             aria_label: t("views.reactions.readingList.aria_label")
+           } %>

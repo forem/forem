@@ -13,6 +13,10 @@ class ReactionCategory
       list.filter_map { |category| category.slug if category.privileged? && category.negative? }
     end
 
+    def for_view
+      list.sort_by(&:position).filter_map { |category| category if category.visible_to_public? }
+    end
+
     def public
       list.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
     end

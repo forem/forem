@@ -1,0 +1,10 @@
+<% ReactionCategory.for_view.each do |reaction_type| %>
+  <%= render partial: "articles/reaction_button",
+             locals: {
+               category: reaction_type.slug.to_sym,
+               description: t("views.reactions.#{reaction_type.slug}.title"),
+               image_path: "#{reaction_type.icon}.svg",
+               image_active_path: "heart-filled.svg",
+               aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
+             } %>
+<% end %>

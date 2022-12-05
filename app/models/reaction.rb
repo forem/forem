@@ -55,10 +55,7 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        reaction_types = %w[like readinglist]
-        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
-          reaction_types << "unicorn"
-        end
+        reaction_types = public_reaction_types
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -73,6 +70,19 @@ class Reaction < ApplicationRecord
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
+    end
+
+    def public_reaction_types
+      if FeatureFlag.enabled?(:multiple_reactions)
+        reaction_types = ReactionCategory.public
+      else
+        reaction_types = %w[like readinglist]
+        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
+          reaction_types << "unicorn"
+        end
+      end
+
+      reaction_types
     end
 
     # @param user [User] the user who might be spamming the system

@@ -1,13 +1,25 @@
 ---
 like:
   position: 1
-  icon: later
+  name: Like
+  icon: heart
 readinglist:
+  position: 5
+  icon: save
+lightbulb:
   position: 2
-  icon: later
+  icon: twemoji/bulb
+rocket:
+  position: 3
+  icon: twemoji/rocket
+raised_hands:
+  position: 4
+  icon: twemoji/raised_hands
 unicorn:
   position: 3
-  icon: later
+  name: Unicorn
+  icon: unicorn
+  published: false
 thumbsup:
   privileged: true
   score: 5.0
@@ -16,6 +28,7 @@ thumbsdown:
   score: -10.0
 vomit:
   privileged: true
+  name: Vomit
   score: -50.0
 thinking:
   published: false
