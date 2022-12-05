@@ -1,6 +1,6 @@
 <fieldset class="config-authentication-form">
   <div class="crayons-field">
-    <%= admin_config_label :"#{provider.provider_name}_key" %>
+    <%= admin_config_label :"#{provider.display_provider_name}_key" %>
     <p class="crayons-field__description">
       <%= Constants::Settings::Authentication.details[:"#{provider.provider_name}_key"][:description] %>
     </p>
@@ -10,7 +10,7 @@
                      placeholder: Constants::Settings::Authentication.details[:"#{provider.provider_name}_key"][:placeholder] %>
   </div>
   <div class="crayons-field">
-    <%= admin_config_label :"#{provider.provider_name}_secret" %>
+    <%= admin_config_label :"#{provider.display_provider_name}_secret" %>
     <p class="crayons-field__description">
       <%= Constants::Settings::Authentication.details[:"#{provider.provider_name}_secret"][:description] %>
     <p>

@@ -37,10 +37,16 @@ module Authentication
     end
 
     def self.available_providers
+      # Both Twitter2 (OAuth 2 implementation) and Twitter (old implementation) should
+      # never be available at the same time. The FeatureFlag toggles between them
       if FeatureFlag.enabled?(:twitter_oauth2)
-        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject { |name| name == Authentication::Providers::Twitter }
+        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject do |name|
+          name == Authentication::Providers::Twitter
+        end
       else
-        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject { |name| name == Authentication::Providers::Twitter2 }
+        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject do |name|
+          name == Authentication::Providers::Twitter2
+        end
       end
     end
 

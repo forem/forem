@@ -2,8 +2,8 @@
   <% authentication_enabled_providers.each do |provider| %>
     <% next unless display_social_login?(provider.provider_name) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
-      <%= f.button type: :submit, class: "crayons-btn crayons-btn--l crayons-btn--brand-#{provider.provider_name} crayons-btn--icon-left grow-1 whitespace-nowrap" do %>
-        <%= crayons_icon_tag(provider.provider_name, aria_hidden: true, title: provider.provider_name) %>
+      <%= f.button type: :submit, class: "crayons-btn crayons-btn--l crayons-btn--brand-#{provider.display_provider_name} crayons-btn--icon-left grow-1 whitespace-nowrap" do %>
+        <%= crayons_icon_tag(provider.provider_name, aria_hidden: true, title: provider.display_provider_name) %>
         <%= t("views.auth.provider.text", action: params[:state] == "new-user" ? t("views.auth.provider.signup") : t("views.auth.provider.login"), provider: provider.official_name) %>
       <% end %>
     <% end %>

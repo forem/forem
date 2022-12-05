@@ -37,12 +37,21 @@ module Authentication
         name.demodulize.underscore.to_sym
       end
 
+      def self.display_provider_name
+        return :twitter if provider_name == :twitter2
+
+        provider_name
+      end
+
       def self.user_username_field
         return :twitter_username if provider_name == :twitter2
+
         "#{provider_name}_username".to_sym
       end
 
       def self.official_name
+        return "Twitter" if name.demodulize == "Twitter2"
+
         name.demodulize
       end
 
