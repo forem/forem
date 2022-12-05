@@ -37,7 +37,11 @@ module Authentication
     end
 
     def self.available_providers
-      Authentication::Providers::Provider.subclasses.sort_by(&:name)
+      if FeatureFlag.enabled?(:twitter_oauth2)
+        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject { |name| name == Authentication::Providers::Twitter }
+      else
+        Authentication::Providers::Provider.subclasses.sort_by(&:name).reject { |name| name == Authentication::Providers::Twitter2 }
+      end
     end
 
     def self.available?(provider_name)
@@ -67,7 +71,7 @@ module Authentication
     end
 
     def self.username_fields
-      Authentication::Providers::Provider.subclasses.map(&:user_username_field).sort
+      Authentication::Providers::Provider.subclasses.map(&:user_username_field).uniq.sort
     end
   end
 end

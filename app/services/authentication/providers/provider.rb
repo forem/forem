@@ -38,6 +38,7 @@ module Authentication
       end
 
       def self.user_username_field
+        return :twitter_username if provider_name == :twitter2
         "#{provider_name}_username".to_sym
       end
 

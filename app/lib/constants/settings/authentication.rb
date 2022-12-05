@@ -86,6 +86,14 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.twitter_secret.description"),
             placeholder: ""
           },
+          twitter2_key: {
+            description: I18n.t("lib.constants.settings.authentication.twitter_key.description"),
+            placeholder: ""
+          },
+          twitter2_secret: {
+            description: I18n.t("lib.constants.settings.authentication.twitter_secret.description"),
+            placeholder: ""
+          },
           providers: {
             description: I18n.t("lib.constants.settings.authentication.providers.description"),
             placeholder: ""

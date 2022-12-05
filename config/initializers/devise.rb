@@ -12,6 +12,11 @@ TWITTER_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:consumer_secret] = Settings::Authentication.twitter_secret
 end
 
+TWITTER2_OMNIAUTH_SETUP = lambda do |env|
+  env["omniauth.strategy"].options[:consumer_key] = Settings::Authentication.twitter2_key
+  env["omniauth.strategy"].options[:consumer_secret] = Settings::Authentication.twitter2_secret
+end
+
 GITHUB_OMNIAUTH_SETUP = lambda do |env|
   env["omniauth.strategy"].options[:scope] = "user:email"
   env["omniauth.strategy"].options[:client_id] = Settings::Authentication.github_key
@@ -331,6 +336,7 @@ Devise.setup do |config|
   config.omniauth :google_oauth2, setup: GOOGLE_OAUTH2_OMNIAUTH_SETUP
   config.omniauth :apple, setup: APPLE_OMNIAUTH_SETUP
   config.omniauth :forem, setup: FOREM_OMNIAUTH_SETUP, strategy_class: OmniAuth::Strategies::Forem
+  config.omniauth :twitter2, setup: TWITTER2_OMNIAUTH_SETUP
   config.omniauth :twitter, setup: TWITTER_OMNIAUTH_SETUP
 
   # ==> Warden configuration

@@ -9,8 +9,13 @@ module AuthenticationHelper
 
   def authentication_enabled_providers
     Authentication::Providers.enabled.map do |provider_name|
-      Authentication::Providers.get!(provider_name)
-    end
+      if provider_name == :twitter && FeatureFlag.enabled?(:twitter_oauth2) ||
+        provider_name == :twitter2 && !FeatureFlag.enabled?(:twitter_oauth2)
+        nil
+      else
+        Authentication::Providers.get!(provider_name)
+      end
+    end.compact
   end
 
   def authentication_provider_enabled?(provider_name)
