@@ -445,9 +445,24 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    front_matter.any? && front_matter["title"].present?
+    if FeatureFlag.enabled?(:consistent_rendering)
+      front_matter.any? && front_matter["title"].present?
+    else
+      original_has_frontmatter?
+    end
   rescue ContentRenderer::ContentParsingError
     true
+  end
+
+  def original_has_frontmatter?
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
+    begin
+      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      parsed.front_matter["title"].present?
+    rescue Psych::SyntaxError, Psych::DisallowedClass
+      # if frontmatter is invalid, still render editor with errors instead of 500ing
+      true
+    end
   end
 
   def class_name
@@ -625,6 +640,14 @@ class Article < ApplicationRecord
   delegate :front_matter, to: :processed_content
 
   def evaluate_markdown
+    if FeatureFlag.enabled?(:consistent_rendering)
+      extracted_evaluate_markdown
+    else
+      original_evaluate_markdown
+    end
+  end
+
+  def extracted_evaluate_markdown
     return unless processed_content
 
     self.reading_time = processed_content.calculate_reading_time
@@ -638,6 +661,24 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def original_evaluate_markdown
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
+    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
+    self.reading_time = parsed_markdown.calculate_reading_time
+    self.processed_html = parsed_markdown.finalize
+
+    if parsed.front_matter.any?
+      evaluate_front_matter(parsed.front_matter)
+    elsif tag_list.any?
+      set_tag_list(tag_list)
+    end
+
+    self.description = processed_description if description.blank?
+  rescue StandardError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
@@ -689,22 +730,23 @@ class Article < ApplicationRecord
     Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
-  def evaluate_front_matter
-    self.title = front_matter["title"] if front_matter["title"].present?
-    set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
-    self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
+  # TODO: The param can be removed after with FeatureFlag :consistent_rendering
+  def evaluate_front_matter(hash = front_matter)
+    self.title = hash["title"] if hash["title"].present?
+    set_tag_list(hash["tags"]) if hash["tags"].present?
+    self.published = hash["published"] if %w[true false].include?(hash["published"].to_s)
 
-    self.published_at = front_matter["published_at"] if front_matter["published_at"]
-    self.published_at ||= parse_date(front_matter["date"]) if published
+    self.published_at = hash["published_at"] if hash["published_at"]
+    self.published_at ||= parse_date(hash["date"]) if published
 
     set_main_image
-    self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
+    self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
-    update_description = front_matter["description"].present? || front_matter["title"].present?
-    self.description = front_matter["description"] if update_description
+    update_description = hash["description"].present? || hash["title"].present?
+    self.description = hash["description"] if update_description
 
-    self.collection_id = nil if front_matter["title"].present?
-    self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
+    self.collection_id = nil if hash["title"].present?
+    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
   end
 
   def set_main_image
