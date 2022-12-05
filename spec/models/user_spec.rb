@@ -599,7 +599,7 @@ RSpec.describe User do
       allow(Settings::UserExperience).to receive(:default_font).and_return("sans-serif")
     end
 
-    it "creates proper body class with defaults" do
+    it "creates proper body class with defaults" do 
       # rubocop:disable Layout/LineLength
       classes = "light-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
