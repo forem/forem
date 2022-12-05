@@ -112,17 +112,9 @@ function setCurrentUserToNavBar(user) {
   }
 }
 
-function setShieldIconVisibility(user){
-  const moderatorForTags = user.moderator_for_tags
-  if(user.admin || moderatorForTags.length > 0){
-    document.getElementById('mod-shield-icon')?.classList.remove('hidden');
-  }
-}
-
 function initializeBaseUserData() {
   const user = userData();
   setCurrentUserToNavBar(user);
-  setShieldIconVisibility(user);
   initializeProfileImage(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);
