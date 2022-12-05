@@ -74,7 +74,7 @@ class Reaction < ApplicationRecord
 
     def public_reaction_types
       if FeatureFlag.enabled?(:multiple_reactions)
-        reaction_types = ReactionCategory.public
+        reaction_types = ReactionCategory.public.map(&:to_s)
       else
         reaction_types = %w[like readinglist]
         unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
