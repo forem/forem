@@ -602,7 +602,7 @@ RSpec.describe User do
     it "creates proper body class with defaults" do
       # rubocop:disable Layout/LineLength
       classes = "light-theme sans-serif-article-body 
-        mod-status-#{user.admin? || !user.moderator_for_tags.empty?} 
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
@@ -613,7 +613,7 @@ RSpec.describe User do
 
       # rubocop:disable Layout/LineLength
       classes = "light-theme sans-serif-article-body 
-        mod-status-#{user.admin? || !user.moderator_for_tags.empty?} 
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
@@ -624,7 +624,7 @@ RSpec.describe User do
 
       # rubocop:disable Layout/LineLength
       classes = "light-theme open-dyslexic-article-body 
-        mod-status-#{user.is_admin? || !user.moderator_for_tags.empty?} 
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
@@ -634,7 +634,7 @@ RSpec.describe User do
       user.setting.config_theme = "dark_theme"
 
       classes = "dark-theme sans-serif-article-body 
-        mod-status-#{user.is_admin? || !user.moderator_for_tags.empty?} 
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       expect(user.decorate.config_body_class).to eq(classes)
     end
