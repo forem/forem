@@ -167,7 +167,7 @@ module Feeds
         next
       end
 
-      Slack::Messengers::ArticleFetchedFeed.call("Imported #{articles.length} articles for #{user.username}")
+      Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles for #{user.username}")
       articles
     end
 
