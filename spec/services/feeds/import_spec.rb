@@ -6,6 +6,7 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
 
   before do
+    allow(Slack::Messengers::ArticleFetchedFeed).to receive(:call).and_return(true)
     [link, nonmedium_link, nonpermanent_link].each do |feed_url|
       user = create(:user)
       user.setting.update(feed_url: feed_url)

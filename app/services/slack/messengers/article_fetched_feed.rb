@@ -1,7 +1,7 @@
 module Slack
   module Messengers
     module ArticleFetchedFeed
-      def call(message)
+      def self.call(message)
         return if ApplicationConfig["SLACK_WORKFLOW_WEBHOOK_URL"].blank?
 
         HTTParty.post(
