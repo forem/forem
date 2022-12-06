@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 191,
-                    "title": "The Cricket on the Hearth172",
-                    "description": "Banjo biodiesel 8-bit semiotics diy blue bottle helvetica. You probably haven't heard of them...",
-                    "readable_publish_date": "Dec 1",
-                    "slug": "the-cricket-on-the-hearth172-37n0",
-                    "path": "/username378/the-cricket-on-the-hearth172-37n0",
-                    "url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
+                    "id": 23864,
+                    "title": "A Time to Kill172",
+                    "description": "Pabst chia pork belly cronut keffiyeh. Green juice plaid single-origin coffee bitters locavore yolo...",
+                    "readable_publish_date": "Dec 2",
+                    "slug": "a-time-to-kill172-1ef0",
+                    "path": "/username382/a-time-to-kill172-1ef0",
+                    "url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-01T14:54:49Z",
+                    "published_timestamp": "2022-12-02T15:14:53Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "social_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "canonical_url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
-                    "created_at": "2022-12-01T14:54:49Z",
+                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                    "canonical_url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
+                    "created_at": "2022-12-02T15:14:53Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-01T14:54:49Z",
-                    "last_comment_at": "2022-12-01T14:54:49Z",
+                    "published_at": "2022-12-02T15:14:53Z",
+                    "last_comment_at": "2022-12-02T15:14:53Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Charity \"Yong\" \\:/ Jast",
-                      "username": "username378",
-                      "twitter_username": "twitter378",
-                      "github_username": "github378",
-                      "user_id": 379,
+                      "name": "Melanie \"Sammy\" \\:/ Greenfelder",
+                      "username": "username382",
+                      "twitter_username": "twitter382",
+                      "github_username": "github382",
+                      "user_id": 39729,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg"
+                      "profile_image": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg"
                     },
                     "organization": {
-                      "name": "Mayert LLC",
-                      "username": "org60",
-                      "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png",
-                      "profile_image_90": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png"
+                      "name": "Stanton, Gottlieb and Windler",
+                      "username": "org67",
+                      "slug": "org67",
+                      "profile_image": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -290,6 +290,130 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to create a new display ad.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 604,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2022-12-02T14:14:54.700-01:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "post_comments",
+                  "processed_html": "<h1>  <a href=\"#hi-this-is-ad\" class=\"anchor\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-02T14:14:54.700-01:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": null,
+                  "clicks_count": 0,
+                  "created_at": null,
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "moon",
+                  "processed_html": null,
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": null,
+                  "tag_list": []
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "int32",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
       }
     },
     "/api/display_ads/{id}": {
@@ -317,22 +441,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 5,
+                  "id": 605,
                   "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 5",
+                  "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-01T15:54:50.529+01:00",
+                  "created_at": "2022-12-02T14:14:54.845-01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 5",
-                  "organization_id": 61,
+                  "name": "Display Ad 605",
+                  "organization_id": 2969,
                   "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-01T15:54:50.531+01:00",
+                  "updated_at": "2022-12-02T14:14:54.848-01:00",
                   "tag_list": []
                 }
               }
@@ -356,6 +480,176 @@
                 "example": {
                   "error": "not found",
                   "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 10",
+                  "display_to": "all",
+                  "name": "Display Ad 606",
+                  "organization_id": 2970,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
+                  "cached_tag_list": "",
+                  "id": 606,
+                  "clicks_count": 0,
+                  "created_at": "2022-12-02T14:14:55.054-01:00",
+                  "impressions_count": 0,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-02T14:14:55.057-01:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "int32",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads/{id}/unpublish": {
+      "put": {
+        "summary": "unpublish",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
                 }
               }
             }
@@ -405,8 +699,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1,
-                  "reactable_id": 195,
+                  "id": 1282,
+                  "reactable_id": 23868,
                   "reactable_type": "Article"
                 }
               }
@@ -468,8 +762,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 3,
-                  "reactable_id": 197,
+                  "id": 1284,
+                  "reactable_id": 23870,
                   "reactable_type": "Article"
                 }
               }

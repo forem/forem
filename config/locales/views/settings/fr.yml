@@ -269,11 +269,11 @@ fr:
         submit: Set New Password
       previous: There is an existing account authorized with that social account.
       tab:
-        profile: Profil
-        customization: Personnalisation
-        notifications: Notifications
-        account: Compte
-        billing: Facturation
-        organization: Organisation
-        extensions: Extensions
+        Profile: Profil
+        Customization: Personnalisation
+        Notifications: Notifications
+        Account: Compte
+        Billing: Facturation
+        Organization: Organisation
+        Extensions: Extensions
       save_profile: Save Profile Information
