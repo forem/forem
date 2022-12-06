@@ -10,7 +10,7 @@ RSpec.describe Slack::WorkflowWebhook, type: :service do
   end
 
   it "send a post request to the webhook url" do
-    allow(ENV).to receive(:[]).with("SLACK_WORKFLOW_WEBHOOK_URL").and_return("https://example.com")
+    ENV["SLACK_WORKFLOW_WEBHOOK_URL"] = "https://example.com"
     allow(HTTParty).to receive(:post).and_return(true)
 
     described_class.call("test")
@@ -19,5 +19,6 @@ RSpec.describe Slack::WorkflowWebhook, type: :service do
       body: { message: "test" }.to_json,
       headers: { "Content-Type" => "application/json" },
     )
+    ENV["SLACK_WORKFLOW_WEBHOOK_USERNAME"] = nil
   end
 end
