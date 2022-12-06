@@ -7,11 +7,16 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    # After FeatureFlag :multiple_reactions, this could change to:
+                    # ReactionCategory[model.category].visible_to_public?
+                    public_reaction_types.include?(model.category.to_s) ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
-  scope :public_category, -> { where(category: ReactionCategory.public.map(&:to_s)) }
+  scope :public_category, lambda {
+    categories = public_reaction_types
+    where(category: categories)
+  }
 
   # Be wary, this is all things on the reading list, but for an end
   # user they might only see readinglist items that are published.
