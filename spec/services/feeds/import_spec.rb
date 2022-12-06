@@ -6,7 +6,6 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
 
   before do
-    allow(Slack::Messengers::ArticleFetchedFeed).to receive(:call).and_return(true)
     [link, nonmedium_link, nonpermanent_link].each do |feed_url|
       user = create(:user)
       user.setting.update(feed_url: feed_url)
@@ -58,9 +57,9 @@ RSpec.describe Feeds::Import, type: :service, vcr: true do
     end
 
     it "queues as many slack messages as there are articles", vcr: { cassette_name: "feeds_import" } do
-      old_count = Slack::Messengers::Worker.jobs.count
-      num_articles = described_class.call
-      expect(Slack::Messengers::Worker.jobs.count).to eq(old_count + num_articles)
+      expect do
+        described_class.call
+      end.to change(Slack::WorkflowWebhookWorker.jobs, :count).by(3) # 3 users
     end
 
     context "when handling errors", vcr: { cassette_name: "feeds_import" } do
