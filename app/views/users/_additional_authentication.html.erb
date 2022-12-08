@@ -8,7 +8,7 @@
       -->
       <% next if provider.provider_name == :apple %>
       <% unless @user.authenticated_through?(provider.provider_name) %>
-        <%= form_with url: provider.sign_in_path(state: "profile"), class: "flex w-100", local: true do |f| %>
+        <%= form_with url: provider.sign_in_path(state: "profile", origin: URL.url("/settings")), class: "flex w-100", local: true do |f| %>
           <%= f.button type: :submit, class: "crayons-btn crayons-btn--icon-left crayons-btn--brand-#{provider.provider_name} m-1" do %>
             <%= crayons_icon_tag(provider.provider_name, title: provider.official_name) %>
             <%= t("views.settings.account.connect", provider: provider.official_name) %>

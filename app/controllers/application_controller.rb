@@ -173,7 +173,7 @@ class ApplicationController < ActionController::Base
 
       uri = Addressable::URI.parse(path)
       uri.query_values = if uri.query_values
-                           uri.query_values.merge(signin_param)
+                           uri.query_values = signin_param
                          else
                            signin_param
                          end
