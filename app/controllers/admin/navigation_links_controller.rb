@@ -14,6 +14,7 @@ module Admin
     def create
       navigation_link = NavigationLink.new(navigation_link_params)
       if navigation_link.save
+        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.created",
                  link: navigation_link.name)
@@ -26,6 +27,7 @@ module Admin
     def update
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.update(navigation_link_params)
+        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.updated",
                  link: navigation_link.name)
@@ -38,6 +40,7 @@ module Admin
     def destroy
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.destroy
+        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.deleted",
                  link: navigation_link.name)
