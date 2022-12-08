@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 23864,
-                    "title": "A Time to Kill172",
-                    "description": "Pabst chia pork belly cronut keffiyeh. Green juice plaid single-origin coffee bitters locavore yolo...",
-                    "readable_publish_date": "Dec 2",
-                    "slug": "a-time-to-kill172-1ef0",
-                    "path": "/username382/a-time-to-kill172-1ef0",
-                    "url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
+                    "id": 191,
+                    "title": "Those Barren Leaves, Thrones, Dominations172",
+                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
+                    "readable_publish_date": "Dec 5",
+                    "slug": "those-barren-leaves-thrones-dominations172-163k",
+                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-02T15:14:53Z",
+                    "published_timestamp": "2022-12-06T00:47:14Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "canonical_url": "http://localhost:3000/username382/a-time-to-kill172-1ef0",
-                    "created_at": "2022-12-02T15:14:53Z",
+                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "created_at": "2022-12-06T00:47:14Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-02T15:14:53Z",
-                    "last_comment_at": "2022-12-02T15:14:53Z",
+                    "published_at": "2022-12-06T00:47:14Z",
+                    "last_comment_at": "2022-12-06T00:47:14Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Melanie \"Sammy\" \\:/ Greenfelder",
+                      "name": "Scottie \"Tony\" \\:/ Gibson",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 39729,
+                      "user_id": 383,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/39729/3e47dec9-dcd9-413f-b0e7-000fb420c9e3.jpeg"
+                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
                     },
                     "organization": {
-                      "name": "Stanton, Gottlieb and Windler",
+                      "name": "O'Hara and Sons",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2968/36954a56-0481-4981-a04f-8b348d317905.png"
+                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
+                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -162,12 +162,141 @@
         }
       }
     },
+    "/api/articles/me": {
+      "get": {
+        "summary": "User's articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/published": {
+      "get": {
+        "summary": "User's published articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserPublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/unpublished": {
+      "get": {
+        "summary": "User's unpublished articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserUnpublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
         "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
-        "operationId": "getUserArticles",
+        "operationId": "getUserAllArticles",
         "parameters": [
           {
             "$ref": "#/components/parameters/pageParam"
@@ -302,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 604,
+                  "id": 10,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T14:14:54.700-01:00",
+                  "created_at": "2022-12-05T18:47:15.209-06:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -317,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T14:14:54.700-01:00",
+                  "updated_at": "2022-12-05T18:47:15.209-06:00",
                   "tag_list": []
                 }
               }
@@ -384,7 +513,7 @@
                     "description": "Ad must be both published and approved to be in rotation"
                   },
                   "organization_id": {
-                    "type": "int32",
+                    "type": "integer",
                     "description": "Identifies the organization to which the ad belongs"
                   },
                   "display_to": {
@@ -441,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 605,
+                  "id": 11,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T14:14:54.845-01:00",
+                  "created_at": "2022-12-05T18:47:15.335-06:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 605",
-                  "organization_id": 2969,
+                  "name": "Display Ad 11",
+                  "organization_id": 68,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T14:14:54.848-01:00",
+                  "updated_at": "2022-12-05T18:47:15.337-06:00",
                   "tag_list": []
                 }
               }
@@ -513,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 606",
-                  "organization_id": 2970,
+                  "name": "Display Ad 12",
+                  "organization_id": 69,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 606,
+                  "id": 12,
                   "clicks_count": 0,
-                  "created_at": "2022-12-02T14:14:55.054-01:00",
+                  "created_at": "2022-12-05T18:47:15.490-06:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-02T14:14:55.057-01:00",
+                  "updated_at": "2022-12-05T18:47:15.493-06:00",
                   "tag_list": []
                 }
               }
@@ -577,7 +706,7 @@
                     "description": "Ad must be both published and approved to be in rotation"
                   },
                   "organization_id": {
-                    "type": "int32",
+                    "type": "integer",
                     "description": "Identifies the organization to which the ad belongs"
                   },
                   "display_to": {
@@ -699,8 +828,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1282,
-                  "reactable_id": 23868,
+                  "id": 1,
+                  "reactable_id": 195,
                   "reactable_type": "Article"
                 }
               }
@@ -762,8 +891,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 1284,
-                  "reactable_id": 23870,
+                  "id": 3,
+                  "reactable_id": 197,
                   "reactable_type": "Article"
                 }
               }
