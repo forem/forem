@@ -1,4 +1,2 @@
-<% cache(release_adjusted_cache_key("hamburger-menu--#{user_signed_in?}"), expires_in: 15.minutes) do %>
-  <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_hamburger_home_page", source: "mobile_hamburger_nav" } unless user_signed_in? %>
-  <%= render partial: "layouts/main_nav", locals: { context: "hamburger" } %>
-<% end %>
+<%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_hamburger_home_page", source: "mobile_hamburger_nav" } unless user_signed_in? %>
+<%= render partial: "layouts/main_nav", locals: { context: "hamburger" } %>
