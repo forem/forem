@@ -5,6 +5,7 @@ require "rails_helper"
 RSpec.describe "Omniauth redirect", type: :request do
   let!(:user) { create(:user) }
   let!(:controller) { ApplicationController.new }
+  let!(:mock_warden) { Warden::Proxy.new({}, Warden::Manager.new(nil)) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -13,9 +14,7 @@ RSpec.describe "Omniauth redirect", type: :request do
   end
 
   it "avoids i=i param in after_sign_in_path_for" do
-    mock_request = OpenStruct.new(env: {
-                                    "warden" => Warden::Proxy.new({}, Warden::Manager.new(nil))
-                                  })
+    mock_request = OpenStruct.new(env: { "warden" => mock_warden })
     allow(controller).to receive(:request).and_return(mock_request)
 
     path = controller.after_sign_in_path_for(user)
@@ -24,10 +23,8 @@ RSpec.describe "Omniauth redirect", type: :request do
   end
 
   it "respects the origin param passed through the OAuth flow" do
-    mock_request = OpenStruct.new(env: {
-                                    "omniauth.origin" => "/settings",
-                                    "warden" => Warden::Proxy.new({}, Warden::Manager.new(nil))
-                                  })
+    mock_env = { "omniauth.origin" => "/settings", "warden" => mock_warden }
+    mock_request = OpenStruct.new(env: mock_env)
     allow(controller).to receive(:request).and_return(mock_request)
 
     path = controller.after_sign_in_path_for(user)
