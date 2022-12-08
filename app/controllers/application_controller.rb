@@ -111,6 +111,8 @@ class ApplicationController < ActionController::Base
   end
 
   def bad_request
+    raise unless request.format.json?
+
     render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
   end
 
