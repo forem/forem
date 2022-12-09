@@ -168,12 +168,13 @@ class ApplicationController < ActionController::Base
   # the user to after a successful log in
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
-      path = stored_location_for(resource) || request.env["omniauth.origin"] || root_path(signin: "true")
+      path = request.env["omniauth.origin"] || stored_location_for(resource) || root_path(signin: "true")
       signin_param = { "signin" => "true" } # the "signin" param is used by the service worker
 
       uri = Addressable::URI.parse(path)
       uri.query_values = if uri.query_values
-                           uri.query_values.merge(signin_param)
+                           # Ignore i=i (internal navigation) param
+                           uri.query_values.except("i").merge(signin_param)
                          else
                            signin_param
                          end
