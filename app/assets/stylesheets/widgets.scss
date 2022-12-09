@@ -285,7 +285,7 @@
   display: block;
 
   .org-sidebar-widget-body {
-    padding: 8px 16px 0px 16px;
+    padding: 16px;
     overflow-wrap: break-word;
     &.body-scrollable {
       height: calc(100vh - 300px);
@@ -297,7 +297,7 @@
       img {
         height: 48px;
         width: 48px;
-        margin: 0 8px 8px 0;
+        margin: 3px;
         border-radius: 100%;
       }
     }

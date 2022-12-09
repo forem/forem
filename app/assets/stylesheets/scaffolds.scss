@@ -85,6 +85,14 @@ body.dark-theme {
   align-self: center;
 }
 
+.mod-icon-visible-block {
+  display: none !important;
+}
+
+body.mod-status-true .mod-icon-visible-block {
+  display: flex !important;
+}
+
 .trusted-visible-block {
   display: none !important;
 }

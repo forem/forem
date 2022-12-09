@@ -1,3 +1,4 @@
 ignore:
-  - "vendor"  # ignore folders and all its contents
-  - "bin"  # ignore folders and all its contents
+  - "vendor"
+  - "bin"
+  - "**/*.svg"
