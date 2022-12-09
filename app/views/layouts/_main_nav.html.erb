@@ -1,8 +1,8 @@
-<% default_nav_ids = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
+<% default_nav_ids = Rails.cache.fetch("default_navigation_links", expires_in: 15.minutes) do
   NavigationLink.default_section.ordered.ids
 end %>
 
-<% other_nav_ids = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
+<% other_nav_ids = Rails.cache.fetch("other_navigation_links", expires_in: 15.minutes) do
   NavigationLink.other_section.ordered.ids
 end %>
 
