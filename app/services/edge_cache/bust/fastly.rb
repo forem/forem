@@ -20,6 +20,8 @@ module EdgeCache
         [
           URL.url(path),
           URL.url("#{path}?i=i"),
+          URL.url("#{path}/"),
+          URL.url("#{path}/?i=i"),
         ]
       end
       private_class_method :urls
