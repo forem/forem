@@ -1,0 +1,5 @@
+---
+vi:
+  decorators:
+    article_decorator:
+      tagged_with: " được gắn tag với %{cached_tag_list}."

@@ -1,0 +1,6 @@
+---
+vi:
+  concerns:
+    image_uploads:
+      too_long: Tên file quá dài - tối đa %{max} ký tự.
+      is_not_file: loại tệp không hợp lệ. Vui lòng tải lên một hình ảnh hợp lệ.

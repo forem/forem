@@ -1,0 +1,21 @@
+---
+vi:
+  api:
+    v0:
+      analytics_controller:
+        invalid_date_format: Tham số ngày 'start' hoặc 'end' phải ở định dạng 'yyyy-mm-dd'
+        start_missing: Yêu cầu 'start' tham số không để trống
+      articles_controller:
+        must_be_json: Tham số bài viết phải là một đối tượng JSON. Bạn đã cung cấp bài viết như một %{type}
+      follows_controller:
+        followed:
+          one: đang theo dõi %{count} người
+          other: đang theo dõi %{count} người
+      health_checks_controller:
+        app_is_up: Ứng dụng đã lên!
+        database_connected: Cơ sở dữ liệu được kết nối
+        database_not_connected: Cơ sở dữ liệu không được kết nối!
+        redis_connected: Redis kết nối
+        redis_not_connected: Redis không được kết nối!
+      listings_controller:
+        no_credit: Số dư không khả dụng

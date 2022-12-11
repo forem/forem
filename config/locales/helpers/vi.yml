@@ -1,0 +1,238 @@
+---
+vi:
+  helpers:
+    label:
+      listing:
+        body_markdown: Body Markdown
+        expires_at: Tùy chỉnh ngày hết hạn
+        location: Địa điểm
+        organization_id: Đăng dưới một tổ chức
+        tag_list: Tags
+        title: Tiêu đề
+      organization:
+        name: Tên
+        slug: Tên tài khoản
+        profile_image: Hình ảnh hồ sơ cá nhân
+        nav_image: Logo cho light themes
+        dark_nav_image: Logo cho dark themes
+        twitter_username: Tên tài khoản Twitter
+        github_username: Tên tài khoản GitHub
+        url: Website url
+        tag_line: Tag line
+        summary: Bản tóm tắt
+        location: Địa điểm
+        email: Email hỗ trợ
+        company_size: Quy mô tổ chức
+        story: Câu chuyện của chúng tôi
+        tech_stack: Our stack
+        cta_body_markdown: Thành phần chính của văn bản
+        cta_button_text: Nội dung đường dẫn
+        cta_button_url: Đường dẫn url
+        proof: Bằng chứng
+      podcast:
+        android_url: Android url
+        description: Mô tả
+        feed_url: Feed url
+        image: Hình ảnh
+        itunes_url: Itunes url
+        main_color_hex: Màu chính hex
+        overcast_url: Overcast url
+        pattern_image: Hình Pattern
+        slug: Slug
+        soundcloud_url: Soundcloud url
+        title: Tiêu đề
+        twitter_username: Tên tài khoản Twitter
+        website_url: Website url
+      response_template:
+        title: Tiêu đề
+        content: Bình luận body (Markdown)
+      user:
+        name: Tên
+        email: Email
+        username: Tên tài khoản
+        profile_image: Hình ảnh hồ sơ cá nhân
+      users_notification_setting:
+        email_newsletter: Gửi cho tôi email bản tin hàng tuần
+        email_digest_periodic: Gửi cho tôi một bản tin định kỳ của các bài đăng hàng đầu từ tag của tôi
+        email_tag_mod_newsletter: Gửi cho tôi các email bản tin của từ tag người điều hành
+        email_community_mod_newsletter: Gửi cho tôi email bản tin của người điều hành cộng đồng
+        email_comment_notifications: Gửi email cho tôi khi ai đó trả lời tôi trong một chủ đề bình luận
+        email_follower_notifications: Gửi email cho tôi khi ai đó mới theo dõi tôi
+        email_mention_notifications: Gửi email cho tôi khi ai đó đề cập đến tôi
+        email_badge_notifications: Gửi email cho tôi khi tôi nhận được huy hiệu
+        email_unread_notifications: Thỉnh thoảng gửi cho tôi lời nhắc tôi có thông báo chưa đọc %{community}
+        mobile_mention_notifications: Gửi cho tôi một thông báo điện thoại khi ai đó đề cập đến tôi
+        mobile_comment_notifications: Gửi cho tôi một thông báo điện thoại khi ai đó trả lời tôi trong một chủ đề bình luận
+        welcome_notifications: Gửi cho tôi những lời khuyên thỉnh thoảng về cách nâng cao trải nghiệm %{community}
+        reaction_notifications: Gửi thông báo khi ai đó phản ứng với nội dung của tôi, chẳng hạn như nhận xét hoặc bài đăng
+        mod_roundrobin_notifications: Thình thoảng gửi cho tôi thông báo community-success của người điều hành
+      users_setting:
+        feed_url: RSS Feed URL
+    placeholder:
+      organization:
+        name: Acme Inc.
+        slug: acmeinc
+        url: https://yoursite.com
+        location: Halifax, Nova Scotia
+        email: mail@example.com
+        company_size: "..."
+        story: "..."
+        tech_stack: "..."
+        cta_body_markdown: "..."
+        cta_button_text: Visit Acme Site
+        cta_button_url: https://example.com
+        proof: "..."
+      response_template:
+        title: "..."
+      user:
+        name: John Doe
+        email: john.doe@example.com
+        username: johndoe
+        feed_url: https://yoursite.com/feed
+    application_helper:
+      app_logo: App logo
+      follow:
+        aria_label:
+          Organization: 'Theo dõi tổ chức: %{name}'
+          Tag: 'Theo dõi tag: %{name}'
+          User: 'Theo dõi người dùng: %{name}'
+          default: 'Theo dõi %{type}: %{name}'
+        text:
+          Organization: Theo dõi
+          Tag: Theo dõi
+          User: Theo dõi
+          default: Theo dõi
+      required: Yêu cầu bắt buộc
+      subtitle:
+        week: Bài viết hàng đầu trong tuần này
+        month: Bài viết hàng đầu trong tháng này
+        year: Bài viết hàng đầu năm nay
+        infinity: Tất cả bài viết
+        latest: Bài viết mới nhất
+      title_text: "%{title} - %{timeframe}"
+    articles_helper:
+      logo: "%{service_name} logo"
+      most_comments: Nhận xét phổ biến
+      most_reactions: Phản ứng phổ biến
+      most_views: Xem phổ biến
+      recently_created: Được tạo gần đây
+      recently_published: Xuất bản gần đây
+    authentication_helper:
+      any_of_those: bất kỳ trong số đó
+      email_password: Email & Mật khẩu
+      reminder: 'Lời nhắc nhở: bạn đã dùng %{method} để xác thực tài khoản của bạn, Vì vậy, hãy sử dụng %{dem} để đăng nhập nếu được nhắc.'
+      that: cái đó
+      invite_only: Bạn không thể làm điều này cho đến khi bạn vô hiệu hóa Invite Only Mode
+    comments_helper:
+      ama: hoặc
+      ask_me_anything: Hỏi tôi bất cứ điều gì
+      author: Tác giả
+      nbsp_likes_html:
+        one: "&nbsp;like"
+        other: "&nbsp;likes"
+    feedback_messages_helper:
+      offender:
+        body: |
+          Xin chào,
+
+          Đây là điều đã được chúng tôi chú ý rằng bạn đã vi phạm quy tắc ứng xử %{community} và/hoặc các điều khoản sử dụng của chúng tôi.
+
+          Nếu hành vi này tiếp tục, chúng ta có thể cần phải đình chỉ tài khoản tại %{community}.
+
+          Nếu bạn nghĩ rằng đã có một lỗi, vui lòng trả lời email này và chúng tôi sẽ xem xét.
+
+          Đội ngũ %{community}
+        subject: "vi phạm quy tắc ứng xử của %{community}"
+      reporter:
+        body: |
+          Chào bạn,
+          Cảm ơn bạn đã gắn cờ nội dung có thể vi phạm quy tắc ứng xử %{community} và/hoặc các điều khoản sử dụng của chúng tôi. Chúng tôi đang xem xét báo cáo của bạn và sẽ có hành động phù hợp.
+          Chúng tôi đánh giá cao sự giúp đỡ của bạn khi chúng tôi làm việc để thúc đẩy một môi trường tích cực và toàn diện cho tất cả mọi người!
+          Đội ngũ %{community}
+        subject: "Báo cáo %{community}"
+      affected:
+        body: |
+          Chào bạn,
+
+          Chúng tôi nhận thấy một số nhận xét (được thực hiện bởi những người khác) trên bài đăng của bạn vi phạm quy tắc ứng xử %{community} và/hoặc các điều khoản sử dụng của chúng tôi. Chúng tôi không nhượng bộ đối với hành vi đó và đang có hành động thích hợp.
+
+          Cảm ơn bạn, và xin đừng ngần ngại gửi email cho chúng tôi với bất kỳ câu hỏi nào! Chúng tôi hoan nghênh tất cả các phản hồi và ý tưởng khi chúng tôi tiếp tục làm việc để thúc đẩy một cộng đồng mở và toàn diện.
+
+          Đội ngũ %{community}
+        subject: Phép lịch sự thông thường từ %{community}
+    listing_helper:
+      option:
+        one: "%{cl_name} (%{count} Credit)"
+        other: "%{cl_name} (%{count} Credits)"
+    organization_helper:
+      option: "%{org_name} (%{unspent})"
+    rate_limit_checker_helper:
+      day:
+        one: ngày
+        other: ngày
+      general: Bao nhiêu %{thing} có thể một thành viên mới (%{timeframe} hoặc ít hơn) tạo trong khoảng chu kỳ thời gian 5 phút?
+      published:
+        title: Giới hạn số lượt tạo bài đăng
+        description: Có bao nhiêu bài viết một người có thể tạo trong khoảng chu kỳ thời gian 30 giây?
+      antispam:
+        title: Giới hạn số lượt bài đăng được tạo bởi một thành viên mới
+      update:
+        title: Giới hạn số lượt cập nhật cho một bài đăng
+        description: Một người có thể thực hiện bao nhiêu bản cập nhật trong khoảng 30 giây? Cập nhật khi thay đổi tài liệu API.
+      upload:
+        title: Giới hạn số lượt đăng tải hình ảnh
+        description: Có bao nhiêu hình ảnh một người có thể tải lên trong chu kỳ khoảng thời gian 30 giây?
+      user:
+        title: Giới hạn số lượt thay đổi mà một người có thể thực hiện đối với tài khoản của họ
+        description: Một người có thể thực hiện bao nhiêu thay đổi đối với tài khoản người dùng của họ trong khoảng chu kỳ thời gian 30 giây?
+      follow:
+        title: Giới hạn số lượt theo dõi của một người có thể thực hiện hàng ngày
+        description: Có bao nhiêu người có thể thực hiện theo dõi trong một ngày?
+      reaction:
+        title: Giới hạn số lượt phản ứng đối với một bài đăng hoặc nhận xét
+        description: Có bao nhiêu lần một người có thể phản ứng với một bài đăng hoặc bình luận trong khoảng chu kỳ thời gian 30 giây?
+      feedback:
+        title: Giới hạn số lần một người có thể báo cáo lạm dụng
+        description: Có bao nhiêu lần một người có thể báo cáo lạm dụng trong khoảng chu kỳ thời gian 5 phút?
+      comment:
+        title: Giới hạn số lượt nhận xét có thể tạo
+        description: Có bao nhiêu bình luận một người có thể tạo ra trong khoảng chu kỳ thời gian 30 giây?
+      comment_antispam:
+        title: Giới hạn số lượt nhận xét được tạo bởi một thành viên mới
+      mention:
+        title: Giới hạn số lượt @-mentions trong một bài đăng hoặc bình luận
+        description: Có bao nhiêu lần một người có thể @-mention người dùng khác trong một bài đăng hoặc nhận xét?
+      listing:
+        title: Giới hạn số lượt tạo tin rao
+        description: Có bao nhiêu tin rao một người có thể tạo ra trong khoảng chu kỳ thời gian 1 phút?
+      organization:
+        title: Giới hạn số lượt tạo tổ chức
+        description: Có bao nhiêu tổ chức một người có thể tạo ra trong khoảng chu kỳ thời gian 5 phút?
+      subscription:
+        title: Giới hạn số lần một người có thể đăng ký vào danh sách nhận thư
+        description: Có bao nhiêu lần một người có thể đăng ký vào danh sách nhận thư trong khoảng chu kỳ thời gian 30 giây?
+      recipient:
+        title: Giới hạn số lượt gửi email thông báo chung của chúng tôi
+        description: Chúng tôi có thể gửi bao nhiêu email cho một người trong khoảng chu kỳ thời gian 2 phút?
+      confirmation:
+        title: Giới hạn số lượng email xác nhận chúng tôi có thể gửi
+        description: Chúng ta có thể gửi email xác nhận bao nhiêu lần cho một người trong vòng 2 phút?
+      thing:
+        posts: bài viết
+        comments: bình luận
+    settings_helper:
+      advanced: Nâng cao
+      beginner: Người mới
+      expert: Chuyên gia
+      mid_level: Trung cấp
+      novice: Tập sự
+    social_link_helper:
+      n_a: N/A
+    admin:
+      user_helper:
+        today: Hôm nay, %{date}
+        yesterday: Hôm qua, %{date}
+        org_join: ", "
+        org_overflow:
+          one: "%{orgs} & %{count} khác"
+          other: "%{orgs} & %{count} khác"

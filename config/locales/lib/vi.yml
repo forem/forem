@@ -1,0 +1,209 @@
+---
+vi:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: Hạn chế đăng ký chỉ một số email nhất định? (Danh sách phân tách bằng dấu phẩy)
+            placeholder: dev.to, forem.com, codenewbie.org
+          apple_client:
+            description: Mã "App Bundle" cho dịch vụ xác thực được cấu hình trong Apple Developer Portal
+          apple_key:
+            description: Thông tin "Key ID" từ dịch vụ xác thực được cấu hình trong Apple Developer Portal
+          apple_pem:
+            description: Chìa khóa "PEM" từ dịch vụ xác thực được cấu hình trong Apple Developer Portal
+          apple_team:
+            description: Thông tin "Team ID" của tài khoản Apple Developer
+          blocked:
+            description: Đăng ký chặn từ các miền được chỉ định?  (Danh sách phân tách bằng dấu phẩy)
+          display_list:
+            description: Bạn có muốn hiển thị danh sách các tên miền được phép, hoặc giữ cho nó riêng tư?
+          facebook_key:
+            description: Thông tin "App ID" phần của phần Cài đặt cơ bản của trang ứng dụng trên Facebook Developer Portal
+          facebook_secret:
+            description: Thông tin "App Secret" phần của phần Cài đặt cơ bản của trang ứng dụng trên Facebook Developer Portal
+          forem_key:
+            description: Forem key
+          forem_secret:
+            description: Forem secret
+          github_key:
+            description: Thông tin "Client ID" một phần của GitHub Oauth Apps portal
+          github_secret:
+            description: Thông tin "Client Secret" một phần của GitHub Oauth Apps portal
+          google_key:
+            description: Thông tin "Client ID" một phần của OAuth 2.0 page trên Google Cloud Platform portal
+          google_secret:
+            description: Thông tin "Client Secret" một phần của OAuth 2.0 page trên Google Cloud Platform portal
+          invite_only:
+            description: Chỉ người dùng được mời qua email mới có thể tham gia cộng đồng này.
+          providers:
+            description: Làm thế nào người dùng có thể đăng nhập?
+          recaptcha_secret:
+            description: Thêm khóa bí mật cho Google reCAPTCHA, được sử dụng để báo cáo lạm dụng
+            placeholder: Chìa khóa bí mật Google reCAPTCHA là gì?
+          recaptcha_site:
+            description: Thêm khóa trang web cho Google reCAPTCHA, được sử dụng để báo cáo lạm dụng
+            placeholder: Chìa khóa trang của Google reCAPTCHA là gì?
+          require_recaptcha:
+            description: Mọi người sẽ được yêu cầu điền vào Captcha khi họ tạo một tài khoản mới trong cộng đồng của bạn
+          twitter_key:
+            description: Thông tin "API key" một phần chìa khóa của người dùng trong Twitter developer portal.
+          twitter_secret:
+            description: Thông tin "API secret key" một phần chìa khóa của người tiêu dùng trong Twitter developer portal.
+        campaign:
+          articles_approval:
+            placeholder: Câu chuyện chiến dịch hiển thị trên thanh bên với sự chấp thuận?
+          articles_expiry:
+            description: Đặt thời gian hết hạn cho các bài viết (tính bằng tuần) được hiển thị trong thanh bên chiến dịch
+          call_to_action:
+            description: Văn bản này điền vào nút Call to Action trên thanh bên chiến dịch
+            placeholder: Chia sẻ dự án của bạn
+          display_name:
+            description: Văn bản này được hiển thị trong tham chiếu đến chiến dịch trong các tiêu đề, v.v.
+            placeholder: Chiến dịch tuyệt vời của tôi
+          featured:
+            description: Các bài đăng có thẻ tag sẽ được giới thiệu trong thanh bên chiến dịch (chỉ phân tách bằng dấu phẩy, chỉ có chữ cái)
+            placeholder: 'Danh sách các thẻ tag chiến dịch: Dấu phẩy được phân tách, chỉ các chữ cái, ví dụ: Shecoded,theycoded'
+          hero_html:
+            description: Tên Hero HtmlVariant
+          sidebar_enabled:
+            placeholder: Thanh bên chiến dịch được bật hay không
+          sidebar_image:
+            placeholder: Được sử dụng ở đầu thanh bên chiến dịch
+          url:
+            description: https://url.com/lander
+            placeholder: URL campaign sidebar image will link to
+        community:
+          copyright:
+            description: Used to mark the year this forem was started.
+          description:
+            description: Used in meta description tags etc.
+            placeholder: A fabulous community of kind and welcoming people.
+          emoji:
+            description: Used in the title tags across the site alongside the community name
+          member:
+            description: Used to determine what a member will be called e.g developer, hobbyist etc.
+            placeholder: user
+          name:
+            description: Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.
+            placeholder: New Forem
+          staff:
+            description: Account ID which acts as automated 'staff'— used principally for welcome thread.
+          tagline:
+            description: Used in signup modal.
+            placeholder: We're a place where coders share, stay up-to-date and grow their careers.
+        general:
+          ahoy_tracking:
+            description: Track visits and events - data is stored in your database. A restart is required for changes to this configuration to take effect.
+          contact_email:
+            description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
+          credit:
+            large:
+              description: Price for large credit purchase (100 - 999 credits).
+            medium:
+              description: Price for medium credit purchase (10 - 99 credits).
+            small:
+              description: Price for small credit purchase (<10 credits).
+            xlarge:
+              description: Price for extra large credit purchase (1000 credits or more).
+          favicon:
+            description: Used as the site favicon
+          ga_tracking:
+            description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
+          ga_analytics_4:
+            description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
+          hashtag:
+            description: Used as the twitter hashtag of the community
+            placeholder: '#DEVCommunity'
+          health:
+            description: Used to authenticate with your health check endpoints.
+            placeholder: a secure token
+          logo_png:
+            description: Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. Recommended minimum of 512x512px
+          logo_svg:
+            description: This is the logo currently used on the upper left-hand corner of your Forem. However, after the release it will be deprecated in favor of the Logo above.
+          mailchimp_api:
+            description: API key used to connect Mailchimp account. Found in Mailchimp backend
+          mailchimp_mod:
+            description: Community Moderators Newsletter ID
+          mailchimp_news:
+            description: Main Newsletter ID, also known as Audience ID
+          mailchimp_tag_mod:
+            description: Tag Moderators Newsletter ID
+          main_social:
+            description: Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)
+          mascot_image:
+            description: Used as the mascot image.
+          mascot_user:
+            description: User ID of the Mascot account
+          meta_keywords:
+            description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
+          onboarding:
+            description: Background for onboarding splash page
+          payment:
+            description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
+          periodic:
+            description: Determines how often periodic email digests are sent (in days)
+          prefer_manual:
+            description: Always show suggested users as suggested people to follow even when auto-suggestion is available
+          sidebar:
+            description: Determines which tags are shown on the homepage right-hand sidebar
+            placeholder: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
+          stripe_api:
+            description: 'Secret Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+          stripe_key:
+            description: 'Public Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+          tags:
+            description: Determines which tags are suggested to new users during onboarding (comma separated, letters only)
+            placeholder: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
+          users:
+            description: Determines which users are suggested to follow to new users during onboarding (comma separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested
+            placeholder: 'List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana'
+          video:
+            description: Secret key used to allow AWS video encoding through the VideoStatesController
+        rate_limit:
+          new_days:
+            description: The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.
+          spam:
+            description: Individual (case insensitive) phrases that trigger spam alerts, comma separated.
+            placeholder: used cars near you, pokemon go hack
+        smtp:
+          address:
+            description: Address of the remote mail server
+            placeholder: i.e. smtp.gmail.com
+          authentication:
+            description: If your mail server requires authentication, you need to specify the authentication type here
+            placeholder: i.e. plain, login, or cram_md5
+          domain:
+            description: If you need to specify a HELO domain, you can do it here
+          password:
+            description: If your mail server requires authentication, copy the password from your server
+          port:
+            description: The port that your mail server runs on
+            placeholder: '25'
+          user_name:
+            description: If your mail server requires authentication, copy the username from your server
+          from_email:
+            description: The email address that emails should be sent from
+          reply_to:
+            description: The email address that users can reply to
+        user_experience:
+          default_font:
+            description: Determines the default reading font (registered users can change this in their UX settings)
+          default_locale:
+            description: Determines the default language and localization for the Forem (currently in experimental beta)
+          feed_strategy:
+            description: 'Determines the main feed algorithm approach the app takes: basic or large_forem_experimental (which should only be used for 10k+ member communities)'
+            placeholder: basic
+          feed_style:
+            description: Determines which default feed the users sees (rich content, more minimal, etc.)
+            placeholder: basic, rich, or compact
+          home_feed:
+            description: Minimum score needed for a post to show up on the unauthenticated home page.
+          index_minimum_score:
+            description: Minimum score needed for a post to be indexed by search engines.
+          primary_hex:
+            description: Determines background/border of buttons etc. Must be dark enough to contrast with white text.
+          tag_feed:
+            description: Minimum score needed for a post to show up on default tag page.

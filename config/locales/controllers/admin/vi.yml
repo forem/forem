@@ -1,0 +1,152 @@
+---
+vi:
+  admin:
+    articles_controller:
+      saved: Đã lưu bài viết!
+      pinned: Bài viết được ghim!
+      unpinned: Đã bỏ ghim bài viết!
+    badge_achievements_controller:
+      deleted: Thành tích huy hiệu đã bị xóa!
+      rewarded: Các huy hiệu đang được thưởng. Nhiệm vụ sẽ hoàn thành trong thời gian ngắn.
+      congrats: Chúc mừng!
+      award: Vui lòng chọn một huy hiệu để trao thưởng
+      wrong: Có gì đó sai.
+    badges_controller:
+      created: Huy hiệu đã được tạo!
+      updated: Huy hiệu đã được cập nhật!
+    broadcasts_controller:
+      created: Chương trình phát thanh đã được tạo!
+      deleted: Chương trình phát thanh đã bị xóa!
+      updated: Chương trình phát thanh đã được cập nhật!
+      wrong: Đã xảy ra sự cố khi xóa chương trình phát thanh.
+    consumer_apps_controller:
+      created: '%{app} đã được tạo!'
+      deleted: '%{app} đã bị xóa!'
+      updated: '%{app} đã được cập nhật!'
+      wrong: Đã xảy ra sự cố khi xóa %{app}.
+    display_ads_controller:
+      created: Hiển thị quảng cáo đã được tạo!
+      deleted: Hiển thị quảng cáo đã bị xóa!
+      updated: Hiển thị quảng cáo đã được cập nhật!
+      wrong: Đã xảy ra sự cố khi xóa hiển thị quảng cáo.
+    gdpr_delete_requests_controller:
+      deleted: Đã xóa thành công
+    extensions_controller:
+      update_success: Các tiện ích mở rộng đã được cập nhật.
+    html_variants_controller:
+      fork: '%{name} FORK-%{rand}'
+      created: Biến thể HTML đã được tạo!
+      deleted: Biến thể HTML đã bị xóa!
+      updated: Biến thể HTML đã được cập nhật!
+      wrong: Đã xảy ra sự cố khi xóa biến thể HTML.
+    invitations_controller:
+      duplicate: 'Lời mời đã không được gửi. Đã có một người dùng đăng ký với email: %{email}'
+      create_success: Lời mời đã được gửi đến email của người dùng.
+      destroy_success: Đã hủy lời mời đối với %{email}.
+      resend_success: Lời mời đã gửi lại %{email}.
+    listing_categories_controller:
+      created: Danh mục tin rao đã được tạo!
+      updated: Danh mục tin rao đã được cập nhật!
+      deleted: Danh mục tin rao đã bị xóa!
+    listings_controller:
+      updated: Danh mục tin rao đã được cập nhật thành công
+      destroyed: "'%{title}' đã bị hủy bỏ"
+      no_credit: Số dư không khả dụng
+    mods_controller:
+      trusted: '%{username} bây giờ có một vai trò đáng tin cậy hơn!'
+    navigation_links_controller:
+      deleted: Liên kết điều hướng %{link} đã bị xóa
+      created: 'Liên kết điều hướng đã được tạo thành công: %{link}'
+      updated: 'Liên kết điều hướng đã được cập nhật thành công: %{link}'
+    organization_memberships_controller:
+      not_exist: 'Tổ chức #%{org_id} không tồn tại.'
+      wrong: Đã xảy ra sự cố khi xóa người dùng khỏi %{org}
+      added: Người dùng đã được thêm thành công vào %{org}
+      removed: Người dùng đã được xóa thành công khỏi %{org}
+      updated: Người dùng đã được cập nhật thành công lên %{type}
+    organizations_controller:
+      credit_updated: Đã cập nhật thành công các khoản tín dụng
+    pages_controller:
+      updated: Trang đã được cập nhật thành công.
+      created: Trang đã được tạo thành công.
+      deleted: Trang đã được xóa thành công.
+      code_of_conduct:
+        title: Quy tắc cộng đồng
+        description: Trang mô tả cách ứng xử trên nền tảng này
+      privacy_policy:
+        title: Chính sách bảo mật
+        description: Trang mô tả chính sách bảo mật
+      terms_of_use:
+        title: Điều khoản sử dụng
+        description: Trang mô tả các điều khoản sử dụng cho ứng dụng
+    podcasts_controller:
+      new_owner_added: Đã thêm chủ sở hữu mới!
+      no_such_user: Không có người dùng như vậy
+      scheduled: "Đã lên lịch cập nhật các tập podcast (%{title}, #%{id})"
+      updated: Đã cập nhật podcast
+    profile_field_groups_controller:
+      deleted: Nhóm %{group} đã bị xóa
+      updated: Nhóm %{group} đã được cập nhật
+      created: 'Đã tạo thành công nhóm: %{group}'
+    profile_fields_controller:
+      created: Trường hồ sơ %{field} đã được tạo
+      deleted: Trường hồ sơ %{field} đã bị xóa
+      updated: Trường hồ sơ %{field} đã được cập nhật
+    response_templates_controller:
+      saved: 'Mẫu phản hồi: "%{title}" đã được lưu thành công.'
+      updated: Mẫu phản hồi "%{title}" đã được cập nhật.
+      deleted: Mẫu phản hồi "%{title}" đã bị xóa.
+    secrets_controller:
+      not_in_vault: Không có trong Vault
+      updated: Chìa Khóa bí mật %{key} đã được cập nhật thành công trong Vault.
+      value: '%{first8}******'
+    settings_controller:
+      confirmation: Tên người dùng của tôi là @%{username} và hành động này là 100% an toàn và phù hợp.
+    spaces_controller:
+      update_success: Space đã được cập nhật.
+    tags:
+      moderators_controller:
+        not_found: 'ID người dùng #%{user_id} không tìm thấy'
+        not_found_or: 'ID người dùng #%{user_id} không tìm thấy hoặc tài khoản của họ bị lỗi: %{errors}'
+        removed: '@%{username} - ID #%{user_id} đã bị xóa tag người kiểm duyệt'
+        added: '%{username} đã được thêm tag người kiểm duyệt!'
+    tags_controller:
+      created: '%{tag_name} đã được tạo!'
+      updated: '%{tag_name} đã cập nhật tag thành công!'
+      update_fail: 'Cập nhật tag không thành công: %{errors}'
+    tools_controller:
+      article_busted: 'Bài viết #%{article} đã được xử lý thành công'
+      user_busted: 'Người dùng #%{user} đã được xử lý thành công'
+      link_busted: '%{link} đã được xử lý thành công'
+    users_controller:
+      exported: Dữ liệu được xuất sang %{receiver}. Công việc sẽ hoàn thành trong giây lát.
+      email_fail: Không gửi được email!
+      email_sent: Đã gửi email!
+      verify_sent: Đã gửi email xác minh!
+      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) đã bị xóa hoàn toàn. Nếu đây là thao tác xóa GDPR, hãy xóa chúng khỏi Mailchimp và Google Analytics và xác nhận vào %{the_page}.'
+      no_email: không có email
+      parameter_missing: Cả chủ đề và nội dung đều yêu cầu bắt buộc!
+      role_removed: 'Vai trò: %{role} đã xóa thành công khỏi người dùng!'
+      identity_removed: Danh tính %{provider} đã xóa và sao lưu thành công.
+      the_page: trang
+      banished: Người dùng này đang bị trục xuất. Việc chạy ngầm này sẽ sớm hoàn thành.
+      unlocked: Tài khoản người dùng được mở khóa!
+      unpublished: Bài viết đang được hủy xuất bản. Việc chạy ngầm này sẽ sớm hoàn thành..
+      updated: Người dùng đã được cập nhật
+      updated_json: Thành công! %{username} đã được cập nhật.
+      credits_added: Tín dụng đã được thêm vào!
+      credits_removed: Các khoản tín dụng đã bị xóa.
+    welcome_controller:
+      thread_content: |
+        ---
+        title: Chủ đề chào mừng - v0
+        published: false
+        description: Giới thiệu bản thân với cộng đồng!
+        tags: welcome
+        ---
+
+        Xin chào! Chào mừng bạn đến %{community}!
+
+        ![CHÀO MỪNG BẠN ĐẾN VỚI INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
+
+        Để lại bình luận bên dưới để giới thiệu bản thân với cộng đồng!✌️
