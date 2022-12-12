@@ -7,10 +7,8 @@ RSpec.describe EdgeCache::BustListings, type: :service do
   let(:paths) do
     [
       "/listings",
-      "/listings?i=i",
-      "/listings/#{listing.category}/#{listing.slug}",
-      "/listings/#{listing.category}/#{listing.slug}?i=i",
       "/listings/#{listing.category}",
+      "/listings/#{listing.category}/#{listing.slug}",
     ]
   end
 
@@ -23,7 +21,7 @@ RSpec.describe EdgeCache::BustListings, type: :service do
     end
   end
 
-  it "busts the cache" do
+  it "busts the cache", :aggregate_failures do
     described_class.call(listing)
 
     expect(listing).to have_received(:purge_all)
