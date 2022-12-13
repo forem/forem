@@ -38,10 +38,11 @@ class StoriesController < ApplicationController
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
-    else
-      @podcast = Podcast.available.find_by!(slug: params[:username])
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    else
+      not_found
     end
   end
 
