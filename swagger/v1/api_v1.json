@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 191,
-                    "title": "Those Barren Leaves, Thrones, Dominations172",
-                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
-                    "readable_publish_date": "Dec 5",
-                    "slug": "those-barren-leaves-thrones-dominations172-163k",
-                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "id": 2294,
+                    "title": "Behold the Man172",
+                    "description": "Cliche craft beer lo-fi roof tacos meh mlkshk scenester. Disrupt gentrify chambray jean shorts...",
+                    "readable_publish_date": "Dec 14",
+                    "slug": "behold-the-man172-59h9",
+                    "path": "/username382/behold-the-man172-59h9",
+                    "url": "http://localhost:3000/username382/behold-the-man172-59h9",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-06T00:47:14Z",
+                    "published_timestamp": "2022-12-13T17:02:13Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "created_at": "2022-12-06T00:47:14Z",
+                    "cover_image": "http://localhost:3000/assets/9-1fea7c7f07002fc02de9c2962ca140942c9ad3c92c5e5c1c7bd51fd6025800c0.png",
+                    "social_image": "http://localhost:3000/assets/9-1fea7c7f07002fc02de9c2962ca140942c9ad3c92c5e5c1c7bd51fd6025800c0.png",
+                    "canonical_url": "http://localhost:3000/username382/behold-the-man172-59h9",
+                    "created_at": "2022-12-13T17:02:13Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-06T00:47:14Z",
-                    "last_comment_at": "2022-12-06T00:47:14Z",
+                    "published_at": "2022-12-13T17:02:13Z",
+                    "last_comment_at": "2022-12-13T17:02:13Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Scottie \"Tony\" \\:/ Gibson",
+                      "name": "Luanne \"Owen\" \\:/ Schimmel",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 383,
+                      "user_id": 4749,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
+                      "profile_image": "/uploads/user/profile_image/4749/d502f67c-7e9b-418f-b4d1-1f5539610453.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/4749/d502f67c-7e9b-418f-b4d1-1f5539610453.jpeg"
                     },
                     "organization": {
-                      "name": "O'Hara and Sons",
+                      "name": "Osinski-Ziemann",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
-                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
+                      "profile_image": "/uploads/organization/profile_image/877/7ef8bcd9-ea44-4ac8-bc5c-2dd18f461dbc.png",
+                      "profile_image_90": "/uploads/organization/profile_image/877/7ef8bcd9-ea44-4ac8-bc5c-2dd18f461dbc.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -158,6 +158,221 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/articles/{id}": {
+      "get": {
+        "summary": "Published article by id",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
+        "operationId": "getArticleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2295,
+                  "title": "The Grapes of Wrath173",
+                  "description": "Godard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf...",
+                  "readable_publish_date": "Dec 14",
+                  "slug": "the-grapes-of-wrath173-2683",
+                  "path": "/username383/the-grapes-of-wrath173-2683",
+                  "url": "http://localhost:3000/username383/the-grapes-of-wrath173-2683",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2022-12-13T17:02:13Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
+                  "social_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
+                  "canonical_url": "http://localhost:3000/username383/the-grapes-of-wrath173-2683",
+                  "created_at": "2022-12-13T17:02:13Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2022-12-13T17:02:13Z",
+                  "last_comment_at": "2022-12-13T17:02:13Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": ["discuss"],
+                  "body_html": "<p>Godard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf moon mixtape lomo before they sold out.</p>\n\n<p>Vhs sriracha bespoke chicharrones celiac.</p>\n\n",
+                  "body_markdown": "---\ntitle: The Grapes of Wrath173\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nGodard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf moon mixtape lomo before they sold out.\n\n\nVhs sriracha bespoke chicharrones celiac.\n\n",
+                  "user": {
+                    "name": "Gerald \"Essie\" \\:/ Zboncak",
+                    "username": "username383",
+                    "twitter_username": "twitter383",
+                    "github_username": "github383",
+                    "user_id": 4750,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/4750/7d0ae6e0-a7e2-4fa7-a9c7-b9389d25e32b.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/4750/7d0ae6e0-a7e2-4fa7-a9c7-b9389d25e32b.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an article by id",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "operationId": "getArticleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "article param must be a JSON object. You provided article as a NilClass",
+                  "status": 422
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "article param must be a JSON object. You provided article as a NilClass",
+                  "status": 422
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "article param must be a JSON object. You provided article as a NilClass",
+                  "status": 422
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{username}/{slug}": {
+      "get": {
+        "summary": "Published article by path",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
+        "operationId": "getArticleByPath",
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found"
           }
         }
       }
@@ -431,12 +646,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 10,
+                  "id": 106,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.209-06:00",
+                  "created_at": "2022-12-14T00:02:14.571+07:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +661,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.209-06:00",
+                  "updated_at": "2022-12-14T00:02:14.571+07:00",
                   "tag_list": []
                 }
               }
@@ -570,22 +785,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 11,
+                  "id": 107,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.335-06:00",
+                  "created_at": "2022-12-14T00:02:14.704+07:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 11",
-                  "organization_id": 68,
+                  "name": "Display Ad 107",
+                  "organization_id": 878,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.337-06:00",
+                  "updated_at": "2022-12-14T00:02:14.707+07:00",
                   "tag_list": []
                 }
               }
@@ -642,19 +857,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 12",
-                  "organization_id": 69,
+                  "name": "Display Ad 108",
+                  "organization_id": 879,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 12,
+                  "id": 108,
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.490-06:00",
+                  "created_at": "2022-12-14T00:02:14.858+07:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.493-06:00",
+                  "updated_at": "2022-12-14T00:02:14.861+07:00",
                   "tag_list": []
                 }
               }
@@ -828,8 +1043,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1,
-                  "reactable_id": 195,
+                  "id": 85,
+                  "reactable_id": 2304,
                   "reactable_type": "Article"
                 }
               }
@@ -891,8 +1106,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 3,
-                  "reactable_id": 197,
+                  "id": 87,
+                  "reactable_id": 2306,
                   "reactable_type": "Article"
                 }
               }
