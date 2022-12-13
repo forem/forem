@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 2294,
-                    "title": "Behold the Man172",
-                    "description": "Cliche craft beer lo-fi roof tacos meh mlkshk scenester. Disrupt gentrify chambray jean shorts...",
-                    "readable_publish_date": "Dec 14",
-                    "slug": "behold-the-man172-59h9",
-                    "path": "/username382/behold-the-man172-59h9",
-                    "url": "http://localhost:3000/username382/behold-the-man172-59h9",
+                    "id": 451,
+                    "title": "The Moon by Night128",
+                    "description": "Occupy skateboard chartreuse meditation echo poutine. Godard tofu sustainable. Scenester phlogiston...",
+                    "readable_publish_date": "Dec 13",
+                    "slug": "the-moon-by-night128-42ij",
+                    "path": "/username158/the-moon-by-night128-42ij",
+                    "url": "http://localhost:3000/username158/the-moon-by-night128-42ij",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-13T17:02:13Z",
+                    "published_timestamp": "2022-12-13T21:53:32Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/9-1fea7c7f07002fc02de9c2962ca140942c9ad3c92c5e5c1c7bd51fd6025800c0.png",
-                    "social_image": "http://localhost:3000/assets/9-1fea7c7f07002fc02de9c2962ca140942c9ad3c92c5e5c1c7bd51fd6025800c0.png",
-                    "canonical_url": "http://localhost:3000/username382/behold-the-man172-59h9",
-                    "created_at": "2022-12-13T17:02:13Z",
+                    "cover_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
+                    "social_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
+                    "canonical_url": "http://localhost:3000/username158/the-moon-by-night128-42ij",
+                    "created_at": "2022-12-13T21:53:32Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-13T17:02:13Z",
-                    "last_comment_at": "2022-12-13T17:02:13Z",
+                    "published_at": "2022-12-13T21:53:32Z",
+                    "last_comment_at": "2022-12-13T21:53:32Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Luanne \"Owen\" \\:/ Schimmel",
-                      "username": "username382",
-                      "twitter_username": "twitter382",
-                      "github_username": "github382",
-                      "user_id": 4749,
+                      "name": "Michel \"Danny\" \\:/ Schamberger",
+                      "username": "username158",
+                      "twitter_username": "twitter158",
+                      "github_username": "github158",
+                      "user_id": 502,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4749/d502f67c-7e9b-418f-b4d1-1f5539610453.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4749/d502f67c-7e9b-418f-b4d1-1f5539610453.jpeg"
+                      "profile_image": "/uploads/user/profile_image/502/ffa77a11-9d5e-4aa8-9d65-a86d2f9eb7fc.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/502/ffa77a11-9d5e-4aa8-9d65-a86d2f9eb7fc.jpeg"
                     },
                     "organization": {
-                      "name": "Osinski-Ziemann",
-                      "username": "org67",
-                      "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/877/7ef8bcd9-ea44-4ac8-bc5c-2dd18f461dbc.png",
-                      "profile_image_90": "/uploads/organization/profile_image/877/7ef8bcd9-ea44-4ac8-bc5c-2dd18f461dbc.png"
+                      "name": "Ward-Rutherford",
+                      "username": "org32",
+                      "slug": "org32",
+                      "profile_image": "/uploads/organization/profile_image/96/33508af2-f894-4336-9bb4-b77013c3021e.png",
+                      "profile_image_90": "/uploads/organization/profile_image/96/33508af2-f894-4336-9bb4-b77013c3021e.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -186,40 +186,40 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 2295,
-                  "title": "The Grapes of Wrath173",
-                  "description": "Godard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf...",
-                  "readable_publish_date": "Dec 14",
-                  "slug": "the-grapes-of-wrath173-2683",
-                  "path": "/username383/the-grapes-of-wrath173-2683",
-                  "url": "http://localhost:3000/username383/the-grapes-of-wrath173-2683",
+                  "id": 452,
+                  "title": "The Soldier's Art129",
+                  "description": "Distillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian...",
+                  "readable_publish_date": "Dec 13",
+                  "slug": "the-soldiers-art129-2o34",
+                  "path": "/username159/the-soldiers-art129-2o34",
+                  "url": "http://localhost:3000/username159/the-soldiers-art129-2o34",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2022-12-13T17:02:13Z",
+                  "published_timestamp": "2022-12-13T21:53:33Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
-                  "social_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
-                  "canonical_url": "http://localhost:3000/username383/the-grapes-of-wrath173-2683",
-                  "created_at": "2022-12-13T17:02:13Z",
+                  "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                  "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                  "canonical_url": "http://localhost:3000/username159/the-soldiers-art129-2o34",
+                  "created_at": "2022-12-13T21:53:33Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2022-12-13T17:02:13Z",
-                  "last_comment_at": "2022-12-13T17:02:13Z",
+                  "published_at": "2022-12-13T21:53:33Z",
+                  "last_comment_at": "2022-12-13T21:53:33Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
                   "tags": ["discuss"],
-                  "body_html": "<p>Godard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf moon mixtape lomo before they sold out.</p>\n\n<p>Vhs sriracha bespoke chicharrones celiac.</p>\n\n",
-                  "body_markdown": "---\ntitle: The Grapes of Wrath173\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nGodard xoxo art party cleanse readymade tote bag pinterest. Direct trade food truck seitan 3 wolf moon mixtape lomo before they sold out.\n\n\nVhs sriracha bespoke chicharrones celiac.\n\n",
+                  "body_html": "<p>Distillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian celiac quinoa echo chicharrones.</p>\n\n<p>Direct trade put a bird on it listicle pour-over whatever.</p>\n\n",
+                  "body_markdown": "---\ntitle: The Soldier's Art129\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nDistillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian celiac quinoa echo chicharrones.\n\n\nDirect trade put a bird on it listicle pour-over whatever.\n\n",
                   "user": {
-                    "name": "Gerald \"Essie\" \\:/ Zboncak",
-                    "username": "username383",
-                    "twitter_username": "twitter383",
-                    "github_username": "github383",
-                    "user_id": 4750,
+                    "name": "Rocky \"Tana\" \\:/ Schaefer",
+                    "username": "username159",
+                    "twitter_username": "twitter159",
+                    "github_username": "github159",
+                    "user_id": 503,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4750/7d0ae6e0-a7e2-4fa7-a9c7-b9389d25e32b.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4750/7d0ae6e0-a7e2-4fa7-a9c7-b9389d25e32b.jpeg"
+                    "profile_image": "/uploads/user/profile_image/503/88428955-9f1d-4032-b235-d790148c5728.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/503/88428955-9f1d-4032-b235-d790148c5728.jpeg"
                   },
                   "flare_tag": {
                     "name": "discuss",
@@ -248,93 +248,6 @@
             }
           }
         }
-      },
-      "put": {
-        "summary": "Update an article by id",
-        "tags": ["articles"],
-        "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
-        "operationId": "getArticleById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "An Article",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "article param must be a JSON object. You provided article as a NilClass",
-                  "status": 422
-                },
-                "schema": {
-                  "type": "object",
-                  "items": {
-                    "$ref": "#/components/schemas/ArticleIndex"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "article param must be a JSON object. You provided article as a NilClass",
-                  "status": 422
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "article param must be a JSON object. You provided article as a NilClass",
-                  "status": 422
-                }
-              }
-            }
-          }
-        }
       }
     },
     "/api/articles/{username}/{slug}": {
@@ -352,9 +265,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "$ref": "#/components/parameters/pageParam"
           }
         ],
         "responses": {
@@ -596,646 +506,6 @@
           },
           "404": {
             "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/display_ads": {
-      "get": {
-        "summary": "display ads",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to retrieve a list of all display ads.",
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": []
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "display ads",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to create a new display ad.",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 106,
-                  "approved": true,
-                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
-                  "cached_tag_list": "",
-                  "clicks_count": 0,
-                  "created_at": "2022-12-14T00:02:14.571+07:00",
-                  "display_to": "all",
-                  "impressions_count": 0,
-                  "name": "Example Ad",
-                  "organization_id": null,
-                  "placement_area": "post_comments",
-                  "processed_html": "<h1>  <a href=\"#hi-this-is-ad\" class=\"anchor\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
-                  "published": true,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2022-12-14T00:02:14.571+07:00",
-                  "tag_list": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "unprocessable",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": null,
-                  "approved": true,
-                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
-                  "cached_tag_list": null,
-                  "clicks_count": 0,
-                  "created_at": null,
-                  "display_to": "all",
-                  "impressions_count": 0,
-                  "name": "Example Ad",
-                  "organization_id": null,
-                  "placement_area": "moon",
-                  "processed_html": null,
-                  "published": true,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": null,
-                  "tag_list": []
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "For internal use, helps distinguish ads from one another"
-                  },
-                  "body_markdown": {
-                    "type": "string",
-                    "description": "The text (in markdown) of the ad (required)"
-                  },
-                  "approved": {
-                    "type": "boolean",
-                    "description": "Ad must be both published and approved to be in rotation"
-                  },
-                  "published": {
-                    "type": "boolean",
-                    "description": "Ad must be both published and approved to be in rotation"
-                  },
-                  "organization_id": {
-                    "type": "integer",
-                    "description": "Identifies the organization to which the ad belongs"
-                  },
-                  "display_to": {
-                    "type": "string",
-                    "enum": ["all", "logged_in", "logged_out"],
-                    "default": "all",
-                    "description": "Potentially limits visitors to whom the ad is visible"
-                  },
-                  "placement_area": {
-                    "type": "string",
-                    "enum": [
-                      "sidebar_left",
-                      "sidebar_left_2",
-                      "sidebar_right",
-                      "post_sidebar",
-                      "post_comments"
-                    ],
-                    "description": "Identifies which area of site layout the ad can appear in"
-                  },
-                  "tags": {
-                    "type": "string",
-                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
-                  }
-                },
-                "required": ["name", "body_markdown", "placement_area"]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/display_ads/{id}": {
-      "get": {
-        "summary": "display ad",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to unpublish.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 123
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 107,
-                  "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 9",
-                  "cached_tag_list": "",
-                  "clicks_count": 0,
-                  "created_at": "2022-12-14T00:02:14.704+07:00",
-                  "display_to": "all",
-                  "impressions_count": 0,
-                  "name": "Display Ad 107",
-                  "organization_id": 878,
-                  "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
-                  "published": false,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2022-12-14T00:02:14.707+07:00",
-                  "tag_list": []
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Unknown DisplayAd ID",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "display ads",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to unpublish.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 123
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 10",
-                  "display_to": "all",
-                  "name": "Display Ad 108",
-                  "organization_id": 879,
-                  "placement_area": "sidebar_left",
-                  "published": false,
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
-                  "cached_tag_list": "",
-                  "id": 108,
-                  "clicks_count": 0,
-                  "created_at": "2022-12-14T00:02:14.858+07:00",
-                  "impressions_count": 0,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2022-12-14T00:02:14.861+07:00",
-                  "tag_list": []
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "For internal use, helps distinguish ads from one another"
-                  },
-                  "body_markdown": {
-                    "type": "string",
-                    "description": "The text (in markdown) of the ad (required)"
-                  },
-                  "approved": {
-                    "type": "boolean",
-                    "description": "Ad must be both published and approved to be in rotation"
-                  },
-                  "published": {
-                    "type": "boolean",
-                    "description": "Ad must be both published and approved to be in rotation"
-                  },
-                  "organization_id": {
-                    "type": "integer",
-                    "description": "Identifies the organization to which the ad belongs"
-                  },
-                  "display_to": {
-                    "type": "string",
-                    "enum": ["all", "logged_in", "logged_out"],
-                    "default": "all",
-                    "description": "Potentially limits visitors to whom the ad is visible"
-                  },
-                  "placement_area": {
-                    "type": "string",
-                    "enum": [
-                      "sidebar_left",
-                      "sidebar_left_2",
-                      "sidebar_right",
-                      "post_sidebar",
-                      "post_comments"
-                    ],
-                    "description": "Identifies which area of site layout the ad can appear in"
-                  },
-                  "tags": {
-                    "type": "string",
-                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
-                  }
-                },
-                "required": ["name", "body_markdown", "placement_area"]
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/display_ads/{id}/unpublish": {
-      "put": {
-        "summary": "unpublish",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to unpublish.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 123
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "no content"
-          },
-          "404": {
-            "description": "not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/reactions/toggle": {
-      "post": {
-        "summary": "toggle reaction",
-        "tags": ["reactions"],
-        "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
-        "parameters": [
-          {
-            "name": "category",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["like", "readinglist", "unicorn"]
-            }
-          },
-          {
-            "name": "reactable_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "reactable_type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["Comment", "Article", "User"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "result": "create",
-                  "category": "like",
-                  "id": 85,
-                  "reactable_id": 2304,
-                  "reactable_type": "Article"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/reactions": {
-      "post": {
-        "summary": "create reaction",
-        "tags": ["reactions"],
-        "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
-        "parameters": [
-          {
-            "name": "category",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["like", "readinglist", "unicorn"]
-            }
-          },
-          {
-            "name": "reactable_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "reactable_type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": ["Comment", "Article", "User"]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "result": "none",
-                  "category": "like",
-                  "id": 87,
-                  "reactable_id": 2306,
-                  "reactable_type": "Article"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/users/{id}": {
-      "get": {
-        "summary": "A User",
-        "tags": ["users"],
-        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
-        "operationId": "getUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful"
-          }
-        }
-      }
-    },
-    "/api/users/{id}/unpublish": {
-      "put": {
-        "summary": "Unpublish a User's Articles and Comments",
-        "tags": ["users"],
-        "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
-        "operationId": "unpublishUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to unpublish.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "User's articles and comments successfully unpublished"
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Unknown User ID (still accepted for async processing)",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/users/{id}/suspend": {
-      "put": {
-        "summary": "Suspend a User",
-        "tags": ["users"],
-        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
-        "operationId": "suspendUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to suspend.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "User successfully unpublished"
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Unknown User ID",
             "content": {
               "application/json": {
                 "example": {

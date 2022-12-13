@@ -104,85 +104,87 @@ belonging to the requested collection, ordered by ascending publication date.",
     end
   end
 
-  path "/api/articles/{id}" do
-    get "Published article by id" do
-      security []
-      tags "articles"
-      description "This endpoint allows the client to retrieve a single published article given its `id`."
-      operationId "getArticleById"
-      produces "application/json"
-      parameter name: :id, in: :path, type: :integer, required: true
+  describe "/api/articles/{id}" do
+    path "/api/articles/{id}" do
+      get "Published article by id" do
+        security []
+        tags "articles"
+        description "This endpoint allows the client to retrieve a single published article given its `id`."
+        operationId "getArticleById"
+        produces "application/json"
+        parameter name: :id, in: :path, type: :integer, required: true
 
-      response "200", "An Article" do
-        let(:id) { article.id }
-        schema  type: :object,
-                items: { "$ref": "#/components/schemas/ArticleIndex" }
-        add_examples
+        response "200", "An Article" do
+          let(:id) { article.id }
+          schema  type: :object,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
 
-        run_test!
+          run_test!
+        end
+
+        response "404", "Article Not Found" do
+          let(:id) { 1_234_567_890 }
+          add_examples
+
+          run_test!
+        end
       end
 
-      response "404", "Article Not Found" do
-        let(:id) { 1_234_567_890 }
-        add_examples
+      #     put "Update an article by id" do
+      #       tags "articles"
+      #       description "This endpoint allows the client to update an existing article.
 
-        run_test!
-      end
+      # \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
+      #       operationId "getArticleById"
+      #       produces "application/json"
+      #       parameter name: :id, in: :path, type: :integer, required: true
+      #       parameter name: :id, in: :path, type: :integer, required: true
+
+      #       response "200", "An Article" do
+      #         let(:"api-key") { api_secret.secret }
+      #         let(:id) { user_article.id }
+      #         # let(:article) {  }
+      #         schema  type: :object,
+      #                 items: { "$ref": "#/components/schemas/ArticleIndex" }
+      #         add_examples
+
+      #         run_test!
+      #       end
+
+      #       response "404", "Article Not Found" do
+      #         let(:"api-key") { api_secret.secret }
+      #         let(:id) { 1234567890 }
+      #         add_examples
+
+      #         run_test!
+      #       end
+
+      #       response "401", "Unauthorized" do
+      #         let(:"api-key") { nil }
+      #         let(:id) { article.id }
+      #         add_examples
+
+      #         run_test!
+      #       end
+
+      #       response "403", "Forbidden" do
+      #         let(:"api-key") { nil }
+      #         let(:id) { article.id }
+      #         add_examples
+
+      #         run_test!
+      #       end
+
+      #       response "422", "Unprocessable Entity" do
+      #         let(:"api-key") { api_secret.secret }
+      #         let(:id) { user_article.id }
+      #         add_examples
+
+      #         run_test!
+      #       end
+      #     end
     end
-
-    #     put "Update an article by id" do
-    #       tags "articles"
-    #       description "This endpoint allows the client to update an existing article.
-
-    # \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
-    #       operationId "getArticleById"
-    #       produces "application/json"
-    #       parameter name: :id, in: :path, type: :integer, required: true
-    #       parameter name: :id, in: :path, type: :integer, required: true
-
-    #       response "200", "An Article" do
-    #         let(:"api-key") { api_secret.secret }
-    #         let(:id) { user_article.id }
-    #         # let(:article) {  }
-    #         schema  type: :object,
-    #                 items: { "$ref": "#/components/schemas/ArticleIndex" }
-    #         add_examples
-
-    #         run_test!
-    #       end
-
-    #       response "404", "Article Not Found" do
-    #         let(:"api-key") { api_secret.secret }
-    #         let(:id) { 1234567890 }
-    #         add_examples
-
-    #         run_test!
-    #       end
-
-    #       response "401", "Unauthorized" do
-    #         let(:"api-key") { nil }
-    #         let(:id) { article.id }
-    #         add_examples
-
-    #         run_test!
-    #       end
-
-    #       response "403", "Forbidden" do
-    #         let(:"api-key") { nil }
-    #         let(:id) { article.id }
-    #         add_examples
-
-    #         run_test!
-    #       end
-
-    #       response "422", "Unprocessable Entity" do
-    #         let(:"api-key") { api_secret.secret }
-    #         let(:id) { user_article.id }
-    #         add_examples
-
-    #         run_test!
-    #       end
-    #     end
   end
 
   path "/api/articles/{username}/{slug}" do
@@ -193,7 +195,6 @@ belonging to the requested collection, ordered by ascending publication date.",
       operationId "getArticleByPath"
       produces "application/json"
       parameter name: :slug, in: :path, type: :string, required: true
-      parameter "$ref": "#/components/parameters/pageParam"
 
       response "200", "An Article" do
         let(:username) { article.username }
