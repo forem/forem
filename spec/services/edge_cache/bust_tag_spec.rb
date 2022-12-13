@@ -6,6 +6,7 @@ RSpec.describe EdgeCache::BustTag, type: :service do
   let(:paths) do
     [
       "/t/#{tag.name}",
+      "/t/#{tag.name}/",
       "/tags",
     ]
   end
