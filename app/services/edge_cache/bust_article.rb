@@ -24,6 +24,7 @@ module EdgeCache
     def self.paths_for(article, &block)
       paths = [
         article.path,
+        "#{article.path}/",
         "/#{article.user.username}",
         "#{article.path}/comments",
         "#{article.path}?preview=#{article.password}",

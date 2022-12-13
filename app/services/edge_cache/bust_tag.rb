@@ -7,6 +7,7 @@ module EdgeCache
 
       cache_bust = EdgeCache::Bust.new
       cache_bust.call("/t/#{tag.name}")
+      cache_bust.call("/t/#{tag.name}/")
       cache_bust.call("/tags")
     end
   end
