@@ -100,56 +100,6 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "article",
-                    "id": 451,
-                    "title": "The Moon by Night128",
-                    "description": "Occupy skateboard chartreuse meditation echo poutine. Godard tofu sustainable. Scenester phlogiston...",
-                    "readable_publish_date": "Dec 13",
-                    "slug": "the-moon-by-night128-42ij",
-                    "path": "/username158/the-moon-by-night128-42ij",
-                    "url": "http://localhost:3000/username158/the-moon-by-night128-42ij",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2022-12-13T21:53:32Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
-                    "social_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
-                    "canonical_url": "http://localhost:3000/username158/the-moon-by-night128-42ij",
-                    "created_at": "2022-12-13T21:53:32Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2022-12-13T21:53:32Z",
-                    "last_comment_at": "2022-12-13T21:53:32Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["discuss"],
-                    "tags": "discuss",
-                    "user": {
-                      "name": "Michel \"Danny\" \\:/ Schamberger",
-                      "username": "username158",
-                      "twitter_username": "twitter158",
-                      "github_username": "github158",
-                      "user_id": 502,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/502/ffa77a11-9d5e-4aa8-9d65-a86d2f9eb7fc.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/502/ffa77a11-9d5e-4aa8-9d65-a86d2f9eb7fc.jpeg"
-                    },
-                    "organization": {
-                      "name": "Ward-Rutherford",
-                      "username": "org32",
-                      "slug": "org32",
-                      "profile_image": "/uploads/organization/profile_image/96/33508af2-f894-4336-9bb4-b77013c3021e.png",
-                      "profile_image_90": "/uploads/organization/profile_image/96/33508af2-f894-4336-9bb4-b77013c3021e.png"
-                    },
-                    "flare_tag": {
-                      "name": "discuss",
-                      "bg_color_hex": "#000000",
-                      "text_color_hex": "#ffffff"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -184,49 +134,6 @@
             "description": "An Article",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "article",
-                  "id": 452,
-                  "title": "The Soldier's Art129",
-                  "description": "Distillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian...",
-                  "readable_publish_date": "Dec 13",
-                  "slug": "the-soldiers-art129-2o34",
-                  "path": "/username159/the-soldiers-art129-2o34",
-                  "url": "http://localhost:3000/username159/the-soldiers-art129-2o34",
-                  "comments_count": 0,
-                  "public_reactions_count": 0,
-                  "collection_id": null,
-                  "published_timestamp": "2022-12-13T21:53:33Z",
-                  "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                  "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
-                  "canonical_url": "http://localhost:3000/username159/the-soldiers-art129-2o34",
-                  "created_at": "2022-12-13T21:53:33Z",
-                  "edited_at": null,
-                  "crossposted_at": null,
-                  "published_at": "2022-12-13T21:53:33Z",
-                  "last_comment_at": "2022-12-13T21:53:33Z",
-                  "reading_time_minutes": 1,
-                  "tag_list": "discuss",
-                  "tags": ["discuss"],
-                  "body_html": "<p>Distillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian celiac quinoa echo chicharrones.</p>\n\n<p>Direct trade put a bird on it listicle pour-over whatever.</p>\n\n",
-                  "body_markdown": "---\ntitle: The Soldier's Art129\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nDistillery taxidermy gentrify yuccie lomo skateboard. Asymmetrical cleanse normcore pug. Flexitarian celiac quinoa echo chicharrones.\n\n\nDirect trade put a bird on it listicle pour-over whatever.\n\n",
-                  "user": {
-                    "name": "Rocky \"Tana\" \\:/ Schaefer",
-                    "username": "username159",
-                    "twitter_username": "twitter159",
-                    "github_username": "github159",
-                    "user_id": 503,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/503/88428955-9f1d-4032-b235-d790148c5728.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/503/88428955-9f1d-4032-b235-d790148c5728.jpeg"
-                  },
-                  "flare_tag": {
-                    "name": "discuss",
-                    "bg_color_hex": "#000000",
-                    "text_color_hex": "#ffffff"
-                  }
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -237,15 +144,28 @@
             }
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
+            "description": "Article Not Found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an article by id",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "operationId": "getArticleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
             }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article"
           }
         }
       }
@@ -258,6 +178,14 @@
         "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
         "operationId": "getArticleByPath",
         "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "slug",
             "in": "path",
@@ -303,21 +231,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -346,21 +265,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -389,21 +299,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -432,21 +333,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -494,26 +386,10 @@
             "description": "Article successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Article Not Found"
           }
         }
       }

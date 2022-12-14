@@ -8,7 +8,7 @@ require "swagger_helper"
 RSpec.describe "Api::V1::Docs::Articles" do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
-  let(:article) { create(:article, featured: true, tags: "discuss", published: true) }
+  let(:published_article) { create(:article, featured: true, tags: "discuss", published: true) }
   let(:unpublished_aricle) { create(:article, published: false) }
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Docs::Articles" do
 
   describe "GET /articles" do
     before do
-      article.update_columns(organization_id: organization.id)
+      published_article.update_columns(organization_id: organization.id)
     end
 
     path "/api/articles" do
@@ -115,7 +115,7 @@ belonging to the requested collection, ordered by ascending publication date.",
         parameter name: :id, in: :path, type: :integer, required: true
 
         response "200", "An Article" do
-          let(:id) { article.id }
+          let(:id) { published_article.id }
           schema  type: :object,
                   items: { "$ref": "#/components/schemas/ArticleIndex" }
           add_examples
@@ -131,59 +131,70 @@ belonging to the requested collection, ordered by ascending publication date.",
         end
       end
 
-      #     put "Update an article by id" do
-      #       tags "articles"
-      #       description "This endpoint allows the client to update an existing article.
+      put "Update an article by id" do
+        tags "articles"
+        description "This endpoint allows the client to update an existing article.
 
-      # \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
-      #       operationId "getArticleById"
-      #       produces "application/json"
-      #       parameter name: :id, in: :path, type: :integer, required: true
-      #       parameter name: :id, in: :path, type: :integer, required: true
+\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
+        operationId "getArticleById"
+        produces "application/json"
+        parameter name: :id, in: :path, type: :integer, required: true
+        parameter name: :article, in: :body, schema: {
+          type: :object,
+          properties: {
+            title: { type: :string },
+            body_markdown: { type: :string },
+            published: { type: :boolean },
+            series: { type: :string },
+            main_image: { type: :string },
+            canonical_url: { type: :string },
+            description: { type: :string },
+            tags: { type: :string },
+            organization_id: { type: :integer }
+          }
+        }
 
-      #       response "200", "An Article" do
-      #         let(:"api-key") { api_secret.secret }
-      #         let(:id) { user_article.id }
-      #         # let(:article) {  }
-      #         schema  type: :object,
-      #                 items: { "$ref": "#/components/schemas/ArticleIndex" }
-      #         add_examples
+        response "200", "An Article" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { user_article.id }
+          let(:article) { { article: { body_markdown: "**New** body for the article" } } }
+          add_examples
 
-      #         run_test!
-      #       end
+          run_test!
+        end
 
-      #       response "404", "Article Not Found" do
-      #         let(:"api-key") { api_secret.secret }
-      #         let(:id) { 1234567890 }
-      #         add_examples
+        # response "404", "Article Not Found" do
+        #   let(:"api-key") { api_secret.secret }
+        #   let(:id) { 1234567890 }
+        #   add_examples
 
-      #         run_test!
-      #       end
+        #   run_test!
+        # end
 
-      #       response "401", "Unauthorized" do
-      #         let(:"api-key") { nil }
-      #         let(:id) { article.id }
-      #         add_examples
+        # response "401", "Unauthorized" do
+        #   let(:"api-key") { nil }
+        #   let(:id) { published_article.id }
+        #   add_examples
 
-      #         run_test!
-      #       end
+        #   run_test!
+        # end
 
-      #       response "403", "Forbidden" do
-      #         let(:"api-key") { nil }
-      #         let(:id) { article.id }
-      #         add_examples
+        # response "403", "Forbidden" do
+        #   let(:"api-key") { nil }
+        #   let(:id) { published_article.id }
+        #   add_examples
 
-      #         run_test!
-      #       end
+        #   run_test!
+        # end
 
-      #       response "422", "Unprocessable Entity" do
-      #         let(:"api-key") { api_secret.secret }
-      #         let(:id) { user_article.id }
-      #         add_examples
+        # response "422", "Unprocessable Entity" do
+        #   let(:"api-key") { api_secret.secret }
+        #   let(:id) { user_article.id }
+        #   add_examples
 
-      #         run_test!
-      #       end
-      #     end
+        #   run_test!
+        # end
+      end
     end
   end
 
@@ -194,11 +205,12 @@ belonging to the requested collection, ordered by ascending publication date.",
       description "This endpoint allows the client to retrieve a single published article given its `path`."
       operationId "getArticleByPath"
       produces "application/json"
+      parameter name: :username, in: :path, type: :string, required: true
       parameter name: :slug, in: :path, type: :string, required: true
 
       response "200", "An Article" do
-        let(:username) { article.username }
-        let(:slug) { article.slug }
+        let(:username) { published_article.username }
+        let(:slug) { published_article.slug }
         schema  type: :object,
                 items: { "$ref": "#/components/schemas/ArticleIndex" }
         add_examples
@@ -386,7 +398,7 @@ will remain."
 
         response "204", "Article successfully unpublished" do
           let(:"api-key") { api_secret.secret }
-          let(:id) { article.id }
+          let(:id) { published_article.id }
           add_examples
 
           run_test!
