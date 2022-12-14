@@ -106,6 +106,7 @@
         </a>
       </h2>
       <% else %>
+        <a href="<%= story.path %>" style="color: unset !important;" id="story-link-<%= story.id %>"><div style="padding: 1rem 0"><%= story.description %></div></a>
         <div id="photo-grid-<%= story.id %>" class="photo-grid" data-images="<%= story.image_list %>"></div>
       <% end %>
       <div class="crayons-story__tags">

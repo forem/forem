@@ -120,7 +120,7 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             { version == 'v0' ? null : <ContentTitle article={article} /> }
-            { version == 'v0' ? (<div style={{padding: "1rem 0"}}>{article.description}</div>) : null }
+            { version == 'v0' ? (<a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div style={{padding: "1rem 0"}}>{article.description}</div></a>) : null }
             { version == 'v0' && (
             <ImageGrid>
               {article.image_list
