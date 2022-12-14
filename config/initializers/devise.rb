@@ -13,8 +13,8 @@ TWITTER_OMNIAUTH_SETUP = lambda do |env|
 end
 
 TWITTER2_OMNIAUTH_SETUP = lambda do |env|
-  env["omniauth.strategy"].options[:consumer_key] = Settings::Authentication.twitter2_key
-  env["omniauth.strategy"].options[:consumer_secret] = Settings::Authentication.twitter2_secret
+  env["omniauth.strategy"].options[:client_id] = Settings::Authentication.twitter2_key
+  env["omniauth.strategy"].options[:client_secret] = Settings::Authentication.twitter2_secret
   env["omniauth.strategy"].options[:scope] = "offline.access"
   env["omniauth.strategy"].options[:callback_path] = "/users/auth/twitter2/callback"
 end
