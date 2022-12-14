@@ -135,17 +135,8 @@ class ArticlesController < ApplicationController
       fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
       # fixed_body_markdown = fixed_body_markdown.gsub(/(\{)(.*)(embed) ((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)(.*)(\})/i, '\4');
       # fixed_body_markdown = fixed_body_markdown.gsub(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i, '{% embed \1 %}'+"\n\n");
-      p "--begin debug--"
-      p fixed_body_markdown
-      p "--end debug--"
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      p "--begin debug--"
-      p parsed
-      p "--end debug--"
       parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
-      p "--begin debug--"
-      p parsed_markdown.finalize
-      p "--end debug--"
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
