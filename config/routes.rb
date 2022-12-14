@@ -289,8 +289,8 @@ Rails.application.routes.draw do
     get "/new", to: "articles#new"
     get "/new/:template", to: "articles#new"
 
-    get "/share-images", to: "articles#new_post"
-    get "/share-images/:template", to: "articles#new_post"
+    get "/quick-share", to: "articles#quick_share"
+    get "/quick-share/:template", to: "articles#quick_share"
 
     get "/pod", to: "podcast_episodes#index"
     get "/podcasts", to: redirect("pod")

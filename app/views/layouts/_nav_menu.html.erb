@@ -19,6 +19,9 @@
       <a href="<%= mod_path %>" class="c-link c-link--block trusted-visible-block"><%= t("views.main.nav.moderator_center") %></a>
     </li>
     <%= application_policy_content_tag("li", record: Article, query: :create?) do %>
+      <a href="/quick-share" class="c-link c-link--block"><%= t("views.main.create_quick_share") %></a>
+    <% end %>
+    <%= application_policy_content_tag("li", record: Article, query: :create?) do %>
       <a href="<%= new_path %>" class="c-link c-link--block"><%= t("views.main.create_post") %></a>
     <% end %>
     <li>

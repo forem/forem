@@ -29,8 +29,8 @@
       </a>
       <% if user_signed_in? %>
         <span class="hidden m:flex ml-auto">
-          <%= application_policy_content_tag("a", record: Article, query: :create?, href: '/share-images', class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
-            <%= 'Share image' %>
+          <%= application_policy_content_tag("a", record: Article, query: :create?, href: '/quick-share', class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
+            <%= t("views.main.create_quick_share") %>
           <% end %>
           <%= application_policy_content_tag("a", record: Article, query: :create?, href: new_path, class: "c-cta c-cta--branded mr-2 whitespace-nowrap") do %>
             <%= t("views.main.create_post") %>

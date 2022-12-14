@@ -90,7 +90,7 @@ class ArticlesController < ApplicationController
   #       a prefill of information are first prompted to sign-in, and then given a form that
   #       prepopulates with that pre-fill information.  This is a feature that StackOverflow and
   #       CodePen use to have folks post on Dev.
-  def new_post
+  def quick_share
     base_editor_assignments
 
     @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
