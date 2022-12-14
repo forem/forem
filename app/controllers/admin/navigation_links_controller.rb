@@ -1,6 +1,8 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
     after_action :bust_content_change_caches, only: %i[create update destroy]
+    after_action :bust_navigation_links_cache, only: %i[create update destroy]
+
     ALLOWED_PARAMS = %i[
       name url icon display_to position section
     ].freeze
@@ -14,7 +16,6 @@ module Admin
     def create
       navigation_link = NavigationLink.new(navigation_link_params)
       if navigation_link.save
-        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.created",
                  link: navigation_link.name)
@@ -27,7 +28,6 @@ module Admin
     def update
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.update(navigation_link_params)
-        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.updated",
                  link: navigation_link.name)
@@ -40,7 +40,6 @@ module Admin
     def destroy
       navigation_link = NavigationLink.find(params[:id])
       if navigation_link.destroy
-        Rails.cache.delete("navigation_links")
         flash[:success] =
           I18n.t("admin.navigation_links_controller.deleted",
                  link: navigation_link.name)
@@ -54,6 +53,10 @@ module Admin
 
     def navigation_link_params
       params.require(:navigation_link).permit(ALLOWED_PARAMS)
+    end
+
+    def bust_navigation_links_cache
+      Rails.cache.delete("navigation_links")
     end
   end
 end
