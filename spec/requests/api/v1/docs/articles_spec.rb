@@ -104,6 +104,105 @@ belonging to the requested collection, ordered by ascending publication date.",
   end
 
   describe "GET /articles/me" do
+    path "/api/articles/me" do
+      get "User's articles" do
+        tags "articles"
+        description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
+
+\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
+
+Published articles will be in reverse chronological publication order.
+
+It will return published articles with pagination. By default a page will contain 30 articles."
+        operationId "getUserArticles"
+        produces "application/json"
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
+
+        response "200", "A List of the authenticated user's Articles" do
+          let(:"api-key") { api_secret.secret }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+
+    path "/api/articles/me/published" do
+      get "User's published articles" do
+        tags "articles"
+        description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
+
+\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
+
+Published articles will be in reverse chronological publication order.
+
+It will return published articles with pagination. By default a page will contain 30 articles."
+        operationId "getUserPublishedArticles"
+        produces "application/json"
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
+
+        response "200", "A List of the authenticated user's Articles" do
+          let(:"api-key") { api_secret.secret }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+
+    path "/api/articles/me/unpublished" do
+      get "User's unpublished articles" do
+        tags "articles"
+        description "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.
+
+\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
+
+Unpublished articles will be in reverse chronological creation order.
+
+It will return unpublished articles with pagination. By default a page will contain 30 articles."
+        operationId "getUserUnpublishedArticles"
+        produces "application/json"
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
+
+        response "200", "A List of the authenticated user's Articles" do
+          let(:"api-key") { api_secret.secret }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+
     path "/api/articles/me/all" do
       get "User's all articles" do
         tags "articles"
@@ -116,7 +215,7 @@ It will return both published and unpublished articles with pagination.
 Unpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.
 
 By default a page will contain 30 articles."
-        operationId "getUserArticles"
+        operationId "getUserAllArticles"
         produces "application/json"
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"

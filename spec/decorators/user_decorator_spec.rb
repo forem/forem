@@ -76,6 +76,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with defaults" do
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -85,6 +86,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -94,6 +96,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_theme = "dark_theme"
       expected_result = %W[
         dark-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -103,6 +106,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_navbar = "static"
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -115,7 +119,7 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:trusted)
 
         expected_result = %w[
-          light-theme sans-serif-article-body
+          light-theme sans-serif-article-body mod-status-false
           trusted-status-true default-header
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)

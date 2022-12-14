@@ -51,7 +51,9 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
-        resources :display_ads, only: %i[index show]
+        resources :display_ads, only: %i[index show create update] do
+          put "unpublish", on: :member
+        end
 
         draw :api
       end

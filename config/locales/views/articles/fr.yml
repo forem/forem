@@ -41,6 +41,9 @@ fr:
           cancel: Dismiss
           edit: Edit
           unpublish: Unpublish
+      jump_to_comments:
+        aria_label: Jump to Comments
+        label: Jump to Comments
       lock:
         meta:
           title: Confirm Discussion Lock
@@ -100,7 +103,8 @@ fr:
       edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
-      posted_html: Posted on %{date}
+      published_html: Posted on %{date}
+      scheduled_html: Scheduled for %{date}
       read_next: Lire ensuite
       reading_time:
         one: "1 min read"
