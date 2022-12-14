@@ -22,22 +22,16 @@ module Stories
 
     def assign_feed_stories
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-                  p 'assign_feed_stories 1'
                   timeframe_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-                  p 'assign_feed_stories 2'
                   latest_feed
                 elsif user_signed_in?
-                  p 'assign_feed_stories 3'
                   signed_in_base_feed
                 else
-                  p 'assign_feed_stories 4'
                   signed_out_base_feed
                 end
-                p 'stories stories stories 11'
-                # p stories
-                ArticleDecorator.decorate_collection(stories)
-                p ArticleDecorator.decorate_collection(stories)
+
+      ArticleDecorator.decorate_collection(stories)
     end
 
     def signed_in_base_feed
