@@ -12,9 +12,7 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function loadForm() {
-    const root = document.querySelector('#photo-grid');
-    const { images } = root.dataset;
-    const imagesArr = images.split(',').filter(n => n);
+    const photoGrids = document.querySelectorAll('.photo-grid');
 
     const pic = (c) => {
       return (
@@ -26,19 +24,26 @@ function loadForm() {
       );
     };
 
-    if (images!= "") {
-      render(
-        // <Photogrid images={imagesArr} //required
-        //   maxWidth={800} //optional according to your need
-        // />,
-        <ImageGrid>
-          {imagesArr
-            .filter((arg, i) => ((i <= imagesArr.length)))
-            .map((a) => pic(a))}
-        </ImageGrid>,
-        root,
-        root.firstElementChild,
-      );
+    for (let i = 0; i < photoGrids.length; i++) {
+      const photoGrid = photoGrids[i];
+      const { images } = photoGrid.dataset;
+      const imagesArr = images.split(',').filter(n => n);
+      const id = Math.random() //or some such identifier 
+      const d = document.createElement("div")
+      d.id = id
+      photoGrid.appendChild(d)
+
+      if (images!= "") {
+        render(
+          <ImageGrid>
+            {imagesArr
+              .filter((arg, i) => ((i <= imagesArr.length)))
+              .map((a) => pic(a))}
+          </ImageGrid>,
+          photoGrid,
+          photoGrid.firstElementChild,
+        );
+      }
     }
 }
 

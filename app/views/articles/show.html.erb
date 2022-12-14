@@ -189,7 +189,7 @@
         </div>
         
         <% if !@article.image_list.nil? %>
-          <div id="photo-grid" data-images="<%= @article.image_list %>"><div></div></div>
+          <div id="photo-grid-<%= @article.id %>" class="photo-grid" data-images="<%= @article.image_list %>"><div></div></div>
           <%= javascript_packs_with_chunks_tag "photoGrid", defer: true %>
         <% end %>
         <%= render "articles/full_comment_area" %>
