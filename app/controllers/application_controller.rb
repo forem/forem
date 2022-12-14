@@ -111,7 +111,16 @@ class ApplicationController < ActionController::Base
   end
 
   def bad_request
-    render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
+    respond_to do |format|
+      format.html do
+        raise if Rails.env.development?
+
+        render plain: "The request could not be understood (400).", status: :bad_request
+      end
+      format.json do
+        render json: { error: I18n.t("application_controller.bad_request") }, status: :bad_request
+      end
+    end
   end
 
   def error_too_many_requests(exc)
