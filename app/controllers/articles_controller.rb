@@ -86,10 +86,31 @@ class ArticlesController < ApplicationController
     end
   end
 
+  # @note The /new path is a unique creature.  We want to ensure that folks coming to the /new with
+  #       a prefill of information are first prompted to sign-in, and then given a form that
+  #       prepopulates with that pre-fill information.  This is a feature that StackOverflow and
+  #       CodePen use to have folks post on Dev.
+  def new_post
+    base_editor_assignments
+
+    @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
+
+    if needs_authorization
+      authorize(Article)
+    else
+      skip_authorization
+
+      # We want the query params for the request (as that is where we have the prefill).  The
+      # `request.path` excludes the query parameters, so we're going with the `request.url` which
+      # includes the parameters.
+      store_location_for(:user, request.url)
+    end
+  end
+
   def edit
     authorize @article
 
-    @version = @article.has_frontmatter? ? "v1" : "v2"
+    @version = @article.image_list ? "v0" : (@article.has_frontmatter? ? "v1" : "v2")
     @user = @article.user
     @organizations = @user&.organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)
@@ -112,8 +133,19 @@ class ArticlesController < ApplicationController
 
     begin
       fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
+      # fixed_body_markdown = fixed_body_markdown.gsub(/(\{)(.*)(embed) ((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)(.*)(\})/i, '\4');
+      # fixed_body_markdown = fixed_body_markdown.gsub(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i, '{% embed \1 %}'+"\n\n");
+      p "--begin debug--"
+      p fixed_body_markdown
+      p "--end debug--"
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+      p "--begin debug--"
+      p parsed
+      p "--end debug--"
       parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
+      p "--begin debug--"
+      p parsed_markdown.finalize
+      p "--end debug--"
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
@@ -147,6 +179,7 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
     @user = current_user
+    
     article = Articles::Creator.call(@user, article_params_json)
 
     render json: if article.persisted?
@@ -311,7 +344,13 @@ class ArticlesController < ApplicationController
 
     allowed_params = if params["article"]["version"] == "v1"
                        %i[body_markdown]
-                     else
+                      elsif params["article"]["version"] == "v0"
+                        %i[
+                         title body_markdown main_image published description video_thumbnail_url
+                         tag_list image_list canonical_url series collection_id archived published_at timezone
+                         published_at_date published_at_time
+                       ]
+                      else
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list canonical_url series collection_id archived published_at timezone

@@ -31,14 +31,14 @@ export function handleImageUploading(textAreaRef) {
  *
  * @param {useRef} textAreaRef The reference of the text area with content.
  */
-export function handleImageUploadSuccess(textAreaRef) {
+export function handleImageUploadSuccess(textAreaRef, version) {
   return function (response) {
     // Function is within the component to be able to access
     // textarea ref.
     const editableBodyElement = textAreaRef.current;
     const { links } = response;
 
-    const markdownImageLink = `![Image description](${links[0]})\n`;
+    const markdownImageLink = version == 'v0' ? '' : `![Image description](${links[0]})\n`;
     const { selectionStart, selectionEnd, value } = editableBodyElement;
     if (value.includes(UPLOADING_IMAGE_PLACEHOLDER)) {
       const newSelectedStart =
@@ -63,6 +63,9 @@ export function handleImageUploadSuccess(textAreaRef) {
 
     // Dispatching a new event so that linkstate, https://github.com/developit/linkstate,
     // the function used to create the onChange prop gets called correctly.
+    if (version == 'v0') {
+      document.dispatchEvent(new CustomEvent("upload_image_success", {detail: response.links}));
+    }
     editableBodyElement.dispatchEvent(new Event('input'));
   };
 }

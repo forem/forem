@@ -37,6 +37,10 @@ class ArticleDecorator < ApplicationDecorator
     (cached_tag_list || "").split(", ")
   end
 
+  def image_list_array
+    (image_list || "").split(",")
+  end
+
   def url
     URL.url(path)
   end

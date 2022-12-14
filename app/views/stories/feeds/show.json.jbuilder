@@ -1,5 +1,5 @@
 article_attributes_to_include = %i[
-  title path id user_id comments_count public_reactions_count organization_id
+  title path id user_id comments_count public_reactions_count organization_id image_list description
   reading_time video_thumbnail_url video video_duration_in_minutes
   experience_level_rating experience_level_rating_distribution
 ]
@@ -26,6 +26,7 @@ json.array!(@stories) do |article|
   end
 
   json.tag_list article.cached_tag_list_array
+  json.image_list article.image_list_array
   json.extract! article, *article_methods_to_include
 
   json.top_comments article.top_comments do |comment|

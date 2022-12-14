@@ -40,11 +40,21 @@ module MarkdownProcessor
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
         # See <https://github.com/Shopify/liquid/issues/1390>
+        p "--begin debug 1--"
+        # p sanitized_content.to_str
+        p "--end debug 1--"
         parsed_liquid = Liquid::Template.parse(sanitized_content.to_str, @liquid_tag_options)
+
+        p "--begin debug 2--"
+        # p parsed_liquid
+        p "--end debug 2--"
 
         html = markdown.render(parsed_liquid.render)
       rescue Liquid::SyntaxError => e
         html = e.message
+        p "--begin debug 3--"
+        p html
+        p "--end debug 3--"
       end
 
       parse_html(html)

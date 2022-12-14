@@ -1,0 +1,14 @@
+<% title t("views.editor.heading.new") %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/new-post") %>" />
+<% end %>
+
+<% if user_signed_in? %>
+  <%= render "shared/webcomponents_loader_script" %>
+  <%= render "articles/v2_form", article: @article, organizations: @organizations, version: 'v0' %>
+  <%= javascript_packs_with_chunks_tag "articleForm", defer: true %>
+  <div id="markdown-lint-js-path" class="hidden" data-markdown-it-js-path="<%= asset_path("markdown-it.min.js") %>" data-markdown-lint-js-path="<%= asset_path("markdownlint-browser.min.js") %>">
+<% else %>
+  <% @new_article_not_logged_in = true %>
+  <%= render "devise/registrations/registration_form" %>
+<% end %>

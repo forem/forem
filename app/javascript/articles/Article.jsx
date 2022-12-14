@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { ImageGrid } from "react-fb-image-video-grid";
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
   ArticleCoverImage,
@@ -40,12 +41,23 @@ export const Article = ({
     'crayons-story__tertiary',
   ];
 
+  const pic = (c) => {
+    return (
+      <img
+        style={{ objectFit: "cover" }}
+        src={c}
+        alt=""
+      />
+    );
+  };
+
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
     !article.cloudinary_video_url;
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
+  const version = article.image_list.length > 0 ? 'v0' : null;
 
   return (
     <article
@@ -107,7 +119,15 @@ export const Article = ({
           </div>
 
           <div className="crayons-story__indention">
-            <ContentTitle article={article} />
+            { version == 'v0' ? null : <ContentTitle article={article} /> }
+            { version == 'v0' ? (<div style={{padding: "1rem 0"}}>{article.description}</div>) : null }
+            { version == 'v0' && (
+            <ImageGrid>
+              {article.image_list
+                .filter((arg, i) => ((i <= article.image_list.length)))
+                .map((a) => pic(a))}
+            </ImageGrid>
+            )}
             <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
 
             {article.class_name === 'Article' && (

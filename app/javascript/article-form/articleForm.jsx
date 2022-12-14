@@ -91,6 +91,7 @@ export class ArticleForm extends Component {
         ? {
             title: previousContent.title || '',
             tagList: previousContent.tagList || '',
+            imageList: previousContent.imageList || '',
             mainImage: previousContent.mainImage || null,
             bodyMarkdown: previousContent.bodyMarkdown || '',
             edited: true,
@@ -112,6 +113,7 @@ export class ArticleForm extends Component {
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      imageList: this.article.image_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       publishedAtTime: this.publishedAtTime,
@@ -163,13 +165,14 @@ export class ArticleForm extends Component {
   }
 
   localStoreContent = () => {
-    const { version, title, tagList, mainImage, bodyMarkdown } = this.state;
+    const { version, title, tagList, imageList, mainImage, bodyMarkdown } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
       JSON.stringify({
         title,
         tagList,
+        imageList,
         mainImage,
         bodyMarkdown,
         updatedAt,
@@ -346,6 +349,7 @@ export class ArticleForm extends Component {
       formKey: new Date().toISOString(),
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
+      imageList: this.article.image_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       publishedAtTime: this.publishedAtTime,
@@ -410,6 +414,7 @@ export class ArticleForm extends Component {
     const {
       title,
       tagList,
+      imageList,
       bodyMarkdown,
       published,
       publishedAtTime,
@@ -475,6 +480,8 @@ export class ArticleForm extends Component {
             titleOnChange={linkState(this, 'title')}
             tagsDefaultValue={tagList}
             tagsOnInput={linkState(this, 'tagList')}
+            imagesDefaultValue={imageList}
+            imagesOnInput={linkState(this, 'imageList')}
             bodyDefaultValue={bodyMarkdown}
             bodyOnChange={linkState(this, 'bodyMarkdown')}
             bodyHasFocus={false}

@@ -37,7 +37,7 @@
 </style>
 
 <main id="main-content"
-  data-article="<%= article.to_json(only: %i[id title cached_tag_list published published_at body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
+  data-article="<%= article.to_json(only: %i[id title cached_tag_list image_list published published_at body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'
@@ -90,20 +90,24 @@
               <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
             </button>
           </div>
+          <% if version == "v2" %>
           <div class="crayons-article-form__title">
             <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="<%= t("views.editor.new_title") %>" autocomplete="off"><%= article.title %></textarea>
           </div>
+          <% end %>
         </div>
       <% end %>
     </div>
   </form>
 </main>
 
+<% if version == "v2" %>
 <div class="hidden">
   <%= render "pages/editor_markdown_help" %>
   <%= render "pages/editor_liquid_help" %>
   <%= render "pages/editor_frontmatter_help" %>
 </div>
+<% end %>
 
 <script>
   <%== RunkitTag.script %>

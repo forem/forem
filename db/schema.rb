@@ -106,6 +106,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.boolean "featured", default: false
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
+    t.text "image_list"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at", precision: nil
     t.string "main_image"

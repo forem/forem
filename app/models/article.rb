@@ -129,8 +129,9 @@ class Article < ApplicationRecord
     too_long: proc { I18n.t("models.article.is_too_long") }
   }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
-  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
+  # validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :cached_tag_list, length: { maximum: 126 }
+  validates :image_list, allow_blank: true, length: { minimum: 0 }
   validates :canonical_url,
             uniqueness: { allow_nil: true, scope: :published, message: unique_url_error },
             if: :published?
@@ -148,8 +149,8 @@ class Article < ApplicationRecord
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
-  validates :slug, uniqueness: { scope: :user_id }
-  validates :title, presence: true, length: { maximum: 128 }
+  #validates :slug, uniqueness: { scope: :user_id }
+  validates :title, allow_blank: true, presence: true, length: { maximum: 128 }
   validates :user_subscriptions_count, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
@@ -296,7 +297,7 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
-           :comments_count, :public_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list, :image_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
@@ -307,7 +308,7 @@ class Article < ApplicationRecord
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-           :comments_count, :public_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list, :image_list,
            :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
@@ -353,7 +354,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list
                    )
                }
 

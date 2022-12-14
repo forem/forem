@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
 import { ErrorList } from './ErrorList';
+// import { TagsField } from './TagsField';
 
 export const Form = ({
   titleDefaultValue,
   titleOnChange,
   tagsDefaultValue,
   tagsOnInput,
+  imagesDefaultValue,
+  imagesOnInput,
   bodyDefaultValue,
   bodyOnChange,
   bodyHasFocus,
@@ -34,11 +37,25 @@ export const Form = ({
         />
       )}
 
+      {/* {version === 'v0' && (
+        <div className="crayons-article-form__top text-padding drop-area" style="padding-bottom: 0">
+          <TagsField
+            defaultValue={tagsDefaultValue}
+            onInput={tagsOnInput}
+            switchHelpContext={switchHelpContext}
+          />
+        </div>
+      )} */}
+
       <EditorBody
         defaultValue={bodyDefaultValue}
         onChange={bodyOnChange}
         hasFocus={bodyHasFocus}
         switchHelpContext={switchHelpContext}
+        tagsDefaultValue={tagsDefaultValue}
+        tagsOnInput={tagsOnInput}
+        imagesDefaultValue={imagesDefaultValue}
+        imagesOnInput={imagesOnInput}
         version={version}
       />
     </div>
@@ -50,6 +67,8 @@ Form.propTypes = {
   titleOnChange: PropTypes.func.isRequired,
   tagsDefaultValue: PropTypes.string.isRequired,
   tagsOnInput: PropTypes.func.isRequired,
+  imagesDefaultValue: PropTypes.string.isRequired,
+  imagesOnInput: PropTypes.func.isRequired,
   bodyDefaultValue: PropTypes.string.isRequired,
   bodyOnChange: PropTypes.func.isRequired,
   bodyHasFocus: PropTypes.bool.isRequired,

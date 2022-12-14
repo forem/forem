@@ -1,3 +1,4 @@
+require 'securerandom'
 module Articles
   class Creator
     def initialize(user, article_params)
@@ -40,6 +41,7 @@ module Articles
     def save_article
       series = article_params[:series]
       tags = article_params[:tags]
+      title = article_params[:title]
 
       # convert tags from array to a string
       if tags.present?
@@ -47,6 +49,10 @@ module Articles
         article_params[:tag_list] = tags.join(", ")
       end
 
+      if title.nil? || title.empty?
+        article_params[:title] = SecureRandom.uuid
+      end
+      
       article = Article.new(article_params)
       article.user_id = user.id
       article.show_comments = true

@@ -130,6 +130,7 @@ const V2EditorImageUpload = ({
           tabindex="-1"
           aria-label="Upload image"
           id="image-upload-field"
+          multiple
           onChange={startNewRequest}
           className="screen-reader-only"
           accept="image/*"
@@ -321,6 +322,8 @@ export const ImageUploader = ({
       type: 'upload_image_success',
       payload: { insertionImageUrls: response.links },
     });
+
+    document.dispatchEvent(new CustomEvent("upload_image_success", {detail: response.links}));
 
     onImageUploadSuccess?.(`![Image description](${response.links})`);
 

@@ -1,14 +1,17 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { useLayoutEffect, useRef } from 'preact/hooks';
+import { useLayoutEffect, useRef, useState } from 'preact/hooks';
+import ReactImageGrid from "@cordelia273/react-image-grid";
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
+import { ImageUploader } from './ImageUploader';
 import {
   handleImageUploadSuccess,
   handleImageUploading,
   handleImageUploadFailure,
 } from './imageUploadHelpers';
 import { handleImageDrop, onDragOver, onDragExit } from './dragAndDropHelpers';
+import { TagsField } from './TagsField';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
@@ -17,15 +20,27 @@ import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextAre
 export const EditorBody = ({
   onChange,
   defaultValue,
+  tagsDefaultValue,
+  tagsOnInput,
+  imagesDefaultValue,
+  imagesOnInput,
   switchHelpContext,
   version,
 }) => {
   const textAreaRef = useRef(null);
 
+  const [images, setImages] = useState(imagesDefaultValue != '' ? imagesDefaultValue.split(',') : []);
+
+  document.addEventListener("upload_image_success", (e) => {
+    const imagesList = [...e.detail, ...images];
+    setImages(imagesList);
+    imagesOnInput(imagesList.join(','));
+  });
+
   const { setElement } = useDragAndDrop({
     onDrop: handleImageDrop(
       handleImageUploading(textAreaRef),
-      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef, version),
       handleImageUploadFailure(textAreaRef),
     ),
     onDragOver,
@@ -35,7 +50,7 @@ export const EditorBody = ({
   const setPasteElement = usePasteImage({
     onPaste: handleImagePasted(
       handleImageUploading(textAreaRef),
-      handleImageUploadSuccess(textAreaRef),
+      handleImageUploadSuccess(textAreaRef, version),
       handleImageUploadFailure(textAreaRef),
     ),
   });
@@ -47,12 +62,21 @@ export const EditorBody = ({
     }
   });
 
+  // const handleImageUploadStarted = () => {
+    
+  // }
+
+  // const handleImageUploadEnd = (imageMarkdown = '') => {
+    
+  // };
+
   return (
     <div
       data-testid="article-form__body"
       className="crayons-article-form__body drop-area text-padding"
+      // style={version == 'v0' ? {'padding-top' : 0} : null}
     >
-      <Toolbar version={version} textAreaId="article_body_markdown" />
+      { version == 'v0' ? null : <Toolbar version={version} textAreaId="article_body_markdown" /> }
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
         maxSuggestions={6}
@@ -73,6 +97,47 @@ export const EditorBody = ({
         placeholder="Write your post content here..."
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
+      
+      { version == 'v0' ? <div style={{
+        'border' : '1px solid #ddd',
+        'border-radius': '0.5rem',
+        'padding': '0.5rem'
+      }}>Add to your post <ImageUploader
+        editorVersion="v2"
+        // onImageUploadStart={handleImageUploadStarted}
+        // onImageUploadSuccess={handleImageUploadEnd}
+        // onImageUploadError={handleImageUploadEnd}
+        buttonProps={{
+          // onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+          onClick: () => {
+          },
+          tooltip: (
+            <span aria-hidden="true">Upload image</span>
+          ),
+          key: 'image-btn',
+          className: 'toolbar-btn formatter-btn mr-1',
+          tabindex: '-1',
+        }}
+      /></div> : null }
+
+      {version === 'v0' && (
+        <div className="crayons-article-form__top drop-area" style={{padding: '0.5rem 0'}}>
+          <TagsField
+            defaultValue={tagsDefaultValue}
+            onInput={tagsOnInput}
+            switchHelpContext={switchHelpContext}
+          />
+        </div>
+      )}
+
+      { version === 'v0' ? (
+        <div style={{ maxWidth: 800, maxHeight: 400, height: 400 }}>
+          <ReactImageGrid
+            images={images}
+            modal={false}
+          />
+        </div>
+      ) : null }
     </div>
   );
 };

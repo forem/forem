@@ -289,6 +289,9 @@ Rails.application.routes.draw do
     get "/new", to: "articles#new"
     get "/new/:template", to: "articles#new"
 
+    get "/share-images", to: "articles#new_post"
+    get "/share-images/:template", to: "articles#new_post"
+
     get "/pod", to: "podcast_episodes#index"
     get "/podcasts", to: redirect("pod")
     get "/readinglist", to: "reading_list_items#index"
