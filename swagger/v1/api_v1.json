@@ -104,44 +104,44 @@
                   {
                     "type_of": "article",
                     "id": 191,
-                    "title": "The Cricket on the Hearth172",
-                    "description": "Banjo biodiesel 8-bit semiotics diy blue bottle helvetica. You probably haven't heard of them...",
-                    "readable_publish_date": "Dec 1",
-                    "slug": "the-cricket-on-the-hearth172-37n0",
-                    "path": "/username378/the-cricket-on-the-hearth172-37n0",
-                    "url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
+                    "title": "Those Barren Leaves, Thrones, Dominations172",
+                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
+                    "readable_publish_date": "Dec 5",
+                    "slug": "those-barren-leaves-thrones-dominations172-163k",
+                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-01T14:54:49Z",
+                    "published_timestamp": "2022-12-06T00:47:14Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "social_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "canonical_url": "http://localhost:3000/username378/the-cricket-on-the-hearth172-37n0",
-                    "created_at": "2022-12-01T14:54:49Z",
+                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "created_at": "2022-12-06T00:47:14Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-01T14:54:49Z",
-                    "last_comment_at": "2022-12-01T14:54:49Z",
+                    "published_at": "2022-12-06T00:47:14Z",
+                    "last_comment_at": "2022-12-06T00:47:14Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Charity \"Yong\" \\:/ Jast",
-                      "username": "username378",
-                      "twitter_username": "twitter378",
-                      "github_username": "github378",
-                      "user_id": 379,
+                      "name": "Scottie \"Tony\" \\:/ Gibson",
+                      "username": "username382",
+                      "twitter_username": "twitter382",
+                      "github_username": "github382",
+                      "user_id": 383,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/379/ad860bca-8384-4b93-94fa-aa2f661525c4.jpeg"
+                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
                     },
                     "organization": {
-                      "name": "Mayert LLC",
-                      "username": "org60",
-                      "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png",
-                      "profile_image_90": "/uploads/organization/profile_image/60/5c98b18e-5f32-40ef-a770-838242f2ad68.png"
+                      "name": "O'Hara and Sons",
+                      "username": "org67",
+                      "slug": "org67",
+                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
+                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -162,12 +162,141 @@
         }
       }
     },
+    "/api/articles/me": {
+      "get": {
+        "summary": "User's articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/published": {
+      "get": {
+        "summary": "User's published articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserPublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/unpublished": {
+      "get": {
+        "summary": "User's unpublished articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserUnpublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
         "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
-        "operationId": "getUserArticles",
+        "operationId": "getUserAllArticles",
         "parameters": [
           {
             "$ref": "#/components/parameters/pageParam"
@@ -290,6 +419,130 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to create a new display ad.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 10,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2022-12-05T18:47:15.209-06:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "post_comments",
+                  "processed_html": "<h1>  <a href=\"#hi-this-is-ad\" class=\"anchor\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-05T18:47:15.209-06:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": null,
+                  "clicks_count": 0,
+                  "created_at": null,
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "moon",
+                  "processed_html": null,
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": null,
+                  "tag_list": []
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
       }
     },
     "/api/display_ads/{id}": {
@@ -317,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 5,
+                  "id": 11,
                   "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 5",
+                  "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-01T15:54:50.529+01:00",
+                  "created_at": "2022-12-05T18:47:15.335-06:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 5",
-                  "organization_id": 61,
+                  "name": "Display Ad 11",
+                  "organization_id": 68,
                   "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-01T15:54:50.531+01:00",
+                  "updated_at": "2022-12-05T18:47:15.337-06:00",
                   "tag_list": []
                 }
               }
@@ -356,6 +609,176 @@
                 "example": {
                   "error": "not found",
                   "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 10",
+                  "display_to": "all",
+                  "name": "Display Ad 12",
+                  "organization_id": 69,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
+                  "cached_tag_list": "",
+                  "id": 12,
+                  "clicks_count": 0,
+                  "created_at": "2022-12-05T18:47:15.490-06:00",
+                  "impressions_count": 0,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-05T18:47:15.493-06:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads/{id}/unpublish": {
+      "put": {
+        "summary": "unpublish",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
                 }
               }
             }
