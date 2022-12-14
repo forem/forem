@@ -66,7 +66,7 @@ jobs:
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
           repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
-          path: ./rspec.xml
+          path: tmp/rspec_final_results.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
@@ -97,7 +97,7 @@ jobs:
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
           repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
-          path: ./junit.xml
+          path: junit.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
