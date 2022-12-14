@@ -417,7 +417,7 @@ class Article < ApplicationRecord
         .tr("\n", " ")
         .strip
     else
-      I18n.t("models.article.a_post_by", user_name: user.name)
+      ''
     end
   end
 
