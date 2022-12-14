@@ -445,7 +445,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    if FeatureFlag.enabled?(:consistent_rendering)
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
       front_matter.any? && front_matter["title"].present?
     else
       original_has_frontmatter?
@@ -640,7 +640,7 @@ class Article < ApplicationRecord
   delegate :front_matter, to: :processed_content
 
   def evaluate_markdown
-    if FeatureFlag.enabled?(:consistent_rendering)
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
       extracted_evaluate_markdown
     else
       original_evaluate_markdown
@@ -924,7 +924,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

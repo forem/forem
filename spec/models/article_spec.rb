@@ -7,7 +7,7 @@ RSpec.describe Article do
     article
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering).and_return(true) }
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
 
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
