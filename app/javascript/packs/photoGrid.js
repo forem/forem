@@ -26,12 +26,14 @@ function loadForm() {
 
     for (let i = 0; i < photoGrids.length; i++) {
       const photoGrid = photoGrids[i];
-      const { images } = photoGrid.dataset;
+      const { images, loaded } = photoGrid.dataset;
+      if (loaded) continue;
       const imagesArr = images.split(',').filter(n => n);
       const id = Math.random() //or some such identifier 
       const d = document.createElement("div")
       d.id = id
       photoGrid.appendChild(d)
+      photoGrid.setAttribute('data-loaded', true);
 
       if (images!= "") {
         render(
@@ -52,4 +54,6 @@ document.ready.then(() => {
     window.InstantClick.on('change', () => {
         loadForm();
     });
+
+    window.addEventListener('checkBlockedContent', loadForm);
 });

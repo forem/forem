@@ -322,6 +322,18 @@ function buildArticleHTML(article, currentUserId = null) {
       </a>
     `;
 
+    var title = ``;
+    if (article.image_list.length > 0) {
+      title = `<a href="${article.path}" style="color: unset !important;" id="article-link-${article.id}"><div style="padding: 1rem 0">${article.description}</div></a>
+      <div id="photo-grid-${article.id}" class="photo-grid" data-images="${article.image_list.join()}"></div>`;
+    } else {
+      title = `<h3 class="crayons-story__title">
+        <a href="${article.path}" id="article-link-${article.id}">
+          ${filterXSS(article.title)}
+        </a>
+      </h3>`;
+    }
+
     return `<article class="crayons-story"
       data-article-path="${article.path}"
       id="article-${article.id}"
@@ -334,11 +346,7 @@ function buildArticleHTML(article, currentUserId = null) {
               ${meta}
             </div>\
             <div class="crayons-story__indention">
-              <h3 class="crayons-story__title">
-                <a href="${article.path}" id="article-link-${article.id}">
-                  ${filterXSS(article.title)}
-                </a>
-              </h3>\
+              ${title}\
               <div class="crayons-story__tags">
                 ${tagString}
               </div>\

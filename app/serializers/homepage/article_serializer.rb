@@ -28,11 +28,13 @@ module Homepage
       :reading_time,
       :title,
       :user_id,
+      :description
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
+    attribute :image_list, ->(article) { article.image_list.to_s.split(",") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
 
     attribute :user do |article|

@@ -14,6 +14,8 @@ module Homepage
       user_id
       video_duration_in_seconds
       video_thumbnail_url
+      image_list
+      description
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
