@@ -1,7 +1,7 @@
 <%= form_with(model: [:admin, response_template], local: true, html: { class: "crayons-card p-6" }) do |f| %>
   <div class="flex flex-col gap-4">
     <div class="crayons-field">
-      <%= label_tag :type_of,  "Type of Response Template" , class: "crayons-field__label" %>
+      <%= label_tag :type_of, "Type of Response Template", class: "crayons-field__label" %>
       <% type_of_options = [["Trusted User Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>
       <%= select_tag :type_of, options_for_select(type_of_options, response_template.type_of), html: { required: true }, class: "crayons-select" %>
     </div>
@@ -13,7 +13,7 @@
 
     <div class="crayons-field">
       <%= label_tag :content, "Response template body", class: "crayons-field__label" %>
-      <%= text_area_tag :content, response_template.content ,class: "crayons-textfield" %>
+      <%= text_area_tag :content, response_template.content , class: "crayons-textfield" %>
     </div>
     
     <div class="crayons-field">
