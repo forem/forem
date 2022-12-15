@@ -57,6 +57,7 @@ module Admin
 
     def bust_navigation_links_cache
       Rails.cache.delete("navigation_links")
+      EdgeCache::Bust.call("/async_info/navigation_links")
     end
   end
 end
