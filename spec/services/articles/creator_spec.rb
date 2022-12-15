@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe Articles::Creator, type: :service do
   let(:user) { create(:user) }
 
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
   context "when valid attributes" do
     let(:valid_attributes) { attributes_for(:article) }
 

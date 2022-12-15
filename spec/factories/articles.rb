@@ -5,13 +5,14 @@ FactoryBot.define do
     published_at { Time.current }
 
     transient do
-      title { generate :title }
+      title { generate(:title) }
       published { true }
       date { "01/01/2015" }
       tags { "javascript, html, discuss" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
+      main_image_from_frontmatter { false }
       with_date { false }
       with_tags { true }
       with_hr_issue { false }

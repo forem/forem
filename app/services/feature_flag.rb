@@ -2,6 +2,16 @@
 #
 # @note A wrapper around the Flipper gem
 module FeatureFlag
+  class Actor < SimpleDelegator
+    class << self
+      alias [] new
+    end
+
+    def flipper_id
+      respond_to?(:id) ? id : nil
+    end
+  end
+
   class << self
     delegate :add, :disable, :enable, :enabled?, :exist?, :remove, to: Flipper
 
