@@ -11,7 +11,7 @@
 
   <div class="crayons-field">
     <%= label_tag :auth_key, "Authentication Key:", class: "crayons-field__label" %>
-    <%= text_field_tag :auth_key, @app.auth_key, class: "crayons-textfield" %>
+    <%= text_area_tag :auth_key, @app.auth_key, size: "100x10", class: "crayons-textfield" %>
   </div>
 
   <div class="crayons-field hidden" data-consumer-app-target="teamId">
