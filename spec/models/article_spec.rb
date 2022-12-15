@@ -7,6 +7,8 @@ RSpec.describe Article do
     article
   end
 
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
@@ -206,7 +208,7 @@ RSpec.describe Article do
     end
 
     describe "liquid tags" do
-      xit "is not valid if it contains invalid liquid tags" do
+      it "is not valid if it contains invalid liquid tags" do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
