@@ -11,11 +11,11 @@
 
   <div class="crayons-field">
     <%= label_tag :auth_key, "Authentication Key:", class: "crayons-field__label" %>
-    <%= text_field_tag :auth_key, @app.auth_key, size: "100x10", class: "crayons-textfield" %>
+    <%= text_field_tag :auth_key, @app.auth_key, class: "crayons-textfield" %>
   </div>
 
   <div class="crayons-field hidden" data-consumer-app-target="teamId">
     <%= label_tag :team_id, "Team ID (Universal Links Support):", class: "crayons-field__label" %>
-    <%= text_field_tag :team_id, @app.team_id, size: "100x10", class: "crayons-textfield" %>
+    <%= text_field_tag :team_id, @app.team_id, class: "crayons-textfield" %>
   </div>
 </div>
