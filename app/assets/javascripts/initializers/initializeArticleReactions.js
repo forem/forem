@@ -2,18 +2,27 @@
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
-  var reactionClassList = document.getElementById(
+  var reactionButtons = document.getElementById(
     'reaction-butt-' + reactionName,
   ).classList;
-  var reactionNumber = document.getElementById(
+  var reactionButtonCounter = document.getElementById(
     'reaction-number-' + reactionName,
   );
+  var reactionEngagementCounter = document.getElementById(
+    'reaction_engagement_' + reactionName + '_count',
+  );
   if (newCount > 0) {
-    reactionClassList.add('activated');
-    reactionNumber.textContent = newCount;
+    reactionButtons.add('activated');
+    reactionButtonCounter.textContent = newCount;
+    if (reactionEngagementCounter) {
+      reactionEngagementCounter.textContent = newCount;
+    }
   } else {
-    reactionClassList.remove('activated');
-    reactionNumber.textContent = '0';
+    reactionButtons.remove('activated');
+    reactionButtonCounter.textContent = '0';
+    if (reactionEngagementCounter) {
+      reactionEngagementCounter.parentElement.classList.add('hidden');
+    }
   }
 }
 
@@ -174,13 +183,15 @@ function initializeArticleReactions() {
     }
 
     var jumpToCommentsButt = document.getElementById('reaction-butt-comment');
-    var commentsSection = document.getElementById("comments");
-    if (document.getElementById('article-body') && commentsSection && jumpToCommentsButt) {
-  
+    var commentsSection = document.getElementById('comments');
+    if (
+      document.getElementById('article-body') &&
+      commentsSection &&
+      jumpToCommentsButt
+    ) {
       jumpToCommentsButt.onclick = function jumpToComments(e) {
-        commentsSection.scrollIntoView({behavior: "smooth"});
+        commentsSection.scrollIntoView({ behavior: 'smooth' });
       };
-
     }
   }, 3);
 }
