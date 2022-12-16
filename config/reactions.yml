@@ -2,7 +2,7 @@
 like:
   position: 1
   name: Like
-  icon: heart
+  icon: twemoji/heart
 readinglist:
   position: 5
   icon: save
