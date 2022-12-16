@@ -14,6 +14,7 @@ en:
         lightbulb: Lightbulb
         raised_hands: Raised hands
         rocket: Rocket
+      drawer_button: Open the reactions drawer
       summary:
         count_html:
           one: "%{count}%{start}\_reaction%{end}"
@@ -35,12 +36,3 @@ en:
       readinglist:
         title: Save
         aria_label: Add to reading list
-      lightbulb:
-        title: Lightbulb
-        aria_label: React with lightbulb
-      raised_hands:
-        title: Raised hands
-        aria_label: React with raised hands
-      rocket:
-        title: Rocket
-        aria_label: React with rocket

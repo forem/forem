@@ -1,13 +1,31 @@
-<% ReactionCategory.for_view.each do |reaction_type| %>
-  <%= render partial: "articles/multireaction_button",
-             locals: {
-               category: reaction_type.slug.to_sym,
-               description: t("views.reactions.#{reaction_type.slug}.title"),
-               image_path: "#{reaction_type.icon}.svg",
-               image_active_path: "#{reaction_type.icon}.svg",
-               aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
-             } %>
-<% end %>
+<button
+  id="reaction-drawer-trigger"
+  aria-label="reaction-drawer-trigger"
+  aria-pressed="false"
+  class="dropbtn dropdown-trigger crayons-reaction pseudo-reaction crayons-tooltip__activator relative">
+    <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+      <%= crayons_icon_tag("heart-plus.svg", aria_hidden: true) %>
+    </span>
+    <span class="crayons-reaction_total_count" id="">
+      <%= @article.public_reactions_count %>
+    </span>
+    <span data-testid="tooltip" class="crayons-tooltip__content">
+      <%= t("views.reactions.drawer_button") %>
+    </span>
+</button>
+
+<div id="reaction-drawer" class="crayons-dropdown" style="top: -10px; left: 30px">
+  <% ReactionCategory.for_view.each do |reaction_type| %>
+    <%= render partial: "articles/multireaction_button",
+               locals: {
+                 category: reaction_type.slug.to_sym,
+                 description: t("views.reactions.#{reaction_type.slug}.title"),
+                 image_path: "#{reaction_type.icon}.svg",
+                 image_active_path: "#{reaction_type.icon}.svg",
+                 aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
+               } %>
+  <% end %>
+</div>
 
 <%= render partial: "articles/reaction_button",
            locals: {

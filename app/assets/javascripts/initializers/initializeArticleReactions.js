@@ -176,6 +176,9 @@ function initializeArticleReactions() {
       requestReactionCounts(articleId);
 
       for (var i = 0; i < reactionButts.length; i += 1) {
+        if (reactionButts[i].classList.contains('pseudo-reaction')) {
+          continue;
+        }
         reactionButts[i].onclick = function addReactionOnClick(e) {
           reactToArticle(articleId, this.dataset.category);
         };
