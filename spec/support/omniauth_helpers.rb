@@ -283,4 +283,23 @@ module OmniauthHelpers
       ),
     )
   end
+
+  def omniauth_mock_twitter2_payload
+    info = OMNIAUTH_BASIC_INFO[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+      urls: { "Twitter" => "https://example.com" },
+    )
+
+    extra = OMNIAUTH_BASIC_INFO[:extra].merge(
+      access_token: "value",
+    )
+
+    OmniAuth.config.mock_auth[:twitter2] = OmniAuth::AuthHash.new(
+      OMNIAUTH_BASIC_INFO.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
+    )
+  end
 end

@@ -505,7 +505,8 @@ RSpec.describe User do
         users.append(user_from_authorization_service(provider_name))
       end
 
-      expect(users.uniq.first.identities.count).to eq(providers.length)
+      # :twitter and :twitter2 both act as one provider
+      expect(users.uniq.first.identities.count).to eq(providers.length - 1)
     end
   end
 

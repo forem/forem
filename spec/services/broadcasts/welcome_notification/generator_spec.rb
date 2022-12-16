@@ -160,6 +160,9 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
 
     Authentication::Providers.available.each do |provider_name|
+      # :twitter and :twitter2 use the same broadcast
+      next if provider_name == :twitter2
+
       it "does not send duplicate notifications for #{provider_name}" do
         user = create(:user, :with_identity, identities: [provider_name], created_at: 1.day.ago)
         2.times do

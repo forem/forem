@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AuthenticationHelper, type: :helper do
+RSpec.describe AuthenticationHelper do
   let(:user) { create(:user, :with_identity) }
 
   before do
@@ -30,11 +30,11 @@ RSpec.describe AuthenticationHelper, type: :helper do
 
   describe "#signed_up_with" do
     it "returns an authentication reminder when a user auths with a provider" do
-      providers = Authentication::Providers.available.last(2)
+      providers = Authentication::Providers.available.first(2)
       allow(Authentication::Providers).to receive(:enabled).and_return(providers)
       allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 
-      expect(helper.signed_up_with(user)).to match(/Google and Twitter/)
+      expect(helper.signed_up_with(user)).to match(/Apple and Facebook/)
       expect(helper.signed_up_with(user)).to match(/use any of those/)
     end
 
