@@ -23,7 +23,7 @@ RSpec.describe ReactionCategory do
   end
 
   it "lists public categories" do
-    expect(described_class.public).to contain_exactly(*%i[like readinglist lightbulb raised_hands rocket])
+    expect(described_class.public).to contain_exactly(*%i[like lightbulb raised_hands rocket])
   end
 
   it "lists privileged categories" do
