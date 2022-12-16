@@ -110,7 +110,7 @@ class ArticlesController < ApplicationController
   def edit
     authorize @article
 
-    @version = @article.image_list ? "v0" : (@article.has_frontmatter? ? "v1" : "v2")
+    @version = @article.quick_share ? "v0" : (@article.has_frontmatter? ? "v1" : "v2")
     @user = @article.user
     @organizations = @user&.organizations
     @user_approved_liquid_tags = Users::ApprovedLiquidTags.call(@user)

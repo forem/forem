@@ -92,7 +92,7 @@ export class ArticleForm extends Component {
             title: previousContent.title || '',
             tagList: previousContent.tagList || '',
             imageList: previousContent.imageList || '',
-            quickShare: previousContent.quickShare || '',
+            quickShare: previousContent.quickShare || version == 'v0',
             mainImage: previousContent.mainImage || null,
             bodyMarkdown: previousContent.bodyMarkdown || '',
             edited: true,
