@@ -1,9 +1,11 @@
 
 <a class="crayons-link crayons-link--contentful" href="<%= plucked_article[0] %>">
-  <% if plucked_article[4].inspect == 'nil' %>
+  <% if !plucked_article[5] %>
   <%= plucked_article[1] %>
-  <% else %>
+  <% elsif plucked_article[4] != "" %>
   <img src="<%= plucked_article[4].split(',')[0] %>" style="width: 100%" />
+  <% else %>
+  <%= plucked_article[6] %>
   <% end %>
   <% if show_comment_count %>
     <div class="crayons-link__secondary">

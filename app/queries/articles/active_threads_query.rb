@@ -43,7 +43,8 @@ module Articles
                    relation = relation.where(published_at: 3.days.ago.., score: MINIMUM_SCORE..).presence || relation
                    relation.order("last_comment_at DESC NULLS LAST")
                  end
-      relation.pluck(:path, :title, :comments_count, :created_at, :image_list)
+      # relation.description = relation.description.truncate(3);
+      relation.pluck(:path, :title, :comments_count, :created_at, :image_list, :quick_share, :description)
     end
   end
 end

@@ -99,7 +99,7 @@
     </div>
 
     <div class="crayons-story__indention">
-      <% if story.image_list.nil? %>
+      <% if !story.quick_share %>
       <h2 class="crayons-story__title">
         <a href="<%= story.path %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
           <%= story.title %>
@@ -107,7 +107,9 @@
       </h2>
       <% else %>
         <a href="<%= story.path %>" style="color: unset !important;" id="article-link-<%= story.id %>"><div style="padding: 1rem 0"><%= story.description %></div></a>
+        <% if !story.image_list.nil? %>
         <div id="photo-grid-<%= story.id %>" class="photo-grid" data-images="<%= story.image_list %>"></div>
+        <% end %>
       <% end %>
       <div class="crayons-story__tags">
         <% flare_tag = FlareTag.new(story, @tag).tag %>

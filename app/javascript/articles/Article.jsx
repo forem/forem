@@ -57,7 +57,7 @@ export const Article = ({
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
-  const version = article.image_list.length > 0 ? 'v0' : null;
+  const version = article.image_list.length > 0 || article.quick_share ? 'v0' : null;
 
   return (
     <article

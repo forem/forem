@@ -92,6 +92,7 @@ export class ArticleForm extends Component {
             title: previousContent.title || '',
             tagList: previousContent.tagList || '',
             imageList: previousContent.imageList || '',
+            quickShare: previousContent.quickShare || '',
             mainImage: previousContent.mainImage || null,
             bodyMarkdown: previousContent.bodyMarkdown || '',
             edited: true,
@@ -114,6 +115,7 @@ export class ArticleForm extends Component {
       title: this.article.title || '',
       tagList: this.article.cached_tag_list || '',
       imageList: this.article.image_list || '',
+      quickShare: this.article.quick_share || version == 'v0',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
       publishedAtTime: this.publishedAtTime,
@@ -165,7 +167,7 @@ export class ArticleForm extends Component {
   }
 
   localStoreContent = () => {
-    const { version, title, tagList, imageList, mainImage, bodyMarkdown } = this.state;
+    const { version, title, tagList, imageList, quickShare, mainImage, bodyMarkdown } = this.state;
     const updatedAt = new Date();
     localStorage.setItem(
       `editor-${version}-${this.url}`,
@@ -173,6 +175,7 @@ export class ArticleForm extends Component {
         title,
         tagList,
         imageList,
+        quickShare,
         mainImage,
         bodyMarkdown,
         updatedAt,
@@ -415,6 +418,7 @@ export class ArticleForm extends Component {
       title,
       tagList,
       imageList,
+      quickShare,
       bodyMarkdown,
       published,
       publishedAtTime,
@@ -486,6 +490,7 @@ export class ArticleForm extends Component {
             bodyOnChange={linkState(this, 'bodyMarkdown')}
             bodyHasFocus={false}
             version={version}
+            quickShare={quickShare}
             mainImage={mainImage}
             onMainImageUrlChange={this.handleMainImageUrlChange}
             errors={errors}

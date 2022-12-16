@@ -132,6 +132,7 @@ class Article < ApplicationRecord
   # validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :cached_tag_list, length: { maximum: 126 }
   validates :image_list, allow_blank: true, length: { minimum: 0 }
+  validates :quick_share, allow_blank: true, presence: true
   validates :canonical_url,
             uniqueness: { allow_nil: true, scope: :published, message: unique_url_error },
             if: :published?
@@ -303,7 +304,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
-           :last_comment_at)
+           :last_comment_at, :quick_share)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -313,7 +314,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :quick_share)
   }
 
   scope :sorting, lambda { |value|
@@ -354,7 +355,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list, :quick_share
                    )
                }
 

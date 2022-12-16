@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_16_143123) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.boolean "published", default: false
     t.datetime "published_at", precision: nil
     t.boolean "published_from_feed", default: false
+    t.boolean "quick_share", default: false
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.tsvector "reading_list_document"

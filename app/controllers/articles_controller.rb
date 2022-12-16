@@ -339,7 +339,7 @@ class ArticlesController < ApplicationController
                         %i[
                          title body_markdown main_image published description video_thumbnail_url
                          tag_list image_list canonical_url series collection_id archived published_at timezone
-                         published_at_date published_at_time
+                         published_at_date published_at_time quick_share
                        ]
                       else
                        %i[

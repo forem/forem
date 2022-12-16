@@ -15,6 +15,7 @@ module Homepage
       video_duration_in_seconds
       video_thumbnail_url
       image_list
+      quick_share
       description
     ].freeze
     DEFAULT_PER_PAGE = 60
