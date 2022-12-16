@@ -8,3 +8,12 @@
                aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
              } %>
 <% end %>
+
+<%= render partial: "articles/reaction_button",
+           locals: {
+             category: :readinglist,
+             description: t("views.reactions.readingList.title"),
+             image_path: "save.svg",
+             image_active_path: "save-filled.svg",
+             aria_label: t("views.reactions.readingList.aria_label")
+           } %>

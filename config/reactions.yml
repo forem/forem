@@ -6,6 +6,7 @@ like:
 readinglist:
   position: 5
   icon: save
+  published: false
 lightbulb:
   position: 2
   icon: twemoji/bulb
