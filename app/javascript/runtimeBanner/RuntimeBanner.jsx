@@ -78,7 +78,8 @@ export const RuntimeBanner = () => {
   // The banner shouldn't appear if it was already dismissed or if it doesn't match the context
   if (
     localStorage.getItem(BANNER_DISMISS_KEY) ||
-    currentContext().match(/Browser-((iOS)|(Android))/) === null
+    currentContext().match(/Browser-((iOS)|(Android))/) === null ||
+    !false
   ) {
     removeFromDOM();
     return;
