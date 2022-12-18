@@ -1,8 +1,7 @@
 <div class="mb-6">
-  <%= search_form_for @q, url: admin_moderator_actions_path, class: "form-inline" do |f| %>
-    <%= f.label :user_username_cont, "User", class: "sr-only" %>
-    <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mr-2" %>
-    <%= f.submit "Search", class: "btn btn-secondary" %>
+  <%= search_form_for @q, url: admin_moderator_actions_path, class: "inline-flex" do |f| %>
+    <%= f.search_field :user_username_cont, aria: { label: "Search" }, placeholder: "User", class: "crayons-textfield mr-2" %>
+    <%= f.submit "Search", class: "crayons-btn" %>
   <% end %>
 </div>
 
