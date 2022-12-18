@@ -1,34 +1,36 @@
-<div class="form-group">
-  <%= form.label :group %>
-  <%= select_tag "profile_field[profile_field_group_id]",
-                 options_from_collection_for_select(
-                   ProfileFieldGroup.all,
-                   :id, :name,
-                   selected: group&.id
-                 ),
-                 { class: "form-control profile__group-dropdown" } %>
-</div>
-<div class="form-group">
-  <%= form.label :label %>
-  <%= form.text_field :label, class: "form-control" %>
-</div>
-<div class="form-group">
-  <%= form.label :description %>
-  <%= form.text_field :description, class: "form-control" %>
-</div>
-<div class="form-group">
-  <%= form.label :placeholder_text %>
-  <%= form.text_field :placeholder_text, class: "form-control" %>
-</div>
-<div class="form-group">
-  <%= form.label :input_type %>
-  <%= form.select :input_type, ProfileField.input_types.keys, class: "form-control" %>
-</div>
-<div class="form-group">
-  <%= form.label :display_area %>
-  <%= form.select :display_area, ProfileField.display_areas.keys, class: "form-control" %>
-</div>
-<div class="form-group">
-  <%= form.label :show_in_onboarding %>
-  <%= form.check_box :show_in_onboarding %>
+<div class="flex flex-col gap-4">
+  <div class="crayons-field">
+    <%= form.label :group, class: "crayons-field__label" %>
+    <%= select_tag "profile_field[profile_field_group_id]",
+                  options_from_collection_for_select(
+                    ProfileFieldGroup.all,
+                    :id, :name,
+                    selected: group&.id
+                  ),
+                  { class: "crayons-select profile__group-dropdown" } %>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :label, class: "crayons-field__label" %>
+    <%= form.text_field :label, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :description, class: "crayons-field__label" %>
+    <%= form.text_field :description, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :placeholder_text, class: "crayons-field__label" %>
+    <%= form.text_field :placeholder_text, class: "crayons-textfield" %>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :input_type, class: "crayons-field__label" %>
+    <%= select_tag :input_type, options_for_select(ProfileField.input_types.keys), class: "crayons-select" %>
+  </div>
+  <div class="crayons-field">
+    <%= form.label :display_area, class: "crayons-field__label" %>
+    <%= select_tag :display_area, options_for_select(ProfileField.display_areas.keys), class: "crayons-select" %>
+  </div>
+  <div class="crayons-field crayons-field--checkbox">
+    <%= form.check_box :show_in_onboarding, class: "crayons-checkbox" %>
+    <%= form.label :show_in_onboarding, class: "crayons-field__label" %>
+  </div>
 </div>
