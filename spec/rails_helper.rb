@@ -9,6 +9,15 @@ KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
   SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
 end
 
+TMP_RSPEC_XML_REPORT = "tmp/rspec.xml".freeze
+FINAL_RSPEC_XML_REPORT = "tmp/rspec_final_results.xml".freeze
+
+KnapsackPro::Hooks::Queue.after_subset_queue do |_queue_id, _subset_queue_id|
+  if File.exist?(TMP_RSPEC_XML_REPORT)
+    FileUtils.mv(TMP_RSPEC_XML_REPORT, FINAL_RSPEC_XML_REPORT)
+  end
+end
+
 require "spec_helper"
 
 require File.expand_path("../config/environment", __dir__)
