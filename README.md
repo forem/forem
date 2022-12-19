@@ -5,8 +5,8 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://app.travis-ci.com/github/forem/forem">
-    <img src="https://api.travis-ci.com/forem/forem.svg?branch=main" alt="Build Status">
+  <a href="https://github.com/forem/forem/actions/workflows/ci-cd.yml">
+    <img src="https://github.com/forem/forem/actions/workflows/ci-cd.yml/badge.svg" alt="Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
