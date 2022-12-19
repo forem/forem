@@ -167,7 +167,10 @@ module Feeds
         next
       end
 
-      Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles for #{user.username}")
+      if articles.length.positive?
+        Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles for #{user.username}")
+      end
+
       articles
     end
 
