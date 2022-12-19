@@ -349,3 +349,22 @@
     color: var(--card-color-tertiary);
   }
 }
+
+// TODO: think about how and when we want to override the crayons-dropdown.
+.crayons-dropdown.reaction-drawer {
+  min-width: auto;
+  border-radius: var(--radius-xl);
+  top: -65px;
+  left: 0;
+
+  @media (min-width: $breakpoint-m) {
+    top: -5px;
+    left: 55px;
+  }
+}
+
+.reaction-drawer__container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--su-3);
+}

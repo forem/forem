@@ -14,17 +14,19 @@
     </span>
 </button>
 
-<div id="reaction-drawer" class="crayons-dropdown" style="top: -10px; left: 30px">
-  <% ReactionCategory.for_view.each do |reaction_type| %>
-    <%= render partial: "articles/multireaction_button",
-               locals: {
-                 category: reaction_type.slug.to_sym,
-                 description: t("views.reactions.#{reaction_type.slug}.title"),
-                 image_path: "#{reaction_type.icon}.svg",
-                 image_active_path: "#{reaction_type.icon}.svg",
-                 aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
-               } %>
-  <% end %>
+<div id="reaction-drawer" class="reaction-drawer crayons-dropdown" style="">
+  <div class="reaction-drawer__container">
+    <% ReactionCategory.for_view.each do |reaction_type| %>
+      <%= render partial: "articles/multireaction_button",
+                 locals: {
+                   category: reaction_type.slug.to_sym,
+                   description: t("views.reactions.#{reaction_type.slug}.title"),
+                   image_path: "#{reaction_type.icon}.svg",
+                   image_active_path: "#{reaction_type.icon}.svg",
+                   aria_label: t("views.reactions.#{reaction_type.slug}.aria_label")
+                 } %>
+    <% end %>
+  </div>
 </div>
 
 <%= render partial: "articles/reaction_button",
