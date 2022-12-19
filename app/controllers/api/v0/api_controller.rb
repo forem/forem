@@ -11,6 +11,8 @@ module Api
       # considered an api_action.
       self.api_action = true
 
+      after_action :add_deprecation_warning_header
+
       rescue_from ActionController::ParameterMissing do |exc|
         error_unprocessable_entity(exc.message)
       end
@@ -77,6 +79,15 @@ module Api
         # (namely should we use @user or current_user, which is a bit soupy in the API controller).
         user = authenticate_with_api_key_or_current_user
         error_unauthorized unless user
+      end
+
+      def add_deprecation_warning_header
+        return if headers["Accept"].present? &&
+          headers["Accept"].include?("application/vnd.forem.api-v#{@version}+json")
+
+        # rubocop:disable Layout/LineLength
+        response.headers["Warning"] = "299 - This endpoint is part of the V0 (beta) API. To start using the V1 endpoints add the `Accept` header and set it to `application/vnd.forem.api-v1+json`. Visit https://developers.forem.com/api for more information."
+        # rubocop:enable Layout/LineLength
       end
 
       private

@@ -67,9 +67,10 @@ describe('<Preview />', () => {
     errors = null;
   });
 
-  it('should have no a11y violations', async () => {
+  it('should have no a11y violations when preview is loading', async () => {
     const { container } = render(
       <Preview
+        previewLoading={false}
         previewResponse={getPreviewResponse()}
         articleState={getArticleState()}
         errors={errors}
@@ -78,6 +79,78 @@ describe('<Preview />', () => {
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
+  });
+
+  it('should have no a11y violations when preview is displayed', async () => {
+    const { container } = render(
+      <Preview
+        previewLoading={true}
+        previewResponse={getPreviewResponse()}
+        articleState={getArticleState()}
+        errors={errors}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('does not show loading screen when preview is displayed', () => {
+    const articleState = { ...getArticleState(), mainImage: null };
+    const previewResponse = { ...getPreviewResponse(), cover_image: null };
+    const { queryByTestId } = render(
+      <Preview
+        previewLoading={false}
+        previewResponse={previewResponse}
+        articleState={articleState}
+        errors={errors}
+      />,
+    );
+
+    expect(queryByTestId('loading-preview')).not.toBeInTheDocument();
+  });
+
+  it('shows loading screen when preview is loading', () => {
+    const articleState = { ...getArticleState(), mainImage: null };
+    const previewResponse = { ...getPreviewResponse(), cover_image: null };
+    const { queryByTestId } = render(
+      <Preview
+        previewLoading={true}
+        previewResponse={previewResponse}
+        articleState={articleState}
+        errors={errors}
+      />,
+    );
+
+    expect(queryByTestId('loading-preview')).toBeInTheDocument();
+  });
+
+  it('shows loading with cover image when image is attached', () => {
+    const { queryByTestId } = render(
+      <Preview
+        previewLoading={true}
+        previewResponse={getPreviewResponse()}
+        articleState={getArticleState()}
+        errors={errors}
+      />,
+    );
+
+    expect(queryByTestId('loading-preview__cover')).toBeInTheDocument();
+  });
+
+  it('shows preview loading without cover image loading', () => {
+    const articleState = { ...getArticleState(), mainImage: null };
+    const previewResponse = { ...getPreviewResponse(), cover_image: null };
+    const { queryByTestId } = render(
+      <Preview
+        previewLoading={true}
+        previewResponse={previewResponse}
+        articleState={articleState}
+        errors={errors}
+      />,
+    );
+
+    expect(queryByTestId('loading-preview__cover')).not.toBeInTheDocument();
   });
 
   it('shows the correct title', () => {
@@ -133,7 +206,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(queryByTestId('article-form__cover')).not.toBeInTheDocument();
+    expect(queryByTestId('page-title__label')).not.toBeInTheDocument();
   });
 
   // TODO: need to write a test for the cover image for v1

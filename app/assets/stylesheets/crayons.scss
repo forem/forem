@@ -28,6 +28,7 @@
 @import 'components/loaders';
 @import 'components/media-cards';
 @import 'components/modals';
+@import 'components/multi-input';
 @import 'components/navigation';
 @import 'components/notices';
 @import 'components/pills';
@@ -45,3 +46,7 @@
 @import 'components/drawer-navigation';
 
 @import 'config/generator';
+
+@import 'badge_details';
+
+@import 'badges';

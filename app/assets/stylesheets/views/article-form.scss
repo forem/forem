@@ -72,7 +72,7 @@
   }
 
   &__content {
-    overflow: auto;
+    overflow-y: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
@@ -158,27 +158,25 @@
     top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--content-padding-x);
-    padding-right: var(--toolbar-padding-right, 0);
-    overflow-x: auto;
+    padding-right: var(--content-padding-x, 0);
     flex-shrink: 0;
     margin: calc(var(--content-padding-y) * -1)
       calc(var(--content-padding-x) * -1) var(--su-6)
       calc(var(--content-padding-x) * -1);
 
+    .editor-toolbar {
+      overflow-x: auto;
+
+      @media (min-width: $breakpoint-xs) {
+        overflow-x: unset;
+        position: relative;
+      }
+    }
+
     > :first-child {
       @media (min-width: $breakpoint-m) {
         margin-left: calc(var(--su-2) * -1);
       }
-    }
-
-    &::-webkit-scrollbar {
-      background: transparent;
-      height: 0;
-    }
-
-    @media (min-width: $breakpoint-m) {
-      --toolbar-padding-right: var(--content-padding-x);
-      overflow: visible;
     }
   }
 
@@ -198,7 +196,7 @@
       width: 250px;
       height: 105px;
       border-radius: var(--radius);
-      object-fit: cover;
+      object-fit: scale-down;
       margin-bottom: var(--su-2);
 
       @media (min-width: $breakpoint-s) {
@@ -254,6 +252,23 @@
     // ideally this one shouldn't be there, but I'm not sure how else we could handle that right now...
     .crayons-article-form__toolbar {
       opacity: var(--opacity-0);
+    }
+  }
+}
+
+.crayons-preview {
+  // Image cover section for preview loading.
+  &__cover {
+    display: block;
+    width: 100%;
+    height: auto;
+    padding-bottom: 42%;
+    background-size: cover;
+    background-color: var(--body-bg);
+    background-position: center center;
+
+    @media (min-width: $breakpoint-s) {
+      border-radius: var(--radius) var(--radius) 0 0;
     }
   }
 }

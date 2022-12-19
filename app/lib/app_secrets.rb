@@ -1,10 +1,4 @@
 class AppSecrets
-  SETTABLE_SECRETS = %w[
-    SLACK_CHANNEL
-    SLACK_DEPLOY_CHANNEL
-    SLACK_WEBHOOK_URL
-  ].freeze
-
   def self.[](key)
     result = Vault.kv(namespace).read(key)&.data&.fetch(:value) if vault_enabled?
     result ||= ApplicationConfig[key]
@@ -23,7 +17,7 @@ class AppSecrets
   end
 
   def self.namespace
-    ENV["VAULT_SECRET_NAMESPACE"]
+    ENV.fetch("VAULT_SECRET_NAMESPACE", nil)
   end
   private_class_method :namespace
 end

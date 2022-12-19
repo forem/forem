@@ -19,12 +19,13 @@ module.exports = {
     preventDefaultAction: false,
     userData: false,
     ga: false, // Google Analytics
+    gtag: false, // Google Analytics 4
     handleOptimisticButtRender: false,
     handleFollowButtPress: false,
     browserStoreCache: false,
     initializeBaseUserData: false,
+    initializeDisplayAdVisibility: false,
     initializeReadingListIcons: false,
-    initializeSponsorshipVisibility: false,
     ActiveXObject: false,
     AndroidBridge: false,
   },

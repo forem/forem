@@ -36,15 +36,17 @@
       <footer class="comment-actions">
         <div class="notification__actions">
           <button
-            class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "like") ? "reacted" : "" %>"
+            class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "like") ? "reacted" : "" %>"
             data-reactable-id="<%= json_data["comment"]["id"] %>"
             data-category="like"
             data-reactable-type="Comment"
-            aria-label="<%= t("views.reactions.like.aria_label") %>"
-            title="heart">
+            aria-label="<%= t("views.reactions.like.aria_label") %>">
             <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
             <%= crayons_icon_tag("small-heart-filled", class: "reaction-icon--like reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.heart.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.heart.text") %></span>
+            <span data-testid="tooltip" class="crayons-tooltip__content">
+              <%= t("views.comments.footer.heart.title") %>
+            </span>
           </button>
 
           <% cache "comment-box-comment-reply-#{@last_user_comment}-#{json_data['comment']['updated_at']}-#{json_data['comment']['id']}" do %>
@@ -55,7 +57,10 @@
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.done") %></span>
               </a>
             <% else %>
-              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex" data-reactable-id="<%= json_data["comment"]["id"] %>" href="#<%= json_data["comment"]["path"] %>" aria-label="<%= t("views.comments.footer.reply.text") %>">
+              <a class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left toggle-reply-form mr-1 inline-flex"
+                 data-reactable-id="<%= json_data["comment"]["id"] %>"
+                 href="#<%= json_data["comment"]["path"] %>"
+                 aria-label="<%= t("views.comments.footer.reply.text") %>">
                 <%= crayons_icon_tag("small-comment", class: "reaction-icon not-reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <%= crayons_icon_tag("small-comment-filled", class: "reaction-icon--comment reaction-icon reacted", aria_hidden: true, title: t("views.comments.footer.reply.icon")) %>
                 <span class="hidden m:inline-block"><%= t("views.comments.footer.reply.text") %></span>
@@ -63,7 +68,8 @@
             <% end %>
           <% end %>
           <a href="<%= json_data["comment"]["path"] %>" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s inline-flex">
-            <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %><span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
+            <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %>
+            <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
         </div>
 
@@ -73,10 +79,13 @@
                      html: { id: "comment-form-for-#{json_data['comment']['id']}", onsubmit: "handleCommentSubmit.bind(this)(event)", onkeydown: "handleKeyDown(event)", class: "p-2 pb-1 pt-3 hidden" }) do |f| %>
           <%= f.hidden_field :commentable_id, value: json_data["comment"]["commentable"]["id"] %>
           <%= f.hidden_field :commentable_type, value: json_data["comment"]["commentable"]["class"]["name"] %>
-
           <%= f.hidden_field :parent_id, value: json_data["comment"]["id"] %>
-          <%= f.text_area :body_markdown, id: "comment-textarea-for-#{json_data['comment']['id']}", class: "comment-textarea crayons-textfield mb-2 resize-y", placeholder: t("views.comments.footer.reply.placeholder"), "aria-label": t("views.comments.footer.reply.aria_label"),
-                                          onfocus: "handleFocus(event)" %>
+          <%= f.text_area :body_markdown,
+                          id: "comment-textarea-for-#{json_data['comment']['id']}",
+                          class: "comment-textarea crayons-textfield mb-2 resize-y",
+                          placeholder: t("views.comments.footer.reply.placeholder"),
+                          "aria-label": t("views.comments.footer.reply.aria_label"),
+                          onfocus: "handleFocus(event)" %>
           <div class="actions">
             <button type="submit" class="crayons-btn comment-action-button" onclick="validateField(event)"><%= t("views.comments.write.submit") %></button>
           </div>

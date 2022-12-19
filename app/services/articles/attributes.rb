@@ -2,7 +2,7 @@ module Articles
   class Attributes
     ATTRIBUTES = %i[archived body_markdown canonical_url description
                     edited_at main_image organization_id user_id published
-                    title video_thumbnail_url].freeze
+                    title video_thumbnail_url published_at].freeze
 
     attr_reader :attributes, :article_user
 
@@ -17,6 +17,7 @@ module Articles
       hash[:collection] = collection if attributes.key?(:series)
       hash[:tag_list] = tag_list
       hash[:edited_at] = Time.current if update_edited_at
+      hash[:published_at] = hash[:published_at].to_datetime if hash[:published_at]
       hash
     end
 

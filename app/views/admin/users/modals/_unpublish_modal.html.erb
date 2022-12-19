@@ -1,0 +1,13 @@
+<div id="unpublish-all-posts">
+  <%= form_tag("/admin/member_manager/users/#{@user.id}/unpublish_all_articles", html: { class: "js-unpublish-form flex flex-col gap-4",
+                                                                                         method: :post,
+                                                                                         onsubmit: "return confirm('#{j t('views.admin.users.unpublish.onsubmit')}')",
+                                                                                         id: nil }) do %>
+    <p><%= t("views.admin.users.unpublish.text1_html", username: tag.span(class: "js-user-name")) %></p>
+    <p class="mt-2"><%= t("views.admin.users.unpublish.text2_html", username: tag.span(class: "js-user-name")) %></p>
+    <p class="mt-2"><%= label_tag "note[content]", t("views.admin.users.unpublish.note") %><%= text_area_tag "note[content]", "", class: "crayons-textfield", placeholder: t("views.admin.users.unpublish.note_placeholder") %></p>
+    <div>
+      <button class="c-btn c-btn--destructive c-btn--primary"><%= t("views.admin.users.unpublish.submit") %></button>
+    </div>
+  <% end %>
+</div>

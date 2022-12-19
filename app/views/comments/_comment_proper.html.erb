@@ -7,7 +7,9 @@
     <div class="comment__content crayons-card">
       <% if comment.deleted %>
         <div class="p-6 align-center opacity-50 fs-s">
-          <span class="js-comment-username">Comment deleted</span>
+          <span class="js-comment-username">
+            <%= t("views.comments.delete.comment_deleted") %>
+          </span>
         </div>
       <% else %>
         <%= render partial: "comments/comment_quality_marker", locals: {
@@ -35,7 +37,7 @@
 
         <% if should_be_hidden?(comment, @root_comment) %>
           <div class="p-6 align-center opacity-50 fs-s hidden comment-hidden-by-author-text">
-            Comment hidden by author
+            <%= t("views.comments.hidden.comment_hidden") %>
           </div>
         <% end %>
       <% end %>

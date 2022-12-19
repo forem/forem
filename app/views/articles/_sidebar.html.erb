@@ -1,34 +1,21 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left crayons-layout__content">
   <aside class="side-bar" aria-label="Primary sidebar">
     <% cache(release_adjusted_cache_key("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
-      <%= render "shared/auth_widget" unless user_signed_in? %>
+      <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_left_sidebar_home_page", source: "left_sidebar" } unless user_signed_in? %>
       <%= render partial: "layouts/main_nav", locals: { context: "sidebar" } %>
       <%= render "layouts/sidebar_tags" %>
-      <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
       <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
-      <% if @sponsorships.present? %>
-        <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
-          <h4 class="flex align-center fs-s ff-monospace fw-bold tt-uppercase mb-4">
-            <%= Settings::General.sponsor_headline %>
-            <%= crayons_icon_tag("twemoji/heart", class: "ml-1", native: true, title: t("views.sponsor.seek")) %>
-          </h4>
-          <div class="grid grid-cols-1 gap-6">
-            <%= render partial: "articles/single_sponsor", collection: @sponsorships, as: :sponsorship %>
-            <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s"><%= t("views.sponsor.seek") %></a>
-          </div>
-        </div>
-      <% end %>
     <% end %>
-    <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
+    <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
+      <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
       <% if @left_sidebar_ad %>
         <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <%= @left_sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
     <% end %>
-    <% cache("display-area-left-2-#{rand(5)}", expires_in: 5.minutes) do %>
-      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2") %>
+    <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
+      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
         <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
           <%= @second_left_sidebar_ad.processed_html.html_safe %>

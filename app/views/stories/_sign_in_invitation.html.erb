@@ -1,20 +1,16 @@
-<div class="authentication-feed__card" id="in-feed-cta">
-  <div class="authentication-feed__container crayons-layout__content">
-    <figure class="authentication-feed__image-container">
-      <img class="authentication-feed__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
-            alt="Secondary <%= community_name %> logo" loading="lazy" />
-    </figure>
-    <div class="authentication-feed__content crayons-layout__content">
-      <h2 class="authentication-feed__title">
-        <%= render "shared/authentication_title" %>
-      </h2>
-      <p class="authentication-feed__description">
-        <%= render "shared/authentication_description" %>
-      </p>
-    </div>
+<div class="crayons-card mt-2 m:mt-0 mb-2 m:p-8 p-4" id="in-feed-cta">
+  <div class="align-center">
+    <img class="authentication-feed__image" src="<%= optimized_image_url(Settings::General.logo_png, width: 190) %>"
+          alt="Secondary <%= community_name %> logo" loading="lazy" />
   </div>
+  <h2 class="crayons-subtitle-3 mt-5 fs-l align-center">
+    <%= render "shared/authentication_title" %>
+  </h2>
+  <p class="align-center mt-1 color-base-60 fs-base">
+    <%= render "shared/authentication_description" %>
+  </p>
 
-  <div class="authentication-feed__actions">
+  <div class="align-center mt-4" id="authentication-feed-actions">
     <%= render "shared/authentication_actions" %>
   </div>
 </div>

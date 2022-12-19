@@ -3,6 +3,18 @@ module Spam
   #
   # @note We may not immediately block spam but instead slowly escalate our response.
   module Handler
+    # @return [TrueClass] if we are going to try to use more rigorous spam handling
+    # @return [FalseClass] if we are using less rigorous spam handling
+    def self.more_rigorous_user_profile_spam_checking?
+      FeatureFlag.enabled?(:more_rigorous_user_profile_spam_checking)
+    end
+
+    # @return [TrueClass] if we are going to unpublish articles when we auto-suspend
+    # @return [FalseClass] if we are not going to unpublish articles when we auto-suspend
+    def self.unpublish_all_posts_when_user_auto_suspended?
+      FeatureFlag.enabled?(:unpublish_all_posts_when_user_auto_suspended)
+    end
+
     # Test the article for spamminess.  If it's not spammy, don't do anything.
     #
     # If it is spammy, escalate the situation!
@@ -15,7 +27,10 @@ module Spam
 
       issue_spam_reaction_for!(reactable: article)
 
-      return unless Reaction.user_has_been_given_too_many_spammy_article_reactions?(user: article.user)
+      return unless Reaction.user_has_been_given_too_many_spammy_article_reactions?(
+        user: article.user,
+        include_user_profile: more_rigorous_user_profile_spam_checking?,
+      )
 
       suspend!(user: article.user)
     end
@@ -37,7 +52,10 @@ module Spam
 
       issue_spam_reaction_for!(reactable: comment)
 
-      return unless Reaction.user_has_been_given_too_many_spammy_comment_reactions?(user: comment.user)
+      return unless Reaction.user_has_been_given_too_many_spammy_comment_reactions?(
+        user: comment.user,
+        include_user_profile: more_rigorous_user_profile_spam_checking?,
+      )
 
       suspend!(user: comment.user)
     end
@@ -48,7 +66,23 @@ module Spam
     #
     # @param user [User] the user to check for spamminess
     def self.handle_user!(user:)
-      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: user.name)
+      text = [user.name]
+
+      if more_rigorous_user_profile_spam_checking?
+        text += [
+          user.email,
+          user.github_username,
+          user.profile&.website_url,
+          user.profile&.location,
+          user.profile&.summary,
+          user.twitter_username,
+          user.username,
+        ].compact
+      end
+
+      text = text.join("\n")
+
+      return :not_spam unless Settings::RateLimit.trigger_spam_for?(text: text)
 
       issue_spam_reaction_for!(reactable: user)
     end
@@ -63,6 +97,9 @@ module Spam
     #       written they might still be logged in but have limited
     #       abilities.
     def self.suspend!(user:)
+      # TODO: Should we send an email when we auto-suspend?  As a matter of practice, whenever we
+      #       suspend someone should we notify.  Note, this is not the only place that we suspend
+      #       someone.
       user.add_role(:suspended)
 
       Note.create(
@@ -71,6 +108,10 @@ module Spam
         reason: "automatic_suspend",
         content: I18n.t("models.comment.suspended_too_many"),
       )
+
+      return unless unpublish_all_posts_when_user_auto_suspended?
+
+      user.articles.update_all(published: false)
     end
     private_class_method :suspend!
 

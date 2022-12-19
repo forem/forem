@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useEffect } from 'preact/hooks';
 import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
+import { LoadingPreview } from './LoadingPreview';
 
 function titleArea({
   previewResponse,
@@ -80,16 +81,29 @@ const previewResponsePropTypes = PropTypes.shape({
 });
 
 export const Preview = ({
+  previewLoading,
   previewResponse,
   articleState,
   errors,
   markdownLintErrors,
 }) => {
   useEffect(() => {
-    if (previewResponse.processed_html.includes('twitter-timeline')) {
+    if (previewResponse?.processed_html?.includes('twitter-timeline')) {
       attachTwitterTimelineScript();
     }
   }, [previewResponse]);
+
+  if (previewLoading) {
+    const coverImage = articleState.mainImage;
+    const loadingPreview = (
+      <LoadingPreview version={coverImage === null ? 'default' : 'cover'} />
+    );
+    return (
+      <div className="crayons-article-form__content crayons-card">
+        {loadingPreview}
+      </div>
+    );
+  }
 
   return (
     <div className="crayons-article-form__content crayons-card">
@@ -123,6 +137,7 @@ function attachTwitterTimelineScript() {
 }
 
 Preview.propTypes = {
+  previewLoading: PropTypes.bool,
   previewResponse: previewResponsePropTypes.isRequired,
   errors: PropTypes.object,
   markdownLintErrors: PropTypes.arrayOf(PropTypes.object),

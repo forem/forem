@@ -38,10 +38,11 @@ class StoriesController < ApplicationController
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
-    else
-      @podcast = Podcast.available.find_by!(slug: params[:username])
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    else
+      not_found
     end
   end
 
@@ -255,7 +256,7 @@ class StoriesController < ApplicationController
     @discussion_lock = @article.discussion_lock
     @user = @article.user
     @organization = @article.organization
-
+    @comments_order = fetch_sort_order
     if @article.collection
       @collection = @article.collection
 
@@ -268,13 +269,14 @@ class StoriesController < ApplicationController
     end
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+    @comments_to_show_count = 15 unless user_signed_in?
     set_article_json_ld
     assign_co_authors
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
-    !@article.published && params[:preview] != @article.password
+    (!@article.published || @article.scheduled?) && params[:preview] != @article.password
   end
 
   def assign_co_authors
@@ -318,7 +320,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_lowercase_username
-    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+    return unless params[:username]&.match?(/[[:upper:]]/)
 
     redirect_permanently_to("/#{params[:username].downcase}")
   end
@@ -412,5 +414,11 @@ class StoriesController < ApplicationController
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
       @user.profile.website_url,
     ].compact_blank
+  end
+
+  def fetch_sort_order
+    return params[:comments_sort] if Comment::VALID_SORT_OPTIONS.include? params[:comments_sort]
+
+    "top"
   end
 end

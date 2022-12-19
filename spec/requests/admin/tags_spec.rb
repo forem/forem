@@ -27,14 +27,14 @@ RSpec.describe "/admin/content_manager/tags", type: :request do
   describe "GET /admin/content_manager/tags" do
     it "responds with 200 OK" do
       get admin_tags_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 
   describe "GET /admin/content_manager/tags/:id" do
     it "responds with 200 OK" do
       get edit_admin_tag_path(tag.id)
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 

@@ -56,5 +56,19 @@ module.exports = {
   ],
   testEnvironment: './customJsDomEnvironment.js',
   // We occasionally need to allow transpiling of specific node_modules. See https://jestjs.io/docs/configuration#transformignorepatterns-arraystring
-  transformIgnorePatterns: ['/node_modules/(?!(preact|react-colorful)/)'],
+  transformIgnorePatterns: [
+    '/node_modules/(?!(preact|react-colorful|i18n-js)/)',
+  ],
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        addFileAttribute: 'true',
+        ancestorSeparator: ' › ',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+      },
+    ],
+  ],
 };

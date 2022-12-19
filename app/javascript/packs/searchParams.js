@@ -17,22 +17,21 @@ function getQueryParams(qs) {
 
 const params = getQueryParams(document.location.search);
 
-function searchMain(substories) {
+function searchMain(substories, loadingHTML) {
   const query = filterXSS(params.q);
   const filters = filterXSS(params.filters || 'class_name:Article');
   const sortBy = filterXSS(params.sort_by || '');
   const sortDirection = filterXSS(params.sort_direction || '');
 
-  substories.innerHTML =
-    '<div class="p-9 align-center crayons-card"><br></div>';
+  substories.innerHTML = loadingHTML;
   if (document.getElementById('query-wrapper')) {
     search(query, filters, sortBy, sortDirection);
     initializeFilters(query, filters);
-    initializeSortingTabs(query);
+    initializeSortingTabs(query, substories, loadingHTML);
   }
 }
 
-function initializeSortingTabs(query) {
+function initializeSortingTabs(query, substories, loadingHTML) {
   const sortingTabs = document.querySelectorAll(
     '#sorting-option-tabs .crayons-navigation__item',
   );
@@ -47,6 +46,7 @@ function initializeSortingTabs(query) {
       const { sortBy, sortDirection } = e.target.dataset;
       const sortString = buildSortString(sortBy, sortDirection);
 
+      substories.innerHTML = loadingHTML;
       if (filters) {
         window.history.pushState(
           null,
@@ -88,7 +88,10 @@ function initializeFilters(query, filters) {
         e.target.classList.contains('my-posts-query-button') &&
         !checkUserLoggedIn()
       ) {
-        showLoginModal();
+        showLoginModal({
+          referring_source: 'search',
+          trigger: 'my_posts_filter',
+        });
         return;
       }
       const filters = e.target.dataset.filter;
@@ -210,11 +213,14 @@ const waitingOnSearch = setInterval(() => {
   ) {
     clearInterval(waitingOnSearch);
     const substories = document.getElementById('substories');
+    const loadingHTML = document.querySelector(
+      'template[id=crayons-story-loading]',
+    ).innerHTML;
     if (
       substories &&
       document.getElementsByClassName('search-results-loaded').length === 0
     ) {
-      searchMain(substories);
+      searchMain(substories, loadingHTML);
     }
   }
 }, 1);

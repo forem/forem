@@ -4,12 +4,18 @@
   <%= render "users/meta" %>
 <% end %>
 <%= render "organizations/header" %>
-<div class="home sub-home" id="index-container"
-     data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
-     data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
-  <%= render "organizations/sidebar" %>
-  <div class="articles-list" id="articles-list">
+<div 
+  class="crayons-layout crayons-layout--limited-l crayons-layout--2-cols crayons-layout--2-cols--1-2 pt-4 m:pt-0"
+  id="index-container"
+  data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
+  data-feed="<%= params[:timeframe] || "base-feed" %>"
+  data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
+  
+  <div class="crayons-layout__sidebar-left crayons-layout__content">
+    <%= render "organizations/sidebar" %>
+  </div>
+
+   <main class="crayons-layout__content articles-list" id="articles-list">
     <div class="substories" id="substories">
       <%# organizations/main_feed will iterate on stories with .each_with_index,
           thus by using .present? here we preload the items %>
@@ -20,8 +26,7 @@
     <div class="loading-articles" id="loading-articles">
       <%= t("core.loading") %>
     </div>
-  </div>
-  <%= render "organizations/sidebar_additional" %>
+  </main>
 </div>
 
 <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "hideBookmarkButtons", defer: true %>

@@ -9,6 +9,8 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
+  VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
   URI_REGEXP = %r{
     \A
     (?:https?://)?  # optional scheme
@@ -63,7 +65,6 @@ class Comment < ApplicationRecord
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
-  after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
@@ -87,10 +88,10 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  def self.tree_for(commentable, limit = 0)
+  def self.tree_for(commentable, limit = 0, order = nil)
     commentable.comments
       .includes(user: %i[setting profile])
-      .arrange(order: "score DESC")
+      .arrange(order: build_sort_query(order))
       .to_a[0..limit - 1]
       .to_h
   end
@@ -101,6 +102,10 @@ class Comment < ApplicationRecord
 
   def self.title_hidden
     I18n.t("models.comment.hidden")
+  end
+
+  def self.build_comment(params, &blk)
+    includes(user: :profile).new(params, &blk)
   end
 
   def search_id
@@ -171,6 +176,19 @@ class Comment < ApplicationRecord
   def root_exists?
     ancestry && Comment.exists?(id: ancestry)
   end
+
+  def self.build_sort_query(order)
+    case order
+    when "latest"
+      "created_at DESC"
+    when "oldest"
+      "created_at ASC"
+    else
+      "score DESC"
+    end
+  end
+
+  private_class_method :build_sort_query
 
   private
 
@@ -256,10 +274,6 @@ class Comment < ApplicationRecord
     end
   end
 
-  def create_first_reaction
-    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
-  end
-
   def after_destroy_actions
     Users::BustCacheWorker.perform_async(user_id)
     user.touch(:last_comment_at)
@@ -327,7 +341,7 @@ class Comment < ApplicationRecord
   def published_article
     return unless commentable_type == "Article" && !commentable.published
 
-    errors.add(:commentable_id, I18n.t("models.comment.is_not_valid"))
+    errors.add(:commentable_id, I18n.t("models.comment.published_article"))
   end
 
   def user_mentions_in_markdown

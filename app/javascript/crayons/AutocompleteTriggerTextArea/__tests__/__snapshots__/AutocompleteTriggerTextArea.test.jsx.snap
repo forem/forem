@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AutocompleteTriggerTextArea /> should render when not replacing an element 1`] = `"<div class=\\"c-autocomplete \\" data-testid=\\"autocomplete-wrapper\\"><span class=\\"screen-reader-only\\" aria-live=\\"assertive\\"></span><textarea data-gramm_editor=\\"false\\"></textarea></div>"`;
+
+exports[`<AutocompleteTriggerTextArea /> should render when replacing an element 1`] = `"<div class=\\"c-autocomplete \\" data-testid=\\"autocomplete-wrapper\\"><span class=\\"screen-reader-only\\" aria-live=\\"assertive\\"></span><textarea data-gramm_editor=\\"false\\" aria-label=\\"test text area\\" id=\\"test-text-area\\" style=\\"font: -webkit-small-control; text-rendering: auto; letter-spacing: normal; word-spacing: normal; line-height: normal; text-transform: none; text-indent: 0; text-shadow: none; display: inline-block; text-align: start; background-color: white; border: 1px solid; flex-direction: column; resize: auto; cursor: auto; padding: 2px; white-space: pre-wrap; word-wrap: break-word; visibility: visible; transition: none;\\"></textarea></div>"`;

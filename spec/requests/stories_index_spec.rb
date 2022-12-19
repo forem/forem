@@ -20,10 +20,16 @@ RSpec.describe "StoriesIndex", type: :request do
 
       get "/"
       expect(response.body).to include(CGI.escapeHTML(article.title))
-      renders_ga_tracking_data
+      renders_ga_tracking_fields
       renders_proper_description
       renders_min_read_time
       renders_proper_sidebar(navigation_link)
+    end
+
+    it "doesn't render a featured scheduled article" do
+      article = create(:article, featured: true, published_at: 1.hour.from_now)
+      get "/"
+      expect(response.body).not_to include(CGI.escapeHTML(article.title))
     end
 
     def renders_proper_description
@@ -38,8 +44,9 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(navigation_link.name))
     end
 
-    def renders_ga_tracking_data
+    def renders_ga_tracking_fields
       expect(response.body).to include("data-ga-tracking=\"#{Settings::General.ga_tracking_id}\"")
+      expect(response.body).to include("data-ga4-tracking-id=\"#{Settings::General.ga_analytics_4_id}\"")
     end
 
     it "renders registration page if the Forem instance is private" do
@@ -95,32 +102,6 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("crayons-sponsorship-widget").once
     end
 
-    it "displays correct sponsors", :aggregate_failures do
-      org = create(:organization)
-      gold_sponsorship = create(:sponsorship, level: "gold", tagline: "GOLD!!!", status: "live", organization: org)
-      silver_sponsorship = create(:sponsorship, level: "silver", tagline: "SILVER!!!", status: "live",
-                                                organization: org)
-      non_live_gold_sponsorship = create(:sponsorship, level: "gold", tagline: "NOT LIVE GOLD!!!", status: "pending",
-                                                       organization: org)
-      get "/"
-
-      displays_gold_sponsors(gold_sponsorship)
-      does_not_display_silver_sponsors(silver_sponsorship)
-      does_not_display_non_live_gold_sponsors(non_live_gold_sponsorship)
-    end
-
-    def displays_gold_sponsors(sponsorship)
-      expect(response.body).to include(sponsorship.tagline)
-    end
-
-    def does_not_display_silver_sponsors(sponsorship)
-      expect(response.body).not_to include(sponsorship.tagline)
-    end
-
-    def does_not_display_non_live_gold_sponsors(sponsorship)
-      expect(response.body).not_to include(sponsorship.tagline)
-    end
-
     it "shows listings" do
       user = create(:user)
       listing = create(:listing, user_id: user.id)
@@ -131,7 +112,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "does not set cache-related headers if private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/"
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
 
       expect(response.headers["X-Accel-Expires"]).to be_nil
       expect(response.headers["Cache-Control"]).not_to eq("public, no-cache")
@@ -141,7 +122,7 @@ RSpec.describe "StoriesIndex", type: :request do
     it "sets correct cache headers", :aggregate_failures do
       get "/"
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(:ok)
       sets_fastly_headers
       sets_nginx_headers
     end
@@ -174,7 +155,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       allow(Settings::UserExperience).to receive(:feed_style).and_return("basic")
       get "/"
-      expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be 1
+      expect(response.body.scan(/(?=class="crayons-article__cover crayons-article__cover__image__feed)/).count).to be 1
     end
 
     it "shows multiple cover images if rich feed style" do
@@ -182,7 +163,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       allow(Settings::UserExperience).to receive(:feed_style).and_return("rich")
       get "/"
-      expect(response.body.scan(/(?=class="crayons-story__cover crayons-story__cover__image)/).count).to be > 1
+      # rubocop:disable Layout/LineLength
+      expect(response.body.scan(/(?=class="crayons-article__cover crayons-article__cover__image__feed)/).count).to be > 1
+      # rubocop:enable Layout/LineLength
     end
 
     context "with campaign hero" do

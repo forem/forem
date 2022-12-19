@@ -174,10 +174,6 @@ class ApplicationPolicy
     update?
   end
 
-  def manage?
-    update? && record.published
-  end
-
   def destroy?
     false
   end
@@ -203,7 +199,7 @@ class ApplicationPolicy
 
   delegate :support_admin?, to: :user
 
-  delegate :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
+  delegate :super_moderator?, :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
 
   alias minimal_admin? user_any_admin?
   deprecate minimal_admin?: "Deprecating #{self}#minimal_admin?, use #{self}#user_any_admin?"

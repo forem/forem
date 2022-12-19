@@ -27,7 +27,7 @@ export const ClipboardButton = ({
       onClick={onCopy}
       className="spec__image-markdown-copy whitespace-nowrap fw-normal"
       icon={CopyIcon}
-      title="Copy markdown for image"
+      title="Copy"
     >
       {showCopyMessage ? 'Copied!' : 'Copy...'}
     </Button>

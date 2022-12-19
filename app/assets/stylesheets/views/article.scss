@@ -23,9 +23,19 @@
       border-radius: var(--radius-auto);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
-      object-fit: cover;
+      object-fit: scale-down;
       width: 100%;
       height: 100%;
+
+      &__feed {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 100%;
+        width: 100%;
+        aspect-ratio: auto 650 / 273;
+        object-fit: scale-down;
+        border-radius: var(--radius-auto) var(--radius) 0 0;
+      }
     }
   }
 
@@ -141,6 +151,22 @@
     flex-direction: column;
   }
 
+  .crayons-tooltip {
+    &__content {
+      // display tooltip on top of the icon
+      @media (max-width: $breakpoint-m) {
+        top: -100%;
+      }
+    }
+  }
+
+  // We don't show tooltips on touch-only devices
+  @media (hover: none) {
+    .crayons-tooltip__content {
+      display: none;
+    }
+  }
+
   &__icon {
     padding: var(--su-2);
     box-shadow: var(--reaction-border);
@@ -203,6 +229,14 @@
     &.user-activated {
       --reaction-color: var(--reaction-save-color);
       --reaction-bg: var(--reaction-save-bg);
+    }
+  }
+
+  &--comment {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-comment-color);
+      --reaction-bg: var(--reaction-comment-bg);
     }
   }
 }
@@ -289,12 +323,18 @@
   }
 }
 
-.crayons-article-sticky {
+.crayons-article-sticky:last-child {
   position: -webkit-sticky;
   position: sticky;
   top: calc(var(--header-height) + var(--layout-padding));
   .static-header & {
     top: var(--layout-padding);
+  }
+}
+
+.crayons-post_sidebar_display_ad {
+  @media screen and (max-width: $breakpoint-l) {
+    display: none;
   }
 }
 

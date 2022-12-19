@@ -29,11 +29,52 @@ describe('<PageTitle/>', () => {
         organizations={organizations}
         organizationId={organizationId}
         onToggle={onToggle}
+        previewLoading={false}
       />,
     );
     const results = await axe(container);
 
     expect(results).toHaveNoViolations();
+  });
+
+  it('should have no a11y violations when preview is loading', async () => {
+    const { container } = render(
+      <PageTitle
+        organizations={organizations}
+        organizationId={organizationId}
+        onToggle={onToggle}
+        previewLoading={true}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('show create post label when preview is not loading', async () => {
+    const { getByText } = render(
+      <PageTitle
+        organizations={organizations}
+        organizationId={organizationId}
+        onToggle={onToggle}
+        previewLoading={false}
+      />,
+    );
+
+    expect(getByText(`Create Post`)).toBeInTheDocument();
+  });
+
+  it('show loading preview label when preview is loading', async () => {
+    const { getByText } = render(
+      <PageTitle
+        organizations={organizations}
+        organizationId={organizationId}
+        onToggle={onToggle}
+        previewLoading={true}
+      />,
+    );
+
+    expect(getByText(`Loading preview`)).toBeInTheDocument();
   });
 
   it('shows the picker if there is more than one organisation', () => {
@@ -42,6 +83,7 @@ describe('<PageTitle/>', () => {
         organizations={organizations}
         organizationId={organizationId}
         onToggle={onToggle}
+        previewLoading={false}
       />,
     );
 
@@ -56,6 +98,7 @@ describe('<PageTitle/>', () => {
         organizations={[]}
         organizationId={organizationId}
         onToggle={onToggle}
+        previewLoading={false}
       />,
     );
 

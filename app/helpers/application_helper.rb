@@ -36,9 +36,11 @@ module ApplicationHelper
   # @return [TrueClass] true when we should render the given link.
   # @return [FalseClass] false when we should **not** render the given link.
   def display_navigation_link?(link:)
-    # This is a quick short-circuit; we already have the link.  So don't bother asking the "Is this
-    # feature enabled" question if the given link requires a sign in and the user is not signed in.
-    return false if link.display_only_when_signed_in? && !user_signed_in?
+    # This is a quick short-circuit; we already have the link. So don't bother asking the "Is this
+    # feature enabled" question if the given link requires a logged in/out state
+    # that doesn't match the user's current state.
+    return false if link.display_to_logged_in? && !user_signed_in?
+    return false if link.display_to_logged_out? && user_signed_in?
     return true if navigation_link_is_for_an_enabled_feature?(link: link)
 
     false
@@ -91,8 +93,6 @@ module ApplicationHelper
   def title(page_title)
     derived_title = if page_title.include?(community_name)
                       page_title
-                    elsif user_signed_in?
-                      "#{page_title} - #{community_name} #{community_emoji}"
                     else
                       "#{page_title} - #{community_name}"
                     end
@@ -198,7 +198,7 @@ module ApplicationHelper
       data: {
         info: DataInfo.to_json(object: followable, className: followable_type, style: style)
       },
-      class: "c-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
+      class: "crayons-btn follow-action-button whitespace-nowrap #{classes} #{user_follow}",
       aria: {
         label: I18n.t("helpers.application_helper.follow.aria_label.#{followable_type}",
                       name: followable_name,
@@ -230,10 +230,6 @@ module ApplicationHelper
 
   def community_name
     @community_name ||= Settings::Community.community_name
-  end
-
-  def community_emoji
-    @community_emoji ||= Settings::Community.community_emoji
   end
 
   def release_adjusted_cache_key(path)

@@ -4,6 +4,7 @@ json.depth @comment.depth
 json.url @comment.path
 json.readable_publish_date @comment.readable_publish_date
 json.published_timestamp @comment.decorate.published_timestamp
+json.public_reactions_count @comment.public_reactions_count.to_i
 json.body_html @comment.processed_html
 json.id @comment.id
 json.id_code @comment.id_code_generated

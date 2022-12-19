@@ -3,16 +3,15 @@ module EdgeCache
     class Fastly
       # [@forem/systems] Fastly-enabled Forems don't need "flexible" domains.
       def self.call(path)
-        api_key = ApplicationConfig["FASTLY_API_KEY"]
-
-        fastly_purge(api_key, path)
+        fastly_purge(path)
       end
 
-      def self.fastly_purge(api_key, path)
-        fastly = ::Fastly.new(api_key: api_key)
+      def self.fastly_purge(path)
+        headers = { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"],
+                    "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
 
         urls(path).map do |url|
-          fastly.purge(url)
+          HTTParty.post("https://api.fastly.com/purge/#{url}", headers: headers)
         end
       end
       private_class_method :fastly_purge
@@ -23,7 +22,7 @@ module EdgeCache
           URL.url("#{path}?i=i"),
         ]
       end
-      private_class_method :fastly_purge
+      private_class_method :urls
     end
   end
 end

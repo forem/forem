@@ -8,9 +8,9 @@ S3DirectUpload.config do |c|
     ENV["AWS_S3_VIDEO_KEY"] = "available"
     ENV["AWS_S3_INPUT_BUCKET"] = "available"
   end
-  c.access_key_id = ENV["AWS_S3_VIDEO_ID"] # your access key id
-  c.secret_access_key = ENV["AWS_S3_VIDEO_KEY"] # your secret access key
-  c.bucket = ENV["AWS_S3_INPUT_BUCKET"] # your bucket name
+  c.access_key_id = ENV.fetch("AWS_S3_VIDEO_ID", nil) # your access key id
+  c.secret_access_key = ENV.fetch("AWS_S3_VIDEO_KEY", nil) # your secret access key
+  c.bucket = ENV.fetch("AWS_S3_INPUT_BUCKET", nil) # your bucket name
   c.region = nil # region prefix. _Required_ for non-default AWS region, eg. "eu-west-1"
   c.url = nil # S3 API endpoint (optional), eg. "https://#{c.bucket}.s3.amazonaws.com"
 end

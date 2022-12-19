@@ -23,6 +23,10 @@ module Settings
 
     # Google Analytics Tracking ID, e.g. UA-71991000-1
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
+    setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+
+    # Ahoy Tracking
+    setting :ahoy_tracking, type: :boolean, default: false
 
     # Images
     setting :main_social_image,
@@ -91,9 +95,6 @@ module Settings
       twitch: nil
     }
     setting :twitter_hashtag, type: :string
-
-    # Sponsors
-    setting :sponsor_headline, default: -> { I18n.t("models.settings.general.community_sponsors") }
 
     # Tags
     setting :sidebar_tags, type: :array, default: %w[]

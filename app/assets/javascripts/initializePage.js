@@ -10,8 +10,8 @@
   initializeProfileInfoToggle, initializePodcastPlayback,
   initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
-  nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers,
+  nextPage:writable, fetching:writable, done:writable, 
+  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
 */
 
 function callInitializers() {
@@ -49,7 +49,7 @@ function initializePage() {
       }
       initializeBroadcast();
       initializeReadingListIcons();
-      initializeSponsorshipVisibility();
+      initializeDisplayAdVisibility();
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
@@ -70,7 +70,6 @@ function initializePage() {
   nextPage = 0;
   fetching = false;
   done = false;
-  adClicked = false;
   setTimeout(function undone() {
     done = false;
   }, 300);

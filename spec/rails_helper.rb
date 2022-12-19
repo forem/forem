@@ -1,6 +1,13 @@
 ENV["RAILS_ENV"] = "test"
 require "knapsack_pro"
+require "simplecov"
+require "simplecov_json_formatter"
+
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 KnapsackPro::Adapters::RSpecAdapter.bind
+KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
+  SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
 
 require "spec_helper"
 

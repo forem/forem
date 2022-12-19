@@ -43,13 +43,13 @@ RSpec.describe "Admin awards badges", type: :system do
 
     visit "/#{user.username}/"
 
-    expect(page).to have_link(href: badge_path(Badge.last.slug))
+    expect(page).to have_css("img[src='#{Badge.last.badge_image.url}']")
   end
 
   it "does not award badges if no badge is selected", js: true do
     expect do
       sidekiq_perform_enqueued_jobs { award_no_badges }
-    end.to change { user.badges.count }.by(0)
+    end.not_to change { user.badges.count }
 
     expect(page).to have_content("Please choose a badge to award")
   end

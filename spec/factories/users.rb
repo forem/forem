@@ -71,6 +71,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:admin) }
     end
 
+    trait :super_moderator do
+      after(:build) { |user| user.add_role(:super_moderator) }
+    end
+
     trait :single_resource_admin do
       transient do
         resource { nil }

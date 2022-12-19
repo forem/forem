@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
+import moment from 'moment';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
 import { submitArticle, previewArticle } from './actions';
@@ -18,7 +19,7 @@ import { getOSKeyboardModifierKeyString } from '@utilities/runtime';
 /* global activateRunkitTags */
 
 /*
-  Although the state fields: id, description, canonicalUrl, series, allSeries and
+  Although the state fields: id, description, canonicalUrl, publishedAtDate, publishedAtTime, series, allSeries and
   editing are not used in this file, they are important to the
   editor.
 */
@@ -63,6 +64,7 @@ export class ArticleForm extends Component {
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
     siteLogo: PropTypes.string.isRequired,
+    schedulingEnabled: PropTypes.bool.isRequired,
   };
 
   static defaultProps = {
@@ -71,7 +73,7 @@ export class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version, siteLogo } = this.props;
+    const { article, version, siteLogo, schedulingEnabled } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -95,6 +97,16 @@ export class ArticleForm extends Component {
           }
         : {};
 
+    this.publishedAtTime = '';
+    this.publishedAtDate = '';
+    this.publishedAtWas = '';
+
+    if (this.article.published_at) {
+      this.publishedAtWas = moment(this.article.published_at);
+      this.publishedAtTime = this.publishedAtWas.format('HH:mm');
+      this.publishedAtDate = this.publishedAtWas.format('YYYY-MM-DD');
+    }
+
     this.state = {
       formKey: new Date().toISOString(),
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
@@ -102,12 +114,18 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAtTime: this.publishedAtTime,
+      publishedAtDate: this.publishedAtDate,
+      publishedAtWas: this.publishedAtWas,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || '', // eslint-disable-line react/no-unused-state
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
+      schedulingEnabled,
       previewShowing: false,
-      previewResponse: '',
+      previewLoading: false,
+      previewResponse: { processed_html: '' },
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       mainImage: this.article.main_image || null,
@@ -137,7 +155,7 @@ export class ArticleForm extends Component {
   componentDidUpdate() {
     const { previewResponse } = this.state;
 
-    if (previewResponse) {
+    if (previewResponse?.processed_html) {
       embedGists(this.formElement);
       this.constructor.handleRunkitPreview();
       this.constructor.handleAsciinemaPreview();
@@ -161,11 +179,13 @@ export class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
+    previewLoading = false,
     helpFor = null,
     helpPosition = null,
   }) => {
     return {
       previewShowing,
+      previewLoading,
       helpFor,
       helpPosition,
     };
@@ -179,6 +199,7 @@ export class ArticleForm extends Component {
         ...this.setCommonProps({}),
       });
     } else {
+      this.showLoadingPreview();
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
   };
@@ -221,10 +242,22 @@ export class ArticleForm extends Component {
     }
   };
 
+  showLoadingPreview = () => {
+    this.setState({
+      ...this.setCommonProps({
+        previewShowing: true,
+        previewLoading: true,
+      }),
+    });
+  };
+
   showPreview = (response) => {
     this.fetchMarkdownLint();
     this.setState({
-      ...this.setCommonProps({ previewShowing: true }),
+      ...this.setCommonProps({
+        previewShowing: true,
+        previewLoading: false,
+      }),
       previewResponse: response,
       errors: null,
     });
@@ -237,6 +270,7 @@ export class ArticleForm extends Component {
 
   failedPreview = (response) => {
     this.setState({
+      ...this.setCommonProps({ previewLoading: false }),
       errors: response,
       submitting: false,
     });
@@ -314,11 +348,15 @@ export class ArticleForm extends Component {
       tagList: this.article.cached_tag_list || '',
       description: '', // eslint-disable-line react/no-unused-state
       canonicalUrl: this.article.canonical_url || '', // eslint-disable-line react/no-unused-state
+      publishedAtTime: this.publishedAtTime,
+      publishedAtDate: this.publishedAtDate,
+      publishedAtWas: this.publishedAtWas,
       series: this.article.series || '', // eslint-disable-line react/no-unused-state
       allSeries: this.article.all_series || [], // eslint-disable-line react/no-unused-state
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
+      previewLoading: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
@@ -374,8 +412,13 @@ export class ArticleForm extends Component {
       tagList,
       bodyMarkdown,
       published,
+      publishedAtTime,
+      publishedAtDate,
+      publishedAtWas,
       previewShowing,
+      previewLoading,
       previewResponse,
+      schedulingEnabled,
       submitting,
       organizations,
       organizationId,
@@ -403,6 +446,7 @@ export class ArticleForm extends Component {
       >
         <Header
           onPreview={this.fetchPreview}
+          previewLoading={previewLoading}
           previewShowing={previewShowing}
           organizations={organizations}
           organizationId={organizationId}
@@ -411,8 +455,14 @@ export class ArticleForm extends Component {
           displayModal={() => this.showModal(true)}
         />
 
-        {previewShowing ? (
+        <span aria-live="polite" className="screen-reader-only">
+          {previewLoading ? 'Loading preview' : null}
+          {previewShowing && !previewLoading ? 'Preview loaded' : null}
+        </span>
+
+        {previewShowing || previewLoading ? (
           <Preview
+            previewLoading={previewLoading}
             previewResponse={previewResponse}
             articleState={this.state}
             errors={errors}
@@ -465,6 +515,10 @@ export class ArticleForm extends Component {
 
         <EditorActions
           published={published}
+          publishedAtTime={publishedAtTime}
+          publishedAtDate={publishedAtDate}
+          publishedAtWas={publishedAtWas}
+          schedulingEnabled={schedulingEnabled}
           version={version}
           onPublish={this.onPublish}
           onSaveDraft={this.onSaveDraft}
@@ -473,6 +527,7 @@ export class ArticleForm extends Component {
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
           submitting={submitting}
+          previewLoading={previewLoading}
         />
 
         <KeyboardShortcuts

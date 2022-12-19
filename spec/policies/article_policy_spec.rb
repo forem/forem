@@ -15,6 +15,10 @@ RSpec.describe ArticlePolicy do
   let(:trusted) { create(:user, :trusted) }
   let(:other_users) { create(:user) }
   let(:author) { create(:user) }
+  let(:moderator) { create(:user, :super_moderator) }
+  let(:tag_mod) { create(:user, :tag_moderator) }
+  let(:tagmod_tag) { tag_mod.roles.find_by(name: "tag_moderator").resource }
+  let(:random_tag) { create(:tag, name: "randomtag") }
 
   let(:resource) { build(:article, user: author, organization: organization) }
   let(:policy) { described_class.new(user, resource) }
@@ -120,10 +124,82 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "it requires a user in good standing"
     it_behaves_like "it requires an authenticated user"
 
-    it_behaves_like "permitted roles", to: %i[trusted], limit_post_creation_to_admins?: false
+    it_behaves_like "permitted roles", to: %i[trusted super_admin admin], limit_post_creation_to_admins?: false
 
-    it_behaves_like "disallowed roles", to: %i[super_admin admin author], limit_post_creation_to_admins?: false
-    it_behaves_like "disallowed roles", to: %i[trusted], limit_post_creation_to_admins?: true
+    it_behaves_like "disallowed roles", to: %i[author], limit_post_creation_to_admins?: false
+    it_behaves_like "disallowed roles", to: %i[trusted super_admin admin], limit_post_creation_to_admins?: true
+  end
+
+  describe "#allow_tag_adjustment?" do
+    let(:policy_method) { :allow_tag_adjustment? }
+    # need "create" (as opposed to "build") for the article to be published
+    let(:resource) { create(:article, tags: tagmod_tag, user: author, organization: organization) }
+
+    it_behaves_like "it requires an authenticated user"
+    it_behaves_like "permitted roles", to: %i[super_admin admin moderator tag_mod]
+    it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+  end
+
+  describe "#tag_moderator_eligible?" do
+    subject(:policy) { described_class.new(tag_mod, resource) }
+
+    context "when article includes tagmod_tag, has no room for more tags, and no relevant adjustments" do
+      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
+
+      it { is_expected.to be_tag_moderator_eligible }
+    end
+
+    context "when article has room for more tags and no relevant adjustments" do
+      let(:resource) { create(:article, tags: "tagtwo, tagthree, #{tagmod_tag}") }
+
+      it { is_expected.to be_tag_moderator_eligible }
+    end
+
+    context "when an irrelevant tag has been adjusted" do
+      let(:resource) { create(:article, tags: "tagtwo, tagthree, #{random_tag}, #{tagmod_tag}") }
+
+      it "is tag_moderator_eligible" do
+        create(
+          :tag_adjustment,
+          user_id: super_admin.id,
+          article_id: resource.id,
+          tag_id: random_tag.id,
+          tag_name: random_tag,
+          adjustment_type: "removal",
+        )
+        expect(policy).to be_tag_moderator_eligible
+      end
+    end
+
+    context "when article excludes tagmod_tag, has no room for more tags, and no relevant adjustments" do
+      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, tagfive") }
+
+      it { is_expected.not_to be_tag_moderator_eligible }
+    end
+
+    context "when tag moderator's tag has been adjusted" do
+      let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, #{tagmod_tag}") }
+
+      it "is not tag_moderator_eligible" do
+        create(
+          :tag_adjustment,
+          user_id: super_admin.id,
+          article_id: resource.id,
+          tag_id: tagmod_tag.id,
+          tag_name: tagmod_tag,
+          adjustment_type: "removal",
+        )
+        expect(policy).not_to be_tag_moderator_eligible
+      end
+    end
+
+    context "when user is not a tag moderator" do
+      subject(:policy) { described_class.new(anyone, resource) }
+
+      let(:resource) { create(:article, tags: tagmod_tag.to_s) }
+
+      it { is_expected.not_to be_tag_moderator_eligible }
+    end
   end
 
   %i[update? edit?].each do |method_name|
@@ -153,13 +229,29 @@ RSpec.describe ArticlePolicy do
     it_behaves_like "disallowed roles", to: %i[admin org_admin other_users]
   end
 
-  %i[admin_unpublish? admin_featured_toggle?].each do |method_name|
-    describe "admin_unpublish?" do
+  %i[admin_unpublish? admin_featured_toggle? revoke_publication? toggle_featured_status?
+     can_adjust_any_tag? can_perform_moderator_actions?].each do |method_name|
+    describe "##{method_name}" do
       let(:policy_method) { method_name }
 
-      it_behaves_like "it requires an authenticated user"
-      it_behaves_like "permitted roles", to: %i[super_admin admin]
-      it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+      context "when published article" do
+        # need "create" (as opposed to "build") for the article to be published
+        let(:resource) { create(:article, user: author, organization: organization) }
+
+        it_behaves_like "it requires an authenticated user"
+        it_behaves_like "permitted roles", to: %i[super_admin admin moderator]
+        it_behaves_like "disallowed roles", to: %i[org_admin author other_users]
+      end
+
+      context "when unpublished article" do
+        let(:resource) do
+          build(:article, user: author, organization: organization, published: false, published_at: nil)
+        end
+
+        it_behaves_like "it requires an authenticated user"
+        it_behaves_like "permitted roles", to: %i[]
+        it_behaves_like "disallowed roles", to: %i[super_admin admin moderator org_admin author other_users]
+      end
     end
   end
 

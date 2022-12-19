@@ -24,6 +24,17 @@
       border-color: var(--form-border-focus);
       box-shadow: 0 0 0 1px var(--form-border-focus);
     }
+
+    .editor-toolbar {
+      border-top: 1px solid var(--form-border);
+      overflow-x: auto;
+    }
+
+    @media (min-width: $breakpoint-xs) {
+      .editor-toolbar {
+        overflow-x: unset;
+      }
+    }
   }
 
   &__inner {
@@ -274,4 +285,25 @@
 .personal-template-button:not(.active),
 .moderator-template-button:not(.active) {
   @extend .crayons-btn--outlined;
+}
+
+#comments-sort-dropdown-container {
+  .comment-sort-option {
+    &__header {
+      color: var(--base-90);
+      font-weight: var(--fw-medium);
+    }
+
+    .comment-sort-option__header {
+      .crayons-icon {
+        position: absolute;
+        left: var(--su-4);
+        color: var(--link-branded-color);
+      }
+
+      &[aria-current='page'] {
+        font-weight: var(--fw-bold);
+      }
+    }
+  }
 }

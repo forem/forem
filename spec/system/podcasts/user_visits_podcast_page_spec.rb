@@ -16,7 +16,7 @@ RSpec.describe "User visits a podcast page", type: :system do
   end
 
   it "displays podcast episodes", js: true do
-    expect(page).to have_selector("a.crayons-card", visible: :visible, count: 2)
+    expect(page).to have_link(class: "crayons-card", visible: :visible, count: 2)
   end
 
   it "displays podcast publish_at" do

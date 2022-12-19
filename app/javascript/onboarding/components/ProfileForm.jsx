@@ -147,6 +147,8 @@ export class ProfileForm extends Component {
       this.props;
     const { profile_image_90, username, name } = this.user;
     const { canSkip, groups = [], error, errorMessage } = this.state;
+    const SUMMARY_MAXLENGTH = 200;
+    const summaryCharacters = this.state?.formValues?.summary?.length || 0;
 
     const sections = groups.map((group) => {
       return (
@@ -219,6 +221,7 @@ export class ProfileForm extends Component {
                   label: 'Username',
                   default_value: username,
                   required: true,
+                  maxLength: 20,
                 }}
                 onFieldChange={this.handleFieldChange}
               />
@@ -230,9 +233,21 @@ export class ProfileForm extends Component {
                   label: 'Bio',
                   placeholder_text: 'Tell us a little about yourself',
                   required: false,
+                  maxLength: SUMMARY_MAXLENGTH,
                 }}
                 onFieldChange={this.handleFieldChange}
               />
+              <p
+                id="summary-description"
+                class="crayons-field__description align-right"
+              >
+                <span class="screen-reader-only" aria-live="polite">
+                  Remaining characters: {SUMMARY_MAXLENGTH - summaryCharacters}
+                </span>
+                <span id="summary-characters">
+                  {summaryCharacters}/{SUMMARY_MAXLENGTH}
+                </span>
+              </p>
             </div>
 
             {sections}
@@ -247,7 +262,7 @@ ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
-  currentSlideIndex: PropTypes.func.isRequired,
+  currentSlideIndex: PropTypes.number.isRequired,
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
   }),

@@ -67,5 +67,10 @@ RSpec.describe Articles::Attributes, type: :service do
       attrs = described_class.new({ title: "title" }, user).for_update(update_edited_at: false)
       expect(attrs[:edited_at]).to be_falsey
     end
+
+    it "sets published_at correctly" do
+      attrs = described_class.new({ title: "title", published_at: "2022-04-25" }, user).for_update
+      expect(attrs[:published_at]).to eq(DateTime.new(2022, 4, 25))
+    end
   end
 end

@@ -25,17 +25,42 @@ module Admin
       last_moderation_notification last_notification_activity
     ].freeze
 
-    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
+    MODROLE_ACTIONS_TO_POLICIES = {
+      user_status: :toggle_suspension_status?,
+      unpublish_all_articles: :unpublish_all_articles?
+    }.freeze
+
+    after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
+    end
+
+    # Having this method here (which also exists in admin/application_controller)
+    # allows us to authorize the actions of the moderator role specifically,
+    # while preserving the implementation for all other admin actions
+    def authorize_admin
+      if MODROLE_ACTIONS_TO_POLICIES.key?(action_name.to_sym)
+        authorize(User, MODROLE_ACTIONS_TO_POLICIES[action_name.to_sym])
+      else
+        super
+      end
     end
 
     def index
       @users = Admin::UsersQuery.call(
         relation: User.registered,
-        options: params.permit(:role, :search),
+        search: params[:search],
+        role: params[:role],
+        roles: params[:roles],
+        statuses: params[:statuses],
+        joining_start: params[:joining_start],
+        joining_end: params[:joining_end],
+        date_format: params[:date_format],
+        organizations: params[:organizations],
       ).page(params[:page]).per(50)
 
       @organization_limit = 3
+      @organizations = Organization.order(name: :desc)
+      @earliest_join_date = User.first.registered_at.to_s
     end
 
     def edit
@@ -48,6 +73,7 @@ module Admin
     def show
       @user = User.find(params[:id])
       set_current_tab(params[:tab])
+      set_unpublish_all_log
       set_banishable_user
       set_feedback_messages
       set_related_reactions
@@ -100,10 +126,32 @@ module Admin
       begin
         Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
         flash[:success] = I18n.t("admin.users_controller.updated")
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: true,
+              message: I18n.t("admin.users_controller.updated_json", username: @user.username)
+            }, status: :ok
+          end
+        end
       rescue StandardError => e
         flash[:danger] = e.message
+        respond_to do |format|
+          format.html do
+            redirect_back_or_to admin_users_path
+          end
+          format.json do
+            render json: {
+              success: false,
+              message: @user.errors_as_sentence
+            }, status: :unprocessable_entity
+          end
+        end
       end
-      redirect_to admin_user_path(params[:id])
+      Credits::Manage.call(@user, credit_params)
     end
 
     def export_data
@@ -145,9 +193,25 @@ module Admin
     end
 
     def unpublish_all_articles
-      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
-      flash[:success] = I18n.t("admin.users_controller.unpublished")
-      redirect_to admin_user_path(params[:id])
+      target_user = User.find(params[:id].to_i)
+      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, current_user.id, "moderator")
+
+      note_content = params.dig(:note, :content).presence
+      note_content ||= "#{current_user.username} unpublished all articles"
+      Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                  content: note_content, author: current_user)
+
+      message = I18n.t("admin.users_controller.unpublished")
+      respond_to do |format|
+        format.html do
+          flash[:success] = message
+          redirect_to admin_user_path(params[:id])
+        end
+
+        format.json do
+          render json: { message: message }
+        end
+      end
     end
 
     def merge
@@ -329,7 +393,7 @@ module Admin
     end
 
     def set_current_tab(current_tab = "overview")
-      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:downcase)
+      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:underscore)
                        current_tab
                      else
                        "overview"
@@ -339,6 +403,12 @@ module Admin
     def set_banishable_user
       @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
         @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+    end
+
+    def set_unpublish_all_log
+      # in theory, there could be multiple "unpublish all" actions
+      # but let's query and display the last one for now, that should be enough for most cases
+      @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
     end
   end
 end

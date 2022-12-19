@@ -402,10 +402,12 @@
           }
         }
         &:hover {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         &.active {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         // &.selected {}
       }
@@ -469,19 +471,6 @@
           display: inline;
         }
       }
-    }
-  }
-  .bottom-actions {
-    display: flex;
-    justify-content: center;
-    padding-bottom: var(--su-4);
-    margin-top: auto;
-    button {
-      display: initial;
-      font-size: var(--fs-base);
-      color: var(--accent-brand);
-      border: none;
-      background: none;
     }
   }
 

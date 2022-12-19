@@ -15,9 +15,16 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true do
-    create_list(:comment, 3, commentable: article)
+  it "shows non-negative comments", js: true do
+    comments = create_list(:comment, 4, commentable: article)
+    admin = create(:user, :admin)
+    create(:thumbsdown_reaction, reactable: comments.last, user: admin)
+    sidekiq_perform_enqueued_jobs
 
+    visit article.path
+    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)
+
+    sign_out user
     visit article.path
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
@@ -136,6 +143,36 @@ RSpec.describe "Views an article", type: :system do
         expect(paths).to eq(expected_paths)
       end
       # rubocop:enable RSpec/ExampleLength
+    end
+  end
+
+  describe "when an article is scheduled" do
+    let(:scheduled_article) { create(:article, user: user, published: true, published_at: Date.tomorrow) }
+    let(:scheduled_article_path) { scheduled_article.path + query_params }
+    let(:query_params) { "?preview=#{scheduled_article.password}" }
+
+    it "shows the article edit link for the author", js: true do
+      visit scheduled_article_path
+      edit_link = find("a#author-click-to-edit")
+      expect(edit_link.matches_style?(display: "inline-block")).to be true
+    end
+
+    it "doesn't show the article manage link, even for the author", js: true do
+      visit scheduled_article_path
+      expect(page).to have_no_link("article-action-space-manage")
+    end
+
+    it "doesn't show an article edit link for the non-authorized user" do
+      sign_out user
+      sign_in create(:user)
+      visit scheduled_article_path
+      expect(page.body).to include('display: none;">Click to edit</a>')
+    end
+
+    it "doesn't show an article edit link when the user is not logged in" do
+      sign_out user
+      visit scheduled_article_path
+      expect(page.body).not_to include("Click to edit")
     end
   end
 

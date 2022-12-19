@@ -325,6 +325,30 @@ Cypress.Commands.add(
 );
 
 /**
+ * Creates a comment.
+ *
+ * @param {string} content The content of the comment.
+ * @param {number} commentableId The ID of either Article or PodcastEpisode.
+ * @param {string} commentableType The model that the comment belongs to.
+ * @param {number} [parentId=null] The ID of the parent comment if it exists.
+ *
+ * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for creating a comment.
+ */
+Cypress.Commands.add(
+  'createComment',
+  ({ content, commentableId, commentableType, parentId = null }) => {
+    return cy.request('POST', '/comments', {
+      comment: {
+        body_markdown: content,
+        commentable_id: commentableId,
+        commentable_type: commentableType,
+        parent_id: parentId,
+      },
+    });
+  },
+);
+
+/**
  * Creates a response template.
  *
  * @param {string} title The title of a response template.

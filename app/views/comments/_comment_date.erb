@@ -1,13 +1,13 @@
 <span class="color-base-30 px-2 m:pl-0" role="presentation">&bull;</span>
 
-<a href="<%= URL.comment(decorated_comment) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
-  <time datetime="<%= decorated_comment.published_timestamp %>">
+<a href="<%= contextual_comment_url(decorated_comment, article: @article) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
+  <time datetime="<%= decorated_comment.published_timestamp %>" class=<%= decorated_comment.created_at.year == Time.current.year ? "date-no-year" : "date-short-year" %>>
     <%= decorated_comment.readable_publish_date %>
   </time>
 
   <% if decorated_comment.edited_at.present? %>
     <%= t("views.comments.edited.text_html", 
-          on: tag.span(t("views.comments.edited.on_html", date: tag.time(decorated_comment.edited_at.strftime(t("time.formats.short")), datetime: decorated_comment.edited_timestamp), class: %w[hidden m:inline-block]))
+          on: tag.span(t("views.comments.edited.on_html", date: tag.time(decorated_comment.edited_at.strftime(t("time.formats.short")), datetime: decorated_comment.edited_timestamp, class: %w[hidden m:inline-block date-no-year])))
     ) %>
   <% end %>
 </a>

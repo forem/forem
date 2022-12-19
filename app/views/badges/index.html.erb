@@ -1,19 +1,31 @@
 <% title t("views.badges.meta.title") %>
 
 <div class="blank-space"></div>
-<div class="container article">
-  <h1 style="text-align: center;"><%= t("views.badges.heading") %></h1>
-  <p style="text-align: center; max-width: 96%;"><%= t("views.badges.desc") %></p>
-  <div class="body sticker-book">
+<main class="badges-page crayons-layout px-4 m:px-9 gap-0">
+  <h1 class="crayons-title"><%= t("views.badges.heading") %></h1>
+  <p class="crayons-subtitle-2 description"><%= t("views.badges.desc") %></p>
+  <div class="sticker-book crayons-card mt-4 l:mt-7 p-3 s:p-3 m:p-6 l:p-6 xl:p-8 grid gap-3 m:gap-4 l:gap-4 l:gap-6 grid-cols-2 s:grid-cols-2 m:grid-cols-3 l:grid-cols-4 xl:grid-cols-5 mb-6">
     <% @badges.each do |badge| %>
-    <a href="/badge/<%= badge.slug %>">
-      <img
-        class="badge-image <%= "unearned" unless badge.id.in?(@earned_badge_achievements) %>"
-        src="<%= optimized_image_url(badge.badge_image_url, width: 375) %>"
-        alt="<%= badge.title %> badge"
-        title="<%= badge.title %>"
-        loading="lazy" />
-    </a>
+    <div
+      role="button"
+      onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= badge.id %>', overlay: true})"
+      class="badge-container crayons-card media-card">
+      <div class="badge-image-container p-3">
+        <img
+          class="badge-image"
+          src="<%= optimized_image_url(badge.badge_image_url, width: 192) %>"
+          alt="<%= badge.title %> badge"
+          title="<%= badge.title %>"
+          loading="lazy" />
+      </div>
+      <p aria-hidden="true" class="title align-center fw-bold fs-s flex lh-base justify-center p-3">
+          <%= badge.title %>
+      </p>
+
+      <div id="badge-<%= badge.id %>" class="hidden">
+        <%= render partial: "badge_detail", locals: { badge: badge } %>
+      </div>
+    </div>
     <% end %>
   </div>
-</div>
+</main>

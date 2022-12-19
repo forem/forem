@@ -8,8 +8,8 @@
       </button>
     </header>
 
-    <div class="p-2">
-      <%= render partial: "shared/auth_widget" unless user_signed_in? %>
+    <div class="p-2" id="authentication-hamburger-actions">
+      <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_hamburger_home_page", source: "mobile_hamburger_nav" } unless user_signed_in? %>
       <%= render partial: "layouts/main_nav", locals: { context: "hamburger" } %>
     </div>
   </div>

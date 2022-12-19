@@ -12,14 +12,11 @@ module Admin
                                  approved
                                  email_digest_eligible
                                  main_image_background_hex_color
-                                 featured_number
                                  user_id
                                  co_author_ids_list
                                  published_at].freeze
 
     def index
-      @pinned_article = PinnedArticle.get
-
       case params[:state]
       when /top-/
         months_ago = params[:state].split("-")[1].to_i.months.ago
@@ -30,6 +27,9 @@ module Admin
         @articles = articles_mixed
         @featured_articles = articles_featured
       end
+
+      @pinned_article = PinnedArticle.get
+      @articles = @articles.where.not(id: @pinned_article) if @pinned_article
     end
 
     def show
@@ -39,7 +39,7 @@ module Admin
     def update
       article = Article.find(params[:id])
 
-      if article.update(article_params)
+      if article.update(article_params.merge(admin_update: true))
         flash[:success] = I18n.t("admin.articles_controller.saved")
       else
         flash[:danger] = article.errors_as_sentence
@@ -55,7 +55,7 @@ module Admin
 
       respond_to do |format|
         format.html do
-          flash[:success] = I18n.t("admin.articles_controller.pinned")
+          flash[:danger] = I18n.t("admin.articles_controller.unpinned")
           redirect_to admin_article_path(article.id)
         end
         format.js do
@@ -113,10 +113,10 @@ module Admin
     def articles_featured
       Article.published.or(Article.where(published_from_feed: true))
         .featured
-        .where("featured_number > ?", Time.current.to_i)
+        .where("published_at > ?", Time.current)
         .includes(:user)
         .limited_columns_internal_select
-        .order(featured_number: :desc)
+        .order(published_at: :desc)
     end
 
     def article_params

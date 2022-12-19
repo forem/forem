@@ -16,7 +16,10 @@ class ProfileValidator < ActiveModel::Validator
     # NOTE: The summary is a base profile field, which we add to all new Forem
     # instances, so it should be safe to validate. The method itself also guards
     # against the field's absence.
-    record.errors.add(:summary, I18n.t("validators.profile_validator.too_long")) if summary_too_long?(record)
+    if summary_too_long?(record)
+      record.errors.add(:base,
+                        message: I18n.t("validators.profile_validator.bio_too_long"))
+    end
 
     ProfileField.all.each do |field|
       attribute = field.attribute_name
@@ -31,10 +34,12 @@ class ProfileValidator < ActiveModel::Validator
   private
 
   def summary_too_long?(record)
+    record.summary&.gsub!(/\r\n/, "\n")
     return if record.summary.blank?
 
     # Grandfather in people who had a too long summary before
     previous_summary = record.summary_was
+    previous_summary&.gsub!(/\r\n/, "\n")
     return if previous_summary && previous_summary.size > MAX_SUMMARY_LENGTH
 
     record.summary.size > MAX_SUMMARY_LENGTH

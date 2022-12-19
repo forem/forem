@@ -11,3 +11,4 @@ export * from '@crayons/Spinner';
 export * from '@crayons/MobileDrawer';
 export * from '@crayons/MarkdownToolbar';
 export * from '@crayons/MultiSelectAutocomplete';
+export * from '@crayons/AutocompleteTriggerTextArea';

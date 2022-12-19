@@ -1,8 +1,4 @@
 class PodcastEpisodeDecorator < ApplicationDecorator
-  def comments_to_show_count
-    cached_tag_list_array.include?("discuss") ? 75 : 25
-  end
-
   # this method exists because podcast episodes are "commentables"
   # and in some parts of the code we assume they have this method,
   # but podcast episodes don't have a cached_tag_list like articles do

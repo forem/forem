@@ -1,0 +1,15 @@
+<li class="comment-sort-option">
+  <a
+    href="<%= @article.path %>?comments_sort=<%= sort_order %>#toggle-comments-sort-dropdown"
+    class="comment-sort-option__header pl-7 pb-0 crayons-link--block block"
+    aria-describedby="<%= sort_order %>-description-text"
+    aria-current="<%= "page" if show_selected %>">
+    <div>
+      <%= crayons_icon_tag(:checkmark, title: "Selected Sort Option", aria_hidden: true) if show_selected %>
+       <%= sort_title %>
+    </div>
+     <div id="<%= sort_order %>-description-text" class="crayons-field__description">
+      <%= sort_description %>
+    </div>
+  </a>
+</li>

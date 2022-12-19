@@ -14,6 +14,7 @@ namespace :admin do
 
     mount Sidekiq::Web => "sidekiq"
     mount FieldTest::Engine, at: "abtests"
+    get "abtests/experiments/:experiment_id/:goal", to: "/field_test/experiments#goal"
 
     flipper_ui = Flipper::UI.app(Flipper,
                                  { rack_protection: { except: %i[authenticity_token form_token json_csrf
@@ -126,12 +127,11 @@ namespace :admin do
   scope :advanced do
     resources :broadcasts
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :secrets, only: %i[index]
-    put "secrets", to: "secrets#update"
-    resources :sponsorships, only: %i[index edit update new create destroy]
     resources :tools, only: %i[index create] do
       collection do
         post "bust_cache"
+        get "feed_playground"
+        post "feed_playground"
       end
     end
 

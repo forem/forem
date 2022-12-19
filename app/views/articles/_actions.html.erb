@@ -10,14 +10,34 @@
                    image_active_path: "heart-filled.svg",
                    aria_label: t("views.reactions.like.aria_label")
                  } %>
-      <%= render partial: "articles/reaction_button",
-                 locals: {
-                   category: :unicorn,
-                   description: t("views.reactions.unicorn.title"),
-                   image_path: "unicorn.svg",
-                   image_active_path: "unicorn-filled.svg",
-                   aria_label: t("views.reactions.unicorn.aria_label")
-                 } %>
+
+     <% if FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments) %>
+        <button
+          id="reaction-butt-comment"
+          aria-label="<%= t("views.articles.jump_to_comments.aria_label") %>"
+          aria-pressed="false"
+          class="crayons-reaction crayons-reaction--comment crayons-tooltip__activator relative"
+          data-category="comment">
+            <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+              <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
+            </span>
+            <span class="crayons-reaction__count" id="reaction-number-comment"><%= @article.comments_count %></span>
+
+            <span data-testid="tooltip" class="crayons-tooltip__content">
+              <%= t("views.articles.jump_to_comments.label") %>
+            </span>
+        </button>
+      <% else %>
+        <%= render partial: "articles/reaction_button",
+                   locals: {
+                     category: :unicorn,
+                     description: t("views.reactions.unicorn.title"),
+                     image_path: "unicorn.svg",
+                     image_active_path: "unicorn-filled.svg",
+                     aria_label: t("views.reactions.unicorn.aria_label")
+                   } %>
+      <% end %>
+
       <%= render partial: "articles/reaction_button",
                  locals: {
                    category: :readinglist,
@@ -83,6 +103,13 @@
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             <%= t("views.actions.share.facebook.text") %>
           </a>
+          <a
+            target="_blank"
+            class="crayons-link crayons-link--block"
+            rel="noopener"
+            href="https://toot.kytta.dev/?text=<%= u article_url(@article) %>">
+            <%= t("views.actions.share.mastodon.text") %>
+          </a>
         </div>
 
         <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" sharetext="<%= @article.description %>" template="web-share-button">
@@ -96,14 +123,3 @@
     </div>
   </div>
 </div>
-
-<% if !user_signed_in? && @article.body_markdown.size > 900 %>
-  <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
-    <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
-    <% if @html_variant %>
-      <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>">
-        <%= @html_variant.html.html_safe %>
-      </div>
-    <% end %>
-  <% end %>
-<% end %>

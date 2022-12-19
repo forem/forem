@@ -12,7 +12,7 @@ RSpec.describe "NavigationLinks", type: :request do
 
     it "returns a successful response" do
       get admin_navigation_links_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 

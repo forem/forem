@@ -7,8 +7,23 @@ en:
       actions:
         aria_label: Article actions
       comments:
-        aria_label: Comments for post %{title} (%{num})
-        subtitle_html: Discussion %{num}
+        aria_label: Add a comment to post - %{title}
+        sort:
+          heading: "Sort discussion: "
+          title:
+            top: Top
+            latest: Latest
+            oldest: Oldest
+          desc:
+            top: Most upvoted and relevant comments will be first
+            latest: Most recent comments will be first
+            oldest: The oldest comments will be first
+        sort_button:
+          aria_label: Sort comments
+        subtitle:
+          top_html: Top comments %{num}
+          latest_html: Latest comments %{num}
+          oldest_html: Oldest comments %{num}
         num: "(%{num})"
         subscribe: Subscribe
       conduct:
@@ -26,6 +41,9 @@ en:
           cancel: Dismiss
           edit: Edit
           unpublish: Unpublish
+      jump_to_comments:
+        aria_label: Jump to Comments
+        label: Jump to Comments
       lock:
         meta:
           title: Confirm Discussion Lock
@@ -44,10 +62,14 @@ en:
         one: '#discuss <img src="%{image}" />%{count}'
         other: '#discuss <img src="%{image}" />%{count}'
       save:
-        title: Save to reading list
-        aria_label: Save to reading list
+        title: "Save post %{title} to reading list"
+        aria_label: "Save post %{title} to reading list"
         initial: Save
         success: Saved
+      scheduled:
+        subtitle: Scheduled Post.
+        text: " This URL is public but secret, so share at your own discretion."
+        edit: Click to edit
       series:
         subtitle: "%{slug} (%{size})"
         size:
@@ -81,7 +103,8 @@ en:
       edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
-      posted_html: Posted on %{date}
+      published_html: Posted on %{date}
+      scheduled_html: Scheduled for %{date}
       read_next: Read next
       reading_time:
         one: "1 min read"

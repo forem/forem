@@ -1,0 +1,1353 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Forem API V1",
+    "version": "1.0.0",
+    "description": "Access Forem articles, users and other resources via API.\n        For a real-world example of Forem in action, check out [DEV](https://www.dev.to).\n        All endpoints can be accessed with the 'api-key' header and a accept header, but\n        some of them are accessible publicly without authentication.\n\n        Dates and date times, unless otherwise specified, must be in\n        the [RFC 3339](https://tools.ietf.org/html/rfc3339) format."
+  },
+  "paths": {
+    "/api/articles": {
+      "get": {
+        "summary": "Published articles",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
+        "operationId": "getArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve articles that contain the requested tag. Articles\nwill be ordered by descending popularity.This parameter can be used in conjuction with `top`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "discuss"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve articles with any of the comma-separated tags.\nArticles will be ordered by descending popularity.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "javascript, css"
+          },
+          {
+            "name": "tags_exclude",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve articles that do _not_ contain _any_\nof comma-separated tags. Articles will be ordered by descending popularity.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "node, java"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve articles belonging\n            to a User or Organization ordered by descending publication date.\n            If `state=all` the number of items returned will be `1000` instead of the default `30`.\n            This parameter can be used in conjuction with `state`.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "ben"
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
+            "schema": {
+              "type": "string",
+              "enum": ["fresh", "rising", "all"]
+            },
+            "example": "fresh"
+          },
+          {
+            "name": "top",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will allow the client to return the most popular articles\nin the last `N` days.\n`top` indicates the number of days since publication of the articles returned.\nThis param can be used in conjuction with `tag`.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 2
+          },
+          {
+            "name": "collection_id",
+            "in": "query",
+            "required": false,
+            "description": "Adding this will allow the client to return the list of articles\nbelonging to the requested collection, ordered by ascending publication date.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "example": 99
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Articles",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 191,
+                    "title": "Those Barren Leaves, Thrones, Dominations172",
+                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
+                    "readable_publish_date": "Dec 5",
+                    "slug": "those-barren-leaves-thrones-dominations172-163k",
+                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2022-12-06T00:47:14Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
+                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "created_at": "2022-12-06T00:47:14Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2022-12-06T00:47:14Z",
+                    "last_comment_at": "2022-12-06T00:47:14Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": ["discuss"],
+                    "tags": "discuss",
+                    "user": {
+                      "name": "Scottie \"Tony\" \\:/ Gibson",
+                      "username": "username382",
+                      "twitter_username": "twitter382",
+                      "github_username": "github382",
+                      "user_id": 383,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
+                    },
+                    "organization": {
+                      "name": "O'Hara and Sons",
+                      "username": "org67",
+                      "slug": "org67",
+                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
+                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me": {
+      "get": {
+        "summary": "User's articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/published": {
+      "get": {
+        "summary": "User's published articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserPublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/unpublished": {
+      "get": {
+        "summary": "User's unpublished articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserUnpublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/all": {
+      "get": {
+        "summary": "User's all articles",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
+        "operationId": "getUserAllArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish an article",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
+        "operationId": "unpublishArticle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the article to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          },
+          {
+            "name": "note",
+            "in": "query",
+            "required": false,
+            "description": "Content for the note that's created along with unpublishing",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Admin requested unpublishing all articles via API"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Article successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads": {
+      "get": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to retrieve a list of all display ads.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": []
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to create a new display ad.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 10,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2022-12-05T18:47:15.209-06:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "post_comments",
+                  "processed_html": "<h1>  <a href=\"#hi-this-is-ad\" class=\"anchor\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-05T18:47:15.209-06:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "approved": true,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": null,
+                  "clicks_count": 0,
+                  "created_at": null,
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Example Ad",
+                  "organization_id": null,
+                  "placement_area": "moon",
+                  "processed_html": null,
+                  "published": true,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": null,
+                  "tag_list": []
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads/{id}": {
+      "get": {
+        "summary": "display ad",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 11,
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 9",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2022-12-05T18:47:15.335-06:00",
+                  "display_to": "all",
+                  "impressions_count": 0,
+                  "name": "Display Ad 11",
+                  "organization_id": 68,
+                  "placement_area": "sidebar_left",
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
+                  "published": false,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-05T18:47:15.337-06:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown DisplayAd ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "display ads",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 10",
+                  "display_to": "all",
+                  "name": "Display Ad 12",
+                  "organization_id": 69,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
+                  "cached_tag_list": "",
+                  "id": 12,
+                  "clicks_count": 0,
+                  "created_at": "2022-12-05T18:47:15.490-06:00",
+                  "impressions_count": 0,
+                  "success_rate": 0.0,
+                  "type_of": "in_house",
+                  "updated_at": "2022-12-05T18:47:15.493-06:00",
+                  "tag_list": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "For internal use, helps distinguish ads from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "published": {
+                    "type": "boolean",
+                    "description": "Ad must be both published and approved to be in rotation"
+                  },
+                  "organization_id": {
+                    "type": "integer",
+                    "description": "Identifies the organization to which the ad belongs"
+                  },
+                  "display_to": {
+                    "type": "string",
+                    "enum": ["all", "logged_in", "logged_out"],
+                    "default": "all",
+                    "description": "Potentially limits visitors to whom the ad is visible"
+                  },
+                  "placement_area": {
+                    "type": "string",
+                    "enum": [
+                      "sidebar_left",
+                      "sidebar_left_2",
+                      "sidebar_right",
+                      "post_sidebar",
+                      "post_comments"
+                    ],
+                    "description": "Identifies which area of site layout the ad can appear in"
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+                  }
+                },
+                "required": ["name", "body_markdown", "placement_area"]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/display_ads/{id}/unpublish": {
+      "put": {
+        "summary": "unpublish",
+        "tags": ["display ads"],
+        "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reactions/toggle": {
+      "post": {
+        "summary": "toggle reaction",
+        "tags": ["reactions"],
+        "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["like", "readinglist", "unicorn"]
+            }
+          },
+          {
+            "name": "reactable_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "reactable_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["Comment", "Article", "User"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "result": "create",
+                  "category": "like",
+                  "id": 1,
+                  "reactable_id": 195,
+                  "reactable_type": "Article"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reactions": {
+      "post": {
+        "summary": "create reaction",
+        "tags": ["reactions"],
+        "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["like", "readinglist", "unicorn"]
+            }
+          },
+          {
+            "name": "reactable_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "reactable_type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": ["Comment", "Article", "User"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "result": "none",
+                  "category": "like",
+                  "id": 3,
+                  "reactable_id": 197,
+                  "reactable_type": "Article"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "A User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/api/users/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish a User's Articles and Comments",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
+        "operationId": "unpublishUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User's articles and comments successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID (still accepted for async processing)",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/suspend": {
+      "put": {
+        "summary": "Suspend a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
+        "operationId": "suspendUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to suspend.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://dev.to/api",
+      "description": "Production server"
+    }
+  ],
+  "security": [
+    {
+      "api-key": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "api-key": {
+        "type": "apiKey",
+        "name": "api-key",
+        "in": "header",
+        "description": "API Key authentication.\n\nAuthentication for some endpoints, like write operations on the\nArticles API require a DEV API key.\n\nAll authenticated endpoints are CORS disabled, the API key is intended for non-browser scripts.\n\n### Getting an API key\n\nTo obtain one, please follow these steps:\n\n  - visit https://dev.to/settings/extensions\n  - in the \"DEV API Keys\" section create a new key by adding a\n    description and clicking on \"Generate API Key\"\n\n    ![obtain a DEV API Key](https://user-images.githubusercontent.com/37842/172718105-bd93664e-76e0-477d-99c4-265dda0b06c5.png)\n\n  - You'll see the newly generated key in the same view\n    ![generated DEV API Key](https://user-images.githubusercontent.com/37842/172718151-e7fe26a0-9937-42e8-96c6-333acdab9e49.png)"
+      }
+    },
+    "parameters": {
+      "pageParam": {
+        "in": "query",
+        "name": "page",
+        "required": false,
+        "description": "Pagination page",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "default": 1
+        }
+      },
+      "perPageParam10to1000": {
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 10
+        }
+      },
+      "perPageParam24to1000": {
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 24
+        }
+      },
+      "perPageParam30to1000": {
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 30
+        }
+      },
+      "perPageParam30to100": {
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 30
+        }
+      },
+      "perPageParam80to1000": {
+        "in": "query",
+        "name": "per_page",
+        "required": false,
+        "description": "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable.",
+        "schema": {
+          "type": "integer",
+          "format": "int32",
+          "minimum": 1,
+          "maximum": 1000,
+          "default": 80
+        }
+      },
+      "listingCategoryParam": {
+        "name": "category",
+        "in": "query",
+        "description": "Using this parameter will return listings belonging to the\n              requested category.",
+        "schema": {
+          "type": "string"
+        },
+        "example": "cfp"
+      }
+    },
+    "schemas": {
+      "ArticleFlareTag": {
+        "description": "Flare tag of the article",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "bg_color_hex": {
+            "description": "Background color (hexadecimal)",
+            "type": "string"
+          },
+          "text_color_hex": {
+            "description": "Text color (hexadecimal)",
+            "type": "string"
+          }
+        }
+      },
+      "ArticleIndex": {
+        "description": "Resprentation of an article or post returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cover_image": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "readable_publish_date": {
+            "type": "string"
+          },
+          "social_image": {
+            "type": "string",
+            "format": "url"
+          },
+          "tag_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "tags": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "format": "path"
+          },
+          "url": {
+            "type": "string",
+            "format": "url"
+          },
+          "canonical_url": {
+            "type": "string",
+            "format": "url"
+          },
+          "positive_reactions_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "public_reactions_count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "edited_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "crossposted_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "published_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "last_comment_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "published_timestamp": {
+            "description": "Crossposting or published date time",
+            "type": "string",
+            "format": "date-time"
+          },
+          "reading_time_minutes": {
+            "description": "Reading time, in minutes",
+            "type": "integer",
+            "format": "int32"
+          },
+          "user": {
+            "$ref": "#/components/schemas/SharedUser"
+          },
+          "flare_tag": {
+            "$ref": "#/components/schemas/ArticleFlareTag"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/SharedOrganization"
+          }
+        },
+        "required": [
+          "type_of",
+          "id",
+          "title",
+          "description",
+          "cover_image",
+          "readable_publish_date",
+          "social_image",
+          "tag_list",
+          "tags",
+          "slug",
+          "path",
+          "url",
+          "canonical_url",
+          "comments_count",
+          "positive_reactions_count",
+          "public_reactions_count",
+          "created_at",
+          "edited_at",
+          "crossposted_at",
+          "published_at",
+          "last_comment_at",
+          "published_timestamp",
+          "user",
+          "reading_time_minutes"
+        ]
+      },
+      "SharedUser": {
+        "description": "The resource creator",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "twitter_username": {
+            "type": "string",
+            "nullable": true
+          },
+          "github_username": {
+            "type": "string",
+            "nullable": true
+          },
+          "website_url": {
+            "type": "string",
+            "format": "url",
+            "nullable": true
+          },
+          "profile_image": {
+            "description": "Profile image (640x640)",
+            "type": "string"
+          },
+          "profile_image_90": {
+            "description": "Profile image (90x90)",
+            "type": "string"
+          }
+        }
+      },
+      "SharedOrganization": {
+        "description": "The organization the resource belongs to",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "profile_image": {
+            "description": "Profile image (640x640)",
+            "type": "string",
+            "format": "url"
+          },
+          "profile_image_90": {
+            "description": "Profile image (90x90)",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      }
+    }
+  }
+}

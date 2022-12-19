@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { Dropdown, ButtonNew as Button } from '@crayons';
 import CogIcon from '@images/cog.svg';
 
@@ -11,18 +12,30 @@ import CogIcon from '@images/cog.svg';
  * @param {Function} props.onSaveDraft Callback for when the post draft is saved
  * @param {Function} props.onConfigChange Callback for when the config options have changed
  */
+
 export const Options = ({
   passedData: {
     published = false,
+    publishedAtDate = '',
+    publishedAtTime = '',
+    publishedAtWas = '',
+    timezone = Intl.DateTimeFormat().resolvedOptions().timeZone,
     allSeries = [],
     canonicalUrl = '',
     series = '',
   },
+  schedulingEnabled,
   onSaveDraft,
   onConfigChange,
+  previewLoading,
 }) => {
   let publishedField = '';
   let existingSeries = '';
+  let publishedAtField = '';
+
+  const wasScheduled = publishedAtWas && moment(publishedAtWas) > moment();
+  // allow to edit published at if it was not set earlier or if it's in the future
+  const editablePublishedAt = !publishedAtWas || wasScheduled;
 
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name, index) => {
@@ -54,17 +67,72 @@ export const Options = ({
   }
 
   if (published) {
-    publishedField = (
-      <div data-testid="options__danger-zone" className="crayons-field mb-6">
-        <div className="crayons-field__label color-accent-danger">
-          Danger Zone
+    if (wasScheduled) {
+      publishedField = (
+        <div data-testid="options__danger-zone" className="crayons-field mb-6">
+          <Button
+            className="c-btn c-btn--secondary w-100"
+            variant="primary"
+            onClick={onSaveDraft}
+          >
+            Convert to a Draft
+          </Button>
         </div>
-        <Button variant="primary" destructive onClick={onSaveDraft}>
-          Unpublish post
-        </Button>
+      );
+    } else {
+      publishedField = (
+        <div data-testid="options__danger-zone" className="crayons-field mb-6">
+          <div className="crayons-field__label color-accent-danger">
+            Danger Zone
+          </div>
+          <Button variant="primary" destructive onClick={onSaveDraft}>
+            Unpublish post
+          </Button>
+        </div>
+      );
+    }
+  }
+
+  if (schedulingEnabled && editablePublishedAt) {
+    const currentDate = moment().format('YYYY-MM-DD');
+    publishedAtField = (
+      <div className="crayons-field mb-6">
+        <label htmlFor="publishedAtDate" className="crayons-field__label">
+          Schedule Publication
+        </label>
+        <input
+          aria-label="Schedule publication date"
+          type="date"
+          min={currentDate}
+          value={publishedAtDate} // ""
+          className="crayons-textfield"
+          name="publishedAtDate"
+          onChange={onConfigChange}
+          id="publishedAtDate"
+          placeholder="..."
+        />
+        <input
+          aria-label="Schedule publication time"
+          type="time"
+          value={publishedAtTime} // "18:00"
+          className="crayons-textfield"
+          name="publishedAtTime"
+          onChange={onConfigChange}
+          id="publishedAtTime"
+          placeholder="..."
+        />
+        <input
+          type="hidden"
+          value={timezone} // "Asia/Magadan"
+          className="crayons-textfield"
+          name="timezone"
+          id="timezone"
+          placeholder="..."
+        />
       </div>
     );
   }
+
   return (
     <div className="s:relative">
       <Button
@@ -72,6 +140,7 @@ export const Options = ({
         icon={CogIcon}
         title="Post options"
         aria-label="Post options"
+        disabled={previewLoading}
       />
 
       <Dropdown
@@ -99,9 +168,11 @@ export const Options = ({
             placeholder="https://yoursite.com/post-title"
             name="canonicalUrl"
             onKeyUp={onConfigChange}
+            onInput={onConfigChange}
             id="canonicalUrl"
           />
         </div>
+        {publishedAtField}
         <div className="crayons-field mb-6">
           <label htmlFor="series" className="crayons-field__label">
             Series
@@ -138,12 +209,18 @@ export const Options = ({
 Options.propTypes = {
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
+    publishedAtDate: PropTypes.string.isRequired,
+    publishedAtTime: PropTypes.string.isRequired,
+    publishedAtWas: PropTypes.string.isRequired,
+    timezone: PropTypes.string.isRequired,
     allSeries: PropTypes.array.isRequired,
     canonicalUrl: PropTypes.string.isRequired,
     series: PropTypes.string.isRequired,
   }).isRequired,
+  schedulingEnabled: PropTypes.bool.isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
+  previewLoading: PropTypes.bool.isRequired,
 };
 
 Options.displayName = 'Options';

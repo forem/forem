@@ -1,0 +1,17 @@
+<div id="unpublish-all-posts" class="hidden">
+  <p>
+    <%= t("views.moderations.actions.unpublish_all.modal_text1", username: @article.username) %>
+  </p>
+  <p class="mt-2">
+    <%= t("views.moderations.actions.unpublish_all.modal_text2", username: @article.username) %>
+  </p>
+  <p class="mt-2"><%= label_tag "note[content]", "Note:" %><%= text_area_tag "note[content]", "", class: "crayons-textfield note_content", placeholder: "Note text" %></p>
+  <div class="mt-4">
+    <button
+      id="unpublish-all-posts-submit-btn"
+      class="c-btn c-btn--destructive c-btn--primary"
+      data-user-id="<%= @article.user.id %>">
+      <%= t("views.moderations.actions.unpublish_all.modal_button") %>
+    </button>
+  </div>
+</div>

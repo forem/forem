@@ -45,6 +45,12 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expected_result = "/#{article.username}/#{article.slug}?preview=#{article.password}"
       expect(article.current_state_path).to eq(expected_result)
     end
+
+    it "returns the path /:username/:slug?:password when scheduled" do
+      article = create_article(published: true, published_at: Date.tomorrow)
+      expected_result = "/#{article.username}/#{article.slug}?preview=#{article.password}"
+      expect(article.current_state_path).to eq(expected_result)
+    end
   end
 
   describe "has_recent_comment_activity?" do
@@ -74,18 +80,6 @@ RSpec.describe ArticleDecorator, type: :decorator do
       article.canonical_url = ""
       expected_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}"
       expect(article.decorate.processed_canonical_url).to eq(expected_url)
-    end
-  end
-
-  describe "#comments_to_show_count" do
-    it "returns 25 if does not have a discuss tag" do
-      article.cached_tag_list = ""
-      expect(article.decorate.comments_to_show_count).to eq(25)
-    end
-
-    it "returns 75 if it does have a discuss tag" do
-      article.cached_tag_list = "discuss, python"
-      expect(article.decorate.comments_to_show_count).to eq(75)
     end
   end
 
@@ -208,17 +202,17 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(article.decorate.discussion?).to be false
     end
 
-    it "returns false if featured number is less than 35 hours ago" do
+    it "returns false if published_at is less than 35 hours ago" do
       Timecop.freeze(Time.current) do
-        article.featured_number = 35.hours.ago.to_i - 1
+        article.published_at = 35.hours.ago - 1
         expect(article.decorate.discussion?).to be false
       end
     end
 
-    it "returns true if it's tagged with discuss and has a feature number greater than 35 hours ago" do
+    it "returns true if it's tagged with discuss and has a published_at greater than 35 hours ago" do
       Timecop.freeze(Time.current) do
         article.cached_tag_list = "welcome, discuss"
-        article.featured_number = 35.hours.ago.to_i + 1
+        article.published_at = 35.hours.ago + 1
         expect(article.decorate.discussion?).to be true
       end
     end

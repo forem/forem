@@ -79,6 +79,7 @@ module.exports = {
     InstantClick: false,
     filterXSS: false,
     ga: false,
+    gtag: false,
     Honeybadger: false,
     AndroidBridge: false,
   },

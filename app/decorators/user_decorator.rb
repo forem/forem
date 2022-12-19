@@ -59,7 +59,7 @@ class UserDecorator < ApplicationDecorator
   end
 
   def enriched_colors
-    if setting.brand_color1.blank? || setting.brand_color2.blank?
+    if setting.brand_color1.blank?
       {
         bg: assigned_color[:bg],
         text: assigned_color[:text]
@@ -67,7 +67,7 @@ class UserDecorator < ApplicationDecorator
     else
       {
         bg: setting.brand_color1,
-        text: setting.brand_color2
+        text: "#ffffff"
       }
     end
   end
@@ -76,6 +76,7 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
+      "mod-status-#{any_admin? || !moderator_for_tags.empty?}",
       "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]

@@ -13,22 +13,11 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         let(:tag) { create(:tag) }
         let(:org) { create(:organization) }
         let(:article) { create(:article, tags: tag.name, score: 5) }
+        let(:unsupported_tag) { create(:tag, supported: false) }
 
         before do
           stub_const("Stories::TaggedArticlesController::SIGNED_OUT_RECORD_COUNT", 10)
           create(:article, tags: tag.name, score: 5)
-        end
-
-        def create_live_sponsor(org, tag)
-          create(
-            :sponsorship,
-            level: :tag,
-            blurb_html: "<p>Oh Yeah!!!</p>",
-            status: "live",
-            organization: org,
-            sponsorable: tag,
-            expires_at: 30.days.from_now,
-          )
         end
 
         context "with caching headers" do
@@ -41,7 +30,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def renders_page
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(:ok)
             expect(response.body).to include(tag.name)
           end
 
@@ -62,8 +51,8 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
         end
 
         it "renders page when tag is not supported but has at least one approved article" do
-          unsupported_tag = create(:tag, supported: false)
-          create(:article, published: true, approved: true, tags: unsupported_tag, published_at: 5.years.ago)
+          create(:article, :past, published: true, approved: true, tags: unsupported_tag,
+                                  past_published_at: 5.years.ago)
 
           get "/t/#{unsupported_tag.name}/top/week"
 
@@ -83,6 +72,11 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           Article.destroy_all
           tag.update_column(:supported, false)
           expect { get "/t/#{tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+
+        it "renders not found if there are approved but scheduled posts" do
+          create(:article, published: true, approved: true, tags: unsupported_tag, published_at: 1.hour.from_now)
+          expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
         it "renders normal page if no articles but tag is supported" do
@@ -106,23 +100,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           get "/t/#{tag2.name}"
           expect(response.body).to redirect_to "/t/#{tag.name}"
           expect(response).to have_http_status(:moved_permanently)
-        end
-
-        it "does not render sponsor if not live" do
-          sponsorship = create(
-            :sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag
-          )
-
-          get "/t/#{tag.name}"
-          expect(response.body).not_to include("is sponsored by")
-          expect(response.body).not_to include(sponsorship.tagline)
-        end
-
-        it "renders live sponsor" do
-          sponsorship = create_live_sponsor(org, tag)
-          get "/t/#{tag.name}"
-          expect(response.body).to include("is sponsored by")
-          expect(response.body).to include(sponsorship.blurb_html)
         end
 
         it "shows meta keywords if set" do

@@ -87,7 +87,31 @@ module Articles
 
       order_by_lever(:final_order_by_random_weighted_to_score,
                      label: "Order by conflating a random number and the score (see forem/forem#16128)",
-                     order_by_fragment: "RANDOM() ^ (1.0 / greatest(articles.score, 0.1)) DESC")
+                     order_by_fragment: "article_relevancies.randomized_value " \
+                                        "^ (1.0 / greatest(articles.score, 0.1)) DESC")
+
+      order_by_lever(:published_at_with_randomization_favoring_public_reactions,
+                     label: "Favor recent articles with more reactions, " \
+                            "but apply randomness to mitigate stagnation.",
+                     order_by_fragment: "(cast(extract(epoch FROM published_at) as integer)) * " \
+                                        "(article_relevancies.randomized_value ^ (1.0 / " \
+                                        "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
+
+      order_by_lever(:last_comment_at_with_randomization_favoring_public_reactions,
+                     label: "Favor articles with recent comments and more reactions, " \
+                            "but apply randomness to mitigate stagnation.",
+                     order_by_fragment: "(cast(extract(epoch FROM last_comment_at) as integer)) * " \
+                                        "(article_relevancies.randomized_value ^ (1.0 / " \
+                                        "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
+
+      order_by_lever(:random_pick_of_which_date_to_use_with_randomization_favoring_public_reactions,
+                     label: "Favor articles with recent comments or published at and more reactions, " \
+                            "but apply randomness to mitigate stagnation.",
+                     order_by_fragment: "(cast(extract(epoch FROM " \
+                                        "(CASE WHEN RANDOM() > 0.5 THEN published_at ELSE last_comment_at END)) " \
+                                        "as integer)) * " \
+                                        "(article_relevancies.randomized_value ^ (1.0 / " \
+                                        "greatest(0.1, ln(1 + greatest(0, public_reactions_count))))) DESC")
 
       relevancy_lever(:comments_count_by_those_followed,
                       label: "Weight to give for the number of comments on the article from other users" \
@@ -114,6 +138,20 @@ module Articles
                       user_required: false,
                       select_fragment: "articles.comments_count",
                       group_by_fragment: "articles.comments_count")
+
+      relevancy_lever(:comments_score,
+                      label: "Weight given based on sum of comment scores of an article.",
+                      range: "[0..∞)",
+                      user_required: false,
+                      select_fragment: "SUM(
+                        CASE
+                          WHEN comments.score is null then 0
+                          ELSE comments.score
+                        END)",
+                      joins_fragments: ["LEFT OUTER JOIN comments
+                        ON comments.commentable_id = articles.id
+                          AND comments.commentable_type = 'Article'
+                          AND comments.deleted = false"])
 
       relevancy_lever(:daily_decay,
                       label: "Weight given based on the relative age of the article",
@@ -287,12 +325,21 @@ module Articles
                         very_positive_reaction_threshold
                         positive_reaction_threshold
                       ])
+
       relevancy_lever(:public_reactions,
                       label: "Weight to give for the number of unicorn, heart, reading list reactions for article.",
                       range: "[0..∞)",
                       user_required: false,
                       select_fragment: "articles.public_reactions_count",
                       group_by_fragment: "articles.public_reactions_count")
+
+      relevancy_lever(:public_reactions_score,
+                      label: "Weight to give based on article.score (see article.update_score for this calculation -
+                      it's a sum of the scores of reactions on an article).",
+                      range: "[0..∞)",
+                      user_required: false,
+                      select_fragment: "articles.score",
+                      group_by_fragment: "articles.score")
     end
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength

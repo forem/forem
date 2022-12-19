@@ -25,28 +25,36 @@ module Articles
         new(config: config, **kwargs)
       end
 
-      # Let's make sure that folks initialize this with a variant configuration.
-      private_class_method :new
-
       Config = Struct.new(
         :variant,
+        :description,
         :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
         :order_by, # Articles::Feeds::OrderByLever
         :max_days_since_published,
+        # when true, each time you call the query you will get different randomized numbers; when
+        # false, the resulting randomized numbers will be the same within a window of time.
+        :reseed_randomizer_on_each_request,
         keyword_init: true,
-      )
+      ) do
+        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
+      end
 
       # @param config [Articles::Feeds::VariantQuery::Config]
       # @param user [User,NilClass]
       # @param number_of_articles [Integer, #to_i]
       # @param page [Integer, #to_i]
       # @param tag [NilClass] not used
-      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil)
+      #
+      # @param seed [Number] used in the `setseed` Postgresql function to set the randomization
+      #        seed.  This parameter allows the caller (and debugger) to use the same randomization
+      #        order in the queries; the hope being that this might help in any debugging.
+      def initialize(config:, user: nil, number_of_articles: 50, page: 1, tag: nil, seed: nil)
         @user = user
         @number_of_articles = number_of_articles
         @page = page
         @tag = tag
         @config = config
+        @seed = randomizer_seed_for(seed: seed, user: user)
         oldest_published_at = Articles::Feeds.oldest_published_at_to_consider_for(
           user: @user,
           days_since_published: config.max_days_since_published,
@@ -55,7 +63,7 @@ module Articles
         configure!
       end
 
-      attr_reader :config, :query_parameters
+      attr_reader :config, :query_parameters, :seed
 
       # Query for articles relevant to the user's interest.
       #
@@ -107,8 +115,17 @@ module Articles
         # articles and then sort on the attributes on either the article or the result set
         # (e.g. sort on the relevancy score).
         join_fragment = Arel.sql(
-          "INNER JOIN (#{Article.sanitize_sql(unsanitized_sql_sub_query)}) " \
-          "AS article_relevancies ON articles.id = article_relevancies.id",
+          "INNER JOIN (" \
+          "\n--- The setseed needs to be called independently; later we reference seeder \n" \
+          "WITH seeder AS (SELECT setseed(#{Float(@seed)})) " \
+          "\n--- We are using the inner logic to build relevancy score" \
+          "\n--- The outer part, with seeder, is to create a stable randomized number \n" \
+          "SELECT inner_article_relevancies.id, " \
+          "inner_article_relevancies.relevancy_score, " \
+          "RANDOM() AS randomized_value " \
+          "FROM seeder, " \
+          "(#{Article.sanitize_sql(unsanitized_sql_sub_query)}) AS inner_article_relevancies" \
+          ") AS article_relevancies ON articles.id = article_relevancies.id",
         )
 
         # This sub-query allows us to take the hard work of the hand-coded unsanitized sql and
@@ -241,6 +258,7 @@ module Articles
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
         # See Articles.published scope discussion regarding the query planner
         where_clauses += " AND articles.published_at < :now"
+        where_clauses += " AND articles.score >= 0" # We only want positive values here.
 
         # Without the compact, if we have `omit_article_ids: [nil]` we
         # have the following SQL clause: `articles.id NOT IN (NULL)`
@@ -277,6 +295,33 @@ module Articles
         return 0 if @page == 1
 
         @page.to_i - (1 * default_limit)
+      end
+
+      # We want to ensure that we're not randomizing someone's feed all the time; and instead aiming
+      # for somewhat repeatable experiences (e.g. I refresh the page it is likely I will have the
+      # same order of pages even though we've randomized things a bit).
+      def randomizer_seed_for(seed:, user:)
+        return Float(seed) if seed
+
+        return rand if config.reseed_randomizer_on_each_request?
+
+        # This is added as a short-circuit in-case the caching proves to be non-performant.  Once
+        # this has been merged, given that it's part of the main loop, we can remove the FeatureFlag
+        # a week or so after we merge.
+        return rand if FeatureFlag.enabled?(:halt_caching_for_feeds_random_seed)
+
+        # From https://api.rubyonrails.org/classes/ActiveSupport/Cache/Store.html#method-i-fetch
+        #
+        # Setting :race_condition_ttl is very useful in situations where a cache entry is used very
+        # frequently and is under heavy load. If a cache expires and due to heavy load several
+        # different processes will try to read data natively and then they all will try to write to
+        # cache. To avoid that case the first process to find an expired cache entry will bump the
+        # cache expiration time by the value set in :race_condition_ttl.
+        Rails.cache.fetch(
+          "variant_query-for-#{user&.id || 'no-one'}",
+          race_condition_ttl: 10.seconds,
+          expires_in: 10.minutes,
+        ) { rand }
       end
 
       # Responsible for transforming the :select_fragment, :cases, and :fallback into a SQL fragment

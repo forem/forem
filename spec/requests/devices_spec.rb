@@ -58,7 +58,7 @@ RSpec.describe "Devices", type: :request do
       it "returns an error" do
         delete device_path(123)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
         expect(response.parsed_body["error"]).to eq("Not Found")
         expect(response.parsed_body["status"]).to eq(404)
       end
@@ -66,7 +66,7 @@ RSpec.describe "Devices", type: :request do
       it "return an error if device id doesn't match params" do
         delete device_path(123), params: incomplete_params
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(:not_found)
         expect(response.parsed_body["error"]).to eq("Not Found")
         expect(response.parsed_body["status"]).to eq(404)
       end
@@ -85,7 +85,7 @@ RSpec.describe "Devices", type: :request do
         delete device_path(device.user.id), params: params
 
         expect(user.devices.count).to eq(0)
-        expect(response.status).to eq(204)
+        expect(response).to have_http_status(:no_content)
         expect(Device.find_by(id: device.id)).to be_nil
       end
     end

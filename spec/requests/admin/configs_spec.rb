@@ -178,25 +178,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           expect(Settings::Community.community_description).to eq(description)
         end
 
-        it "updates the community_emoji if valid" do
-          allow(Settings::Community).to receive(:community_emoji).and_call_original
-          emoji = "🥐"
-          post admin_settings_communities_path, params: {
-            settings_community: { community_emoji: emoji }
-          }
-          expect(Settings::Community.community_emoji).to eq(emoji)
-        end
-
-        it "does not update the community_emoji if invalid" do
-          Settings::Community.community_emoji = "🥐"
-          not_an_emoji = "i love croissants"
-          expect do
-            post admin_settings_communities_path, params: {
-              settings_community: { community_emoji: not_an_emoji }
-            }
-          end.not_to change(Settings::Community, :community_emoji)
-        end
-
         it "updates the community_name" do
           name_magoo = "Hey hey #{rand(100)}"
           post admin_settings_communities_path, params: {
@@ -256,12 +237,21 @@ RSpec.describe "/admin/customization/config", type: :request do
         end
       end
 
-      describe "Google Analytics Reporting API v4" do
+      describe "Google Universal Analytics Reporting" do
         it "updates ga_tracking_id" do
           post admin_settings_general_settings_path, params: {
             settings_general: { ga_tracking_id: "abc" }
           }
           expect(Settings::General.ga_tracking_id).to eq("abc")
+        end
+      end
+
+      describe "Google Analytics 4 Reporting" do
+        it "updates ga_analytics_4_id" do
+          post admin_settings_general_settings_path, params: {
+            settings_general: { ga_analytics_4_id: "abc" }
+          }
+          expect(Settings::General.ga_analytics_4_id).to eq("abc")
         end
       end
 
@@ -673,16 +663,6 @@ RSpec.describe "/admin/customization/config", type: :request do
 
           expect(Settings::SMTP.address).to eq(default_address)
           expect(Settings::SMTP.port).to eq(default_port)
-        end
-      end
-
-      describe "Sponsors" do
-        it "updates the sponsor_headline" do
-          headline = "basic"
-          post admin_settings_general_settings_path, params: {
-            settings_general: { sponsor_headline: headline }
-          }
-          expect(Settings::General.sponsor_headline).to eq(headline)
         end
       end
 

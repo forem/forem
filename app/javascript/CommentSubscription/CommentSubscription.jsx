@@ -77,6 +77,7 @@ export class CommentSubscription extends Component {
         >
           <Button
             variant="outlined"
+            data-tracking-name="comment_subscription_toggle"
             onClick={(_event) => {
               if (isLoggedIn) {
                 if (subscribed) {
@@ -90,7 +91,10 @@ export class CommentSubscription extends Component {
 
                 this.setState({ subscribed: !subscribed });
               } else {
-                showLoginModal();
+                showLoginModal({
+                  referring_source: 'comments',
+                  trigger: 'comment_subscription',
+                });
               }
             }}
           >
@@ -100,6 +104,7 @@ export class CommentSubscription extends Component {
             <Button
               id="subscription-settings-btn"
               data-testid="subscription-settings"
+              data-tracking-name="comment_subscription_settings"
               variant="outlined"
               icon={CogIcon}
               contentType="icon"

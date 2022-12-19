@@ -51,6 +51,19 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       expect(response.parsed_body.length).to eq(0)
     end
 
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create(:organization_membership, user: create(:user), organization: organization)
+      create(:organization_membership, user: create(:user), organization: organization)
+      create(:organization_membership, user: create(:user), organization: organization)
+
+      get api_organization_users_path(organization.username), params: { per_page: 10 }
+      expect(response.parsed_body.count).to eq(2)
+    end
+
     it "returns the correct json representation of the organizations users", :aggregate_failures do
       get api_organization_users_path(organization.username)
 
@@ -99,6 +112,17 @@ RSpec.describe "Api::V0::Organizations", type: :request do
 
       get api_organization_listings_path(organization.username), params: { page: 3, per_page: 1 }
       expect(response.parsed_body.length).to eq(0)
+    end
+
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create_list(:listing, 3, user: org_user, organization: organization)
+
+      get api_organization_listings_path(organization.username), params: { per_page: 10 }
+      expect(response.parsed_body.count).to eq(2)
     end
 
     it "returns the correct json representation of the organizations listings", :aggregate_failures do
@@ -169,6 +193,17 @@ RSpec.describe "Api::V0::Organizations", type: :request do
       %w[name username slug].each do |attr|
         expect(response_article["organization"][attr]).to eq(organization.public_send(attr))
       end
+    end
+
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create_list(:article, 3, organization: organization)
+
+      get api_organization_articles_path(organization.username), params: { per_page: 10 }
+      expect(response.parsed_body.count).to eq(2)
     end
   end
 end

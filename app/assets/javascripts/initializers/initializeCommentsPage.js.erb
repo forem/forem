@@ -47,7 +47,7 @@ function initializeCommentsPage() {
                   if (buttForComment) {
                     var reactionsCountWrapper = buttForComment.querySelector('.reactions-count');
                     var reactionsLabelWrapper = buttForComment.querySelector('.reactions-label');
-                    if (publicReactionCounts[i].count > 0) {
+                    if (publicReactionCounts[i].count > 0 && reactionsLabelWrapper) {
 
                       if (publicReactionCounts[i].count > 1) {
                         reactionsLabelWrapper.innerHTML = `&nbsp;${I18n.t('core.like').toLowerCase()}s`;
@@ -101,7 +101,7 @@ function initializeCommentsPage() {
         sendHapticMessage('medium');
         var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
-          showLoginModal();
+          showLoginModal({ referring_source: 'comment', trigger: 'like' });
           return;
         }
 
@@ -130,7 +130,9 @@ function initializeCommentsPage() {
               reactionCount.innerHTML = parseInt(reactionCount.innerHTML) - 1;
               if(parseInt(reactionCount.innerHTML) == 0) {
                 reactionCount.classList.add("hidden");
-                reactionLabel.innerHTML = "Like"
+                thisButt.classList.remove('crayons-btn--icon-left');
+                thisButt.classList.add('crayons-btn--icon');
+                reactionLabel.innerHTML = ""
               }
             }
           }
@@ -165,7 +167,7 @@ function initializeCommentsPage() {
         } else {
           var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
-            showLoginModal();
+            showLoginModal({ referring_source: 'comment', trigger: 'reply' });
             return;
           }
           var parentId = event.target.closest('.comment').dataset.commentId;
@@ -298,6 +300,7 @@ function handleCommentSubmit(event) {
           updateCommentsCount();
           initializeCommentsPage();
           initializeCommentDate();
+          initializeDateHelpers();
           activateRunkitTags();
         })
       } else {
@@ -321,7 +324,7 @@ function handleFocus(event) {
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
-    showLoginModal();
+    showLoginModal({ referring_source: 'comments', trigger: 'new_comment'});
     area.blur();
   } else {
     var form = event.target.closest(".comment-form");
@@ -329,7 +332,7 @@ function handleFocus(event) {
       form.classList.add("comment-form--initiated");
     }
     handleSizeChange(event);
-    window.Forem.initializeMentionAutocompleteTextArea(area);
+    window.Forem.initializeEnhancedCommentTextArea(area);
   }
 }
 
@@ -352,93 +355,11 @@ function handleSubmit(event) {
   }
 }
 
-// Handler when Ctrl+B/I OR Command+B/I is pressed
-function handleBoldAndItalic(event) {
-  var textArea = event.target;
-
-  var selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-  var selectionStart = textArea.selectionStart;
-  var surroundingStr = event.keyCode === KEY_CODE_B ? "**" : "_";
-
-  replaceSelectedText(textArea, `${surroundingStr}${selection}${surroundingStr}`);
-
-  var selectionStartWithOffset = selectionStart + surroundingStr.length;
-  textArea.setSelectionRange(selectionStartWithOffset, selectionStartWithOffset + selection.length);
-}
-
-// Handler when Ctrl+K OR Command+K is pressed
-function handleLink(event) {
-  var textArea = event.target;
-
-  var selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd);
-  var selectionStart = textArea.selectionStart;
-
-  replaceSelectedText(textArea, `[${selection}](url)`);
-
-  // start position + length of selection + [](
-  var startOffset = selectionStart + selection.length + 3;
-
-  // start offset + 'url'.length
-  var endOffset = startOffset + 3;
-
-  textArea.setSelectionRange(startOffset, endOffset);
-}
-
-function replaceSelectedText(textArea, text) {
-  // Chrome and other modern browsers (except FF and IE 8,9,10,11)
-  if (document.execCommand('insertText', false, text)) {
-  }
-  // Firefox (non-standard method)
-  else if (typeof textArea.setRangeText === "function") {
-    textArea.setRangeText(text);
-  }
-
-  /*
-    Disabling IE 8-11 for now as there's no easy way to verify all this
-    We can revisit this if it's really needed and find a jQuery plugin to use
-
-    // IE 8-10
-    else if(document.selection) {
-      const ieRange = document.selection.createRange();
-      ieRange.text = text;
-
-      // Move cursor after the inserted text
-      ieRange.collapse(false); // to the end
-      ieRange.select();
-    }
-    else {
-      // Does not support IE 11 yet
-    }
-  */
-}
-
-var KEY_CODE_B = 66;
-var KEY_CODE_I = 73;
-var KEY_CODE_K = 75;
 var ENTER_KEY_CODE = 13;
-
 function handleKeyDown(event) {
-  if (window.Forem.Runtime.hasOSSpecificModifier(event)) {
-    switch (event.keyCode) {
-      case KEY_CODE_B:
-        event.preventDefault();
-        handleBoldAndItalic(event);
-        break;
-      case KEY_CODE_I:
-        event.preventDefault();
-        handleBoldAndItalic(event);
-        break;
-      case KEY_CODE_K:
-        event.preventDefault();
-        handleLink(event);
-        break;
-      case ENTER_KEY_CODE:
-        event.preventDefault();
-        handleSubmit(event);
-        break;
-      default:
-        break;
-    }
+  if (window.Forem.Runtime.hasOSSpecificModifier(event) && event.keyCode === ENTER_KEY_CODE) {
+    event.preventDefault();
+    handleSubmit(event);
   }
 }
 
@@ -487,71 +408,6 @@ function generateUploadFormdata(image) {
   return formData;
 }
 
-function handleImageUpload(event, randomIdNumber) {
-  var commentableId = document.getElementById('comments-container').dataset.commentableId;
-  event.preventDefault();
-  document.getElementById('image-upload-' + randomIdNumber).click();
-  document.getElementById('image-upload-' + randomIdNumber).onchange = function (e) {
-    var image = document.getElementById('image-upload-' + randomIdNumber).files;
-    if (image.length > 0) {
-      document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#888888';
-      document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = "Uploading...";
-      document.getElementById("image-upload-submit-" + randomIdNumber).value = "uploading";
-      setTimeout(function () {
-        document.getElementById("image-upload-submit-" + randomIdNumber).click(function () { });
-      }, 50)
-    }
-  }
-
-  document.getElementById("image-upload-submit-" + randomIdNumber).onclick = function (e) {
-    e.preventDefault();
-    var image = document.getElementById('image-upload-' + randomIdNumber).files;
-    if (image.length > 0) {
-      getCsrfToken()
-        .then(sendFetch("image-upload", generateUploadFormdata(image)))
-        .then(function (response) {
-          if (response.status === 200) {
-            response.json().then(
-              function uploadImageCb(json) {
-                var address = document.getElementById("uploaded-image-" + randomIdNumber);
-                var button = document.getElementById("image-upload-button-" + randomIdNumber);
-                var messageContainer = document.getElementById("image-upload-file-label-" + randomIdNumber)
-                // button.style.display = "none";
-                messageContainer.style.display = "none";
-                address.value = json.links[0];
-                address.classList.remove("hidden");;
-                address.select();
-
-                var uploadedMessage = 'Uploaded! Paste into editor';
-                messageContainer.innerHTML = uploadedMessage;
-                messageContainer.style.color = '#00c673';
-                messageContainer.style.position = "relative";
-                messageContainer.style.top = "5px";
-              }
-            );
-          } else if (response.status === 429) {
-            showRateLimitModal({
-              response,
-              element: 'image',
-              action_ing: 'uploading',
-              action_past: 'uploaded',
-            });
-          } else {
-            response.json().then(function(responseBody) {
-              var errorMessage = responseBody.error || 'Invalid file!';
-              document.getElementById("image-upload-file-label-" + randomIdNumber).innerHTML = errorMessage;
-              document.getElementById("image-upload-file-label-" + randomIdNumber).style.color = '#e05252';
-              document.getElementById("image-upload-submit-" + randomIdNumber).style.display = 'none';
-            });
-          }
-        })
-        .catch(function (err) {
-          // there's currently no error handling
-        })
-    }
-  }
-}
-
 function updateItemSummaryHtml(item) {
   var itemSummaryContent = item.getElementsByClassName("js-collapse-comment-content")[0];
   var usernames = item.getElementsByClassName("js-comment-username");
@@ -589,6 +445,10 @@ function updateCommentsCount() {
   const commentsCountData = parseInt(commentsCountDiv.dataset.commentsCount, 10) + 1;
   commentsCountDiv.dataset.commentsCount = commentsCountData;
   commentsCountDiv.innerHTML = `(${commentsCountData})`
+
+  const commentsSidebarCountDiv = document.getElementById("reaction-number-comment");
+  if (!commentsSidebarCountDiv) return;
+  commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
 }
 
 function handleHiddenComments(commentableType){

@@ -54,3 +54,18 @@
     <% end %>
   <% end %>
 </div>
+
+<%# cache("article-sidebar-content-#{rand(5)}-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 15.minutes) do %>
+  <% sidebar_ad = DisplayAd.for_display("post_sidebar", user_signed_in?, @article.decorate.cached_tag_list_array) %>
+  <% if @article.permit_adjacent_sponsors? && sidebar_ad %>
+    <div class="crayons-article-sticky grid gap-4 break-word pt-3">
+      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget crayons-post_sidebar_display_ad text-styles"
+           data-display-unit data-id="<%= sidebar_ad.id %>"
+           data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
+           data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
+           data-context-type="<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>">
+        <%= sidebar_ad.processed_html.html_safe %>
+      </div>
+    </div>
+  <% end %>
+<%# end %>

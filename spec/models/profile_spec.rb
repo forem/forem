@@ -22,11 +22,16 @@ RSpec.describe Profile, type: :model do
       it "is not valid if the summary is too long and the user is not grandfathered" do
         profile.summary = invalid_summary
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Summary is too long"
+        expect(profile.errors_as_sentence).to eq "Bio is too long"
       end
 
       it "is valid if the summary is less than the limit" do
         profile.summary = "Hello 👋"
+        expect(profile).to be_valid
+      end
+
+      it "counts line ending as a single character when summary is multi line" do
+        profile.summary = "#{'x' * ProfileValidator::MAX_SUMMARY_LENGTH.pred}\r\n"
         expect(profile).to be_valid
       end
     end

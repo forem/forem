@@ -1,9 +1,11 @@
 import { h, render } from 'preact';
+import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
+import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
 
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
@@ -71,6 +73,28 @@ function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
+// Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
+function trackCommentsSectionDisplayed() {
+  const callback = (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        ahoy.track('Comment section viewable', { page: location.href });
+        observer.disconnect();
+      }
+      if (location.hash === '#comments') {
+        //handle focus event on text area
+        const element = document.getElementById('text-area');
+        const event = new FocusEvent('focus');
+        element.dispatchEvent(event);
+      }
+    });
+  };
+
+  const target = document.getElementById('comments');
+  const observer = new IntersectionObserver(callback, {});
+  observer.observe(target);
+}
+
 function copyArticleLink() {
   const postUrlValue = document
     .getElementById('copy-post-url-button')
@@ -135,3 +159,6 @@ const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
 initializeUserSubscriptionLiquidTagContent();
+// Temporary Ahoy Stats for comment section clicks on controls
+trackCommentClicks('comments');
+trackCommentsSectionDisplayed();

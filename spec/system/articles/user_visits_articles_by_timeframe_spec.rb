@@ -3,10 +3,10 @@ require "rails_helper"
 RSpec.describe "User visits articles by timeframe", type: :system do
   let(:author) { create(:user) }
   let!(:article) { create(:article, user: author, published_at: Time.current) }
-  let!(:days_old_article) { create(:article, user: author, published_at: 2.days.ago) }
-  let!(:weeks_old_article) { create(:article, user: author, published_at: 2.weeks.ago) }
-  let!(:months_old_article) { create(:article, user: author, published_at: 2.months.ago) }
-  let!(:years_old_article) { create(:article, user: author, published_at: 2.years.ago) }
+  let!(:days_old_article) { create(:article, :past, past_published_at: 2.days.ago, user: author) }
+  let!(:weeks_old_article) { create(:article, :past, past_published_at: 2.weeks.ago, user: author) }
+  let!(:months_old_article) { create(:article, :past, past_published_at: 2.months.ago, user: author) }
+  let!(:years_old_article) { create(:article, :past, past_published_at: 2.years.ago, user: author) }
 
   def shows_correct_articles_count(count)
     expect(page).to have_selector(".crayons-story", visible: :visible, count: count)
@@ -74,7 +74,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".authentication-feed__card", count: 1)
+        expect(page).to have_selector("#in-feed-cta", count: 1)
 
         within("#main-content") do
           expect(page).to have_text(article.title)
@@ -92,7 +92,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       it "shows correct articles and cta-count", :aggregate_failures do
         shows_correct_articles_count(5)
         shows_main_article
-        expect(page).to have_selector(".authentication-feed__card", count: 1)
+        expect(page).to have_selector("#in-feed-cta", count: 1)
 
         within("#main-content") do
           expect(page).to have_text(article.title)

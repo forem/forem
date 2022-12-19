@@ -1,16 +1,43 @@
 require "rails_helper"
 
 describe Admin::UsersHelper do
+  describe "#role_options" do
+    let(:user) { create(:user) }
+
+    it "returns base roles as statuses", :aggregate_failures do
+      user.add_role(:admin)
+      roles = helper.role_options(user)
+      expect(roles).to have_key("Statuses")
+      expect(roles["Statuses"]).to eq Constants::Role::BASE_ROLES
+    end
+
+    it "returns special roles as roles", :aggregate_failures do
+      user.add_role(:super_admin)
+      roles = helper.role_options(user)
+      expect(roles).to have_key("Roles")
+      expect(roles["Roles"]).to eq Constants::Role::SPECIAL_ROLES
+    end
+
+    it "adds moderator role when feature flag enabled", :aggregate_failures do
+      user.add_role(:super_admin)
+      allow(FeatureFlag).to receive(:enabled?).with(:moderator_role).and_return(true)
+
+      roles = helper.role_options(user)
+      expect(roles).to have_key("Roles")
+      expect(roles["Roles"]).to include "Super Moderator"
+    end
+  end
+
   describe "#format_last_activity_timestamp" do
     it "renders the proper 'Last activity' date for a user that was active today" do
-      timestamp = Time.zone.today
+      timestamp = Time.zone.today.in_time_zone # Since actual user last_activity class is TimeWithZone
       date = timestamp.strftime("%d %b")
       formatted_date = helper.format_last_activity_timestamp(timestamp)
       expect(formatted_date).to eq "Today, #{date}"
     end
 
     it "renders the proper 'Last activity' date for a user that was active yesterday" do
-      timestamp = Date.yesterday
+      timestamp = Date.yesterday.in_time_zone # Since actual user last_activity class is TimeWithZone
       date = timestamp.strftime("%d %b")
       formatted_date = helper.format_last_activity_timestamp(timestamp)
       expect(formatted_date).to eq "Yesterday, #{date}"

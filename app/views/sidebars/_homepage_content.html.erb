@@ -1,8 +1,8 @@
 <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
-    <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
+  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+    <% @sidebar_ad = DisplayAd.for_display("sidebar_right", user_signed_in?) %>
     <% if @sidebar_ad %>
-      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget" data-display-unit data-id="<%= @sidebar_ad.id %>">
+      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget text-styles" data-display-unit data-id="<%= @sidebar_ad.id %>">
         <%= @sidebar_ad.processed_html.html_safe %>
       </div>
     <% end %>

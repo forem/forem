@@ -28,15 +28,20 @@ fr:
         submit: Delete
         edit: Edit
         cancel: Dismiss
+        comment_deleted: Comment deleted
       collapse: Collapse
       edit: Editing comment
       edited:
         text_html: "&bull; Edited %{on}"
         on_html: on %{date}
       expand: Expand
+      visible_signed_in:
+        text_html: "Some comments may only be visible to logged-in visitors. %{sign_in} to view all comments."
+        sign_in: "Sign in"
       hidden:
         text_html: Some comments have been hidden by the post's author - %{info}
         info: find out more
+        comment_hidden: Comment hidden by post author
       hider:
         description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
         hide_child: Hide child comments as well
@@ -93,7 +98,7 @@ fr:
           create:
             subtitle: Create template
             desc: Templates let you quickly answer FAQs or store snippets for re-use.
-          moderator: Moderator
+          moderator: Trusted User
           personal: Personal
         submit: Submit
         preview: Preview
@@ -118,7 +123,8 @@ fr:
           aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:
         heart:
-          title: heart
+          aria_label: like
+          title: Like
           icon: 'Like comment: '
           count_html: "%{num}%{likes}"
           text: Like

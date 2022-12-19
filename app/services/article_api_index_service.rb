@@ -1,9 +1,8 @@
 class ArticleApiIndexService
   DEFAULT_PER_PAGE = 30
-  MAX_PER_PAGE = 1000
 
   def initialize(params)
-    @page = params[:page]
+    @page = params[:page].to_i
     @tag = params[:tag]
     @tags = params[:tags]
     @tags_exclude = params[:tags_exclude]
@@ -12,7 +11,7 @@ class ArticleApiIndexService
     @sort = params[:sort]
     @top = params[:top]
     @collection_id = params[:collection_id]
-    @per_page = params[:per_page]
+    @per_page = [(params[:per_page] || DEFAULT_PER_PAGE).to_i, per_page_max].min
   end
 
   def get
@@ -39,9 +38,13 @@ class ArticleApiIndexService
 
   attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :sort, :top, :collection_id, :per_page
 
+  def per_page_max
+    (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+  end
+
   def username_articles
     num = if @state == "all"
-            MAX_PER_PAGE
+            per_page_max
           else
             DEFAULT_PER_PAGE
           end
@@ -67,7 +70,7 @@ class ArticleApiIndexService
     articles = published_articles_with_users_and_organizations.cached_tagged_with(tag)
 
     articles = if Tag.find_by(name: tag)&.requires_approval
-                 articles.approved.order(featured_number: :desc)
+                 articles.approved.order(published_at: :desc)
                elsif top.present?
                  articles.where("published_at > ?", top.to_i.days.ago)
                    .order(public_reactions_count: :desc)
@@ -101,12 +104,12 @@ class ArticleApiIndexService
     articles = case state
                when "fresh"
                  articles.where(
-                   "public_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
+                   "public_reactions_count < ? AND published_at > ? AND score > ?", 2, 7.hours.ago, -2
                  )
                when "rising"
                  articles.where(
-                   "public_reactions_count > ? AND public_reactions_count < ? AND featured_number > ?",
-                   19, 33, 3.days.ago.to_i
+                   "public_reactions_count > ? AND public_reactions_count < ? AND published_at > ?",
+                   19, 33, 3.days.ago
                  )
                when "recent"
                  articles.order(published_at: :desc)

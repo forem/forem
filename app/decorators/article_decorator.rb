@@ -10,8 +10,19 @@ class ArticleDecorator < ApplicationDecorator
     DataInfo.to_json(object: cached_user, class_name: "User", id: user_id, style: "full")
   end
 
+  def current_state
+    state = if !published?
+              "unpublished"
+            elsif scheduled?
+              "scheduled"
+            else
+              "published"
+            end
+    ActiveSupport::StringInquirer.new(state)
+  end
+
   def current_state_path
-    published ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+    current_state.published? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
   end
 
   def processed_canonical_url
@@ -20,10 +31,6 @@ class ArticleDecorator < ApplicationDecorator
     else
       url
     end
-  end
-
-  def comments_to_show_count
-    cached_tag_list_array.include?("discuss") ? 75 : 25
   end
 
   def cached_tag_list_array
@@ -102,7 +109,12 @@ class ArticleDecorator < ApplicationDecorator
 
   # Used in determining when to bust additional routes for an Article's comments
   def discussion?
-    cached_tag_list_array.include?("discuss") && featured_number.to_i > 35.hours.ago.to_i
+    cached_tag_list_array.include?("discuss") && published_at.to_i > 35.hours.ago.to_i
+  end
+
+  def permit_adjacent_sponsors?
+    author_ids = [user_id] + co_author_ids
+    Users::Setting.where(user_id: author_ids).all?(&:permit_adjacent_sponsors)
   end
 
   def pinned?

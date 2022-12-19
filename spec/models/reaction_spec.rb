@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Reaction, type: :model do
+RSpec.describe Reaction do
   let(:user) { create(:user, registered_at: 20.days.ago) }
   let(:article) { create(:article, user: user) }
   let(:reaction) { build(:reaction, reactable: article, user: user) }
@@ -9,13 +9,20 @@ RSpec.describe Reaction, type: :model do
     subject { build(:reaction, reactable: article, user: user) }
 
     it { is_expected.to belong_to(:user) }
-    it { is_expected.to validate_inclusion_of(:category).in_array(Reaction::CATEGORIES) }
+    it { is_expected.to validate_inclusion_of(:category).in_array(ReactionCategory.all_slugs.map(&:to_s)) }
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
   end
 
   describe ".user_has_been_given_too_many_spammy_article_reactions?" do
     it "performs a valid query for the user" do
       expect { described_class.user_has_been_given_too_many_spammy_article_reactions?(user: user) }.not_to raise_error
+    end
+
+    it "performs a valid query for the user with the include_user_profile logic" do
+      expect do
+        described_class.user_has_been_given_too_many_spammy_article_reactions?(user: user,
+                                                                               include_user_profile: true)
+      end.not_to raise_error
     end
   end
 
@@ -67,59 +74,6 @@ RSpec.describe Reaction, type: :model do
       article.update_column(:published, false)
       reaction = build(:reaction, user: user, reactable: article)
       expect(reaction).not_to be_valid
-    end
-
-    it "assigns 0 points if reaction is invalid" do
-      reaction.update(status: "invalid")
-      expect(reaction.points).to eq(0)
-    end
-
-    it "assigns extra 5 points if reaction is to comment on author's post" do
-      comment = create(:comment, commentable: article)
-      comment_reaction = create(:reaction, reactable: comment, user: user)
-      expect(comment_reaction.points).to eq(5.0)
-    end
-
-    it "does not extra 5 points if reaction is to comment on author's post" do
-      second_user = create(:user)
-      second_article = create(:article, user: second_user)
-      comment = create(:comment, commentable: second_article)
-      comment_reaction = create(:reaction, reactable: comment, user: user)
-      expect(comment_reaction.points).to eq(1)
-    end
-
-    it "assigns the correct points if reaction is confirmed" do
-      reaction_points = reaction.points
-      reaction.update(status: "confirmed")
-      expect(reaction.points).to eq(reaction_points * 2)
-    end
-
-    it "assigns fractional points to new users on create" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      reaction = create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(0.3)
-    end
-
-    it "Does not assign new fractional logic on re-save" do
-      reaction.save
-      original_points = reaction.points
-      reaction.user.update_column(:registered_at, 7.days.ago)
-      reaction.save
-      expect(reaction.points).to eq(original_points)
-    end
-
-    it "assigns full points to new users who is also trusted" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      newish_user.add_role(:trusted)
-      create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(1.0)
-    end
-
-    it "assigns full points to new users who is admin" do
-      newish_user = create(:user, registered_at: 3.days.ago)
-      newish_user.add_role(:admin)
-      create(:reaction, reactable: article, user: newish_user)
-      expect(reaction.points).to be_within(0.1).of(1.0)
     end
 
     context "when user is trusted" do
@@ -193,6 +147,36 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called after create" do
+    describe "field tests" do
+      let!(:user) { create(:user, :trusted) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: Users::RecordFieldTestEventWorker)
+      end
+
+      it "enqueues a Users::RecordFieldTestEventWorker for giving a like to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(1, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a privileged reaction to an article" do
+        article = create(:article, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
+
+      it "does not enqueue a Users::RecordFieldTestEventWorker for giving a like to a comment" do
+        comment = create(:comment, user: user)
+        sidekiq_assert_enqueued_jobs(0, only: Users::RecordFieldTestEventWorker) do
+          create(:reaction, reactable: comment, user: user, category: "like")
+        end
+      end
+    end
+
     describe "slack messages" do
       let!(:user) { create(:user, :trusted) }
       let!(:article) { create(:article, user: user) }
@@ -292,6 +276,39 @@ RSpec.describe Reaction, type: :model do
       reaction = create(:vomit_reaction, user: moderator, reactable: user)
 
       expect(described_class.related_negative_reactions_for_user(moderator).first.id).to eq(reaction.id)
+    end
+  end
+
+  describe ".contradictory_mod_reactions" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns the contradictary reactions related to the category passed in" do
+      article = create(:article, user: moderator)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.contradictory_mod_reactions(
+        category: "thumbsup",
+        reactable_id: article.id,
+        reactable_type: "Article",
+        user: moderator,
+      ).first).to eq(reaction)
+    end
+  end
+
+  describe ".readinglist_for_user finds reactions from given user" do
+    before do
+      user.reactions.create(reactable: article, category: "readinglist")
+      comment = create(:comment)
+      user.reactions.create(reactable: comment, category: "readinglist")
+      article2 = create(:article)
+      user.reactions.create(reactable: article2, category: "like")
+
+      user2 = create(:user)
+      user2.reactions.create(reactable: article, category: "readinglist")
+    end
+
+    it "returns un-archived reactions on articles" do
+      expect(described_class.readinglist_for_user(user).pluck(:reactable_id)).to contain_exactly(article.id)
     end
   end
 end

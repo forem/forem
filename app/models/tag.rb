@@ -2,8 +2,7 @@
 # define what we mean when we "tag" something.
 #
 # These tags can be arbitrary or supported (e.g. `tag.supported ==
-# true`).  We allow for sponsorship of tags (see `belongs_to
-# :sponsorship`).  Some tags have moderators.  These tags can create a
+# true`). Some tags have moderators.  These tags can create a
 # defacto "sub-community" within a Forem.
 #
 # Sometimes we need to consolidate tags (e.g. rubyonrails and rails).
@@ -38,8 +37,7 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :badge, optional: true
 
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
-
-  has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
+  has_many :display_ads, through: :taggings, source: :taggable, source_type: "DisplayAd"
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -259,14 +257,14 @@ class Tag < ActsAsTaggableOn::Tag
     #   FROM articles
     #   WHERE
     #     (cached_tag_list ~ '[[:<:]]javascript[[:>:]]')
-    #     AND (articles.featured_number > 1639594999)
+    #     AND (articles.published_at > 7.days.ago)
     #
     # Due to the construction of the query, there will be one entry.
     # Furthermore, we need to first convert to an array then call
     # `.first`.  The ActiveRecord query handler is ill-prepared to
     # call "first" on this.
     score_attributes = Article.cached_tagged_with(name)
-      .where("articles.featured_number > ?", 7.days.ago.to_i)
+      .where("articles.published_at > ?", 7.days.ago)
       .select("(SUM(comments_count) * 14 + SUM(score)) AS partial_score, COUNT(id) AS article_count")
       .to_a
       .first

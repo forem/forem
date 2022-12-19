@@ -2,12 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class ArticleController extends Controller {
   static classes = ['bgHighlighted', 'borderHighlighted'];
-  static targets = [
-    'featuredNumber',
-    'cardBody',
-    'pinnedCheckbox',
-    'unpinButton',
-  ];
+  static targets = ['featuredNumber', 'cardBody', 'pinnedCheckbox'];
   static values = { id: Number, pinPath: String };
 
   increaseFeaturedNumber() {
@@ -74,11 +69,15 @@ export default class ArticleController extends Controller {
     }
   }
 
-  ajaxSuccess(event) {
-    if (event.target !== this.unpinButtonTarget) {
-      return;
-    }
+  async unpinArticle(event) {
+    const unpinArticleForm = event.target;
+    // We dont want to submit the pin form here.
+    event.preventDefault();
 
+    unpinArticleForm.submit();
+  }
+
+  ajaxSuccess(event) {
     // Replace the current Article HTML with the HTML sent by the server
     const newArticle = document.createElement('div');
 

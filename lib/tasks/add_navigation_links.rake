@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :navigation_links do
   def image_path(*paths)
-    File.read(Rails.root.join("app/assets/images/#{paths.join('/')}")).freeze
+    Rails.root.join("app/assets/images/#{paths.join('/')}").read.freeze
   end
 
   def twemoji_path(name)
@@ -20,7 +20,6 @@ namespace :navigation_links do
   tag_icon = twemoji_path("tag.svg")
   bulb_icon = twemoji_path("bulb.svg")
   shopping_icon = twemoji_path("shopping.svg")
-  heart_icon = twemoji_path("heart.svg")
   rainbowdev = image_path("rainbowdev.svg")
 
   def perform_create_of_navigation_links?
@@ -59,7 +58,7 @@ namespace :navigation_links do
         name: "Home",
         url: URL.url("/"),
         icon: home_icon,
-        display_only_when_signed_in: false,
+        display_to: :all,
         position: 1,
         section: :default,
       )
@@ -70,7 +69,7 @@ namespace :navigation_links do
         url: URL.url("readinglist"),
         name: "Reading List",
         icon: reading_icon,
-        display_only_when_signed_in: true,
+        display_to: :logged_in,
         position: 2,
         section: :default,
       )
@@ -81,7 +80,7 @@ namespace :navigation_links do
         name: "Contact",
         url: URL.url("contact"),
         icon: contact_icon,
-        display_only_when_signed_in: false,
+        display_to: :all,
         position: 3,
         section: :default,
       )
@@ -92,7 +91,7 @@ namespace :navigation_links do
         name: "Code of Conduct",
         url: URL.url(Page::CODE_OF_CONDUCT_SLUG),
         icon: thumb_up_icon,
-        display_only_when_signed_in: false,
+        display_to: :all,
         position: 1,
         section: :other,
       )
@@ -103,7 +102,7 @@ namespace :navigation_links do
         name: "Privacy Policy",
         url: URL.url(Page::PRIVACY_SLUG),
         icon: smart_icon,
-        display_only_when_signed_in: false,
+        display_to: :all,
         position: 2,
         section: :other,
       )
@@ -114,7 +113,7 @@ namespace :navigation_links do
         name: "Terms of Use",
         url: URL.url(Page::TERMS_SLUG),
         icon: look_icon,
-        display_only_when_signed_in: false,
+        display_to: :all,
         position: 3,
         section: :other,
       )
@@ -131,7 +130,7 @@ namespace :navigation_links do
       url: "/",
       name: "Home",
       icon: home_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 1,
       section: :default,
     )
@@ -140,7 +139,7 @@ namespace :navigation_links do
       url: "#{base_url}/readinglist",
       name: "Reading List",
       icon: reading_icon,
-      display_only_when_signed_in: true,
+      display_to: :logged_in,
       position: 2,
       section: :default,
     )
@@ -148,7 +147,7 @@ namespace :navigation_links do
       url: "#{base_url}/listings",
       name: "Listings",
       icon: listing_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 3,
       section: :default,
     )
@@ -156,7 +155,7 @@ namespace :navigation_links do
       url: "#{base_url}/pod",
       name: "Podcasts",
       icon: mic_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 4,
       section: :default,
     )
@@ -164,7 +163,7 @@ namespace :navigation_links do
       url: "#{base_url}/videos",
       name: "Videos",
       icon: camera_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 5,
       section: :default,
     )
@@ -172,7 +171,7 @@ namespace :navigation_links do
       url: "#{base_url}/tags",
       name: "Tags",
       icon: tag_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 6,
       section: :default,
     )
@@ -180,7 +179,7 @@ namespace :navigation_links do
       url: "#{base_url}/faq",
       name: "FAQ",
       icon: bulb_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 7,
       section: :default,
     )
@@ -188,23 +187,15 @@ namespace :navigation_links do
       url: "https://shop.dev.to/",
       name: "DEV Shop",
       icon: shopping_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 6,
-      section: :default,
-    )
-    NavigationLink.create_or_update_by_identity(
-      url: "#{base_url}/sponsors",
-      name: "Sponsors",
-      icon: heart_icon,
-      display_only_when_signed_in: false,
-      position: 7,
       section: :default,
     )
     NavigationLink.create_or_update_by_identity(
       url: "#{base_url}/about",
       name: "About",
       icon: rainbowdev,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 8,
       section: :default,
     )
@@ -212,7 +203,7 @@ namespace :navigation_links do
       url: "#{base_url}/contact",
       name: "Contact",
       icon: contact_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 9,
       section: :default,
     )
@@ -221,7 +212,7 @@ namespace :navigation_links do
       url: "#{base_url}/code-of-conduct",
       name: "Code of Conduct",
       icon: thumb_up_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 1,
       section: :other,
     )
@@ -230,7 +221,7 @@ namespace :navigation_links do
       url: "#{base_url}/privacy",
       name: "Privacy Policy",
       icon: smart_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 2,
       section: :other,
     )
@@ -238,7 +229,7 @@ namespace :navigation_links do
       url: "#{base_url}/terms",
       name: "Terms of Use",
       icon: look_icon,
-      display_only_when_signed_in: false,
+      display_to: :all,
       position: 3,
       section: :other,
     )

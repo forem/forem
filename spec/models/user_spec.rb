@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe User, type: :model do
+RSpec.describe User do
   def user_from_authorization_service(service_name, signed_in_resource = nil, cta_variant = "navbar_basic")
     auth = OmniAuth.config.mock_auth[service_name]
     Authentication::Authenticator.call(
@@ -78,7 +78,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:delete_all) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:nullify) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
@@ -601,7 +601,7 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with defaults" do
       # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      classes = "light-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -610,7 +610,7 @@ RSpec.describe User, type: :model do
       user.setting.config_font = "sans_serif"
 
       # rubocop:disable Layout/LineLength
-      classes = "light-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      classes = "light-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -619,7 +619,7 @@ RSpec.describe User, type: :model do
       user.setting.config_font = "open_dyslexic"
 
       # rubocop:disable Layout/LineLength
-      classes = "light-theme open-dyslexic-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      classes = "light-theme open-dyslexic-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
@@ -627,8 +627,9 @@ RSpec.describe User, type: :model do
     it "creates proper body class with dark theme" do
       user.setting.config_theme = "dark_theme"
 
-      classes =
-        "dark-theme sans-serif-article-body trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      # rubocop:disable Layout/LineLength
+      classes = "dark-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end
   end
@@ -659,13 +660,18 @@ RSpec.describe User, type: :model do
       expect(user.reload.following_orgs_count).to eq(1)
     end
 
-    it "returns cached ids of articles that have been saved to their readinglist" do
+    it "returns cached ids of published articles that have been saved to their readinglist" do
       article = create(:article)
       article2 = create(:article)
+      article3 = create(:article)
+
       create(:reading_reaction, user: user, reactable: article)
       create(:reading_reaction, user: user, reactable: article2)
+      create(:reading_reaction, user: user, reactable: article3)
 
-      expect(user.cached_reading_list_article_ids).to eq([article2.id, article.id])
+      Articles::Unpublish.call(article2.user, article2)
+
+      expect(user.cached_reading_list_article_ids).to eq([article3.id, article.id])
     end
   end
 

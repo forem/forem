@@ -4,13 +4,13 @@ fr:
     badges:
       meta:
         title: Badges
-        name: "%{title} Badge"
       all:
         one: Show one badge
         other: Show all %{count} badges
       heading: Badges
       desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
-      name: "🏅 %{title} Badge 🏅"
+      icon_close: Close
+      gotit: Got it
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
@@ -60,6 +60,10 @@ fr:
       pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
       removed: "🗑 Pin removed"
       error: You can only have five pins
+    profile:
+      color:
+        label: Brand color
+        description: Used for backgrounds, borders etc.
     reading_list:
       meta:
         title: Reading List
@@ -98,8 +102,6 @@ fr:
         heading: "%{series} Series' Articles"
         back: Back to %{user}'s Series
         empty: This series doesn't have any articles
-    sponsor:
-      seek: Become a sponsor
     stats:
       meta:
         title: Stats for Your Article

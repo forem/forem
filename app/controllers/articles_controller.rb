@@ -17,7 +17,7 @@ class ArticlesController < ApplicationController
   #
   #              I still want to enable this, but first want to get things mostly conformant with
   #              existing expectations.  Note, in config/application.rb, we're rescuing the below
-  #              excpetion as though it was a Pundit::NotAuthorizedError.
+  #              exception as though it was a Pundit::NotAuthorizedError.
   #
   #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
   #              config/application.rb uses the config.consider_all_requests_local to determine if
@@ -146,7 +146,6 @@ class ArticlesController < ApplicationController
 
   def create
     authorize Article
-
     @user = current_user
     article = Articles::Creator.call(@user, article_params_json)
 
@@ -213,13 +212,18 @@ class ArticlesController < ApplicationController
 
   def admin_unpublish
     authorize @article
-    if @article.has_frontmatter?
-      @article.body_markdown.sub!(/\npublished:\s*true\s*\n/, "\npublished: false\n")
-    else
-      @article.published = false
-    end
 
-    if @article.save
+    result = Articles::Unpublish.call(current_user, @article)
+
+    if result.success
+      Audit::Logger.log(:moderator, current_user, params.dup)
+      Note.create(
+        noteable: @article.user,
+        reason: "unpublish_article",
+        content: "#{current_user.username} unpublished post with ID #{@article.id}",
+        author: current_user,
+      )
+
       render json: { message: "success", path: @article.current_state_path }, status: :ok
     else
       render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
@@ -299,6 +303,8 @@ class ArticlesController < ApplicationController
   # TODO: refactor all of this update logic into the Articles::Updater possibly,
   # ideally there should only be one place to handle the update logic
   def article_params_json
+    return @article_params_json if @article_params_json
+
     params.require(:article) # to trigger the correct exception in case `:article` is missing
 
     params["article"].transform_keys!(&:underscore)
@@ -308,7 +314,8 @@ class ArticlesController < ApplicationController
                      else
                        %i[
                          title body_markdown main_image published description video_thumbnail_url
-                         tag_list canonical_url series collection_id archived
+                         tag_list canonical_url series collection_id archived published_at timezone
+                         published_at_date published_at_time
                        ]
                      end
 
@@ -321,7 +328,24 @@ class ArticlesController < ApplicationController
       allowed_params << :organization_id
     end
 
-    params.require(:article).permit(allowed_params)
+    manage_published_at_params
+
+    @article_params_json = params.require(:article).permit(allowed_params)
+  end
+
+  def manage_published_at_params
+    time_zone_str = params["article"].delete("timezone")
+
+    time = params["article"].delete("published_at_time")
+    date = params["article"].delete("published_at_date")
+
+    if date.present?
+      time_zone = Time.find_zone(time_zone_str)
+      time_zone ||= Time.find_zone("UTC")
+      params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
+    elsif params["article"]["version"] != "v1" && !params["article"]["from_dashboard"]
+      params["article"]["published_at"] = nil
+    end
   end
 
   def allowed_to_change_org_id?

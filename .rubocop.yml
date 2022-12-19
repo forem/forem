@@ -37,8 +37,8 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
-Gemspec/DateAssignment:
-  Description: 'Checks that `date =` is not used in gemspec file, it is set automatically when the gem is packaged.'
+Gemspec/DeprecatedAttributeAssignment:
+  Description: 'Checks that deprecated attribute attributes (like date) are not set in a gemspec file.'
   Enabled: true
 
 #################### Layout ###########################
@@ -672,10 +672,13 @@ Style/SwapValues:
 
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
-  Enabled: true
-  Exclude:
-    - scripts/release
-    - scripts/stage_release
+  Enabled: false
+# We're disabling it for the time being until a new version of rubocop
+# (> 1.31.2) is released with a fix for false positives that are coming up.
+# These files below were the original files excluded from this rule.
+#  Exclude:
+#    - scripts/release
+#    - scripts/stage_release
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
@@ -832,6 +835,10 @@ Rails/Inquiry:
   StyleGuide: 'https://rails.rubystyle.guide/#inquiry'
   Enabled: true
 
+Rails/LexicallyScopedActionFilter:
+  Exclude:
+    - app/controllers/api/**/*
+
 Rails/MailerName:
   Description: 'Mailer should end with `Mailer` suffix.'
   StyleGuide: 'https://rails.rubystyle.guide/#mailer-name'
@@ -958,3 +965,10 @@ RSpec/Rails/AvoidSetupHook:
   Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
+
+RSpec/NoExpectationExample:
+  Enabled: false
+  AllowedPatterns:
+    - ^expect_
+    - ^assert_
+    - sidekiq_assert_

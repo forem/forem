@@ -40,7 +40,9 @@
           reaction_categories.filter_map do |cat|
             image_path = reaction_image(cat)
             if image_path.present?
-              crayons_icon_tag(image_path, class: "reaction-image mx-1 my-1 reaction-icon--#{cat}", title: t("views.reactions.category.#{cat}"))
+              "<span class='crayons-hover-tooltip inline-block' data-tooltip='#{t("views.reactions.category.#{cat}")}'>
+                #{crayons_icon_tag(image_path, class: "reaction-image mx-1 my-1 reaction-icon--#{cat}")}
+              </span>".html_safe
             end
           end, "\n"
         )) %>

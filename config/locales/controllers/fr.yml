@@ -13,6 +13,7 @@ fr:
     create:
       success: created
       failure: comment already exists
+      authorization_error: Your privileges have been suspended.
     delete:
       error: Something went wrong; Comment NOT deleted.
       notice: Comment was successfully deleted.
@@ -116,6 +117,7 @@ fr:
     updated_config: Your config has been updated. Refresh to see all changes.
     updated_profile: Your profile was successfully updated.
     token_expired: Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.
+    notifications_settings_updated: Your notifications settings have been updated.
   video_states_controller:
     related_article_not_found: Related article not found
     video_state_updated: Video state updated

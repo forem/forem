@@ -21,14 +21,6 @@ RSpec.describe Users::Delete, type: :service do
     expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
-  it "deletes user's sponsorships" do
-    create(:sponsorship, user: user)
-
-    expect do
-      described_class.call(user)
-    end.to change(Sponsorship, :count).by(-1)
-  end
-
   it "deletes user's follows" do
     create(:follow, follower: user)
     create(:follow, followable: user)
@@ -44,6 +36,14 @@ RSpec.describe Users::Delete, type: :service do
     expect(Article.find_by(id: article.id)).to be_nil
   end
 
+  it "deletes user's owned podcasts" do
+    podcast = create(:podcast, creator: user)
+    create(:podcast_ownership, owner: user, podcast: podcast)
+    expect do
+      described_class.call(user)
+    end.to change(Podcast, :count).by(-1)
+  end
+
   it "deletes the destroy token" do
     allow(Rails.cache).to receive(:delete).and_call_original
     described_class.call(user)
@@ -55,7 +55,7 @@ RSpec.describe Users::Delete, type: :service do
 
     expect do
       described_class.call(user)
-    end.to change(AuditLog, :count).by(0)
+    end.not_to change(AuditLog, :count)
 
     expect(audit_log.reload.user_id).to be_nil
   end
@@ -85,6 +85,7 @@ RSpec.describe Users::Delete, type: :service do
         audit_logs
         banished_users
         created_podcasts
+        display_ad_events
         offender_feedback_messages
         page_views
         rating_votes
