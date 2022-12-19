@@ -1,12 +1,4 @@
-// These assertions are currently skipped because we have the display_ad_tags Feature Flag in place right now.
-// We've tried to incorporate feature flags in Cypress tests previously, but there isn't an easy way to do it via an API.
-// Hence, for that reason and a couple of other db requirements we went with a separate db and script in the past.
-// This is not feasible for every use case.
-
-// Since these feature flags are temporary, I'll skip these cypress tests for now and add the tests back and remove these comments
-// once the feature flags have been removed.
-
-xdescribe('Create Display Ads', () => {
+describe('Create Display Ads', () => {
   context('when creating a new display ad', () => {
     beforeEach(() => {
       cy.testSetup();
@@ -20,9 +12,9 @@ xdescribe('Create Display Ads', () => {
       });
     });
 
-    it('should not show the tags field if the placement is not "Below the comment section"', () => {
+    it('should not show the tags field if the placement is not one of the post page areas', () => {
       cy.findByRole('combobox', { name: 'Placement Area:' }).select(
-        'Sidebar Right',
+        'Sidebar Right (Home)',
       );
       cy.findByRole('input', { name: 'Targeted Tag(s)' }).should('not.exist');
     });
@@ -33,5 +25,13 @@ xdescribe('Create Display Ads', () => {
       );
       cy.findByLabelText('Targeted Tag(s)').should('exist');
     });
+
+    it('should show the tags field if the placement is "Sidebar Right (Individual Post)"', () => {
+      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+        'Sidebar Right (Individual Post)',
+      );
+      cy.findByLabelText('Targeted Tag(s)').should('exist');
+    });
+
   });
 });

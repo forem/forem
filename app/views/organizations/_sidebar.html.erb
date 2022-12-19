@@ -1,37 +1,57 @@
-<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
-  <div class="sidebar-bg" id="sidebar-bg-left"></div>
-  <div class="side-bar">
-    <% if @organization.story.present? %>
-      <div class="widget">
-        <header>
-          <h4><%= t("views.organizations.story") %></h4>
-        </header>
-        <div class="widget-body">
-          <%= sanitized_sidebar @organization.story %>
-        </div>
+<div id="sidebar-left" class="m:gap-4 hidden m:grid js-user-info">
+  <%# given the probability that organizations can have lots of users,
+      here we're using the any?/find_each pattern to avoid loading possibly
+      too many objects in memory %>
+  <% if @organization.users.any? %>
+    <div class="crayons-card crayons-card--secondary org-sidebar-widget">
+      <header class="crayons-card__header">
+        <h3 class="crayons-subtitle-3">
+          <%= t("views.organizations.team") %>
+        </h3>
+      </header>
+      <div class="org-sidebar-widget-body">
+        <% @organization.users.find_each do |user| %>
+          <div class="org-sidebar-widget-user-pic">
+            <a href="/<%= user.username %>">
+              <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
+            </a>
+          </div>
+        <% end %>
       </div>
-    <% end %>
-    <% if @organization.tech_stack.present? %>
-      <div class="widget">
-        <header>
-          <h4><%= t("views.organizations.stack") %></h4>
-        </header>
-        <div class="widget-body">
-          <%= sanitized_sidebar @organization.tech_stack %>
-        </div>
+    </div>
+  <% end %>
+  <% if @organization.story.present? %>
+    <div class="crayons-card crayons-card--secondary">
+      <header class="crayons-card__header">
+        <h3 class="crayons-subtitle-3">
+          <%= t("views.organizations.story") %>
+        </h3>
+      </header>
+      <div class="crayons-card__body">
+        <%= sanitized_sidebar @organization.story %>
       </div>
-    <% end %>
-    <% if @organization.users.any? %>
-      <div class="widget">
-        <div class="widget-body">
-          <%= crayons_icon_tag(:post, class: "mr-3 color-base", title: t("views.organizations.side.post.icon")) %>
-          <%= t "views.organizations.side.post.text", count: @stories.size %>
-        </div>
-        <div class="widget-body mt-4">
-          <%= crayons_icon_tag(:team, class: "mr-3 color-base", title: t("views.organizations.side.member.icon")) %>
-          <%= t "views.organizations.side.member.text", count: @organization.users.size %>
-        </div>
+    </div>
+  <% end %>
+  <% if @organization.tech_stack.present? %>
+    <div class="crayons-card crayons-card--secondary">
+      <header class="crayons-card__header">
+        <h3 class="crayons-subtitle-3"><%= t("views.organizations.stack") %></h3>
+      </header>
+      <div class="crayons-card__body">
+        <%= sanitized_sidebar @organization.tech_stack %>
       </div>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
+  <% if @organization.users.any? %>
+    <div class="crayons-card crayons-card--secondary p-4">
+      <div class="flex items-center mb-4">
+        <%= crayons_icon_tag(:post, class: "mr-3 color-base", title: t("views.organizations.side.post.icon")) %>
+        <%= t "views.organizations.side.post.text", count: @stories.size %>
+      </div>
+      <div class="flex items-center">
+        <%= crayons_icon_tag(:team, class: "mr-3 color-base", title: t("views.organizations.side.member.icon")) %>
+        <%= t "views.organizations.side.member.text", count: @organization.users.size %>
+      </div>
+    </div>
+  <% end %>
 </div>

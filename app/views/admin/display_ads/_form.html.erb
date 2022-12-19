@@ -20,17 +20,14 @@
       <%= select_tag :placement_area, options_for_select(display_ads_placement_area_options_array, selected: @display_ad.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
     </div>
 
-    <% if FeatureFlag.enabled?(:display_ad_tags) %>
+    <div class="crayons-field">
+      <div id="display-ad-targeted-tags"></div>
+    </div>
 
-        <div class="crayons-field">
-          <div id="display-ad-targeted-tags"></div>
-        </div>
-
-        <div class="crayons-field hidden">
-          <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
-          <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield" %>
-        </div>
-    <% end %>
+    <div class="crayons-field hidden">
+      <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
+      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield" %>
+    </div>
 
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
@@ -107,6 +104,4 @@
   </div>
 </div>
 
-<% if FeatureFlag.enabled?(:display_ad_tags) %>
-  <%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>
-<% end %>
+<%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>

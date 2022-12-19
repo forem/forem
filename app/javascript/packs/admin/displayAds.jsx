@@ -81,13 +81,13 @@ function defaultTagValues() {
  */
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
-
-  if (select.value === 'post_comments') {
+  const placementAreasWithTags = ['post_comments', 'post_sidebar']
+  if (placementAreasWithTags.includes(select.value)) {
     showTagsField();
   }
 
   select.addEventListener('change', (event) => {
-    if (event.target.value === 'post_comments') {
+    if (placementAreasWithTags.includes(event.target.value)) {
       showTagsField();
     } else {
       hideTagsField();

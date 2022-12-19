@@ -3,7 +3,7 @@
 @import 'react-dates/lib/css/_datepicker.css';
 
 %form-styling {
-  --border-width: 1px;
+  --border-width: 1.5px;
   background-color: var(--form-bg);
   border: var(--border-width) solid var(--form-border);
   color: var(--body-color);
@@ -275,7 +275,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
-    
+
     & .react-colorful {
       padding: var(--su-2);
       border-radius: var(--radius);
@@ -283,7 +283,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
       box-shadow: var(--shadow-1);
       width: 220px;
       height: 160px;
-      
+
       &__pointer {
         cursor: pointer;
       }
