@@ -36,7 +36,7 @@
     <div>
       <p class="fw-bold">Status</p>
       <p>
-        <span class="badge badge-<%= @broadcast.active? ? "success" : "warning" %>">
+        <span class="c-indicator c-indicator--<%= @broadcast.active? ? "success" : "warning" %>">
           <%= @broadcast.active? ? "Active" : "Inactive" %>
         </span>
       </p>
