@@ -241,6 +241,18 @@
   }
 }
 
+.reaction-drawer .crayons-reaction {
+  &.user-activated {
+    background-color: var(--body-bg);
+    border-radius: 15px;
+
+    .crayons-reaction__icon--active {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+}
+
 .user-animated {
   .crayons-reaction__icon {
     position: relative;
