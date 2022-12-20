@@ -186,6 +186,7 @@ Rails.application.routes.draw do
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
+    get "/async_info/navigation_links", controller: "async_info#navigation_links"
 
     # Settings
     post "users/join_org", to: "users#join_org"
