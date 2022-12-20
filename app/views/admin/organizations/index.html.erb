@@ -1,9 +1,7 @@
 <%= form_tag(admin_organizations_path, method: "get") do %>
-  <div class="form-row">
-    <div class="form-group">
-      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }) %>
-      <%= submit_tag("Search") %>
-    </div>
+  <div class="inline-flex">
+    <%= search_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield") %>
+    <%= submit_tag("Search", class: "crayons-btn ml-2") %>
   </div>
 <% end %>
 
