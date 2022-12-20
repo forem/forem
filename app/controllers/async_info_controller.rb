@@ -1,6 +1,7 @@
 # @note No pundit policy. All actions are unrestricted.
 class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
+  before_action :set_cache_control_headers, only: %i[navigation_links]
 
   def base_data
     flash.discard(:notice)
@@ -60,5 +61,11 @@ class AsyncInfoController < ApplicationController
     #{current_user&.reactions_count}__
     #{current_user&.articles_count}__
     #{current_user&.blocking_others_count}__"
+  end
+
+  def navigation_links
+    # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
+    # the view file - it allows us to not include the HTML headers for sending back to client.
+    render layout: false
   end
 end
