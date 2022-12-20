@@ -1,26 +1,26 @@
-<div class="mb-6 flex items-center">
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <%= link_to "General Community", admin_mods_path, class: "nav-link #{'active' if params[:state].blank?}" %>
+<div class="mb-6 flex items-center flex-col m:flex-row">
+  <ul class="crayons-navigation crayons-navigation--horizontal">
+    <li>
+      <a href="<%= admin_mods_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state].blank? %>">General Community</a>
     </li>
-    <li class="nav-item">
-      <%= link_to "Tag Mods", admin_mods_path(state: :tag_moderator), class: "nav-link #{'active' if params[:state] == 'tag_moderator'}" %>
+    <li>
+      <a href="<%= admin_mods_path(state: :tag_moderator) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == 'tag_moderator' %>">Tag Mods</a>
     </li>
-    <li class="nav-item">
-      <%= link_to "Potential Mods", admin_mods_path(state: :potential), class: "nav-link #{'active' if params[:state] == 'potential'}" %>
+    <li>
+      <a href="<%= admin_mods_path(state: :potential) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == 'potential' %>">Potential Mods</a>
     </li>
   </ul>
 
-  <%= form_with url: admin_mods_path, method: :get, local: true, class: "form-inline ml-auto" do |f| %>
-    <div class="form-group mx-sm-3">
-      <%= f.text_field :search, value: params[:search], class: "form-control", aria: { label: "Search" } %>
+  <%= form_with url: admin_mods_path, method: :get, local: true, class: "flex mt-4 mx-auto m:ml-auto m:mt-0" do |f| %>
+    <div class="mx-3">
+      <%= f.text_field :search, value: params[:search], class: "crayons-textfield", aria: { label: "Search" } %>
       <%= f.hidden_field :state, value: params[:state] if params[:state].present? %>
     </div>
-    <%= f.submit "Search", class: "btn btn-light" %>
+    <%= f.submit "Search", class: "crayons-btn" %>
   <% end %>
 </div>
 <% if @mods.empty? %>
-    <div class="alert alert-warning">There are no mods matching your search criteria.</div>
+    <div class="crayons-notice crayons-notice--warning">There are no mods matching your search criteria.</div>
 <% else %>
   <%= paginate @mods, theme: "internal" %>
 
