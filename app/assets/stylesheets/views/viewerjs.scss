@@ -1,8 +1,13 @@
 
-.viewer-backdrop {
+.viewer-backdrop, .viewer-button, .viewer-navbar, .viewer-toolbar > ul > li {
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.viewer-navbar {
-    background-color: rgba(0, 0, 0, 0.5) !important;
+.viewer-tooltip, .viewer-button:focus, .viewer-button:hover, .viewer-toolbar > ul > li:focus, .viewer-toolbar > ul > li:hover {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+}
+
+.viewer-loading::after {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    border-left-color: rgba(255, 255, 255, 0.5) !important;
 }
