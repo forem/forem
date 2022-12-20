@@ -66,7 +66,7 @@ jobs:
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
           repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
-          path: spec/reports
+          path: tmp/rspec_final_results.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
@@ -90,14 +90,14 @@ jobs:
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn lint:frontend
-      - run: yarn test --colors
+      - run: yarn test --colors --ci --reporters=jest-junit
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
         with:
           account: ${{ secrets.BUILDPULSE_ACCOUNT }}
           repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
-          path: /junit.xml
+          path: junit.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
