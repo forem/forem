@@ -29,7 +29,7 @@
     <% if @podcast.owners.present? %>
       <ul class="list-group list-group-flush mb-3">
         <% @podcast.owners.select(:id, :username).each do |owner| %>
-          <%= form_for @podcast, url: "#", html: { method: :delete, class: "form-inline" } do |f| %>
+          <%= form_for @podcast, url: "#", html: { method: :delete, class: "flex" } do |f| %>
             <li class="list-group-item w-100">
               <%= link_to "@#{owner.username}", user_url(owner), target: "_blank", rel: :noopener %>
               <%# f.hidden_field :user_id, value: owner.id %>
