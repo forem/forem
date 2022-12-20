@@ -16140,6 +16140,11 @@ vfile@^4.0.0:
     unist-util-stringify-position "^2.0.0"
     vfile-message "^2.0.0"
 
+viewerjs@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/viewerjs/-/viewerjs-1.11.1.tgz#9aed519f489eb50730faf258ca8c88e39934cccb"
+  integrity sha512-/VQ2zalHLZJOGIwlxOBtxagLZwNvU3Bf+nm692XlhNFxjBXRxpCVn+GeqmRFg9jK1Y2+Wf8PPGxZgTDN4pHXww==
+
 vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"

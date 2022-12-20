@@ -12,7 +12,7 @@ HTMLDocument.prototype.ready = new Promise((resolve) => {
 });
 
 function loadForm() {
-    const photoGrids = document.querySelectorAll('.photo-grid');
+    const photoGrids = document.querySelectorAll('.photo-grid:not([data-loaded="true"])');
 
     const pic = (c) => {
       return (
@@ -37,7 +37,7 @@ function loadForm() {
 
       if (images!= "") {
         render(
-          <ImageGrid>
+          <ImageGrid showModal={false}>
             {imagesArr
               .filter((arg, i) => ((i <= imagesArr.length)))
               .map((a) => pic(a))}
@@ -45,6 +45,9 @@ function loadForm() {
           photoGrid,
           photoGrid.firstElementChild,
         );
+      }
+      if (i == photoGrids.length - 1) {
+        window.dispatchEvent(new CustomEvent('photoGridLoaded'));
       }
     }
 }
@@ -55,5 +58,7 @@ document.ready.then(() => {
         loadForm();
     });
 
-    window.addEventListener('checkBlockedContent', loadForm);
+    window.addEventListener('checkBlockedContent', () => {
+      loadForm();
+    });
 });

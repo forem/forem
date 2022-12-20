@@ -122,11 +122,13 @@ export const Article = ({
             { version == 'v0' ? null : <ContentTitle article={article} /> }
             { version == 'v0' ? (<a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div style={{padding: "1rem 0"}}>{article.description}</div></a>) : null }
             { version == 'v0' && (
-            <ImageGrid>
-              {article.image_list
-                .filter((arg, i) => ((i <= article.image_list.length)))
-                .map((a) => pic(a))}
-            </ImageGrid>
+            <div id={`photo-grid-${article.id}`} class="photo-grid" data-images={article.image_list} data-loaded="true">
+              <ImageGrid showModal={false}>
+                {article.image_list
+                  .filter((arg, i) => ((i <= article.image_list.length)))
+                  .map((a) => pic(a))}
+              </ImageGrid>
+            </div>
             )}
             <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
 

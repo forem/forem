@@ -1,4 +1,4 @@
-/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick */
+/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick, Viewer */
 
 var client;
 
@@ -415,6 +415,43 @@ function checkIfNearBottomOfPage() {
   }, 210);
 }
 
+function initViewerJS() {
+  window.gallerys = window.gallerys || {};
+  window._onImageClick = window._onImageClick || function(e) {
+    const { galleryid } = e.target.dataset;
+    let nodes = Array.prototype.slice.call( document.querySelectorAll('#' + galleryid + ' img') );
+    let idx = nodes.indexOf(e.target);
+    window.gallerys[galleryid].view(idx);
+  }
+
+  const photoGrids = document.querySelectorAll('.photo-grid:not([data-viewerjsloaded="true"])');
+  for (let photoGrid of photoGrids) {
+    const { images, viewerjsloaded } = photoGrid.dataset;
+    
+    if (viewerjsloaded || images == '') {
+      continue;
+    }
+
+    photoGrid.setAttribute('data-viewerjsloaded', true);
+    let photoGridContainer = document.createElement('div');
+    images.split(',').forEach(imageUrl => {
+      let img = document.createElement('img');
+      img.setAttribute("src", imageUrl);
+      photoGridContainer.appendChild(img);
+    });
+
+    window.gallerys[photoGrid.getAttribute('id')] = new Viewer(photoGridContainer, {
+      toolbar: false,
+      tooltip: false,
+      title: false
+    });
+    for (let img of photoGrid.getElementsByTagName('img')) {
+      img.setAttribute('data-galleryid', photoGrid.getAttribute('id'));
+      img.addEventListener('click', window._onImageClick);
+    };
+  }
+}
+
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
@@ -422,4 +459,8 @@ function initScrolling() {
     initScrolling.called = true;
     checkIfNearBottomOfPage();
   }
+  window.addEventListener('photoGridLoaded', () => {
+    setTimeout(initViewerJS, 500);
+    setTimeout(initViewerJS, 2000);
+  });
 }

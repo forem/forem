@@ -144,6 +144,7 @@
     "react-colorful": "^5.6.1",
     "react-dates": "^21.8.0",
     "react-fb-image-video-grid": "^0.1.10",
+    "viewerjs": "^1.11.1",
     "web-share-wrapper": "^0.2.2"
   }
 }
