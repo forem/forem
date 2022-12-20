@@ -2,4 +2,3 @@
 --format progress
 --require spec_helper
 --format RspecJunitFormatter
---out spec/reports/rspec.xml
