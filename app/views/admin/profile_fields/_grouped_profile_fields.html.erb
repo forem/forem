@@ -1,5 +1,5 @@
 <% @grouped_profile_fields.each do |group| %>
-  <article id="profile-field-group-<%= group.id %>" class="row my-3">
+  <article id="profile-field-group-<%= group.id %>" class="flex flex-wrap -mx-4 my-3">
     <div class="card w-100">
       <div class="card-header">
         <div class="card-header__information">
@@ -29,12 +29,12 @@
             <details class="crayons-card mb-4" id="profile-field-<%= field.id %>">
               <summary class="crayons-subtitle-2 p-5"><%= field.label %></summary>
               <div id="<%= field.attribute_name %>_container" class="p-5 pt-0">
-                <div class="form-group grid p-6 mb-6 gap-1">
+                <div class="flex flex-col p-6 mb-6 gap-1">
                   <%= form_for [:admin, field] do |form| %>
                     <%= render "profile_field_form", form: form, group: group %>
-                    <%= form.submit class: "btn btn-primary" %>
+                    <%= form.submit class: "c-btn c-btn--primary mt-4" %>
                   <% end %>
-                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-secondary mx-auto" %>
+                  <%= button_to "Delete Profile Field", admin_profile_field_path(field), data: { confirm: "Are you sure?" }, method: :delete, class: "crayons-btn crayons-btn--danger mt-4 mx-auto" %>
                 </div>
               </div>
             </details>
