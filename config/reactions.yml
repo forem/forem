@@ -16,6 +16,9 @@ rocket:
 raised_hands:
   position: 4
   icon: twemoji/raised_hands
+tada:
+  position: 5
+  icon: twemoji/tada
 unicorn:
   position: 3
   name: Unicorn
