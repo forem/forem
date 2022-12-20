@@ -35,7 +35,7 @@ export default class ImageUploadController extends Controller {
   }
 
   onUploadSuccess(result) {
-    this.imageResultTarget.classList.remove('d-none');
+    this.imageResultTarget.classList.remove('hidden');
     const output = `
       <div class="form-group">
         <label for="output">Image URL:</label>
