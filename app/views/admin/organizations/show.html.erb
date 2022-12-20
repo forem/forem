@@ -5,7 +5,7 @@
   </div>
 
   <div class="ml-auto">
-    <%= link_to "View @#{@organization.name}", "/#{@organization.slug}", class: "btn btn-primary", target: "_blank", rel: "noopener" %>
+    <%= link_to "View @#{@organization.name}", "/#{@organization.slug}", class: "crayons-btn", target: "_blank", rel: "noopener" %>
   </div>
 </header>
 
@@ -38,22 +38,22 @@
 <div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
   <h3 class="mb-4">Credits (current: <%= current_credits %>)</h3>
-  <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
-    <div class="form-group">
+  <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-content-between mb-2" do %>
+    <div>
       <%= hidden_field_tag :credit_action, :add %>
-      <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "form-control mr-3", size: 5, aria: { label: "Credits" } %>
-      <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3", aria: { label: "Reason" } %>
+      <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" } %>
+      <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" } %>
     </div>
-    <%= submit_tag "Add Org Credits", class: "btn btn-primary" %>
+    <%= submit_tag "Add Org Credits", class: "crayons-btn" %>
   <% end %>
   <% if current_credits.positive? %>
-    <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
-      <div class="form-group">
+    <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-content-between mb-2" do %>
+      <div>
         <%= hidden_field_tag :credit_action, :remove %>
-        <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "form-control mr-3", size: 5, aria: { label: "Credits" } %>
-        <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3", aria: { label: "Reason" } %>
+        <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" } %>
+        <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" } %>
       </div>
-      <%= submit_tag "Remove Org Credits", class: "btn btn-danger" %>
+      <%= submit_tag "Remove Org Credits", class: "crayons-btn crayons-btn--danger" %>
     <% end %>
   <% end %>
 </div>
