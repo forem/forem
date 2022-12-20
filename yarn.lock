@@ -1522,19 +1522,19 @@
   resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
   integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
 
-"@honeybadger-io/core@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/core/-/core-4.6.0.tgz#bff3128212a6fbfd15d5d6b87aee2f9417021da3"
-  integrity sha512-1AEw40GTSIFCG9jyQDGCk+tATRbrlJGG2YJK74PelRDAEeB+FvWy5uFWAaRyDN43XMrGYAT4ZDcVn4q4T1uw1Q==
+"@honeybadger-io/core@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/core/-/core-4.8.0.tgz#240e6b221f95cdb10c43fb917485979f2855f896"
+  integrity sha512-hGsnMOAdfRn7+OTi6BJM9SrvcWNMWoG9YmV9eyx847ZKeIcd3Cb4XOrtNQwXMKxpdPAoG03rOnJhaxpJZY1u/g==
   dependencies:
     stacktrace-parser "^0.1.10"
 
-"@honeybadger-io/js@^4.6.0":
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.7.1.tgz#ab17b929cefa06940c781a768accd27a0303df09"
-  integrity sha512-YXwGn+RWpjZikJeDgfgWu4RlUQamnDzm43rmD3K2kRzJdnsUqHrxkp/VniM/3uldDQ0fN59Y69l3Uwi7lU8VkQ==
+"@honeybadger-io/js@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.8.0.tgz#5e1361a38a641d2237dd86af330848a3e85ca9f1"
+  integrity sha512-N1ONRY22CwWejhk6dqkNgFhkVVuvjBlN0yafASbG7Ov610eySxD1U5lDWERs62BMWKsR0vxy8+PYr+FvGxw0og==
   dependencies:
-    "@honeybadger-io/core" "^4.6.0"
+    "@honeybadger-io/core" "^4.8.0"
     "@types/aws-lambda" "^8.10.89"
     "@types/express" "^4.17.13"
 
@@ -3853,10 +3853,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@whitespace/storybook-addon-html@^5.0.0":
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/@whitespace/storybook-addon-html/-/storybook-addon-html-5.0.3.tgz#f5d9a8af9d7a3ee0f33af71505246157166fa7b3"
-  integrity sha512-aR9eRMST/NxEPxtF0Sne7uyFuieXmBKB3hDbB6L+Vh5c/dPtAM0sVLaA62xW/iJS8P8oLW84fShFHUOv190qCQ==
+"@whitespace/storybook-addon-html@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@whitespace/storybook-addon-html/-/storybook-addon-html-5.1.1.tgz#a84789a5b09a3f5a664e2ed804206d0d85e3b9df"
+  integrity sha512-keUiMJua+ytgMuqvLLwV9FjqWqVeyJlqmoqYAyRsihp9vAcSWYbkG3WWGn+IAk52oBmJIuuDUElEERoTwLIYlg==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -13050,10 +13050,19 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-postcss@^8.2.15, postcss@^8.4.18:
+postcss@^8.2.15:
   version "8.4.19"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.19.tgz#61178e2add236b17351897c8bcc0b4c8ecab56fc"
   integrity sha512-h+pbPsyhlYj6N2ozBmHhHrs9DzGmbaarbLvWipMRO7RLS+v4onj26MPFXA5OBYFxyqYhUJK456SwDcY9H2/zsA==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
+postcss@^8.4.20:
+  version "8.4.20"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.20.tgz#64c52f509644cecad8567e949f4081d98349dc56"
+  integrity sha512-6Q04AXR1212bXr5fh03u8aAwbLxAQNGQ/Q1LNa0VfOI06ZAlhPHtQvE4OIdpj4kLThXilalPnmDSOD65DcHt+g==
   dependencies:
     nanoid "^3.3.4"
     picocolors "^1.0.0"
