@@ -1,24 +1,26 @@
-<div class="form-group">
-  <%= label_tag :title, "Title:" %>
-  <%= text_field_tag :title, @broadcast.title, class: "form-control" %>
-</div>
+<div class="flex flex-col gap-4">
+  <div class="crayons-field">
+    <%= label_tag :title, "Title", class: "crayons-field__label" %>
+    <%= text_field_tag :title, @broadcast.title, class: "crayons-textfield" %>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :processed_html, "HTML" %>
-  <%= text_area_tag :processed_html, @broadcast.processed_html, size: "100x10", class: "form-control" %>
-</div>
+  <div class="crayons-field">
+    <%= label_tag :processed_html, "HTML", class: "crayons-field__label" %>
+    <%= text_area_tag :processed_html, @broadcast.processed_html, size: "100x10", class: "crayons-textfield" %>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :type_of, "Type:" %>
-  <%= select_tag :type_of, options_for_select(%w[Welcome Announcement], selected: @broadcast.type_of) %>
-</div>
+  <div class="crayons-field">
+    <%= label_tag :type_of, "Type", class: "crayons-field__label" %>
+    <%= select_tag :type_of, options_for_select(%w[Welcome Announcement],  selected: @broadcast.type_of), class: "crayons-select"%>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :banner_style, "Banner Style:" %>
-  <%= select_tag :banner_style, options_for_select(%w[default brand success warning error], selected: @broadcast.banner_style), include_blank: true %>
-</div>
+  <div class="crayons-field">
+    <%= label_tag :banner_style, "Banner Style", class: "crayons-field__label" %>
+    <%= select_tag :banner_style, options_for_select(%w[default brand success warning error], selected: @broadcast.banner_style), include_blank: true, class: "crayons-select"%>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :active, "Active:" %>
-  <%= select_tag :active, options_for_select([false, true], selected: @broadcast.active) %>
+  <div class="crayons-field">
+    <%= label_tag :active, "Active", class: "crayons-field__label" %>
+    <%= select_tag :active, options_for_select([false, true], selected: @broadcast.active), class: "crayons-select"%>
+  </div>
 </div>

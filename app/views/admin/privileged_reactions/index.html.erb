@@ -1,18 +1,14 @@
 <div class="mb-6">
-  <%= search_form_for @q, url: admin_privileged_reactions_path, class: "form-inline" do |f| %>
-
-    <%= f.label :user_username_cont, "User", class: "sr-only" %>
-    <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control" %>
-
+  <%= search_form_for @q, url: admin_privileged_reactions_path, class: "inline-flex" do |f| %>
+    <%= f.search_field :user_username_cont, aria: { label: "Search" }, placeholder: "User", class: "crayons-textfield" %>
     <%= f.select(
           :category_eq,
           options_for_select(["", [t("views.reactions.category.thumbsup"), "thumbsup"], [t("views.reactions.category.thumbsdown"), "thumbsdown"], [t("views.reactions.category.vomit"), "vomit"]], @q.category_eq),
           {},
-          class: "custom-select mx-3",
+          class: "crayons-select mx-3",
           aria: { label: "Action" },
         ) %>
-
-    <%= f.submit "Search", class: "btn btn-secondary" %>
+    <%= f.submit "Search", class: "crayons-btn" %>
   <% end %>
 </div>
 
