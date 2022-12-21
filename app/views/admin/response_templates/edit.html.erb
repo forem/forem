@@ -1,7 +1,7 @@
 <header class="flex items-center mb-6">
   <h2 class="crayons-title">Edit: <%= @response_template.title %></h2>
   <%= form_with(model: [:admin, @response_template], local: true, class: "ml-auto", method: :delete, html: { onsubmit: "return confirm('Are you sure you want to delete this response template?')" }) do |f| %>
-    <%= f.submit "Delete", class: "btn btn-danger" %>
+    <%= f.submit "Delete", class: "crayons-btn crayons-btn--danger" %>
   <% end %>
 </header>
 
