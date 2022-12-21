@@ -1,20 +1,20 @@
-<nav class="flex mb-4" aria-label="Broadcasts navigation">
-  <ul class="nav nav-pills">
-    <li class="nav-item">
-      <%= link_to "All", admin_broadcasts_path, class: "nav-link #{'active' if params[:type_of].blank?}" %>
+<header class="flex items-center mb-6">
+  <h2 class="crayons-title">Broadcasts</h2>
+  <a href="<%= new_admin_broadcast_path %>" class="crayons-btn ml-auto" role="button">Make a New Broadcast</a>
+</header>
+
+<nav class="mb-2 flex justify-between items-center" aria-label="Broadcasts navigation">
+  <ul class="crayons-navigation crayons-navigation--horizontal">
+    <li>
+      <%= link_to "All", admin_broadcasts_path, class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:type_of].blank?}" %>
     </li>
-    <li class="nav-item">
-      <%= link_to "Announcement", admin_broadcasts_path(type_of: :announcement), class: "nav-link #{'active' if params[:type_of] == 'announcement'}" %>
+    <li>
+      <%= link_to "Announcement", admin_broadcasts_path(type_of: :announcement), class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:type_of] == 'announcement'}" %>
     </li>
-    <li class="nav-item">
-      <%= link_to "Welcome", admin_broadcasts_path(type_of: :welcome), class: "nav-link #{'active' if params[:type_of] == 'welcome'}" %>
+    <li>
+      <%= link_to "Welcome", admin_broadcasts_path(type_of: :welcome), class: "crayons-navigation__item #{'crayons-navigation__item--current' if params[:type_of] == 'welcome'}" %>
     </li>
   </ul>
-  <div class="ml-auto">
-    <div class="justify-content-end">
-      <%= link_to "Make A New Broadcast", new_admin_broadcast_path, class: "btn btn-primary" %>
-    </div>
-  </div>
 </nav>
 
 <div class="crayons-card p-6 grid gap-6">
@@ -33,7 +33,7 @@
         <tr>
           <td><%= link_to broadcast.title, admin_broadcast_path(broadcast.id) %></td>
           <td class="justify-content-center">
-            <div class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
+            <div class="c-indicator c-indicator--<%= broadcast.active? ? "success" : "warning" %>">
               <%= broadcast.active? ? "Active" : "Inactive" %>
             </div>
           </td>

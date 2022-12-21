@@ -1,6 +1,8 @@
 module Admin
   class NavigationLinksController < Admin::ApplicationController
     after_action :bust_content_change_caches, only: %i[create update destroy]
+    after_action :bust_navigation_links_cache, only: %i[create update destroy]
+
     ALLOWED_PARAMS = %i[
       name url icon display_to position section
     ].freeze
@@ -51,6 +53,11 @@ module Admin
 
     def navigation_link_params
       params.require(:navigation_link).permit(ALLOWED_PARAMS)
+    end
+
+    def bust_navigation_links_cache
+      Rails.cache.delete("navigation_links")
+      EdgeCache::Bust.call("/async_info/navigation_links")
     end
   end
 end
