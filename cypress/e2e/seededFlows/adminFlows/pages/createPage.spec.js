@@ -24,15 +24,25 @@ describe('Create a new page from the admin portal', () => {
     cy.findByText('Page has been successfully created.').should('exist');
     cy.findByRole('link', { name: 'New page with nav bar' }).click();
 
+    // We start scoping the queries here below because we have navigation links
+    // in the sidebar and the footer, and we want to exclude the footer links.
     // Check nav bar elements are displayed alongside the entered body markdown
-    cy.findByRole('link', { name: 'Nav link 0' });
-    cy.findByRole('link', { name: 'Reading List' });
-    cy.findByRole('heading', { name: 'Hello world', level: 2 });
+    cy.findByRole('main').within(() => {
+      cy.findByRole('link', { name: 'Nav link 0' });
+      cy.findByRole('link', { name: 'Reading List' });
+      cy.findByRole('heading', { name: 'Hello world', level: 2 });
+    });
 
     // Check that the nav bar collapses in mobile screen size
     cy.viewport('iphone-x');
-    cy.findByRole('link', { name: 'Nav link 0' }).should('not.exist');
     cy.findAllByRole('button', { name: 'Navigation menu' }).first().click();
-    cy.findByRole('link', { name: 'Nav link 0' }).should('exist');
+
+    cy.findByRole('main').within(() => {
+      cy.findByRole('link', { name: 'Nav link 0' }).should('not.exist');
+    });
+
+    cy.get('.hamburger').within(() => {
+      cy.findByRole('link', { name: 'Nav link 0' }).should('exist');
+    });
   });
 });
