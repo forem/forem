@@ -61,6 +61,7 @@ function initializePage() {
     }
   }, 1);
 
+  console.log("***********Calling initializers*******************");
   callInitializers();
 
   function freezeScrolling(event) {
