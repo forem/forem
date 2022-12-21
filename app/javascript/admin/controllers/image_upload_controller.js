@@ -37,7 +37,7 @@ export default class ImageUploadController extends Controller {
   onUploadSuccess(result) {
     this.imageResultTarget.classList.remove('hidden');
     const output = `
-      <div>
+      <div class="mb-4">
         <label for="output" class="crayons-field__label">Image URL:</label>
         <textfield id="output" name="output" class="crayons-textfield" readonly>
           ${result}
