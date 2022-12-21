@@ -56,6 +56,7 @@ export const Form = ({
         tagsOnInput={tagsOnInput}
         imagesDefaultValue={imagesDefaultValue}
         imagesOnInput={imagesOnInput}
+        onMainImageUrlChange={onMainImageUrlChange}
         version={version}
       />
     </div>

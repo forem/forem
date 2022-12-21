@@ -37,12 +37,20 @@
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
+    <% if @article.quick_share %>
+    <meta property="og:title" content="<%= @article.cached_user_name %> on <%= community_name %>">
+    <% else %>
     <meta property="og:title" content="<%= @article.title %>" />
+    <% end %>
     <meta property="og:description" content="<%= @article.description || t("views.articles.meta.description") %>" />
     <meta property="og:site_name" content="<%= community_name %>" />
     <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
+    <% if @article.quick_share %>
+    <meta name="twitter:title" content="<%= @article.cached_user_name %> on <%= community_name %>">
+    <% else %>
     <meta name="twitter:title" content="<%= @article.title %>">
+    <% end %>
     <meta name="twitter:description" content="<%= @article.description || t("views.articles.meta.description") %>">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:widgets:new-embed-design" content="on">
@@ -93,12 +101,14 @@
         data-scheduled="<%= @article.scheduled? %>"
         <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
+          <% if !@article.quick_share %>
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
           <% elsif @article.main_image.present? %>
             <div class="crayons-article__cover">
               <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= @article.title %>">
             </div>
+          <% end %>
           <% end %>
 
           <div class="crayons-article__header__meta">

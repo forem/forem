@@ -24,6 +24,7 @@ export const EditorBody = ({
   tagsOnInput,
   imagesDefaultValue,
   imagesOnInput,
+  onMainImageUrlChange,
   switchHelpContext,
   version,
 }) => {
@@ -35,6 +36,9 @@ export const EditorBody = ({
     const imagesList = [...e.detail, ...images];
     setImages(imagesList);
     imagesOnInput(imagesList.join(','));
+    onMainImageUrlChange({
+      links: [imagesList[0]],
+    });
   });
 
   const { setElement } = useDragAndDrop({
