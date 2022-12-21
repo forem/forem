@@ -120,7 +120,11 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             { version == 'v0' ? null : <ContentTitle article={article} /> }
-            { version == 'v0' ? (<a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div style={{padding: "1rem 0"}}>{article.description}</div></a>) : null }
+            { version == 'v0' ? 
+              // eslint-disable-next-line react/no-danger
+              (<a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div class="text-styles" style={{padding: "1rem 0"}} dangerouslySetInnerHTML={{__html: article.processed_html}} /></a>)
+              : null 
+            }
             { version == 'v0' && (
             <div id={`photo-grid-${article.id}`} class="photo-grid" data-images={article.image_list} data-loaded="true">
               <ImageGrid showModal={false}>

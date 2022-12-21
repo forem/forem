@@ -17,6 +17,7 @@ module Homepage
       image_list
       quick_share
       description
+      processed_html
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
