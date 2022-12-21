@@ -41,7 +41,7 @@
           <% if Settings::Campaign.sidebar_image.present? %>
             <div class="row mt-2">
               <div class="col-12">
-                <img alt="Campaign sidebar image" class="img-fluid" src="<%= Settings::Campaign.sidebar_image %>" />
+                <img alt="Campaign sidebar image" class="max-w-100 h-auto" src="<%= Settings::Campaign.sidebar_image %>" />
               </div>
             </div>
           <% end %>
