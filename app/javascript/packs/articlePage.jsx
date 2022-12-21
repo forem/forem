@@ -38,7 +38,10 @@ const multiReactionDrawerTrigger = document.getElementById(
   'reaction-drawer-trigger',
 );
 
-if (multiReactionDrawerTrigger.dataset.initialized !== 'true') {
+if (
+  multiReactionDrawerTrigger &&
+  multiReactionDrawerTrigger.dataset.initialized !== 'true'
+) {
   initializeDropdown({
     triggerElementId: 'reaction-drawer-trigger',
     dropdownContentId: 'reaction-drawer',
