@@ -198,7 +198,7 @@ export class ArticleForm extends Component {
   };
 
   fetchPreview = (e) => {
-    const { previewShowing, bodyMarkdown } = this.state;
+    const { previewShowing, bodyMarkdown, quickShare } = this.state;
     e.preventDefault();
     if (previewShowing) {
       this.setState({
@@ -206,7 +206,7 @@ export class ArticleForm extends Component {
       });
     } else {
       this.showLoadingPreview();
-      previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
+      previewArticle(bodyMarkdown, quickShare, this.showPreview, this.failedPreview);
     }
   };
 

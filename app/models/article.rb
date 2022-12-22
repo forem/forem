@@ -668,6 +668,9 @@ class Article < ApplicationRecord
 
   def original_evaluate_markdown
     fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
+    if quick_share
+      fixed_body_markdown = MarkdownProcessor::Fixer::FixForQuickShare.call(fixed_body_markdown)
+    end
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time

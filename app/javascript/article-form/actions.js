@@ -1,6 +1,6 @@
 import { validateFileInputs } from '../packs/validateFileInputs';
 
-export function previewArticle(payload, successCb, failureCb) {
+export function previewArticle(payload, quickShare, successCb, failureCb) {
   fetch('/articles/preview', {
     method: 'POST',
     headers: {
@@ -10,6 +10,7 @@ export function previewArticle(payload, successCb, failureCb) {
     },
     body: JSON.stringify({
       article_body: payload,
+      quick_share: quickShare
     }),
     credentials: 'same-origin',
   })
