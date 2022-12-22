@@ -3,6 +3,7 @@
   <% if !plucked_article[5] %>
   <%= plucked_article[1] %>
   <% elsif plucked_article[4] != "" %>
+  <p style="margin-bottom: var(--su-1);"><%= plucked_article[6] %></p>
   <img src="<%= plucked_article[4].split(',')[0] %>" style="width: 100%" />
   <% else %>
   <%= plucked_article[6] %>
