@@ -157,10 +157,10 @@
       <div class="flex flex-wrap -mx-4 my-3">
         <div class="w-100 max-w-100 px-4">
           <h3>Notes:</h3>
-          <div class="notes__container" id="notes__<%= feedback_message.id %>">
+          <div id="notes__<%= feedback_message.id %>">
             <% feedback_message.notes&.order(:created_at)&.each do |note| %>
-              <div class="border border-info bg-light rounded my-2 p-2">
-                <span class="badge badge-info float-right">
+              <div class="notes__border my-2 p-2">
+                <span class="c-indicator c-indicator--info float-right">
                   <%= time_ago_in_words note.created_at %> ago
                 </span>
                 <h5 class="font-weight-bold">
