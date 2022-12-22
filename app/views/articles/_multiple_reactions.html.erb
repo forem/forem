@@ -29,6 +29,22 @@
   </div>
 </div>
 
+<button
+  id="reaction-butt-comment"
+  aria-label="<%= t("views.articles.jump_to_comments.aria_label") %>"
+  aria-pressed="false"
+  class="crayons-reaction crayons-reaction--comment crayons-tooltip__activator relative"
+  data-category="comment">
+    <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+      <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
+    </span>
+    <span class="crayons-reaction__count" id="reaction-number-comment"><%= @article.comments_count %></span>
+
+    <span data-testid="tooltip" class="crayons-tooltip__content">
+      <%= t("views.articles.jump_to_comments.label") %>
+    </span>
+</button>
+
 <%= render partial: "articles/reaction_button",
            locals: {
              category: :readinglist,
