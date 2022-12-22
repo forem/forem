@@ -15,6 +15,7 @@ function setReactionCount(reactionName, newCount) {
     reactionButtons.add('activated');
     reactionButtonCounter.textContent = newCount;
     if (reactionEngagementCounter) {
+      reactionEngagementCounter.parentElement.classList.remove('hidden');
       reactionEngagementCounter.textContent = newCount;
     }
   } else {
