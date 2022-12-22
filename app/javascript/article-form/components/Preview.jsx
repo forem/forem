@@ -108,9 +108,6 @@ export const Preview = ({
     );
   }
 
-  console.log("articleState");
-  console.log(articleState);
-
   return (
     <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
