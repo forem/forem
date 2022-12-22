@@ -14,7 +14,7 @@ fr:
         lightbulb: Lightbulb
         raised_hands: Raised hands
         rocket: Rocket
-      drawer_button: Open the reactions drawer
+      drawer_button: Add reaction
       summary:
         count_html:
           one: "%{count}%{start}\_réaction%{end}"
