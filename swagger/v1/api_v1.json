@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 191,
-                    "title": "Those Barren Leaves, Thrones, Dominations172",
-                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
-                    "readable_publish_date": "Dec 5",
-                    "slug": "those-barren-leaves-thrones-dominations172-163k",
-                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "id": 1316,
+                    "title": "Number the Stars172",
+                    "description": "Swag marfa wes anderson mumblecore cornhole. Listicle xoxo polaroid vegan. Fashion axe echo blue...",
+                    "readable_publish_date": "Dec 21",
+                    "slug": "number-the-stars172-4g8l",
+                    "path": "/username382/number-the-stars172-4g8l",
+                    "url": "http://localhost:3000/username382/number-the-stars172-4g8l",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-06T00:47:14Z",
+                    "published_timestamp": "2022-12-21T09:35:16Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "created_at": "2022-12-06T00:47:14Z",
+                    "cover_image": "http://localhost:3000/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "social_image": "http://localhost:3000/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "canonical_url": "http://localhost:3000/username382/number-the-stars172-4g8l",
+                    "created_at": "2022-12-21T09:35:16Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-06T00:47:14Z",
-                    "last_comment_at": "2022-12-06T00:47:14Z",
+                    "published_at": "2022-12-21T09:35:16Z",
+                    "last_comment_at": "2022-12-21T09:35:16Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Scottie \"Tony\" \\:/ Gibson",
+                      "name": "Elisha \"Dorene\" \\:/ Jacobs",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 383,
+                      "user_id": 3033,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
+                      "profile_image": "/uploads/user/profile_image/3033/08ec2a9c-544e-4e53-8440-b31ee28677ab.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/3033/08ec2a9c-544e-4e53-8440-b31ee28677ab.jpeg"
                     },
                     "organization": {
-                      "name": "O'Hara and Sons",
+                      "name": "O'Hara-Kerluke",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
-                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
+                      "profile_image": "/uploads/organization/profile_image/553/67755f9f-2b3f-4af6-85ce-e06837211465.png",
+                      "profile_image_90": "/uploads/organization/profile_image/553/67755f9f-2b3f-4af6-85ce-e06837211465.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 10,
+                  "id": 82,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.209-06:00",
+                  "created_at": "2022-12-21T05:35:17.206-04:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.209-06:00",
+                  "updated_at": "2022-12-21T05:35:17.206-04:00",
                   "tag_list": []
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 11,
+                  "id": 83,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.335-06:00",
+                  "created_at": "2022-12-21T05:35:17.381-04:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 11",
-                  "organization_id": 68,
+                  "name": "Display Ad 83",
+                  "organization_id": 554,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.337-06:00",
+                  "updated_at": "2022-12-21T05:35:17.384-04:00",
                   "tag_list": []
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 12",
-                  "organization_id": 69,
+                  "name": "Display Ad 84",
+                  "organization_id": 555,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 12,
+                  "id": 84,
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.490-06:00",
+                  "created_at": "2022-12-21T05:35:17.606-04:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.493-06:00",
+                  "updated_at": "2022-12-21T05:35:17.611-04:00",
                   "tag_list": []
                 }
               }
@@ -828,8 +828,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1,
-                  "reactable_id": 195,
+                  "id": 78,
+                  "reactable_id": 1320,
                   "reactable_type": "Article"
                 }
               }
@@ -891,8 +891,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 3,
-                  "reactable_id": 197,
+                  "id": 80,
+                  "reactable_id": 1322,
                   "reactable_type": "Article"
                 }
               }
@@ -905,6 +905,49 @@
                 "example": {
                   "error": "unauthorized",
                   "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/readinglist": {
+      "get": {
+        "summary": "Readinglist",
+        "tags": ["readinglist"],
+        "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
+        "operationId": "getReadinglist",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A list of articles in the users readinglist",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
                 }
               }
             }
