@@ -19,6 +19,7 @@ module NotificationsHelper
       I18n.t(
         action,
         user: key_to_link.call("user"),
+        post: link_to(I18n.t("views.notifications.new_post.new_post"), data["article"]["path"], class: "crayons-link fw-bold"),
         if_org: data["organization"] ? I18n.t(if_org, org: key_to_link.call("organization")) : "",
       )
     else

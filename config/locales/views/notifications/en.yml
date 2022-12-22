@@ -65,6 +65,8 @@ en:
       new_post:
         if_org_html: " under %{org}"
         verb_html: "%{user} made a new post%{if_org}"
+        quick_share_verb_html: "%{user} made a %{post}%{if_org}"
+        new_post: "new post"
       reacted:
         and_html: "%{first} and %{last}"
         and_other_html:
@@ -85,3 +87,4 @@ en:
         reason: 'Reason for action:'
         remove_html: Moderators removed the <strong>%{tag}</strong> tag from your post %{title}. Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
         support_html: "Thanks for being part of %{community}! %{email} 🤗"
+      post: "post"

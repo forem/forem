@@ -10,12 +10,14 @@
     <div class="notification__content">
       <header class="mb-4">
         <h2 class="fs-base fw-normal">
-          <%= message_user_acted_maybe_org(json_data, "views.notifications.new_post.verb_html", if_org: "views.notifications.new_post.if_org_html") %>
+          <%= message_user_acted_maybe_org(json_data, "views.notifications.new_post.quick_share_verb_html", if_org: "views.notifications.new_post.if_org_html") %>
         </h2>
         <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"], scope: :"datetime.distance_in_words_ago" %></small></p>
       </header>
 
+      <% if !json_data["article"]["quick_share"] %>
       <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
+      <% end %>
     </div>
   <% end %>
 </div>

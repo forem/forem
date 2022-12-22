@@ -8,7 +8,7 @@
     <% end %>
 
     <div class="notification__content">
-      <% params = { user: link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold"), title: link_to(h(json_data["comment"]["commentable"]["title"]), json_data["comment"]["commentable"]["path"], class: "crayons-link fw-bold") } %>
+      <% params = { user: link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold"), title: link_to(json_data["comment"]["commentable"]["quick_share"] ? t("views.notifications.post") : h(json_data["comment"]["commentable"]["title"]), json_data["comment"]["commentable"]["path"], class: "crayons-link fw-bold") } %>
       <% if notification.action.blank? %>
         <% if json_data["comment"]["created_at"] %>
           <header class="mb-4">

@@ -29,7 +29,8 @@ module Notifications
         path: comment.commentable.path,
         class: {
           name: comment.commentable.class.name
-        }
+        },
+        quick_share: comment.commentable.quick_share
       }
     }
   end
@@ -44,7 +45,8 @@ module Notifications
       updated_at: article.updated_at,
       published_at: article.published_at,
       readable_publish_date: article.readable_publish_date,
-      reading_time: article.reading_time
+      reading_time: article.reading_time,
+      quick_share: article.quick_share
     }
   end
 
