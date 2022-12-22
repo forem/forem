@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useEffect } from 'preact/hooks';
+import ReactImageGrid from "@cordelia273/react-image-grid";
 import { ErrorList } from './ErrorList';
 import { AccessibilitySuggestions } from './AccessibilitySuggestions';
 import { LoadingPreview } from './LoadingPreview';
@@ -44,7 +45,7 @@ function titleArea({
 
   return (
     <header className="crayons-article__header">
-      {coverImage.length > 0 && (
+      {!articleState.quickShare && coverImage.length > 0 && (
         <div
           data-testid="article-form__cover"
           className="crayons-article__cover"
@@ -58,6 +59,7 @@ function titleArea({
           />
         </div>
       )}
+      {!articleState.quickShare && (
       <div className="crayons-article__header__meta">
         {errors && <ErrorList errors={errors} />}
         {!errors && markdownLintErrors?.length > 0 && (
@@ -69,6 +71,7 @@ function titleArea({
 
         <div className="spec-article__tags color-base-60">{tags}</div>
       </div>
+      )}
     </header>
   );
 }
@@ -105,6 +108,9 @@ export const Preview = ({
     );
   }
 
+  console.log("articleState");
+  console.log(articleState);
+
   return (
     <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
@@ -122,6 +128,14 @@ export const Preview = ({
           />
         </div>
       </article>
+      { articleState.quickShare && articleState.imageList != "" ? (
+        <div style={{ maxWidth: 800, maxHeight: 400, height: 400 }}>
+          <ReactImageGrid
+            images={articleState.imageList.split(',')}
+            modal={false}
+          />
+        </div>
+      ) : null }
     </div>
   );
 };
