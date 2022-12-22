@@ -16,11 +16,6 @@ module MarkdownProcessor
         fix_methods.reduce(markdown) { |acc, elem| public_send(elem, acc) }
       end
 
-      def self.auto_embed_links(markdown)
-        markdown = markdown.gsub(/(\{)(.*)(embed) ((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)(.*)(\})/i, '\4');
-        markdown = markdown.gsub(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i, '{% embed \1 %}'+"\n\n");
-      end
-
       def self.fix_methods
         self::METHODS
       end
