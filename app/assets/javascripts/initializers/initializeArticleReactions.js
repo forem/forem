@@ -59,15 +59,23 @@ function getNumReactions(reactionName) {
 }
 
 function reactToArticle(articleId, reaction) {
+  var reactionTotalCount = document.getElementById('reaction_total_count');
+
   // Visually toggle the reaction
   function toggleReaction() {
     var currentNum = getNumReactions(reaction);
     if (hasUserReacted(reaction)) {
       hideUserReaction(reaction);
       setReactionCount(reaction, currentNum - 1);
+      if (reactionTotalCount) {
+        reactionTotalCount.innerText = Number(reactionTotalCount.innerText) - 1;
+      }
     } else {
       showUserReaction(reaction, 'user-animated');
       setReactionCount(reaction, currentNum + 1);
+      if (reactionTotalCount) {
+        reactionTotalCount.innerText = Number(reactionTotalCount.innerText) + 1;
+      }
     }
   }
   var userStatus = document.body.getAttribute('data-user-status');
