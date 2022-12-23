@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { ImageGrid } from "react-fb-image-video-grid";
+import ReactImageGrid from "@cordelia273/react-image-grid";
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
   ArticleCoverImage,
@@ -40,16 +40,6 @@ export const Article = ({
     'crayons-story__bottom',
     'crayons-story__tertiary',
   ];
-
-  const pic = (c) => {
-    return (
-      <img
-        style={{ objectFit: "cover" }}
-        src={c}
-        alt=""
-      />
-    );
-  };
 
   let showCover =
     (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
@@ -127,11 +117,13 @@ export const Article = ({
             }
             { version == 'v0' && (
             <div id={`photo-grid-${article.id}`} class="photo-grid" data-images={article.image_list} data-loaded="true">
-              <ImageGrid showModal={false}>
-                {article.image_list
-                  .filter((arg, i) => ((i <= article.image_list.length)))
-                  .map((a) => pic(a))}
-              </ImageGrid>
+              <ReactImageGrid
+                images={article.image_list}
+                modal={false}
+                onClick={(url) => {
+                  window._onPhotoGridClick(`photo-grid-${article.id}`, article.image_list.indexOf(url));
+                }}
+              />
             </div>
             )}
             <TagList tags={article.tag_list} flare_tag={article.flare_tag} />

@@ -416,12 +416,9 @@ function checkIfNearBottomOfPage() {
 }
 
 function initViewerJS() {
-  window.gallerys = window.gallerys || {};
-  window._onImageClick = window._onImageClick || function(e) {
-    const { galleryid } = e.target.dataset;
-    let nodes = Array.prototype.slice.call( document.querySelectorAll('#' + galleryid + ' img') );
-    let idx = nodes.indexOf(e.target);
-    window.gallerys[galleryid].view(idx);
+  window._photoGrids = window._photoGrids || {};
+  window._onPhotoGridClick = window._onPhotoGridClick || function(photoGridId, idx) {
+    window._photoGrids[photoGridId].view(idx);
   }
 
   const photoGrids = document.querySelectorAll('.photo-grid:not([data-viewerjsloaded="true"])');
@@ -440,15 +437,11 @@ function initViewerJS() {
       photoGridContainer.appendChild(img);
     });
 
-    window.gallerys[photoGrid.getAttribute('id')] = new Viewer(photoGridContainer, {
+    window._photoGrids[photoGrid.getAttribute('id')] = new Viewer(photoGridContainer, {
       toolbar: false,
       tooltip: false,
       title: false
     });
-    for (let img of photoGrid.getElementsByTagName('img')) {
-      img.setAttribute('data-galleryid', photoGrid.getAttribute('id'));
-      img.addEventListener('click', window._onImageClick);
-    };
   }
 }
 
