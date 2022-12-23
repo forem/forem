@@ -15,7 +15,12 @@
         <div>
           <% user_stickies.each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
+              <% if article.quick_share %>
+              <p style="margin-bottom: var(--su-1);"><%= article.description %></p>
+              <img src="<%= article.image_list.split(',')[0] %>" style="width: 100%" />
+              <% else %>
               <%= article.title %>
+              <% end %>
               <div class="crayons-link__secondary -ml-1">
                 <% article.decorate.cached_tag_list_array.each do |tag| %>
                   <span class="mr-1"><span class="opacity-50">#</span><%= tag %></span>
@@ -40,7 +45,9 @@
                 <img src="<%= article.cached_user.profile_image_url_for(length: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.cached_user.name %> profile image">
               </span>
               <div>
+                <% if !article.quick_share %>
                 <%= article.title %>
+                <% end %>
                 <div class="crayons-link__secondary -ml-1">
                   <% article.decorate.cached_tag_list_array.each do |tag| %>
                     <span class="mr-1"><span class="opacity-50">#</span><%= tag %></span>
