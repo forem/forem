@@ -33,7 +33,7 @@ export const EditorBody = ({
   const [images, setImages] = useState(imagesDefaultValue != '' ? imagesDefaultValue.split(',') : []);
 
   document.addEventListener("upload_image_success", (e) => {
-    const imagesList = [...e.detail, ...images];
+    const imagesList = [...images, ...e.detail];
     setImages(imagesList);
     imagesOnInput(imagesList.join(','));
     onMainImageUrlChange({
