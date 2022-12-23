@@ -34,7 +34,7 @@
                     count: actors.size - 1)
                 end,
         # your article/comment or the actual title of the article/comment
-        title: link_to(reactable_data["title"].blank? ? t("views.notifications.reacted.your.#{reactable_data['class']['name'].downcase}") : h(reactable_data["title"]), reactable_data["path"], class: "crayons-link fw-bold"),
+        title: link_to(reactable_data["title"].blank? ? t("views.notifications.reacted.your.#{reactable_data['class']['name'].downcase}") : t("views.notifications.post"), reactable_data["path"], class: "crayons-link fw-bold"),
         end: "</span>".html_safe,
         reactions: safe_join(
           reaction_categories.filter_map do |cat|

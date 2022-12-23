@@ -12,7 +12,7 @@
          ) %>
     <% else %>
       <% title_link = link_to(
-           sanitize(notification.json_data["reaction"]["reactable"]["title"]),
+           t("views.notifications.post"),
            notification.json_data["reaction"]["reactable"]["path"],
            class: "crayons-link fw-bold",
          ) %>

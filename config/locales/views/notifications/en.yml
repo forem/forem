@@ -41,7 +41,7 @@ en:
         single_html: "%{name} followed you!"
       load: Load More
       mention:
-        article_html: "%{user} mentioned you in a post%{if_org}"
+        article_html: "%{user} mentioned you in a %{post}%{if_org}"
         comment_html: "%{user} mentioned you in a comment"
         article_mobile: "%{user} mentioned you in the post %{title}"
         comment_mobile: "%{user} mentioned you in a comment on %{title}"
