@@ -49,6 +49,7 @@ module UnifiedEmbed
 
       req = method.new(uri.request_uri)
       req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      req["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
       response = http.request(req)
 
       case response

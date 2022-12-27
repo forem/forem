@@ -1,6 +1,8 @@
 # This class provides methods for getting structured metadata properties for
 # Open Graph usage
 
+require 'rest-client'
+
 # @note A wrapper around the metainspector gem
 class OpenGraph
   delegate :meta, :meta_tags, :images, to: :page
@@ -85,7 +87,11 @@ class OpenGraph
 
   def fetch_html(url)
     Rails.cache.fetch("#{url}_open_graph_html", expires_in: CACHE_EXPIRY_IN_MINUTES.minutes) do
-      Net::HTTP.get(URI(url))
+      # Net::HTTP.get(URI(url))
+      response = RestClient.get(url, headers = {
+        "user_agent" => "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      })
+      response.body
     end
   end
 
