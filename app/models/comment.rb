@@ -230,6 +230,8 @@ class Comment < ApplicationRecord
   end
 
   def extracted_evaluate_markdown
+    return unless processed_content
+
     self.processed_html = processed_content.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
