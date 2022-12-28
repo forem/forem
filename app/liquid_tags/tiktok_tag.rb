@@ -1,7 +1,7 @@
 class TiktokTag < LiquidTagBase
   PARTIAL = "liquids/tiktok".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:www\.|m\.|)?(?:tiktok\.com)/(.*)/video/(.*)?}
+  REGISTRY_REGEXP = %r{https?://(?:www\.|m\.|)?(?:tiktok\.com)/(.*)/video/([0-9]+)(.*)?}
   # rubocop:enable Layout/LineLength
   REGEXP_OPTIONS = [REGISTRY_REGEXP].freeze
 
@@ -9,7 +9,8 @@ class TiktokTag < LiquidTagBase
     super
 
     input   = CGI.unescape_html(strip_tags(id))
-    @id     = parse_id_or_url(input)
+    match = input.match(REGISTRY_REGEXP)
+    @id     = match[2]
     @width  = '100%'
     @height = 738
   end

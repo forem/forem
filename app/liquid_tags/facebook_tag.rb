@@ -10,8 +10,6 @@ class FacebookTag < LiquidTagBase
 
     input   = CGI.unescape_html(strip_tags(id))
     match = input.match(REGISTRY_REGEXP)
-    p 'match.match'
-    p match
     @id     = parse_id_or_url(input)
     @type   = ((match[2] == 'videos' || match[1] == 'watch') ? 'video' : 'post');
     @width  = '100%'
