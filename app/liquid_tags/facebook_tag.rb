@@ -1,7 +1,7 @@
 class FacebookTag < LiquidTagBase
   PARTIAL = "liquids/facebook".freeze
   # rubocop:disable Layout/LineLength
-  REGISTRY_REGEXP = %r{https?://(?:www\.|m\.|)?(?:facebook\.com)/([a-zA-Z]+)/(posts|videos|)(.*)?}
+  REGISTRY_REGEXP = %r{https?://(?:www\.|m\.|)?(?:facebook\.com)/([a-zA-Z0-9\.]+)/(posts|videos|)(.*)?}
   # rubocop:enable Layout/LineLength
   REGEXP_OPTIONS = [REGISTRY_REGEXP].freeze
 
