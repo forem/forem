@@ -267,6 +267,8 @@ export class ArticleForm extends Component {
       previewResponse: response,
       errors: null,
     });
+    // eslint-disable-next-line no-undef
+    QSFBEmbedParse(100);
   };
 
   handleOrgIdChange = (e) => {

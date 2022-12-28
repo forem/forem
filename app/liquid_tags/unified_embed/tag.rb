@@ -43,35 +43,40 @@ module UnifiedEmbed
     end
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
-      uri = URI.parse(input.split.first)
-      http = Net::HTTP.new(uri.host, uri.port)
-      http.use_ssl = true if http.port == 443
-
-      req = method.new(uri.request_uri)
-      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
-      req["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
-      response = http.request(req)
-
-      case response
-      when Net::HTTPSuccess
+      if input.match(/(https|http)\:\/\/(www\.|m\.|)tiktok.com\/(.*)/i) || input.match(/(https|http)\:\/\/(www\.|m\.|)facebook.com\/(.*)/i)
         input
-      when Net::HTTPRedirection
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if retries.zero?
-
-        validate_link(input: response["location"], retries: retries - 1)
-      when Net::HTTPMethodNotAllowed
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if retries.zero?
-
-        validate_link(input: input, retries: retries, method: Net::HTTP::Get)
-      when Net::HTTPNotFound
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found") if retries.zero?
-
-        validate_link(input: input, retries: retries, method: Net::HTTP::Get)
       else
-        raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+        uri = URI.parse(input.split.first)
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true if http.port == 443
+
+        req = method.new(uri.request_uri)
+        req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+        response = http.request(req)
+
+        case response
+        when Net::HTTPSuccess
+          input
+        when Net::HTTPRedirection
+          raise StandardError, I18n.t("liquid_tags.unified_embed.tag.too_many_redirects") if retries.zero?
+
+          validate_link(input: response["location"], retries: retries - 1)
+        when Net::HTTPMethodNotAllowed
+          raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url") if retries.zero?
+
+          validate_link(input: input, retries: retries, method: Net::HTTP::Get)
+        when Net::HTTPNotFound
+          raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found") if retries.zero?
+
+          validate_link(input: input, retries: retries, method: Net::HTTP::Get)
+        else
+          input
+          # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+        end
       end
     rescue SocketError
-      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      input
+      # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
 
     def self.handle_listings_disabled!(link)

@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { useLayoutEffect, useEffect } from 'preact/hooks';
 import ReactImageGrid from "@cordelia273/react-image-grid";
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
@@ -50,6 +51,12 @@ export const Article = ({
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
   const version = article.image_list.length > 0 || article.quick_share ? 'v0' : null;
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    // eslint-disable-next-line no-undef
+    QSFBEmbedParse(2000);
+  }, []);
 
   return (
     <article

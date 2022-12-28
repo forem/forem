@@ -1,4 +1,4 @@
-/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick, Viewer */
+/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick, Viewer, QSFBEmbedParse */
 
 var client;
 
@@ -453,7 +453,10 @@ function initScrolling() {
     checkIfNearBottomOfPage();
   }
   window.addEventListener('photoGridLoaded', () => {
+    // eslint-disable-next-line no-console
+    console.log("photoGridLoaded");
     setTimeout(initViewerJS, 500);
     setTimeout(initViewerJS, 2000);
+    QSFBEmbedParse(2000);
   });
 }

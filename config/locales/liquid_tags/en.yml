@@ -111,3 +111,5 @@ en:
       invalid_wikipedia_url: Invalid Wikipedia URL
     youtube_tag:
       invalid_youtube_id: Invalid YouTube ID or URL
+    facebook_tag:
+      invalid_facebook_url: Invalid Faebook URL
