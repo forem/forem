@@ -166,7 +166,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             }
           },
           ArticleIndex: {
-            description: "Resprentation of an article or post returned in a list",
+            description: "Representation of an article or post returned in a list",
             type: :object,
             properties: {
               type_of: { type: :string },
@@ -227,6 +227,33 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
             }
+          },
+          SharedPodcast: {
+            description: "The podcast the resource belongs to",
+            type: "object",
+            properties: {
+              title: { type: :string },
+              slug: { type: :string },
+              image_url: { description: "", type: :string, format: :url }
+            }
+          },
+          PodcastEpisodeIndex: {
+            description: "Representation of podcast episodes returned in a list",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int32 },
+              class_name: "PodcastEpisode",
+              path: { type: :string, format: :url, nullable: true },
+              title: { type: :string },
+              image_url: { description: "", type: :string, format: :url },
+              podcast: { "$ref": "#/components/schemas/SharedPodcast" }
+            },
+            required: %w[type_of id title description cover_image readable_publish_date
+                         social_image tag_list tags slug path url canonical_url comments_count
+                         positive_reactions_count public_reactions_count created_at edited_at
+                         crossposted_at published_at last_comment_at published_timestamp user
+                         reading_time_minutes]
           }
         }
       }
