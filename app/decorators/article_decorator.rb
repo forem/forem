@@ -67,7 +67,11 @@ class ArticleDecorator < ApplicationDecorator
     if search_optimized_title_preamble.present? && !user_signed_in
       "#{search_optimized_title_preamble}: #{title}"
     else
-      title
+      if quick_share
+        "#{cached_user_name} on #{Settings::Community.community_name}"
+      else
+        title
+      end
     end
   end
 
