@@ -70,13 +70,11 @@ module UnifiedEmbed
 
           validate_link(input: input, retries: retries, method: Net::HTTP::Get)
         else
-          input
-          # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+          raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
         end
       end
     rescue SocketError
-      input
-      # raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
+      raise StandardError, I18n.t("liquid_tags.unified_embed.tag.invalid_url")
     end
 
     def self.handle_listings_disabled!(link)
