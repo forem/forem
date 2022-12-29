@@ -121,12 +121,12 @@ export const Article = ({
             { version == 'v0' ? null : <ContentTitle article={article} /> }
             <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div></a>
             { version == 'v0' && (
-            <div id={`photo-grid-${article.id}`} class="photo-grid" data-images={article.image_list} data-loaded="true">
+            <div id={`photo-grid-${article.id}`} class="photo-grid"  data-href={article.path} data-images={article.image_list} data-loaded="true">
               <ReactImageGrid
                 images={article.image_list}
                 modal={false}
-                onClick={(url) => {
-                  window._onPhotoGridClick(`photo-grid-${article.id}`, article.image_list.indexOf(url));
+                onClick={() => {
+                  window.location.href = article.path;
                 }}
               />
             </div>

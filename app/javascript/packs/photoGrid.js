@@ -15,7 +15,7 @@ function loadForm() {
 
     for (let i = 0; i < photoGrids.length; i++) {
       const photoGrid = photoGrids[i];
-      const { images, loaded } = photoGrid.dataset;
+      const { images, loaded, href } = photoGrid.dataset;
       if (loaded) continue;
       const imagesArr = images.split(',').filter(n => n);
       const id = Math.random() //or some such identifier 
@@ -31,7 +31,11 @@ function loadForm() {
             images={imagesArr}
             modal={false}
             onClick={(url) => {
-              window._onPhotoGridClick(photoGrid.getAttribute('id'), imagesArr.indexOf(url));
+              if (href) {
+                window.location.href = href;
+              } else {
+                window._onPhotoGridClick(photoGrid.getAttribute('id'), imagesArr.indexOf(url));
+              }
             }}
           />
         </div>,
