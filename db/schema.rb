@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_16_143123) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_29_155156) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -122,10 +122,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_16_143123) do
     t.string "password"
     t.string "path"
     t.integer "positive_reactions_count", default: 0, null: false
+    t.text "preview_link"
     t.integer "previous_positive_reactions_count", default: 0
     t.integer "previous_public_reactions_count", default: 0, null: false
     t.integer "privileged_users_reaction_points_sum", default: 0
     t.text "processed_html"
+    t.text "processed_preview_link"
     t.integer "public_reactions_count", default: 0, null: false
     t.boolean "published", default: false
     t.datetime "published_at", precision: nil

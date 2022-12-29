@@ -336,6 +336,8 @@ function buildArticleHTML(article, currentUserId = null) {
       </h3>`;
     }
 
+    title += !article.image_list.length && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
+
     return `<article class="crayons-story"
       data-article-path="${article.path}"
       id="article-${article.id}"

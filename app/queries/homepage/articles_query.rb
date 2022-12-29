@@ -18,6 +18,7 @@ module Homepage
       quick_share
       description
       processed_html
+      processed_preview_link
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100

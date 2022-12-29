@@ -180,6 +180,7 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :processed_preview
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -298,7 +299,7 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
-           :comments_count, :public_reactions_count, :cached_tag_list, :image_list,
+           :comments_count, :public_reactions_count, :cached_tag_list, :image_list, :processed_preview_link,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
@@ -309,7 +310,7 @@ class Article < ApplicationRecord
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-           :comments_count, :public_reactions_count, :cached_tag_list, :image_list,
+           :comments_count, :public_reactions_count, :cached_tag_list, :image_list, :processed_preview_link,
            :main_image, :main_image_background_hex_color, :updated_at,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
@@ -355,7 +356,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list, :quick_share
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list, :quick_share, :processed_preview_link
                    )
                }
 
@@ -409,6 +410,23 @@ class Article < ApplicationRecord
 
   def search_id
     "article_#{id}"
+  end
+
+  def processed_preview
+    preview_links = body_markdown.scan(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i)
+    if preview_links
+      preview_links.each do |preview|
+        preview_link = preview[0]
+        
+        fixed_preview = MarkdownProcessor::Fixer::FixForQuickShare.call(preview[0])
+        parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
+        parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content)
+
+        self.preview_link = preview_link
+        self.processed_preview_link = parsed_markdown.finalize
+        break
+      end
+    end
   end
 
   def processed_description

@@ -30,7 +30,8 @@ module Homepage
       :user_id,
       :description,
       :quick_share,
-      :processed_html
+      :processed_html,
+      :processed_preview_link
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes

@@ -7,3 +7,28 @@
     mask-image: linear-gradient(180deg,#000 60%,transparent);
     max-height: 200px;
 }
+
+.preview .c-embed {
+    display: table;
+}
+
+.preview .c-embed__cover {
+    float: left;
+    max-width: 40%;
+}
+
+.preview .c-embed__body {
+    float: right;
+    max-width: 60%;
+    padding-left: var(--su-3);
+}
+
+.preview .c-embed__body .truncate-at-3 {
+    -webkit-line-clamp: 2
+}
+
+@media screen and (min-width: 640px) {
+    .preview .c-embed {
+        padding: var(--su-3);
+    }
+}
