@@ -673,6 +673,12 @@ class Article < ApplicationRecord
     end
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
+
+    doc = Nokogiri::HTML(parsed_markdown.finalize)
+    doc.search('.c-embed').remove()
+    self.processed_html = doc.to_html
+    self.description = processed_description if description.blank?
+
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
