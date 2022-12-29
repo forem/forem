@@ -14,10 +14,12 @@
         </header>
         <div>
           <% user_stickies.each_with_index do |article, index| %>
-            <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
+            <a class="crayons-link crayons-link--contentful" style="color: unset !important;" href="<%= article.path %>">
               <% if article.quick_share %>
-              <p style="margin-bottom: var(--su-1);"><%= article.description %></p>
+              <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= article.description %></p>
+              <% if article.image_list != '' %>
               <img src="<%= article.image_list.split(',')[0] %>" style="width: 100%" />
+              <% end %>
               <% else %>
               <%= article.title %>
               <% end %>
@@ -46,8 +48,10 @@
               </span>
               <div>
                 <% if article.quick_share %>
-                <p style="margin-bottom: var(--su-1);"><%= article.description %></p>
+                <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= article.description %></p>
+                <% if article.image_list != '' %>
                 <img src="<%= article.image_list.split(',')[0] %>" style="width: 100%" />
+                <% end %>
                 <% else %>
                 <%= article.title %>
                 <% end %>

@@ -1,12 +1,12 @@
 
-<a class="crayons-link crayons-link--contentful" href="<%= plucked_article[0] %>">
+<a class="crayons-link crayons-link--contentful" style="color: unset !important;" href="<%= plucked_article[0] %>">
   <% if !plucked_article[5] %>
   <%= plucked_article[1] %>
   <% elsif plucked_article[4] != "" %>
-  <p style="margin-bottom: var(--su-1);"><%= plucked_article[6] %></p>
+  <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= plucked_article[6] %></p>
   <img src="<%= plucked_article[4].split(',')[0] %>" style="width: 100%" />
   <% else %>
-  <%= plucked_article[6] %>
+  <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= plucked_article[6] %></p>
   <% end %>
   <% if show_comment_count %>
     <div class="crayons-link__secondary">

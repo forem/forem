@@ -119,7 +119,7 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             { version == 'v0' ? null : <ContentTitle article={article} /> }
-            <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div class="text-styles" style={{padding: "1rem 0"}} dangerouslySetInnerHTML={{__html: article.processed_html}} /></a>
+            <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div></a>
             { version == 'v0' && (
             <div id={`photo-grid-${article.id}`} class="photo-grid" data-images={article.image_list} data-loaded="true">
               <ReactImageGrid

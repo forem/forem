@@ -324,7 +324,7 @@ function buildArticleHTML(article, currentUserId = null) {
 
     var title = ``;
     if (article.quick_share) {
-      title = `<a href="${article.path}" style="color: unset !important;" id="article-link-${article.id}"><div class="text-styles" style="padding: 1rem 0">${article.processed_html}</div></a>`;
+      title = `<a href="${article.path}" style="color: unset !important;" id="article-link-${article.id}"><div class="text-styles text-truncate" style="padding: 1rem 0">${article.description}</div></a>`;
       if (article.image_list.length > 0) {
         title += `<div id="photo-grid-${article.id}" class="photo-grid" data-images="${article.image_list.join()}"></div>`;
       }

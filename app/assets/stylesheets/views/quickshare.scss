@@ -1,3 +1,9 @@
 .crayons-article__body .fb-post, .crayons-article__body .fb-video {
     text-align: center !important;
 }
+
+.crayons-article__body .text-truncate, .crayons-story__body .text-truncate, .crayons-link--contentful .text-truncate {
+    -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
+    mask-image: linear-gradient(180deg,#000 60%,transparent);
+    max-height: 200px;
+}

@@ -1,5 +1,5 @@
 article_attributes_to_include = %i[
-  title path id user_id comments_count public_reactions_count organization_id image_list processed_html quick_share
+  title path id user_id comments_count public_reactions_count organization_id image_list description processed_html quick_share
   reading_time video_thumbnail_url video video_duration_in_minutes
   experience_level_rating experience_level_rating_distribution
 ]
