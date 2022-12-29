@@ -25,6 +25,9 @@
         <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
+      <% if Settings::Authentication.facebook_key %>
+      <meta property="fb:app_id" content="<%= Settings::Authentication.facebook_key %>" />
+      <% end %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
       <%= favicon_link_tag Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>
       <link rel="apple-touch-icon" href="<%= optimized_image_url(Settings::General.logo_png, width: 180, fetch_format: "png") %>">
