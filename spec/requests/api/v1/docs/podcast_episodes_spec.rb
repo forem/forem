@@ -6,10 +6,11 @@ require "swagger_helper"
 
 RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
   # let(:api_secret) { create(:api_secret) }
-  let(:user) { api_secret.user }
+  # let(:user) { api_secret.user }
   let(:Accept) { "application/vnd.forem.api-v1+json" }
+  let!(:podcast) { create(:podcast, slug: "codenewbie") }
 
-  before { user.add_role(:admin) }
+  before { create(:podcast_episode, podcast: podcast) }
 
   describe "GET /podcast_episodes" do
     path "/api/podcast_episodes" do
@@ -31,10 +32,26 @@ RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
                   schema: { type: :string },
                   example: "codenewbie"
 
-        response "200", "A List of Articles" do
+        response "200", "A List of Podcast episodes" do
           let(:"api-key") { nil }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/PodcastEpisodeIndex" }
+          add_examples
+
+          run_test!
+        end
+
+        response "200", "A List of Podcast episodes with username" do
+          let(:username) { "codenewbie" }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/PodcastEpisodeIndex" }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Unknown Podcast username" do
+          let(:username) { "unknown" }
           add_examples
 
           run_test!

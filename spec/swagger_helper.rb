@@ -204,6 +204,20 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          PodcastEpisodeIndex: {
+            description: "Representation of a podcast episode returned in a list",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int32 },
+              class_name: { type: :string },
+              path: { type: :string, format: "path" },
+              title: { type: :string },
+              image_url: { description: "Podcast episode image url or podcast image url", type: :string, format: :url },
+              podcast: { "$ref": "#/components/schemas/SharedPodcast" }
+            },
+            required: %w[type_of class_name id path title image_url podcast]
+          },
           SharedUser: {
             description: "The resource creator",
             type: "object",
@@ -234,26 +248,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             properties: {
               title: { type: :string },
               slug: { type: :string },
-              image_url: { description: "", type: :string, format: :url }
+              image_url: { description: "Podcast image url", type: :string, format: :url }
             }
-          },
-          PodcastEpisodeIndex: {
-            description: "Representation of podcast episodes returned in a list",
-            type: :object,
-            properties: {
-              type_of: { type: :string },
-              id: { type: :integer, format: :int32 },
-              class_name: "PodcastEpisode",
-              path: { type: :string, format: :url, nullable: true },
-              title: { type: :string },
-              image_url: { description: "", type: :string, format: :url },
-              podcast: { "$ref": "#/components/schemas/SharedPodcast" }
-            },
-            required: %w[type_of id title description cover_image readable_publish_date
-                         social_image tag_list tags slug path url canonical_url comments_count
-                         positive_reactions_count public_reactions_count created_at edited_at
-                         crossposted_at published_at last_comment_at published_timestamp user
-                         reading_time_minutes]
           }
         }
       }
