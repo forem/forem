@@ -10,7 +10,7 @@ fr:
     existing_published_article_id_validator:
       default: doit être un identifiant d'article publié valide
     profile_validator:
-      too_long: est trop long
+      bio_too_long: La biographie est trop longue
     unique_cross_model_slug_validator:
       is_taken: est déjà pris
     valid_domain_csv_validator:

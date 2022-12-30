@@ -275,7 +275,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
-    
+
     & .react-colorful {
       padding: var(--su-2);
       border-radius: var(--radius);
@@ -283,7 +283,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
       box-shadow: var(--shadow-1);
       width: 220px;
       height: 160px;
-      
+
       &__pointer {
         cursor: pointer;
       }
