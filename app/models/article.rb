@@ -420,7 +420,7 @@ class Article < ApplicationRecord
         
         fixed_preview = MarkdownProcessor::Fixer::FixForQuickShare.call(preview[0])
         parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
-        parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content)
+        parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content, source: self, user: user, liquid_tag_options: { is_preview: true })
 
         self.preview_link = preview_link
         self.processed_preview_link = parsed_markdown.finalize

@@ -34,7 +34,12 @@ module UnifiedEmbed
       # If the link is invalid, we raise an error encouraging the user to
       # check their link and try again.
       validated_link = validate_link(input: stripped_input)
-      klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
+      liquid_tag_options = parse_context.instance_variable_get(:@template_options)[:liquid_tag_options]
+      if liquid_tag_options != nil && liquid_tag_options[:is_preview]
+        klass = OpenGraphTag
+      else
+        klass = UnifiedEmbed::Registry.find_liquid_tag_for(link: validated_link)
+      end
 
       # Why the __send__?  Because a LiquidTagBase class "privatizes"
       # the `.new` method.  And we want to instantiate the specific
