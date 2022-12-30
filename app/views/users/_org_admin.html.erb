@@ -83,7 +83,7 @@
     </div>
     <div class="crayons-field">
       <%= f.label :slug, class: "crayons-field__label" %>
-      <%= f.text_field :slug, maxlength: 18, minlength: 2, class: "crayons-textfield" %>
+      <%= f.text_field :slug, maxlength: 30, minlength: 2, class: "crayons-textfield" %>
       <p class="crayons-field__description"><%= t("views.settings.org.admin.form.slug", slug: app_url(@organization.slug)) %></p>
     </div>
 
