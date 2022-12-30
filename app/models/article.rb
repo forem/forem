@@ -424,6 +424,13 @@ class Article < ApplicationRecord
 
         self.preview_link = preview_link
         self.processed_preview_link = parsed_markdown.finalize
+
+        doc = Nokogiri::HTML(self.processed_preview_link)
+        doc.xpath('//img').each do |img|
+          self.social_image = img['src']
+          break
+        end
+
         break
       end
     end
