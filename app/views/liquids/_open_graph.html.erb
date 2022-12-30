@@ -31,7 +31,7 @@
     </div>
   <% else %>
     <a href="<%= url %>" target="_blank" rel="noopener noreferrer">
-      <%= url_domain %>
+      <%= url.truncate(65) %>
     </a>
   <% end %>
 </div>
