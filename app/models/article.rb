@@ -691,14 +691,15 @@ class Article < ApplicationRecord
     end
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
+    processed_html = parsed_markdown.finalize
 
-    doc = Nokogiri::HTML(parsed_markdown.finalize)
-    doc.search('.c-embed').remove()
+    doc = Nokogiri::HTML(processed_html)
+    doc.search('.c-embed', 'a', 'img').remove()
     self.processed_html = doc.to_html
     self.description = processed_description if description.blank?
 
     self.reading_time = parsed_markdown.calculate_reading_time
-    self.processed_html = parsed_markdown.finalize
+    self.processed_html = processed_html
 
     if parsed.front_matter.any?
       evaluate_front_matter(parsed.front_matter)
