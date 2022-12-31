@@ -71,6 +71,7 @@ module UnifiedEmbed
 
           validate_link(input: input, retries: retries, method: Net::HTTP::Get)
         when Net::HTTPNotFound
+        when Net::HTTPForbidden
           raise StandardError, I18n.t("liquid_tags.unified_embed.tag.not_found") if retries.zero?
 
           validate_link(input: input, retries: retries, method: Net::HTTP::Get)
