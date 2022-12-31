@@ -447,6 +447,9 @@ class Article < ApplicationRecord
             file_path = "#{upload_path}/#{title}#{File.extname(tempfile.path)}"
             FileUtils.mv(tempfile.path, file_path)
             self.social_image = URL.url("#{relative_upload_path}/#{title}#{File.extname(tempfile.path)}")
+
+            img['src'] = self.social_image
+            self.processed_preview_link = doc.to_html
           end
 
           break
