@@ -413,7 +413,11 @@ class Article < ApplicationRecord
   end
 
   def processed_preview
+    self.preview_link = ''
+    self.processed_preview_link = ''
+
     preview_links = body_markdown.scan(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i)
+
     if preview_links
       preview_links.each do |preview|
         preview_link = preview[0]
