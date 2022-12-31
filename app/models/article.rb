@@ -428,6 +428,20 @@ class Article < ApplicationRecord
         doc = Nokogiri::HTML(self.processed_preview_link)
         doc.xpath('//img').each do |img|
           self.social_image = img['src']
+
+          # try download preview image
+          relative_upload_path = "/uploads/previews"
+          upload_path = "#{Rails.root}/public#{relative_upload_path}"
+          Dir.mkdir(upload_path) unless Dir.exist?(upload_path)
+
+          tempfile = Down.download(img['src'], max_redirects: 3);
+
+          if tempfile
+            file_path = "#{upload_path}/#{title}#{File.extname(tempfile.path)}"
+            FileUtils.mv(tempfile.path, file_path)
+            self.social_image = URL.url("#{relative_upload_path}/#{title}#{File.extname(tempfile.path)}")
+          end
+
           break
         end
 

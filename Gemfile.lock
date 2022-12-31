@@ -226,6 +226,8 @@ GEM
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
       railties (>= 3.2)
+    down (5.4.0)
+      addressable (~> 2.8)
     e2mmap (0.1.0)
     easy_translate (0.5.1)
       thread
@@ -984,6 +986,7 @@ DEPENDENCIES
   devise_invitable (~> 2.0.6)
   dogstatsd-ruby (~> 4.8)
   dotenv-rails (~> 2.8.1)
+  down (~> 5.4)
   easy_translate (~> 0.5.1)
   email_validator (~> 2.2)
   emoji_regex (~> 3.2)
