@@ -417,6 +417,14 @@ class Article < ApplicationRecord
     if preview_links
       preview_links.each do |preview|
         preview_link = preview[0]
+
+        if preview_link.match(/\.(png|jpg|gif)$/i)
+          continue
+        end
+
+        if preview_link.match(/#{URL.domain}/i)
+          continue
+        end
         
         fixed_preview = MarkdownProcessor::Fixer::FixForQuickShare.call(preview[0])
         parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
