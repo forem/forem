@@ -17,19 +17,24 @@
     -webkit-line-clamp: 2
 }
 
+.preview .c-embed__cover img {
+    width: 100vw;
+}
+
 @media screen and (min-width: 640px) {
     .preview .c-embed {
         padding: var(--su-3);
     }
 
     .preview .c-embed__cover {
-        float: left;
-        max-width: 40%;
+        float: right;
+        max-width: 30%;
+        margin-bottom: 0;
     }
     
     .preview .c-embed__body {
-        float: right;
-        max-width: 60%;
-        padding-left: var(--su-3);
+        float: left;
+        max-width: 70%;
+        padding-right: var(--su-3);
     }
 }

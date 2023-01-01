@@ -415,6 +415,7 @@ class Article < ApplicationRecord
   def processed_preview
     self.preview_link = ''
     self.processed_preview_link = ''
+    self.social_image = self.main_image.present? ? self.main_image : ''
 
     preview_links = body_markdown.scan(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i)
 
@@ -429,32 +430,39 @@ class Article < ApplicationRecord
         parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
         parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content, source: self, user: user, liquid_tag_options: { is_preview: true })
 
-        self.preview_link = preview_link
-        self.processed_preview_link = parsed_markdown.finalize
-
-        doc = Nokogiri::HTML(self.processed_preview_link)
-        doc.xpath('//img').each do |img|
-          self.social_image = img['src']
-
-          # try download preview image
-          relative_upload_path = "/uploads/previews"
-          upload_path = "#{Rails.root}/public#{relative_upload_path}"
-          Dir.mkdir(upload_path) unless Dir.exist?(upload_path)
-
-          tempfile = Down.download(img['src'], max_redirects: 3);
-
-          if tempfile
-            file_path = "#{upload_path}/#{title}#{File.extname(tempfile.path)}"
-            FileUtils.mv(tempfile.path, file_path)
-            self.social_image = URL.url("#{relative_upload_path}/#{title}#{File.extname(tempfile.path)}")
-
-            img['src'] = self.social_image
-            self.processed_preview_link = doc.to_html
-          end
-
-          break
+        if self.preview_link == ''
+          self.preview_link = preview_link
+          self.processed_preview_link = parsed_markdown.finalize
         end
 
+        next if social_image.present?
+
+        begin
+          doc = Nokogiri::HTML(self.processed_preview_link)
+          doc.xpath('//img').each do |img|
+            self.social_image = img['src']
+
+            # try download preview image
+            relative_upload_path = "/uploads/previews"
+            upload_path = "#{Rails.root}/public#{relative_upload_path}"
+            filename = self.quick_share ? title : SecureRandom.uuid
+            Dir.mkdir(upload_path) unless Dir.exist?(upload_path)
+
+            tempfile = Down.download(img['src'], max_redirects: 3);
+
+            if tempfile
+              file_path = "#{upload_path}/#{filename}#{File.extname(tempfile.original_filename)}"
+              FileUtils.mv(tempfile.path, file_path)
+              self.social_image = URL.url("#{relative_upload_path}/#{filename}#{File.extname(tempfile.original_filename)}")
+
+              img['src'] = Images::Optimizer.call(self.social_image, resize: { width: 180, height: 180, resizing_type: 'auto', enlarge: true, extend: true }).gsub(",", "%2C")
+              self.processed_preview_link = doc.to_html
+            end
+
+            break
+          end
+        rescue StandardError => e
+        end
         break
       end
     end

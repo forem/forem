@@ -128,10 +128,15 @@ module MarkdownProcessor
     def parse_html(html)
       return html if html.blank?
 
-      Html::Parser
+      parse = Html::Parser
         .new(html)
         .remove_nested_linebreak_in_list
-        .prefix_all_images
+      
+      if !(@liquid_tag_options[:liquid_tag_options] && @liquid_tag_options[:liquid_tag_options][:is_preview])
+        parse.prefix_all_images
+      end
+
+      parse
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
