@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\config",
+    "\\config\\locales",
+    "\\config\\locales\\controllers",
+    "\\config\\locales\\controllers\\admin",
+    "\\config\\locales\\decorators",
+    "\\config\\locales\\helpers",
+    "\\config\\locales\\lib",
+    "\\config\\locales\\liquid_tags",
+    "\\config\\locales\\mailers"
+  ],
+  "SelectedNode": "\\config\\locales\\controllers\\admin\\vi.yml",
+  "PreviewInSolutionExplorer": false
+}

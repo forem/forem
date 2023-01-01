@@ -4,9 +4,9 @@ vi:
     generated: 'Mã Khóa API của bạn đã được tạo: %{secret}'
     revoked: Mã Khóa API của bạn đã bị thu hồi.
   application_controller:
-    bad_request: 'Lỗi: Yêu cầu tệ'
-    not_authorized: 'Lỗi: không được ủy quyền'
-    please_sign_in: làm ơn đăng nhập
+    bad_request: 'Lỗi: Bad Request (lỗi yêu cầu)'
+    not_authorized: 'Lỗi: Not authorized (không được ủy quyền)'
+    please_sign_in: Xin hãy đăng nhập
   articles_controller:
     deleted: Bài viết đã xóa thành công.
   comments_controller:
@@ -15,13 +15,13 @@ vi:
       failure: Nhận xét đã tồn tại
       authorization_error: Đặc quyền của bạn đã bị đình chỉ.
     delete:
-      error: Có gì đó sai; Nhận xét không xóa được.
+      error: Có gì đó sai sai; Nhận xét không thể xóa được.
       notice: Nhận xét đã xóa thành công.
     markdown: 'Có một lỗi trong markdown của bạn: %{error}'
     markdown_html: "<p>😔 Đây là một lỗi trong markdown</p><hr><p>%{error}</p>"
     moderated: Không được phép do moderation action
   confirmations_controller:
-    email_sent: Email đã gửi! Vui lòng liên hệ với hỗ trợ tại %{email} Nếu bạn gặp khó khăn về hướng dẫn xác nhận của mình.
+    email_sent: Email đã được gửi! Vui lòng liên hệ hỗ trợ tại %{email} Nếu bạn gặp khó khăn về hướng dẫn xác nhận của mình.
   credits_controller:
     done:
       one: "%{count} tín dụng mới đã được thanh toán! "
@@ -52,18 +52,18 @@ vi:
     repo_not_found: GitHub repository không tìm thấy
     github_unauthorized: 'GitHub Unauthorized: %{e_message}'
   image_uploads_controller:
-    server_error: Một lỗi máy chủ đã xảy ra!
+    server_error: Lỗi máy chủ!
   listings_controller:
     deleted: Tin rao đã xóa thành công.
     no_credit: Không đủ số dư tín dụng
   omniauth_callbacks_controller:
-    log_in_error: 'Đăng nhập lỗi: %{e}'
-    username_taken: Tên người dùng này đã được sử dụng
+    log_in_error: 'Lỗi Đăng nhập: %{e}'
+    username_taken: Tên người dùng đã được sử dụng
   organizations_controller:
     secret_updated: Org secret của bạn đã được cập nhật
     deletion_scheduled: 'Tổ chức của bạn: "%{organization_name}" lệnh xóa được lên lịch. Bạn sẽ được thông báo khi nó bị xóa.'
-    not_deleted: Tổ chức của bạn đã không bị xóa; Bạn phải là quản trị viên, thành viên duy nhất trong tổ chức và không có bài viết nào được kết nối với tổ chức.
-    created: Tổ chức của bạn đã được tạo thành công và bạn là một quản trị viên.
+    not_deleted: Hiện tại, bạn không thể xóa tổ chức này; Bạn phải là quản trị viên, thành viên duy nhất trong tổ chức và không có bài viết nào được kết nối với tổ chức.
+    created: Tổ chức của bạn đã được tạo thành công và bạn là một quản trị viên (admin).
     updated: Tổ chức của bạn đã được cập nhật thành công.
   podcasts_controller:
     podcast_suggested: Podcast đề xuất
@@ -74,7 +74,7 @@ vi:
   registrations_controller:
     error:
       recaptcha: Bạn phải hoàn thành Recaptcha ✅
-      domain: là không bao gồm các tên miền được phép.
+      domain: không thuộc các tên miền được phép.
   response_templates_controller:
     response_template_error: 'Lỗi mẫu phản hồi: %{errors}'
     created: Mẫu phản hồi của bạn "%{title}" đã được tạo.
@@ -89,15 +89,15 @@ vi:
     404_bio_not_found: 404 Bio không tìm thấy
     searching: "...đang tìm kiếm"
   stripe_active_cards_controller:
-    cannot_remove: Không thể xóa tag nếu bạn đang là thành viên tích cực. Vui lòng hủy tư cách thành viên của bạn trước.
-    cannot_update: Có một vấn đề khi cập nhật thông tin thanh toán của bạn.
+    cannot_remove: Không thể xóa thẻ (Card) nếu bạn đang là thành viên. Vui lòng hủy tư cách thành viên của bạn trước.
+    cannot_update: Có vấn đề khi cập nhật thông tin thanh toán của bạn.
     updated: Thông tin thanh toán của bạn đã được cập nhật
-    removed: Thẻ của bạn đã xóa thành công.
+    removed: Thẻ (Card) của bạn đã xóa thành công.
   tag_adjustments_controller:
     failure: 'Thất bại: %{errors}'
     destroyed: Tag điều chỉnh bị hủy bỏ
   tags_controller:
-    tag_successfully_updated: "Tag cập nhật thành công! 👍 "
+    tag_successfully_updated: "Tag được cập nhật thành công! 👍 "
   users_controller:
     removed_admin: "%{name} không còn là admin."
     removed_member: "%{name} không còn là một phần trong tổ chức của bạn."
@@ -105,12 +105,12 @@ vi:
     provide_email: Xin vui lòng, cung cấp một email để xóa tài khoản của bạn.
     provide_email_delete: Xin vui lòng, cung cấp một email để xóa tài khoản của bạn
     send_export: " Xuất tài liệu sẽ được gửi qua email cho bạn trong thời gian ngắn."
-    invalid_secret: Organization secret đã cho không hợp lệ.
+    invalid_secret: Bí mật tổ chức (Organization secret) đã cho không hợp lệ.
     username_blank: Tên người dùng không thể để trống
-    deletion_in_progress: Bạn đã yêu cầu xóa tài khoản. Xin vui lòng, kiểm tra email của bạn để được hướng dẫn thêm.
+    deletion_in_progress: Bạn đã yêu cầu xóa tài khoản. Xin kiểm tra email của bạn để được hướng dẫn thêm.
     joined_org: Bạn đã tham gia tổ chức %{organization_name}.
     left_org: Bạn đã rời khỏi tổ chức của bạn.
-    deletion_requested: Bạn đã yêu cầu xóa tài khoản. Xin vui lòng, hãy kiểm tra email của bạn để được hướng dẫn thêm.
+    deletion_requested: Bạn đã yêu cầu xóa tài khoản. Xin kiểm tra email của bạn để được hướng dẫn thêm.
     log_in_to_delete: Bạn phải đăng nhập để tiến hành xóa tài khoản.
     deletion_scheduled: Việc xóa tài khoản của bạn được lên lịch. Bạn sẽ được thông báo khi nó bị xóa.
     removed_identity: Tài khoản %{provider} của bạn đã được xóa thành công.
@@ -120,4 +120,4 @@ vi:
     notifications_settings_updated: Cài đặt thông báo của bạn đã được cập nhật.
   video_states_controller:
     related_article_not_found: Không tìm thấy bài viết liên quan
-    video_state_updated: Video State cập nhật
+    video_state_updated: Trạng thái video (Video State) cập nhật

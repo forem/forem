@@ -6,19 +6,19 @@ vi:
       pinned: Bài viết được ghim!
       unpinned: Đã bỏ ghim bài viết!
     badge_achievements_controller:
-      deleted: Thành tích huy hiệu đã bị xóa!
-      rewarded: Các huy hiệu đang được thưởng. Nhiệm vụ sẽ hoàn thành trong thời gian ngắn.
-      congrats: Chúc mừng!
-      award: Vui lòng chọn một huy hiệu để trao thưởng
-      wrong: Có gì đó sai.
+      deleted: Huy hiệu Thành tích đã bị xóa!
+      rewarded: Các Huy hiệu đang được thưởng. Nhiệm vụ sẽ hoàn thành trong thời gian ngắn.
+      congrats: Chúc Mừng Bạn!
+      award: Vui lòng chọn một Huy hiệu để trao thưởng
+      wrong: Đã có Lỗi xảy ra.
     badges_controller:
-      created: Huy hiệu đã được tạo!
-      updated: Huy hiệu đã được cập nhật!
+      created: Huy hiệu đã được Tạo!
+      updated: Huy hiệu đã được Cập nhật!
     broadcasts_controller:
-      created: Chương trình phát thanh đã được tạo!
-      deleted: Chương trình phát thanh đã bị xóa!
-      updated: Chương trình phát thanh đã được cập nhật!
-      wrong: Đã xảy ra sự cố khi xóa chương trình phát thanh.
+      created: Broadcast đã được tạo!
+      deleted: Broadcast đã bị xóa!
+      updated: Broadcast đã được cập nhật!
+      wrong: Đã xảy ra sự cố khi xóa Broadcast.
     consumer_apps_controller:
       created: '%{app} đã được tạo!'
       deleted: '%{app} đã bị xóa!'
@@ -30,7 +30,7 @@ vi:
       updated: Hiển thị quảng cáo đã được cập nhật!
       wrong: Đã xảy ra sự cố khi xóa hiển thị quảng cáo.
     gdpr_delete_requests_controller:
-      deleted: Đã xóa thành công
+      deleted: Đã Đánh dấu hành động Xóa
     extensions_controller:
       update_success: Các tiện ích mở rộng đã được cập nhật.
     html_variants_controller:
@@ -40,10 +40,10 @@ vi:
       updated: Biến thể HTML đã được cập nhật!
       wrong: Đã xảy ra sự cố khi xóa biến thể HTML.
     invitations_controller:
-      duplicate: 'Lời mời đã không được gửi. Đã có một người dùng đăng ký với email: %{email}'
-      create_success: Lời mời đã được gửi đến email của người dùng.
-      destroy_success: Đã hủy lời mời đối với %{email}.
-      resend_success: Lời mời đã gửi lại %{email}.
+      duplicate: 'Không thể gửi Lời mời. Vì Email: %{email}, đã được đăng kí!'
+      create_success: 'Lời mời đã được gửi đến Email: %{email}' 
+      destroy_success: 'Đã hủy lời mời đến với Email: %{email}.'
+      resend_success: 'Lời mời đã gửi lại cho Email: %{email}.'
     listing_categories_controller:
       created: Danh mục tin rao đã được tạo!
       updated: Danh mục tin rao đã được cập nhật!
@@ -59,7 +59,7 @@ vi:
       created: 'Liên kết điều hướng đã được tạo thành công: %{link}'
       updated: 'Liên kết điều hướng đã được cập nhật thành công: %{link}'
     organization_memberships_controller:
-      not_exist: 'Tổ chức #%{org_id} không tồn tại.'
+      not_exist: 'Tổ Chức #%{org_id} không tồn tại.'
       wrong: Đã xảy ra sự cố khi xóa người dùng khỏi %{org}
       added: Người dùng đã được thêm thành công vào %{org}
       removed: Người dùng đã được xóa thành công khỏi %{org}
@@ -72,7 +72,7 @@ vi:
       deleted: Trang đã được xóa thành công.
       code_of_conduct:
         title: Quy tắc cộng đồng
-        description: Trang mô tả cách ứng xử trên nền tảng này
+        description: Mô tả cách ứng xử chung
       privacy_policy:
         title: Chính sách bảo mật
         description: Trang mô tả chính sách bảo mật
@@ -81,24 +81,24 @@ vi:
         description: Trang mô tả các điều khoản sử dụng cho ứng dụng
     podcasts_controller:
       new_owner_added: Đã thêm chủ sở hữu mới!
-      no_such_user: Không có người dùng như vậy
+      no_such_user: Người dùng không tồn tại
       scheduled: "Đã lên lịch cập nhật các tập podcast (%{title}, #%{id})"
-      updated: Đã cập nhật podcast
+      updated: Podcast đã được cập nhật
     profile_field_groups_controller:
       deleted: Nhóm %{group} đã bị xóa
       updated: Nhóm %{group} đã được cập nhật
       created: 'Đã tạo thành công nhóm: %{group}'
     profile_fields_controller:
-      created: Trường hồ sơ %{field} đã được tạo
-      deleted: Trường hồ sơ %{field} đã bị xóa
-      updated: Trường hồ sơ %{field} đã được cập nhật
+      created: Hồ sơ %{field} đã được tạo
+      deleted: Hồ sơ %{field} đã bị xóa 
+      updated: Hồ sơ %{field} đã được cập nhật
     response_templates_controller:
       saved: 'Mẫu phản hồi: "%{title}" đã được lưu thành công.'
       updated: Mẫu phản hồi "%{title}" đã được cập nhật.
       deleted: Mẫu phản hồi "%{title}" đã bị xóa.
     secrets_controller:
       not_in_vault: Không có trong Vault
-      updated: Chìa Khóa bí mật %{key} đã được cập nhật thành công trong Vault.
+      updated: Chìa Khóa bí mật %{key} đã được cập nhật thành công vào Vault.
       value: '%{first8}******'
     settings_controller:
       confirmation: Tên người dùng của tôi là @%{username} và hành động này là 100% an toàn và phù hợp.
@@ -149,4 +149,4 @@ vi:
 
         ![CHÀO MỪNG BẠN ĐẾN VỚI INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
-        Để lại bình luận bên dưới để giới thiệu bản thân với cộng đồng!✌️
+        Để lại bình luận bên dưới để giới thiệu bản thân với cộng đồng nhé bạn ơi!✌️

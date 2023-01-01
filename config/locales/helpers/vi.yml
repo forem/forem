@@ -6,18 +6,18 @@ vi:
         body_markdown: Body Markdown
         expires_at: Tùy chỉnh ngày hết hạn
         location: Địa điểm
-        organization_id: Đăng dưới một tổ chức
+        organization_id: Đăng dưới danh nghĩa tổ chức
         tag_list: Tags
         title: Tiêu đề
       organization:
         name: Tên
         slug: Tên tài khoản
         profile_image: Hình ảnh hồ sơ cá nhân
-        nav_image: Logo cho light themes
-        dark_nav_image: Logo cho dark themes
+        nav_image: Logo cho Giao diện sáng (light themes)
+        dark_nav_image: Logo cho Giao diện tối (dark themes)
         twitter_username: Tên tài khoản Twitter
         github_username: Tên tài khoản GitHub
-        url: Website url
+        url: Địa chỉ trang Web (Website url)
         tag_line: Tag line
         summary: Bản tóm tắt
         location: Địa điểm
@@ -25,9 +25,9 @@ vi:
         company_size: Quy mô tổ chức
         story: Câu chuyện của chúng tôi
         tech_stack: Our stack
-        cta_body_markdown: Thành phần chính của văn bản
-        cta_button_text: Nội dung đường dẫn
-        cta_button_url: Đường dẫn url
+        cta_body_markdown: Nội dung văn bản (Body text)
+        cta_button_text: Đường dẫn văn bản (Link text)
+        cta_button_url: Đường dẫn đến địa chỉ web (Link URL)
         proof: Bằng chứng
       podcast:
         android_url: Android url
@@ -37,9 +37,9 @@ vi:
         itunes_url: Itunes url
         main_color_hex: Màu chính hex
         overcast_url: Overcast url
-        pattern_image: Hình Pattern
+        pattern_image: Hình mẫu (Pattern Image)
         slug: Slug
-        soundcloud_url: Soundcloud url
+        soundcloud_url: Soundcloud url 
         title: Tiêu đề
         twitter_username: Tên tài khoản Twitter
         website_url: Website url
@@ -52,7 +52,7 @@ vi:
         username: Tên tài khoản
         profile_image: Hình ảnh hồ sơ cá nhân
       users_notification_setting:
-        email_newsletter: Gửi cho tôi email bản tin hàng tuần
+        email_newsletter: Gửi vào email của tôi tin mới mỗi tuần nhé 
         email_digest_periodic: Gửi cho tôi một bản tin định kỳ của các bài đăng hàng đầu từ tag của tôi
         email_tag_mod_newsletter: Gửi cho tôi các email bản tin của từ tag người điều hành
         email_community_mod_newsletter: Gửi cho tôi email bản tin của người điều hành cộng đồng
@@ -63,9 +63,9 @@ vi:
         email_unread_notifications: Thỉnh thoảng gửi cho tôi lời nhắc tôi có thông báo chưa đọc %{community}
         mobile_mention_notifications: Gửi cho tôi một thông báo điện thoại khi ai đó đề cập đến tôi
         mobile_comment_notifications: Gửi cho tôi một thông báo điện thoại khi ai đó trả lời tôi trong một chủ đề bình luận
-        welcome_notifications: Gửi cho tôi những lời khuyên thỉnh thoảng về cách nâng cao trải nghiệm %{community}
-        reaction_notifications: Gửi thông báo khi ai đó phản ứng với nội dung của tôi, chẳng hạn như nhận xét hoặc bài đăng
-        mod_roundrobin_notifications: Thình thoảng gửi cho tôi thông báo community-success của người điều hành
+        welcome_notifications: Thỉnh thoảng gửi tôi Mẹo nâng cao trải nghiệm %{community} cho tôi nhé
+        reaction_notifications: Gửi thông báo khi ai đó phản ứng với nội dung của tôi, chẳng hạn như nhận xét hoặc đăng bài viết
+        mod_roundrobin_notifications: Thỉnh thoảng gửi cho tôi thông báo thay đổi community-success của người điều hành
       users_setting:
         feed_url: RSS Feed URL
     placeholder:
@@ -112,17 +112,17 @@ vi:
       title_text: "%{title} - %{timeframe}"
     articles_helper:
       logo: "%{service_name} logo"
-      most_comments: Nhận xét phổ biến
-      most_reactions: Phản ứng phổ biến
-      most_views: Xem phổ biến
+      most_comments: Nhiều bình luận nhất
+      most_reactions: Nhiều Lượt tương tác nhất
+      most_views: Được xem nhiều nhất
       recently_created: Được tạo gần đây
-      recently_published: Xuất bản gần đây
+      recently_published: Được xuất bản gần đây
     authentication_helper:
       any_of_those: bất kỳ trong số đó
       email_password: Email & Mật khẩu
       reminder: 'Lời nhắc nhở: bạn đã dùng %{method} để xác thực tài khoản của bạn, Vì vậy, hãy sử dụng %{dem} để đăng nhập nếu được nhắc.'
-      that: cái đó
-      invite_only: Bạn không thể làm điều này cho đến khi bạn vô hiệu hóa Invite Only Mode
+      that: đó
+      invite_only: Bạn không thể làm điều này cho đến khi bạn vô hiệu hóa Chế độ chỉ được mời (Invite Only Mode)
     comments_helper:
       ama: hoặc
       ask_me_anything: Hỏi tôi bất cứ điều gì
@@ -133,14 +133,15 @@ vi:
     feedback_messages_helper:
       offender:
         body: |
-          Xin chào,
+          Chào bạn,
 
-          Đây là điều đã được chúng tôi chú ý rằng bạn đã vi phạm quy tắc ứng xử %{community} và/hoặc các điều khoản sử dụng của chúng tôi.
+          Chúng tôi nhận thấy có lẽ bạn đã vi phạm quy tắc ứng xử %{community} và/hoặc các điều khoản sử dụng của chúng tôi.
 
-          Nếu hành vi này tiếp tục, chúng ta có thể cần phải đình chỉ tài khoản tại %{community}.
+          Nếu hành vi này tiếp tục, chúng tôi có thể cần phải đình chỉ tài khoản tại %{community}.
 
-          Nếu bạn nghĩ rằng đã có một lỗi, vui lòng trả lời email này và chúng tôi sẽ xem xét.
+          Nếu bằng cho rằng đây chỉ là sự nhầm lẫn hay còn điều gì muốn nói, xin hãy trả lời lại email này và chúng tôi sẽ xem xét lại điều này.z.
 
+          Cảm ơn bạn.
           Đội ngũ %{community}
         subject: "vi phạm quy tắc ứng xử của %{community}"
       reporter:
