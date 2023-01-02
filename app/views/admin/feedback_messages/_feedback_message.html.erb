@@ -5,11 +5,11 @@
 <% end %>
 
 <details class="crayons-card" id="accordion-<%= feedback_message.id %>">
-  <summary class="crayons-subtitle-2 p-5">
+  <summary class="p-5">
     <span id="header<%= feedback_message.id %>">
-      <a id="collapse__header__link-<%= feedback_message.id %>">
+      <span id="collapse__header__link-<%= feedback_message.id %>">
         Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
-      </a>
+      </span>
       <div class="float-right">
         ✉️ Emails Sent: <%= feedback_message_emails.size %> |
         <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
