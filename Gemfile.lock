@@ -609,7 +609,7 @@ GEM
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
-    pundit (2.2.0)
+    pundit (2.3.0)
       activesupport (>= 3.0.0)
     pundit-matchers (1.8.4)
       rspec-rails (>= 3.0.0)
