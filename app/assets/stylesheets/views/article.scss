@@ -244,7 +244,8 @@
 .reaction-drawer .crayons-reaction {
   &.user-activated {
     background-color: var(--body-bg);
-    border-radius: 15px;
+    border: 1px solid #d4d4d4;
+    border-radius: 20px;
 
     .crayons-reaction__icon--active {
       border: 0;
@@ -365,7 +366,7 @@
 // TODO: think about how and when we want to override the crayons-dropdown.
 .crayons-dropdown.reaction-drawer {
   min-width: auto;
-  border-radius: var(--radius-xl);
+  border-radius: 32px;
   top: -65px;
   left: 0;
 
