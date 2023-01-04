@@ -1,31 +1,31 @@
 <div>
   <h2 class="crayons-title mb-4">Abuse reports</h2>
-  <ul class="nav nav-pills mb-4">
-    <li class="nav-item">
-      <a href="<%= admin_reports_path(state: @feedback_type, status: "Open") %>" class="nav-link <%= "active" if @status == "Open" %>">Open/Unresolved</a>
+  <ul class="crayons-navigation crayons-navigation--horizontal mb-4">
+    <li>
+      <a href="<%= admin_reports_path(state: @feedback_type, status: "Open") %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @status == "Open" %>">Open/Unresolved</a>
     </li>
-    <li class="nav-item">
-      <a href="<%= admin_reports_path(state: @feedback_type, status: "Resolved") %>" class="nav-link <%= "active" if @status == "Resolved" %>">Resolved</a>
+    <li>
+      <a href="<%= admin_reports_path(state: @feedback_type, status: "Resolved") %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @status == "Resolved" %>">Resolved</a>
     </li>
-    <li class="nav-item">
-      <a href="<%= admin_reports_path(state: @feedback_type, status: "Invalid") %>" class="nav-link <%= "active" if @status == "Invalid" %>">Invalid</a>
+    <li>
+      <a href="<%= admin_reports_path(state: @feedback_type, status: "Invalid") %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @status == "Invalid" %>">Invalid</a>
   </ul>
 
   <div id="vomitReactions">
     <div class="crayons-card">
       <div class="card-header flex items-center" id="vomitReactionsHeader">
         <h4>Flag Reactions</h4>
-        <button class="btn btn-secondary ml-auto" type="button" data-toggle="collapse" data-target="#vomitReactionsBodyContainer" aria-expanded="false" aria-controls="vomitReactionsBodyContainer">
+        <button class="crayons-btn crayons-btn--secondary ml-auto" type="button" data-toggle="collapse" data-target="#vomitReactionsBodyContainer" aria-expanded="false" aria-controls="vomitReactionsBodyContainer">
           Toggle
         </button>
       </div>
       <div id="vomitReactionsBodyContainer" class="collapse hide" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
-        <div class="card-body" style="overflow: scroll; max-height: 500px;">
+        <div class="crayons-card__body" style="overflow: scroll; max-height: 500px;">
           <% @vomits.each do |reaction| %>
             <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
 
             <div
-              class="d-flex justify-content-between"
+              class="flex justify-content-between"
               data-controller="reaction"
               data-reaction-id-value="<%= reaction.id %>"
               data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
@@ -39,17 +39,17 @@
                 <strong><%= reaction.reactable_type %>:</strong>
                 <a href="<%= reaction.reactable.path %>" target="_blank" rel="noopener"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
                 <% if reaction.reactable_type == "User" && reaction.reactable.suspended? %>
-                  <span class="badge badge-danger">Suspended</span>
+                  <span class="c-indicator c-indicator--danger">Suspended</span>
                 <% end %>
                 <% if reaction.reactable_type == "User" && reaction.reactable.vomited_on? %>
-                  <span class="badge badge-warning">Flagged</span>
+                  <span class="c-indicator c-indicator--warning">Flagged</span>
                 <% end %>
               </span>
               <span>
                 <% if params[:status] == "Open" || params[:status].blank? %>
                   <% if reaction.reactable_type == "User" %>
                     <button
-                      class="btn btn-success btn-sm"
+                      class="crayons-btn crayons-btn--success crayons-btn--s"
                       type="button"
                       data-reactable="user"
                       data-status="confirmed"
@@ -59,7 +59,7 @@
                     </button>
                   <% else %>
                     <button
-                      class="btn btn-success btn-sm"
+                      class="crayons-btn crayons-btn--success crayons-btn--s"
                       type="button"
                       data-reactable="non-user"
                       data-status="confirmed"
@@ -69,7 +69,7 @@
                     </button>
                   <% end %>
                   <button
-                    class="btn btn-danger btn-sm"
+                    class="crayons-btn crayons-btn--danger crayons-btn--s"
                     type="button"
                     data-altstatus="invalid"
                     data-reaction-target="invalid"
@@ -79,7 +79,7 @@
                 <% end %>
                 <% if params[:status] == "Resolved" %>
                   <button
-                    class="btn btn-warning text-white btn-sm"
+                    class="crayons-btn crayons-btn--warning crayons-btn--s"
                     type="button"
                     data-altstatus="invalid"
                     data-reaction-target="invalid"
@@ -88,7 +88,7 @@
                   </button>
                   <% elsif params[:status] == "Invalid" %>
                   <button
-                    class="btn btn-success btn-sm"
+                    class="crayons-btn crayons-btn--success crayons-btn--s"
                     type="button"
                     data-status="confirmed"
                     data-reaction-target="confirmed"
