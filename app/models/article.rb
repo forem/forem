@@ -473,7 +473,7 @@ class Article < ApplicationRecord
               FileUtils.mv(tempfile.path, file_path)
               self.social_image = URL.url("#{relative_upload_path}/#{filename}#{File.extname(tempfile.original_filename)}")
 
-              img['src'] = Images::Optimizer.call(self.social_image, resize: { width: 180, height: 180, resizing_type: 'fill-down', enlarge: true, extend: true }).gsub(",", "%2C")
+              img['src'] = Images::Optimizer.call(self.social_image, resize: { width: 180, height: 180, resizing_type: 'auto', enlarge: true, extend: true }).gsub(",", "%2C")
               self.processed_preview_link = doc.to_html
             end
 
