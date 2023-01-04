@@ -51,7 +51,7 @@ module Api
 
       def permitted_params
         params.permit :approved, :body_markdown, :display_to, :name,
-                      :organization_id, :placement_area, :published, :tags
+                      :organization_id, :placement_area, :published, :tag_list
       end
     end
   end
