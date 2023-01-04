@@ -317,7 +317,6 @@ function buildArticleHTML(article, currentUserId = null) {
         href="${article.path}"
         aria-labelledby="article-link-${article.id}"
         class="crayons-story__hidden-navigation-link"
-        style = "pointer-events: unset;"
       >
         ${filterXSS(article.title)}
       </a>
@@ -338,7 +337,7 @@ function buildArticleHTML(article, currentUserId = null) {
       </h3>`;
     }
 
-    var processed_preview_link = !article.image_list.length && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
+    var processed_preview_link = article.quick_share && !article.image_list.length > 0 && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
 
     return `<article class="crayons-story"
       data-article-path="${article.path}"
@@ -353,7 +352,9 @@ function buildArticleHTML(article, currentUserId = null) {
             </div>\
             <div class="crayons-story__indention">
               ${title}\
+              <a href="${article.path}" style="color: unset;">
               ${description}\
+              </a>
               ${processed_preview_link}\
               ${photoGrid}\
               <div class="crayons-story__tags">

@@ -125,7 +125,7 @@ export const Article = ({
                 <div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div> 
               }
             </a>
-            { !article.image_list.length && article.processed_preview_link && <div class="preview mb-4" dangerouslySetInnerHTML={{ __html: article.processed_preview_link }} />}
+            { article.quick_share && !article.image_list.length && article.processed_preview_link && <div class="preview mb-4" dangerouslySetInnerHTML={{ __html: article.processed_preview_link }} />}
             { version == 'v0' && (
             <div id={`photo-grid-${article.id}`} class="photo-grid mb-4"  data-href={article.path} data-images={article.image_list} data-loaded="true">
               <ReactImageGrid
