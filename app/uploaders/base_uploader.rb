@@ -7,7 +7,14 @@ class BaseUploader < CarrierWave::Uploader::Base
   FRAME_STRIP_MAX = 150
 
   process :validate_frame_count
+  process :fix_exif_rotation
   process :strip_exif
+
+  def fix_exif_rotation
+    manipulate! do |img|
+      img.tap(&:auto_orient)
+    end
+  end
 
   def store_dir
     # eg. uploads/user/profile_image/1/e481b7ee.jpg
