@@ -381,3 +381,11 @@
   flex-direction: row;
   gap: var(--su-3);
 }
+
+.multiple_reactions_engagement {
+  padding: 0.5em 0;
+
+  span {
+    margin-right: 1em;
+  }
+}
