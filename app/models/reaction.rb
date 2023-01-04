@@ -61,6 +61,7 @@ class Reaction < ApplicationRecord
         counts = reactions.group(:category).count
 
         reaction_types = public_reaction_types
+        reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -79,7 +80,7 @@ class Reaction < ApplicationRecord
 
     def public_reaction_types
       if FeatureFlag.enabled?(:multiple_reactions)
-        reaction_types = ReactionCategory.public.map(&:to_s) + ["readinglist"]
+        reaction_types = ReactionCategory.public.map(&:to_s)
       else
         reaction_types = %w[like readinglist]
         unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
