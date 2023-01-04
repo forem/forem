@@ -27,12 +27,30 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
-function showUserReaction(reactionName, animatedClass) {
+function showUserReaction(reactionName, animatedClass, wasToggling) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
   reactionButton.classList.add('user-activated', animatedClass);
   reactionButton.setAttribute('aria-pressed', 'true');
+  if (wasToggling) {
+    const activeIcon = reactionButton.querySelector(
+      '.crayons-reaction__icon--active svg',
+    );
+
+    if (activeIcon) {
+      const drawerIcon = document
+        .getElementById('reaction-drawer-trigger')
+        .querySelector('svg');
+      const originalIcon = drawerIcon.outerHTML;
+      drawerIcon.outerHTML = activeIcon.outerHTML;
+      setTimeout(function () {
+        document
+          .getElementById('reaction-drawer-trigger')
+          .querySelector('svg').outerHTML = originalIcon;
+      }, 1500);
+    }
+  }
 }
 
 function hideUserReaction(reactionName) {
@@ -71,7 +89,7 @@ function reactToArticle(articleId, reaction) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) - 1;
       }
     } else {
-      showUserReaction(reaction, 'user-animated');
+      showUserReaction(reaction, 'user-animated', 'toggleReaction');
       setReactionCount(reaction, currentNum + 1);
       if (reactionTotalCount) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) + 1;
