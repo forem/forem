@@ -29,6 +29,7 @@ module Homepage
       :title,
       :user_id,
       :description,
+      :description_html,
       :quick_share,
       :processed_html,
       :processed_preview_link

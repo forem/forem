@@ -108,7 +108,7 @@
         </a>
       </h2>
       <% end %>
-      <a href="<%= story.path %>" style="color: unset !important;" id="article-link-<%= story.id %>"><div class="text-styles text-truncate" style="padding: 1rem 0"><%= story.description %></div></a>
+      <a href="<%= story.path %>" style="color: unset !important;" id="article-link-<%= story.id %>"><div class="text-styles text-truncate" style="padding: 1rem 0"><%= story.description_html ? story.description_html.html_safe : story.description %></div></a>
       <% if story.quick_share %>
         <% if !story.image_list.nil? %>
         <div id="photo-grid-<%= story.id %>" class="photo-grid" data-href="<%= story.path %>" data-images="<%= story.image_list %>"></div>

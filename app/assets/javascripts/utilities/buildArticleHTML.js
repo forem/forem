@@ -317,17 +317,19 @@ function buildArticleHTML(article, currentUserId = null) {
         href="${article.path}"
         aria-labelledby="article-link-${article.id}"
         class="crayons-story__hidden-navigation-link"
+        style = "pointer-events: unset;"
       >
         ${filterXSS(article.title)}
       </a>
     `;
 
     var title = ``;
+    var description = article.description_html ? `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description_html}</div>` : `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description}</div>`;
+    var photoGrid = '';
     if (article.quick_share) {
-      title = `<a href="${article.path}" style="color: unset !important;" id="article-link-${article.id}"><div class="text-styles text-truncate" style="padding: 1rem 0">${article.description}</div></a>`;
-      if (article.image_list.length > 0) {
-        title += `<div id="photo-grid-${article.id}" data-href="${article.path}" class="photo-grid" data-images="${article.image_list.join()}"></div>`;
-      }
+        if (article.image_list.length > 0) {
+          photoGrid = `<div id="photo-grid-${article.id}" data-href="${article.path}" class="photo-grid" data-images="${article.image_list.join()}"></div>`;
+        }
     } else {
       title = `<h3 class="crayons-story__title">
         <a href="${article.path}" id="article-link-${article.id}">
@@ -336,7 +338,7 @@ function buildArticleHTML(article, currentUserId = null) {
       </h3>`;
     }
 
-    title += !article.image_list.length && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
+    var processed_preview_link = !article.image_list.length && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
 
     return `<article class="crayons-story"
       data-article-path="${article.path}"
@@ -351,6 +353,9 @@ function buildArticleHTML(article, currentUserId = null) {
             </div>\
             <div class="crayons-story__indention">
               ${title}\
+              ${description}\
+              ${processed_preview_link}\
+              ${photoGrid}\
               <div class="crayons-story__tags">
                 ${tagString}
               </div>\

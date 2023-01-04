@@ -119,7 +119,12 @@ export const Article = ({
 
           <div className="crayons-story__indention">
             { version == 'v0' ? null : <ContentTitle article={article} /> }
-            <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}><div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div></a>
+            <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}>
+              { article.description_html ? 
+                <div class="text-styles text-truncate" style={{padding: "1rem 0"}} dangerouslySetInnerHTML={{ __html: article.description_html }}/> : 
+                <div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div> 
+              }
+            </a>
             { !article.image_list.length && article.processed_preview_link && <div class="preview mb-4" dangerouslySetInnerHTML={{ __html: article.processed_preview_link }} />}
             { version == 'v0' && (
             <div id={`photo-grid-${article.id}`} class="photo-grid mb-4"  data-href={article.path} data-images={article.image_list} data-loaded="true">

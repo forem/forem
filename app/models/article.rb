@@ -181,6 +181,7 @@ class Article < ApplicationRecord
   before_save :fetch_video_duration
   before_save :set_caches
   before_save :processed_preview
+  before_save :processed_description_html
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -305,7 +306,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
-           :last_comment_at, :quick_share, :processed_html)
+           :last_comment_at, :quick_share, :processed_html, :description_html)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -410,6 +411,23 @@ class Article < ApplicationRecord
 
   def search_id
     "article_#{id}"
+  end
+
+  def processed_description_html
+    # fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixForQuickShare.remove_embed_links(body_markdown)
+    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content)
+
+    doc = Nokogiri::HTML.fragment(parsed_markdown.finalize)
+    doc.search('.article-body-image-wrapper').each(&:remove)
+    p_empty = doc.at_css("p:first-child:empty")
+    if p_empty
+      p_empty.remove
+    end
+    self.description_html = Truncato.truncate(doc.to_html, max_length: 700, count_tags: false).strip
+
+    # self.description_html = Truncato.truncate(parsed_markdown.finalize, max_length: 700, count_tags: false).strip
   end
 
   def processed_preview

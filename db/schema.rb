@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_29_155156) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_01_171356) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -99,6 +99,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_29_155156) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
+    t.text "description_html"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0

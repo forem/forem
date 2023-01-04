@@ -17,6 +17,7 @@ module Homepage
       image_list
       quick_share
       description
+      description_html
       processed_html
       processed_preview_link
     ].freeze

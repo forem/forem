@@ -6,8 +6,12 @@ module MarkdownProcessor
       ].freeze
 
       def self.auto_embed_links(markdown)
-        markdown = markdown.gsub(/(\{)(.*)(embed) ((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)(.*)(\})/i, '\4');
+        markdown = self.remove_embed_links(markdown)
         markdown = markdown.gsub(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i, '{% embed \1 %}'+"\n\n");
+      end
+
+      def self.remove_embed_links(markdown)
+        markdown = markdown.gsub(/(\{)(.*)(embed) ((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)(.*)(\})/i, '\4');
       end
     end
   end

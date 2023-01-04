@@ -175,3 +175,5 @@ group :test do
 end
 
 gem "down", "~> 5.4"
+
+gem "truncato", "~> 0.7.12"
