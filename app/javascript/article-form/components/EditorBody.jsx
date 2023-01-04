@@ -37,7 +37,7 @@ export const EditorBody = ({
     setImages(imagesList);
     imagesOnInput(imagesList.join(','));
     onMainImageUrlChange({
-      links: [(location.href.includes('localhost') ? 'http://localhost:3000' : '') + imagesList[0]],
+      links: [(location.href.includes('localhost') || location.href.includes('host.docker.internal') ? location.origin : '') + imagesList[0]],
     });
   });
 
