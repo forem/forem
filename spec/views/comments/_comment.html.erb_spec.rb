@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "rendering locals in a partial", type: :view do
+RSpec.describe "rendering locals in a partial" do
   context "when comment is low-quality" do
     it "renders the comment with low-quality marker" do
       allow(Settings::General).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")

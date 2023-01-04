@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by timeframe", type: :system do
+RSpec.describe "User visits articles by timeframe" do
   let(:author) { create(:user) }
   let!(:article) { create(:article, user: author, published_at: Time.current) }
   let!(:days_old_article) { create(:article, :past, past_published_at: 2.days.ago, user: author) }

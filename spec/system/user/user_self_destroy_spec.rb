@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User destroys their profile", type: :system, js: true do
+RSpec.describe "User destroys their profile", js: true do
   let(:user) { create(:user) }
   let(:token) { SecureRandom.hex(10) }
   let(:mismatch_token) { SecureRandom.hex(10) }

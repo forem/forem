@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits podcast show page", type: :system, js: true do
+RSpec.describe "User visits podcast show page", js: true do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }
@@ -24,8 +24,8 @@ RSpec.describe "User visits podcast show page", type: :system, js: true do
   it "see the new comment box on the page" do
     visit podcast_episode.path.to_s
     expect(page).to have_css "form#new_comment"
-    expect(find("#comment_commentable_type", visible: :hidden).value).to eq("PodcastEpisode")
-    expect(find("#comment_commentable_id", visible: :hidden).value).to eq(podcast_episode.id.to_s)
+    expect(find_by_id("comment_commentable_type", visible: :hidden).value).to eq("PodcastEpisode")
+    expect(find_by_id("comment_commentable_id", visible: :hidden).value).to eq(podcast_episode.id.to_s)
   end
 
   context "when mobile apps read the podcast episode metadata" do

@@ -41,7 +41,7 @@ class RunkitTag < Liquid::Block
         }
 
         var wrapperContent = targets[i].textContent;
-        if (/^(\<iframe src)/.test(wrapperContent) === false) {
+        if (/^(<iframe src)/.test(wrapperContent) === false) {
           if (targets[i].children.length > 0) {
             var preamble = targets[i].children[0].textContent;
             var content = targets[i].children[1].textContent;

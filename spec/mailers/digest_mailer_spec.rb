@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DigestMailer, type: :mailer do
+RSpec.describe DigestMailer do
   let(:user) { create(:user) }
   let(:article) { build_stubbed(:article) }
   let(:from_email_address) { "custom_noreply@forem.com" }

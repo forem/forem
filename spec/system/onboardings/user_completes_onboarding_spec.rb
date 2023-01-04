@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Completing Onboarding", type: :system, js: true do
+RSpec.describe "Completing Onboarding", js: true do
   let(:password) { Faker::Internet.password(min_length: 8) }
   let(:user) { create(:user, password: password, password_confirmation: password, saw_onboarding: false) }
 

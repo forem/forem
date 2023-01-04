@@ -61,7 +61,7 @@ module Users
     end
 
     def profile_params
-      params[:profile] ? params[:profile].permit(Profile.static_fields + Profile.attributes) : nil
+      params[:profile]&.permit(Profile.static_fields + Profile.attributes)
     end
   end
 end

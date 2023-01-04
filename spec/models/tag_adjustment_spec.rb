@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe TagAdjustment, type: :model do
+RSpec.describe TagAdjustment do
   before do
     mod_user.add_role(:tag_moderator, tag)
     admin_user.add_role(:admin)

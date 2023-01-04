@@ -1,7 +1,7 @@
 class StackeryTag < LiquidTagBase
   PARTIAL = "liquids/stackery".freeze
   REGISTRY_REGEXP = %r{https://app\.stackery\.io/editor/design(?<params>\?.*)?}
-  PARAM_REGEXP = /\A(owner=[\w\-]+)|(repo=[\w\-]+)|(file=.*)|(ref=.*)\Z/
+  PARAM_REGEXP = /\A(owner=[\w-]+)|(repo=[\w-]+)|(file=.*)|(ref=.*)\Z/
 
   def initialize(_tag_name, input, _parse_context)
     super

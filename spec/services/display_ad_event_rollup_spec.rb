@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe DisplayAdEventRollup, type: :service do
-  let(:ad1) { create :display_ad }
-  let(:ad2) { create :display_ad }
-  let(:user1) { create :user }
-  let(:user2) { create :user }
+  let(:ad1) { create(:display_ad) }
+  let(:ad2) { create(:display_ad) }
+  let(:user1) { create(:user) }
+  let(:user2) { create(:user) }
 
   def override_timestamps
     DisplayAdEvent.record_timestamps = false

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User discussion locks", type: :system, js: true do
+RSpec.describe "User discussion locks", js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:discussion_lock) { create(:discussion_lock, article: article, locking_user: user) }

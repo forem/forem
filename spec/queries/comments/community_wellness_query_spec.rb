@@ -70,7 +70,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
     it "returns users with correct data on their corresponding hash" do
       result = described_class.call
 
-      result_user_ids = result.map { |hash| hash["user_id"] }
+      result_user_ids = result.pluck("user_id")
       expect(result_user_ids).to contain_exactly(user1.id, user2.id, user5.id)
 
       index1 = result.index { |hash| hash["user_id"] == user1.id }
@@ -119,7 +119,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
     it "matches the correct comment count for each week in result hash" do
       result = described_class.call
 
-      result_user_ids = result.map { |hash| hash["user_id"] }
+      result_user_ids = result.pluck("user_id")
       # Result includes both users because they have > 1 comment per week
       expect(result_user_ids).to contain_exactly(user1.id, user2.id)
 

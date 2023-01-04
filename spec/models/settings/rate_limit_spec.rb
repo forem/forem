@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Settings::RateLimit, type: :model do
+RSpec.describe Settings::RateLimit do
   describe ".user_considered_new?" do
     subject(:function_call) { described_class.user_considered_new?(user: user) }
 

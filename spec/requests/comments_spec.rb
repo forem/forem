@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/comment_hide_or_unhide_request"
 
-RSpec.describe "Comments", type: :request do
+RSpec.describe "Comments" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }

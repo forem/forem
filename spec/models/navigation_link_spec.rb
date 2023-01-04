@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe NavigationLink, type: :model do
+RSpec.describe NavigationLink do
   let(:navigation_link) { create(:navigation_link) }
 
   describe ".create_or_update_by_identity" do

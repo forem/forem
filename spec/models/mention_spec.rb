@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Mention, type: :model do
+RSpec.describe Mention do
   let(:comment) { create(:comment, commentable: create(:podcast_episode)) }
 
   describe "#create_all" do

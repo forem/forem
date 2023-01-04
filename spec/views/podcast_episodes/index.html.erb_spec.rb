@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "podcast_episodes/index", type: :view do
+RSpec.describe "podcast_episodes/index" do
   let(:podcast) { create(:podcast) }
   let(:podcast_episodes) { create_list(:podcast_episode, 5, podcast: podcast) }
 

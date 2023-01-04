@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Feedback report", type: :system do
+RSpec.describe "Feedback report" do
   let(:user) { create(:user) }
   let(:message) { Faker::Lorem.paragraph }
   let(:url) { Faker::Lorem.sentence }

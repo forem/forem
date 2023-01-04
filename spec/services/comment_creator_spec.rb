@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe CommentCreator, type: :service do
   subject(:creator) { described_class.build_comment params, current_user: user }
 
-  let(:user) { create :user }
-  let(:commentable) { create :article }
+  let(:user) { create(:user) }
+  let(:commentable) { create(:article) }
   let(:record) { Comment.new user: user }
   let(:params) do
     {

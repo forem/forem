@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserSubscriptions", type: :request do
+RSpec.describe "UserSubscriptions" do
   let(:user) { create(:user) }
 
   before { sign_in user }

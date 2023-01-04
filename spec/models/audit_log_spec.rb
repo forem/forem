@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AuditLog, type: :model do
+RSpec.describe AuditLog do
   let(:audit_log) { create(:audit_log) }
 
   describe "validations" do

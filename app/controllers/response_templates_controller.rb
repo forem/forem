@@ -55,19 +55,6 @@ class ResponseTemplatesController < ApplicationController
     end
   end
 
-  def destroy
-    authorize response_template
-
-    if response_template.destroy
-      flash[:settings_notice] =
-        I18n.t("response_templates_controller.deleted", title: response_template.title)
-    else
-      flash[:error] = response_template.errors_as_sentence # this will probably never fail
-    end
-
-    redirect_to user_settings_path(tab: "response-templates")
-  end
-
   def update
     authorize response_template
 
@@ -86,6 +73,19 @@ class ResponseTemplatesController < ApplicationController
         previous_content: attributes[:content],
       )
     end
+  end
+
+  def destroy
+    authorize response_template
+
+    if response_template.destroy
+      flash[:settings_notice] =
+        I18n.t("response_templates_controller.deleted", title: response_template.title)
+    else
+      flash[:error] = response_template.errors_as_sentence # this will probably never fail
+    end
+
+    redirect_to user_settings_path(tab: "response-templates")
   end
 
   private

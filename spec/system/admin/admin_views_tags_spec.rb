@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin updates a tag", type: :system do
+RSpec.describe "Admin updates a tag" do
   let(:super_admin) { create(:user, :super_admin) }
   let!(:tag1) { create(:tag, name: "alpha", supported: true, taggings_count: 1) }
   let!(:tag2) { create(:tag, name: "betical", supported: false, taggings_count: 2) }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PollSkip, type: :model do
+RSpec.describe PollSkip do
   let(:article) { create(:article, featured: true) }
   let(:user) { create(:user) }
   let(:poll) { create(:poll, article: article) }

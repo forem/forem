@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Poll, type: :model do
+RSpec.describe Poll do
   let(:article) { create(:article, featured: true) }
 
   describe "validations" do

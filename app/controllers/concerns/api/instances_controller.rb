@@ -26,7 +26,7 @@ module Api
     end
 
     def release_version
-      File.read(Rails.root.join(".release-version"))
+      Rails.root.join(".release-version").read
 
     # Accommodate the .release-version file not existing in the case where
     # this deployment is deployed from a checkout/snapshot of the code.

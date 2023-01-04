@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UserSubscription, type: :model do
+RSpec.describe UserSubscription do
   subject { build(:user_subscription) }
 
   let(:subscriber) { create(:user) }

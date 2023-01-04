@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ResponseTemplate, type: :model do
+RSpec.describe ResponseTemplate do
   let(:comment_validation_message) { I18n.t("models.response_template.comment_markdown") }
 
   it { is_expected.to validate_inclusion_of(:type_of).in_array(ResponseTemplate::TYPE_OF_TYPES) }

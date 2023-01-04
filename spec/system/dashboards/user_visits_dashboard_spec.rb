@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Dashboard", type: :system, js: true do
+RSpec.describe "Dashboard", js: true do
   let(:tag) { create(:tag) }
   let(:organization) { create(:organization) }
   let(:podcast) { create(:podcast) }

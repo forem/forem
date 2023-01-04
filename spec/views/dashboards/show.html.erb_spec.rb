@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "dashboards/show", type: :view do
+RSpec.describe "dashboards/show" do
   before do
     stub_template "dashboards/_actions_mobile.html.erb" => "stubbed content"
     stub_template "dashboards/_analytics.html.erb" => "stubbed content"

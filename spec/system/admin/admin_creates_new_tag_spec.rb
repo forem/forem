@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin creates new tag", type: :system do
+RSpec.describe "Admin creates new tag" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UsersOnboarding", type: :request do
+RSpec.describe "UsersOnboarding" do
   let!(:user) do
     create(:user,
            saw_onboarding: false,

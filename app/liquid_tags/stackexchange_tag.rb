@@ -4,7 +4,7 @@ class StackexchangeTag < LiquidTagBase
   ID_REGEXP = /\A(?<id>\d{1,20})\Z/
   SITE_REGEXP = /(?<subdomain>\b[a-zA-Z]+\b)/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP, SITE_REGEXP].freeze
-  STACKOVERFLOW_REGEXP = %r{https://stackoverflow\.com/(q|a|questions)/\d{1,20}(?:/[\w\-]+)?}
+  STACKOVERFLOW_REGEXP = %r{https://stackoverflow\.com/(q|a|questions)/\d{1,20}(?:/[\w-]+)?}
   API_URL = "https://api.stackexchange.com/2.3/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReactionCategory, type: :model do
+RSpec.describe ReactionCategory do
   let(:attributes_hash) do
     {
       "slug" => "lol",

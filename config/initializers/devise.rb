@@ -1,4 +1,4 @@
-Dir.glob(Rails.root.join("lib/omni_auth/strategies/*.rb")).each do |filename|
+Rails.root.glob("lib/omni_auth/strategies/*.rb").each do |filename|
   require_dependency filename
 end
 

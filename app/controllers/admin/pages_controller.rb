@@ -29,18 +29,6 @@ module Admin
       @landing_page = Page.landing_page
     end
 
-    def update
-      @page = Page.find(params[:id])
-
-      if @page.update(page_params)
-        flash[:success] = I18n.t("admin.pages_controller.updated")
-        redirect_to admin_pages_path
-      else
-        flash.now[:error] = @page.errors_as_sentence
-        render :edit
-      end
-    end
-
     def create
       @page = Page.new(page_params)
 
@@ -50,6 +38,18 @@ module Admin
       else
         flash.now[:error] = @page.errors_as_sentence
         render :new
+      end
+    end
+
+    def update
+      @page = Page.find(params[:id])
+
+      if @page.update(page_params)
+        flash[:success] = I18n.t("admin.pages_controller.updated")
+        redirect_to admin_pages_path
+      else
+        flash.now[:error] = @page.errors_as_sentence
+        render :edit
       end
     end
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ProfilePins", type: :request do
+RSpec.describe "ProfilePins" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:article2) { create(:article, user_id: user.id) }

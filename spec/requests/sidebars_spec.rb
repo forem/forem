@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Sidebars", type: :request do
+RSpec.describe "Sidebars" do
   describe "GET /sidebars/home" do
     it "includes surrogate headers" do
       get "/sidebars/home"

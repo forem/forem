@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Invitations", type: :request do
+RSpec.describe "Invitations" do
   let(:user) { create(:user) }
 
   describe "Accept invitation" do

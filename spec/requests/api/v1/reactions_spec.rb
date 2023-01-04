@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Reactions", type: :request do
+RSpec.describe "Api::V1::Reactions" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:params) do
     {

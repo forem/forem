@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages organizations", type: :system do
+RSpec.describe "Admin manages organizations" do
   let(:admin) { create(:user, :super_admin) }
   let(:organization) { create(:organization) }
 
@@ -8,7 +8,7 @@ RSpec.describe "Admin manages organizations", type: :system do
 
   context "when searching for organizations" do
     it "searches for organizations" do
-      create_list :organization, 5
+      create_list(:organization, 5)
       visit admin_organizations_path
 
       fill_in "search", with: organization.name.to_s
@@ -23,7 +23,7 @@ RSpec.describe "Admin manages organizations", type: :system do
 
     it "does not show the remove form when there are no credits" do
       expect(page).to have_button("Add Org Credits")
-      expect(page).to have_no_button("Remove Org Credits")
+      expect(page).not_to have_button("Remove Org Credits")
     end
   end
 end

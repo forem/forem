@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages profile fields", type: :system do
+RSpec.describe "Admin manages profile fields" do
   let(:admin) { create(:user, :super_admin) }
   let!(:profile_field_group) { create(:profile_field_group, name: "Delete Me") }
   let(:label) { "Delete Me Too" }

@@ -2,7 +2,7 @@ require "rails_helper"
 
 # HairTrigger suggests adding this test to make sure the schema and triggers are aligned
 # See https://github.com/jenseng/hair_trigger#testing
-RSpec.describe HairTrigger, type: :model do
+RSpec.describe HairTrigger do
   describe ".migrations_current?" do
     # Disabled due to Rails 7 compatibility. See https://github.com/jenseng/hair_trigger/pull/104
     xit "is always true" do

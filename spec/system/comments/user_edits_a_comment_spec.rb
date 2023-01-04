@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Editing A Comment", type: :system, js: true do
+RSpec.describe "Editing A Comment", js: true do
   let(:user) { create(:user) }
   let!(:article) { create(:article, show_comments: true) }
   let(:new_comment_text) { Faker::Lorem.paragraph }

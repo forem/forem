@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Visiting article comments", type: :system, js: true do
+RSpec.describe "Visiting article comments", js: true do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id, show_comments: true) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
@@ -32,7 +32,7 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
   end
 
   context "when root is specified" do
-    before { visit "#{article.path}/comments/#{comment.id.to_s(26)}" } # rubocop:disable Rails/ToSWithArgument
+    before { visit "#{article.path}/comments/#{comment.id.to_s(26)}" }
 
     it "displays related comments" do
       expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)

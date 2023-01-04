@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Editing with an editor", type: :system, js: true do
+RSpec.describe "Editing with an editor", js: true do
   let(:template) { file_fixture("article_published.txt").read }
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, body_markdown: template) }

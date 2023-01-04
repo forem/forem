@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
+RSpec.describe "Infinite scroll on dashboard", js: true do
   let(:default_per_page) { 3 }
   let(:total_records) { default_per_page * 2 }
   let(:user) { create(:user) }

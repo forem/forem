@@ -3,7 +3,7 @@
 return unless Rails.env.test? && ENV["E2E"].present?
 
 # Explicitly requiring lib/cypress-rails to load monkey-patch
-Dir.glob(Rails.root.join("lib/cypress-rails/*.rb")).each do |filename|
+Rails.root.glob("lib/cypress-rails/*.rb").each do |filename|
   require_dependency filename
 end
 

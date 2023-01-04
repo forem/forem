@@ -1,5 +1,5 @@
 class HtmlVariant < ApplicationRecord
-  self.ignored_columns = %w[success_rate].freeze
+  self.ignored_columns += %w[success_rate].freeze
 
   resourcify
 

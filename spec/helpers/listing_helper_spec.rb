@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ListingHelper, type: :helper do
+RSpec.describe ListingHelper do
   let!(:cat1) { create(:listing_category, cost: 1) }
   let!(:cat2) { create(:listing_category, :cfp, cost: 5) }
 

@@ -36,7 +36,7 @@ module DataUpdateScripts
           article.save
           # article.index_to_elasticsearch_inline
 
-          articles_to_delete_ids += articles_to_graft.map { |a| a["id"] }
+          articles_to_delete_ids += articles_to_graft.pluck("id")
         end
 
         # we shouldn't need to call Articles::Destroy as all the data has been moved over by now
@@ -60,7 +60,7 @@ module DataUpdateScripts
     # or different collections as it's highly unlikely
     def graft_articles(article_to_keep, articles_to_graft)
       article_id = article_to_keep.id
-      articles_to_graft_ids = articles_to_graft.map { |a| a["id"] }
+      articles_to_graft_ids = articles_to_graft.pluck("id")
 
       # NotificationSubscription, Notification and RatingVote rows will be removed
       # Poll is ignored because it's related to the liquid tag inside the article, also user's can't use polls
