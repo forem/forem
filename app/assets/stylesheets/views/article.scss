@@ -389,3 +389,17 @@
     margin-right: 1em;
   }
 }
+
+.multiple_reactions_aggregate {
+  padding-right: 1em;
+
+  svg {
+    background-color: var(--body-bg);
+    border-radius: 15px;
+    margin-right: -0.5em;
+  }
+
+  .aggregate_reactions_counter {
+    margin-left: 0.75em;
+  }
+}
