@@ -393,10 +393,17 @@
 .multiple_reactions_aggregate {
   padding-right: 1em;
 
-  svg {
+  .crayons_icon_container {
+    display: inline-block;
     background-color: var(--body-bg);
     border-radius: 15px;
-    margin-right: -0.5em;
+    margin-right: -0.75em;
+    width: 24px;
+    height: 24px;
+  }
+
+  svg {
+    margin: 3px 3px;
   }
 
   .aggregate_reactions_counter {
