@@ -28,6 +28,7 @@ export const Options = ({
   onSaveDraft,
   onConfigChange,
   previewLoading,
+  onFetchUrl,
 }) => {
   let publishedField = '';
   let existingSeries = '';
@@ -171,6 +172,14 @@ export const Options = ({
             onInput={onConfigChange}
             id="canonicalUrl"
           />
+          <Button
+            id="post-repost-btn"
+            className="w-100"
+            variant="primary"
+            onClick={onFetchUrl}
+          >
+            Repost
+          </Button>
         </div>
         {publishedAtField}
         <div className="crayons-field mb-6">

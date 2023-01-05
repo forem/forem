@@ -17,7 +17,7 @@ export const useTagsField = ({ defaultValue, onInput }) => {
     // Previously selected tags are passed as a plain comma separated string
     // Fetching further tag data allows us to display a richer UI
     // This fetch only happens once on first component load
-    if (defaultValue && defaultValue !== '' && !defaultsLoaded) {
+    if (defaultValue && defaultValue !== '') {
       const tagNames = defaultValue.split(', ');
 
       const tagRequests = tagNames.map((tagName) =>

@@ -1,5 +1,31 @@
 import { validateFileInputs } from '../packs/validateFileInputs';
 
+export function previewUrl(payload, successCb, failureCb) {
+  fetch('/fetch_url', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url: payload
+    }),
+    credentials: 'same-origin',
+  })
+    .then(async (response) => {
+      const payload = await response.json();
+
+      if (response.status !== 200) {
+        throw payload;
+      }
+
+      return payload;
+    })
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function previewArticle(payload, quickShare, successCb, failureCb) {
   fetch('/articles/preview', {
     method: 'POST',

@@ -14,6 +14,16 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
   const textAreaRef = useRef(null);
   const { setTextArea, setConstrainToContentHeight } = useTextAreaAutoResize();
 
+  document.addEventListener('repost_fill_data', () => {
+    if (textAreaRef.current) {
+      setConstrainToContentHeight(false);
+      setTextArea(textAreaRef.current);
+      setTimeout(()=>{
+        setConstrainToContentHeight(true);
+      }, 1000)
+    }
+  });
+
   useLayoutEffect(() => {
     if (textAreaRef.current) {
       setConstrainToContentHeight(true);

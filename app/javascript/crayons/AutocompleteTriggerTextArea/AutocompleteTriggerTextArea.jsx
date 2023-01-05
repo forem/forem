@@ -150,6 +150,13 @@ export const AutocompleteTriggerTextArea = forwardRef(
 
     const { setTextArea, setAdditionalElements } = useTextAreaAutoResize();
 
+    document.addEventListener('repost_fill_data', () => {
+      if (autoResize && inputRef.current) {
+        setTextArea(inputRef.current);
+        setAdditionalElements([wrapperRef.current]);
+      }
+    });
+
     useEffect(() => {
       if (activeDescendentIndex !== null) {
         const { current: popover } = popoverRef;

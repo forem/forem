@@ -177,3 +177,5 @@ end
 gem "down", "~> 5.4"
 
 gem "truncato", "~> 0.7.12"
+
+gem "ruby-readability", "~> 0.7.0"

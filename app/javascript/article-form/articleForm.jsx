@@ -5,7 +5,7 @@ import postscribe from 'postscribe';
 import moment from 'moment';
 import { KeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
 import { embedGists } from '../utilities/gist';
-import { submitArticle, previewArticle } from './actions';
+import { submitArticle, previewArticle, previewUrl } from './actions';
 import { EditorActions, Form, Header, Help, Preview } from './components';
 import { Button, Modal } from '@crayons';
 import {
@@ -210,6 +210,12 @@ export class ArticleForm extends Component {
     }
   };
 
+  fetchUrl = (e) => {
+    const { canonicalUrl } = this.state;
+    e.preventDefault();
+    previewUrl(canonicalUrl, this.fillUrl, this.failedPreview);
+  }
+
   lintMarkdown = () => {
     const options = {
       ...LINT_OPTIONS,
@@ -269,6 +275,23 @@ export class ArticleForm extends Component {
     });
     // eslint-disable-next-line no-undef
     QSFBEmbedParse(100);
+  };
+
+  fillUrl = (response) => {
+    let tagList = `${this.state.tagList == '' ? '' : `${this.state.tagList}, `}goc`
+    tagList = tagList.split(', ').filter((value, index, array) => {
+      return array.indexOf(value) === index;
+    });
+
+    this.setState({
+      title: response.data.title,
+      bodyMarkdown: response.data.body_markdown,
+      mainImage: response.data.cover_image || null,
+      tagList: tagList.join(', ')
+    });
+
+    document.dispatchEvent(new CustomEvent("repost_fill_data"));
+    this.fetchMarkdownLint();
   };
 
   handleOrgIdChange = (e) => {
@@ -542,6 +565,7 @@ export class ArticleForm extends Component {
           onConfigChange={this.handleConfigChange}
           submitting={submitting}
           previewLoading={previewLoading}
+          onFetchUrl={this.fetchUrl}
         />
 
         <KeyboardShortcuts

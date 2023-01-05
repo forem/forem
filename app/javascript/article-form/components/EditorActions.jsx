@@ -18,6 +18,7 @@ export const EditorActions = ({
   onConfigChange,
   submitting,
   previewLoading,
+  onFetchUrl,
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
@@ -87,6 +88,7 @@ export const EditorActions = ({
           onConfigChange={onConfigChange}
           onSaveDraft={onSaveDraft}
           previewLoading={previewLoading}
+          onFetchUrl={onFetchUrl}
         />
       )}
 
