@@ -278,7 +278,7 @@ export class ArticleForm extends Component {
   };
 
   fillUrl = (response) => {
-    let tagList = `${this.state.tagList == '' ? '' : `${this.state.tagList}, `}goc`
+    let tagList = `${this.state.tagList == '' ? '' : `${this.state.tagList}, `}repost`
     tagList = tagList.split(', ').filter((value, index, array) => {
       return array.indexOf(value) === index;
     });
