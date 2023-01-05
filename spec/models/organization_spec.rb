@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Organization, type: :model do
+RSpec.describe Organization do
   let(:organization) { create(:organization) }
 
   describe "validations" do
@@ -27,7 +27,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:name).is_at_most(50) }
       it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
-      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
       it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
