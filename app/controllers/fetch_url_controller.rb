@@ -72,7 +72,10 @@ class FetchUrlController < ApplicationController
     url = params[:url]
     html = fetch_html(url)
     readability = Readability::Document.new(html, :tags => WHITELIST_TAGS, :attributes => WHITELIST_ATTRIBUTES, :ignore_image_format => ["gif", "jpg", "jpeg", "png", "*"], :remove_empty_nodes => true)
-    body_markdown = ReverseMarkdown.convert readability.content
+    body_markdown = ReverseMarkdown
+      .convert(readability.content, github_flavored: true)
+      .gsub("```\n\n```", "")
+      .gsub(/&nbsp;|\u00A0/, " ")
     page = MetaInspector.new(url, document: html)
 
     render :json => { 
