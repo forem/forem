@@ -7,8 +7,8 @@ class FetchUrlController < ApplicationController
   # after_action :verify_authorized
 
   CACHE_EXPIRY_IN_MINUTES = 15
-  WHITELIST_TAGS = %w[div h1 h2 h3 h4 h5 h6 p em strong i b blockquote code img a hr li ol ul table tr th td br figure]
-  WHITELIST_ATTRIBUTES = %w[src href figure]
+  WHITELIST_TAGS = %w[div h1 h2 h3 h4 h5 h6 p em strong i b blockquote code img a hr li ol ul table tr th td br figure picture figcaption source]
+  WHITELIST_ATTRIBUTES = %w[src alt title data-src data-srcset href]
 
   def index
 
