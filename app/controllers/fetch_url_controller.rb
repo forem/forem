@@ -7,6 +7,8 @@ class FetchUrlController < ApplicationController
   # after_action :verify_authorized
 
   CACHE_EXPIRY_IN_MINUTES = 15
+  WHITELIST_TAGS = %w[div h1 h2 h3 h4 h5 h6 p em strong i b blockquote code img a hr li ol ul table tr th td br figure]
+  WHITELIST_ATTRIBUTES = %w[src href figure]
 
   def index
 
@@ -14,14 +16,14 @@ class FetchUrlController < ApplicationController
     # html = fetch_html('https://vneconomy.vn/cuba-muon-thoat-danh-sach-tai-tro-khung-bo-cua-my.htm');
     # url = params[:url]
     # url = url ? url : 'https://vnexpress.net/trinh-quoc-hoi-phe-chuan-mien-nhiem-hai-pho-thu-tuong-theo-nguyen-vong-ca-nhan-4556270.html'
-    url = 'https://vnexpress.net/trinh-quoc-hoi-phe-chuan-mien-nhiem-hai-pho-thu-tuong-theo-nguyen-vong-ca-nhan-4556270.html'
+    url = 'https://vietcetera.com/vn/luong-thang-13-co-gi-khien-ta-khong-danh-long-nghi-viec'
     html = fetch_html(url)
-    readability = Readability::Document.new(html, :tags => %w[div p img a figure picture], :attributes => %w[src href figure picture], :ignore_image_format => ["gif", "jpg", "jpeg", "png", "*"], :remove_empty_nodes => false);
+    readability = Readability::Document.new(html, :tags => WHITELIST_TAGS, :attributes => WHITELIST_ATTRIBUTES, :ignore_image_format => ["gif", "jpg", "jpeg", "png", "*"], :remove_empty_nodes => false);
 
     # puts readability.title
     # puts readability.description
     # puts readability.images
-    # puts readability.content
+    puts readability.content
 
     # doc =Kramdown::Document.new(readability.content, :input => 'html', :html_to_native => true)
     # doc = Kramdown::Document.new(readability.content, :input => 'html', 
@@ -37,6 +39,12 @@ class FetchUrlController < ApplicationController
     # puts doc.to_html
 
     body_markdown = ReverseMarkdown.convert readability.content
+  #   body_markdown = ReverseMarkdown.convert "<ul>
+  #   <li>First item</li>
+  #   <li>Second item</li>
+  #   <li>Third item</li>
+  #   <li>Fourth item</li>
+  # </ul>"
     # fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     # parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     # parsed_markdown = MarkdownProcessor::Parser.new(parsed.content)
@@ -63,7 +71,7 @@ class FetchUrlController < ApplicationController
     
     url = params[:url]
     html = fetch_html(url)
-    readability = Readability::Document.new(html, :tags => %w[div p img a figure picture], :attributes => %w[src href figure picture], :ignore_image_format => ["gif", "jpg", "jpeg", "png", "*"], :remove_empty_nodes => false)
+    readability = Readability::Document.new(html, :tags => WHITELIST_TAGS, :attributes => WHITELIST_ATTRIBUTES, :ignore_image_format => ["gif", "jpg", "jpeg", "png", "*"], :remove_empty_nodes => true)
     body_markdown = ReverseMarkdown.convert readability.content
     page = MetaInspector.new(url, document: html)
 
