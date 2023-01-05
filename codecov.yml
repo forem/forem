@@ -2,3 +2,4 @@ ignore:
   - "vendor"
   - "bin"
   - "**/*.svg"
+github_checks: true
