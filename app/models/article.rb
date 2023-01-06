@@ -421,6 +421,7 @@ class Article < ApplicationRecord
 
     doc = Nokogiri::HTML.fragment(parsed_markdown.finalize)
     doc.search('.article-body-image-wrapper').each(&:remove)
+    doc.search('.//img').remove
     p_empty = doc.at_css("p:first-child:empty")
     if p_empty
       p_empty.remove
@@ -435,55 +436,53 @@ class Article < ApplicationRecord
     self.processed_preview_link = ''
     self.social_image = self.main_image.present? ? self.main_image : ''
 
-    preview_links = body_markdown.scan(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i)
+    Nokogiri::HTML(processed_html).xpath('//a').each do |a|
+      preview_link = a['href']
 
-    if preview_links
-      preview_links.each do |preview|
-        preview_link = preview[0]
-        uri = Addressable::URI.parse(preview[0])
+      next if preview_link.match(/\.(png|jpg|jpep|webp|gif)$/i)
+      next if preview_link.match(/#{URL.domain}/i)
 
-        next if (uri.origin + uri.path).match(/\.(png|jpg|gif)$/i)
-        next if (uri.origin + uri.path).match(/#{URL.domain}/i)
-        
-        fixed_preview = MarkdownProcessor::Fixer::FixForQuickShare.call(preview[0])
-        parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
-        parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content, source: self, user: user, liquid_tag_options: { is_preview: true })
+      fixed_preview = MarkdownProcessor::Fixer::FixForQuickShare.call(preview_link)
+      parsed_preview = FrontMatterParser::Parser.new(:md).call(fixed_preview)
+      parsed_markdown = MarkdownProcessor::Parser.new(parsed_preview.content, source: self, user: user, liquid_tag_options: { is_preview: true })
 
+      begin
         if self.preview_link == ''
           self.preview_link = preview_link
           self.processed_preview_link = parsed_markdown.finalize
         end
-
-        next if social_image.present?
-
-        begin
-          doc = Nokogiri::HTML(self.processed_preview_link)
-          doc.xpath('//img').each do |img|
-            self.social_image = img['src']
-
-            # try download preview image
-            relative_upload_path = "/uploads/previews"
-            upload_path = "#{Rails.root}/public#{relative_upload_path}"
-            filename = self.quick_share ? title : SecureRandom.uuid
-            Dir.mkdir(upload_path) unless Dir.exist?(upload_path)
-
-            tempfile = Down.download(img['src'], max_redirects: 3);
-
-            if tempfile
-              file_path = "#{upload_path}/#{filename}#{File.extname(tempfile.original_filename)}"
-              FileUtils.mv(tempfile.path, file_path)
-              self.social_image = URL.url("#{relative_upload_path}/#{filename}#{File.extname(tempfile.original_filename)}")
-
-              img['src'] = Images::Optimizer.call(self.social_image, resize: { width: 180, height: 180, resizing_type: 'auto', enlarge: true, extend: true }).gsub(",", "%2C")
-              self.processed_preview_link = doc.to_html
-            end
-
-            break
-          end
-        rescue StandardError => e
-        end
-        break
+      rescue
       end
+
+      next if social_image.present?
+
+      begin
+        doc = Nokogiri::HTML(self.processed_preview_link)
+        doc.xpath('//img').each do |img|
+          self.social_image = img['src']
+
+          # try download preview image
+          relative_upload_path = "/uploads/previews"
+          upload_path = "#{Rails.root}/public#{relative_upload_path}"
+          filename = self.quick_share ? title : SecureRandom.uuid
+          Dir.mkdir(upload_path) unless Dir.exist?(upload_path)
+
+          tempfile = Down.download(img['src'], max_redirects: 3);
+
+          if tempfile
+            file_path = "#{upload_path}/#{filename}#{File.extname(tempfile.original_filename)}"
+            FileUtils.mv(tempfile.path, file_path)
+            self.social_image = URL.url("#{relative_upload_path}/#{filename}#{File.extname(tempfile.original_filename)}")
+
+            img['src'] = Images::Optimizer.call(self.social_image, resize: { width: 180, height: 180, resizing_type: 'auto', enlarge: true, extend: true }).gsub(",", "%2C")
+            self.processed_preview_link = doc.to_html
+          end
+
+          break
+        end
+      rescue StandardError => e
+      end
+      break
     end
   end
 
