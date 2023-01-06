@@ -15,9 +15,9 @@
     </div>
   </div>
   <div id="collapse<%= feedback_message.id %>" class="collapse show" aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-9">
+    <div class="crayons-card__body">
+      <div class="flex flex-wrap -mx-4">
+        <div class="w-75 max-w-75 px-4">
           <h5 class="fw-bold">
           <% if feedback_message.offender %>
             Reporter and Affected:
@@ -52,12 +52,12 @@
           <% end %>
         </div>
 
-        <div class="col-3">
+        <div class="w-25 max-w-25 px-4">
           <h3 class="report__tags">
-            <span class="badge badge-warning float-right"><%= feedback_message.category.titleize %></span>
+            <span class="c-indicator c-indicator--warning float-right"><%= feedback_message.category.titleize %></span>
           </h3>
         </div>
-        <div class="col-12">
+        <div class="w-100 max-w-100 px-4">
           <% if feedback_message.offender %>
             <h5 class="fw-bold">
               Message from Offender:
@@ -71,7 +71,7 @@
             </h5>
             <p>
             <% if feedback_message.message.blank? %>
-              <span class="font-italic">No message was left.</span>
+              <span class="fs-italic">No message was left.</span>
             <% else %>
               <%= feedback_message.message %>
             <% end %>
@@ -80,8 +80,8 @@
         </div>
       </div>
       <hr>
-      <div class="row">
-        <div class="col-12">
+      <div class="flex flex-wrap -mx-4">
+        <div class="w-100 max-w-100 px-4">
           <h5 class="fw-bold">Previous Emails:</h5>
           <div class="previous__emails__container">
             <% if feedback_message_emails.any? %>
@@ -100,8 +100,8 @@
         </div>
       </div>
       <hr>
-      <div class="row">
-        <div class="col-12">
+      <div class="flex flex-wrap -mx-4">
+        <div class="w-100 max-w-100 px-4">
           <h4 class="fw-bold">Email Form:</h4>
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="nav-item">
@@ -119,48 +119,48 @@
               <div class="crayons-notice crayons-notice--info" aria-live="polite">Please note that all users who report abuse receive an automatic confirmation email. You can send an additional, follow-up email to this user by using the form below.</div>
               <br>
               <h5 class="fw-bold">Send To:</h5>
-              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "form-control my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "crayons-textfield my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
-              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "form-control my-1", id: "reporter__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "crayons-textfield my-1", id: "reporter__subject__#{feedback_message.id}" %>
               <h5 class="fw-bold">Body:</h5>
-              <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
+              <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
             </div>
             <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
-              <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "form-control my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "crayons-textfield my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
-              <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "form-control my-1", id: "offender__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "crayons-textfield my-1", id: "offender__subject__#{feedback_message.id}" %>
               <h5 class="fw-bold">Body:</h5>
-              <%= text_area_tag :offender_email_body, offender_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
+              <%= text_area_tag :offender_email_body, offender_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
             </div>
             <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="affected" id="affected-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
-              <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "form-control my-1", id: "affected__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "crayons-textfield my-1", id: "affected__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
-              <%= text_field_tag :affected_email_subject, affected_email_details[:subject], class: "form-control my-1", id: "affected__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :affected_email_subject, affected_email_details[:subject], class: "crayons-textfield my-1", id: "affected__subject__#{feedback_message.id}" %>
               <h5 class="fw-bold">Body:</h5>
-              <%= text_area_tag :affected_email_body, affected_email_details[:body], class: "form-control my-1", style: "height: 300px;", id: "affected__body__#{feedback_message.id}" %>
+              <%= text_area_tag :affected_email_body, affected_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "affected__body__#{feedback_message.id}" %>
             </div>
           </div>
-          <button class="btn btn-primary" type="button" id="send__email__btn__<%= feedback_message.id %>">Send Email ✉️</button>
+          <button class="c-btn c-btn--primary" type="button" id="send__email__btn__<%= feedback_message.id %>">Send Email ✉️</button>
         </div>
       </div>
-      <div class="email__alert alert w-100 mt-2 d-none" id="email__alert__<%= feedback_message.id %>">
+      <div class="email__alert crayons-notice w-100 mt-2 d-none" id="email__alert__<%= feedback_message.id %>">
       </div>
-      <div class="row my-3">
-        <div class="col-12">
+      <div class="flex flex-wrap -mx-4 my-3">
+        <div class="w-100 max-w-100 px-4">
           <h3>Status:</h3>
           <%= f.select :status, %w[Open Invalid Resolved], {}, id: "status__#{feedback_message.id}" %>
-          <button class="btn btn-primary d-block mt-3" type="button" id="save__status__<%= feedback_message.id %>">Save Status</button>
+          <button class="c-btn c-btn--primary block mt-3" type="button" id="save__status__<%= feedback_message.id %>">Save Status</button>
         </div>
       </div>
-      <div class="row my-3">
-        <div class="col-12">
+      <div class="flex flex-wrap -mx-4 my-3">
+        <div class="w-100 max-w-100 px-4">
           <h3>Notes:</h3>
-          <div class="notes__container" id="notes__<%= feedback_message.id %>">
+          <div id="notes__<%= feedback_message.id %>">
             <% feedback_message.notes&.order(:created_at)&.each do |note| %>
-              <div class="border border-info bg-light rounded my-2 p-2">
-                <span class="badge badge-info float-right">
+              <div class="notes__border my-2 p-2">
+                <span class="c-indicator c-indicator--info float-right">
                   <%= time_ago_in_words note.created_at %> ago
                 </span>
                 <h5 class="font-weight-bold">
@@ -184,13 +184,13 @@
               class="notefield"
               id="note__content__<%= feedback_message.id %>"
               required>
-            <button class="btn btn-primary" type="button" id="note__submit__<%= feedback_message.id %>">Submit Note 📝</button>
+            <button class="c-btn c-btn--primary" type="button" id="note__submit__<%= feedback_message.id %>">Submit Note 📝</button>
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-12 d-flex justify-content-end">
-          <button class="btn btn-primary" type="button" id="minimize__report__button__<%= feedback_message.id %>">
+      <div class="flex flex-wrap -mx-4">
+        <div class="w-100 max-w-100 px-4 flex justify-content-end">
+          <button class="c-btn c-btn--primary" type="button" id="minimize__report__button__<%= feedback_message.id %>">
             Minimize Report
           </button>
         </div>
@@ -235,14 +235,14 @@
  });
 
  function successfulEmail(alert) {
-   alert.classList.remove("d-none");
-   alert.classList.add('alert-success');
+   alert.classList.remove("hidden");
+   alert.classList.add('crayons-notice--success');
    alert.innerHTML = "Email sent successfully! Refresh to see";
  }
 
  function failedEmail(alert) {
-   alert.classList.remove("d-none");
-   alert.classList.add('alert-danger');
+   alert.classList.remove("hidden");
+   alert.classList.add('crayons-notice--danger');
    alert.innerHTML = "Email failed to send, see console or Honeybadger for errors";
  }
 
@@ -255,14 +255,14 @@
    var subjectLine = document.getElementById(userType + "__subject__" + id).value;
    var emailBody = document.getElementById(userType + "__body__" + id).value;
 
-   alert.classList.add("d-none");
-   alert.classList.remove("alert-warning");
-   alert.classList.remove("alert-success");
-   alert.classList.remove("alert-danger");
+   alert.classList.add("hidden");
+   alert.classList.remove("crayons-notice--warning");
+   alert.classList.remove("crayons-notice--success");
+   alert.classList.remove("crayons-notice--danger");
 
    if (emailToAddress === "") {
-     alert.classList.remove("d-none");
-     alert.classList.add("alert-warning");
+     alert.classList.remove("hidden");
+     alert.classList.add("crayons-notice--warning");
      alert.innerHTML = "Email can't be blank!"
      return
    }

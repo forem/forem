@@ -29,3 +29,19 @@
     gap: var(--su-2);
   }
 }
+
+.dot {
+  height: var(--su-1);
+  width: var(--su-1);
+  background-color: var(--base-70);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.footer__nav-links {
+  list-style-type: none;
+
+  li:last-child .dot {
+    display:none
+  }
+}

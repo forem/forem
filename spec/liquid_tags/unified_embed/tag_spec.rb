@@ -144,4 +144,10 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       Liquid::Template.parse("{% embed #{listing_url} %}")
     end.to raise_error(StandardError, "Listings are disabled on this Forem; cannot embed a listing URL")
   end
+
+  it "sanitizes community_name into safe user-agent string" do
+    unsafe = "Some of this.is_not_safe (but that's okay?) 🌱"
+    result = described_class.safe_user_agent(unsafe)
+    expect(result).to eq("Some of this.is_not_safe (but that-s okay-) -")
+  end
 end
