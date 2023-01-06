@@ -109,7 +109,7 @@ Rails.application.routes.draw do
       end
     end
     resources :image_uploads, only: [:create]
-    resources :fetch_url, only: %i[index create]
+    resources :fetch_url, only: [:create]
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
