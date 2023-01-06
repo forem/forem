@@ -12,8 +12,8 @@
                            class: "crayons-textfield",
                            value: Settings::General.onboarding_background_image,
                            placeholder: Constants::Settings::General.details[:onboarding_background_image][:placeholder] %>
-          <div class="row mt-2">
-            <div class="col-12">
+          <div class="flex flex-wrap flex-row -mx-4 mt-2">
+            <div class="w-100 max-w-100 px-4">
               <img alt="onboarding background image" class="max-w-100 h-auto" src="<%= Settings::General.onboarding_background_image %>" loading="lazy" />
             </div>
           </div>
