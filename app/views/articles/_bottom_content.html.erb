@@ -11,8 +11,22 @@
                                       image_options: { loading: "lazy", alt: "#{article.cached_user.username} profile image", class: "crayons-avatar__image" }) %>
             <% end %>
           </span>
-          <div>
-            <h3 class="fs-xl mb-0 lh-tight"><%= article.title %></h3>
+          <div style="width: 100%">
+            <h3 class="fs-xl mb-0 lh-tight">
+            <% if !article.quick_share %>
+            <div class="text-truncate">
+              <%= article.title %>
+            </div>
+            <% elsif article.description != '' %>
+            <div class="text-truncate">
+              <%= article.description %>
+            </div>
+            <% elsif article.image_list != '' %>
+            <div class="crayons-article__cover m-0 mb-1">
+              <img src="<%= article.image_list.split(',')[0] %>" width="1000" height="420" class="crayons-article__cover__image" style="background-color: #eee" />
+            </div>
+            <% end %>
+            </h3>
             <p class="opacity-75 pt-1">
               <%= article.cached_user.name %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
             </p>
