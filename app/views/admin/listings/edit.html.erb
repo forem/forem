@@ -2,45 +2,47 @@
   <h2 class="crayons-title mb-4">Edit</h2>
 
   <div class="ml-auto flex">
-    <%= link_to "Remove", url_for(action: :destroy, id: @listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger mr-2" %>
+    <%= link_to "Remove", url_for(action: :destroy, id: @listing.id), method: :delete, data: { confirm: "Are you sure?" }, class: "crayons-btn crayons-btn--danger mr-2" %>
 
     <%= form_with model: [:admin, @listing], method: :patch do |f| %>
       <input type="hidden" name="listing[action]" value="bump" />
-      <%= f.submit "Bump Listing ⏫", class: "btn btn-secondary" %>
+      <%= f.submit "Bump Listing ⏫", class: "crayons-btn crayons-btn--secondary" %>
     <% end %>
 
-    <%= link_to "View", "/listings/#{@listing.category}/#{@listing.slug}", target: "_blank", rel: "noopener", class: "btn btn-primary ml-2" %>
+    <%= link_to "View", "/listings/#{@listing.category}/#{@listing.slug}", target: "_blank", rel: "noopener", class: "crayons-btn crayons-btn--primary ml-2" %>
 
   </div>
 </header>
 
 <div class="crayons-card p-6">
   <%= form_with model: [:admin, @listing], method: :patch, local: true do |form| %>
-    <div class="form-group">
-      <%= form.label :title %>
-      <%= form.text_field :title, size: 100, maxlength: 128, class: "form-control" %>
+    <div class="flex flex-col gap-4">
+      <div class="crayons-field">
+        <%= form.label :title, class: "crayons-field__label"%>
+        <%= form.text_field :title, size: 100, maxlength: 128, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= form.label :body_markdown, class: "crayons-field__label" %>
+        <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= form.label :tag_list, class: "crayons-field__label" %>
+        <i class="fs-s">Comma separated, one space, 8 tags max</i>
+        <%= form.text_field :tag_list, value: @listing.cached_tag_list, size: 100, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= form.label :organization_id, "Organization ID (Optional)", class: "crayons-field__label" %>
+        <%= form.text_field :organization_id, value: @listing.organization_id, class: "crayons-textfield" %>
+      </div>
+      <div class="crayons-field">
+        <%= form.label :listing_category_id, class: "crayons-field__label" %>
+        <%= form.select :listing_category_id, select_options_for_categories, class: "crayons-select" %>
+      </div>
+      <div class="crayons-field crayons-field--checkbox">
+        <%= form.check_box :published, checked: @listing.published?, class: "crayons-checkbox" %>
+        <%= form.label :published, class: "crayons-field__label" %>
+      </div>
+      <%= form.submit "Update Listing", class: "crayons-btn crayons-btn--primary mr-auto" %>
     </div>
-    <div class="form-group">
-      <%= form.label :body_markdown %>
-      <%= form.text_area :body_markdown, cols: 40, rows: 15, maxlength: 400, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= form.label :tag_list %>
-      <i class="fs-s">Comma separated, one space, 8 tags max</i>
-      <%= form.text_field :tag_list, value: @listing.cached_tag_list, size: 100, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= form.label :organization_id, "Organization ID (Optional)" %>
-      <%= form.text_field :organization_id, value: @listing.organization_id, class: "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= form.label :listing_category_id %>
-      <%= form.select :listing_category_id, select_options_for_categories %>
-    </div>
-    <div class="form-check">
-      <%= form.check_box :published, checked: @listing.published? %>
-      <%= form.label :published %>
-    </div>
-    <%= form.submit "Update Listing", class: "btn btn-primary" %>
   <% end %>
 </div>
