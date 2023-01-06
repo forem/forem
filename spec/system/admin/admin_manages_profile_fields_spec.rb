@@ -38,7 +38,8 @@ RSpec.describe "Admin manages profile fields", type: :system do
   it "deletes a profile_field" do
     profile_field = ProfileField.find_by(label: label)
     expect(page).to have_text(profile_field.label.to_s)
-    find("summary", text: profile_field.label.to_s).click
+    find("#profile-field-group-summary-#{profile_field_group.id}").click
+    find("#profile-field-summary-#{profile_field.id}").click
 
     find("#profile-field-#{profile_field.id}").click_button("Delete Profile Field")
     expect(page).to have_text("Profile field #{label} deleted")

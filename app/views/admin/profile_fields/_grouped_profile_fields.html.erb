@@ -1,34 +1,32 @@
 <% @grouped_profile_fields.each do |group| %>
   <article id="profile-field-group-<%= group.id %>" class="flex flex-wrap -mx-4 my-3">
-    <div class="crayons-card w-100">
-      <div class="card-header">
-        <div class="card-header__information">
-          <div class="fw-bold fs-l"><%= group.name %></div>
-          <div class="fw-bold fs-s">&nbsp;(<%= group.profile_fields.length %>)</div>
-          <% if group.description %>
-            <div class="fs-s group__description"><%= group.description %></div>
-          <% end %>
-        </div>
+    <details class="crayons-card w-100">
+      <summary id="profile-field-group-summary-<%= group.id %>" class="card-header">
+        <div class="flex items-center justify-between w-100">
+          <div class="card-header__information">
+            <div class="fw-bold fs-l"><%= group.name %></div>
+            <div class="fw-bold fs-s">&nbsp;(<%= group.profile_fields.length %>)</div>
+            <% if group.description %>
+              <div class="fs-s group__description"><%= group.description %></div>
+            <% end %>
+          </div>
 
-        <div class="card-header__actions">
-          <%= render partial: "add_profile_field_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
-          <%= render partial: "edit_group_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
-          <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "crayons-btn crayons-btn--danger mx-1" %>
-          <button id="<%= dom_safe_name(group.name) %>Header" data-toggle="collapse" class="crayons-btn crayons-btn--secondary mx-1"
-                  data-target="#<%= dom_safe_name(group.name) %>BodyContainer" aria-expanded="false" aria-controls="<%= dom_safe_name(group.name) %>BodyContainer">
-            Toggle
-          </button>
+          <div class="card-header__actions">
+            <%= render partial: "add_profile_field_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
+            <%= render partial: "edit_group_modal", locals: { group: group, dom_safe_name: dom_safe_name(group.name) } %>
+            <%= button_to "Delete Group", admin_profile_field_group_path(group), data: { confirm: "Are you sure?" }, method: :delete, class: "crayons-btn crayons-btn--danger mx-1" %>
+          </div>
         </div>
-      </div>
+      </summary>
 
-      <div id="<%= dom_safe_name(group.name) %>BodyContainer" class="collapse hide" aria-labelledby="<%= dom_safe_name(group.name) %>Header">
+      <div id="<%= dom_safe_name(group.name) %>BodyContainer" aria-labelledby="<%= dom_safe_name(group.name) %>Header">
         <% if group.profile_fields.empty? %>
           <div class="m-3"> There are no profile fields configured for this group. </div>
         <% else %>
           <div class="m-3">
             <% group.profile_fields.each do |field| %>
               <details class="crayons-card mb-4" id="profile-field-<%= field.id %>">
-                <summary class="crayons-subtitle-2 p-5"><%= field.label %></summary>
+                <summary id="profile-field-summary-<%= field.id %>" class="crayons-subtitle-2 p-5"><%= field.label %></summary>
                 <div id="<%= field.attribute_name %>_container" class="p-5 pt-0">
                   <div class="flex flex-col p-6 mb-6 gap-1">
                     <%= form_for [:admin, field] do |form| %>
@@ -43,6 +41,6 @@
           </div>
         <% end %>
       </div>
-    </div>
+    </details>
   </article>
 <% end %>
