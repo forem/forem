@@ -341,10 +341,10 @@
    var notesDiv = document.getElementById('notes__' + id);
 
    var singleNoteDiv = document.createElement('div');
-   singleNoteDiv.setAttribute('class', 'border border-info bg-light rounded my-2 p-2');
+   singleNoteDiv.setAttribute('class', 'notes__timestamp my-2 p-2');
 
    var timeBadge = document.createElement('span');
-   timeBadge.setAttribute('class', 'badge badge-info float-right');
+   timeBadge.setAttribute('class', 'c-indicator c-indicator--info float-right');
    timeBadge.innerText = "just now";
    singleNoteDiv.append(timeBadge);
 
