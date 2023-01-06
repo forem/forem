@@ -337,6 +337,21 @@ function buildArticleHTML(article, currentUserId = null) {
       </h3>`;
     }
 
+    var cover_image = article.main_image != null && !article.quick_share ? `<div class="crayons-article__cover">
+      <a
+        href="${article.path}"
+        title="${article.title}"
+      >
+        <img
+          class="crayons-article__cover__image"
+          src="${article.main_image}"
+          width="650"
+          height="275"
+          alt="${article.title}"
+          style="background-color: ${article.main_image_background_hex_color}"
+        />
+      </a>
+    </div>` : '';
     var processed_preview_link = article.quick_share && !article.image_list.length > 0 && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
 
     return `<article class="crayons-story"
@@ -346,6 +361,7 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
+          ${cover_image}\
           <div class="crayons-story__body">\
             <div class="crayons-story__top">\
               ${meta}

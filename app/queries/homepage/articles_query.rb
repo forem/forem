@@ -14,12 +14,14 @@ module Homepage
       user_id
       video_duration_in_seconds
       video_thumbnail_url
+      main_image
       image_list
       quick_share
       description
       description_html
       processed_html
       processed_preview_link
+      main_image_background_hex_color
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100

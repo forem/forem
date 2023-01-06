@@ -32,7 +32,8 @@ module Homepage
       :description_html,
       :quick_share,
       :processed_html,
-      :processed_preview_link
+      :processed_preview_link,
+      :main_image_background_hex_color
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes
@@ -40,6 +41,7 @@ module Homepage
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :image_list, ->(article) { article.image_list.to_s.split(",") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
+    attribute :main_image, ->(article) { ApplicationController.helpers.cloud_cover_url(article.main_image) }
 
     attribute :user do |article|
       user = article.user

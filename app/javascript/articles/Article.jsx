@@ -45,7 +45,7 @@ export const Article = ({
   ];
 
   let showCover =
-    (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
+    (isFeatured || (article.main_image)) &&
     !article.cloudinary_video_url;
 
   // pinned article can have a cover image
