@@ -2,10 +2,14 @@
     text-align: center !important;
 }
 
-.crayons-article__body .text-truncate, .crayons-story__body .text-truncate, .crayons-link--contentful .text-truncate {
+.crayons-article__body .text-truncate, .crayons-story__body .text-truncate, .crayons-link--contentful .text-truncate, .profile-comment-row .text-truncate {
     -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
     mask-image: linear-gradient(180deg,#000 60%,transparent);
     max-height: 200px;
+}
+
+.profile-comment-row .text-truncate {
+    max-height: 50px;
 }
 
 .preview .c-embed {

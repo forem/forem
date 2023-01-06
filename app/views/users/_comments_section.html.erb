@@ -28,7 +28,19 @@
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
         <a href="<%= comment.path %>" class="profile-comment-row ">
           <h4 class="fw-bold fs-base m-0 mb-1">
-            <%= comment.commentable.title %>
+            <% if !comment.commentable.quick_share %>
+            <div class="text-truncate">
+              <%= comment.commentable.title %>
+            </div>
+            <% elsif comment.commentable.description != '' %>
+            <div class="text-truncate">
+              <%= comment.commentable.description %>
+            </div>
+            <% elsif comment.commentable.image_list != '' %>
+            <div class="crayons-article__cover m-0 mb-1">
+              <img src="<%= comment.commentable.image_list.split(',')[0] %>" width="1000" height="420" class="crayons-article__cover__image" style="background-color: #eee" />
+            </div>
+            <% end %>
           </h4>
           <div class="flex items-center fs-s">
             <p class="color-base-80">
