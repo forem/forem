@@ -4,17 +4,19 @@
   <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
 <% end %>
 
-<div class="crayons-card" id="accordion-<%= feedback_message.id %>">
-  <div class="card-header" id="header<%= feedback_message.id %>">
-    <a href="#" id="collapse__header__link-<%= feedback_message.id %>" data-toggle="collapse" data-target="#collapse<%= feedback_message.id %>" aria-expanded="true" aria-controls="collapse<%= feedback_message.id %>">
-      Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
-    </a>
-    <div class="float-right">
-      ✉️ Emails Sent: <%= feedback_message_emails.size %> |
-      <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
-    </div>
-  </div>
-  <div id="collapse<%= feedback_message.id %>" class="collapse show" aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">
+<details class="crayons-card" id="accordion-<%= feedback_message.id %>">
+  <summary class="p-5">
+    <span id="header<%= feedback_message.id %>">
+      <span id="collapse__header__link-<%= feedback_message.id %>">
+        Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
+      </span>
+      <div class="float-right">
+        ✉️ Emails Sent: <%= feedback_message_emails.size %> |
+        <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
+      </div>
+    </span>
+  </summary>
+  <div aria-labelledby="header<%= feedback_message.id %>" data-parent="#accordion-<%= feedback_message.id %>">
     <div class="crayons-card__body">
       <div class="flex flex-wrap -mx-4">
         <div class="w-75 max-w-75 px-4">
@@ -197,7 +199,7 @@
       </div>
     </div>
   </div>
-</div>
+</details>
 
 <script>
  function saveStatus(id) {

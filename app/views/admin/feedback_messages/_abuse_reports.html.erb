@@ -12,14 +12,11 @@
   </ul>
 
   <div id="vomitReactions">
-    <div class="crayons-card">
-      <div class="card-header flex items-center" id="vomitReactionsHeader">
-        <h4>Flag Reactions</h4>
-        <button class="crayons-btn crayons-btn--secondary ml-auto" type="button" data-toggle="collapse" data-target="#vomitReactionsBodyContainer" aria-expanded="false" aria-controls="vomitReactionsBodyContainer">
-          Toggle
-        </button>
-      </div>
-      <div id="vomitReactionsBodyContainer" class="collapse hide" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
+    <details class="crayons-card w-100">
+      <summary class="crayons-subtitle-2 p-5" id="vomitReactionsHeader">
+        Flag Reactions
+      </summary>
+      <div id="vomitReactionsBodyContainer" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
         <div class="crayons-card__body" style="overflow: scroll; max-height: 500px;">
           <% @vomits.each do |reaction| %>
             <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
@@ -102,6 +99,6 @@
           <% end %>
         </div>
       </div>
-    </div>
+    </details>
   </div>
 </div>
