@@ -13,17 +13,16 @@ lightbulb:
 rocket:
   position: 3
   icon: twemoji/rocket
-raised_hands:
+unicorn:
   position: 4
+  name: Unicorn
+  icon: multi-unicorn
+raised_hands:
+  position: 5
   icon: twemoji/raised_hands
 tada:
-  position: 5
+  position: 6
   icon: twemoji/tada
-unicorn:
-  position: 3
-  name: Unicorn
-  icon: unicorn
-  published: false
 thumbsup:
   privileged: true
   score: 5.0
