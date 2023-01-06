@@ -242,6 +242,8 @@
 }
 
 .reaction-drawer .crayons-reaction {
+  border: 1px solid var(--card-bg);
+
   &.user-activated {
     background-color: var(--body-bg);
     border: 1px solid #d4d4d4;

@@ -7,6 +7,7 @@
     <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
       <%= crayons_icon_tag(image_path, native: true, aria_hidden: true) %>
     </span>
+    <%# TODO: This can be straightened out after feature-flag -- double icons are not required now %>
     <% if user_signed_in? # We cannot trigger the action state unless the user is signed in, so no need to render. %>
       <span class="crayons-reaction__icon crayons-reaction__icon--active">
         <%= crayons_icon_tag(image_active_path, native: true, aria_hidden: true) %>

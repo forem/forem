@@ -33,21 +33,31 @@ function showUserReaction(reactionName, animatedClass, wasToggling) {
   );
   reactionButton.classList.add('user-activated', animatedClass);
   reactionButton.setAttribute('aria-pressed', 'true');
+  const reactionDrawerButton = document.getElementById(
+    "reaction-drawer-trigger"
+  );
+
+  if (reactionDrawerButton && reactionName !== "readinglist") {
+    reactionDrawerButton.classList.add('user-activated', 'user-animated');
+  }
+
   if (wasToggling) {
     const activeIcon = reactionButton.querySelector(
       '.crayons-reaction__icon--active svg',
     );
 
     if (activeIcon) {
-      const drawerIcon = document
-        .getElementById('reaction-drawer-trigger')
-        .querySelector('svg');
-      const originalIcon = drawerIcon.outerHTML;
-      drawerIcon.outerHTML = activeIcon.outerHTML;
+      const activeDrawerIcon = reactionDrawerButton
+        .querySelector(".crayons-reaction__icon--active svg");
+      reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
+      activeDrawerIcon.outerHTML = activeIcon.outerHTML;
+
       setTimeout(function () {
+        console.log("A little while later")
         document
           .getElementById('reaction-drawer-trigger')
-          .querySelector('svg').outerHTML = originalIcon;
+          .querySelector(".crayons-reaction__icon--active svg").outerHTML =
+          reactionDrawerButton.originalIcon;
       }, 1500);
     }
   }
