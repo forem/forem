@@ -1603,19 +1603,19 @@
   resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
   integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
 
-"@honeybadger-io/core@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/core/-/core-4.6.0.tgz#bff3128212a6fbfd15d5d6b87aee2f9417021da3"
-  integrity sha512-1AEw40GTSIFCG9jyQDGCk+tATRbrlJGG2YJK74PelRDAEeB+FvWy5uFWAaRyDN43XMrGYAT4ZDcVn4q4T1uw1Q==
+"@honeybadger-io/core@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/core/-/core-4.8.0.tgz#240e6b221f95cdb10c43fb917485979f2855f896"
+  integrity sha512-hGsnMOAdfRn7+OTi6BJM9SrvcWNMWoG9YmV9eyx847ZKeIcd3Cb4XOrtNQwXMKxpdPAoG03rOnJhaxpJZY1u/g==
   dependencies:
     stacktrace-parser "^0.1.10"
 
-"@honeybadger-io/js@^4.6.0":
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.7.4.tgz#2159d4b041f87e369fc124a78fba964a1b9573f2"
-  integrity sha512-txSpXlXSyT76HtusjJ5qLTIksE9zToj1liWD/p6s1QgOsq7Cz7DzbnGW39hgBQlH5qRnicqKIYFL9gVV232Zrg==
+"@honeybadger-io/js@^4.8.0":
+  version "4.8.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/js/-/js-4.8.0.tgz#5e1361a38a641d2237dd86af330848a3e85ca9f1"
+  integrity sha512-N1ONRY22CwWejhk6dqkNgFhkVVuvjBlN0yafASbG7Ov610eySxD1U5lDWERs62BMWKsR0vxy8+PYr+FvGxw0og==
   dependencies:
-    "@honeybadger-io/core" "^4.6.0"
+    "@honeybadger-io/core" "^4.8.0"
     "@types/aws-lambda" "^8.10.89"
     "@types/express" "^4.17.13"
 
@@ -3917,10 +3917,10 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
-"@whitespace/storybook-addon-html@^5.0.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@whitespace/storybook-addon-html/-/storybook-addon-html-5.1.0.tgz#e415b3cb476e374dd6d5361cfda7a1a0ae797480"
-  integrity sha512-ir47RQp9WWczuv0qObhmZhsuFugN8Jn2M/yr2dG2u7GwpuhSJDjcLSfL16Zdt7CqquxnvnG/orCvv/gPE4A6Jw==
+"@whitespace/storybook-addon-html@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@whitespace/storybook-addon-html/-/storybook-addon-html-5.1.1.tgz#a84789a5b09a3f5a664e2ed804206d0d85e3b9df"
+  integrity sha512-keUiMJua+ytgMuqvLLwV9FjqWqVeyJlqmoqYAyRsihp9vAcSWYbkG3WWGn+IAk52oBmJIuuDUElEERoTwLIYlg==
 
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
@@ -8856,10 +8856,10 @@ husky@^8.0.1:
   resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.2.tgz#5816a60db02650f1f22c8b69b928fd6bcd77a236"
   integrity sha512-Tkv80jtvbnkK3mYWxPZePGFpQ/tT3HNSs/sasF9P2YfkMezDl3ON37YN6jUUI4eTg5LcyVynlb6r4eyvOmspvg==
 
-i18n-js@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.2.0.tgz#c2d8417e8a93054d15e6f5199aa1f5297a325f10"
-  integrity sha512-3LIJO23hXITmUtvduSeBgRdclD9XwTtAv/Vqp1dtZZYF9SvxvjYDXUpzTM2Ptb64BdgPQXhPFECnIVHcMiwWaw==
+i18n-js@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.2.2.tgz#fa3904564877e387d9ff8d26d14a9f1d5a17f13a"
+  integrity sha512-Mpr6g9T3uB7xHD4LpuyeCEKVRKxedeTFduT+ft0Xu+i0qqWRJ3T+bIcb73bd0/qH2u2IHnCTRMfAKtjf6NsjJg==
   dependencies:
     bignumber.js "*"
     lodash "*"
@@ -10575,10 +10575,10 @@ linkstate@^2.0.1:
   dependencies:
     esm "^3.2.25"
 
-lint-staged@^13.0.4:
-  version "13.0.4"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.0.4.tgz#c4b4391280c35165b805ad43304ba01f733067a0"
-  integrity sha512-HxlHCXoYRsq9QCby5wFozmZW00hMs/9e3l+/dz6Qr8Kle4UH0kJTdABAbqhzG+3pcG6QjL9kz7NgGBfph+a5dw==
+lint-staged@^13.1.0:
+  version "13.1.0"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.1.0.tgz#d4c61aec939e789e489fa51987ec5207b50fd37e"
+  integrity sha512-pn/sR8IrcF/T0vpWLilih8jmVouMlxqXxKuAojmbiGX5n/gDnz+abdPptlj0vYnbfE0SQNl3CY/HwtM0+yfOVQ==
   dependencies:
     cli-truncate "^3.1.0"
     colorette "^2.0.19"
@@ -12535,10 +12535,10 @@ postcss-import@^12.0.1:
     read-cache "^1.0.0"
     resolve "^1.1.7"
 
-postcss-import@^15.0.1:
-  version "15.0.1"
-  resolved "https://registry.yarnpkg.com/postcss-import/-/postcss-import-15.0.1.tgz#5887da24440ef259324d65e08343437a43ff92b1"
-  integrity sha512-UGlvk8EgT7Gm/Ndf9xZHnzr8xm8P54N8CBWLtcY5alP+YxlEge/Rv78etQyevZs3qWTE9If13+Bo6zATBrPOpA==
+postcss-import@^15.1.0:
+  version "15.1.0"
+  resolved "https://registry.yarnpkg.com/postcss-import/-/postcss-import-15.1.0.tgz#41c64ed8cc0e23735a9698b3249ffdbf704adc70"
+  integrity sha512-hpr+J05B2FVYUAXHeK1YyI267J/dDDhMU6B6civm8hSY1jYJnBXxzKDKDswzJmtLHryrjhnDjqqp/49t8FALew==
   dependencies:
     postcss-value-parser "^4.0.0"
     read-cache "^1.0.0"
@@ -13162,10 +13162,19 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-postcss@^8.2.15, postcss@^8.4.18:
+postcss@^8.2.15:
   version "8.4.19"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.19.tgz#61178e2add236b17351897c8bcc0b4c8ecab56fc"
   integrity sha512-h+pbPsyhlYj6N2ozBmHhHrs9DzGmbaarbLvWipMRO7RLS+v4onj26MPFXA5OBYFxyqYhUJK456SwDcY9H2/zsA==
+  dependencies:
+    nanoid "^3.3.4"
+    picocolors "^1.0.0"
+    source-map-js "^1.0.2"
+
+postcss@^8.4.20:
+  version "8.4.20"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.20.tgz#64c52f509644cecad8567e949f4081d98349dc56"
+  integrity sha512-6Q04AXR1212bXr5fh03u8aAwbLxAQNGQ/Q1LNa0VfOI06ZAlhPHtQvE4OIdpj4kLThXilalPnmDSOD65DcHt+g==
   dependencies:
     nanoid "^3.3.4"
     picocolors "^1.0.0"
@@ -13208,7 +13217,7 @@ prescribe@>=1.1.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.0.tgz#b6a5bf1284026ae640f17f7ff5658a7567fc0d18"
   integrity sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==
 
-prettier@^2.7.1:
+prettier@^2.8.1:
   version "2.8.1"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.1.tgz#4e1fd11c34e2421bc1da9aea9bd8127cd0a35efc"
   integrity sha512-lqGoSJBQNJidqCHE80vqZJHWHRFoNYsSpP9AjFhlhi9ODCJA541svILes/+/1GM3VaL/abZi7cpFzOpdR9UPKg==

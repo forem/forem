@@ -9,6 +9,14 @@ import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 
+Document.prototype.ready = new Promise((resolve) => {
+  if (document.readyState !== 'loading') {
+    return resolve();
+  }
+  document.addEventListener('DOMContentLoaded', () => resolve());
+  return null;
+});
+
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
   preactImport: undefined,
@@ -62,17 +70,17 @@ function getPageEntries() {
   });
 }
 
+/**
+ * Initializes the left hand side hamburger menu
+ */
 function initializeNav() {
   const { currentPage } = document.getElementById('page-content').dataset;
   const menuTriggers = [
-    ...document.querySelectorAll(
-      '.js-hamburger-trigger, .hamburger a:not(.js-nav-more-trigger)',
-    ),
+    ...document.querySelectorAll('.js-hamburger-trigger, .hamburger a'),
   ];
-  const moreMenus = [...document.getElementsByClassName('js-nav-more-trigger')];
 
   setCurrentPageIconLink(currentPage, getPageEntries());
-  initializeMobileMenu(menuTriggers, moreMenus);
+  initializeMobileMenu(menuTriggers);
 }
 
 const memberMenu = document.getElementById('crayons-header__menu');
@@ -80,6 +88,25 @@ const menuNavButton = document.getElementById('member-menu-button');
 
 if (memberMenu) {
   initializeMemberMenu(memberMenu, menuNavButton);
+}
+
+/**
+ * Fetches the html for the navigation_links from an endpoint and dynamically insterts it in the DOM.
+ */
+async function getNavigation() {
+  const placeholderElement = document.getElementsByClassName(
+    'js-navigation-links-container',
+  )[0];
+
+  if (placeholderElement.innerHTML.trim() === '') {
+    const response = await window.fetch(`/async_info/navigation_links`);
+    const htmlContent = await response.text();
+
+    const generatedElement = document.createElement('div');
+    generatedElement.innerHTML = htmlContent;
+
+    placeholderElement.appendChild(generatedElement);
+  }
 }
 
 // Initialize when asset pipeline (sprockets) initializers have executed
@@ -103,6 +130,7 @@ waitOnBaseData()
     Honeybadger.notify(error);
   });
 
+// we need to call initializeNav here for the initial page load
 initializeNav();
 
 async function loadCreatorSettings() {
@@ -124,6 +152,13 @@ async function loadCreatorSettings() {
 if (document.location.pathname === '/admin/creator_settings/new') {
   loadCreatorSettings();
 }
+
+document.ready.then(() => {
+  const hamburgerTrigger = document.getElementsByClassName(
+    'js-hamburger-trigger',
+  )[0];
+  hamburgerTrigger.addEventListener('click', getNavigation);
+});
 
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
