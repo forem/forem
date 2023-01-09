@@ -4,7 +4,7 @@
   <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
 <% end %>
 
-<details class="crayons-card" id="accordion-<%= feedback_message.id %>">
+<details open class="crayons-card" id="accordion-<%= feedback_message.id %>">
   <summary class="p-5">
     <span id="header<%= feedback_message.id %>">
       <span id="collapse__header__link-<%= feedback_message.id %>">
