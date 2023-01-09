@@ -223,24 +223,24 @@
 
  function showTabContent(tabName, reportId) {
    // Make all tabs inactive
-   document.getElementById('tab-reporter-' + reportId).classList.remove("crayons-navigation__item--current");
-   document.getElementById('tab-offender-' + reportId).classList.remove("crayons-navigation__item--current");
-   document.getElementById('tab-affected-' + reportId).classList.remove("crayons-navigation__item--current");
+   document.getElementById(`tab-reporter-${reportId}`).classList.remove("crayons-navigation__item--current");
+   document.getElementById(`tab-offender-${reportId}`).classList.remove("crayons-navigation__item--current");
+   document.getElementById(`tab-affected-${reportId}`).classList.remove("crayons-navigation__item--current");
 
    // Hide all tab related contents
-   document.getElementById('reporter-' + reportId).classList.add("hidden");
-   document.getElementById('offender-' + reportId).classList.add("hidden");
-   document.getElementById('affected-' + reportId).classList.add("hidden");
+   document.getElementById(`reporter-${reportId}`).classList.add("hidden");
+   document.getElementById(`offender-${reportId}`).classList.add("hidden");
+   document.getElementById(`affected-${reportId}`).classList.add("hidden");
    
    // Remove tab-pane class from all tab contents
-   document.getElementById('reporter-' + reportId).classList.remove("tab-pane");
-   document.getElementById('offender-' + reportId).classList.remove("tab-pane");
-   document.getElementById('affected-' + reportId).classList.remove("tab-pane");
+   document.getElementById(`reporter-${reportId}`).classList.remove("tab-pane");
+   document.getElementById(`offender-${reportId}`).classList.remove("tab-pane");
+   document.getElementById(`affected-${reportId}`).classList.remove("tab-pane");
    
    // Finally, make the tab active and its related content visible
-   document.getElementById(tabName+ '-' + reportId).classList.remove("hidden");
-   document.getElementById(tabName+ '-' + reportId).classList.add("tab-pane");
-   document.getElementById('tab-' + tabName + '-' + reportId).classList.add("crayons-navigation__item--current");
+   document.getElementById(`${tabName}-${reportId}`).classList.remove("hidden");
+   document.getElementById(`${tabName}-${reportId}`).classList.add("tab-pane");
+   document.getElementById(`tab-${tabName}-${reportId}`).classList.add("crayons-navigation__item--current");
  }
 
  function saveStatus(id) {
