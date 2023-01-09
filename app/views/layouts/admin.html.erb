@@ -74,7 +74,7 @@
           data-testid="flash-<%= type %>" 
           class="mb-4 crayons-notice crayons-notice--<%= type == "info" || type == "success" ? "success" : "danger" %>">
           <span id="flash-<%= i %>"><%= message %></span>
-          <button class="js-flash-close-btn" data-action="click->notice#closeNotice" aria-label="Dismiss message" aria-describedby="flash-<%= i %>">
+          <button class="crayons-notice--close js-flash-close-btn" data-action="click->notice#closeNotice" aria-label="Dismiss message" aria-describedby="flash-<%= i %>">
             <%= crayons_icon_tag(:x, aria_hidden: true) %>
           </button>
         </div>
