@@ -1067,7 +1067,7 @@ DEPENDENCIES
   rspec_junit_formatter (~> 0.6)
   rss (~> 0.2.9)
   rswag-specs (~> 2.5.1)
-  rubocop (~> 1.33)
+  rubocop (~> 1.42)
   rubocop-performance (~> 1.14)
   rubocop-rails (~> 2.15)
   rubocop-rspec (~> 2.12)
