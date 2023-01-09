@@ -243,7 +243,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             }
           },
           SharedPodcast: {
-            description: "The podcast the resource belongs to",
+            description: "The podcast that the resource belongs to",
             type: "object",
             properties: {
               title: { type: :string },
