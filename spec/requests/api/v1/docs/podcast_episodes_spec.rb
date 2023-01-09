@@ -41,7 +41,7 @@ RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
           run_test!
         end
 
-        response "200", "A List of Podcast episodes with username" do
+        response "200", "A List of Podcast episodes filtered by username" do
           let(:username) { "codenewbie" }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/PodcastEpisodeIndex" }
