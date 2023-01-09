@@ -6,7 +6,7 @@ export default class NoticeController extends Controller {
   closeNotice() {
     document.getElementById('notice-container').addEventListener('click', (event) => {
       event.preventDefault();
-      document.getElementById('notice-container').style.display = 'none';
+      document.getElementById('notice-container').remove();
     })
   }
 }
