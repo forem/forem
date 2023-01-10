@@ -419,7 +419,7 @@ export const MarkdownToolbar = ({
         }}
       />
 
-      <EmojiPicker textAreaRef={textAreaRef}/>
+      {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef}/>}
 
       <Button
         id="overflow-menu-button"

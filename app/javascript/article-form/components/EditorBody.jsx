@@ -17,6 +17,7 @@ import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
 import { AutocompleteTriggerTextArea } from '@crayons/AutocompleteTriggerTextArea';
+import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 
 export const EditorBody = ({
   onChange,
@@ -32,6 +33,7 @@ export const EditorBody = ({
   const textAreaRef = useRef(null);
 
   const [images, setImages] = useState(imagesDefaultValue != '' ? imagesDefaultValue.split(',') : []);
+  const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
   document.addEventListener("upload_image_success", (e) => {
     const imagesList = [...images, ...e.detail];
@@ -124,7 +126,7 @@ export const EditorBody = ({
           tabindex: '-1',
         }}
       />
-      <EmojiPicker textAreaRef={textAreaRef}/>
+      {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef}/>}
       </div> : null }
 
       {version === 'v0' && (
