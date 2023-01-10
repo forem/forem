@@ -42,3 +42,11 @@
         padding-right: var(--su-3);
     }
 }
+
+.emoji-popup {
+    z-index: 1;
+}
+
+.popupContainer .closeButton {
+    z-index: 2 !important;
+}

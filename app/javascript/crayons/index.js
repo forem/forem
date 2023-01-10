@@ -1,3 +1,4 @@
+export * from '@crayons/EmojiPicker';
 export * from '@crayons/Button';
 export * from '@crayons/Buttons';
 export * from '@crayons/Links';

@@ -12,6 +12,7 @@ import {
 } from './imageUploadHelpers';
 import { handleImageDrop, onDragOver, onDragExit } from './dragAndDropHelpers';
 import { TagsField } from './TagsField';
+import { EmojiPicker } from '@crayons';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
@@ -122,7 +123,9 @@ export const EditorBody = ({
           className: 'toolbar-btn formatter-btn mr-1',
           tabindex: '-1',
         }}
-      /></div> : null }
+      />
+      <EmojiPicker textAreaRef={textAreaRef}/>
+      </div> : null }
 
       {version === 'v0' && (
         <div className="crayons-article-form__top drop-area" style={{padding: '0.5rem 0'}}>
