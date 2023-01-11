@@ -1,15 +1,7 @@
 import { h, render } from 'preact';
-import {
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useCallback,
-} from 'preact/hooks';
+import { useState, useRef, useEffect } from 'preact/hooks';
 import ReactGiphySearchbox from 'react-giphy-searchbox';
-import PropTypes, { any } from 'prop-types';
-import { ButtonNew as Button } from '@crayons';
+import PropTypes from 'prop-types';
 import {
   autoUpdate,
   computePosition,
@@ -17,9 +9,9 @@ import {
   offset,
   shift,
 } from '@floating-ui/dom';
-import styled from 'styled-components';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import CloseIcon from './icons/close.svg';
+import { ButtonNew as Button } from '@crayons';
 import GifIcon from '@images/gif.svg';
 
 const GlobalStyle = createGlobalStyle`
@@ -34,10 +26,16 @@ export const GifPicker = ({ textAreaRef }) => {
   const [referenceEl, setReferenceEl] = useState(null);
   const [floatingEl, setFloatingEl] = useState(null);
   const floatingElRef = useRef(null);
-  const [update, setUpdate] = useState(false);
   let stopAutoUpdate = null;
 
   useEffect(() => {
+    if (
+      typeof updatePosition != 'function' ||
+      typeof onDocumentClick != 'function'
+    ) {
+      return;
+    }
+
     if (referenceEl && floatingEl && open) {
       !document.body.contains(floatingEl) &&
         document.body.appendChild(floatingEl);
@@ -47,6 +45,7 @@ export const GifPicker = ({ textAreaRef }) => {
           opacity: 0,
         });
 
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       stopAutoUpdate = autoUpdate(referenceEl, floatingEl, updatePosition);
 
       floatingEl &&
@@ -87,7 +86,7 @@ export const GifPicker = ({ textAreaRef }) => {
     }
   };
 
-  function updatePosition() {
+  const updatePosition = () => {
     if (!referenceEl) {
       return;
     }
@@ -103,12 +102,13 @@ export const GifPicker = ({ textAreaRef }) => {
         top: `${y}px`,
       });
     });
-  }
+  };
 
   const insertGif = (giphy) => {
     const { current: textArea } = textAreaRef;
     const { url: gif } = giphy.images.downsized;
-    const replaceSelectionWith = '![](' + gif + ')\n\n';
+    const { title } = giphy;
+    const replaceSelectionWith = `![${title}](${gif})\n\n`;
 
     const { selectionStart, selectionEnd } = textArea;
 
@@ -135,6 +135,13 @@ export const GifPicker = ({ textAreaRef }) => {
   };
 
   const handleClick = (target) => {
+    if (
+      typeof handleClose != 'function' ||
+      typeof insertGif != 'function'
+    ) {
+      return;
+    }
+
     setReferenceEl(target);
 
     if (!floatingElRef.current) {
@@ -157,7 +164,7 @@ export const GifPicker = ({ textAreaRef }) => {
     setOpen(!open);
   };
 
-  const handleClose = (e) => {
+  const handleClose = () => {
     setOpen(false);
   };
 
@@ -172,8 +179,6 @@ export const GifPicker = ({ textAreaRef }) => {
           if (typeof handleClick != 'function') {
             return;
           }
-
-          console.log(e);
 
           handleClick(e.target);
         }}
