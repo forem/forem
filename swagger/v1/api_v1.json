@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 4857,
-                    "title": "Edna O'Brien172",
-                    "description": "Post-ironic microdosing craft beer keytar plaid hoodie helvetica tofu. Ethical hoodie single-origin...",
-                    "readable_publish_date": "Dec 27",
-                    "slug": "edna-obrien172-2jb1",
-                    "path": "/username382/edna-obrien172-2jb1",
-                    "url": "http://localhost:3000/username382/edna-obrien172-2jb1",
+                    "id": 5405,
+                    "title": "The Wealth of Nations172",
+                    "description": "Cray asymmetrical yolo yuccie green juice narwhal readymade beard. Vinyl synth vegan. Cardigan...",
+                    "readable_publish_date": "Jan 11",
+                    "slug": "the-wealth-of-nations172-1he3",
+                    "path": "/username382/the-wealth-of-nations172-1he3",
+                    "url": "http://localhost:3000/username382/the-wealth-of-nations172-1he3",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-27T07:10:43Z",
+                    "published_timestamp": "2023-01-11T15:12:45Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
-                    "social_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
-                    "canonical_url": "http://localhost:3000/username382/edna-obrien172-2jb1",
-                    "created_at": "2022-12-27T07:10:43Z",
+                    "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                    "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                    "canonical_url": "http://localhost:3000/username382/the-wealth-of-nations172-1he3",
+                    "created_at": "2023-01-11T15:12:45Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-27T07:10:43Z",
-                    "last_comment_at": "2022-12-27T07:10:43Z",
+                    "published_at": "2023-01-11T15:12:45Z",
+                    "last_comment_at": "2023-01-11T15:12:45Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Rueben \"Thomasine\" \\:/ Rath",
+                      "name": "William \"Annita\" \\:/ O'Conner",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 11307,
+                      "user_id": 12599,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/11307/5218c001-4fc4-4afa-bf68-f80e15e56df8.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/11307/5218c001-4fc4-4afa-bf68-f80e15e56df8.jpeg"
+                      "profile_image": "/uploads/user/profile_image/12599/f6990740-dedf-4af6-b584-7f72f60a2837.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/12599/f6990740-dedf-4af6-b584-7f72f60a2837.jpeg"
                     },
                     "organization": {
-                      "name": "Jenkins Group",
+                      "name": "Runolfsson, Kulas and Ankunding",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2044/f2f20edc-be61-4ff6-8e78-39e1e4896ed1.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2044/f2f20edc-be61-4ff6-8e78-39e1e4896ed1.png"
+                      "profile_image": "/uploads/organization/profile_image/2282/d499dcdc-8f33-43d1-9cc1-cdee6e7eba37.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2282/d499dcdc-8f33-43d1-9cc1-cdee6e7eba37.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 239,
+                  "id": 271,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-27T10:10:47.105+03:00",
+                  "created_at": "2023-01-11T16:12:49.444+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-27T10:10:47.105+03:00",
+                  "updated_at": "2023-01-11T16:12:49.444+01:00",
                   "tag_list": []
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 240,
+                  "id": 272,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-27T10:10:47.738+03:00",
+                  "created_at": "2023-01-11T16:12:50.067+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 240",
-                  "organization_id": 2045,
+                  "name": "Display Ad 272",
+                  "organization_id": 2283,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-27T10:10:47.750+03:00",
+                  "updated_at": "2023-01-11T16:12:50.078+01:00",
                   "tag_list": []
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 241",
-                  "organization_id": 2046,
+                  "name": "Display Ad 273",
+                  "organization_id": 2284,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 241,
+                  "id": 273,
                   "clicks_count": 0,
-                  "created_at": "2022-12-27T10:10:48.431+03:00",
+                  "created_at": "2023-01-11T16:12:50.793+01:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-27T10:10:48.442+03:00",
+                  "updated_at": "2023-01-11T16:12:50.805+01:00",
                   "tag_list": []
                 }
               }
@@ -828,8 +828,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 243,
-                  "reactable_id": 4861,
+                  "id": 271,
+                  "reactable_id": 5409,
                   "reactable_type": "Article"
                 }
               }
@@ -891,8 +891,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 245,
-                  "reactable_id": 4863,
+                  "id": 273,
+                  "reactable_id": 5411,
                   "reactable_type": "Article"
                 }
               }
@@ -1400,6 +1400,24 @@
           "reading_time_minutes"
         ]
       },
+      "FollowedTag": {
+        "description": "Represetation of a followed tag",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "points": {
+            "type": "number",
+            "format": "float"
+          }
+        }
+      },
       "SharedUser": {
         "description": "The resource creator",
         "type": "object",
@@ -1455,6 +1473,28 @@
             "description": "Profile image (90x90)",
             "type": "string",
             "format": "url"
+          }
+        }
+      },
+      "Tag": {
+        "description": "Represetation of a tag",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "bg_color_hex": {
+            "description": "Background color (hexadecimal)",
+            "type": "string"
+          },
+          "text_color_hex": {
+            "description": "Text color (hexadecimal)",
+            "type": "string"
           }
         }
       }

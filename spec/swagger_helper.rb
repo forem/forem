@@ -204,6 +204,15 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          FollowedTag: {
+            description: "Represetation of a followed tag",
+            type: "object",
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              points: { type: :number, format: :float }
+            }
+          },
           SharedUser: {
             description: "The resource creator",
             type: "object",
@@ -227,7 +236,18 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
             }
+          },
+          Tag: {
+            description: "Represetation of a tag",
+            type: "object",
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int32 },
+              name: { type: :string },
+              bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
+              text_color_hex: { description: "Text color (hexadecimal)", type: :string }
+            }
           }
+
         }
       }
     }
