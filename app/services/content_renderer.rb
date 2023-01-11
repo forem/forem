@@ -24,8 +24,8 @@ class ContentRenderer
     raise ContentParsingError, e.message
   end
 
-  def finalize
-    processed.finalize
+  def finalize(link_attributes: {})
+    processed.finalize(link_attributes: link_attributes)
   # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
   rescue StandardError => e
     raise ContentParsingError, e.message

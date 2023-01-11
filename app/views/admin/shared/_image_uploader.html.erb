@@ -3,19 +3,14 @@
   <p class="mb-6">Quickly upload an image.</p>
 <%# Multipart, remote forms are tricky, the data is actually sent in the Stimulus controller. %>
   <%= form_with(url: image_uploads_path, multipart: true) do |f| %>
-    <div class="form-group">
-      <%= f.label(:image, "Image:") %>
-      <%= f.file_field(
-            "image",
-            class: "form-control",
-            required: true,
-            accept: "image/*",
-            data: { "image-upload-target": "fileField" },
-          ) %>
+
+    <div class="crayons-field">
+      <%= label_tag :image, "Image:", class: "crayons-field__label" %>
+      <%= f.file_field :image, required: true, accept: "image/*", data: { "image-upload-target": "fileField" } %>
     </div>
-    <%= f.submit "Upload", class: "btn btn-primary", data: { action: "image-upload#onFormSubmit" } %>
+    <%= f.submit "Upload", class: "crayons-btn mt-4", data: { action: "image-upload#onFormSubmit" } %>
   <% end %>
 
-  <div class="mt-4 d-none" data-image-upload-target="imageResult">
+  <div class="mt-4 hidden" data-image-upload-target="imageResult">
   </div>
 </div>

@@ -1,0 +1,8 @@
+<% if display_navigation_link?(link: link) %>
+  <li class="footer__nav-link flex items-center">
+    <a href="<%= link.url %>">
+      <%= t("views.main.nav_name.#{link.name}", default: link.name) %>
+    </a>
+    <span class="dot ml-2"></span>
+  </li>
+<% end %>
