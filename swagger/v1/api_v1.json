@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 5405,
-                    "title": "The Wealth of Nations172",
-                    "description": "Cray asymmetrical yolo yuccie green juice narwhal readymade beard. Vinyl synth vegan. Cardigan...",
-                    "readable_publish_date": "Jan 11",
-                    "slug": "the-wealth-of-nations172-1he3",
-                    "path": "/username382/the-wealth-of-nations172-1he3",
-                    "url": "http://localhost:3000/username382/the-wealth-of-nations172-1he3",
+                    "id": 5679,
+                    "title": "A Passage to India172",
+                    "description": "Meh kickstarter try-hard. Distillery everyday humblebrag selfies photo booth letterpress squid...",
+                    "readable_publish_date": "Jan 12",
+                    "slug": "a-passage-to-india172-33g8",
+                    "path": "/username382/a-passage-to-india172-33g8",
+                    "url": "http://localhost:3000/username382/a-passage-to-india172-33g8",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-01-11T15:12:45Z",
+                    "published_timestamp": "2023-01-11T15:26:14Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                    "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                    "canonical_url": "http://localhost:3000/username382/the-wealth-of-nations172-1he3",
-                    "created_at": "2023-01-11T15:12:45Z",
+                    "cover_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
+                    "social_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
+                    "canonical_url": "http://localhost:3000/username382/a-passage-to-india172-33g8",
+                    "created_at": "2023-01-11T15:26:14Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-01-11T15:12:45Z",
-                    "last_comment_at": "2023-01-11T15:12:45Z",
+                    "published_at": "2023-01-11T15:26:14Z",
+                    "last_comment_at": "2023-01-11T15:26:14Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "William \"Annita\" \\:/ O'Conner",
+                      "name": "Jeffry \"Velda\" \\:/ Welch",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 12599,
+                      "user_id": 13245,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/12599/f6990740-dedf-4af6-b584-7f72f60a2837.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/12599/f6990740-dedf-4af6-b584-7f72f60a2837.jpeg"
+                      "profile_image": "/uploads/user/profile_image/13245/68638893-82dd-4f0c-bbf0-ed1ea3fe2707.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/13245/68638893-82dd-4f0c-bbf0-ed1ea3fe2707.jpeg"
                     },
                     "organization": {
-                      "name": "Runolfsson, Kulas and Ankunding",
+                      "name": "O'Keefe-Mohr",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/2282/d499dcdc-8f33-43d1-9cc1-cdee6e7eba37.png",
-                      "profile_image_90": "/uploads/organization/profile_image/2282/d499dcdc-8f33-43d1-9cc1-cdee6e7eba37.png"
+                      "profile_image": "/uploads/organization/profile_image/2401/9a3855e9-5f6f-4562-ba82-b0f3cba75c62.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2401/9a3855e9-5f6f-4562-ba82-b0f3cba75c62.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 271,
+                  "id": 287,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-11T16:12:49.444+01:00",
+                  "created_at": "2023-01-12T03:26:18.995+12:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-11T16:12:49.444+01:00",
+                  "updated_at": "2023-01-12T03:26:18.995+12:00",
                   "tag_list": []
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 272,
+                  "id": 288,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-11T16:12:50.067+01:00",
+                  "created_at": "2023-01-12T03:26:19.636+12:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 272",
-                  "organization_id": 2283,
+                  "name": "Display Ad 288",
+                  "organization_id": 2402,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-11T16:12:50.078+01:00",
+                  "updated_at": "2023-01-12T03:26:19.647+12:00",
                   "tag_list": []
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 273",
-                  "organization_id": 2284,
+                  "name": "Display Ad 289",
+                  "organization_id": 2403,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 273,
+                  "id": 289,
                   "clicks_count": 0,
-                  "created_at": "2023-01-11T16:12:50.793+01:00",
+                  "created_at": "2023-01-12T03:26:20.368+12:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-11T16:12:50.805+01:00",
+                  "updated_at": "2023-01-12T03:26:20.380+12:00",
                   "tag_list": []
                 }
               }
@@ -828,8 +828,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 271,
-                  "reactable_id": 5409,
+                  "id": 285,
+                  "reactable_id": 5683,
                   "reactable_type": "Article"
                 }
               }
@@ -891,8 +891,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 273,
-                  "reactable_id": 5411,
+                  "id": 287,
+                  "reactable_id": 5685,
                   "reactable_type": "Article"
                 }
               }
@@ -1416,7 +1416,8 @@
             "type": "number",
             "format": "float"
           }
-        }
+        },
+        "required": ["id", "name", "points"]
       },
       "SharedUser": {
         "description": "The resource creator",
@@ -1496,7 +1497,8 @@
             "description": "Text color (hexadecimal)",
             "type": "string"
           }
-        }
+        },
+        "required": ["id", "name", "bg_color_hex", "text_color_hex"]
       }
     }
   }

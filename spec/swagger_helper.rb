@@ -211,7 +211,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id: { description: "Tag id", type: :integer, format: :int64 },
               name: { type: :string },
               points: { type: :number, format: :float }
-            }
+            },
+            required: %w[id name points]
           },
           SharedUser: {
             description: "The resource creator",
@@ -245,9 +246,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               name: { type: :string },
               bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
               text_color_hex: { description: "Text color (hexadecimal)", type: :string }
-            }
+            },
+            required: %w[id name bg_color_hex text_color_hex]
           }
-
         }
       }
     }
