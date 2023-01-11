@@ -18,7 +18,7 @@
   <%= form_with model: [:admin, @listing], method: :patch, local: true do |form| %>
     <div class="flex flex-col gap-4">
       <div class="crayons-field">
-        <%= form.label :title, class: "crayons-field__label"%>
+        <%= form.label :title, class: "crayons-field__label" %>
         <%= form.text_field :title, size: 100, maxlength: 128, class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">

@@ -1,5 +1,6 @@
 <div class="mb-6">
   <%= search_form_for @q, url: admin_moderator_actions_path, class: "inline-flex" do |f| %>
+    <%= f.label :user_username_cont, "User", class: "screen-reader-only" %>
     <%= f.search_field :user_username_cont, aria: { label: "Search" }, placeholder: "User", class: "crayons-textfield mr-2" %>
     <%= f.submit "Search", class: "crayons-btn" %>
   <% end %>
