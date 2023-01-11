@@ -138,7 +138,18 @@ belonging to the requested collection, ordered by ascending publication date.",
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
         operationId "getArticleById"
         produces "application/json"
-        parameter name: :id, in: :path, type: :integer, required: true
+        consumes "application/json"
+        parameter name: :id,
+                  in: :path,
+                  type: :integer,
+                  required: true,
+                  description: "The ID of the user to unpublish.",
+                  schema: {
+                    type: :integer,
+                    format: :int32,
+                    minimum: 1
+                  },
+                  example: 123
         parameter name: :article, in: :body, schema: {
           type: :object,
           properties: {
@@ -163,37 +174,32 @@ belonging to the requested collection, ordered by ascending publication date.",
           run_test!
         end
 
-        # response "404", "Article Not Found" do
-        #   let(:"api-key") { api_secret.secret }
-        #   let(:id) { 1234567890 }
-        #   add_examples
+        response "404", "Article Not Found" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { 1_234_567_890 }
+          let(:article) { { article: {} } }
+          add_examples
 
-        #   run_test!
-        # end
+          run_test!
+        end
 
-        # response "401", "Unauthorized" do
-        #   let(:"api-key") { nil }
-        #   let(:id) { published_article.id }
-        #   add_examples
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:id) { published_article.id }
+          let(:article) { { article: {} } }
+          add_examples
 
-        #   run_test!
-        # end
+          run_test!
+        end
 
-        # response "403", "Forbidden" do
-        #   let(:"api-key") { nil }
-        #   let(:id) { published_article.id }
-        #   add_examples
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:id) { user_article.id }
+          let(:article) { { article: {} } }
+          add_examples
 
-        #   run_test!
-        # end
-
-        # response "422", "Unprocessable Entity" do
-        #   let(:"api-key") { api_secret.secret }
-        #   let(:id) { user_article.id }
-        #   add_examples
-
-        #   run_test!
-        # end
+          run_test!
+        end
       end
     end
   end
