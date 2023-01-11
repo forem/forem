@@ -366,15 +366,52 @@
 }
 
 // TODO: think about how and when we want to override the crayons-dropdown.
-.crayons-dropdown.reaction-drawer {
-  min-width: auto;
-  border-radius: 32px;
-  top: -65px;
-  left: 0;
+.reaction-drawer__outer {
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
 
   @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  &.open .reaction-drawer {
+    display: block;
+  }
+}
+
+.reaction-drawer {
+  min-width: auto;
+  border-radius: 32px;
+  position: absolute;
+  top: -65px;
+  left: 0;
+  display: none; // Initially hidden
+
+  // Copying from Dropdown for now
+  padding: var(--su-2);
+  min-width: 250px;
+  margin-top: var(--su-1);
+  z-index: var(--z-dropdown);
+  background: var(--card-bg);
+  color: var(--card-color);
+  box-shadow: var(--shadow-1);
+  border-radius: var(--radius);
+
+  @media (min-width: $breakpoint-s) {
+    max-width: 360px;
+    width: max-content;
     top: -5px;
     left: 55px;
+  }
+}
+
+.reaction-drawer__outer:hover .reaction-drawer {
+  @media (min-width: $breakpoint-m) {
+    display: block;
   }
 }
 

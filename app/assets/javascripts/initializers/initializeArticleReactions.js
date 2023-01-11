@@ -34,10 +34,10 @@ function showUserReaction(reactionName, animatedClass, wasToggling) {
   reactionButton.classList.add('user-activated', animatedClass);
   reactionButton.setAttribute('aria-pressed', 'true');
   const reactionDrawerButton = document.getElementById(
-    "reaction-drawer-trigger"
+    'reaction-drawer-trigger',
   );
 
-  if (reactionDrawerButton && reactionName !== "readinglist") {
+  if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
   }
 
@@ -47,16 +47,16 @@ function showUserReaction(reactionName, animatedClass, wasToggling) {
     );
 
     if (activeIcon) {
-      const activeDrawerIcon = reactionDrawerButton
-        .querySelector(".crayons-reaction__icon--active svg");
+      const activeDrawerIcon = reactionDrawerButton.querySelector(
+        '.crayons-reaction__icon--active svg',
+      );
       reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
       activeDrawerIcon.outerHTML = activeIcon.outerHTML;
 
       setTimeout(function () {
-        console.log("A little while later")
         document
           .getElementById('reaction-drawer-trigger')
-          .querySelector(".crayons-reaction__icon--active svg").outerHTML =
+          .querySelector('.crayons-reaction__icon--active svg').outerHTML =
           reactionDrawerButton.originalIcon;
       }, 1500);
     }
@@ -199,8 +199,33 @@ function requestReactionCounts(articleId) {
   ajaxReq.send();
 }
 
+function watchHoverdown() {
+  var timer;
+  const drawerTrigger = document.getElementById('reaction-drawer-trigger');
+  if (!drawerTrigger) {
+    return;
+  }
+
+  drawerTrigger.addEventListener('click', function (event) {
+    event.preventDefault();
+  });
+  document.querySelectorAll('.hoverdown').forEach(function (el) {
+    el.addEventListener('mouseover', function (event) {
+      this.classList.add('open');
+      clearTimeout(timer);
+    });
+    el.addEventListener('mouseout', function (event) {
+      timer = setTimeout(function (event) {
+        document.querySelector('.hoverdown.open').classList.remove('open');
+      }, 1000);
+    });
+  });
+}
+
 function initializeArticleReactions() {
   setCollectionFunctionality();
+
+  watchHoverdown();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');
