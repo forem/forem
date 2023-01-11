@@ -6,7 +6,7 @@ import {
   getNewTextAreaValueWithEdits,
 } from './markdownSyntaxFormatters';
 import OverflowIcon from '@images/overflow-vertical.svg';
-import { ButtonNew as Button, EmojiPicker } from '@crayons';
+import { ButtonNew as Button, EmojiPicker, GifPicker } from '@crayons';
 import { useKeyboardShortcuts } from '@components/useKeyboardShortcuts';
 import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
@@ -419,7 +419,8 @@ export const MarkdownToolbar = ({
         }}
       />
 
-      {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef}/>}
+      {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef} />}
+      <GifPicker textAreaRef={textAreaRef} />
 
       <Button
         id="overflow-menu-button"

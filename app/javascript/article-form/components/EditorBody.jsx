@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useLayoutEffect, useRef, useState } from 'preact/hooks';
-import ReactImageGrid from "@cordelia273/react-image-grid";
+import ReactImageGrid from '@cordelia273/react-image-grid';
 import { Toolbar } from './Toolbar';
 import { handleImagePasted } from './pasteImageHelpers';
 import { ImageUploader } from './ImageUploader';
@@ -12,7 +12,7 @@ import {
 } from './imageUploadHelpers';
 import { handleImageDrop, onDragOver, onDragExit } from './dragAndDropHelpers';
 import { TagsField } from './TagsField';
-import { EmojiPicker } from '@crayons';
+import { EmojiPicker, GifPicker } from '@crayons';
 import { usePasteImage } from '@utilities/pasteImage';
 import { useDragAndDrop } from '@utilities/dragAndDrop';
 import { fetchSearch } from '@utilities/search';
@@ -32,15 +32,22 @@ export const EditorBody = ({
 }) => {
   const textAreaRef = useRef(null);
 
-  const [images, setImages] = useState(imagesDefaultValue != '' ? imagesDefaultValue.split(',') : []);
+  const [images, setImages] = useState(
+    imagesDefaultValue != '' ? imagesDefaultValue.split(',') : [],
+  );
   const smallScreen = useMediaQuery(`(max-width: ${BREAKPOINTS.Medium - 1}px)`);
 
-  document.addEventListener("upload_image_success", (e) => {
+  document.addEventListener('upload_image_success', (e) => {
     const imagesList = [...images, ...e.detail];
     setImages(imagesList);
     imagesOnInput(imagesList.join(','));
     onMainImageUrlChange({
-      links: [(location.href.includes('localhost') || location.href.includes('host.docker.internal') ? location.origin : '') + imagesList[0]],
+      links: [
+        (location.href.includes('localhost') ||
+        location.href.includes('host.docker.internal')
+          ? location.origin
+          : '') + imagesList[0],
+      ],
     });
   });
 
@@ -70,11 +77,11 @@ export const EditorBody = ({
   });
 
   // const handleImageUploadStarted = () => {
-    
+
   // }
 
   // const handleImageUploadEnd = (imageMarkdown = '') => {
-    
+
   // };
 
   return (
@@ -83,7 +90,9 @@ export const EditorBody = ({
       className="crayons-article-form__body drop-area text-padding"
       // style={version == 'v0' ? {'padding-top' : 0} : null}
     >
-      { version == 'v0' ? null : <Toolbar version={version} textAreaId="article_body_markdown" /> }
+      {version == 'v0' ? null : (
+        <Toolbar version={version} textAreaId="article_body_markdown" />
+      )}
       <AutocompleteTriggerTextArea
         triggerCharacter="@"
         maxSuggestions={6}
@@ -104,33 +113,40 @@ export const EditorBody = ({
         placeholder="Write your post content here..."
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
-      
-      { version == 'v0' ? <div style={{
-        'border' : '1px solid #ddd',
-        'border-radius': '0.5rem',
-        'padding': '0.5rem'
-      }}>Add to your post <ImageUploader
-        editorVersion="v2"
-        // onImageUploadStart={handleImageUploadStarted}
-        // onImageUploadSuccess={handleImageUploadEnd}
-        // onImageUploadError={handleImageUploadEnd}
-        buttonProps={{
-          // onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
-          onClick: () => {
-          },
-          tooltip: (
-            <span aria-hidden="true">Upload image</span>
-          ),
-          key: 'image-btn',
-          className: 'toolbar-btn formatter-btn mr-1',
-          tabindex: '-1',
-        }}
-      />
-      {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef}/>}
-      </div> : null }
+
+      {version == 'v0' ? (
+        <div
+          style={{
+            border: '1px solid #ddd',
+            'border-radius': '0.5rem',
+            padding: '0.5rem',
+          }}
+        >
+          Add to your post{' '}
+          <ImageUploader
+            editorVersion="v2"
+            // onImageUploadStart={handleImageUploadStarted}
+            // onImageUploadSuccess={handleImageUploadEnd}
+            // onImageUploadError={handleImageUploadEnd}
+            buttonProps={{
+              // onKeyUp: (e) => handleToolbarButtonKeyPress(e, 'toolbar-btn'),
+              onClick: () => {},
+              tooltip: <span aria-hidden="true">Upload image</span>,
+              key: 'image-btn',
+              className: 'toolbar-btn formatter-btn mr-1',
+              tabindex: '-1',
+            }}
+          />
+          {smallScreen ? null : <EmojiPicker textAreaRef={textAreaRef} />}
+          <GifPicker textAreaRef={textAreaRef} />
+        </div>
+      ) : null}
 
       {version === 'v0' && (
-        <div className="crayons-article-form__top drop-area" style={{padding: '0.5rem 0'}}>
+        <div
+          className="crayons-article-form__top drop-area"
+          style={{ padding: '0.5rem 0' }}
+        >
           <TagsField
             defaultValue={tagsDefaultValue}
             onInput={tagsOnInput}
@@ -139,14 +155,11 @@ export const EditorBody = ({
         </div>
       )}
 
-      { version === 'v0' ? (
+      {version === 'v0' ? (
         <div style={{ maxWidth: 800, maxHeight: 400, height: 400 }}>
-          <ReactImageGrid
-            images={images}
-            modal={false}
-          />
+          <ReactImageGrid images={images} modal={false} />
         </div>
-      ) : null }
+      ) : null}
     </div>
   );
 };
