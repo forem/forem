@@ -22,7 +22,7 @@
             <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
 
             <div
-              class="flex justify-content-between"
+              class="flex justify-between"
               data-controller="reaction"
               data-reaction-id-value="<%= reaction.id %>"
               data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
