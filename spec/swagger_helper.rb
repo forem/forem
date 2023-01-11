@@ -158,7 +158,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
         schemas: {
           ArticleFlareTag: {
             description: "Flare tag of the article",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
@@ -231,7 +231,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedUser: {
             description: "The resource creator",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
@@ -244,7 +244,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedOrganization: {
             description: "The organization the resource belongs to",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
@@ -255,7 +255,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedPodcast: {
             description: "The podcast that the resource belongs to",
-            type: "object",
+            type: :object,
             properties: {
               title: { type: :string },
               slug: { type: :string },
