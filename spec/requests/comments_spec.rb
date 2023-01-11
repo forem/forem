@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/comment_hide_or_unhide_request"
 
-RSpec.describe "Comments", type: :request do
+RSpec.describe "Comments" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }
@@ -162,7 +162,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is for a podcast's episode" do
-      it "works" do
+      it "is successful" do
         podcast_comment = create(:comment, commentable: podcast_episode, user: user)
 
         get podcast_comment.path

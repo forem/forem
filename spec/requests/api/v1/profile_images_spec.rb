@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::ProfileImages", type: :request do
+RSpec.describe "Api::V1::ProfileImages" do
   let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/profile_images/:username" do
