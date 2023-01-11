@@ -118,4 +118,26 @@ describe('<SearchFormSync />', () => {
     expect(desktopSearch.value).toEqual(searchTerm2);
     expect(mobileSearch.value).toEqual(searchTerm2);
   });
+
+  it('ensure both mobile search form & desktop search form exists', async () => {
+    const { getAllByRole } = render(<SearchFormSync />);
+
+    setWindowLocation(`https://localhost:3000/search`);
+
+    // fire click event twice with empty query to mimic clicking search button twice present in header
+    for (let i = 0; i < 2; i += 1) {
+      fireEvent(
+        window,
+        new CustomEvent('syncSearchForms', {
+          detail: { querystring: window.location.search },
+        }),
+      );
+    }
+
+    const forms = await getAllByRole('textbox', {
+      name: /search/i,
+    });
+
+    expect(forms.length).toEqual(2);
+  });
 });

@@ -4,7 +4,7 @@
   <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
 <% end %>
 
-<details class="crayons-card" id="accordion-<%= feedback_message.id %>">
+<details open class="crayons-card" id="accordion-<%= feedback_message.id %>">
   <summary class="p-5">
     <span id="header<%= feedback_message.id %>">
       <span id="collapse__header__link-<%= feedback_message.id %>">
@@ -105,19 +105,19 @@
       <div class="flex flex-wrap -mx-4">
         <div class="w-100 max-w-100 px-4">
           <h4 class="fw-bold">Email Form:</h4>
-          <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="nav-item">
-              <a class="nav-link active" href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab" data-toggle="tab">Reporter</a>
+          <ul class="crayons-navigation crayons-navigation--horizontal" role="tablist">
+            <li role="presentation" >
+              <a id="tab-reporter-<%= feedback_message.id %>" class="crayons-navigation__item crayons-navigation__item--current" href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab">Reporter</a>
             </li>
-            <li role="presentation" class="nav-item">
-              <a class="nav-link" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab" data-toggle="tab">Offender</a>
+            <li role="presentation">
+              <a id="tab-offender-<%= feedback_message.id %>" class="crayons-navigation__item" href="#offender-<%= feedback_message.id %>" aria-controls="offender-<%= feedback_message.id %>" role="tab">Offender</a>
             </li>
-            <li role="presentation" class="nav-item">
-              <a class="nav-link" href="#affected-<%= feedback_message.id %>" aria-controls="affected-<%= feedback_message.id %>" role="tab" data-toggle="tab">Affected</a>
+            <li role="presentation">
+              <a id="tab-affected-<%= feedback_message.id %>" class="crayons-navigation__item" href="#affected-<%= feedback_message.id %>" aria-controls="affected-<%= feedback_message.id %>" role="tab">Affected</a>
             </li>
           </ul>
-          <div class="tab-content my-3">
-            <div role="tabcard" class="tab-pane fade active show" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
+          <div class="my-3">
+            <div role="tabcard" class="" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
               <div class="crayons-notice crayons-notice--info" aria-live="polite">Please note that all users who report abuse receive an automatic confirmation email. You can send an additional, follow-up email to this user by using the form below.</div>
               <br>
               <h5 class="fw-bold">Send To:</h5>
@@ -127,7 +127,7 @@
               <h5 class="fw-bold">Body:</h5>
               <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
             </div>
-            <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
+            <div role="tabcard" class="hidden" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
               <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "crayons-textfield my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
@@ -135,7 +135,7 @@
               <h5 class="fw-bold">Body:</h5>
               <%= text_area_tag :offender_email_body, offender_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
             </div>
-            <div role="tabcard" class="tab-pane fade" data-id="<%= feedback_message.id %>" data-userType="affected" id="affected-<%= feedback_message.id %>">
+            <div role="tabcard" class="hidden" data-id="<%= feedback_message.id %>" data-userType="affected" id="affected-<%= feedback_message.id %>">
               <h5 class="fw-bold">Send To:</h5>
               <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "crayons-textfield my-1", id: "affected__emailto__#{feedback_message.id}", required: true %>
               <h5 class="fw-bold">Subject:</h5>
@@ -147,7 +147,7 @@
           <button class="c-btn c-btn--primary" type="button" id="send__email__btn__<%= feedback_message.id %>">Send Email ✉️</button>
         </div>
       </div>
-      <div class="email__alert crayons-notice w-100 mt-2 d-none" id="email__alert__<%= feedback_message.id %>">
+      <div class="email__alert crayons-notice w-100 mt-2 hidden" id="email__alert__<%= feedback_message.id %>">
       </div>
       <div class="flex flex-wrap -mx-4 my-3">
         <div class="w-100 max-w-100 px-4">
@@ -202,6 +202,47 @@
 </details>
 
 <script>
+
+ document.getElementById('tab-reporter-' + <%= feedback_message.id %>).addEventListener('click', function (event) {
+   event.preventDefault();
+   var reportId = <%= feedback_message.id %>;
+   showTabContent("reporter", reportId);
+ });
+
+ document.getElementById('tab-offender-' + <%= feedback_message.id %>).addEventListener('click', function (event) {
+   event.preventDefault();
+   var reportId = <%= feedback_message.id %>;
+   showTabContent("offender", reportId);
+ });
+
+ document.getElementById('tab-affected-' + <%= feedback_message.id %>).addEventListener('click', function (event) {
+   event.preventDefault();
+   var reportId = <%= feedback_message.id %>;
+   showTabContent("affected", reportId);
+ });
+
+ function showTabContent(tabName, reportId) {
+   // Make all tabs inactive
+   document.getElementById(`tab-reporter-${reportId}`).classList.remove("crayons-navigation__item--current");
+   document.getElementById(`tab-offender-${reportId}`).classList.remove("crayons-navigation__item--current");
+   document.getElementById(`tab-affected-${reportId}`).classList.remove("crayons-navigation__item--current");
+
+   // Hide all tab related contents
+   document.getElementById(`reporter-${reportId}`).classList.add("hidden");
+   document.getElementById(`offender-${reportId}`).classList.add("hidden");
+   document.getElementById(`affected-${reportId}`).classList.add("hidden");
+   
+   // Remove tab-pane class from all tab contents
+   document.getElementById(`reporter-${reportId}`).classList.remove("tab-pane");
+   document.getElementById(`offender-${reportId}`).classList.remove("tab-pane");
+   document.getElementById(`affected-${reportId}`).classList.remove("tab-pane");
+   
+   // Finally, make the tab active and its related content visible
+   document.getElementById(`${tabName}-${reportId}`).classList.remove("hidden");
+   document.getElementById(`${tabName}-${reportId}`).classList.add("tab-pane");
+   document.getElementById(`tab-${tabName}-${reportId}`).classList.add("crayons-navigation__item--current");
+ }
+
  function saveStatus(id) {
    var formData = new FormData();
    var statusSelectTag = document.getElementById('status__' + id);
@@ -249,7 +290,8 @@
  }
 
  function sendEmail(id) {
-   var activeTab = document.querySelector(".tab-pane.active[data-id='" + id + "']");
+   // tab-pane class helps to identify the active tab.
+   var activeTab = document.querySelector(".tab-pane[data-id='" + id + "']");
    var alert = document.getElementById('email__alert__' + id);
    var sendEmailBtn = document.getElementById('send__email__btn__' + id);
    var userType = activeTab.dataset.usertype;
@@ -309,10 +351,10 @@
    var notesDiv = document.getElementById('notes__' + id);
 
    var singleNoteDiv = document.createElement('div');
-   singleNoteDiv.setAttribute('class', 'border border-info bg-light rounded my-2 p-2');
+   singleNoteDiv.setAttribute('class', 'border-solid border-2 border-base-0');
 
    var timeBadge = document.createElement('span');
-   timeBadge.setAttribute('class', 'badge badge-info float-right');
+   timeBadge.setAttribute('class', 'c-indicator c-indicator--info float-right');
    timeBadge.innerText = "just now";
    singleNoteDiv.append(timeBadge);
 
