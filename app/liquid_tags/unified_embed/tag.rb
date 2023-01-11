@@ -48,7 +48,7 @@ module UnifiedEmbed
       http.use_ssl = true if http.port == 443
 
       req = method.new(uri.request_uri)
-      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      req["User-Agent"] = "#{safe_user_agent} (#{URL.url})"
       response = http.request(req)
 
       case response
@@ -75,6 +75,10 @@ module UnifiedEmbed
       return unless link.start_with?("#{URL.url}/listings/") && !Listing.feature_enabled?
 
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.listings_disabled")
+    end
+
+    def self.safe_user_agent(agent = Settings::Community.community_name)
+      agent.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
     end
   end
 end

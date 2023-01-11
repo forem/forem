@@ -9,8 +9,12 @@
     "/api/articles": {
       "get": {
         "summary": "Published articles",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -67,7 +71,11 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": ["fresh", "rising", "all"]
+              "enum": [
+                "fresh",
+                "rising",
+                "all"
+              ]
             },
             "example": "fresh"
           },
@@ -100,6 +108,58 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 372,
+                    "title": "The Soldier's Art1",
+                    "description": "Kinfolk cornhole irony twee neutra narwhal you probably haven't heard of them. Jean shorts squid food...",
+                    "readable_publish_date": "Jan 11",
+                    "slug": "the-soldiers-art1-3ljm",
+                    "path": "/username1/the-soldiers-art1-3ljm",
+                    "url": "http://localhost:3000/username1/the-soldiers-art1-3ljm",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2023-01-11T00:29:37Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://localhost:3000/assets/11-f4a704eef06d25d2d2fa2026ef08f1089754beaf5b6ee01160115d3c36ed3d34.png",
+                    "social_image": "http://localhost:3000/assets/11-f4a704eef06d25d2d2fa2026ef08f1089754beaf5b6ee01160115d3c36ed3d34.png",
+                    "canonical_url": "http://localhost:3000/username1/the-soldiers-art1-3ljm",
+                    "created_at": "2023-01-11T00:29:37Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2023-01-11T00:29:37Z",
+                    "last_comment_at": "2023-01-11T00:29:37Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": [
+                      "discuss"
+                    ],
+                    "tags": "discuss",
+                    "user": {
+                      "name": "Andrew \"Jamey\" \\:/ Hartmann",
+                      "username": "username1",
+                      "twitter_username": "twitter1",
+                      "github_username": "github1",
+                      "user_id": 853,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/853/4a622966-b7e4-49a0-9d94-3fd50a164c10.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/853/4a622966-b7e4-49a0-9d94-3fd50a164c10.jpeg"
+                    },
+                    "organization": {
+                      "name": "Kautzer, Gibson and Ebert",
+                      "username": "org1",
+                      "slug": "org1",
+                      "profile_image": "/uploads/organization/profile_image/132/66178223-5f38-433a-bf47-a53f41ba4a19.png",
+                      "profile_image_90": "/uploads/organization/profile_image/132/66178223-5f38-433a-bf47-a53f41ba4a19.png"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  }
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -115,8 +175,12 @@
     "/api/articles/{id}": {
       "get": {
         "summary": "Published article by id",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
         "operationId": "getArticleById",
         "parameters": [
@@ -134,6 +198,51 @@
             "description": "An Article",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 373,
+                  "title": "That Hideous Strength2",
+                  "description": "Ethical cronut crucifix five dollar toast selvage truffaut actually ramps. Selfies offal whatever...",
+                  "readable_publish_date": "Jan 11",
+                  "slug": "that-hideous-strength2-1j01",
+                  "path": "/username2/that-hideous-strength2-1j01",
+                  "url": "http://localhost:3000/username2/that-hideous-strength2-1j01",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-01-11T00:29:37Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
+                  "social_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
+                  "canonical_url": "http://localhost:3000/username2/that-hideous-strength2-1j01",
+                  "created_at": "2023-01-11T00:29:37Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2023-01-11T00:29:37Z",
+                  "last_comment_at": "2023-01-11T00:29:37Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Ethical cronut crucifix five dollar toast selvage truffaut actually ramps. Selfies offal whatever kinfolk tofu stumptown. Hella cliche pabst.</p>\n\n<p>Banjo pop-up mlkshk tumblr street direct trade. Cold-pressed slow-carb muggle magic church-key fanny pack next level dreamcatcher street.</p>\n\n",
+                  "body_markdown": "---\ntitle: That Hideous Strength2\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nEthical cronut crucifix five dollar toast selvage truffaut actually ramps. Selfies offal whatever kinfolk tofu stumptown. Hella cliche pabst.\n\n\nBanjo pop-up mlkshk tumblr street direct trade. Cold-pressed slow-carb muggle magic church-key fanny pack next level dreamcatcher street.\n\n",
+                  "user": {
+                    "name": "Patrina \"Dario\" \\:/ Mayert",
+                    "username": "username2",
+                    "twitter_username": "twitter2",
+                    "github_username": "github2",
+                    "user_id": 854,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/854/ce95b78c-7f18-4e65-87c3-9a83b29b6039.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/854/ce95b78c-7f18-4e65-87c3-9a83b29b6039.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -144,28 +253,158 @@
             }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       },
       "put": {
         "summary": "Update an article by id",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
         "operationId": "getArticleById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "type": "integer",
             "required": true,
+            "description": "The ID of the user to unpublish.",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
           }
         ],
         "responses": {
           "200": {
-            "description": "An Article"
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 374,
+                  "title": "Dulce et Decorum Est3",
+                  "description": "Retro polaroid thundercats tattooed chicharrones sriracha squid truffaut. Pitchfork celiac polaroid....",
+                  "readable_publish_date": "Jan 11",
+                  "slug": "dulce-et-decorum-est3-481b",
+                  "path": "/username3/dulce-et-decorum-est3-481b",
+                  "url": "http://localhost:3000/username3/dulce-et-decorum-est3-481b",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-01-11T00:29:38Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
+                  "social_image": "http://localhost:3000/assets/39-20fc2599938fbd7c41146577147aa7c6925e3b8ff069aba58c9304bc1b944cf1.png",
+                  "canonical_url": "http://localhost:3000/username3/dulce-et-decorum-est3-481b",
+                  "created_at": "2023-01-11T00:29:38Z",
+                  "edited_at": "2023-01-11T00:29:38Z",
+                  "crossposted_at": null,
+                  "published_at": "2023-01-11T00:29:38Z",
+                  "last_comment_at": "2023-01-11T00:29:38Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "",
+                  "tags": [
+
+                  ],
+                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
+                  "body_markdown": "**New** body for the article",
+                  "user": {
+                    "name": "Elbert \"Cornell\" \\:/ Buckridge",
+                    "username": "username3",
+                    "twitter_username": "twitter3",
+                    "github_username": "github3",
+                    "user_id": 855,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/855/6bcdfebe-d24c-46a9-8789-2342c4a0701b.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/855/6bcdfebe-d24c-46a9-8789-2342c4a0701b.jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: article",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "body_markdown": {
+                    "type": "string"
+                  },
+                  "published": {
+                    "type": "boolean"
+                  },
+                  "series": {
+                    "type": "string"
+                  },
+                  "main_image": {
+                    "type": "string"
+                  },
+                  "canonical_url": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "string"
+                  },
+                  "organization_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -173,8 +412,12 @@
     "/api/articles/{username}/{slug}": {
       "get": {
         "summary": "Published article by path",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
         "operationId": "getArticleByPath",
         "parameters": [
@@ -200,6 +443,51 @@
             "description": "An Article",
             "content": {
               "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 377,
+                  "title": "The Daffodil Sky6",
+                  "description": "Tousled quinoa hella sriracha deep v hoodie. Wayfarers gentrify blue bottle cliche disrupt pour-over....",
+                  "readable_publish_date": "Jan 11",
+                  "slug": "the-daffodil-sky6-3l5k",
+                  "path": "/username7/the-daffodil-sky6-3l5k",
+                  "url": "http://localhost:3000/username7/the-daffodil-sky6-3l5k",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-01-11T00:29:38Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                  "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                  "canonical_url": "http://localhost:3000/username7/the-daffodil-sky6-3l5k",
+                  "created_at": "2023-01-11T00:29:38Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2023-01-11T00:29:38Z",
+                  "last_comment_at": "2023-01-11T00:29:38Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Tousled quinoa hella sriracha deep v hoodie. Wayfarers gentrify blue bottle cliche disrupt pour-over. Plaid tilde tumblr brooklyn tacos literally drinking single-origin coffee.</p>\n\n<p>Xoxo +1 wes anderson echo hoodie retro.</p>\n\n",
+                  "body_markdown": "---\ntitle: The Daffodil Sky6\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nTousled quinoa hella sriracha deep v hoodie. Wayfarers gentrify blue bottle cliche disrupt pour-over. Plaid tilde tumblr brooklyn tacos literally drinking single-origin coffee.\n\n\nXoxo +1 wes anderson echo hoodie retro.\n\n",
+                  "user": {
+                    "name": "Reed \"Jerrod\" \\:/ Pfeffer",
+                    "username": "username7",
+                    "twitter_username": "twitter7",
+                    "github_username": "github7",
+                    "user_id": 859,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/859/ea124e4c-729f-41ee-af65-f106762162c4.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/859/ea124e4c-729f-41ee-af65-f106762162c4.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -210,7 +498,15 @@
             }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -218,7 +514,9 @@
     "/api/articles/me": {
       "get": {
         "summary": "User's articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserArticles",
         "parameters": [
@@ -231,12 +529,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -252,7 +561,9 @@
     "/api/articles/me/published": {
       "get": {
         "summary": "User's published articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserPublishedArticles",
         "parameters": [
@@ -265,12 +576,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -286,7 +608,9 @@
     "/api/articles/me/unpublished": {
       "get": {
         "summary": "User's unpublished articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserUnpublishedArticles",
         "parameters": [
@@ -299,12 +623,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -320,7 +655,9 @@
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
         "operationId": "getUserAllArticles",
         "parameters": [
@@ -333,12 +670,23 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -354,7 +702,9 @@
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -386,10 +736,26 @@
             "description": "Article successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
           },
           "404": {
-            "description": "Article Not Found"
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
           }
         }
       }
@@ -403,7 +769,9 @@
   ],
   "security": [
     {
-      "api-key": []
+      "api-key": [
+
+      ]
     }
   ],
   "components": {
@@ -522,7 +890,7 @@
         }
       },
       "ArticleIndex": {
-        "description": "Resprentation of an article or post returned in a list",
+        "description": "Representation of an article or post returned in a list",
         "type": "object",
         "properties": {
           "type_of": {
@@ -651,6 +1019,46 @@
           "reading_time_minutes"
         ]
       },
+      "PodcastEpisodeIndex": {
+        "description": "Representation of a podcast episode returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "class_name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "format": "path"
+          },
+          "title": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast episode image url or podcast image url",
+            "type": "string",
+            "format": "url"
+          },
+          "podcast": {
+            "$ref": "#/components/schemas/SharedPodcast"
+          }
+        },
+        "required": [
+          "type_of",
+          "class_name",
+          "id",
+          "path",
+          "title",
+          "image_url",
+          "podcast"
+        ]
+      },
       "SharedUser": {
         "description": "The resource creator",
         "type": "object",
@@ -704,6 +1112,23 @@
           },
           "profile_image_90": {
             "description": "Profile image (90x90)",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "SharedPodcast": {
+        "description": "The podcast that the resource belongs to",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast image url",
             "type": "string",
             "format": "url"
           }
