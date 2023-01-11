@@ -15,9 +15,7 @@ RSpec.describe "Api::V1::Docs::ProfileImages" do
         tags "profile images"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a user or organization profile image information by its
-        corresponding username
-
-        For complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/profile-images"
+        corresponding username.
         DESCRIBE
         operationId "getProfileImage"
         produces "application/json"
