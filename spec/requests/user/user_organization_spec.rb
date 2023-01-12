@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserOrganization", type: :request do
+RSpec.describe "UserOrganization" do
   let(:user)          { create(:user) }
   let(:organization)  { create(:organization, secret: SecureRandom.hex(50)) }
 

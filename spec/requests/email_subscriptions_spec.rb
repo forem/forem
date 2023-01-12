@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "EmailSubscriptions", type: :request do
+RSpec.describe "EmailSubscriptions" do
   let(:user) { create(:user) }
 
   before do

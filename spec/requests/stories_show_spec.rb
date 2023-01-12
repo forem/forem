@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "StoriesShow", type: :request do
+RSpec.describe "StoriesShow" do
   let(:user) { create(:user) }
   let(:org)     { create(:organization) }
   let(:article) { create(:article, user: user) }

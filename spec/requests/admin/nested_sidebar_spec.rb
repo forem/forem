@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin sidebar", type: :request do
+RSpec.describe "admin sidebar" do
   let(:super_admin) { create(:user, :super_admin) }
 
   before do
