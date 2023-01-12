@@ -22,7 +22,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export const GifPicker = ({ textAreaRef }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(null);
   const [referenceEl, setReferenceEl] = useState(null);
   const [floatingEl, setFloatingEl] = useState(null);
   const floatingElRef = useRef(null);
@@ -36,44 +36,45 @@ export const GifPicker = ({ textAreaRef }) => {
       return;
     }
 
-    if (referenceEl && floatingEl && open) {
-      !document.body.contains(floatingEl) &&
-        document.body.appendChild(floatingEl);
-
-      floatingEl &&
-        Object.assign(floatingEl.style, {
-          opacity: 0,
-        });
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      stopAutoUpdate = autoUpdate(referenceEl, floatingEl, updatePosition);
-
-      floatingEl &&
-        Object.assign(floatingEl.style, {
-          opacity: 1,
-        });
-    } else {
-      floatingEl &&
-        Object.assign(floatingEl.style, {
-          opacity: 0,
-        });
-
-      stopAutoUpdate?.();
-      floatingEl && floatingEl.remove();
-
+    if (open == null) {
       return;
     }
 
-    if (open) {
-      document.addEventListener('mousedown', onDocumentClick);
+    return open ? onOpen() : onClose();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  const onOpen = async () => {
+    if (!open) {
+      return;
     }
 
+    !document.body.contains(floatingEl) &&
+      document.body.appendChild(floatingEl);
+
+    Object.assign(floatingEl.style, {
+      opacity: 0,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    stopAutoUpdate = autoUpdate(referenceEl, floatingEl, updatePosition);
+    await animatePopup();
+
+    document.addEventListener('mousedown', onDocumentClick);
     return () => {
-      if (open) {
-        document.removeEventListener('mousedown', onDocumentClick);
-      }
+      document.removeEventListener('mousedown', onDocumentClick);
     };
-  }, [open]);
+  };
+
+  const onClose = async () => {
+    if (open) {
+      return;
+    }
+
+    stopAutoUpdate?.();
+    await animatePopup();
+    floatingEl.remove();
+  };
 
   const onDocumentClick = (e) => {
     const clickedNode = e.target;
@@ -84,6 +85,25 @@ export const GifPicker = ({ textAreaRef }) => {
     if (open && !isClickOnPicker && !isClickOnTrigger) {
       handleClose();
     }
+  };
+
+  const animatePopup = () => {
+    if (!floatingEl) {
+      return;
+    }
+
+    return floatingEl.animate(
+      {
+        opacity: [0, 1],
+        transform: ['scale(0.9)', 'scale(1)'],
+      },
+      {
+        duration: 150,
+        easing: 'ease-in-out',
+        direction: open ? 'normal' : 'reverse',
+        fill: 'both',
+      },
+    ).finished;
   };
 
   const updatePosition = () => {
@@ -97,7 +117,6 @@ export const GifPicker = ({ textAreaRef }) => {
     }).then(({ x, y }) => {
       Object.assign(floatingEl.style, {
         position: 'absolute',
-
         left: `${x}px`,
         top: `${y}px`,
       });
@@ -135,10 +154,7 @@ export const GifPicker = ({ textAreaRef }) => {
   };
 
   const handleClick = (target) => {
-    if (
-      typeof handleClose != 'function' ||
-      typeof insertGif != 'function'
-    ) {
+    if (typeof handleClose != 'function' || typeof insertGif != 'function') {
       return;
     }
 
