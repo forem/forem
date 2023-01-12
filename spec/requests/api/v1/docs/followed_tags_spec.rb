@@ -37,7 +37,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
         response "200", "A List of followed tags" do
           let(:"api-key") { api_secret.secret }
           schema  type: :array,
-                  items: { "$ref": "#/components/schemas/FollowedTags" }
+                  items: { "$ref": "#/components/schemas/FollowedTag" }
           add_examples
 
           run_test!
