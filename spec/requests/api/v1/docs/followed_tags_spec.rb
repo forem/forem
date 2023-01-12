@@ -12,6 +12,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   let(:tag2) { create(:tag) }
 
   before do
+    user.add_role(:admin)
     user.follow(tag1)
     user.follow(tag2)
   end
@@ -28,7 +29,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
         produces "application/json"
 
         response "200", "A List of followed tags" do
-          let(:"api-key") { nil }
+          let(:"api-key") { api_secret.secret }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/FollowedTags" }
           add_examples
