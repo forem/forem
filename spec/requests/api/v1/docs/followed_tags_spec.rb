@@ -20,13 +20,19 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   describe "GET /follows/tags" do
     path "/api/follows/tags" do
       get "Followed Tags" do
-        security []
         tags "followed_tags"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of the tags they follow.
         DESCRIBE
         operationId "getFollowedTags"
         produces "application/json"
+
+        response "401", "unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
 
         response "200", "A List of followed tags" do
           let(:"api-key") { api_secret.secret }
@@ -37,12 +43,6 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
           run_test!
         end
 
-        response "401", "unauthorized" do
-          let(:"api-key") { "invalid" }
-          add_examples
-
-          run_test!
-        end
       end
     end
   end
