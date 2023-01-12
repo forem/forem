@@ -62,7 +62,7 @@
         >
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
-        <div id="body-styles">
+        <span id="body-styles">
           <style>
             :root {
               --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
@@ -70,7 +70,7 @@
               --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.8, only_values: true) %>;
             }
           </style>
-        </div>
+        </span>
         <% if user_signed_in? %>
           <%= render "layouts/user_config" %>
         <% end %>
