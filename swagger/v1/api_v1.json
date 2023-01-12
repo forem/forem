@@ -1489,7 +1489,7 @@
           "reading_time_minutes"
         ]
       },
-      "FollowedTags": {
+      "FollowedTag": {
         "description": "Resprentation of a tag",
         "type": "object",
         "name": {
