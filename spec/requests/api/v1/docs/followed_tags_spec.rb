@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   let(:tag1) { create(:tag) }
   let(:tag2) { create(:tag) }
 
-  before {
+  before do
     user.follow(tag1)
     user.follow(tag2)
   }
