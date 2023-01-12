@@ -554,7 +554,7 @@ RSpec.describe "Api::V0::Articles" do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
         get "/api/articles/me/all", headers: headers
-        expected_order = response.parsed_body..pluck("published")
+        expected_order = response.parsed_body.pluck("published")
         expect(expected_order).to eq([false, true])
       end
 
