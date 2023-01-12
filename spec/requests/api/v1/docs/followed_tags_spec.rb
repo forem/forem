@@ -12,7 +12,6 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   let(:tag2) { create(:tag) }
 
   before do
-    user.add_role(:admin)
     user.follow(tag1)
     user.follow(tag2)
   end
