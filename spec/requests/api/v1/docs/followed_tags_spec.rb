@@ -40,7 +40,6 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
 
           run_test!
         end
-
       end
     end
   end
