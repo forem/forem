@@ -15,7 +15,6 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
     user.follow(tag1)
     user.follow(tag2)
   end
-
   describe "GET /follows/tags" do
     path "/api/follows/tags" do
       get "Followed Tags" do
