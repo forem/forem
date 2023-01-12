@@ -138,7 +138,7 @@ class Organization < ApplicationRecord
   def conditionally_update_articles
     return unless Article::ATTRIBUTES_CACHED_FOR_RELATED_ENTITY.detect { |attr| saved_change_to_attribute?(attr) }
 
-    articles.each(&:save)
+    Organizations::SaveAllArticlesWorker.perform_async(id)
   end
 
   def bust_cache
