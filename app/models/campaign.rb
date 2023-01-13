@@ -48,7 +48,7 @@ class Campaign
   #
   # @see `./app/views/articles/_widget_list_item.html.erb` for the
   #      importance of maintaining position of these parameters.
-  def plucked_article_attributes(limit: 5, attributes: %i[path title comments_count created_at image_list quick_share description])
+  def plucked_article_attributes(limit: 5, attributes: %i[path title comments_count created_at image_list quick_share description nsfw])
     articles_scope.limit(limit).pluck(*attributes)
   end
 

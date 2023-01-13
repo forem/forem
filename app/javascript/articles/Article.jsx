@@ -3,7 +3,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { useEffect } from 'preact/hooks';
-import ReactImageGrid from "@cordelia273/react-image-grid";
+import ReactImageGrid from '@cordelia273/react-image-grid';
 import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
   ArticleCoverImage,
@@ -45,12 +45,12 @@ export const Article = ({
   ];
 
   let showCover =
-    (isFeatured || (article.main_image)) &&
-    !article.cloudinary_video_url;
+    (isFeatured || article.main_image) && !article.cloudinary_video_url;
 
   // pinned article can have a cover image
   showCover = showCover || (article.pinned && article.main_image);
-  const version = article.image_list.length > 0 || article.quick_share ? 'v0' : null;
+  const version =
+    article.image_list.length > 0 || article.quick_share ? 'v0' : null;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useEffect(() => {
@@ -91,7 +91,9 @@ export const Article = ({
       >
         {article.cloudinary_video_url && <Video article={article} />}
 
-        {showCover && !article.quick_share && <ArticleCoverImage article={article} />}
+        {showCover && !article.quick_share && (
+          <ArticleCoverImage article={article} />
+        )}
         <div className="crayons-story__body">
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
@@ -118,24 +120,53 @@ export const Article = ({
           </div>
 
           <div className="crayons-story__indention">
-            { version == 'v0' ? null : <ContentTitle article={article} /> }
-            <a href={article.path} style="color: unset !important;" id={`article-link-${article.id}`}>
-              { article.description_html ? 
-                <div class="text-styles text-truncate" style={{padding: "1rem 0"}} dangerouslySetInnerHTML={{ __html: article.description_html }}/> : 
-                <div class="text-styles text-truncate" style={{padding: "1rem 0"}}>{article.description}</div> 
-              }
+            {version == 'v0' ? null : <ContentTitle article={article} />}
+            <a
+              href={article.path}
+              style="color: unset !important;"
+              id={`article-link-${article.id}`}
+            >
+              {article.description_html ? (
+                <div
+                  class="text-styles text-truncate"
+                  style={{ padding: '1rem 0' }}
+                  dangerouslySetInnerHTML={{ __html: article.description_html }}
+                />
+              ) : (
+                <div
+                  class="text-styles text-truncate"
+                  style={{ padding: '1rem 0' }}
+                >
+                  {article.description}
+                </div>
+              )}
             </a>
-            { article.quick_share && !article.image_list.length && article.processed_preview_link && <div class="preview mb-4" dangerouslySetInnerHTML={{ __html: article.processed_preview_link }} />}
-            { version == 'v0' && (
-            <div id={`photo-grid-${article.id}`} class="photo-grid mb-4"  data-href={article.path} data-images={article.image_list} data-loaded="true">
-              <ReactImageGrid
-                images={article.image_list}
-                modal={false}
-                onClick={() => {
-                  window.location.href = article.path;
-                }}
-              />
-            </div>
+            {article.quick_share &&
+              !article.image_list.length &&
+              article.processed_preview_link && (
+                <div
+                  class="preview mb-4"
+                  dangerouslySetInnerHTML={{
+                    __html: article.processed_preview_link,
+                  }}
+                />
+              )}
+            {version == 'v0' && (
+              <div
+                id={`photo-grid-${article.id}`}
+                class={`photo-grid mb-4 ${article.nsfw ? 'nsfw-content' : ''}`}
+                data-href={article.path}
+                data-images={article.image_list}
+                data-loaded="true"
+              >
+                <ReactImageGrid
+                  images={article.image_list}
+                  modal={false}
+                  onClick={() => {
+                    window.location.href = article.path;
+                  }}
+                />
+              </div>
             )}
             <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
 

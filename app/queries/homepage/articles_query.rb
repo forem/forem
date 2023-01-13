@@ -22,6 +22,7 @@ module Homepage
       processed_html
       processed_preview_link
       main_image_background_hex_color
+      nsfw
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100

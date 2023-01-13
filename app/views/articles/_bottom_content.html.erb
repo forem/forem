@@ -23,7 +23,7 @@
             </div>
             <% elsif article.image_list != '' %>
             <div class="crayons-article__cover m-0 mb-1">
-              <img src="<%= article.image_list.split(',')[0] %>" width="1000" height="420" class="crayons-article__cover__image" style="background-color: #eee" />
+              <img src="<%= article.image_list.split(',')[0] %>" width="1000" height="420" class="crayons-article__cover__image<%= article.nsfw ? ' nsfw-content' : '' %>" style="background-color: #eee" />
             </div>
             <% end %>
             </h3>

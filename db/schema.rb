@@ -113,6 +113,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_01_171356) do
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.boolean "main_image_from_frontmatter", default: false
+    t.boolean "nsfw", default: false
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0

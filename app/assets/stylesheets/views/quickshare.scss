@@ -1,52 +1,66 @@
-.crayons-article__body .fb-post, .crayons-article__body .fb-video {
-    text-align: center !important;
+:root {
+  --nsfw-blur-radius: 1rem;
+  --nsfw-opacity-percent: 0.3;
 }
 
-.crayons-article__body .text-truncate, .crayons-story__body .text-truncate, .crayons-link--contentful .text-truncate, .profile-comment-row .text-truncate {
-    -webkit-mask-image: linear-gradient(180deg,#000 60%,transparent);
-    mask-image: linear-gradient(180deg,#000 60%,transparent);
-    max-height: 200px;
+.crayons-article__body .fb-post,
+.crayons-article__body .fb-video {
+  text-align: center !important;
+}
+
+.crayons-article__body .text-truncate,
+.crayons-story__body .text-truncate,
+.crayons-link--contentful .text-truncate,
+.profile-comment-row .text-truncate {
+  -webkit-mask-image: linear-gradient(180deg, #000 60%, transparent);
+  mask-image: linear-gradient(180deg, #000 60%, transparent);
+  max-height: 200px;
 }
 
 .profile-comment-row .text-truncate {
-    max-height: 50px;
+  max-height: 50px;
 }
 
 .preview .c-embed {
-    display: table;
-    width: 100%;
+  display: table;
+  width: 100%;
 }
 
 .preview .c-embed__body .truncate-at-3 {
-    -webkit-line-clamp: 2
+  -webkit-line-clamp: 2;
 }
 
 .preview .c-embed__cover img {
-    width: 100vw;
+  width: 100vw;
 }
 
 @media screen and (min-width: 640px) {
-    .preview .c-embed {
-        padding: var(--su-3);
-    }
+  .preview .c-embed {
+    padding: var(--su-3);
+  }
 
-    .preview .c-embed__cover {
-        float: right;
-        max-width: 30%;
-        margin-bottom: 0;
-    }
-    
-    .preview .c-embed__body {
-        float: left;
-        max-width: 70%;
-        padding-right: var(--su-3);
-    }
+  .preview .c-embed__cover {
+    float: right;
+    max-width: 30%;
+    margin-bottom: 0;
+  }
+
+  .preview .c-embed__body {
+    float: left;
+    max-width: 70%;
+    padding-right: var(--su-3);
+  }
 }
 
 .emoji-popup {
-    z-index: 1;
+  z-index: 1;
 }
 
 .popupContainer .closeButton {
-    z-index: 2 !important;
+  z-index: 2 !important;
+}
+
+.nsfw-content {
+  filter: blur(var(--nsfw-blur-radius));
+  opacity: var(--nsfw-opacity-percent);
 }

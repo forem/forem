@@ -44,7 +44,7 @@ module Articles
                    relation.order("last_comment_at DESC NULLS LAST")
                  end
       # relation.description = relation.description.truncate(3);
-      relation.pluck(:path, :title, :comments_count, :created_at, :image_list, :quick_share, :description)
+      relation.pluck(:path, :title, :comments_count, :created_at, :image_list, :quick_share, :description, :nsfw)
     end
   end
 end

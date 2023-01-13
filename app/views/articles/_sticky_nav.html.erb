@@ -18,7 +18,7 @@
               <% if article.quick_share %>
               <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= article.description %></p>
               <% if article.image_list != '' %>
-              <img src="<%= article.image_list.split(',')[0] %>" style="width: 100%" />
+              <img <%= article.nsfw ? 'class=nsfw-content' : '' %> src="<%= article.image_list.split(',')[0] %>" style="width: 100%" />
               <% end %>
               <% else %>
               <%= article.title %>

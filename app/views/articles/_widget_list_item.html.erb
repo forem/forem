@@ -4,7 +4,7 @@
   <%= plucked_article[1] %>
   <% elsif plucked_article[4] != "" %>
   <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= plucked_article[6] %></p>
-  <img src="<%= plucked_article[4].split(',')[0] %>" style="width: 100%" />
+  <img <%= plucked_article[7] ? 'class=nsfw-content' : '' %> src="<%= plucked_article[4].split(',')[0] %>" style="width: 100%" />
   <% else %>
   <p style="margin-bottom: var(--su-1);" class="text-truncate"><%= plucked_article[6] %></p>
   <% end %>

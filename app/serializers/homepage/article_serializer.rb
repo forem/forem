@@ -33,7 +33,8 @@ module Homepage
       :quick_share,
       :processed_html,
       :processed_preview_link,
-      :main_image_background_hex_color
+      :main_image_background_hex_color,
+      :nsfw
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes

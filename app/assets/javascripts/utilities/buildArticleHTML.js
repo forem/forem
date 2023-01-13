@@ -323,12 +323,18 @@ function buildArticleHTML(article, currentUserId = null) {
     `;
 
     var title = ``;
-    var description = article.description_html ? `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description_html}</div>` : `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description}</div>`;
+    var description = article.description_html
+      ? `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description_html}</div>`
+      : `<div class="text-styles text-truncate" style="padding: 1rem 0">${article.description}</div>`;
     var photoGrid = '';
     if (article.quick_share) {
-        if (article.image_list.length > 0) {
-          photoGrid = `<div id="photo-grid-${article.id}" data-href="${article.path}" class="photo-grid" data-images="${article.image_list.join()}"></div>`;
-        }
+      if (article.image_list.length > 0) {
+        photoGrid = `<div id="photo-grid-${article.id}" data-href="${
+          article.path
+        }" class="photo-grid ${
+          article.nsfw ? 'nsfw-content' : ''
+        }" data-images="${article.image_list.join()}"></div>`;
+      }
     } else {
       title = `<h3 class="crayons-story__title">
         <a href="${article.path}" id="article-link-${article.id}">
@@ -337,7 +343,9 @@ function buildArticleHTML(article, currentUserId = null) {
       </h3>`;
     }
 
-    var cover_image = article.main_image != null && !article.quick_share ? `<div class="crayons-article__cover">
+    var cover_image =
+      article.main_image != null && !article.quick_share
+        ? `<div class="crayons-article__cover">
       <a
         href="${article.path}"
         title="${article.title}"
@@ -351,8 +359,14 @@ function buildArticleHTML(article, currentUserId = null) {
           style="background-color: ${article.main_image_background_hex_color}"
         />
       </a>
-    </div>` : '';
-    var processed_preview_link = article.quick_share && !article.image_list.length > 0 && article.processed_preview_link ? `<div class="preview mb-4">${article.processed_preview_link}</div>` : ``;
+    </div>`
+        : '';
+    var processed_preview_link =
+      article.quick_share &&
+      !article.image_list.length > 0 &&
+      article.processed_preview_link
+        ? `<div class="preview mb-4">${article.processed_preview_link}</div>`
+        : ``;
 
     return `<article class="crayons-story"
       data-article-path="${article.path}"

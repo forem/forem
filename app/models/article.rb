@@ -174,6 +174,8 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :remove_prohibited_unicode_characters
   before_validation :normalize_title
+  before_validation :validate_nsfw
+  before_validation :add_nsfw_tag
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -306,7 +308,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
-           :last_comment_at, :quick_share, :processed_html, :description_html)
+           :last_comment_at, :quick_share, :processed_html, :description_html, :nsfw)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -316,7 +318,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :quick_share)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :quick_share, :nsfw)
   }
 
   scope :sorting, lambda { |value|
@@ -357,7 +359,7 @@ class Article < ApplicationRecord
   scope :feed, lambda {
                  published.includes(:taggings)
                    .select(
-                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list, :quick_share, :processed_preview_link
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list, :image_list, :quick_share, :processed_preview_link, :nsfw
                    )
                }
 
@@ -1064,5 +1066,36 @@ class Article < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
+  end
+
+  def validate_nsfw
+    if (image_list == '')
+      return
+    end
+    
+    begin
+      image_list.split(',').each do |image|
+        uri = Addressable::URI.parse(image);
+        if Nsfw.unsafe?(Rails.public_path.to_s + uri.path.to_s)
+          self.nsfw = true;
+        end
+      end
+    rescue Nsfw::NsfwEroticError, Nsfw::NsfwHentaiError => e
+      errors.add(:base, ErrorMessages::Clean.call("Your post contains sensitive images!!!"))
+    end
+  end
+
+  def add_nsfw_tag
+    if !nsfw
+      return
+    end
+
+    if !tag_list.include? 'nsfw'
+      if (tag_list.size >= MAX_TAG_LIST_SIZE)
+        tag_list.remove(tag_list[tag_list.size - 1], parse: true)
+      end
+
+      tag_list.add('nsfw', parse: true)
+    end
   end
 end
