@@ -9,12 +9,8 @@
     "/api/articles": {
       "get": {
         "summary": "Published articles",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -71,11 +67,7 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": [
-                "fresh",
-                "rising",
-                "all"
-              ]
+              "enum": ["fresh", "rising", "all"]
             },
             "example": "fresh"
           },
@@ -111,47 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 791,
-                    "title": "The Parliament of Man172",
-                    "description": "Normcore hoodie echo next level chia williamsburg. Small batch kogi skateboard vice master retro...",
-                    "readable_publish_date": "Dec 22",
-                    "slug": "the-parliament-of-man172-199d",
-                    "path": "/username382/the-parliament-of-man172-199d",
-                    "url": "http://localhost:3000/username382/the-parliament-of-man172-199d",
+                    "id": 1544,
+                    "title": "The Line of Beauty172",
+                    "description": "Five dollar toast pour-over 8-bit gluten-free selvage try-hard. Stumptown listicle ennui plaid tacos...",
+                    "readable_publish_date": "Jan 12",
+                    "slug": "the-line-of-beauty172-39d8",
+                    "path": "/username382/the-line-of-beauty172-39d8",
+                    "url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-22T13:50:45Z",
+                    "published_timestamp": "2023-01-11T16:00:22Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/33-dc66b0d3c291181013c8bc7a6eb3b26755d85e90b63c9c589cb6c161624cc410.png",
-                    "social_image": "http://localhost:3000/assets/33-dc66b0d3c291181013c8bc7a6eb3b26755d85e90b63c9c589cb6c161624cc410.png",
-                    "canonical_url": "http://localhost:3000/username382/the-parliament-of-man172-199d",
-                    "created_at": "2022-12-22T13:50:45Z",
+                    "cover_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
+                    "social_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
+                    "canonical_url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
+                    "created_at": "2023-01-11T16:00:22Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-22T13:50:45Z",
-                    "last_comment_at": "2022-12-22T13:50:45Z",
+                    "published_at": "2023-01-11T16:00:22Z",
+                    "last_comment_at": "2023-01-11T16:00:22Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "discuss"
-                    ],
+                    "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Charlie \"Sydney\" \\:/ Sipes",
+                      "name": "Ira \"Tanna\" \\:/ West",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 1769,
+                      "user_id": 3620,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/1769/c04bae58-32cf-452e-ba55-86ed65b8d57f.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/1769/c04bae58-32cf-452e-ba55-86ed65b8d57f.jpeg"
+                      "profile_image": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg"
                     },
                     "organization": {
-                      "name": "Walsh LLC",
+                      "name": "Klocko and Sons",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/556/f2c0763c-f2e8-43a1-9f77-723c4b3944d5.png",
-                      "profile_image_90": "/uploads/organization/profile_image/556/f2c0763c-f2e8-43a1-9f77-723c4b3944d5.png"
+                      "profile_image": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png",
+                      "profile_image_90": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -175,9 +165,7 @@
     "/api/articles/me": {
       "get": {
         "summary": "User's articles",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserArticles",
         "parameters": [
@@ -204,9 +192,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -222,9 +208,7 @@
     "/api/articles/me/published": {
       "get": {
         "summary": "User's published articles",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserPublishedArticles",
         "parameters": [
@@ -251,9 +235,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -269,9 +251,7 @@
     "/api/articles/me/unpublished": {
       "get": {
         "summary": "User's unpublished articles",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserUnpublishedArticles",
         "parameters": [
@@ -298,9 +278,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -316,9 +294,7 @@
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
         "operationId": "getUserAllArticles",
         "parameters": [
@@ -345,9 +321,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -363,9 +337,7 @@
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -424,18 +396,14 @@
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a list of all display ads.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [
-
-                ]
+                "example": []
               }
             }
           },
@@ -454,25 +422,21 @@
       },
       "post": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to create a new display ad.",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
                 "example": {
-                  "id": 296,
+                  "id": 91,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-22T10:20:47.377-03:30",
+                  "created_at": "2023-01-12T00:00:23.787+08:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -482,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-22T10:20:47.377-03:30",
+                  "updated_at": "2023-01-12T00:00:23.787+08:00",
                   "tag_list": ""
                 }
               }
@@ -554,11 +518,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -578,11 +538,7 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
@@ -592,9 +548,7 @@
     "/api/display_ads/{id}": {
       "get": {
         "summary": "display ad",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
         "parameters": [
           {
@@ -616,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 297,
+                  "id": 92,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-22T10:20:47.575-03:30",
+                  "created_at": "2023-01-12T00:00:23.944+08:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 297",
-                  "organization_id": 557,
+                  "name": "Display Ad 92",
+                  "organization_id": 667,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-22T10:20:47.579-03:30",
+                  "updated_at": "2023-01-12T00:00:23.947+08:00",
                   "tag_list": ""
                 }
               }
@@ -663,9 +617,7 @@
       },
       "put": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
         "parameters": [
           {
@@ -690,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 298",
-                  "organization_id": 558,
+                  "name": "Display Ad 93",
+                  "organization_id": 668,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 298,
+                  "id": 93,
                   "clicks_count": 0,
-                  "created_at": "2022-12-22T10:20:47.796-03:30",
+                  "created_at": "2023-01-12T00:00:24.163+08:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-22T10:20:47.800-03:30",
+                  "updated_at": "2023-01-12T00:00:24.165+08:00",
                   "tag_list": ""
                 }
               }
@@ -759,11 +711,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -783,11 +731,7 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
@@ -797,9 +741,7 @@
     "/api/display_ads/{id}/unpublish": {
       "put": {
         "summary": "unpublish",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
         "parameters": [
           {
@@ -844,12 +786,130 @@
         }
       }
     },
+    "/api/podcast_episodes": {
+      "get": {
+        "summary": "Podcast Episodes",
+        "security": [],
+        "tags": ["podcast_episodes"],
+        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
+        "operationId": "getPodcastEpisodes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve episodes belonging to a specific podcast.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "codenewbie"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Podcast episodes filtered by username",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "podcast_episodes",
+                    "class_name": "PodcastEpisode",
+                    "id": 115,
+                    "path": "/codenewbie/slug-4",
+                    "title": "2",
+                    "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg",
+                    "podcast": {
+                      "title": "Sapporo Premium",
+                      "slug": "codenewbie",
+                      "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PodcastEpisodeIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown Podcast username",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile_images/{username}": {
+      "get": {
+        "summary": "A Users or organizations profile image",
+        "tags": ["profile images"],
+        "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
+        "operationId": "getProfileImage",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "The parameter is the username of the user or the username of the organization.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "janedoe"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing profile image details",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "profile_image",
+                  "image_of": "user",
+                  "profile_image": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfileImage"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
         "parameters": [
           {
@@ -858,11 +918,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -880,11 +936,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -896,8 +948,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 56,
-                  "reactable_id": 795,
+                  "id": 72,
+                  "reactable_id": 1548,
                   "reactable_type": "Article"
                 }
               }
@@ -920,9 +972,7 @@
     "/api/reactions": {
       "post": {
         "summary": "create reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
         "parameters": [
           {
@@ -931,11 +981,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "like",
-                "readinglist",
-                "unicorn"
-              ]
+              "enum": ["like", "readinglist", "unicorn"]
             }
           },
           {
@@ -953,11 +999,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -969,8 +1011,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 58,
-                  "reactable_id": 797,
+                  "id": 74,
+                  "reactable_id": 1550,
                   "reactable_type": "Article"
                 }
               }
@@ -993,9 +1035,7 @@
     "/api/readinglist": {
       "get": {
         "summary": "Readinglist",
-        "tags": [
-          "readinglist"
-        ],
+        "tags": ["readinglist"],
         "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
         "operationId": "getReadinglist",
         "parameters": [
@@ -1022,9 +1062,7 @@
             "description": "A list of articles in the users readinglist",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1040,10 +1078,8 @@
     "/api/users/{id}": {
       "get": {
         "summary": "A User",
-        "tags": [
-          "users"
-        ],
-        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
         "operationId": "getUser",
         "parameters": [
           {
@@ -1065,9 +1101,7 @@
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
         "operationId": "unpublishUser",
         "parameters": [
@@ -1116,9 +1150,7 @@
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
         "operationId": "suspendUser",
         "parameters": [
@@ -1163,48 +1195,6 @@
           }
         }
       }
-    },
-    "/api/podcast_episodes": {
-      "get": {
-        "summary": "PodcastEpisodeIndex",
-        "tags": ["podcast_episode_index"],
-        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n If username parameter is passed, episodes of the corresponding podcast will be returned\n        The endpoint supports pagination, each page will contain `30` podcast episodes by default",
-        "operationId": "getPodcastEpisodes",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "required": false,
-            "description": "Using this parameter will retrieve episodes that belong to the podcast that has the specified slug (username).",
-            "schema": {
-              "type": "string"
-            },
-            "example": "codenewbie"
-          },
-          {
-            "$ref": "#/components/parameters/pageParam"
-          },
-          {
-            "$ref": "#/components/parameters/perPageParam30to1000"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of articles in the users readinglist",
-            "content": {
-              "application/json": {
-                "example": [],
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ArticleIndex"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "servers": [
@@ -1215,9 +1205,7 @@
   ],
   "security": [
     {
-      "api-key": [
-
-      ]
+      "api-key": []
     }
   ],
   "components": {
@@ -1336,7 +1324,7 @@
         }
       },
       "ArticleIndex": {
-        "description": "Resprentation of an article or post returned in a list",
+        "description": "Representation of an article or post returned in a list",
         "type": "object",
         "properties": {
           "type_of": {
@@ -1466,7 +1454,7 @@
         ]
       },
       "PodcastEpisodeIndex": {
-        "description": "Resprentation of a podcast episode returned in a list",
+        "description": "Representation of a podcast episode returned in a list",
         "type": "object",
         "properties": {
           "type_of": {
@@ -1487,6 +1475,7 @@
             "type": "string"
           },
           "image_url": {
+            "description": "Podcast episode image url or podcast image url",
             "type": "string",
             "format": "url"
           },
@@ -1503,6 +1492,28 @@
           "image_url",
           "podcast"
         ]
+      },
+      "ProfileImage": {
+        "description": "A profile image object",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "description": "Return profile_image",
+            "type": "string"
+          },
+          "image_of": {
+            "description": "Determines the type of the profile image owner (user or organization)",
+            "type": "string"
+          },
+          "profile_image": {
+            "description": "Profile image (640x640)",
+            "type": "string"
+          },
+          "profile_image_90": {
+            "description": "Profile image (90x90)",
+            "type": "string"
+          }
+        }
       },
       "SharedUser": {
         "description": "The resource creator",
@@ -1563,7 +1574,7 @@
         }
       },
       "SharedPodcast": {
-        "description": "The podcast the resource belongs to",
+        "description": "The podcast that the resource belongs to",
         "type": "object",
         "properties": {
           "title": {
@@ -1573,7 +1584,7 @@
             "type": "string"
           },
           "image_url": {
-            "description": "Image",
+            "description": "Podcast image url",
             "type": "string",
             "format": "url"
           }
