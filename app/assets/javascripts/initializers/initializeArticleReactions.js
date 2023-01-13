@@ -215,8 +215,10 @@ function watchHoverdown() {
     drawerTrigger.addEventListener('longTouch', function () {
       drawerTrigger.parentElement.classList.add('open');
     });
-    document.addEventListener('touchstart', function () {
-      drawerTrigger.parentElement.classList.remove('open');
+    document.addEventListener('touchstart', function (event) {
+      if (!drawerTrigger.parentElement.contains(event.target)) {
+        drawerTrigger.parentElement.classList.remove('open');
+      }
     });
   } else {
     document.querySelectorAll('.hoverdown').forEach(function (el) {
