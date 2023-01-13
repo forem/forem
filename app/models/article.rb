@@ -1069,7 +1069,7 @@ class Article < ApplicationRecord
   end
 
   def validate_nsfw
-    if (image_list == '')
+    if (image_list == '' || image_list.nil?)
       return
     end
     
