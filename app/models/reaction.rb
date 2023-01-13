@@ -82,7 +82,9 @@ class Reaction < ApplicationRecord
       if FeatureFlag.enabled?(:multiple_reactions)
         reaction_types = ReactionCategory.public.map(&:to_s) - ["readinglist"]
       else
-        reaction_types = %w[like readinglist]
+        # used to include "readinglist" but that's not correct now, even without the feature flag
+        # we aren't going to re-process these, they will gradually correct over time
+        reaction_types = %w[like]
         unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
           reaction_types << "unicorn"
         end
