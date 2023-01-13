@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Analytics", type: :request do
+RSpec.describe "Api::V1::Analytics" do
   let(:api_secret) { create(:api_secret) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
 

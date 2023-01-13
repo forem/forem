@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Podcast Episodes Show Spec", type: :request do
+RSpec.describe "Podcast Episodes Show Spec" do
   describe "GET podcast episodes show" do
     it "renders the correct podcast episode" do
       podcast = create(:podcast)

@@ -166,7 +166,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             }
           },
           ArticleIndex: {
-            description: "Resprentation of an article or post returned in a list",
+            description: "Representation of an article or post returned in a list",
             type: :object,
             properties: {
               type_of: { type: :string },
@@ -204,6 +204,20 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          PodcastEpisodeIndex: {
+            description: "Representation of a podcast episode returned in a list",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int32 },
+              class_name: { type: :string },
+              path: { type: :string, format: "path" },
+              title: { type: :string },
+              image_url: { description: "Podcast episode image url or podcast image url", type: :string, format: :url },
+              podcast: { "$ref": "#/components/schemas/SharedPodcast" }
+            },
+            required: %w[type_of class_name id path title image_url podcast]
+          },
           SharedUser: {
             description: "The resource creator",
             type: "object",
@@ -226,6 +240,15 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               slug: { type: :string },
               profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
+            }
+          },
+          SharedPodcast: {
+            description: "The podcast that the resource belongs to",
+            type: "object",
+            properties: {
+              title: { type: :string },
+              slug: { type: :string },
+              image_url: { description: "Podcast image url", type: :string, format: :url }
             }
           }
         }

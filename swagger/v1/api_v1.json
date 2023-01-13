@@ -1163,6 +1163,48 @@
           }
         }
       }
+    },
+    "/api/podcast_episodes": {
+      "get": {
+        "summary": "PodcastEpisodeIndex",
+        "tags": ["podcast_episode_index"],
+        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n If username parameter is passed, episodes of the corresponding podcast will be returned\n        The endpoint supports pagination, each page will contain `30` podcast episodes by default",
+        "operationId": "getPodcastEpisodes",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve episodes that belong to the podcast that has the specified slug (username).",
+            "schema": {
+              "type": "string"
+            },
+            "example": "codenewbie"
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of articles in the users readinglist",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -1423,6 +1465,45 @@
           "reading_time_minutes"
         ]
       },
+      "PodcastEpisodeIndex": {
+        "description": "Resprentation of a podcast episode returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "class_name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "format": "path"
+          },
+          "title": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string",
+            "format": "url"
+          },
+          "podcast": {
+            "$ref": "#/components/schemas/SharedPodcast"
+          }
+        },
+        "required": [
+          "type_of",
+          "class_name",
+          "id",
+          "path",
+          "title",
+          "image_url",
+          "podcast"
+        ]
+      },
       "SharedUser": {
         "description": "The resource creator",
         "type": "object",
@@ -1476,6 +1557,23 @@
           },
           "profile_image_90": {
             "description": "Profile image (90x90)",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "SharedPodcast": {
+        "description": "The podcast the resource belongs to",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Image",
             "type": "string",
             "format": "url"
           }

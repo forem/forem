@@ -146,7 +146,7 @@ group :development, :test do
   gem "rspec-rails", "~> 5.1" # rspec-rails is a testing framework for Rails 3+
   gem "rspec_junit_formatter", "~> 0.6" # RSpec formatter for JUnit XML output
   gem "rswag-specs", "~> 2.5.1" # RSwag - Swagger-based DSL for rspec & accompanying rake task for generating Swagger files
-  gem "rubocop", "~> 1.33", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 1.42", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.14", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.12", require: false # Code style checking for RSpec files
