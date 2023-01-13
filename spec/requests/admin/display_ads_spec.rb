@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/customization/display_ads", type: :request do
+RSpec.describe "/admin/customization/display_ads" do
   let(:get_resource) { get admin_display_ads_path }
   let(:org) { create(:organization) }
   let(:params) do

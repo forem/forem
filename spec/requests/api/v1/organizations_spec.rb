@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Organizations", type: :request do
+RSpec.describe "Api::V1::Organizations" do
   let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/organizations/:username" do

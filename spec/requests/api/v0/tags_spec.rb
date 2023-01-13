@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Tags", type: :request do
+RSpec.describe "Api::V0::Tags" do
   describe "GET /api/tags" do
     it "returns tags" do
       create(:tag, taggings_count: 10)
@@ -30,7 +30,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       get api_tags_path
 
       expected_result = [other_tag.id, tag.id]
-      expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
+      expect(response.parsed_body.pluck("id")).to eq(expected_result)
     end
 
     it "supports pagination" do

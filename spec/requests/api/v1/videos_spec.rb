@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Videos", type: :request do
+RSpec.describe "Api::V1::Videos" do
   let(:user) { create(:user, created_at: 1.month.ago) }
   let(:api_secret) { create(:api_secret, user: user) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
@@ -71,7 +71,7 @@ RSpec.describe "Api::V1::Videos", type: :request do
       get api_videos_path, headers: headers
 
       expected_result = [video_article.id, other_video_article.id]
-      expect(response.parsed_body.map { |a| a["id"] }).to eq(expected_result)
+      expect(response.parsed_body.pluck("id")).to eq(expected_result)
     end
 
     it "supports pagination" do
