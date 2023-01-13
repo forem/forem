@@ -206,7 +206,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           FollowedTag: {
             description: "Representation of a followed tag",
-            type: "object",
+            type: :object,
             properties: {
               id: { description: "Tag id", type: :integer, format: :int64 },
               name: { type: :string },
