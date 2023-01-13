@@ -1492,8 +1492,8 @@
       "FollowedTag": {
         "description": "Resprentation of a tag",
         "type": "object",
-        "name": {
-          "type_of": {
+        "properties": {
+          "name": {
             "type": "string"
           },
           "id": {
