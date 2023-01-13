@@ -1,4 +1,4 @@
-/* global sendHapticMessage, showLoginModal, showModalAfterError */
+/* global sendHapticMessage, showLoginModal, showModalAfterError, isTouchDevice, watchForLongTouch */
 
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
@@ -209,17 +209,28 @@ function watchHoverdown() {
   drawerTrigger.addEventListener('click', function (event) {
     event.preventDefault();
   });
-  document.querySelectorAll('.hoverdown').forEach(function (el) {
-    el.addEventListener('mouseover', function (event) {
-      this.classList.add('open');
-      clearTimeout(timer);
+
+  if (isTouchDevice()) {
+    watchForLongTouch(drawerTrigger);
+    drawerTrigger.addEventListener('longTouch', function () {
+      drawerTrigger.parentElement.classList.add('open');
     });
-    el.addEventListener('mouseout', function (event) {
-      timer = setTimeout(function (event) {
-        document.querySelector('.hoverdown.open').classList.remove('open');
-      }, 1000);
+    document.addEventListener('touchstart', function () {
+      drawerTrigger.parentElement.classList.remove('open');
     });
-  });
+  } else {
+    document.querySelectorAll('.hoverdown').forEach(function (el) {
+      el.addEventListener('mouseover', function (event) {
+        this.classList.add('open');
+        clearTimeout(timer);
+      });
+      el.addEventListener('mouseout', function (event) {
+        timer = setTimeout(function (event) {
+          document.querySelector('.hoverdown.open').classList.remove('open');
+        }, 1000);
+      });
+    });
+  }
 }
 
 function initializeArticleReactions() {
