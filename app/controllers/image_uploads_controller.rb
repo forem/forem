@@ -36,6 +36,26 @@ class ImageUploadsController < ApplicationController
     end
 
     links = uploaders.map(&:url)
+    image_path = nil;
+
+    begin
+      links.each do |link|
+        uri = Addressable::URI.parse(link);
+        image_path = Rails.public_path.to_s + uri.path.to_s;
+        Nsfw.unsafe?(image_path)
+      end
+    rescue Nsfw::NsfwEroticError, Nsfw::NsfwHentaiError => e
+      File.delete(image_path) if File.exist?(image_path)
+
+      respond_to do |format|
+        format.json do
+          render json: { error: "Your post contains sensitive images. Your uploaded image deleted!" },
+                 status: :unprocessable_entity
+        end
+      end
+      return
+    end
+
     respond_to do |format|
       format.json { render json: { links: links }, status: :ok }
     end
