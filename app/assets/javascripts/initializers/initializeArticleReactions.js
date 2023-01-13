@@ -33,9 +33,15 @@ function showUserReaction(reactionName, animatedClass, wasToggling) {
   );
   reactionButton.classList.add('user-activated', animatedClass);
   reactionButton.setAttribute('aria-pressed', 'true');
+
   const reactionDrawerButton = document.getElementById(
     'reaction-drawer-trigger',
   );
+
+  // the rest only applies to multiple reactions feature flag
+  if (!reactionDrawerButton) {
+    return;
+  }
 
   if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
