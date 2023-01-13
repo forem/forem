@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NotificationsIndex", type: :request do
+RSpec.describe "NotificationsIndex" do
   include ActionView::Helpers::DateHelper
 
   let(:staff_account) { create(:user) }
@@ -61,7 +61,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before { sign_in user }
 
       def mock_follow_notifications(amount)
-        create_list :user, amount
+        create_list(:user, amount)
         follow_instances = User.last(amount).map { |follower| follower.follow(user) }
         follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
       end
@@ -180,7 +180,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before { sign_in user }
 
       def mock_heart_reaction_notifications(amount, categories, reactable = article1)
-        create_list :user, amount
+        create_list(:user, amount)
         reactions = User.last(amount).map do |user|
           create(
             :reaction,
@@ -294,7 +294,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does group notifications that are on different days but have the same reactable" do
-        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
+        mock_heart_reaction_notifications(2, %w[unicorn like])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
 
         get notifications_path(filter: :org, org_id: organization.id)
@@ -303,8 +303,8 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
+        mock_heart_reaction_notifications(1, %w[unicorn like], article1)
+        mock_heart_reaction_notifications(1, %w[unicorn like], article2)
 
         get notifications_path(filter: :org, org_id: organization.id)
         notifications = controller.instance_variable_get(:@notifications)
