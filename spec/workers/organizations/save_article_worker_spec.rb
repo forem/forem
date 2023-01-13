@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Organizations::SaveAllArticlesWorker do
+RSpec.describe Organizations::SaveArticleWorker do
   describe "perform" do
     let(:worker) { subject }
     let(:organization) { create(:organization) }
