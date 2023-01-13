@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserSettings", type: :request do
+RSpec.describe "UserSettings" do
   let(:user) { create(:user) }
 
   describe "GET /settings/:tab" do

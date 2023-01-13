@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Users", type: :request do
+RSpec.describe "Api::V1::Users" do
   let(:api_secret) { create(:api_secret) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:auth_headers) { headers.merge({ "api-key" => api_secret.secret }) }

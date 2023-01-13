@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/customization/html_variants", type: :request do
+RSpec.describe "/admin/customization/html_variants" do
   let(:get_resource) { get admin_html_variants_path }
   let(:params) do
     { name: "Banner", html: "<h1>Hello HTML Variants!</h1>", group: "campaign",

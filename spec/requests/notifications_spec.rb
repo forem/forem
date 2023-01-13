@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NotificationsIndex", type: :request do
+RSpec.describe "NotificationsIndex" do
   include ActionView::Helpers::DateHelper
 
   let(:staff_account) { create(:user) }
@@ -61,7 +61,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before { sign_in user }
 
       def mock_follow_notifications(amount)
-        create_list :user, amount
+        create_list(:user, amount)
         follow_instances = User.last(amount).map { |follower| follower.follow(user) }
         follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
       end
@@ -180,7 +180,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       before { sign_in user }
 
       def mock_heart_reaction_notifications(amount, categories, reactable = article1)
-        create_list :user, amount
+        create_list(:user, amount)
         reactions = User.last(amount).map do |user|
           create(
             :reaction,

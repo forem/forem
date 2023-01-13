@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "FollowingsController", type: :request do
+RSpec.describe "FollowingsController" do
   let(:user) { create(:user) }
 
   describe "GET /followings/users" do

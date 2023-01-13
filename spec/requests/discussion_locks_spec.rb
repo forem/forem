@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "DiscussionLocks", type: :request do
+RSpec.describe "DiscussionLocks" do
   let(:user) { create(:user) }
   let(:cache_buster) { EdgeCache::BustArticle }
 

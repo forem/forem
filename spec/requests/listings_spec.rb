@@ -1,7 +1,7 @@
 require "rails_helper"
 require "nokogiri"
 
-RSpec.describe "/listings", type: :request do
+RSpec.describe "/listings" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:edu_category) { create(:listing_category, cost: 1) }
