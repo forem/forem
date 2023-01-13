@@ -438,8 +438,14 @@ class Article < ApplicationRecord
     self.processed_preview_link = ''
     self.social_image = self.main_image.present? ? self.main_image : ''
 
-    Nokogiri::HTML(processed_html).xpath('//a').each do |a|
-      preview_link = a['href']
+    preview_links = body_markdown.scan(/((https?|ftp):\/\/(\S*?\.\S*?))([\s)\[\]{},;"\':<]|\.\s|$)/i)
+
+    if !preview_links
+      return
+    end
+
+    preview_links.each do |preview|
+      preview_link = preview[0]
 
       next if preview_link.match(/\.(png|jpg|jpep|webp|gif)$/i)
       next if preview_link.match(/#{URL.domain}/i)
