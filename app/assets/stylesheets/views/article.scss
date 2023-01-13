@@ -241,8 +241,10 @@
   }
 }
 
+// This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
   border: 1px solid var(--card-bg);
+  flex-direction: column;
 
   &.user-activated {
     background-color: var(--body-bg);
@@ -365,7 +367,11 @@
   }
 }
 
-// TODO: think about how and when we want to override the crayons-dropdown.
+// TODO: The drawer__outer contains the trigger button and the drawer itself,
+// enabling hover, however this then requires the __outer wrapping div to be
+// styled similarly to the other action buttons in the sidebar, which we can
+// clean up significantly *after* the multiple_reactions feature flag is
+// fully rolled-out.
 .reaction-drawer__outer {
   border: none;
   padding: 0;
@@ -387,8 +393,8 @@
   min-width: auto;
   border-radius: 32px;
   position: absolute;
-  top: -65px;
-  left: 0;
+  top: -80px;
+  left: 15px;
   display: none; // Initially hidden
 
   // Copying from Dropdown for now
@@ -401,11 +407,19 @@
   box-shadow: var(--shadow-1);
   border-radius: var(--radius);
 
+  flex-direction: column;
+
   @media (min-width: $breakpoint-s) {
     max-width: 360px;
     width: max-content;
     top: -5px;
     left: 55px;
+  }
+
+  .crayons-reaction__count {
+    min-width: auto;
+    margin-left: 0;
+    display: block;
   }
 }
 
