@@ -1196,48 +1196,6 @@
         }
       }
     },
-    "/api/podcast_episodes": {
-      "get": {
-        "summary": "PodcastEpisodeIndex",
-        "tags": ["podcast_episode_index"],
-        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n If username parameter is passed, episodes of the corresponding podcast will be returned\n        The endpoint supports pagination, each page will contain `30` podcast episodes by default",
-        "operationId": "getPodcastEpisodes",
-        "parameters": [
-          {
-            "name": "username",
-            "in": "query",
-            "required": false,
-            "description": "Using this parameter will retrieve episodes that belong to the podcast that has the specified slug (username).",
-            "schema": {
-              "type": "string"
-            },
-            "example": "codenewbie"
-          },
-          {
-            "$ref": "#/components/parameters/pageParam"
-          },
-          {
-            "$ref": "#/components/parameters/perPageParam30to1000"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "A list of articles in the users readinglist",
-            "content": {
-              "application/json": {
-                "example": [],
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ArticleIndex"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/follows/tags": {
       "get": {
         "summary": "FollowedTags",
@@ -1520,7 +1478,7 @@
         ]
       },
       "FollowedTag": {
-        "description": "Resprentation of a tag",
+        "description": "Representation of a tag",
         "type": "object",
         "properties": {
           "name": {
