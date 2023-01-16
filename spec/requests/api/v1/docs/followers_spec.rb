@@ -57,6 +57,13 @@ RSpec.describe "Api::V1::Docs::Followers" do
           add_examples
           run_test!
         end
+
+        response "401", "unauthorized" do
+          let(:"api-key") { nil }
+          add_examples
+
+          run_test!
+        end
       end
     end
   end
