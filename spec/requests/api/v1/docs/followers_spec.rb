@@ -31,6 +31,12 @@ RSpec.describe "Api::V1::Docs::Followers" do
 
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
+        parameter name: :sort, in: :query, required: false,
+                  description: "Default is 'created_at'. Specifies the sort order for the created_at param of the follow
+                                relationship. To sort by newest followers first (descending order) specify
+                                ?sort=-created_at.",
+                  schema: { type: :string },
+                  example: "created_at"
       end
     end
   end
