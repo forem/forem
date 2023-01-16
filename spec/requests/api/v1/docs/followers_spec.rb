@@ -20,6 +20,14 @@ RSpec.describe "Api::V1::Docs::Followers" do
   describe "GET /followers/users" do
     path "/api/followers/users" do
       get "Followers" do
+        tags "followers"
+        description(<<-DESCRIBE.strip)
+        This endpoint allows the client to retrieve a list of the followers they have.
+        "Followers" are users that are following other users on the website.
+        It supports pagination, each page will contain 80 followers by default.
+        DESCRIBE
+        operationId "getFollowers"
+        produces "application/json"
       end
     end
   end
