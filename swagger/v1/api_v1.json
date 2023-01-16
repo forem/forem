@@ -786,6 +786,108 @@
         }
       }
     },
+    "/api/followers/users": {
+      "get": {
+        "summary": "Followers",
+        "tags": ["followers"],
+        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
+        "operationId": "getFollowers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Default is 'created_at'. Specifies the sort order for the created_at param of the follow\n                                relationship. To sort by newest followers first (descending order) specify\n                                ?sort=-created_at.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "created_at"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of followers",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user_follower",
+                    "id": 163,
+                    "created_at": "2023-01-16T14:31:07Z",
+                    "user_id": 7532,
+                    "name": "Audrey \"Brinda\" \\:/ O'Reilly",
+                    "path": "/username411",
+                    "username": "username411",
+                    "profile_image": "/uploads/user/profile_image/7532/591ae4b9-0aa1-4eac-8910-1c73d309023b.jpeg"
+                  },
+                  {
+                    "type_of": "user_follower",
+                    "id": 162,
+                    "created_at": "2023-01-16T14:31:07Z",
+                    "user_id": 7530,
+                    "name": "Gerardo \"Racquel\" \\:/ Harvey",
+                    "path": "/username409",
+                    "username": "username409",
+                    "profile_image": "/uploads/user/profile_image/7530/550c2c6a-e961-441a-b7a0-bb9c8613fd53.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "description": "A follower",
+                    "type": "object",
+                    "properties": {
+                      "type_of": {
+                        "description": "user_follower by default",
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "user_id": {
+                        "description": "The follower's user id",
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "name": {
+                        "description": "The follower's name",
+                        "type": "string"
+                      },
+                      "path": {
+                        "description": "A path to the follower's profile",
+                        "type": "string"
+                      },
+                      "profile_image": {
+                        "description": "Profile image (640x640)",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/podcast_episodes": {
       "get": {
         "summary": "Podcast Episodes",
