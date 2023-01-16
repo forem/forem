@@ -93,6 +93,12 @@ class Reaction < ApplicationRecord
       reaction_types
     end
 
+    def for_analytics
+      reaction_types = public_reaction_types
+      reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+      where(category: reaction_types)
+    end
+
     # @param user [User] the user who might be spamming the system
     # @param threshold [Integer] the number of strikes before they are spam
     # @param include_user_profile [Boolean] do we include the user's profile as part of the "check
