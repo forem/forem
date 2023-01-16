@@ -1,10 +1,10 @@
 <%= javascript_packs_with_chunks_tag "admin/users/gdprDeleteRequests", defer: true %>
 <div id="gdpr-delete-requests-content" class="crayons-card overflow-admin-main-layout-padding p-4 m:p-0">
-  <header class="flex flex-col l:flex-row justify-content-between l:items-center p-0 m:p-7 pb-4">
+  <header class="flex flex-col l:flex-row justify-between l:items-center p-0 m:p-7 pb-4">
     <h1 class="crayons-title ml-3 l:ml-0">Members<span class="screen-reader-only"> (GDPR Delete Requests)</span></h1>
     <%= form_with url: admin_gdpr_delete_requests_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
-      <div class="hidden m:flex flex-col m:flex-row justify-content-between p-3 xl:px-0">
-        <div class="flex grow-1 justify-content-end">
+      <div class="hidden m:flex flex-col m:flex-row justify-between p-3 xl:px-0">
+        <div class="flex grow-1 justify-end">
           <%= paginate @gdpr_delete_requests, theme: "admin", scope: @gdpr_delete_requests, label: "Paginate GDPR delete requests", context: "top" %>
         </div>
         <%= render "admin/users/controls/search_field", f: f, placeholder: "Search members...", aria_label: "Search members by email or username", context: "large" %>
