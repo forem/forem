@@ -37,6 +37,26 @@ RSpec.describe "Api::V1::Docs::Followers" do
                                 ?sort=-created_at.",
                   schema: { type: :string },
                   example: "created_at"
+
+        response "200", "A List of followers" do
+          let(:"api-key") { api_secret.secret }
+          schema  type: :array,
+                  items: {
+                    description: "A follower",
+                    type: "object",
+                    properties: {
+                      type_of: { description: "user_follower by default", type: :string },
+                      id: { type: :integer, format: :int32 },
+                      user_id: { description: "The follower's user id", type: :integer, format: :int32 },
+                      name: { description: "The follower's name", type: :string },
+                      path: { description: "A path to the follower's profile", type: :string },
+                      profile_image: { description: "Profile image (640x640)", type: :string }
+                    }
+                  }
+
+          add_examples
+          run_test!
+        end
       end
     end
   end
