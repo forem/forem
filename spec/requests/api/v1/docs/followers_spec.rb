@@ -28,6 +28,9 @@ RSpec.describe "Api::V1::Docs::Followers" do
         DESCRIBE
         operationId "getFollowers"
         produces "application/json"
+
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
       end
     end
   end
