@@ -241,11 +241,12 @@ jobs:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: [CI-status-report]
+    concurrency: ${{ matrix.environment }}
     environment: ${{ matrix.environment }}
 
     strategy:
       matrix:
-        environment: [ production ]
+        environment: [ production, staging ]
 
     steps:
       - uses: actions/checkout@v3
