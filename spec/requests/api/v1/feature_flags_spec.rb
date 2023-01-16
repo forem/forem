@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::FeatureFlagsController", type: :request do
+RSpec.describe "Api::V1::FeatureFlagsController" do
   let(:flag) { "test_flag" }
   let(:params) { { flag: flag } }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/apps/listings", type: :request do
+RSpec.describe "/admin/apps/listings" do
   let(:admin) { create(:user, :super_admin) }
   let!(:listing) { create(:listing, user_id: admin.id) }
 

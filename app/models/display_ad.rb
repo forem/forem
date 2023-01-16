@@ -74,6 +74,13 @@ class DisplayAd < ApplicationRecord
     validate_tag_name(tag_list)
   end
 
+  # This needs to correspond with Rails built-in method signature
+  # rubocop:disable Style/OptionHash
+  def as_json(options = {})
+    super(options.merge(except: %i[tags tag_list])).merge("tag_list" => cached_tag_list)
+  end
+  # rubocop:enable Style/OptionHash
+
   private
 
   def generate_display_ad_name

@@ -212,6 +212,11 @@
   }
 }
 
+input[type=file]::file-selector-button {
+  @extend .crayons-btn;
+  @extend .crayons-btn--secondary;
+}
+
 .crayons-fields {
   display: flex;
   flex-flow: column;

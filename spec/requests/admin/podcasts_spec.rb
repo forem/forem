@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/podcasts", type: :request do
+RSpec.describe "/admin/content_manager/podcasts" do
   let(:admin) { create(:user, :super_admin) }
   let(:podcast) { create(:podcast, published: false) }
   let(:user) { create(:user) }

@@ -48,7 +48,7 @@ class Organization < ApplicationRecord
   validates :secret, length: { is: 100 }, allow_nil: true
   validates :secret, uniqueness: true
   validates :slug, exclusion: { in: ReservedWords.all, message: :reserved_word }
-  validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
+  validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..30 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }
   validates :spent_credits_count, presence: true
   validates :summary, length: { maximum: 250 }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/api/admin/users", type: :request do
+RSpec.describe "/api/admin/users" do
   let(:params) { { email: "test@example.com" } }
   let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 

@@ -32,7 +32,7 @@
       <% @broadcasts.each do |broadcast| %>
         <tr>
           <td><%= link_to broadcast.title, admin_broadcast_path(broadcast.id) %></td>
-          <td class="justify-content-center">
+          <td class="justify-center">
             <div class="c-indicator c-indicator--<%= broadcast.active? ? "success" : "warning" %>">
               <%= broadcast.active? ? "Active" : "Inactive" %>
             </div>

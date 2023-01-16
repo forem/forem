@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserBlock", type: :request do
+RSpec.describe "UserBlock" do
   let(:blocker) { create(:user) }
   let(:blocked) { create(:user) }
 

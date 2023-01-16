@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Registrations", type: :request do
+RSpec.describe "Registrations" do
   let(:user) { create(:user) }
 
   describe "Log In" do

@@ -1,14 +1,14 @@
 <%= javascript_packs_with_chunks_tag "admin/users/controls", "admin/users/memberIndex", defer: true %>
 <div id="member-index-content" class="crayons-card overflow-admin-main-layout-padding p-0">
   <header class="flex flex-col p-4 xl:p-7 pb-4">
-    <div class="flex flex-col l:flex-row justify-content-between l:items-center">
+    <div class="flex flex-col l:flex-row justify-between l:items-center">
       <h1 class="crayons-title ml-3 xl:ml-0">Members<span class="screen-reader-only"> (Invitations)</span></h1>
     </div>
 
     <!-- Small screen layout start -->
     <div class="flex flex-col m:hidden fs-s">
       <%= form_with url: admin_invitations_path, method: :get, local: true, class: "py-3" do |f| %>
-        <div class="flex justify-content-between">
+        <div class="flex justify-between">
           <%= render "admin/users/controls/expand_search_button" %>
           <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-small" %>
         </div>
@@ -23,7 +23,7 @@
       <ul class="list-none mx-2">
         <% @invitations.each do |user| %>
             <li class="py-4">
-            <article class="flex justify-content-between items-start">
+            <article class="flex justify-between items-start">
               <div class="flex">
                 <%= render "admin/users/index/member_image", user: user %>
                 <div class="flex flex-col gap-2">
@@ -44,11 +44,11 @@
     <!-- Small screen layout end -->
 
     <!-- Large screen layout start -->
-    <div class="hidden m:flex flex-col m:flex-row justify-content-between p-3 xl:px-0">
+    <div class="hidden m:flex flex-col m:flex-row justify-between p-3 xl:px-0">
       <%= form_with url: admin_invitations_path, method: :get, local: true, class: "grow-1 mb-3 m:mb-0" do |f| %>
         <% render "admin/users/controls/search_field", f: f, placeholder: "Search invited members...", aria_label: "Search invited members by name, email, or username", context: "large" %>
       <% end %>
-      <div class="flex grow-1 justify-content-end">
+      <div class="flex grow-1 justify-end">
         <%= paginate @invitations, theme: "admin", scope: @invitations, label: "Paginate invitations", context: "top-large" %>
         <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
       </div>
@@ -88,7 +88,7 @@
       <p class="fs-xl fw-normal mb-2">No members invited yet.</p>
       <p class="color-secondary">Invite members and grow your community.</p>
     </div>
-    <div class="flex grow-1 justify-content-center">
+    <div class="flex grow-1 justify-center">
       <%= link_to "Invite member", new_admin_invitation_path, class: "c-cta c-cta--branded ml-3" %>
     </div>
   <% end %>

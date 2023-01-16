@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 191,
-                    "title": "Those Barren Leaves, Thrones, Dominations172",
-                    "description": "Farm-to-table muggle magic wolf swag. Cronut intelligentsia dreamcatcher. Cleanse craft beer franzen...",
-                    "readable_publish_date": "Dec 5",
-                    "slug": "those-barren-leaves-thrones-dominations172-163k",
-                    "path": "/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
+                    "id": 1544,
+                    "title": "The Line of Beauty172",
+                    "description": "Five dollar toast pour-over 8-bit gluten-free selvage try-hard. Stumptown listicle ennui plaid tacos...",
+                    "readable_publish_date": "Jan 12",
+                    "slug": "the-line-of-beauty172-39d8",
+                    "path": "/username382/the-line-of-beauty172-39d8",
+                    "url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-12-06T00:47:14Z",
+                    "published_timestamp": "2023-01-11T16:00:22Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "social_image": "http://localhost:3000/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "canonical_url": "http://localhost:3000/username382/those-barren-leaves-thrones-dominations172-163k",
-                    "created_at": "2022-12-06T00:47:14Z",
+                    "cover_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
+                    "social_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
+                    "canonical_url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
+                    "created_at": "2023-01-11T16:00:22Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-12-06T00:47:14Z",
-                    "last_comment_at": "2022-12-06T00:47:14Z",
+                    "published_at": "2023-01-11T16:00:22Z",
+                    "last_comment_at": "2023-01-11T16:00:22Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Scottie \"Tony\" \\:/ Gibson",
+                      "name": "Ira \"Tanna\" \\:/ West",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 383,
+                      "user_id": 3620,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/383/67e51ab1-9623-4860-a91d-746b7a0a1334.jpeg"
+                      "profile_image": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg"
                     },
                     "organization": {
-                      "name": "O'Hara and Sons",
+                      "name": "Klocko and Sons",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png",
-                      "profile_image_90": "/uploads/organization/profile_image/67/b31df2fa-bc7e-4652-b10c-5777614d6194.png"
+                      "profile_image": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png",
+                      "profile_image_90": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 10,
+                  "id": 91,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.209-06:00",
+                  "created_at": "2023-01-12T00:00:23.787+08:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,8 +446,8 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.209-06:00",
-                  "tag_list": []
+                  "updated_at": "2023-01-12T00:00:23.787+08:00",
+                  "tag_list": ""
                 }
               }
             }
@@ -484,7 +484,7 @@
                   "success_rate": 0.0,
                   "type_of": "in_house",
                   "updated_at": null,
-                  "tag_list": []
+                  "tag_list": null
                 }
               }
             }
@@ -533,7 +533,7 @@
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
                   },
-                  "tags": {
+                  "tag_list": {
                     "type": "string",
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
@@ -570,23 +570,23 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 11,
+                  "id": 92,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.335-06:00",
+                  "created_at": "2023-01-12T00:00:23.944+08:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 11",
-                  "organization_id": 68,
+                  "name": "Display Ad 92",
+                  "organization_id": 667,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.337-06:00",
-                  "tag_list": []
+                  "updated_at": "2023-01-12T00:00:23.947+08:00",
+                  "tag_list": ""
                 }
               }
             }
@@ -642,20 +642,20 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 12",
-                  "organization_id": 69,
+                  "name": "Display Ad 93",
+                  "organization_id": 668,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 12,
+                  "id": 93,
                   "clicks_count": 0,
-                  "created_at": "2022-12-05T18:47:15.490-06:00",
+                  "created_at": "2023-01-12T00:00:24.163+08:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2022-12-05T18:47:15.493-06:00",
-                  "tag_list": []
+                  "updated_at": "2023-01-12T00:00:24.165+08:00",
+                  "tag_list": ""
                 }
               }
             }
@@ -726,7 +726,7 @@
                     ],
                     "description": "Identifies which area of site layout the ad can appear in"
                   },
-                  "tags": {
+                  "tag_list": {
                     "type": "string",
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
@@ -786,6 +786,126 @@
         }
       }
     },
+    "/api/podcast_episodes": {
+      "get": {
+        "summary": "Podcast Episodes",
+        "security": [],
+        "tags": ["podcast_episodes"],
+        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
+        "operationId": "getPodcastEpisodes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve episodes belonging to a specific podcast.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "codenewbie"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Podcast episodes filtered by username",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "podcast_episodes",
+                    "class_name": "PodcastEpisode",
+                    "id": 115,
+                    "path": "/codenewbie/slug-4",
+                    "title": "2",
+                    "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg",
+                    "podcast": {
+                      "title": "Sapporo Premium",
+                      "slug": "codenewbie",
+                      "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PodcastEpisodeIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown Podcast username",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile_images/{username}": {
+      "get": {
+        "summary": "A Users or organizations profile image",
+        "tags": ["profile images"],
+        "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
+        "operationId": "getProfileImage",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "The parameter is the username of the user or the username of the organization.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "janedoe"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing profile image details",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "profile_image",
+                  "image_of": "user",
+                  "profile_image": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfileImage"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
@@ -828,8 +948,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 1,
-                  "reactable_id": 195,
+                  "id": 72,
+                  "reactable_id": 1548,
                   "reactable_type": "Article"
                 }
               }
@@ -891,8 +1011,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 3,
-                  "reactable_id": 197,
+                  "id": 74,
+                  "reactable_id": 1550,
                   "reactable_type": "Article"
                 }
               }
@@ -912,11 +1032,54 @@
         }
       }
     },
+    "/api/readinglist": {
+      "get": {
+        "summary": "Readinglist",
+        "tags": ["readinglist"],
+        "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
+        "operationId": "getReadinglist",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A list of articles in the users readinglist",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users/{id}": {
       "get": {
         "summary": "A User",
         "tags": ["users"],
-        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
         "operationId": "getUser",
         "parameters": [
           {
@@ -1161,7 +1324,7 @@
         }
       },
       "ArticleIndex": {
-        "description": "Resprentation of an article or post returned in a list",
+        "description": "Representation of an article or post returned in a list",
         "type": "object",
         "properties": {
           "type_of": {
@@ -1290,6 +1453,68 @@
           "reading_time_minutes"
         ]
       },
+      "PodcastEpisodeIndex": {
+        "description": "Representation of a podcast episode returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "class_name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "format": "path"
+          },
+          "title": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast episode image url or podcast image url",
+            "type": "string",
+            "format": "url"
+          },
+          "podcast": {
+            "$ref": "#/components/schemas/SharedPodcast"
+          }
+        },
+        "required": [
+          "type_of",
+          "class_name",
+          "id",
+          "path",
+          "title",
+          "image_url",
+          "podcast"
+        ]
+      },
+      "ProfileImage": {
+        "description": "A profile image object",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "description": "Return profile_image",
+            "type": "string"
+          },
+          "image_of": {
+            "description": "Determines the type of the profile image owner (user or organization)",
+            "type": "string"
+          },
+          "profile_image": {
+            "description": "Profile image (640x640)",
+            "type": "string"
+          },
+          "profile_image_90": {
+            "description": "Profile image (90x90)",
+            "type": "string"
+          }
+        }
+      },
       "SharedUser": {
         "description": "The resource creator",
         "type": "object",
@@ -1343,6 +1568,23 @@
           },
           "profile_image_90": {
             "description": "Profile image (90x90)",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "SharedPodcast": {
+        "description": "The podcast that the resource belongs to",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast image url",
             "type": "string",
             "format": "url"
           }

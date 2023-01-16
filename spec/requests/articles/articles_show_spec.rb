@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesShow", type: :request do
+RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, published: true, organization: organization) }
   let(:organization) { create(:organization) }

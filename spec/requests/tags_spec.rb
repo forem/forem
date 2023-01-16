@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Tags", type: :request, proper_status: true do
+RSpec.describe "Tags", proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       create(:tag, name: "ruby")
@@ -42,7 +42,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
       get bulk_tags_path, params: { tag_names: tag_names, tag_ids: tag_ids }
 
-      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
+      expect(response.parsed_body.pluck("id")).to match_array(tag_ids)
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
     end
@@ -53,7 +53,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
       get bulk_tags_path, params: { tag_ids: tag_ids }
 
-      expect(response.parsed_body.map { |t| t["id"] }).to match_array(tag_ids)
+      expect(response.parsed_body.pluck("id")).to match_array(tag_ids)
     end
 
     it "finds tags from array of tag_names" do
@@ -62,7 +62,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
       get bulk_tags_path, params: { tag_names: tag_names }
 
-      expect(response.parsed_body.map { |t| t["name"] }).to match_array(tag_names)
+      expect(response.parsed_body.pluck("name")).to match_array(tag_names)
     end
   end
 

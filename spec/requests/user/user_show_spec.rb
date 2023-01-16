@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserShow", type: :request do
+RSpec.describe "UserShow" do
   let!(:profile) do
     create(
       :profile,
