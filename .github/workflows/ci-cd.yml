@@ -245,7 +245,7 @@ jobs:
 
     strategy:
       matrix:
-        environment: [ production ]
+        environment: [ production, staging ]
 
     steps:
       - uses: actions/checkout@v3
