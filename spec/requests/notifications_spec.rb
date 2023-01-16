@@ -215,7 +215,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "does group notifications that are on different days but have the same reactable" do
-        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
+        mock_heart_reaction_notifications(2, %w[unicorn like])
         Notification.last.update(created_at: Notification.last.created_at - 1.day)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
@@ -223,8 +223,8 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "does not group notifications that are on the same day but have different reactables" do
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
-        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
+        mock_heart_reaction_notifications(1, %w[unicorn like], article1)
+        mock_heart_reaction_notifications(1, %w[unicorn like], article2)
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq 2
