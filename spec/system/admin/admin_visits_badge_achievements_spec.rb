@@ -8,7 +8,7 @@ RSpec.describe "Admin visits badge achievements page", type: :system do
     visit admin_badge_achievements_path
   end
 
-  it "nests the content under the Badges menu item" do
+  it "nests the content under Badges" do
     expect(find("h1.crayons-title").text).to eq("Badges")
   end
 

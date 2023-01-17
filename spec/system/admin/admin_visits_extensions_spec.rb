@@ -8,7 +8,7 @@ RSpec.describe "Admin visits extentions page", type: :system do
     visit admin_extensions_path
   end
 
-  it "nests the content under the Developer Tools menu item" do
+  it "nests the content under Developer Tools" do
     expect(find("h1.crayons-title").text).to eq("Developer Tools")
   end
 
