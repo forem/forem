@@ -158,7 +158,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
         schemas: {
           ArticleFlareTag: {
             description: "Flare tag of the article",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
@@ -218,9 +218,20 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[type_of class_name id path title image_url podcast]
           },
+          ProfileImage: {
+            description: "A profile image object",
+            type: :object,
+            properties: {
+              type_of: { description: "Return profile_image", type: :string },
+              image_of: { description: "Determines the type of the profile image owner (user or organization)",
+                          type: :string },
+              profile_image: { description: "Profile image (640x640)", type: :string },
+              profile_image_90: { description: "Profile image (90x90)", type: :string }
+            }
+          },
           SharedUser: {
             description: "The resource creator",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
@@ -233,7 +244,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedOrganization: {
             description: "The organization the resource belongs to",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
@@ -244,7 +255,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedPodcast: {
             description: "The podcast that the resource belongs to",
-            type: "object",
+            type: :object,
             properties: {
               title: { type: :string },
               slug: { type: :string },

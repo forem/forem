@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # rubocop:disable RSpec/NestedGroups
-RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
+RSpec.describe "Stories::TaggedArticlesIndex" do
   %i[enable disable].each do |method|
     context "when :optimize_article_tag_query is #{method}d" do
       before do

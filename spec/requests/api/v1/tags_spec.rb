@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Tags", type: :request do
+RSpec.describe "Api::V1::Tags" do
   describe "GET /api/tags" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
@@ -34,7 +34,7 @@ RSpec.describe "Api::V1::Tags", type: :request do
       get api_tags_path, headers: headers
 
       expected_result = [other_tag.id, tag.id]
-      expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
+      expect(response.parsed_body.pluck("id")).to eq(expected_result)
     end
 
     it "supports pagination" do
