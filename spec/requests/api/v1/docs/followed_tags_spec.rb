@@ -11,9 +11,11 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   let(:tag1) { create(:tag) }
   let(:tag2) { create(:tag) }
 
+  let(:tag1_json) { { id: tag1.id, name: tag1.name, points: 1.0 } }
+  let(:tag2_json) { { id: tag2.id, name: tag2.name, points: 1.0 } }
+
   before do
-    user.follow(tag1)
-    user.follow(tag2)
+    [tag1, tag2].each { |tag| user.follow(tag) }
   end
 
   describe "GET /follows/tags" do
