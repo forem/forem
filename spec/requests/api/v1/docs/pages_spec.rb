@@ -7,13 +7,11 @@ require "swagger_helper"
 RSpec.describe "api/v1/pages" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
-  let(:page) { create(:page) }
+  let!(:page) { create(:page) }
   let(:user) { api_secret.user }
 
   before do
     user.add_role(:admin)
-
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
   end
 
   path "/api/pages" do
@@ -28,7 +26,6 @@ RSpec.describe "api/v1/pages" do
         produces "application/json"
 
         response(200, "successful") do
-          let(:"api-key") { api_secret.secret }
           add_examples
 
           run_test!
@@ -59,7 +56,6 @@ RSpec.describe "api/v1/pages" do
         let(:id) { page.id }
 
         response(200, "successful") do
-          let(:"api-key") { api_secret.secret }
           add_examples
 
           run_test!

@@ -4,8 +4,6 @@ RSpec.describe "Api::V1::Pages" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
   let!(:page) { create(:page) }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }

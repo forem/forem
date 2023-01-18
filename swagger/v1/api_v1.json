@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 3295,
-                    "title": "Dying of the Light172",
-                    "description": "Selfies heirloom five dollar toast gastropub you probably haven't heard of them quinoa. Chartreuse...",
-                    "readable_publish_date": "Jan 17",
-                    "slug": "dying-of-the-light172-33ef",
-                    "path": "/username382/dying-of-the-light172-33ef",
-                    "url": "http://localhost:3000/username382/dying-of-the-light172-33ef",
+                    "id": 3885,
+                    "title": "Jesting Pilate172",
+                    "description": "Literally neutra tilde asymmetrical pinterest. Butcher gentrify phlogiston quinoa listicle. Organic...",
+                    "readable_publish_date": "Jan 18",
+                    "slug": "jesting-pilate172-46ko",
+                    "path": "/username382/jesting-pilate172-46ko",
+                    "url": "http://localhost:3000/username382/jesting-pilate172-46ko",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-01-17T10:25:56Z",
+                    "published_timestamp": "2023-01-18T10:07:25Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
-                    "canonical_url": "http://localhost:3000/username382/dying-of-the-light172-33ef",
-                    "created_at": "2023-01-17T10:25:56Z",
+                    "cover_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
+                    "social_image": "http://localhost:3000/assets/1-613c6ba62b8bf11f61018f6da5140eaa03eadd4b2ae5ce640c955655808aafcc.png",
+                    "canonical_url": "http://localhost:3000/username382/jesting-pilate172-46ko",
+                    "created_at": "2023-01-18T10:07:25Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-01-17T10:25:56Z",
-                    "last_comment_at": "2023-01-17T10:25:56Z",
+                    "published_at": "2023-01-18T10:07:25Z",
+                    "last_comment_at": "2023-01-18T10:07:25Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Adolfo \"Travis\" \\:/ Hane",
+                      "name": "Frederick \"Ona\" \\:/ Braun",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 7009,
+                      "user_id": 8630,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/7009/2e4f6c1a-66a3-462e-8520-7e38a6987d58.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/7009/2e4f6c1a-66a3-462e-8520-7e38a6987d58.jpeg"
+                      "profile_image": "/uploads/user/profile_image/8630/fa368163-d0be-482d-a3fc-f3bd3b06956e.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/8630/fa368163-d0be-482d-a3fc-f3bd3b06956e.jpeg"
                     },
                     "organization": {
-                      "name": "Pollich, Tillman and Heidenreich",
+                      "name": "Kutch LLC",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/1184/4e3a0c91-194f-4aa6-a82e-5c144823d7cf.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1184/4e3a0c91-194f-4aa6-a82e-5c144823d7cf.png"
+                      "profile_image": "/uploads/organization/profile_image/1452/eeff270a-10be-41ff-9db2-9c96f9cefdfe.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1452/eeff270a-10be-41ff-9db2-9c96f9cefdfe.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 464,
+                  "id": 496,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-17T10:25:57.586+00:00",
+                  "created_at": "2023-01-18T04:07:26.446-06:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-17T10:25:57.586+00:00",
+                  "updated_at": "2023-01-18T04:07:26.446-06:00",
                   "tag_list": ""
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 465,
+                  "id": 497,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-17T10:25:57.736+00:00",
+                  "created_at": "2023-01-18T04:07:26.587-06:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 465",
-                  "organization_id": 1185,
+                  "name": "Display Ad 497",
+                  "organization_id": 1453,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-17T10:25:57.738+00:00",
+                  "updated_at": "2023-01-18T04:07:26.589-06:00",
                   "tag_list": ""
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 466",
-                  "organization_id": 1186,
+                  "name": "Display Ad 498",
+                  "organization_id": 1454,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 466,
+                  "id": 498,
                   "clicks_count": 0,
-                  "created_at": "2023-01-17T10:25:57.919+00:00",
+                  "created_at": "2023-01-18T04:07:26.754-06:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-17T10:25:57.922+00:00",
+                  "updated_at": "2023-01-18T04:07:26.757-06:00",
                   "tag_list": ""
                 }
               }
@@ -789,6 +789,7 @@
     "/api/pages": {
       "get": {
         "summary": "show details for all pages",
+        "security": [],
         "tags": ["pages"],
         "description": "This endpoint allows the client to retrieve details for all Page objects.",
         "responses": {
@@ -796,7 +797,24 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": []
+                "example": [
+                  {
+                    "id": 141,
+                    "title": "The Lathe of Heaven",
+                    "slug": "smile_shock",
+                    "description": "Non iusto soluta in.",
+                    "is_top_level_path": false,
+                    "landing_page": false,
+                    "body_html": null,
+                    "body_json": null,
+                    "body_markdown": "Ut molestiae eum repellat.",
+                    "processed_html": "<p>Ut molestiae eum repellat.</p>\n\n",
+                    "social_image": {
+                      "url": null
+                    },
+                    "template": "contained"
+                  }
+                ]
               }
             }
           }
@@ -806,6 +824,7 @@
     "/api/pages/{id}": {
       "get": {
         "summary": "show details for a page",
+        "security": [],
         "tags": ["pages"],
         "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
         "parameters": [
@@ -828,16 +847,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 54,
-                  "title": "The Monkey's Raincoat",
-                  "slug": "thirsty-offensive",
-                  "description": "Delectus nostrum alias dolor.",
+                  "id": 142,
+                  "title": "Time To Murder And Create",
+                  "slug": "general-guess",
+                  "description": "Tempore velit est ipsam.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Vel non distinctio facere.",
-                  "processed_html": "<p>Vel non distinctio facere.</p>\n\n",
+                  "body_markdown": "Ut dolor enim id.",
+                  "processed_html": "<p>Ut dolor enim id.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -883,14 +902,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 140,
+                    "id": 184,
                     "path": "/codenewbie/slug-4",
-                    "title": "8",
-                    "image_url": "/uploads/podcast/image/182/bb2c756c-c6e6-4ccf-80fd-aeb5c1a50041.jpeg",
+                    "title": "13",
+                    "image_url": "/uploads/podcast/image/216/05310b69-72ac-408d-a00d-627d2a837cc4.jpeg",
                     "podcast": {
-                      "title": "Arrogant Bastard Ale",
+                      "title": "Westmalle Trappist Tripel",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/182/bb2c756c-c6e6-4ccf-80fd-aeb5c1a50041.jpeg"
+                      "image_url": "/uploads/podcast/image/216/05310b69-72ac-408d-a00d-627d2a837cc4.jpeg"
                     }
                   }
                 ],
@@ -943,8 +962,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/7038/e3e0bbe9-e6f2-49b1-ab8c-8620c95a3dff.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/7038/e3e0bbe9-e6f2-49b1-ab8c-8620c95a3dff.jpeg"
+                  "profile_image": "/uploads/user/profile_image/8659/6688cc0b-178b-4b62-99dd-13dab707f1e9.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/8659/6688cc0b-178b-4b62-99dd-13dab707f1e9.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -1011,8 +1030,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 655,
-                  "reactable_id": 3299,
+                  "id": 736,
+                  "reactable_id": 3889,
                   "reactable_type": "Article"
                 }
               }
@@ -1074,8 +1093,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 657,
-                  "reactable_id": 3301,
+                  "id": 738,
+                  "reactable_id": 3891,
                   "reactable_type": "Article"
                 }
               }
