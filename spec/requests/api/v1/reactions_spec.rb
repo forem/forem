@@ -10,8 +10,6 @@ RSpec.describe "Api::V1::Reactions" do
     }
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
