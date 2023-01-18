@@ -27,7 +27,7 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
-function showUserReaction(reactionName, animatedClass, wasToggling) {
+function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
   );
@@ -45,27 +45,6 @@ function showUserReaction(reactionName, animatedClass, wasToggling) {
 
   if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
-  }
-
-  if (wasToggling) {
-    const activeIcon = reactionButton.querySelector(
-      '.crayons-reaction__icon--active svg',
-    );
-
-    if (activeIcon) {
-      const activeDrawerIcon = reactionDrawerButton.querySelector(
-        '.crayons-reaction__icon--active svg',
-      );
-      reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
-      activeDrawerIcon.outerHTML = activeIcon.outerHTML;
-
-      setTimeout(function () {
-        document
-          .getElementById('reaction-drawer-trigger')
-          .querySelector('.crayons-reaction__icon--active svg').outerHTML =
-          reactionDrawerButton.originalIcon;
-      }, 1500);
-    }
   }
 }
 
@@ -105,7 +84,7 @@ function reactToArticle(articleId, reaction) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) - 1;
       }
     } else {
-      showUserReaction(reaction, 'user-animated', 'toggleReaction');
+      showUserReaction(reaction, 'user-animated');
       setReactionCount(reaction, currentNum + 1);
       if (reactionTotalCount) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) + 1;

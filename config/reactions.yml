@@ -2,7 +2,7 @@
 like:
   position: 1
   name: Like
-  icon: twemoji/sparkle-heart
+  icon: sparkle-heart
 unicorn:
   position: 2
   name: Unicorn
@@ -12,7 +12,7 @@ exploding-head:
   icon: exploding-head
 raised_hands:
   position: 4
-  icon: twemoji/raised_hands
+  icon: raised-hands
 fire:
   position: 5
   icon: fire

@@ -387,6 +387,10 @@
   &.open .reaction-drawer {
     display: block;
   }
+
+  .hidden {
+    display: none;
+  }
 }
 
 .reaction-drawer {
