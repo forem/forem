@@ -136,12 +136,11 @@ belonging to the requested collection, ordered by ascending publication date.",
         description "This endpoint allows the client to update an existing article.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code."
-        operationId "getArticleById"
+        operationId "updateArticle"
         produces "application/json"
         consumes "application/json"
         parameter name: :id,
                   in: :path,
-                  type: :integer,
                   required: true,
                   description: "The ID of the user to unpublish.",
                   schema: {
