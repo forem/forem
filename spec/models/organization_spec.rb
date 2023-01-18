@@ -273,6 +273,8 @@ RSpec.describe Organization do
           organization.save!
         end.to change { organization.reload.profile_image_url }
 
+        sidekiq_perform_enqueued_jobs
+
         # I want to collect reloaded versions of the organization's articles so I can see their
         # cached organization profile image
         articles_profile_image_urls = organization.articles
@@ -303,6 +305,8 @@ RSpec.describe Organization do
           old_reading_list_document = article.reading_list_document
 
           organization.update(name: "ACME Org")
+
+          sidekiq_perform_enqueued_jobs
 
           expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
         end
