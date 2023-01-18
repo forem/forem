@@ -242,7 +242,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure() && github.ref == 'refs/heads/main'
-      - run: exit 0
 
   Deploy:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
