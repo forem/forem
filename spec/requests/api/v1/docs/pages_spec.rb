@@ -26,6 +26,8 @@ RSpec.describe "api/v1/pages" do
         produces "application/json"
 
         response(200, "successful") do
+          schema type: :array,
+                 items: { "$ref": "#/components/schemas/Page" }
           add_examples
 
           run_test!
@@ -56,6 +58,7 @@ RSpec.describe "api/v1/pages" do
         let(:id) { page.id }
 
         response(200, "successful") do
+          schema "$ref": "#/components/schemas/Page"
           add_examples
 
           run_test!
