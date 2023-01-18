@@ -40,6 +40,7 @@ RSpec.describe "api/v1/pages" do
   path "/api/pages/{id}" do
     describe "get to view a page" do
       get("show details for a page") do
+        security []
         tags "pages"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve details for a single Page object, specified by ID.
