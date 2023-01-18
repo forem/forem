@@ -186,7 +186,7 @@ function requestReactionCounts(articleId) {
   ajaxReq.send();
 }
 
-function watchHoverdown() {
+function hoverTriggerOpensDrawer() {
   var timer;
   const drawerTrigger = document.getElementById('reaction-drawer-trigger');
   if (!drawerTrigger) {
@@ -225,7 +225,7 @@ function watchHoverdown() {
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
-  watchHoverdown();
+  hoverTriggerOpensDrawer();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');
