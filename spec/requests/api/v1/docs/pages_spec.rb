@@ -19,6 +19,7 @@ RSpec.describe "api/v1/pages" do
   path "/api/pages" do
     describe "get to view all pages" do
       get("show details for all pages") do
+        security []
         tags "pages"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve details for all Page objects.
