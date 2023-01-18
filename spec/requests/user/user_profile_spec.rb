@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserProfiles", type: :request do
+RSpec.describe "UserProfiles" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
 

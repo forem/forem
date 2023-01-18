@@ -10,7 +10,7 @@ RSpec.shared_examples "redirects to the lowercase route" do
   end
 end
 
-RSpec.describe "StoriesIndex", type: :request do
+RSpec.describe "StoriesIndex" do
   describe "GET stories index" do
     let(:user) { create(:user) }
 

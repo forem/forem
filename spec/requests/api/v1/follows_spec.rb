@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::FollowsController", type: :request do
+RSpec.describe "Api::V1::FollowsController" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "POST /api/follows" do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/advanced/tools/feed_playground", type: :request do
+RSpec.describe "/admin/advanced/tools/feed_playground" do
   describe "GET /admin/advanced/tools/feed_playground" do
     context "when the user is not an admin" do
       let(:user) { create(:user) }

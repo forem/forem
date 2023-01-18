@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/apps/welcome", type: :request do
+RSpec.describe "/admin/apps/welcome" do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 

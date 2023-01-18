@@ -6,7 +6,7 @@
     <div class="crayons-field">
       <%= label_tag :dead_link, "Link:", class: "crayons-field__label" %>
       <%= text_field_tag :dead_link, nil, placeholder: "/xyz", class: "crayons-textfield" %>
-      <%= submit_tag :"Clear Cache", class: "crayons-btn mr-auto"%>
+      <%= submit_tag :"Clear Cache", class: "crayons-btn mr-auto" %>
     </div>
   <% end %>
 </div>
@@ -18,14 +18,14 @@
     <div class="crayons-field">
       <%= label_tag :bust_article, "Article ID:", class: "crayons-field__label" %>
       <%= text_field_tag :bust_article, nil, placeholder: "12345", class: "crayons-textfield" %>
-      <%= submit_tag :"Clear Article Cache", class: "crayons-btn mr-auto"%>
+      <%= submit_tag :"Clear Article Cache", class: "crayons-btn mr-auto" %>
     </div>
   <% end %>
   <%= form_tag bust_cache_admin_tools_path do %>
     <div class="crayons-field mt-6">
       <%= label_tag :bust_user, "User ID:", class: "crayons-field__label" %>
       <%= text_field_tag :bust_user, nil, placeholder: "12345", class: "crayons-textfield" %>
-      <%= submit_tag :"Clear User Cache", class: "crayons-btn mr-auto"%>
+      <%= submit_tag :"Clear User Cache", class: "crayons-btn mr-auto" %>
     </div>
   <% end %>
 </div>

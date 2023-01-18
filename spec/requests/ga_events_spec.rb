@@ -5,7 +5,7 @@ vcr_option = {
   allow_playback_repeats: "true"
 }
 
-RSpec.describe "GaEvents", type: :request, vcr: vcr_option do
+RSpec.describe "GaEvents", vcr: vcr_option do
   describe "POST /fallback_activity_recorder" do
     it "posts to fallback_activity_recorder" do
       post "/fallback_activity_recorder", params: {

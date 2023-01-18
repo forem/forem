@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "feedback_messages", type: :request do
+RSpec.describe "feedback_messages" do
   let(:user) { create(:user) }
 
   before do

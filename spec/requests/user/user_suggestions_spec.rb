@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Users", type: :request do
+RSpec.describe "Users" do
   describe "GET /users" do
     let(:user) { create(:user, username: "Sloan") }
     let!(:suggested_users_list) { %w[eeyore] }

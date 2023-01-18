@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/app/listings/categories", type: :request do
+RSpec.describe "/admin/app/listings/categories" do
   let(:get_resource) { get admin_listing_categories_path }
   let(:params) do
     { name: "Computer stuff", cost: 22, rules: "Things computers do",
