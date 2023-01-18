@@ -74,19 +74,21 @@ function getNumReactions(reactionName) {
 function reactToArticle(articleId, reaction) {
   var reactionTotalCount = document.getElementById('reaction_total_count');
 
+  var isReadingList = reaction === 'readinglist';
+
   // Visually toggle the reaction
   function toggleReaction() {
     var currentNum = getNumReactions(reaction);
     if (hasUserReacted(reaction)) {
       hideUserReaction(reaction);
       setReactionCount(reaction, currentNum - 1);
-      if (reactionTotalCount) {
+      if (reactionTotalCount && !isReadingList) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) - 1;
       }
     } else {
       showUserReaction(reaction, 'user-animated');
       setReactionCount(reaction, currentNum + 1);
-      if (reactionTotalCount) {
+      if (reactionTotalCount && !isReadingList) {
         reactionTotalCount.innerText = Number(reactionTotalCount.innerText) + 1;
       }
     }
