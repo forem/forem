@@ -46,6 +46,27 @@ function showUserReaction(reactionName, animatedClass) {
   if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
   }
+
+  if (animatedClass == 'user-animated') {
+    const activeIcon = reactionButton.querySelector(
+      '.crayons-reaction__icon--active svg',
+    );
+
+    if (activeIcon) {
+      const activeDrawerIcon = reactionDrawerButton.querySelector(
+        '.crayons-reaction__icon--active svg',
+      );
+      reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
+      activeDrawerIcon.outerHTML = activeIcon.outerHTML;
+
+      setTimeout(function () {
+        document
+          .getElementById('reaction-drawer-trigger')
+          .querySelector('.crayons-reaction__icon--active svg').outerHTML =
+          reactionDrawerButton.originalIcon;
+      }, 1500);
+    }
+  }
 }
 
 function hideUserReaction(reactionName) {
@@ -186,7 +207,7 @@ function requestReactionCounts(articleId) {
   ajaxReq.send();
 }
 
-function hoverTriggerOpensDrawer() {
+function openDrawerOnHover() {
   var timer;
   const drawerTrigger = document.getElementById('reaction-drawer-trigger');
   if (!drawerTrigger) {
@@ -225,7 +246,7 @@ function hoverTriggerOpensDrawer() {
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
-  hoverTriggerOpensDrawer();
+  openDrawerOnHover();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');
