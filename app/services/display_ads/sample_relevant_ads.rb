@@ -1,7 +1,5 @@
 module DisplayAds
   class SampleRelevantAds
-    attr_reader :filtered_display_ads
-
     def self.call(...)
       new(...).call
     end
