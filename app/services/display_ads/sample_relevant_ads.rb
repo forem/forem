@@ -25,7 +25,7 @@ module DisplayAds
       relation = authenticated_ads(relation)
       relation.order(success_rate: :desc)
 
-      sample_ads
+      sample_ads(relation)
     end
 
     private
