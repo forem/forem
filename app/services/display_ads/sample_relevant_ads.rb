@@ -21,7 +21,7 @@ module DisplayAds
       end
 
       if @article_tags.blank?
-        @filtered_display_ads = display_ads_with_no_tags
+        @filtered_display_ads = untagged_post_comment_ads
       end
 
       @filtered_display_ads = authenticated_ads
@@ -39,10 +39,10 @@ module DisplayAds
     def tagged_post_comment_ads
       display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
 
-      display_ads_with_no_tags.or(display_ads_with_targeted_article_tags)
+      untagged_post_comment_ads.or(display_ads_with_targeted_article_tags)
     end
 
-    def display_ads_with_no_tags
+    def untagged_post_comment_ads
       @filtered_display_ads.where(cached_tag_list: "")
     end
 
