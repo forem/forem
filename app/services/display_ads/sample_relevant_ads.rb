@@ -19,7 +19,7 @@ module DisplayAds
       end
 
       if @article_tags.blank?
-        relation = relation.where(cached_tag_list: "")
+        relation = display_ads_with_no_tags(relation)
       end
 
       relation = if @user_signed_in
@@ -44,10 +44,14 @@ module DisplayAds
     end
 
     def tagged_post_comment_ads(relation)
-      display_ads_with_no_tags = relation.where(cached_tag_list: "")
+      display_ads_with_no_tags = display_ads_with_no_tags(relation)
       display_ads_with_targeted_article_tags = relation.cached_tagged_with_any(@article_tags)
 
       display_ads_with_no_tags.or(display_ads_with_targeted_article_tags)
+    end
+
+    def display_ads_with_no_tags(relation)
+      relation.where(cached_tag_list: "")
     end
   end
 end
