@@ -54,6 +54,7 @@ module DisplayAds
       end
     end
 
+    # Business Logic Context:
     # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
     # rise to the top. 1 out of every 8 times we show an ad (12.5%), it is totally random. This gives "not yet
     # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
