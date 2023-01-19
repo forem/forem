@@ -22,12 +22,7 @@ module DisplayAds
         relation = display_ads_with_no_tags(relation)
       end
 
-      relation = if @user_signed_in
-                   relation.where(display_to: %w[all logged_in])
-                 else
-                   relation.where(display_to: %w[all logged_out])
-                 end
-
+      relation = authenticated_ads(relation)
       relation.order(success_rate: :desc)
 
       if rand(8) == 1
@@ -52,6 +47,14 @@ module DisplayAds
 
     def display_ads_with_no_tags(relation)
       relation.where(cached_tag_list: "")
+    end
+
+    def authenticated_ads(relation)
+      if @user_signed_in
+        relation.where(display_to: %w[all logged_in])
+      else
+        relation.where(display_to: %w[all logged_out])
+      end
     end
   end
 end
