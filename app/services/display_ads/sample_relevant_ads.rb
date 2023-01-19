@@ -33,7 +33,7 @@ module DisplayAds
     private
 
     def approved_and_published_ads
-      @filtered_display_ads.approved_and_published.where(placement_area: @area).order(success_rate: :desc)
+      @filtered_display_ads.approved_and_published.where(placement_area: @area)
     end
 
     def tagged_post_comment_ads
