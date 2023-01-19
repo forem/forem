@@ -54,8 +54,9 @@ function showUserReaction(reactionName, animatedClass) {
 
     if (activeIcon) {
       const activeDrawerIcon = reactionDrawerButton.querySelector(
-        '.crayons-reaction__icon--active svg',
+        '.crayons-reaction__icon--active img',
       );
+
       reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
       activeDrawerIcon.outerHTML = activeIcon.outerHTML;
 
