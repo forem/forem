@@ -1,55 +1,56 @@
 module DisplayAds
   class SampleRelevantAds
+    attr_reader :filtered_display_ads
+
     def self.call(...)
       new(...).call
     end
 
     def initialize(display_ads, area, user_signed_in, article_tags)
-      @display_ads = display_ads
+      @filtered_display_ads = display_ads
       @area = area
       @user_signed_in = user_signed_in
       @article_tags = article_tags
     end
 
     def call
-      relation = approved_and_published_ads
+      @filtered_display_ads = approved_and_published_ads
 
       if @article_tags.any?
-        relation = tagged_post_comment_ads(relation)
+        @filtered_display_ads = tagged_post_comment_ads
       end
 
       if @article_tags.blank?
-        relation = display_ads_with_no_tags(relation)
+        @filtered_display_ads = display_ads_with_no_tags
       end
 
-      relation = authenticated_ads(relation)
-      relation.order(success_rate: :desc)
+      @filtered_display_ads = authenticated_ads
+      @filtered_display_ads.order(success_rate: :desc)
 
-      sample_ads(relation)
+      sample_ads
     end
 
     private
 
     def approved_and_published_ads
-      @display_ads.approved_and_published.where(placement_area: @area).order(success_rate: :desc)
+      @filtered_display_ads.approved_and_published.where(placement_area: @area).order(success_rate: :desc)
     end
 
-    def tagged_post_comment_ads(relation)
-      display_ads_with_no_tags = display_ads_with_no_tags(relation)
-      display_ads_with_targeted_article_tags = relation.cached_tagged_with_any(@article_tags)
+    def tagged_post_comment_ads
+      display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
 
       display_ads_with_no_tags.or(display_ads_with_targeted_article_tags)
     end
 
-    def display_ads_with_no_tags(relation)
-      relation.where(cached_tag_list: "")
+    def display_ads_with_no_tags
+      @filtered_display_ads.where(cached_tag_list: "")
     end
 
-    def authenticated_ads(relation)
+    def authenticated_ads
       if @user_signed_in
-        relation.where(display_to: %w[all logged_in])
+        @filtered_display_ads.where(display_to: %w[all logged_in])
       else
-        relation.where(display_to: %w[all logged_out])
+        @filtered_display_ads.where(display_to: %w[all logged_out])
       end
     end
 
@@ -64,11 +65,11 @@ module DisplayAds
     # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
     # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
     # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
-    def sample_ads(relation)
+    def sample_ads
       if rand(8) == 1
-        relation.sample
+        @filtered_display_ads.sample
       else
-        relation.limit(rand(1..15)).sample
+        @filtered_display_ads.limit(rand(1..15)).sample
       end
     end
   end
