@@ -1,7 +1,7 @@
 module DisplayAds
   class SampleRelevantAds
-    def self.call(display_ads, area, user_signed_in, article_tags)
-      new(display_ads, area, user_signed_in, article_tags).call
+    def self.call(...)
+      new(...).call
     end
 
     def initialize(display_ads, area, user_signed_in, article_tags)
