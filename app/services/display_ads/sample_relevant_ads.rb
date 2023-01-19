@@ -12,7 +12,7 @@ module DisplayAds
     end
 
     def call
-      relation = @display_ads.approved_and_published.where(placement_area: @area).order(success_rate: :desc)
+      relation = approved_and_published_ads
 
       if @article_tags.any?
         display_ads_with_no_tags = relation.where(cached_tag_list: "")
@@ -38,6 +38,12 @@ module DisplayAds
       else
         relation.limit(rand(1..15)).sample
       end
+    end
+
+    private
+
+    def approved_and_published_ads
+      @display_ads.approved_and_published.where(placement_area: @area).order(success_rate: :desc)
     end
   end
 end
