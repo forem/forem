@@ -27,7 +27,7 @@ module DisplayAds
       @filtered_display_ads = authenticated_ads
       @filtered_display_ads.order(success_rate: :desc)
 
-      sample_ads
+      @filtered_display_ads = sample_ads
     end
 
     private
