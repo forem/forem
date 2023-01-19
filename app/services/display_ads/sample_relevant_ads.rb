@@ -25,11 +25,7 @@ module DisplayAds
       relation = authenticated_ads(relation)
       relation.order(success_rate: :desc)
 
-      if rand(8) == 1
-        relation.sample
-      else
-        relation.limit(rand(1..15)).sample
-      end
+      sample_ads
     end
 
     private
@@ -54,6 +50,25 @@ module DisplayAds
         relation.where(display_to: %w[all logged_in])
       else
         relation.where(display_to: %w[all logged_out])
+      end
+    end
+
+    # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
+    # rise to the top. 1 out of every 8 times we show an ad (12.5%), it is totally random. This gives "not yet
+    # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
+    # stays in this area.
+
+    # Ads that get engagemen have a higher "success rate", and among this category, we sample from the top 15 that
+    # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
+    # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
+    # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
+    # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
+    # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
+    def sample_ads(relation)
+      if rand(8) == 1
+        relation.sample
+      else
+        relation.limit(rand(1..15)).sample
       end
     end
   end
