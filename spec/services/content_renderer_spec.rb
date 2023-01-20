@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe ContentRenderer do
-  describe "#finalize" do
+  describe "#process" do
     let(:markdown) { "hello, hey" }
     let(:expected_result) { "<p>hello, hey</p>\n\n" }
     let(:mock_fixer) { class_double MarkdownProcessor::Fixer::FixAll }
@@ -35,12 +35,12 @@ RSpec.describe ContentRenderer do
     # rubocop:enable RSpec/InstanceVariable
 
     it "is the result of fixing, parsing, and processing" do
-      result = described_class.new(markdown, source: nil, user: nil).finalize
+      result = described_class.new(markdown, source: nil, user: nil).process
       expect(result).to eq(expected_result)
       expect(mock_fixer).to have_received(:call)
       expect(mock_front_matter_parser).to have_received(:call).with(fixed_markdown)
       expect(mock_processor).to have_received(:new)
-      expect(processed_contents).to have_received(:finalize)
+      expect(processed_contents).to have_received(:process)
     end
   end
 
@@ -58,7 +58,7 @@ RSpec.describe ContentRenderer do
     RESULT
 
     it "processes markdown" do
-      result = described_class.new(markdown, source: nil, user: nil).finalize
+      result = described_class.new(markdown, source: nil, user: nil).process
       expect(result).to eq(expected_result)
     end
   end
@@ -74,7 +74,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: article, user: user).finalize
+        described_class.new(markdown, source: article, user: user).process
       end.to raise_error(ContentRenderer::ContentParsingError, /User is not permitted to use this liquid tag/)
     end
   end
@@ -90,7 +90,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: source, user: user).finalize
+        described_class.new(markdown, source: source, user: user).process
       end.to raise_error(ContentRenderer::ContentParsingError, /This liquid tag can only be used in Articles/)
     end
   end
@@ -100,7 +100,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: nil, user: nil).front_matter
+        described_class.new(markdown, source: nil, user: nil).process
       end.to raise_error(ContentRenderer::ContentParsingError, /while scanning a simple key/)
     end
   end
