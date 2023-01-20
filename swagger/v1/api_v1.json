@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 4707,
-                    "title": "Paths of Glory172",
-                    "description": "Xoxo knausgaard dreamcatcher stumptown yolo. Pabst offal sriracha migas lumbersexual cleanse...",
-                    "readable_publish_date": "Jan 18",
-                    "slug": "paths-of-glory172-12ll",
-                    "path": "/username382/paths-of-glory172-12ll",
-                    "url": "http://localhost:3000/username382/paths-of-glory172-12ll",
+                    "id": 5606,
+                    "title": "His Dark Materials172",
+                    "description": "Gastropub readymade hammock helvetica locavore seitan 3 wolf moon jean shorts. Readymade yolo...",
+                    "readable_publish_date": "Jan 20",
+                    "slug": "his-dark-materials172-5g2l",
+                    "path": "/username382/his-dark-materials172-5g2l",
+                    "url": "http://localhost:3000/username382/his-dark-materials172-5g2l",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-01-18T10:47:57Z",
+                    "published_timestamp": "2023-01-20T13:09:55Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
-                    "social_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
-                    "canonical_url": "http://localhost:3000/username382/paths-of-glory172-12ll",
-                    "created_at": "2023-01-18T10:47:57Z",
+                    "cover_image": "http://localhost:3000/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
+                    "social_image": "http://localhost:3000/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
+                    "canonical_url": "http://localhost:3000/username382/his-dark-materials172-5g2l",
+                    "created_at": "2023-01-20T13:09:55Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-01-18T10:47:57Z",
-                    "last_comment_at": "2023-01-18T10:47:57Z",
+                    "published_at": "2023-01-20T13:09:55Z",
+                    "last_comment_at": "2023-01-20T13:09:55Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Mable \"Sherryl\" \\:/ Jacobs",
+                      "name": "Judith \"Art\" \\:/ Feeney",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 10579,
+                      "user_id": 12540,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/10579/60c734f4-26ee-4ca9-bd30-ce784f5eb4f6.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/10579/60c734f4-26ee-4ca9-bd30-ce784f5eb4f6.jpeg"
+                      "profile_image": "/uploads/user/profile_image/12540/2a2bd8a5-ac54-4308-a3cd-1e815b85c6b2.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/12540/2a2bd8a5-ac54-4308-a3cd-1e815b85c6b2.jpeg"
                     },
                     "organization": {
-                      "name": "Schiller-Ledner",
+                      "name": "Connelly Group",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/1809/5e65e219-2f3b-4c2f-9b4f-d535aabda9bd.png",
-                      "profile_image_90": "/uploads/organization/profile_image/1809/5e65e219-2f3b-4c2f-9b4f-d535aabda9bd.png"
+                      "profile_image": "/uploads/organization/profile_image/2079/c2447186-d53e-4845-a56c-8cc001d6be2b.png",
+                      "profile_image_90": "/uploads/organization/profile_image/2079/c2447186-d53e-4845-a56c-8cc001d6be2b.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 544,
+                  "id": 576,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-18T18:47:58.967+08:00",
+                  "created_at": "2023-01-20T19:09:56.752+06:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-18T18:47:58.967+08:00",
+                  "updated_at": "2023-01-20T19:09:56.752+06:00",
                   "tag_list": ""
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 545,
+                  "id": 577,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-18T18:47:59.109+08:00",
+                  "created_at": "2023-01-20T19:09:56.894+06:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 545",
-                  "organization_id": 1810,
+                  "name": "Display Ad 577",
+                  "organization_id": 2080,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-18T18:47:59.113+08:00",
+                  "updated_at": "2023-01-20T19:09:56.897+06:00",
                   "tag_list": ""
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 546",
-                  "organization_id": 1811,
+                  "name": "Display Ad 578",
+                  "organization_id": 2081,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 546,
+                  "id": 578,
                   "clicks_count": 0,
-                  "created_at": "2023-01-18T18:47:59.289+08:00",
+                  "created_at": "2023-01-20T19:09:57.053+06:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-18T18:47:59.292+08:00",
+                  "updated_at": "2023-01-20T19:09:57.057+06:00",
                   "tag_list": ""
                 }
               }
@@ -786,6 +786,108 @@
         }
       }
     },
+    "/api/followers/users": {
+      "get": {
+        "summary": "Followers",
+        "tags": ["followers"],
+        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
+        "operationId": "getFollowers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Default is 'created_at'. Specifies the sort order for the created_at param of the follow\n                                relationship. To sort by newest followers first (descending order) specify\n                                ?sort=-created_at.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "created_at"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of followers",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user_follower",
+                    "id": 361,
+                    "created_at": "2023-01-20T13:09:57Z",
+                    "user_id": 12569,
+                    "name": "Gladys \"Donald\" \\:/ Hessel",
+                    "path": "/username411",
+                    "username": "username411",
+                    "profile_image": "/uploads/user/profile_image/12569/ccf1db99-3887-4d05-b8f3-6512accb29be.jpeg"
+                  },
+                  {
+                    "type_of": "user_follower",
+                    "id": 360,
+                    "created_at": "2023-01-20T13:09:57Z",
+                    "user_id": 12567,
+                    "name": "Emile \"Weston\" \\:/ Blanda",
+                    "path": "/username409",
+                    "username": "username409",
+                    "profile_image": "/uploads/user/profile_image/12567/455c02bf-e137-4673-9f96-3cb5473128a8.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "description": "A follower",
+                    "type": "object",
+                    "properties": {
+                      "type_of": {
+                        "description": "user_follower by default",
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "user_id": {
+                        "description": "The follower's user id",
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "name": {
+                        "description": "The follower's name",
+                        "type": "string"
+                      },
+                      "path": {
+                        "description": "A path to the follower's profile",
+                        "type": "string"
+                      },
+                      "profile_image": {
+                        "description": "Profile image (640x640)",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/pages": {
       "get": {
         "summary": "show details for all pages",
@@ -799,16 +901,16 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 176,
-                    "title": "Such, Such Were the Joys",
-                    "slug": "brown_glow",
-                    "description": "Qui eos omnis fugit.",
+                    "id": 191,
+                    "title": "For a Breath I Tarry",
+                    "slug": "highway-whole",
+                    "description": "Nobis illo quia molestiae.",
                     "is_top_level_path": false,
                     "landing_page": false,
                     "body_html": null,
                     "body_json": null,
-                    "body_markdown": "Soluta expedita est voluptatem.",
-                    "processed_html": "<p>Soluta expedita est voluptatem.</p>\n\n",
+                    "body_markdown": "Ab omnis dignissimos voluptas.",
+                    "processed_html": "<p>Ab omnis dignissimos voluptas.</p>\n\n",
                     "social_image": {
                       "url": null
                     },
@@ -853,16 +955,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 177,
-                  "title": "Some Buried Caesar",
-                  "slug": "kidnap_copy",
-                  "description": "Non quia totam reiciendis.",
+                  "id": 192,
+                  "title": "That Good Night",
+                  "slug": "doctor_arena",
+                  "description": "Consequatur libero vero occaecati.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Modi autem esse et.",
-                  "processed_html": "<p>Modi autem esse et.</p>\n\n",
+                  "body_markdown": "Rerum est in quas.",
+                  "processed_html": "<p>Rerum est in quas.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -911,14 +1013,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 250,
+                    "id": 294,
                     "path": "/codenewbie/slug-4",
-                    "title": "1",
-                    "image_url": "/uploads/podcast/image/267/f9ae979b-a40e-41a2-aa9e-cc5bd8077ae6.jpeg",
+                    "title": "19",
+                    "image_url": "/uploads/podcast/image/301/87a9757d-a8f1-4122-8aa8-47d0a977a91c.jpeg",
                     "podcast": {
-                      "title": "HopSlam Ale",
+                      "title": "Celebrator Doppelbock",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/267/f9ae979b-a40e-41a2-aa9e-cc5bd8077ae6.jpeg"
+                      "image_url": "/uploads/podcast/image/301/87a9757d-a8f1-4122-8aa8-47d0a977a91c.jpeg"
                     }
                   }
                 ],
@@ -971,8 +1073,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/10608/fe1ea9b1-8f9a-4157-a8e3-c80118b45123.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/10608/fe1ea9b1-8f9a-4157-a8e3-c80118b45123.jpeg"
+                  "profile_image": "/uploads/user/profile_image/12575/6d783f40-2783-4a43-ab40-8d2ee32633bf.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/12575/6d783f40-2783-4a43-ab40-8d2ee32633bf.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -1039,8 +1141,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 778,
-                  "reactable_id": 4711,
+                  "id": 856,
+                  "reactable_id": 5610,
                   "reactable_type": "Article"
                 }
               }
@@ -1102,8 +1204,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 780,
-                  "reactable_id": 4713,
+                  "id": 858,
+                  "reactable_id": 5612,
                   "reactable_type": "Article"
                 }
               }
