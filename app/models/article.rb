@@ -647,8 +647,8 @@ class Article < ApplicationRecord
     content_renderer = processed_content
     return unless content_renderer
 
-    self.processed_html = content_renderer.process(calculate_reading_time: true) # fix, parse, finalize
-    self.reading_time = content_renderer.reading_time # ну такое
+    self.processed_html = content_renderer.process(calculate_reading_time: true)
+    self.reading_time = content_renderer.reading_time
 
     front_matter = content_renderer.front_matter
 
