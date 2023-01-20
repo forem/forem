@@ -243,9 +243,9 @@ RSpec.describe Reaction do
     end
 
     it "updates reactable without delay" do
-      allow(reaction).to receive(:update_reactable_without_delay)
+      allow(reaction).to receive(:update_reactable_with_delay)
       reaction.destroy
-      expect(reaction).to have_received(:update_reactable_without_delay)
+      expect(reaction).to have_received(:update_reactable_with_delay)
     end
 
     it "busts reactable cache without delay" do
