@@ -35,7 +35,7 @@ module DisplayAds
       @filtered_display_ads.approved_and_published
     end
 
-    def placement_area_for_ads
+    def placement_area_ads
       @filtered_display_ads.where(placement_area: @area)
     end
 
