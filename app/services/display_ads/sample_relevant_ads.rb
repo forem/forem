@@ -23,9 +23,13 @@ module DisplayAds
         @filtered_display_ads = untagged_post_comment_ads
       end
 
-      @filtered_display_ads = authenticated_ads
-      @filtered_display_ads.order(success_rate: :desc)
+      @filtered_display_ads = if @user_signed_in
+                                authenticated_ads(%w[all logged_in])
+                              else
+                                authenticated_ads(%w[all logged_out])
+                              end
 
+      @filtered_display_ads.order(success_rate: :desc)
       @filtered_display_ads = sample_ads
     end
 
@@ -41,7 +45,6 @@ module DisplayAds
 
     def tagged_post_comment_ads
       display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
-
       untagged_post_comment_ads.or(display_ads_with_targeted_article_tags)
     end
 
@@ -49,12 +52,8 @@ module DisplayAds
       @filtered_display_ads.where(cached_tag_list: "")
     end
 
-    def authenticated_ads
-      if @user_signed_in
-        @filtered_display_ads.where(display_to: %w[all logged_in])
-      else
-        @filtered_display_ads.where(display_to: %w[all logged_out])
-      end
+    def authenticated_ads(display_auth_audience)
+      @filtered_display_ads.where(display_to: display_auth_audience)
     end
 
     # Business Logic Context:
