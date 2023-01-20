@@ -94,6 +94,11 @@ GEM
       activerecord (>= 5.2.6)
     anyway_config (2.3.0)
       ruby-next-core (>= 0.14.0)
+    appmap (0.95.0)
+      activesupport
+      method_source
+      rack
+      reverse_markdown
     ast (2.4.2)
     aws-eventstream (1.2.0)
     aws-sigv4 (1.5.1)
@@ -958,6 +963,7 @@ DEPENDENCIES
   ahoy_matey (~> 4.1)
   amazing_print (~> 1.4)
   ancestry (~> 4.2)
+  appmap
   better_errors (~> 2.9)
   blazer (~> 2.6)
   bootsnap (>= 1.1.0)
