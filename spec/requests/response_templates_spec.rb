@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ResponseTemplate", type: :request do
+RSpec.describe "ResponseTemplate" do
   let(:user) { create(:user) }
   let(:trusted_user) { create(:user, :trusted) }
   let(:moderator) { create(:user, :tag_moderator) }
@@ -51,7 +51,7 @@ RSpec.describe "ResponseTemplate", type: :request do
         headers = { HTTP_ACCEPT: "application/json" }
         get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
 
-        user_ids = response.parsed_body.map { |hash| hash["user_id"] }
+        user_ids = response.parsed_body.pluck("user_id")
         expect(user_ids).to eq([user.id, user.id])
       end
 
@@ -256,7 +256,7 @@ RSpec.describe "ResponseTemplate", type: :request do
     context "when signed-in as trusted user updating a mod_comment template" do
       before { sign_in trusted_user }
 
-      let(:response_template) { create :response_template, user: nil, type_of: "mod_comment" }
+      let(:response_template) { create(:response_template, user: nil, type_of: "mod_comment") }
 
       it "does not permit the action" do
         title = "something else"
@@ -269,7 +269,7 @@ RSpec.describe "ResponseTemplate", type: :request do
     context "when signed-in as super_moderator user updating a mod_comment template" do
       before { sign_in create(:user, :super_moderator) }
 
-      let(:response_template) { create :response_template, user: nil, type_of: "mod_comment" }
+      let(:response_template) { create(:response_template, user: nil, type_of: "mod_comment") }
 
       it "successfully updates the response template" do
         title = "something else"

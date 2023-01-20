@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/customization/profile_fields", type: :request do
+RSpec.describe "/admin/customization/profile_fields" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

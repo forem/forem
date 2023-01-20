@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Reactions", type: :request do
+RSpec.describe "Reactions" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }

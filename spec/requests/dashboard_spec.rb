@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Dashboards", type: :request do
+RSpec.describe "Dashboards" do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
@@ -327,7 +327,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user is an org admin" do
       it "shows page properly" do
-        org = create :organization
+        org = create(:organization)
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
 
         sign_in user
@@ -338,7 +338,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user is an org member" do
       it "shows page properly" do
-        org = create :organization
+        org = create(:organization)
         create(:organization_membership, user: user, organization: org)
 
         sign_in user
