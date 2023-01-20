@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1544,
-                    "title": "The Line of Beauty172",
-                    "description": "Five dollar toast pour-over 8-bit gluten-free selvage try-hard. Stumptown listicle ennui plaid tacos...",
-                    "readable_publish_date": "Jan 12",
-                    "slug": "the-line-of-beauty172-39d8",
-                    "path": "/username382/the-line-of-beauty172-39d8",
-                    "url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
+                    "id": 3736,
+                    "title": "The Painted Veil172",
+                    "description": "Mumblecore chia keffiyeh flexitarian. Paleo dreamcatcher venmo meggings everyday normcore banjo. Blue...",
+                    "readable_publish_date": "Jan 16",
+                    "slug": "the-painted-veil172-4617",
+                    "path": "/username382/the-painted-veil172-4617",
+                    "url": "http://localhost:3000/username382/the-painted-veil172-4617",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-01-11T16:00:22Z",
+                    "published_timestamp": "2023-01-16T14:44:17Z",
                     "positive_reactions_count": 0,
                     "cover_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
                     "social_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
-                    "canonical_url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
-                    "created_at": "2023-01-11T16:00:22Z",
+                    "canonical_url": "http://localhost:3000/username382/the-painted-veil172-4617",
+                    "created_at": "2023-01-16T14:44:17Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-01-11T16:00:22Z",
-                    "last_comment_at": "2023-01-11T16:00:22Z",
+                    "published_at": "2023-01-16T14:44:17Z",
+                    "last_comment_at": "2023-01-16T14:44:17Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Ira \"Tanna\" \\:/ West",
+                      "name": "Ellsworth \"Elijah\" \\:/ Stehr",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 3620,
+                      "user_id": 8803,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg"
+                      "profile_image": "/uploads/user/profile_image/8803/dd94e0b1-e597-4e1e-bad0-b6188e2d6911.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/8803/dd94e0b1-e597-4e1e-bad0-b6188e2d6911.jpeg"
                     },
                     "organization": {
-                      "name": "Klocko and Sons",
+                      "name": "Hoeger Group",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png",
-                      "profile_image_90": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png"
+                      "profile_image": "/uploads/organization/profile_image/1618/e09d7538-9c0f-4a19-8351-88298839920b.png",
+                      "profile_image_90": "/uploads/organization/profile_image/1618/e09d7538-9c0f-4a19-8351-88298839920b.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -431,12 +431,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 91,
+                  "id": 219,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:23.787+08:00",
+                  "created_at": "2023-01-16T15:44:18.850+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +446,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:23.787+08:00",
+                  "updated_at": "2023-01-16T15:44:18.850+01:00",
                   "tag_list": ""
                 }
               }
@@ -570,22 +570,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 92,
+                  "id": 220,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:23.944+08:00",
+                  "created_at": "2023-01-16T15:44:18.996+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 92",
-                  "organization_id": 667,
+                  "name": "Display Ad 220",
+                  "organization_id": 1619,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:23.947+08:00",
+                  "updated_at": "2023-01-16T15:44:18.999+01:00",
                   "tag_list": ""
                 }
               }
@@ -642,19 +642,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 93",
-                  "organization_id": 668,
+                  "name": "Display Ad 221",
+                  "organization_id": 1620,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 93,
+                  "id": 221,
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:24.163+08:00",
+                  "created_at": "2023-01-16T15:44:19.168+01:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:24.165+08:00",
+                  "updated_at": "2023-01-16T15:44:19.170+01:00",
                   "tag_list": ""
                 }
               }
@@ -786,6 +786,108 @@
         }
       }
     },
+    "/api/followers/users": {
+      "get": {
+        "summary": "Followers",
+        "tags": ["followers"],
+        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
+        "operationId": "getFollowers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Default is 'created_at'. Specifies the sort order for the created_at param of the follow\n                                relationship. To sort by newest followers first (descending order) specify\n                                ?sort=-created_at.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "created_at"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of followers",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user_follower",
+                    "id": 197,
+                    "created_at": "2023-01-16T14:44:19Z",
+                    "user_id": 8832,
+                    "name": "Nannie \"Oswaldo\" \\:/ Dietrich",
+                    "path": "/username411",
+                    "username": "username411",
+                    "profile_image": "/uploads/user/profile_image/8832/4dd0a135-7862-45dc-9e75-6c0111d248f6.jpeg"
+                  },
+                  {
+                    "type_of": "user_follower",
+                    "id": 196,
+                    "created_at": "2023-01-16T14:44:19Z",
+                    "user_id": 8830,
+                    "name": "Hipolito \"Wilmer\" \\:/ Bailey",
+                    "path": "/username409",
+                    "username": "username409",
+                    "profile_image": "/uploads/user/profile_image/8830/dd5663da-71fb-4db1-84cd-633ddd9d0ee9.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "description": "A follower",
+                    "type": "object",
+                    "properties": {
+                      "type_of": {
+                        "description": "user_follower by default",
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "user_id": {
+                        "description": "The follower's user id",
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "name": {
+                        "description": "The follower's name",
+                        "type": "string"
+                      },
+                      "path": {
+                        "description": "A path to the follower's profile",
+                        "type": "string"
+                      },
+                      "profile_image": {
+                        "description": "Profile image (640x640)",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/podcast_episodes": {
       "get": {
         "summary": "Podcast Episodes",
@@ -820,14 +922,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 115,
+                    "id": 291,
                     "path": "/codenewbie/slug-4",
-                    "title": "2",
-                    "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg",
+                    "title": "18",
+                    "image_url": "/uploads/podcast/image/226/b05ba740-f722-433c-8368-9c8be349373b.jpeg",
                     "podcast": {
-                      "title": "Sapporo Premium",
+                      "title": "Two Hearted Ale",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg"
+                      "image_url": "/uploads/podcast/image/226/b05ba740-f722-433c-8368-9c8be349373b.jpeg"
                     }
                   }
                 ],
@@ -880,8 +982,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg"
+                  "profile_image": "/uploads/user/profile_image/8836/bed3e87e-ba27-433d-992a-6eb12b5feff9.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/8836/bed3e87e-ba27-433d-992a-6eb12b5feff9.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -948,8 +1050,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 72,
-                  "reactable_id": 1548,
+                  "id": 184,
+                  "reactable_id": 3740,
                   "reactable_type": "Article"
                 }
               }
@@ -1011,8 +1113,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 74,
-                  "reactable_id": 1550,
+                  "id": 186,
+                  "reactable_id": 3742,
                   "reactable_type": "Article"
                 }
               }
