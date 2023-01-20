@@ -122,12 +122,14 @@
 
 <script>
 function showBodyFields() {
-    document.querySelectorAll('.optional').forEach(el => el.style.display = 'none');
-    window.document.querySelectorAll("select, option:selected").forEach(el => {
-      if (el.value == "json") {
-        document.querySelectorAll('.json').forEach(el => el.style.display = 'block');
+    // hide all optional elements
+    $('.optional').css('display','none');
+
+    $("select option:selected").each(function () {
+      if($(this).val() == "json") {
+        $('.json').css('display','block');
       } else {
-        document.querySelectorAll('.html').forEach(el => el.style.display = 'block');
+        $('.html').css('display','block');
       }
     });
   };
