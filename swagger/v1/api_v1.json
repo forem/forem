@@ -103,45 +103,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 1544,
-                    "title": "The Line of Beauty172",
-                    "description": "Five dollar toast pour-over 8-bit gluten-free selvage try-hard. Stumptown listicle ennui plaid tacos...",
-                    "readable_publish_date": "Jan 12",
-                    "slug": "the-line-of-beauty172-39d8",
-                    "path": "/username382/the-line-of-beauty172-39d8",
-                    "url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
+                    "id": 1018,
+                    "title": "No Country for Old Men172",
+                    "description": "Goth kitsch shoreditch poutine mlkshk. Distillery chambray normcore you probably haven't heard of...",
+                    "readable_publish_date": "Jan 20",
+                    "slug": "no-country-for-old-men172-1c9i",
+                    "path": "/username382/no-country-for-old-men172-1c9i",
+                    "url": "http://localhost:3000/username382/no-country-for-old-men172-1c9i",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-01-11T16:00:22Z",
+                    "published_timestamp": "2023-01-20T02:57:02Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
-                    "social_image": "http://localhost:3000/assets/27-441873f471d98b5358beff7d47a211e58b9979c6453794f9a7abfd5709c33322.png",
-                    "canonical_url": "http://localhost:3000/username382/the-line-of-beauty172-39d8",
-                    "created_at": "2023-01-11T16:00:22Z",
+                    "cover_image": "http://localhost:3000/assets/40-57aabe055a9fc60491e0fca9a4dade362141764e7ad214956bbfc9c9e69763b0.png",
+                    "social_image": "http://localhost:3000/assets/40-57aabe055a9fc60491e0fca9a4dade362141764e7ad214956bbfc9c9e69763b0.png",
+                    "canonical_url": "http://localhost:3000/username382/no-country-for-old-men172-1c9i",
+                    "created_at": "2023-01-20T02:57:02Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-01-11T16:00:22Z",
-                    "last_comment_at": "2023-01-11T16:00:22Z",
+                    "published_at": "2023-01-20T02:57:02Z",
+                    "last_comment_at": "2023-01-20T02:57:02Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Ira \"Tanna\" \\:/ West",
+                      "name": "Corey \"Jesus\" \\:/ Kihn",
                       "username": "username382",
                       "twitter_username": "twitter382",
                       "github_username": "github382",
-                      "user_id": 3620,
+                      "user_id": 2328,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/3620/3b3f8cf9-6517-4a48-aa69-95eeaf8b0456.jpeg"
+                      "profile_image": "/uploads/user/profile_image/2328/90959015-16a1-4f3b-a147-a488c8f31a89.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/2328/90959015-16a1-4f3b-a147-a488c8f31a89.jpeg"
                     },
                     "organization": {
-                      "name": "Klocko and Sons",
+                      "name": "Grimes, Walter and Graham",
                       "username": "org67",
                       "slug": "org67",
-                      "profile_image": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png",
-                      "profile_image_90": "/uploads/organization/profile_image/666/5431d3e5-2222-4881-8108-adecceb1cf6f.png"
+                      "profile_image": "/uploads/organization/profile_image/424/49be649c-70ad-4d01-8de2-7cdada8c617c.png",
+                      "profile_image_90": "/uploads/organization/profile_image/424/49be649c-70ad-4d01-8de2-7cdada8c617c.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -393,6 +393,140 @@
         }
       }
     },
+    "/api/comments": {
+      "get": {
+        "summary": "Comments",
+        "security": [],
+        "tags": ["comments"],
+        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.",
+        "operationId": "getCommentsByArticleId",
+        "parameters": [
+          {
+            "name": "a_id",
+            "in": "query",
+            "required": false,
+            "description": "Article identifier.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
+          },
+          {
+            "name": "p_id",
+            "in": "query",
+            "required": false,
+            "description": "Podcast Episode identifier.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Comments",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "comment",
+                    "id_code": "mo",
+                    "created_at": "2023-01-20T02:57:03Z",
+                    "body_html": "<p>Polaroid craft beer pork belly plaid biodiesel kombucha. Iphone hella tousled pitchfork. Put a bird on it messenger bag listicle kale chips.</p>\n\n",
+                    "user": {
+                      "name": "Jama \"Lovella\" \\:/ Pfeffer",
+                      "username": "username396",
+                      "twitter_username": "twitter396",
+                      "github_username": "github396",
+                      "user_id": 2342,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/2342/730a3d41-0e6e-4826-a36b-94e66ea1f743.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/2342/730a3d41-0e6e-4826-a36b-94e66ea1f743.jpeg"
+                    },
+                    "children": []
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/comments/{id}": {
+      "get": {
+        "summary": "Comment by id",
+        "security": [],
+        "tags": ["comments"],
+        "description": "This endpoint allows the client to retrieve a comment as well as his descendants comments.\n  \n  It will return the required comment (the root) with its nested descendants as a thread.\n        \n  See the format specification for further details.",
+        "operationId": "getCommentById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Comment identifier.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "321"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of the Comments",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "comment",
+                  "id_code": "n0",
+                  "created_at": "2023-01-20T02:57:03Z",
+                  "body_html": "<p>Phlogiston scenester cliche seitan neutra food truck. Vinegar bushwick hashtag cold-pressed.</p>\n\n",
+                  "user": {
+                    "name": "Arcelia \"Matthew\" \\:/ Cremin",
+                    "username": "username400",
+                    "twitter_username": "twitter400",
+                    "github_username": "github400",
+                    "user_id": 2346,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/2346/fef838a1-19ba-4e63-8be4-4d9ac6dec730.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/2346/fef838a1-19ba-4e63-8be4-4d9ac6dec730.jpeg"
+                  },
+                  "children": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
@@ -431,12 +565,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 91,
+                  "id": 58,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:23.787+08:00",
+                  "created_at": "2023-01-20T07:27:03.842+04:30",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -446,7 +580,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:23.787+08:00",
+                  "updated_at": "2023-01-20T07:27:03.842+04:30",
                   "tag_list": ""
                 }
               }
@@ -570,22 +704,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 92,
+                  "id": 59,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:23.944+08:00",
+                  "created_at": "2023-01-20T07:27:03.982+04:30",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 92",
-                  "organization_id": 667,
+                  "name": "Display Ad 59",
+                  "organization_id": 425,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:23.947+08:00",
+                  "updated_at": "2023-01-20T07:27:03.984+04:30",
                   "tag_list": ""
                 }
               }
@@ -642,19 +776,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 93",
-                  "organization_id": 668,
+                  "name": "Display Ad 60",
+                  "organization_id": 426,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 93,
+                  "id": 60,
                   "clicks_count": 0,
-                  "created_at": "2023-01-12T00:00:24.163+08:00",
+                  "created_at": "2023-01-20T07:27:04.138+04:30",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-01-12T00:00:24.165+08:00",
+                  "updated_at": "2023-01-20T07:27:04.140+04:30",
                   "tag_list": ""
                 }
               }
@@ -820,14 +954,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 115,
+                    "id": 70,
                     "path": "/codenewbie/slug-4",
-                    "title": "2",
-                    "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg",
+                    "title": "29",
+                    "image_url": "/uploads/podcast/image/55/af9f6e0a-f181-4163-be23-c1d782ea3a75.jpeg",
                     "podcast": {
-                      "title": "Sapporo Premium",
+                      "title": "Yeti Imperial Stout",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/90/d7d60853-1d17-46c7-b5b2-a8ec981e0360.jpeg"
+                      "image_url": "/uploads/podcast/image/55/af9f6e0a-f181-4163-be23-c1d782ea3a75.jpeg"
                     }
                   }
                 ],
@@ -880,8 +1014,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/3647/b862b06c-e357-491a-b0ee-94f9ebe30557.jpeg"
+                  "profile_image": "/uploads/user/profile_image/2363/6cb6e0a4-e6f9-4811-9a6a-8cd98b8af3f0.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/2363/6cb6e0a4-e6f9-4811-9a6a-8cd98b8af3f0.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -948,8 +1082,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 72,
-                  "reactable_id": 1548,
+                  "id": 43,
+                  "reactable_id": 1026,
                   "reactable_type": "Article"
                 }
               }
@@ -1011,8 +1145,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 74,
-                  "reactable_id": 1550,
+                  "id": 45,
+                  "reactable_id": 1028,
                   "reactable_type": "Article"
                 }
               }
@@ -1582,6 +1716,27 @@
           },
           "slug": {
             "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast image url",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "Comment": {
+        "description": "A Comment on an Article or Podcast Episode",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id_code": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
           },
           "image_url": {
             "description": "Podcast image url",
