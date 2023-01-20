@@ -24,54 +24,12 @@
 
   <script src="https://js.stripe.com/v3/"></script>
 
-  <p class="hook-description">Credits are used for <a href="/listings"><%= community_name %> listings</a> as well as upcoming products and services.</p>
+  <p class="hook-description"><%= t("views.credits.new.hook.text_html", listings: link_to(t("views.credits.new.hook.listings", community: community_name), listings_path)) %></p>
 
   <div style="margin-top: 30px; text-align: center">
-    <div class="credit-price" data-num="1">
-      <div class="credit-amount" data-num="1">1+</div>
-      $5/per credit
-    </div>
-    <div class="credit-price" data-num="10">
-      <div class="credit-amount" data-num="10">10+</div>
-      $4/per credit</div>
-    <div class="credit-price" data-num="100">
-      <div class="credit-amount" data-num="100">
-        100+
-      </div>
-      $3/per credit</div>
-    <div class="credit-price" data-num="1000">
-      <div class="credit-amount" data-num="1000">
-        1000+
-      </div>
-      $2.50/per credit
-    </div>
-      <br />
-    </div>
-    <p class="bulk-description"><em>Contact <%= contact_link(additional_info: { subject: "Custom Bulk Pricing/Partnerships" }) %> for custom bulk pricing and partnerships.</em></p>
-    <details>
-      <summary>
-        How many credits does one listing cost?
-      </summary>
-      <div>
-        <p>
-          All listings cost <strong>1 credit</strong>, except:
-        </p>
-        <ul>
-          <li>
-            <strong>products/tools: 5 credits</strong>
-          </li>
-          <li>
-            <strong>job listings: 25 credits</strong>
-          </li>
-        </ul>
-        <p>
-          Buying more credits upfront makes listings more cost-effective.
-        </p>
-        <p>
-          25 credits purchased today costs $100. 25 credits purchased individually will cost $125, etc.
-        </p>
-      </div>
-    </details>
+    <%= render "pricing" %>
+
+    <%= render "purchase_faq" %>
     <details>
       <summary>
         <%= params[:organization_id].present? ? t("views.credits.new.status.subtitle.org", name: @purchaser.name) : t("views.credits.new.status.subtitle.user") %>
