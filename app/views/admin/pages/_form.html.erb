@@ -123,7 +123,7 @@
 <script>
 function showBodyFields() {
     document.querySelectorAll('.optional').forEach(el => el.style.display = 'none');
-    document.querySelectorAll("select option:selected").forEach(el => {
+    window.document.querySelectorAll("select, option:selected").forEach(el => {
       if (el.value == "json") {
         document.querySelectorAll('.json').forEach(el => el.style.display = 'block');
       } else {
