@@ -27,7 +27,12 @@ describe('Add tags to article', () => {
     cy.get('@user').then((user) => {
       cy.intercept('/tags/suggest', exampleTopTags).as('topTagsRequest');
       cy.loginAndVisit(user, '/new');
-      cy.wait('@topTagsRequest');
+      cy.wait('@topTagsRequest').then((interception) => {
+        // we can now access the low level interception
+        // that contains the request body,
+        // response body, status, etc
+        console.log("Interception: ", interception.response);
+      });
     });
   });
 
