@@ -62,7 +62,7 @@ module DisplayAds
     # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
     # stays in this area.
 
-    # Ads that get engagemen have a higher "success rate", and among this category, we sample from the top 15 that
+    # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
     # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
     # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
     # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
