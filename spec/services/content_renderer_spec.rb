@@ -8,7 +8,7 @@ RSpec.describe ContentRenderer do
     let(:mock_front_matter_parser) { instance_double FrontMatterParser::Parser }
     let(:mock_processor) { class_double MarkdownProcessor::Parser }
     let(:fixed_markdown) { :fixed_markdown }
-    let(:parsed_contents) { Struct.new(:content).new(:parsed_content) }
+    let(:parsed_contents) { Struct.new(:content, :front_matter).new(:parsed_content) }
     let(:processed_contents) { instance_double MarkdownProcessor::Parser }
 
     # rubocop:disable RSpec/InstanceVariable
@@ -17,7 +17,6 @@ RSpec.describe ContentRenderer do
       allow(mock_front_matter_parser).to receive(:call).with(fixed_markdown).and_return(parsed_contents)
       allow(mock_processor).to receive(:new).and_return(processed_contents)
       allow(processed_contents).to receive(:finalize).and_return(expected_result)
-
       @original_fixer = described_class.fixer
       @original_parser = described_class.front_matter_parser
       @original_processor = described_class.processor
@@ -40,7 +39,7 @@ RSpec.describe ContentRenderer do
       expect(mock_fixer).to have_received(:call)
       expect(mock_front_matter_parser).to have_received(:call).with(fixed_markdown)
       expect(mock_processor).to have_received(:new)
-      expect(processed_contents).to have_received(:process)
+      expect(processed_contents).to have_received(:finalize)
     end
   end
 
