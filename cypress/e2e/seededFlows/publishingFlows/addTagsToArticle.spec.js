@@ -32,6 +32,7 @@ describe('Add tags to article', () => {
         // that contains the request body,
         // response body, status, etc
         console.log("Interception: ", interception.response);
+        expect(interception.response.body).to.have.length(2);
       });
     });
   });
