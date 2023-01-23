@@ -14,7 +14,6 @@ RSpec.describe "Api::V1::Docs::Articles" do
   let(:user) { api_secret.user }
   let(:user_article) { create(:article, featured: true, tags: "discuss", published: true, user_id: user.id) }
   let(:Accept) { "application/vnd.forem.api-v1+json" }
-  # let!(:sample_articles) { create_list(:article, 3) }
 
   before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
@@ -32,20 +31,10 @@ RSpec.describe "Api::V1::Docs::Articles" do
         operationId "createArticle"
         produces "application/json"
         consumes "application/json"
-        parameter name: :article, in: :body, schema: {
-          type: :object,
-          properties: {
-            title: { type: :string },
-            body_markdown: { type: :string },
-            published: { type: :boolean },
-            series: { type: :string },
-            main_image: { type: :string },
-            canonical_url: { type: :string },
-            description: { type: :string },
-            tags: { type: :string },
-            organization_id: { type: :integer }
-          }
-        }
+        parameter name: :article,
+                  in: :body,
+                  description: "Representation of Article to be created",
+                  schema: { "$ref": "#/components/schemas/Article" }
 
         response "201", "An Article" do
           let(:"api-key") { api_secret.secret }
@@ -241,20 +230,10 @@ It supports pagination, each page will contain 30 articles by default."
                     minimum: 1
                   },
                   example: 123
-        parameter name: :article, in: :body, schema: {
-          type: :object,
-          properties: {
-            title: { type: :string },
-            body_markdown: { type: :string },
-            published: { type: :boolean },
-            series: { type: :string },
-            main_image: { type: :string },
-            canonical_url: { type: :string },
-            description: { type: :string },
-            tags: { type: :string },
-            organization_id: { type: :integer }
-          }
-        }
+        parameter name: :article,
+                  in: :body,
+                  description: "Representation of Article to be updated",
+                  schema: { "$ref": "#/components/schemas/Article" }
 
         response "200", "An Article" do
           let(:"api-key") { api_secret.secret }
