@@ -2,10 +2,12 @@ ignore:
   - "vendor"
   - "bin"
   - "**/*.svg"
-coverage:
-  status:
-    project:
-      default:
+flag_management:
+  default_rules:
+    carryforward: true
+    statuses:
+      - type: project
         target: auto
-        threshold: 0%
-        base: auto
+        threshold: 1%
+      - type: patch
+        target: 90%
