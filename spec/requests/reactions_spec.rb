@@ -29,7 +29,7 @@ RSpec.describe "Reactions" do
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
         ]
-        expect(result["article_reaction_counts"]).to eq(expected_reactions_counts)
+        expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions_counts)
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
       end
 
@@ -61,7 +61,7 @@ RSpec.describe "Reactions" do
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
         ]
-        expect(result["article_reaction_counts"]).to eq(expected_reactions)
+        expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions)
         expect(result["reactions"]).to be_empty
       end
 

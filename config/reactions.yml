@@ -1,13 +1,25 @@
 ---
 like:
   position: 1
-  icon: later
-readinglist:
-  position: 2
-  icon: later
+  name: Like
+  icon: sparkle-heart
 unicorn:
+  position: 2
+  name: Unicorn
+  icon: multi-unicorn
+exploding-head:
   position: 3
-  icon: later
+  icon: exploding-head
+raised_hands:
+  position: 4
+  icon: raised-hands
+fire:
+  position: 5
+  icon: fire
+readinglist:
+  position: 5
+  icon: save
+  published: false
 thumbsup:
   privileged: true
   score: 5.0
@@ -16,6 +28,7 @@ thumbsdown:
   score: -10.0
 vomit:
   privileged: true
+  name: Vomit
   score: -50.0
 thinking:
   published: false
