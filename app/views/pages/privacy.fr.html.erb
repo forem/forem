@@ -1,0 +1,27 @@
+<% title("Privacy Policy for #{community_name}") %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/privacy") %>" />
+  <meta name="description" content="Privacy Policy for <%= community_name %>">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="<%= app_url("/privacy") %>" />
+  <meta property="og:title" content="Privacy Policy for <%= community_name %>" />
+  <meta property="og:image" content="<%= Settings::General.main_social_image %>" />
+  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_name %>" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="Privacy Policy for <%= community_name %>">
+  <meta name="twitter:description" content="<%= community_name %> is great!">
+  <meta name="twitter:image:src" content="<%= Settings::General.main_social_image %>">
+<% end %>
+
+<main id="main-content" class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Privacy Policy</h1>
+    <%= render "privacy_text" %>
+  </div>
+</main>
