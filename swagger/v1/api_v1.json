@@ -1297,6 +1297,41 @@
           }
         }
       }
+    },
+    "/api/follows/tags": {
+      "get": {
+        "summary": "FollowedTags",
+        "tags": ["followed_tags"],
+        "description": "This endpoint allows the client to retrieve a list of the tags they follow.",
+        "operationId": "getFollowedTags",
+        "responses": {
+          "200": {
+            "description": "A list of followed tags",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 7875,
+                    "name": "Tag1",
+                    "points": 1
+                  },
+                  {
+                    "id": 7876,
+                    "name": "Tag2",
+                    "points": 1
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FollowedTag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -1553,6 +1588,28 @@
           "published_timestamp",
           "user",
           "reading_time_minutes"
+        ]
+      },
+      "FollowedTag": {
+        "description": "Representation of a tag",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "points": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "points"
         ]
       },
       "PodcastEpisodeIndex": {
