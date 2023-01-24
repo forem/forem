@@ -2,15 +2,15 @@
 class ReactionCategory
   class << self
     def [](slug)
-      hash[slug.to_sym]
+      to_h[slug.to_sym]
     end
 
     def all_slugs
-      list.map(&:slug)
+      to_a.map(&:slug)
     end
 
     def negative_privileged
-      list.filter_map { |category| category.slug if category.privileged? && category.negative? }
+      to_a.filter_map { |category| category.slug if category.privileged? && category.negative? }
     end
 
     def for_view
@@ -18,14 +18,14 @@ class ReactionCategory
     end
 
     def public
-      list.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
+      to_a.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
     end
 
     def privileged
-      list.filter_map { |category| category.slug if category.privileged? }
+      to_a.filter_map { |category| category.slug if category.privileged? }
     end
 
-    def list
+    def to_a
       @list ||= to_h.values
     end
 
