@@ -204,6 +204,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          FollowedTag: {
+            description: "Representation of a followed tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              points: { type: :number, format: :float }
+            },
+            required: %w[id name points]
+          },
           PodcastEpisodeIndex: {
             description: "Representation of a podcast episode returned in a list",
             type: :object,
