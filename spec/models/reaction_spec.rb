@@ -142,7 +142,7 @@ RSpec.describe Reaction do
         { category: "readinglist", count: 0 },
         { category: "unicorn", count: 1 },
       ]
-      expect(described_class.count_for_article(article.id)).to eq(expected_result)
+      expect(described_class.count_for_article(article.id)).to contain_exactly(*expected_result)
     end
   end
 
