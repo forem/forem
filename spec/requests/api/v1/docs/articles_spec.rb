@@ -5,7 +5,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/VariableName
 # rubocop:disable Layout/LineLength
 
-RSpec.describe "Api::V1::Docs::Articles" do
+RSpec.describe "Api::V1::Docs::Articles", appmap: false do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, :with_colors, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss", published: true) }

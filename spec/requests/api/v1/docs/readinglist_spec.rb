@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "Api::V1::Docs::Readinglist" do
+RSpec.describe "Api::V1::Docs::Readinglist", appmap: false do
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
   let(:readinglist) { create_list(:reading_reaction, 3, user: user) }

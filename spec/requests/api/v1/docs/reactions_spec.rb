@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "api/v1/reactions" do
+RSpec.describe "api/v1/reactions", appmap: false do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
   let(:category) { "like" }

@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "api/v1/display_ads" do
+RSpec.describe "api/v1/display_ads", appmap: false do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
   let(:display_ad) { create(:display_ad) }

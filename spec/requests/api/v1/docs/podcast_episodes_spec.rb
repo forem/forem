@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "Api::V1::Docs::PodcastEpisodes" do
+RSpec.describe "Api::V1::Docs::PodcastEpisodes", appmap: false do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let!(:podcast) { create(:podcast, slug: "codenewbie") }
 

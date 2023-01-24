@@ -4,7 +4,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "Api::V1::Docs::Users" do
+RSpec.describe "Api::V1::Docs::Users", appmap: false do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
   let(:user) { api_secret.user }
