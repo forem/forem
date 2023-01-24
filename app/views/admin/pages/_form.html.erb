@@ -123,13 +123,13 @@
 <script>
 function showBodyFields() {
     // hide all optional elements
-    $('.optional').css('display','none');
+    document.querySelectorAll('.optional').forEach(el => el.style.display = 'none');
 
-    $("select option:selected").each(function () {
-      if($(this).val() == "json") {
-        $('.json').css('display','block');
+    document.querySelectorAll("select").forEach(el => {      
+      if (el.options[el.selectedIndex].value == "json") {
+        document.querySelectorAll('.json').forEach(el => el.style.display = 'block');
       } else {
-        $('.html').css('display','block');
+        document.querySelectorAll('.html').forEach(el => el.style.display = 'block');
       }
     });
   };
