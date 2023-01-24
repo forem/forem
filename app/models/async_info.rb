@@ -18,7 +18,7 @@ class AsyncInfo
   # @todo The given feed_style_prefernce could be extracted to the user decorator.  We would need to
   #       account for a nil current user in our view logic.
   def self.to_hash(user:, context:)
-    new(user: user, context: context).to_hash
+    new(user: user, context: context).to_h
   end
 
   def initialize(user:, context:)
@@ -28,7 +28,7 @@ class AsyncInfo
 
   attr_reader :user, :context
 
-  def to_hash
+  def to_h
     {
       id: user.id,
       name: user.name,
