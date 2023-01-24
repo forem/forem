@@ -2,40 +2,22 @@
   Hey <%= @user.name %>!
 </p>
 <p>
-  We are happy to let you know that you've been granted "trusted" status on <%= community_name %>.
+  We are happy to let you know that you've been granted new permissions on <%= community_name %>!
 </p>
 <p>
-  This update allows you to make use of a few extra features—all of which further our goal of cultivating a welcoming and constructive community.
+  <b>You will now see a shield icon on post pages. Click on the shield to take <em>private</em> actions to help vote on community content.</b>
 </p>
 <p>
   Here's an overview of your new abilities:
   <ul>
-    <li>Use reactions (👎, 👍) to moderate content</li>
-    <li>Quickly flag rule-breaking behavior with 🧐 to <%= community_name %> staff</li>
-    <li>Rate the experience level of a post</li>
+    <li>Use private reactions (👎, 👍) to vote on content quality</li>
+    <li>Quickly flag rule-breaking behavior with the 🧐 icon</li>
+    <li>Rate the appropriate "experience level" of a post</li>
   </ul>
 </p>
 <p>
-  <b>For details on all available features and how to access them, visit our <a href="<%= app_url("/community-moderation") %>"><%= community_name %> Trusted User Guide</a>.</b>
+  Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
 </p>
-<% if ForemInstance.dev_to? %>
-  <p>
-    Also, we hope that you'll use <a href="https://discord.com/invite/f5ARW5gxES">this link</a> to join our moderator chat channels on DEV Discord!
-    Once inside, visit the #mod-verification channel and drop a link to your DEV profile so we can verify which set of privileges you have (<a href="<%= app_url("/community-moderation") %>">Trusted User</a>
-    and/or <a href="<%= app_url("/tag-moderation") %>">Tag Moderator</a>) and invite you to the correct moderator channels. We hope to see you there! 😀
-  </p>
-<% end %>
-<p>
-  You may occasionally receive notifications about optional moderation actions; please <a href="<%= app_url(user_settings_path(:notifications)) %>">unsubscribe</a> if you do not want to receive these updates.
-</p>
-<p>
-  If you have any questions or feedback for us, please write to <%= contact_link %> and share your thoughts.
-</p>
-
-<p>
-  Thanks for being such an awesome member of the community!
-</p>
-
 <p>
   <%= community_name %> Team
 </p>
