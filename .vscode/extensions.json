@@ -8,6 +8,7 @@
     "ms-vsliveshare.vsliveshare-pack",
     "42crunch.vscode-openapi",
     "philosowaffle.openapi-designer",
-    "silvenon.mdx"
+    "silvenon.mdx",
+    "appland.appmap",
   ]
 }
