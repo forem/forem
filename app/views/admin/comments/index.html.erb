@@ -50,9 +50,9 @@
 
 <script>
   window.addEventListener('load', function() {
-    $("form").submit(function (e) {
-      $(this).toggleClass("hidden");
-      $(this).toggleClass("inline");
+    document.querySelector("form").addEventListener("submit", function(e) {
+      this.classList.toggle("hidden");
+      this.classList.toggle("inline");
     });
   });
 </script>
