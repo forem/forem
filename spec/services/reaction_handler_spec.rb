@@ -69,9 +69,8 @@ RSpec.describe ReactionHandler, type: :service do
 
     it "updates the last_reacted_at field" do
       Timecop.freeze(Time.current) do
-        current_time = Time.zone.now
         described_class.new(params, current_user: user).create
-        expect(Reaction.last.user.last_reacted_at).to eq current_time
+        expect(Reaction.last.user.last_reacted_at).to eq Time.current
       end
     end
   end
