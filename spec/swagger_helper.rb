@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength
+
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you"re using the rswag-api to serve API descriptions, you"ll need
@@ -204,6 +206,56 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          Article: {
+            description: "Representation of an Article to be created/updated",
+            type: :object,
+            properties: {
+              article: {
+                type: :object,
+                properties: {
+                  title: { type: :string },
+                  body_markdown: { type: :string },
+                  published: { type: :boolean, default: false },
+                  series: { type: :string, nullable: true },
+                  main_image: { type: :string, nullable: true },
+                  canonical_url: { type: :string, nullable: true },
+                  description: { type: :string },
+                  tags: { type: :string },
+                  organization_id: { type: :integer, nullable: true }
+                }
+              }
+            }
+          },
+          FollowedTag: {
+            description: "Representation of a followed tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              points: { type: :number, format: :float }
+            },
+            required: %w[id name points]
+          },
+          Page: {
+            description: "Representation of a page object",
+            type: :object,
+            properties: {
+              title: { type: :string, description: "Title of the page" },
+              slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
+              description: { type: :string, description: "For internal use, helps similar pages from one another" },
+              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
+                               nullable: true },
+              body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              is_top_level_path: { type: :boolean,
+                                   description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+              social_image: { type: :object, nullable: true },
+              template: {
+                type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
+                description: "Controls what kind of layout the page is rendered in"
+              }
+            },
+            required: %w[title slug description template]
+          },
           PodcastEpisodeIndex: {
             description: "Representation of a podcast episode returned in a list",
             type: :object,
@@ -304,3 +356,5 @@ module Rswag
     end
   end
 end
+
+# rubocop:enable Layout/LineLength
