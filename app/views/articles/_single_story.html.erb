@@ -163,7 +163,7 @@
             <%= t("views.articles.reading_time", count: story.reading_time < 1 ? 1 : story.reading_time) %>
           </small>
 
-          <% if @user.id != story.user_id %>
+          <% if (@user == nil) || (@user.id != story.user_id) %>
             <button
               type="button"
               id="article-save-button-<%= story.id %>"
