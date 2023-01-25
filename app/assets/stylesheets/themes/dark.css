@@ -172,6 +172,9 @@
 
   /* Code */
   --code-inline-bg: rgb(var(--white), 0.1);
+
+  /* Onboarding suggested people */
+  --content-row-hover-bg: rgba(var(--base-20));
 }
 
 :root {
