@@ -80,6 +80,7 @@ GEM
       activerecord (>= 6.0, < 7.1)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
+    aes_key_wrap (1.1.0)
     ahoy_email (2.1.3)
       actionmailer (>= 5)
       addressable (>= 2.3.2)
@@ -114,6 +115,7 @@ GEM
       erubi (~> 1.4)
       parser (>= 2.4)
       smart_properties
+    bindata (2.4.14)
     bindex (0.8.1)
     blazer (2.6.5)
       activerecord (>= 5)
@@ -256,7 +258,7 @@ GEM
       i18n (>= 1.8.11, < 2)
     fakeredis (0.8.0)
       redis (~> 4.1)
-    faraday (2.7.1)
+    faraday (2.7.4)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-cookie_jar (0.0.7)
@@ -422,11 +424,17 @@ GEM
     js-routes (2.2.4)
       railties (>= 4)
     json (2.6.3)
+    json-jwt (1.16.3)
+      activesupport (>= 4.2)
+      aes_key_wrap
+      bindata
+      faraday (~> 2.0)
+      faraday-follow_redirects
     json-schema (2.8.1)
       addressable (>= 2.4)
     jsonapi-serializer (2.2.0)
       activesupport (>= 4.2)
-    jwt (2.5.0)
+    jwt (2.6.0)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.2)
@@ -555,12 +563,12 @@ GEM
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
     oj (3.13.23)
-    omniauth (2.1.0)
+    omniauth (2.1.1)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)
       rack-protection
-    omniauth-apple (1.2.2)
-      jwt
+    omniauth-apple (1.3.0)
+      json-jwt
       omniauth-oauth2
     omniauth-facebook (9.0.0)
       omniauth-oauth2 (~> 1.2)
@@ -617,7 +625,7 @@ GEM
       rack (>= 2.0.0)
     rack-host-redirect (1.3.0)
       rack
-    rack-protection (3.0.3)
+    rack-protection (3.0.5)
       rack
     rack-proxy (0.7.2)
       rack

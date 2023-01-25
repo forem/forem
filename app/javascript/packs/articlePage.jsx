@@ -34,6 +34,20 @@ if (snackZone) {
 // eslint-disable-next-line no-restricted-globals
 top.addSnackbarItem = addSnackbarItem;
 
+const multiReactionDrawerTrigger = document.getElementById(
+  'reaction-drawer-trigger',
+);
+
+if (
+  multiReactionDrawerTrigger &&
+  multiReactionDrawerTrigger.dataset.initialized !== 'true'
+) {
+  initializeDropdown({
+    triggerElementId: 'reaction-drawer-trigger',
+    dropdownContentId: 'reaction-drawer',
+  });
+}
+
 // Dropdown accessibility
 function hideCopyLinkAnnouncerIfVisible() {
   document.getElementById('article-copy-link-announcer').hidden = true;

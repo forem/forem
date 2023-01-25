@@ -1,27 +1,15 @@
 Hey <%= @user.name %>!
 
-We are happy to let you know that you've been granted "trusted" status on <%= community_name %>.
+We are happy to let you know that you've been granted new permissions on <%= community_name %>!
 
-This update allows you to make use of a few extra features—all of which further our goal of cultivating a welcoming and constructive community.
+You will now see a shield icon on post pages. Click on the shield to take *private* actions to help vote on community content.
 
 Here's an overview of your new abilities:
 
-- Use reactions (👎, 👍) to moderate content
-- Quickly flag rule-breaking behavior with 🧐 to <%= community_name %> staff
-- Rate the experience level of a post
+- Use private reactions (👎, 👍) to vote on content quality
+- Quickly flag rule-breaking behavior with the 🧐 icon
+- Rate the appropriate "experience level" of a post
 
-For details on all available features and how to access them, visit our <%= community_name %> Trusted User Guide: <%= app_url("/community-moderation") %>
-
-<% if ForemInstance.dev_to? %>
-  Also, we hope that you'll use this link (https://discord.com/invite/f5ARW5gxES) to join our moderator chat channels on DEV Discord!
-  Once inside, visit the #mod-verification channel and drop a link to your DEV profile so we can verify which set of privileges you have (Trusted User [<%= app_url("/community-moderation") %>]
-  and/or Tag Moderator [<%= app_url("/tag-moderation") %>]) and invite you to the correct moderator channels. We hope to see you there! 😀
-<% end %>
-
-You may occasionally receive notifications about optional moderation actions; please unsubscribe (<%= app_url(user_settings_path(:notifications)) %>) if you do not want to receive these updates.
-
-If you have any questions or feedback for us, please write to <%= ForemInstance.contact_email %> and share your thoughts.
-
-Thanks for being such an awesome member of the community!
+Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
 
 <%= community_name %> Team
