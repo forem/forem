@@ -19,7 +19,6 @@ RSpec.describe "Api::V1::DisplayAds" do
   end
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
     @ad1 = create(:display_ad, published: true, approved: true)
   end
 

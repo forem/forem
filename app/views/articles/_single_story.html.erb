@@ -129,9 +129,9 @@
                   </span>
                 <% end %>
                 <span class="aggregate_reactions_counter"><%= t("views.reactions.summary.count_html",
-                                      count: story.public_reactions_count,
-                                      start: tag("span", { class: %w[hidden s:inline] }, true),
-                                      end: "</span>".html_safe) %></span>
+                                                                count: story.public_reactions_count,
+                                                                start: tag("span", { class: %w[hidden s:inline] }, true),
+                                                                end: "</span>".html_safe) %></span>
               </div>
             <% else %>
               <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
@@ -160,7 +160,7 @@
         </div>
         <div class="crayons-story__save">
           <small class="crayons-story__tertiary fs-xs mr-2">
-            <%= t("views.articles.reading_time", count: story.reading_time < 1 ? 1 : story.reading_time) %>
+            <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
           </small>
           <button
             type="button"

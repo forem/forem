@@ -64,9 +64,9 @@
       <% flash.each_with_index do |(type, message), i| %>
         <div
           id="notice-container"
-          data-controller="notice" 
-          data-notice-target="noticeZone" 
-          data-testid="flash-<%= type %>" 
+          data-controller="notice"
+          data-notice-target="noticeZone"
+          data-testid="flash-<%= type %>"
           class="mb-4 crayons-notice crayons-notice--<%= type == "info" || type == "success" ? "success" : "danger" %>">
           <span id="flash-<%= i %>"><%= message %></span>
           <button class="crayons-notice--close js-flash-close-btn" data-action="click->notice#closeNotice" aria-label="Dismiss message" aria-describedby="flash-<%= i %>">

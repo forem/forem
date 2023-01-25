@@ -1,14 +1,14 @@
 require "rails_helper"
 
 RSpec.describe ContentRenderer do
-  describe "#finalize" do
+  describe "#process" do
     let(:markdown) { "hello, hey" }
     let(:expected_result) { "<p>hello, hey</p>\n\n" }
     let(:mock_fixer) { class_double MarkdownProcessor::Fixer::FixAll }
     let(:mock_front_matter_parser) { instance_double FrontMatterParser::Parser }
     let(:mock_processor) { class_double MarkdownProcessor::Parser }
     let(:fixed_markdown) { :fixed_markdown }
-    let(:parsed_contents) { Struct.new(:content).new(:parsed_content) }
+    let(:parsed_contents) { Struct.new(:content, :front_matter).new(:parsed_content) }
     let(:processed_contents) { instance_double MarkdownProcessor::Parser }
 
     # rubocop:disable RSpec/InstanceVariable
@@ -17,7 +17,6 @@ RSpec.describe ContentRenderer do
       allow(mock_front_matter_parser).to receive(:call).with(fixed_markdown).and_return(parsed_contents)
       allow(mock_processor).to receive(:new).and_return(processed_contents)
       allow(processed_contents).to receive(:finalize).and_return(expected_result)
-
       @original_fixer = described_class.fixer
       @original_parser = described_class.front_matter_parser
       @original_processor = described_class.processor
@@ -35,7 +34,7 @@ RSpec.describe ContentRenderer do
     # rubocop:enable RSpec/InstanceVariable
 
     it "is the result of fixing, parsing, and processing" do
-      result = described_class.new(markdown, source: nil, user: nil).finalize
+      result = described_class.new(markdown, source: nil, user: nil).process
       expect(result).to eq(expected_result)
       expect(mock_fixer).to have_received(:call)
       expect(mock_front_matter_parser).to have_received(:call).with(fixed_markdown)
@@ -58,7 +57,7 @@ RSpec.describe ContentRenderer do
     RESULT
 
     it "processes markdown" do
-      result = described_class.new(markdown, source: nil, user: nil).finalize
+      result = described_class.new(markdown, source: nil, user: nil).process
       expect(result).to eq(expected_result)
     end
   end
@@ -74,7 +73,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: article, user: user).finalize
+        described_class.new(markdown, source: article, user: user).process
       end.to raise_error(ContentRenderer::ContentParsingError, /User is not permitted to use this liquid tag/)
     end
   end
@@ -90,7 +89,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: source, user: user).finalize
+        described_class.new(markdown, source: source, user: user).process
       end.to raise_error(ContentRenderer::ContentParsingError, /This liquid tag can only be used in Articles/)
     end
   end
@@ -100,7 +99,7 @@ RSpec.describe ContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: nil, user: nil).front_matter
+        described_class.new(markdown, source: nil, user: nil).process
       end.to raise_error(ContentRenderer::ContentParsingError, /while scanning a simple key/)
     end
   end
