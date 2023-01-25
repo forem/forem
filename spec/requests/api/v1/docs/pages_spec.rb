@@ -219,7 +219,7 @@ RSpec.describe "api/v1/pages" do
           let(:"api-key") { api_secret.secret }
 
           before do
-            fake_page = instance_double(page, destroy: false)
+            fake_page = instance_double(Page, destroy: false)
             allow(Page).to receive(:find).and_return(fake_page)
           end
 
