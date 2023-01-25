@@ -4,9 +4,8 @@ module Notifications
     SUPPORTED = [Comment].freeze
 
     def self.available_moderators
-      User.with_role(:trusted)
+      User.with_role(:trusted).joins(:notification_setting)
         .where("last_reacted_at > ?", 1.week.ago)
-        .joins(:notification_setting)
         .where("last_moderation_notification < ?", 3.days.ago)
         .where(notification_setting: { mod_roundrobin_notifications: true })
     end
