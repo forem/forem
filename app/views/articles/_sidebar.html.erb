@@ -4,7 +4,6 @@
       <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_left_sidebar_home_page", source: "left_sidebar" } unless user_signed_in? %>
       <%= render partial: "layouts/main_nav", locals: { context: "sidebar" } %>
       <%= render "layouts/sidebar_tags" %>
-      <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
     <% end %>
     <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>

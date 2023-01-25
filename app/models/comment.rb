@@ -108,6 +108,17 @@ class Comment < ApplicationRecord
     includes(user: :profile).new(params, &blk)
   end
 
+  def self.build_sort_query(order)
+    case order
+    when "latest"
+      "created_at DESC"
+    when "oldest"
+      "created_at ASC"
+    else
+      "score DESC"
+    end
+  end
+
   def search_id
     "comment_#{id}"
   end
@@ -177,17 +188,6 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
-  def self.build_sort_query(order)
-    case order
-    when "latest"
-      "created_at DESC"
-    when "oldest"
-      "created_at ASC"
-    else
-      "score DESC"
-    end
-  end
-
   private_class_method :build_sort_query
 
   private
@@ -230,9 +230,11 @@ class Comment < ApplicationRecord
   end
 
   def extracted_evaluate_markdown
-    return unless processed_content
+    content_renderer = processed_content
 
-    self.processed_html = processed_content.finalize(link_attributes: { rel: "nofollow" })
+    return unless content_renderer
+
+    self.processed_html = content_renderer.process(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
   rescue ContentRenderer::ContentParsingError => e

@@ -139,8 +139,8 @@ RSpec.describe Reaction do
 
       expected_result = [
         { category: "like", count: 1 },
-        { category: "readinglist", count: 0 },
         { category: "unicorn", count: 1 },
+        { category: "readinglist", count: 0 },
       ]
       expect(described_class.count_for_article(article.id)).to eq(expected_result)
     end
