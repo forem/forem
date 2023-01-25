@@ -1,5 +1,5 @@
 module DisplayAds
-  class SampleRelevantAds
+  class FilteredAdsQuery
     def self.call(...)
       new(...).call
     end
