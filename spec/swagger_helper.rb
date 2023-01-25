@@ -204,6 +204,26 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          Article: {
+            description: "Representation of an Article to be created/updated",
+            type: :object,
+            properties: {
+              article: {
+                type: :object,
+                properties: {
+                  title: { type: :string },
+                  body_markdown: { type: :string },
+                  published: { type: :boolean, default: false },
+                  series: { type: :string, nullable: true },
+                  main_image: { type: :string, nullable: true },
+                  canonical_url: { type: :string, nullable: true },
+                  description: { type: :string },
+                  tags: { type: :string },
+                  organization_id: { type: :integer, nullable: true }
+                }
+              }
+            }
+          },
           FollowedTag: {
             description: "Representation of a followed tag",
             type: :object,
