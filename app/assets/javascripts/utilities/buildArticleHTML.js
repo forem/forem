@@ -286,8 +286,8 @@ function buildArticleHTML(article, currentUserId = null) {
           data-reactable-id="${article.id}"
           data-article-author-id="${article.user_id}"
           aria-label="Save post ${article.title} to reading list">
-          <span class="bm-initial">${saveSVG}</span>
-          <span class="bm-success">${saveFilledSVG}</span>
+          <span class="bm-initial crayons-icon c-btn__icon">${saveSVG}</span>
+          <span class="bm-success crayons-icon c-btn__icon">${saveFilledSVG}</span>
         </button>
       `;
     } else if (article.class_name === 'User') {
