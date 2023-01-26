@@ -57,6 +57,12 @@ class Page < ApplicationRecord
     "page_#{slug}"
   end
 
+  def as_json(...)
+    super(...).slice(*%w[id title slug description is_top_level_path landing_page
+                         body_html body_json body_markdown processed_html
+                         social_image template ])
+  end
+
   private
 
   def evaluate_markdown
