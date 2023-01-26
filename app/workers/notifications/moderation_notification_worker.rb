@@ -5,7 +5,7 @@ module Notifications
     sidekiq_options queue: :medium_priority, retry: 10
 
     def perform(notifiable_id)
-      random_moderators = Notifications::Moderation.available_moderators.order(Arel.sql("RANDOM()")).first(2)
+      random_moderators = Notifications::Moderation.available_moderators.order(Arel.sql("RANDOM()")).first(4)
       return unless random_moderators.any?
 
       # notifiable is currently only comment
