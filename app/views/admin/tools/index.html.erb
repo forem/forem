@@ -1,5 +1,5 @@
 <div class="crayons-card p-6 mb-6">
-  <h2 class="crayons-title mb-4">General Purpose URL Purge</h2>
+  <h2 class="crayons-subtitle-1 mb-4">General Purpose URL Purge</h2>
   <p class="mb-2">For a page that should 404. This will purge the page via Fastly.</p>
   <p class="mb-6">Use the full path (<%= app_url("xyz") %>) or the relative path: (/xyz)</p>
   <%= form_tag bust_cache_admin_tools_path do %>
@@ -12,7 +12,7 @@
 </div>
 
 <div class="crayons-card p-6 mb-6">
-  <h2 class="crayons-title mb-4">Bust Cache For Specific Content</h2>
+  <h2 class="crayons-subtitle-1 mb-4">Bust Cache For Specific Content</h2>
   <p class="mb-6">This clears both the Rails cache & the Fastly cache.</p>
   <%= form_tag bust_cache_admin_tools_path do %>
     <div class="crayons-field">
