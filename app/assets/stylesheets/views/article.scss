@@ -435,6 +435,10 @@
   }
 }
 
+.crayons-reaction_total_count {
+  color: var(--btn-color); // Mobile safari button text blue bug
+}
+
 .reaction-drawer__outer:hover .reaction-drawer {
   @media (min-width: $breakpoint-m) {
     display: block;
