@@ -4,8 +4,6 @@ RSpec.describe "Api::V1::Tags" do
   describe "GET /api/tags" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     it "returns tags" do
       create(:tag, taggings_count: 10)
 

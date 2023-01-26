@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength
+
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you"re using the rswag-api to serve API descriptions, you"ll need
@@ -234,6 +236,26 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[id name points]
           },
+          Page: {
+            description: "Representation of a page object",
+            type: :object,
+            properties: {
+              title: { type: :string, description: "Title of the page" },
+              slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
+              description: { type: :string, description: "For internal use, helps similar pages from one another" },
+              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
+                               nullable: true },
+              body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              is_top_level_path: { type: :boolean,
+                                   description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+              social_image: { type: :object, nullable: true },
+              template: {
+                type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
+                description: "Controls what kind of layout the page is rendered in"
+              }
+            },
+            required: %w[title slug description template]
+          },
           PodcastEpisodeIndex: {
             description: "Representation of a podcast episode returned in a list",
             type: :object,
@@ -291,6 +313,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               slug: { type: :string },
               image_url: { description: "Podcast image url", type: :string, format: :url }
             }
+          },
+          Comment: {
+            description: "A Comment on an Article or Podcast Episode",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id_code: { type: :string },
+              created_at: { type: :string, format: "date-time" },
+              image_url: { description: "Podcast image url", type: :string, format: :url }
+            }
           }
         }
       }
@@ -324,3 +356,5 @@ module Rswag
     end
   end
 end
+
+# rubocop:enable Layout/LineLength
