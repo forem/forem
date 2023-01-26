@@ -26,6 +26,7 @@ require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
+Rake.application = Rake::Application.new
 Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
