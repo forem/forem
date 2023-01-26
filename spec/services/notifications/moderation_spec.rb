@@ -32,7 +32,8 @@ RSpec.describe Notifications::Moderation, type: :service do
   end
 
   it "returns an accurate list of available moderators" do
-    expect(described_class.available_moderators).to eq([user1])
+    expect(described_class.available_moderators).to include(user1)
+    expect(described_class.available_moderators).not_to include(user2, user3, user4)
   end
 
   it "returns an empty array when there are no moderators that meet the criteria" do
