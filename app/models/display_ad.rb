@@ -35,8 +35,12 @@ class DisplayAd < ApplicationRecord
                      }
 
   def self.for_display(area, user_signed_in, article_tags = [])
-    DisplayAds::FilteredAdsQuery.call(display_ads: self, area: area, user_signed_in: user_signed_in,
-                                      article_tags: article_tags)
+    DisplayAds::FilteredAdsQuery.call(
+      display_ads: self,
+      area: area,
+      user_signed_in: user_signed_in,
+      article_tags: article_tags,
+    )
   end
 
   def human_readable_placement_area
