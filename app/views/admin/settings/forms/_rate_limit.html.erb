@@ -63,12 +63,12 @@
             <div class="crayons-field">
               <%= admin_config_label platform %>
               <p class="crayons-field__description">
-              <%= platform.capitalize %> username
+              <%= platform == "mastodon" ? "Mastodon complete URL including \"https://\"" : "#{platform.capitalize} username" %>
               </p>
               <%= social_media_field.text_field platform,
                                                 class: "crayons-textfield",
                                                 value: Settings::General.social_media_handles[platform],
-                                                placeholder: "" %>
+                                                placeholder: platform == "mastodon" ? "https://fosstodon.org/@thepracticaldev" : "" %>
             </div>
           <% end %>
         <% end %>
