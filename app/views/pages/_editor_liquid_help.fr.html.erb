@@ -1,0 +1,76 @@
+<div id="editor-liquid-help">
+  <div class="text-styles">
+    <h3>Supported URL Embeds</h3>
+
+    <ul class="crayons-card grid gap-2 grid-cols-2 p-4 list-disc">
+      <li class="ml-4"><%= community_name %> Comment</li>
+      <li class="ml-4"><%= community_name %> Link</li>
+      <li class="ml-4"><%= community_name %> Link</li>
+      <li class="ml-4"><%= community_name %> Listing</li>
+      <li class="ml-4"><%= community_name %> Organization</li>
+      <li class="ml-4"><%= community_name %> Podcast Episode</li>
+      <li class="ml-4"><%= community_name %> Tag</li>
+      <li class="ml-4"><%= community_name %> User Profile</li>
+      <li class="ml-4">asciinema</li>
+      <li class="ml-4">CodePen</li>
+      <li class="ml-4">CodeSandbox</li>
+      <li class="ml-4">DotNetFiddle</li>
+      <li class="ml-4">GitHub Gist, Issue or Repository</li>
+      <li class="ml-4">Glitch</li>
+      <li class="ml-4">Instagram</li>
+      <li class="ml-4">JSFiddle</li>
+      <li class="ml-4">JSitor</li>
+      <li class="ml-4">Loom</li>
+      <li class="ml-4">Kotlin</li>
+      <li class="ml-4">Medium</li>
+      <li class="ml-4">Next Tech</li>
+      <li class="ml-4">Reddit</li>
+      <li class="ml-4">Replit</li>
+      <li class="ml-4">Slideshare</li>
+      <li class="ml-4">Speaker Deck</li>
+      <li class="ml-4">SoundCloud</li>
+      <li class="ml-4">Spotify</li>
+      <li class="ml-4">StackBlitz</li>
+      <li class="ml-4">Stackery</li>
+      <li class="ml-4">Stack Exchange or Stack Overflow</li>
+      <li class="ml-4">Twitch</li>
+      <li class="ml-4">Twitter</li>
+      <li class="ml-4">Twitter timeline</li>
+      <li class="ml-4">Wikipedia</li>
+      <li class="ml-4">Vimeo</li>
+      <li class="ml-4">YouTube</li>
+    </ul>
+
+    <hr />
+
+    <h3>Supported Non-URL Embeds</h3>
+
+    <h4>Details</h4>
+    <p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
+    <p><code>{% details summary %} content {% enddetails %}</code></p>
+    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
+    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
+
+    <h4>KaTex</h4>
+    <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
+    <pre>{% katex %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+    <p>To render KaTeX inline add the "inline" option:</p>
+    <pre>{% katex inline %}<br> c = \pm\sqrt{a^2 + b^2}<br>{% endkatex %}<br></pre>
+
+    <h4>RunKit</h4>
+    <p>Put executable code within a runkit liquid block, as follows:</p>
+    <pre>{% runkit<br>// hidden setup JavaScript code goes in this preamble area<br>const hiddenVar = 42<br>%}<br>// visible, reader-editable JavaScript code goes here<br>console.log(hiddenVar)<br>{% endrunkit %}<br></pre>
+
+    <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
+      <h4><%= community_name %> User Subscriptions</h4>
+      <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
+      <p>You can add call-to-action text that will show above the subscribe button:</p>
+      <code>{% user_subscription If you'd like to receive future updates, subscribe below! %}</code>
+      <p class="fs-s">
+        If a reader is signed out, the button will prompt them to sign in first
+        to subscribe. If the reader is signed in, the button will prompt them
+        to subscribe.
+      </p>
+    <% end %>
+  </div>
+</div>

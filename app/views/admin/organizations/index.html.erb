@@ -1,6 +1,8 @@
+<h1 class="crayons-title mb-3">Organizations</h1>
+
 <%= form_tag(admin_organizations_path, method: "get") do %>
   <div class="inline-flex">
-    <%= search_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield") %>
+    <%= search_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-textfield", autocomplete: "off") %>
     <%= submit_tag("Search", class: "crayons-btn ml-2") %>
   </div>
 <% end %>

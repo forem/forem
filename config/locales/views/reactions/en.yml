@@ -11,6 +11,10 @@ en:
         thumbsdown: Thumbs down
         unicorn: Unicorn
         vomit: Flag
+        lightbulb: Lightbulb
+        raised_hands: Raised hands
+        rocket: Rocket
+      drawer_button: Add reaction
       summary:
         count_html:
           one: "%{count}%{start}\_reaction%{end}"
@@ -29,3 +33,6 @@ en:
         aria_label: Add to reading list
         icon: Save button
         text: Save
+      readinglist:
+        title: Save
+        aria_label: Add to reading list

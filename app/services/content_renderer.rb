@@ -6,10 +6,8 @@ class ContentRenderer
   class ContentParsingError < StandardError
   end
 
-  delegate :calculate_reading_time, to: :processed
-  delegate :content, :front_matter, to: :parsed_input
-
   attr_reader :input, :source, :user
+  attr_accessor :reading_time, :front_matter
 
   def initialize(input, source:, user:)
     @input = input || ""
@@ -17,40 +15,23 @@ class ContentRenderer
     @user = user
   end
 
-  def processed
-    @processed ||= processor.new(content, source: source, user: user)
-  # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
-  rescue StandardError => e
-    raise ContentParsingError, e.message
-  end
-
-  def finalize(link_attributes: {})
+  def process(link_attributes: {}, calculate_reading_time: false)
+    fixed = fixer.call(input)
+    parsed = front_matter_parser.call(fixed)
+    self.front_matter = parsed.front_matter
+    processed = processor.new(parsed.content, source: source, user: user)
+    self.reading_time = processed.calculate_reading_time if calculate_reading_time
     processed.finalize(link_attributes: link_attributes)
-  # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
   rescue StandardError => e
     raise ContentParsingError, e.message
   end
 
-  private
-
-  def fix(markdown)
-    fixer.call(markdown)
-  # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
-  rescue StandardError => e
-    raise ContentParsingError, e.message
-  end
-
-  def parse_front_matter(markdown)
-    front_matter_parser.call(markdown)
-  # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
-  rescue StandardError => e
-    raise ContentParsingError, e.message
-  end
-
-  def parsed_input
-    @parsed_input = parse_front_matter(fix(input))
-  # TODO: Replicating prior behaviour, but this swallows errors we probably shouldn't
-  rescue StandardError => e
-    raise ContentParsingError, e.message
+  def has_front_matter?
+    fixed = fixer.call(input)
+    parsed = front_matter_parser.call(fixed)
+    self.front_matter = parsed.front_matter
+    front_matter.any? && front_matter["title"].present?
+  rescue ContentRenderer::ContentParsingError
+    true
   end
 end
