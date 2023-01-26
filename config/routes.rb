@@ -55,6 +55,8 @@ Rails.application.routes.draw do
           put "unpublish", on: :member
         end
 
+        resources :pages, only: %i[index show]
+
         draw :api
       end
 
