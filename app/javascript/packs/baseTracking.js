@@ -139,6 +139,7 @@ function trackCustomImpressions() {
     const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
     const tokenMeta = document.querySelector("meta[name='csrf-token']")
     const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
+    // eslint-disable-next-line no-unused-vars
     const windowBigEnough =  window.innerWidth > 1023
 
     // page view
