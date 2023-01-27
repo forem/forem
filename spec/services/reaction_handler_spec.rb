@@ -7,14 +7,14 @@ RSpec.describe ReactionHandler, type: :service do
   # existing reaction = no-op
   # existing contradictory mod reaction
 
-  let(:user) { create :user }
-  let(:article) { create :article }
+  let(:user) { create(:user) }
+  let(:article) { create(:article) }
   let(:category) { "like" }
 
   let!(:other_category) { article.reactions.create! user: user, category: "hands" }
   let!(:other_existing) { article.reactions.create! user: create(:user), category: "like" }
 
-  let(:moderator) { create :user, :trusted }
+  let(:moderator) { create(:user, :trusted) }
   let!(:contradictory_mod) { article.reactions.create! user: moderator, category: "thumbsup" }
 
   let(:params) do
@@ -64,6 +64,13 @@ RSpec.describe ReactionHandler, type: :service do
       it "destroys the other reaction as a side-effect" do
         expect(result).to be_success
         expect(Reaction.ids).not_to include(contradictory_mod.id)
+      end
+    end
+
+    it "updates the last_reacted_at field" do
+      Timecop.freeze(Time.current) do
+        reaction_handler = described_class.new(params, current_user: user).create
+        expect(reaction_handler.reaction.user.last_reacted_at).to eq Time.current
       end
     end
   end
