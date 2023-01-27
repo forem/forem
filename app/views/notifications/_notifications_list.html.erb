@@ -2,7 +2,7 @@
   <div
     class="mb-2 spec-notification <%= "unseen" unless notification.read? %>"
     data-notification-id="<%= notification.id %>">
-    <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
+    <%= render notification, notification: notification %>
   </div>
 
   <% rescue => e %>

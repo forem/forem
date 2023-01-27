@@ -9,8 +9,18 @@ module NotificationsHelper
     "vomit" => "twemoji/suspicious.svg"
   }.freeze
 
-  def reaction_image(category)
-    REACTION_IMAGES[category]
+  def reaction_image(slug)
+    if FeatureFlag.enabled?(:multiple_reactions)
+      if (category = ReactionCategory[slug])
+        "#{category.icon}.svg"
+      end
+    else
+      REACTION_IMAGES[category]
+    end
+  end
+
+  def reaction_category_name(slug)
+    ReactionCategory[slug]&.name.presence || "unknown"
   end
 
   def message_user_acted_maybe_org(data, action, if_org: "")
