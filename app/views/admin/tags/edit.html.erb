@@ -12,7 +12,7 @@
 <div class="grid gap-6">
   <div class="crayons-card p-6">
     <div class="crayons-card__header">
-      <h4 class="crayons-card__headline">Moderators</h4>
+      <h2 class="crayons-subtitle-1">Moderators</h2>
     </div>
     <div class="crayons-card__body flex flex-col gap-2">
       <% if @tag_moderators.exists? %>
@@ -43,7 +43,7 @@
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h4>Edit details</h4>
+    <h2 class="crayons-subtitle-1">Edit details</h2>
     <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
   </div>
 </div>
