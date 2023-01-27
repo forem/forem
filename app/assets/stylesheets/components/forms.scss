@@ -66,6 +66,10 @@
     display: none;
   }
 
+  &::-webkit-date-and-time-value {
+    min-height: 1.5em;
+  }
+
   &--icon {
     padding-left: var(--su-7);
   }
