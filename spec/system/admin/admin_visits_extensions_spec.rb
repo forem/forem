@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin visits extentions page", type: :system do
+RSpec.describe "Admin visits extentions page" do
   let(:super_admin) { create(:user, :super_admin) }
 
   before do

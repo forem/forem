@@ -13,8 +13,8 @@ module Admin
     end
 
     def corresponding_menu_item
-      return unless deduced_scope(request).present?
-      return unless deduced_controller(request).present?
+      return if deduced_scope(request).blank?
+      return if deduced_controller(request).blank?
 
       AdminMenu.nested_menu_items(deduced_scope(request), deduced_controller(request))
     end
