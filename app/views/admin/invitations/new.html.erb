@@ -21,7 +21,7 @@
 <% end %>
 
 <% if smtp_enabled %>
-  <h1 class="fw-heavy fs-3xl">Invite Users</h1>
+  <h1 class="crayons-title">Invite Users</h1>
   <%= form_for(User.new, url: admin_invitations_path) do |f| %>
     <div class="crayons-field mt-6">
       <%= f.label :email, class: "crayons-field__label" %>

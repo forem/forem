@@ -31,16 +31,16 @@
   data-article-pinned-modal-ok-button-id-value="article-pin-modal-ok"
   data-action="article-pinned-modal:open@document->article-pinned-modal#openModal">
 
-  <% if @pinned_article.present? %>
+  <% unless @pinned_article.present? %>
     <div class="crayons-card crayons-card--elevated p-2">
-      <h2 class="crayons-subtitle-2 flex gap-2 items-center mb-2 p-2"><%= crayons_icon_tag("pin.svg") %> Pinned Article</h2>
+      <h2 class="crayons-subtitle-1 flex gap-2 items-center mb-2 p-2"><%= crayons_icon_tag("pin.svg") %> Pinned Article</h2>
       <%= render partial: "individual_article", locals: { article: @pinned_article } %>
     </div>
   <% end %>
 
-  <% if @featured_articles.present? %>
+  <% unless @featured_articles.present? %>
     <div class="crayons-card p-3">
-      <h2 class="crayons-subtitle-2 flex gap-2 items-center mb-2">Manually Featured Articles</h2>
+      <h2 class="crayons-subtitle-1 flex gap-2 items-center mb-2">Manually Featured Articles</h2>
       <%= render partial: "individual_article", collection: @featured_articles, as: :article %>
     </div>
   <% end %>
