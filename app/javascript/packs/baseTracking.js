@@ -51,7 +51,8 @@ function trackGoogleAnalytics4() {
       if (window.google_tag_manager) {
         //Define the gtag function and call it. Adapted from https://stackoverflow.com/questions/22716542/google-analytics-code-explanation %>
         window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
+        // eslint-disable-next-line no-inner-declarations
+        function gtag(){window.dataLayer.push(arguments);}
 
         window['gtag'] = window['gtag'] || function () {
           window.dataLayer.push(arguments)
