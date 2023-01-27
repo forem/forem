@@ -241,6 +241,23 @@
   }
 }
 
+// This overrides some of the styles for the temporarily feature-flaged
+.reaction-drawer .crayons-reaction {
+  border: 1px solid var(--card-bg);
+  flex-direction: column;
+
+  &.user-activated {
+    background-color: var(--body-bg);
+    border: 1px solid #d4d4d4;
+    border-radius: 20px;
+
+    .crayons-reaction__icon--active {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+}
+
 .user-animated {
   .crayons-reaction__icon {
     position: relative;
@@ -347,5 +364,109 @@
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     color: var(--card-color-tertiary);
+  }
+}
+
+// TODO: The drawer__outer contains the trigger button and the drawer itself,
+// enabling hover, however this then requires the __outer wrapping div to be
+// styled similarly to the other action buttons in the sidebar, which we can
+// clean up significantly *after* the multiple_reactions feature flag is
+// fully rolled-out.
+.reaction-drawer__outer {
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  &.open .reaction-drawer {
+    display: block;
+  }
+
+  .hidden {
+    display: none;
+  }
+}
+
+.reaction-drawer {
+  min-width: auto;
+  border-radius: 32px;
+  position: absolute;
+  top: -80px;
+  left: 15px;
+  display: none; // Initially hidden
+
+  // Copying from Dropdown for now
+  padding: var(--su-2);
+  min-width: 250px;
+  margin-top: var(--su-1);
+  z-index: var(--z-dropdown);
+  background: var(--card-bg);
+  color: var(--card-color);
+  box-shadow: var(--shadow-1);
+  border-radius: var(--radius);
+
+  flex-direction: column;
+
+  @media (min-width: $breakpoint-s) {
+    max-width: 360px;
+    width: max-content;
+    top: -5px;
+    left: 55px;
+  }
+
+  .crayons-reaction__count {
+    min-width: auto;
+    margin-left: 0;
+    display: block;
+  }
+}
+
+.reaction-drawer__outer:hover .reaction-drawer {
+  @media (min-width: $breakpoint-m) {
+    display: block;
+  }
+}
+
+.reaction-drawer__container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--su-3);
+}
+
+.multiple_reactions_engagement {
+  padding: 0.5em 0;
+
+  span {
+    margin-right: 1em;
+  }
+  svg {
+    display: inline-block;
+  }
+}
+
+.multiple_reactions_aggregate {
+  padding-right: 1em;
+
+  .crayons_icon_container {
+    display: inline-block;
+    background-color: var(--body-bg);
+    border-radius: 15px;
+    margin-right: -0.75em;
+    width: 24px;
+    height: 24px;
+  }
+
+  svg {
+    margin: 3px 3px;
+  }
+
+  .aggregate_reactions_counter {
+    margin-left: 0.75em;
   }
 }

@@ -335,6 +335,7 @@
   }
 
   .introduction-title {
+    color: var(--base-inverted);
     font-size: var(--fs-2xl);
     font-weight: var(--fw-heavy);
     line-height: var(--lh-tight);
@@ -346,6 +347,7 @@
   }
 
   .introduction-subtitle {
+    color: var(--base-inverted);
     font-size: var(--fs-l);
     font-weight: var(--fw-normal);
     line-height: var(--lh-base);
@@ -458,6 +460,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
   .user-name,
   .user-summary {
+    color: var(--base);
     margin: 0;
     line-height: var(--lh-tight);
 
@@ -549,7 +552,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
     &:hover,
     &:focus-within {
-      background-color: #eef0f1 !important;
+      background-color: var(--content-row-hover-bg) !important;
     }
   }
 

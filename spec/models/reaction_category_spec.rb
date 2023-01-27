@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ReactionCategory, type: :model do
+RSpec.describe ReactionCategory do
   let(:attributes_hash) do
     {
       "slug" => "lol",
@@ -17,12 +17,13 @@ RSpec.describe ReactionCategory, type: :model do
   end
 
   it "lists all category slugs" do
-    expect(described_class.all_slugs).to contain_exactly(*%i[like unicorn readinglist hands thinking thumbsup
-                                                             thumbsdown vomit])
+    expect(described_class.all_slugs).to contain_exactly(*%i[exploding-head fire hands like
+                                                             raised_hands readinglist thinking
+                                                             thumbsdown thumbsup unicorn vomit])
   end
 
   it "lists public categories" do
-    expect(described_class.public).to contain_exactly(*%i[like readinglist unicorn])
+    expect(described_class.public).to contain_exactly(*%i[like unicorn raised_hands fire exploding-head])
   end
 
   it "lists privileged categories" do

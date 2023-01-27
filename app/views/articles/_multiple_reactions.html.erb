@@ -1,0 +1,61 @@
+
+<div class="reaction-drawer__outer hoverdown" style="">
+  <button
+    id="reaction-drawer-trigger"
+    aria-label="reaction-drawer-trigger"
+    aria-pressed="false"
+    class="hoverdown-trigger crayons-reaction pseudo-reaction crayons-tooltip__activator relative">
+      <span class="crayons-reaction__icon crayons-reaction__icon--inactive" style="width: 40px; height: 40px">
+        <%= image_tag "heart-plus.svg", aria_hidden: true, height: 24, width: 24 %>
+      </span>
+      <span class="crayons-reaction__icon crayons-reaction__icon--active" style="width: 40px; height: 40px">
+        <%= image_tag "heart-plus-active.svg", aria_hidden: true, height: 24, width: 24 %>
+      </span>
+      <span class="crayons-reaction_total_count" id="reaction_total_count">
+        <%= @article.public_reactions_count %>
+      </span>
+      <span data-testid="tooltip" class="crayons-tooltip__content">
+        <%= t("views.reactions.drawer_button") %>
+      </span>
+  </button>
+
+  <div class="reaction-drawer" aria-expanded="false">
+    <div class="reaction-drawer__container">
+      <% ReactionCategory.for_view.each do |reaction_type| %>
+        <%= render partial: "articles/multireaction_button",
+                   locals: {
+                     category: reaction_type.slug.to_sym,
+                     description: reaction_type.name,
+                     image_path: "#{reaction_type.icon}.svg",
+                     image_active_path: "#{reaction_type.icon}.svg",
+                     aria_label: reaction_type.name
+                   } %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<button
+  id="reaction-butt-comment"
+  aria-label="<%= t("views.articles.jump_to_comments.aria_label") %>"
+  aria-pressed="false"
+  class="crayons-reaction crayons-reaction--comment crayons-tooltip__activator relative"
+  data-category="comment">
+    <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+      <%= crayons_icon_tag("comment.svg", aria_hidden: true) %>
+    </span>
+    <span class="crayons-reaction__count" id="reaction-number-comment"><%= @article.comments_count %></span>
+
+    <span data-testid="tooltip" class="crayons-tooltip__content">
+      <%= t("views.articles.jump_to_comments.label") %>
+    </span>
+</button>
+
+<%= render partial: "articles/reaction_button",
+           locals: {
+             category: :readinglist,
+             description: t("views.reactions.readingList.title"),
+             image_path: "save.svg",
+             image_active_path: "save-filled.svg",
+             aria_label: t("views.reactions.readingList.aria_label")
+           } %>
