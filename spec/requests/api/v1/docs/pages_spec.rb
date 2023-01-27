@@ -59,9 +59,7 @@ RSpec.describe "api/v1/pages" do
             template: {
               type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
               description: "Controls what kind of layout the page is rendered in"
-            },
-
-            required: %w[title slug description template]
+            }
           }
         }
         let(:page) do
