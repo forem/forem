@@ -115,6 +115,7 @@ function eventListening(){
   }
 }
 
+// eslint-disable-next-line no-unused-vars
 function ga4eventListening(){
   const registerNowButt = document.getElementById("cta-comment-register-now-link");
   if (registerNowButt) {
