@@ -55,7 +55,7 @@
         </div>
 
         <div class="w-25 max-w-25 px-4">
-          <h3 class="report__tags">
+          <h3 class="crayons-subtitle-2 report__tags">
             <span class="c-indicator c-indicator--warning float-right"><%= feedback_message.category.titleize %></span>
           </h3>
         </div>
@@ -151,14 +151,14 @@
       </div>
       <div class="flex flex-wrap -mx-4 my-3">
         <div class="w-100 max-w-100 px-4">
-          <h3>Status:</h3>
+          <h3 class="crayons-subtitle-2">Status:</h3>
           <%= f.select :status, %w[Open Invalid Resolved], {}, id: "status__#{feedback_message.id}" %>
           <button class="c-btn c-btn--primary block mt-3" type="button" id="save__status__<%= feedback_message.id %>">Save Status</button>
         </div>
       </div>
       <div class="flex flex-wrap -mx-4 my-3">
         <div class="w-100 max-w-100 px-4">
-          <h3>Notes:</h3>
+          <h3 class="crayons-subtitle-2">Notes:</h3>
           <div id="notes__<%= feedback_message.id %>">
             <% feedback_message.notes&.order(:created_at)&.each do |note| %>
               <div class="notes__border my-2 p-2">
