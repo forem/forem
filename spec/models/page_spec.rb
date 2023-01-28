@@ -61,6 +61,13 @@ RSpec.describe Page, type: :model do
       expect(page.errors[:slug].to_s.include?("taken")).to be true
     end
 
+    it "takes page slug into account" do
+      create(:page, slug: "benapage")
+      page = build(:page, slug: "benapage")
+      expect(page).not_to be_valid
+      expect(page.errors[:slug].to_s.include?("taken")).to be true
+    end
+
     it "takes sitemap into account" do
       page = build(:page, slug: "sitemap-hey")
       expect(page).not_to be_valid
