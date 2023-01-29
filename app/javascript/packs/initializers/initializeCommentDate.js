@@ -2,7 +2,6 @@
 /* global addLocalizedDateTimeToElementsTitles */
 
 export function initializeCommentDate() {
-  console.log("Initializing CommentDate");
   const commentsDates = document.querySelectorAll('.comment-date time');
 
   if (commentsDates) {
