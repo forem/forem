@@ -40,7 +40,7 @@
               image_path = reaction_image(category)
               if image_path.present?
                 "<span class='crayons-hover-tooltip inline-block' data-tooltip='#{reaction_category_name(category)}'>
-                  #{crayons_icon_tag(image_path, native: true, class: "reaction-image mx-1 my-1 reaction-icon--#{category}")}
+                  #{crayons_icon_tag(image_path, force_unique: true, native: true, class: "reaction-image mx-1 my-1 reaction-icon--#{category}")}
                 </span>".html_safe
               end
             end, "\n"
