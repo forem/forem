@@ -125,10 +125,10 @@ class NotificationDecorator < ApplicationDecorator
   private
 
   def action_inquirer
-    @action_inquirer ||= ActiveSupport::StringInquirer.new(action.downcase)
+    @action_inquirer ||= ActiveSupport::StringInquirer.new(action&.downcase || "")
   end
 
   def type_inquirer
-    @type_inquirer ||= ActiveSupport::StringInquirer.new(notifiable_type.downcase)
+    @type_inquirer ||= ActiveSupport::StringInquirer.new(notifiable_type&.downcase || "")
   end
 end
