@@ -20,7 +20,7 @@
   <div class="notification__content pt-2">
     <%= t("views.notifications.reacted.verb_html",
           count: notification.actors.size,
-          start: tag("span", { class: %w[inline-block py-1] }, true), # rubocop:disable Rails/ContentTag
+          start: tag("span", { class: %w[inline-block py-1] }, true),
           actors: if notification.actors.size == 1
                     link_to notification.actors.first["name"], notification.actors.first["path"], class: "crayons-link fw-bold"
                   elsif notification.actors.size == 2
