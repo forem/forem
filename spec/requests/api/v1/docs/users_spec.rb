@@ -14,7 +14,6 @@ RSpec.describe "Api::V1::Docs::Users" do
   let(:comment) { create(:comment, user: banned_user, article: article) }
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
     user.add_role(:admin)
   end
 

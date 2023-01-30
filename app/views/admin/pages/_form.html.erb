@@ -17,7 +17,7 @@
       </div>
       <div class="crayons-field">
         <%= form.label :slug, class: "crayons-field__label" %>
-        <%= form.text_field :slug, class: "crayons-textfield", pattern: "^[0-9a-z\-_]*$", required: true %>
+        <%= form.text_field :slug, class: "crayons-textfield", pattern: "^[0-9a-z-_]*$", required: true %>
       </div>
       <div class="crayons-field">
         <%= form.label :description, class: "crayons-field__label" %>
@@ -125,7 +125,7 @@ function showBodyFields() {
     // hide all optional elements
     document.querySelectorAll('.optional').forEach(el => el.style.display = 'none');
 
-    document.querySelectorAll("select").forEach(el => {      
+    document.querySelectorAll("select").forEach(el => {
       if (el.options[el.selectedIndex].value == "json") {
         document.querySelectorAll('.json').forEach(el => el.style.display = 'block');
       } else {

@@ -446,12 +446,10 @@ class Article < ApplicationRecord
 
   def has_frontmatter?
     if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
-      front_matter.any? && front_matter["title"].present?
+      processed_content.has_front_matter?
     else
       original_has_frontmatter?
     end
-  rescue ContentRenderer::ContentParsingError
-    true
   end
 
   def original_has_frontmatter?
@@ -637,8 +635,6 @@ class Article < ApplicationRecord
     @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
   end
 
-  delegate :front_matter, to: :processed_content
-
   def evaluate_markdown
     if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
       extracted_evaluate_markdown
@@ -648,13 +644,16 @@ class Article < ApplicationRecord
   end
 
   def extracted_evaluate_markdown
-    return unless processed_content
+    content_renderer = processed_content
+    return unless content_renderer
 
-    self.reading_time = processed_content.calculate_reading_time
-    self.processed_html = processed_content.finalize
+    self.processed_html = content_renderer.process(calculate_reading_time: true)
+    self.reading_time = content_renderer.reading_time
+
+    front_matter = content_renderer.front_matter
 
     if front_matter.any?
-      evaluate_front_matter
+      evaluate_front_matter(front_matter)
     elsif tag_list.any?
       set_tag_list(tag_list)
     end
@@ -730,8 +729,7 @@ class Article < ApplicationRecord
     Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
-  # TODO: The param can be removed after with FeatureFlag :consistent_rendering
-  def evaluate_front_matter(hash = front_matter)
+  def evaluate_front_matter(hash)
     self.title = hash["title"] if hash["title"].present?
     set_tag_list(hash["tags"]) if hash["tags"].present?
     self.published = hash["published"] if %w[true false].include?(hash["published"].to_s)
@@ -739,7 +737,7 @@ class Article < ApplicationRecord
     self.published_at = hash["published_at"] if hash["published_at"]
     self.published_at ||= parse_date(hash["date"]) if published
 
-    set_main_image
+    set_main_image(hash)
     self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
     update_description = hash["description"].present? || hash["title"].present?
@@ -749,13 +747,13 @@ class Article < ApplicationRecord
     self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
   end
 
-  def set_main_image
+  def set_main_image(hash)
     # At one point, we have set the main_image based on the front matter. Forever will that now dictate the behavior.
     if main_image_from_frontmatter?
-      self.main_image = front_matter["cover_image"]
-    elsif front_matter.key?("cover_image")
+      self.main_image = hash["cover_image"]
+    elsif hash.key?("cover_image")
       # They've chosen the set cover image in the front matter, so we'll proceed with that assumption.
-      self.main_image = front_matter["cover_image"]
+      self.main_image = hash["cover_image"]
       self.main_image_from_frontmatter = true
     end
   end

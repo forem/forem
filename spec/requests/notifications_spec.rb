@@ -5,7 +5,7 @@ RSpec.describe "NotificationsIndex" do
 
   let(:staff_account) { create(:user) }
   let(:mascot_account) { create(:user) }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, last_reacted_at: 2.days.ago) }
   let(:organization) { create(:organization) }
 
   before do
