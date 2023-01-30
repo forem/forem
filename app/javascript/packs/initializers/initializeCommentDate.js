@@ -1,5 +1,4 @@
-/* Show comment date/time according to user's locale */
-/* global addLocalizedDateTimeToElementsTitles */
+import { addLocalizedDateTimeToElementsTitles } from "../../utilities/localDateTime";
 
 export function initializeCommentDate() {
   const commentsDates = document.querySelectorAll('.comment-date time');
