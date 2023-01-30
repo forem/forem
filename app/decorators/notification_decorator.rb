@@ -101,6 +101,11 @@ class NotificationDecorator < ApplicationDecorator
     @reaction_categories ||= siblings.pluck("category")
   end
 
+  # NOTE: Using *siblings*, not json_data, via reaction_categories
+  def unique_reaction_categories
+    @unique_reaction_categories ||= reaction_categories.uniq
+  end
+
   def user_id
     @user_id ||= json_data.dig "user", "id"
   end
