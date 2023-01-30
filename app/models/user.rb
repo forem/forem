@@ -539,10 +539,6 @@ class User < ApplicationRecord
     notification_setting.welcome_notifications
   end
 
-  def subscribed_to_mod_roundrobin_notifications?
-    notification_setting.mod_roundrobin_notifications
-  end
-
   def subscribed_to_email_follower_notifications?
     notification_setting.email_follower_notifications
   end
