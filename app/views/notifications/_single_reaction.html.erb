@@ -19,6 +19,8 @@
           title: title_link,
           end: "",
           reactions: tag.span(crayons_icon_tag(reaction_image(notification.reaction_category),
+                                               native: true,
+                                               force_unique: true,
                                                class: "reaction-image mx-1 reaction-icon--#{notification.reaction_category}",
                                                title: t("views.reactions.category.#{notification.reaction_category}")))) %>
   </div>
