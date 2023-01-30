@@ -1,5 +1,5 @@
 module Notifications
-  class ModerationNotificationWorker
+  class CreateRoundRobinModerationNotificationsWorker
     include Sidekiq::Job
 
     sidekiq_options queue: :medium_priority, retry: 10
