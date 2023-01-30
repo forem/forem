@@ -53,8 +53,6 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
-
-      // initializeRuntimeDependantFeatures();
     }
   }, 1);
 
