@@ -11,11 +11,13 @@ module NotificationsHelper
 
   def reaction_image(slug)
     if FeatureFlag.enabled?(:multiple_reactions)
-      if (category = ReactionCategory[slug])
+      if (category = ReactionCategory[slug] || ReactionCategory["like"])
         "#{category.icon}.svg"
       end
     else
-      REACTION_IMAGES[category]
+      # This is mostly original behavior, pre-multiple_reactions, modified to return
+      # a "like" image if the actual reaction is one of the new ones
+      REACTION_IMAGES[category] || REACTION_IMAGES["like"]
     end
   end
 
