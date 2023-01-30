@@ -7,7 +7,7 @@ module Notifications
     MODERATOR_SAMPLE_SIZE = 4
 
     def perform(notifiable_id)
-      random_moderators = Notifications::Moderation.available_moderators.order(Arel.sql("RANDOM()"))
+      random_moderators = Users::SelectModeratorsQuery.call.order(Arel.sql("RANDOM()"))
         .first(MODERATOR_SAMPLE_SIZE)
       return unless random_moderators.any?
 
