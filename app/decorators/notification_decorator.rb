@@ -70,7 +70,9 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def reaction?
-    type_inquirer.reaction? || (type_inquirer.article? && action_inquirer.reaction?)
+    type_inquirer.reaction? ||
+      (type_inquirer.article? && action_inquirer.reaction?) ||
+      (type_inquirer.comment? && action_inquirer.reaction?)
   end
 
   # TODO: This is an odd one - contrast with reactable_type?
