@@ -66,7 +66,7 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def multiple_reactors?
-    actors.size == 1
+    actors.size > 1
   end
 
   def reaction?
