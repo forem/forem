@@ -4,7 +4,7 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(display_ads:, area:, user_signed_in:, article_tags:)
+    def initialize(display_ads:, area:, user_signed_in:, article_tags: [])
       @filtered_display_ads = display_ads
       @area = area
       @user_signed_in = user_signed_in
