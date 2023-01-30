@@ -23,6 +23,21 @@ module NotificationsHelper
     ReactionCategory[slug]&.name.presence || "unknown"
   end
 
+  def render_each_or_error(notifications, error:, &block)
+    notifications.each do |notification|
+      concat render_notification(notification, error: error, &block)
+    end
+  end
+
+  def render_notification(notification, error:)
+    capture { yield(notification) }
+  rescue StandardError => e
+    raise if Rails.env.development?
+
+    Honeybadger.notify(e, context: { notification_id: notification.id })
+    capture { render error }
+  end
+
   def message_user_acted_maybe_org(data, action, if_org: "")
     key_to_link = ->(key) { link_to(data[key]["name"], data[key]["path"], class: "crayons-link fw-bold") }
     if if_org.present?
