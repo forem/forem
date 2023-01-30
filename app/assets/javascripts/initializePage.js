@@ -7,11 +7,11 @@
   initializeCommentPreview, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
-  initializeProfileInfoToggle, initializePodcastPlayback,
-  initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
-  initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
-  nextPage:writable, fetching:writable, done:writable, 
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
+  initializeProfileInfoToggle, initializeDrawerSliders,
+  initializeProfileBadgesToggle, initializeHeroBannerClose,
+  initializeOnboardingTaskCard, initScrolling, nextPage:writable,
+  fetching:writable, done:writable, initializePaymentPointers,
+  initializeBroadcast, initializeDateHelpers
 */
 
 function callInitializers() {
@@ -36,27 +36,6 @@ function callInitializers() {
   initializeDateHelpers();
 }
 
-// This is a helper function that mitigates a race condition happening in JS
-// when this intializer runs before `base.jsx` gets to load the
-// window.Forem / window.Forem.Runtime utility class we depend on for
-// podcast/video playback
-function initializeRuntimeDependantFeatures() {
-  if (window.Forem && window.Forem.Runtime) {
-    // The necessary helper functions are available so we can initialize
-    // Podcast/Video playback
-    initializePodcastPlayback();
-    initializeVideoPlayback();
-
-    // Initialize data-runtime context to the body data-attribute
-    document.body.dataset.runtime = window.Forem.Runtime.currentContext();
-  } else {
-    // window.Forem or window.Forem.Runtime isn't available in the context yet
-    // so we need to wait for it to exist. It's loaded here:
-    // https://github.com/forem/forem/blob/main/app/javascript/packs/base.jsx#L20
-    setTimeout(initializeRuntimeDependantFeatures, 200);
-  }
-}
-
 function initializePage() {
   initializeLocalStorageRender();
   initializeBodyData();
@@ -75,7 +54,7 @@ function initializePage() {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
 
-      initializeRuntimeDependantFeatures();
+      // initializeRuntimeDependantFeatures();
     }
   }, 1);
 
