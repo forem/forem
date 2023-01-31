@@ -88,7 +88,7 @@ Rails.application.configure do
     config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
   end
   if (uffizzi_url = ENV.fetch("UFFIZZI_URL", nil))
-    config.hosts << /.*#{URI.parse(uffizzi_url).host}/
+    config.hosts << URI.parse(uffizzi_url).host
   end
   config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:3000")
 
