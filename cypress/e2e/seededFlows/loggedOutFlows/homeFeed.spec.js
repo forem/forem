@@ -14,9 +14,10 @@ describe('Logged out Home feed', () => {
     cy.findAllByTestId('profile-preview-card')
       .first()
       .within(() => {
+        cy.focused().should('have.attr', 'href', '/admin_mcadmin');
         cy.findByRole('link', {
           name: 'Admin McAdmin',
-        }).should('have.focus');
+        });
 
         // Check all the expected user data sections are present
         cy.findByText('Admin user summary');
