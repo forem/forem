@@ -1,4 +1,4 @@
-<% render_each_or_error @notifications, error: "notifications/shared/error" do |notification| %>
+<% render_each_notification_or_error @notifications, error: "notifications/shared/error" do |notification| %>
   <div
     class="mb-2 spec-notification <%= "unseen" unless notification.read? %>"
     data-notification-id="<%= notification.id %>">

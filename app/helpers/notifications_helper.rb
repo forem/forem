@@ -25,13 +25,13 @@ module NotificationsHelper
     ReactionCategory[slug]&.name.presence || "unknown"
   end
 
-  def render_each_or_error(notifications, error:, &block)
+  def render_each_notification_or_error(notifications, error:, &block)
     notifications.each do |notification|
-      concat render_notification(notification, error: error, &block)
+      concat render_notification_or_error(notification, error: error, &block)
     end
   end
 
-  def render_notification(notification, error:)
+  def render_notification_or_error(notification, error:)
     capture { yield(notification) }
   rescue StandardError => e
     raise if Rails.env.development?
