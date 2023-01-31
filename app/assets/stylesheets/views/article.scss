@@ -169,10 +169,7 @@
 
   &__icon {
     padding: var(--su-2);
-    box-shadow: var(--reaction-border);
-    background: var(--reaction-bg);
     color: var(--reaction-color);
-    border-radius: 50%;
     transition: all var(--transition-props);
 
     &--active {
