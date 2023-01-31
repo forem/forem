@@ -1,6 +1,6 @@
 <h2 class="crayons-subtitle-1"><%= t("views.admin.users.reports.subtitle", user: @user.name, num: @related_reports.count) %></h2>
 
-<% if @related_reports.empty? %>
+<% unless @related_reports.empty? %>
   <div class="pt-3">
     <% @related_reports.each do |report| %>
       <article class="c-list-item c-list-item--interactive flex justify-between gap-4">
