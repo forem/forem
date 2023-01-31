@@ -26,8 +26,9 @@ module Admin
         checked_code_of_conduct: @creator_settings_form.checked_code_of_conduct,
         checked_terms_and_conditions: @creator_settings_form.checked_terms_and_conditions,
       )
+      @creator_settings_form.save
 
-      if @creator_settings_form.save
+      if @creator_settings_form.success
         current_user.update!(saw_onboarding: true)
         redirect_to root_path
       else
