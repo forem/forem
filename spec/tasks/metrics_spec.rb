@@ -1,10 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Metrics Overview task", type: :task do
-  before do
-    Rake::Task.clear
-    PracticalDeveloper::Application.load_tasks
-  end
+  before { Rake.application["fastly:update_configs"].reenable }
 
   describe "#overview" do
     let(:event_name) { "Admin Overview Link Clicked" }
