@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Editor", type: :request do
+RSpec.describe "Editor" do
   describe "GET /new" do
     subject(:request_call) { get new_path }
 

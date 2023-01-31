@@ -30,7 +30,7 @@
           </td>
           <td><%= script.created_at %></td>
           <td id="data_update_script_<%= script.id %>_run_at" class="whitespace-nowrap"><%= script.run_at %></td>
-          <td id="data_update_script_<%= script.id %>_status" class="data_update_script__status justify-content-center">
+          <td id="data_update_script_<%= script.id %>_status" class="data_update_script__status justify-center">
             <%= script.status %>
             <% if script.error.present? %>
               <div id="data_update_script_<%= script.id %>_error" class="fs-xs"><%= script.error %></div>

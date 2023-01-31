@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController", type: :request do
+RSpec.describe "IncomingWebhooks::MailchimpUnsubscribesController" do
   let(:user) { create(:user, :with_newsletters) }
   let(:secret) { "secret" }
 

@@ -7,11 +7,16 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
+                    # After FeatureFlag :multiple_reactions, this could change to:
+                    # ReactionCategory[model.category].visible_to_public?
+                    public_reaction_types.include?(model.category.to_s) ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
-  scope :public_category, -> { where(category: ReactionCategory.public.map(&:to_s)) }
+  scope :public_category, lambda {
+    categories = public_reaction_types
+    where(category: categories)
+  }
 
   # Be wary, this is all things on the reading list, but for an end
   # user they might only see readinglist items that are published.
@@ -44,7 +49,7 @@ class Reaction < ApplicationRecord
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
-  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
+  before_destroy :update_reactable, unless: :destroyed_by_association
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
@@ -55,10 +60,8 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        reaction_types = %w[like readinglist]
-        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
-          reaction_types << "unicorn"
-        end
+        reaction_types = public_reaction_types
+        reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -73,6 +76,27 @@ class Reaction < ApplicationRecord
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
+    end
+
+    def public_reaction_types
+      if FeatureFlag.enabled?(:multiple_reactions)
+        reaction_types = ReactionCategory.public.map(&:to_s) - ["readinglist"]
+      else
+        # used to include "readinglist" but that's not correct now, even without the feature flag
+        # we aren't going to re-process these, they will gradually correct over time
+        reaction_types = %w[like]
+        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
+          reaction_types << "unicorn"
+        end
+      end
+
+      reaction_types
+    end
+
+    def for_analytics
+      reaction_types = public_reaction_types
+      reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+      where(category: reaction_types)
     end
 
     # @param user [User] the user who might be spamming the system
@@ -168,10 +192,6 @@ class Reaction < ApplicationRecord
 
   def bust_reactable_cache_without_delay
     Reactions::BustReactableCacheWorker.new.perform(id)
-  end
-
-  def update_reactable_without_delay
-    Reactions::UpdateRelevantScoresWorker.new.perform(id)
   end
 
   def reading_time

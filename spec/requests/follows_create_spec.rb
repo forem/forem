@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Follows #create", type: :request do
+RSpec.describe "Follows #create" do
   let(:user) { create(:user) }
   let(:user_2) { create(:user) }
   let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }

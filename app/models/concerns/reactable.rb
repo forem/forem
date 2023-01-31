@@ -8,4 +8,8 @@ module Reactable
   def sync_reactions_count
     update_column(:public_reactions_count, reactions.public_category.size)
   end
+
+  def reaction_categories
+    reactions.distinct(:category).pluck(:category)
+  end
 end

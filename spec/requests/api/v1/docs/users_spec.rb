@@ -14,7 +14,6 @@ RSpec.describe "Api::V1::Docs::Users" do
   let(:comment) { create(:comment, user: banned_user, article: article) }
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
     user.add_role(:admin)
   end
 
@@ -25,7 +24,7 @@ RSpec.describe "Api::V1::Docs::Users" do
         description "This endpoint allows the client to retrieve a single user, either by id
 or by the user's username.
 
-For complete documentumenation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser"
+For complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser"
         operationId "getUser"
         produces "application/json"
         parameter name: :id, in: :path, required: true, type: :string

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserNotificationSettings", type: :request do
+RSpec.describe "UserNotificationSettings" do
   let(:user) { create(:user) }
 
   before { sign_in user }
