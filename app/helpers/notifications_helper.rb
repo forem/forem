@@ -17,7 +17,7 @@ module NotificationsHelper
     else
       # This is mostly original behavior, pre-multiple_reactions, modified to return
       # a "like" image if the actual reaction is one of the new ones
-      REACTION_IMAGES[category] || REACTION_IMAGES["like"]
+      REACTION_IMAGES[slug] || REACTION_IMAGES["like"]
     end
   end
 
