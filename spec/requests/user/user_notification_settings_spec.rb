@@ -18,23 +18,23 @@ RSpec.describe "UserNotificationSettings" do
     it "enables community-success notifications" do
       put users_notification_settings_path(user.notification_setting.id),
           params: { users_notification_setting: { tab: "notifications", mod_roundrobin_notifications: 1 } }
-      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(true)
+      expect(user.notification_setting.reload.mod_roundrobin_notifications).to be(true)
     end
 
     it "disables community-success notifications" do
       put users_notification_settings_path(user.notification_setting.id),
           params: { users_notification_setting: { tab: "notifications", mod_roundrobin_notifications: 0 } }
-      expect(user.reload.subscribed_to_mod_roundrobin_notifications?).to be(false)
+      expect(user.notification_setting.reload.mod_roundrobin_notifications).to be(false)
     end
 
     it "can toggle welcome notifications" do
       put users_notification_settings_path(user.notification_setting.id),
           params: { users_notification_setting: { tab: "notifications", welcome_notifications: 0 } }
-      expect(user.reload.subscribed_to_welcome_notifications?).to be(false)
+      expect(user.notification_setting.reload.subscribed_to_welcome_notifications?).to be(false)
 
       put users_notification_settings_path(user.notification_setting.id),
           params: { users_notification_setting: { tab: "notifications", welcome_notifications: 1 } }
-      expect(user.reload.subscribed_to_welcome_notifications?).to be(true)
+      expect(user.notification_setting.reload.subscribed_to_welcome_notifications?).to be(true)
     end
   end
 

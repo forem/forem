@@ -39,7 +39,7 @@ function showUserReaction(reactionName, animatedClass) {
   );
 
   // the rest only applies to multiple reactions feature flag
-  if (!reactionDrawerButton) {
+  if (!reactionDrawerButton || reactionName == 'readinglist') {
     return;
   }
 
