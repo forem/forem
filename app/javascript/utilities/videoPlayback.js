@@ -28,8 +28,8 @@ export function initializeVideoPlayback() {
   function getParameterByName(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
-    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`),
-      results = regex.exec(url);
+    const regex = new RegExp(`[?&]${name}(=([^&#]*)|&|#|$)`);
+    const results = regex.exec(url);
     if (!results) return null;
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
@@ -42,10 +42,9 @@ export function initializeVideoPlayback() {
     } else if (hms.length < 6) {
       a = hms.split(':');
       return (hms = +a[0] * 60 + +a[1]);
-    } 
-      a = hms.split(':');
-      return (hms = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]);
-    
+    }
+    a = hms.split(':');
+    return (hms = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]);
   }
 
   function videoPlayerEvent(isPlaying) {
