@@ -1,17 +1,17 @@
 module Broadcasts
   module WelcomeNotification
     class Generator
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(receiver_id)
         @user = User.find(receiver_id)
         @notification_enqueued = false
       end
 
-      def self.call(...)
-        new(...).call
-      end
-
       def call
-        return unless user.subscribed_to_welcome_notifications?
+        return unless user.notification_setting.subscribed_to_welcome_notifications?
 
         notification_methods.each do |method|
           send method unless notification_enqueued # rubocop:disable Style/Send
