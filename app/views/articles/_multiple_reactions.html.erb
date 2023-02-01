@@ -5,17 +5,14 @@
     aria-label="reaction-drawer-trigger"
     aria-pressed="false"
     class="hoverdown-trigger crayons-reaction pseudo-reaction crayons-tooltip__activator relative">
-      <span class="crayons-reaction__icon crayons-reaction__icon--inactive" style="width: 40px; height: 40px">
-        <%= image_tag "heart-plus.svg", aria_hidden: true, height: 24, width: 24 %>
+      <span class="crayons-reaction__icon crayons-reaction--like crayons-reaction__icon--inactive" style="width: 40px; height: 40px">
+        <%= crayons_icon_tag("heart-plus.svg", aria_hidden: true, height: 24, width: 24) %>
       </span>
       <span class="crayons-reaction__icon crayons-reaction__icon--active" style="width: 40px; height: 40px">
         <%= image_tag "heart-plus-active.svg", aria_hidden: true, height: 24, width: 24 %>
       </span>
       <span class="crayons-reaction_total_count" id="reaction_total_count">
         <%= @article.public_reactions_count %>
-      </span>
-      <span data-testid="tooltip" class="crayons-tooltip__content">
-        <%= t("views.reactions.drawer_button") %>
       </span>
   </button>
 
