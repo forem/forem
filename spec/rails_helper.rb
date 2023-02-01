@@ -4,7 +4,7 @@ require "simplecov"
 require "simplecov_json_formatter"
 
 if ENV["CI"]
-  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 KnapsackPro::Adapters::RSpecAdapter.bind
 KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
