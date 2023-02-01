@@ -17,6 +17,31 @@ RSpec.describe "Api::V1::Docs::Users" do
     user.add_role(:admin)
   end
 
+  describe "GET /users/me" do
+    path "/api/users/me" do
+      get "The authenticated user" do
+        tags "users"
+        description "This endpoint allows the client to retrieve information about the authenticated user"
+        operationId "getUserMe"
+        produces "application/json"
+
+        response 200, "successful" do
+          let(:"api-key") { api_secret.secret }
+          schema type: :object,
+                 items: { "$ref": "#/components/schemas/User" }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "bad_api_secret" }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "GET /users/:id" do
     path "/api/users/{id}" do
       get "A User" do
@@ -32,6 +57,8 @@ For complete documentation, see the v0 API docs: https://developers.forem.com/ap
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
           let(:id) { user.id }
+          schema type: :object,
+                 items: { "$ref": "#/components/schemas/User" }
 
           run_test!
         end
