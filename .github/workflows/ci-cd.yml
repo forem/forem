@@ -103,7 +103,7 @@ jobs:
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
         fail_ci_if_error: true
-        flags: jest
+        flags: JavasScript
       - run: yarn build-storybook
 
   Build-test:
