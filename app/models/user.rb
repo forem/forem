@@ -510,7 +510,7 @@ class User < ApplicationRecord
   end
 
   def receives_follower_email_notifications?
-    email.present? && subscribed_to_email_follower_notifications?
+    email.present? && notification_setting.subscribed_to_email_follower_notifications?
   end
 
   def authenticated_through?(provider_name)
@@ -533,18 +533,6 @@ class User < ApplicationRecord
 
   def flipper_id
     "User:#{id}"
-  end
-
-  def subscribed_to_welcome_notifications?
-    notification_setting.welcome_notifications
-  end
-
-  def subscribed_to_mod_roundrobin_notifications?
-    notification_setting.mod_roundrobin_notifications
-  end
-
-  def subscribed_to_email_follower_notifications?
-    notification_setting.email_follower_notifications
   end
 
   def reactions_to
