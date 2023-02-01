@@ -94,6 +94,22 @@ class DisplayAd < ApplicationRecord
   end
 
   def process_markdown
+    if FeatureFlag.enabled?(:consistent_rendering)
+      extracted_process_markdown
+    else
+      original_process_markdown
+    end
+  end
+
+  def extracted_process_markdown
+    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
+    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self)
+    self.processed_html = parsed_markdown.finalize
+    self.processed_html = processed_html.delete("\n")
+  end
+
+  def original_process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)

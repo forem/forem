@@ -1,6 +1,6 @@
 module MarkdownProcessor
   class Parser
-    include ApplicationHelper
+    # include ApplicationHelper
 
     BAD_XSS_REGEX = [
       /src=["'](data|&)/i,
@@ -35,7 +35,10 @@ module MarkdownProcessor
       code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      sanitized_content = sanitize_rendered_markdown(html)
+      # sanitized_content = sanitize_rendered_markdown(html)
+
+      sanitized_content = ActionController::Base.helpers.sanitize html, scrubber: RenderedMarkdownScrubber.new
+
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.

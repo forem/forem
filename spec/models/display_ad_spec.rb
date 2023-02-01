@@ -4,6 +4,8 @@ RSpec.describe DisplayAd do
   let(:organization) { build(:organization) }
   let(:display_ad) { build(:display_ad, organization: nil) }
 
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
   it_behaves_like "Taggable"
 
   describe "validations" do
@@ -58,6 +60,18 @@ RSpec.describe DisplayAd do
       display_ad.organization = organization
       expect(display_ad).to be_valid
       expect(display_ad.errors[:organization]).to be_blank
+    end
+  end
+
+  context "when parsing liquid tags" do
+    it "renders username embed" do
+      user = create(:user)
+      url = "#{URL.url}/#{user.username}"
+      # allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
+      allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
+      username_ad = create(:display_ad, body_markdown: "Hello! {% embed #{url}} %}")
+      expect(username_ad.processed_html).to include("/#{user.username}")
+      expect(username_ad.processed_html).to include("ltag__user__link")
     end
   end
 
