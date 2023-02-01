@@ -131,4 +131,8 @@ class NotificationDecorator < ApplicationDecorator
   def type_inquirer
     @type_inquirer ||= ActiveSupport::StringInquirer.new(notifiable_type&.downcase || "")
   end
+
+  def json_data
+    read_attribute(:json_data) || {}
+  end
 end
