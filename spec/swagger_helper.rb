@@ -313,6 +313,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               slug: { type: :string },
               image_url: { description: "Podcast image url", type: :string, format: :url }
             }
+          },
+          Comment: {
+            description: "A Comment on an Article or Podcast Episode",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id_code: { type: :string },
+              created_at: { type: :string, format: "date-time" },
+              image_url: { description: "Podcast image url", type: :string, format: :url }
+            }
           }
         }
       }
