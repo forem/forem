@@ -1,10 +1,10 @@
 ENV["RAILS_ENV"] = "test"
 require "knapsack_pro"
 require "simplecov"
-require "simplecov-cobertura"
+require "simplecov_json_formatter"
 
 if ENV["CI"]
-  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
 end
 KnapsackPro::Adapters::RSpecAdapter.bind
 KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
