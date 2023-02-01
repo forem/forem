@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::ModerationNotificationWorker do
+RSpec.describe Notifications::CreateRoundRobinModerationNotificationsWorker do
   let(:id) { rand(1000) }
   let(:comment) do
     comment = double

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Notifications::Moderation, type: :service do
+RSpec.describe Users::SelectModeratorsQuery, type: :query do
   # last_reacted_at is within the bounds, and last_moderation_notification is within the bounds
   let(:user1) do
     create(:user, :trusted,
@@ -32,13 +32,13 @@ RSpec.describe Notifications::Moderation, type: :service do
   end
 
   it "returns an accurate list of available moderators" do
-    expect(described_class.available_moderators).to include(user1)
-    expect(described_class.available_moderators).not_to include(user2, user3, user4)
+    expect(described_class.call).to include(user1)
+    expect(described_class.call).not_to include(user2, user3, user4)
   end
 
   it "returns an empty array when there are no moderators that meet the criteria" do
     user1.notification_setting.update(mod_roundrobin_notifications: false)
 
-    expect(described_class.available_moderators).to eq([])
+    expect(described_class.call).to eq([])
   end
 end
