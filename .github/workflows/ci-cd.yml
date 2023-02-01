@@ -61,7 +61,6 @@ jobs:
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
         fail_ci_if_error: true
-        flags: rspec
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
