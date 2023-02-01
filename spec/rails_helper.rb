@@ -1,7 +1,7 @@
 ENV["RAILS_ENV"] = "test"
 require "knapsack_pro"
 require "simplecov"
-require "simplecov_json_formatter"
+require "simplecov-cobertura"
 
 if ENV["CI"]
   SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
