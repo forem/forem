@@ -2,6 +2,8 @@ ignore:
   - "vendor"
   - "bin"
   - "**/*.svg"
+  - "lib/sitemap_generator"
+  - "lib/generators"
 flag_management:
   default_rules:
     carryforward: true
