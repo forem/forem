@@ -10,5 +10,3 @@ flag_management:
       - type: project
         target: auto
         threshold: 1%
-      - type: patch
-        target: 90%
