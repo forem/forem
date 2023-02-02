@@ -831,9 +831,6 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
-    simplecov-cobertura (2.1.0)
-      rexml
-      simplecov (~> 0.19)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
     slack-notifier (2.4.0)
@@ -1088,7 +1085,6 @@ DEPENDENCIES
   sidekiq-cron (~> 1.7)
   sidekiq-unique-jobs (~> 7.1.27)
   simplecov (~> 0.21.2)
-  simplecov-cobertura (~> 2.1)
   slack-notifier (~> 2.4)
   solargraph (~> 0.45)
   solargraph-rails (~> 0.3.1)
