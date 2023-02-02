@@ -1,6 +1,6 @@
 <header class="flex items-center mb-6">
   <div>
-    <h2 class="crayons-title"><%= @organization.name %></h2>
+    <h1 class="crayons-title"><%= @organization.name %></h1>
     <p class="color-base-60">Created <%= @organization.created_at.strftime("%b %e '%y") %></p>
   </div>
 
@@ -10,7 +10,7 @@
 </header>
 
 <div class="crayons-card p-6 mb-6">
-  <h3 class="mb-4">General Info</h3>
+  <h3 class="crayons-subtitle-2 mb-4">General Info</h3>
   <dl>
     <dt>ID:</dt>
     <dd><%= @organization.id %></dd>
@@ -37,7 +37,7 @@
 
 <div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
-  <h3 class="mb-4">Credits (current: <%= current_credits %>)</h3>
+  <h3 class="crayons-subtitle-2 mb-4">Credits (current: <%= current_credits %>)</h3>
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>
     <div>
       <%= hidden_field_tag :credit_action, :add %>
