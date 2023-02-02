@@ -2,7 +2,7 @@
   <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.previous", num: @user.email_messages.count) %></h2>
   <% if @user.email_messages.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.emails.empty1", user: @user.name) %></h3>
+      <h3 class="crayons-subtitle-2 mb-2"><%= t("views.admin.users.emails.empty1", user: @user.name) %></h3>
       <p class="color-secondary"><%= t("views.admin.users.emails.empty2", email: @user.email) %></p>
     </div>
   <% else %>

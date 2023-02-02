@@ -1,7 +1,7 @@
 <div class="js-filters-modal hidden">
     <%= form_with url: admin_users_path, method: :get, local: true, class: "flex flex-col h-100" do |f| %>
         <div class="flex justify-between items-center border-0 border-b-1 border-base-10 border-solid -mx-7 px-7 pb-2">
-            <h2 class="crayons-subtitle-2"><%= t("views.admin.users.filters.heading") %></h2>
+            <h2 class="crayons-subtitle-1"><%= t("views.admin.users.filters.heading") %></h2>
             <button type="button" class="js-clear-all-filters-btn c-btn"><%= t("views.admin.users.filters.clear_filters") %></button>
         </div>
         <p id="filters-description" class="mt-4 crayons-field__description"><%= t("views.admin.users.filters.desc") %></p>

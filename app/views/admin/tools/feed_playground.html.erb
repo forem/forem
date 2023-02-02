@@ -1,5 +1,5 @@
 <header class="flex mb-6">
-  <h2 class="crayons-title">Feed Playground</h2>
+  <h1 class="crayons-title">Feed Playground</h1>
 </header>
 <div class="crayons-card p-6 mb-6">
   <%= form_tag feed_playground_admin_tools_path do %>
@@ -23,7 +23,7 @@
 
 <% if @user && @articles %>
   <header class="flex mb-6">
-    <h2 class="crayons-title">Feed Preview for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
+    <h2 class="crayons-subtitle-1">Feed Preview for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
   </header>
   <div>
     <% Follow.follower_tag(@user.id).includes(:followable).order("points DESC").each do |follow| %>
