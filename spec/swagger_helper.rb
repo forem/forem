@@ -206,6 +206,27 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          VideoArticle: {
+            description: "Representation of an Article with video",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              path: { type: :string },
+              cloudinary_video_url: { type: :string },
+              title: { type: :string },
+              user_id: { type: :integer, format: :int64 },
+              video_duration_in_minutes: { type: :string },
+              video_source_url: { type: :string },
+              user: {
+                description: "Author of the article",
+                type: :object,
+                properties: {
+                  name: { type: :string }
+                }
+              }
+            }
+          },
           Article: {
             description: "Representation of an Article to be created/updated",
             type: :object,
