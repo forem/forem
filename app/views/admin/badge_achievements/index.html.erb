@@ -23,7 +23,7 @@
     </div>
   </div>
 
-  <table class="crayons-table" width="100%">
+  <table class="crayons-table mt-2" width="100%">
     <thead>
       <tr>
         <th scope="col">User ID</th>
@@ -38,19 +38,17 @@
         <td class="whitespace-nowrap"><%= badge_achievement.user.id %></td>
         <td><%= badge_achievement.user.username %></td>
         <td><%= badge_achievement.badge.title %></td>
-        <h5>
-          <td class="justify-center">
-            <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
-          </td>
-          <td>
-            <button
-              class="crayons-btn crayons-btn--danger"
-              data-item-id="<%= badge_achievement.id %>"
-              data-endpoint="/admin/content_manager/badge_achievements"
-              data-username="<%= current_user.username %>"
-              data-action="click->confirmation-modal#openModal">Remove</button>
-          </td>
-        </h5>
+        <td class="justify-center">
+          <img class="mx-auto mt-3" width="40" height="40" src="<%= badge_achievement.badge.badge_image %>" alt="badge image" loading="lazy" />
+        </td>
+        <td>
+          <button
+            class="crayons-btn crayons-btn--danger"
+            data-item-id="<%= badge_achievement.id %>"
+            data-endpoint="/admin/content_manager/badge_achievements"
+            data-username="<%= current_user.username %>"
+            data-action="click->confirmation-modal#openModal">Remove</button>
+        </td>
       </tr>
       <% end %>
     </tbody>

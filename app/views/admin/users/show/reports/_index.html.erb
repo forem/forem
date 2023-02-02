@@ -6,7 +6,7 @@
       <article class="c-list-item c-list-item--interactive flex justify-between gap-4">
         <div class="w-100">
           <header>
-            <h3 class="crayons-subtitle-3 w-100 flex items-center justify-between">
+            <h3 class="crayons-subtitle-2 w-100 flex items-center justify-between">
               <span class="flex gap-3">
                 <a href="<%= admin_report_path(report.id) %>" class="c-link">
                   <%= t("views.admin.users.reports.category.#{report.category}", default: report.category.capitalize) %>
@@ -28,7 +28,7 @@
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.reports.empty1") %></h3>
+    <h3 class="crayons-subtitle-2 mb-2"><%= t("views.admin.users.reports.empty1") %></h3>
     <p class="color-secondary"><%= t("views.admin.users.reports.empty2", user: @user.name) %></p>
   </div>
 <% end %>
