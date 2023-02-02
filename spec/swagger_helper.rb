@@ -236,6 +236,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[id name points]
           },
+          Tag: {
+            description: "Representation of a tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            }
+          },
           Page: {
             description: "Representation of a page object",
             type: :object,
@@ -322,6 +332,31 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id_code: { type: :string },
               created_at: { type: :string, format: "date-time" },
               image_url: { description: "Podcast image url", type: :string, format: :url }
+            }
+          },
+          User: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :string },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              website_url: { type: :string },
+              location: { type: :string },
+              joined_at: { type: :string },
+              profile_image: { type: :string }
+            }
+          },
+          UserInviteParam: {
+            description: "User invite parameters",
+            type: :object,
+            properties: {
+              email: { type: :string },
+              name: { type: :string, nullable: true }
             }
           }
         }
