@@ -60,6 +60,9 @@ jobs:
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          flags: ruby
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -101,6 +104,9 @@ jobs:
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+          flags: javascript
       - run: yarn build-storybook
 
   Build-test:
