@@ -1,5 +1,5 @@
 <% if @unpublish_all_data.exists? %>
-  <h2 class="fs-xl fw-normal mb-5"><%= t("views.admin.users.unpublish_logs.subtitle_html", user: link_to(@unpublish_all_data.audit_log.user.username, @unpublish_all_data.audit_log.user.path), time: l(@unpublish_all_data.audit_log.created_at, format: :admin_user)) %></h3>
+  <h3 class="crayons-subtitle-2 mb-5"><%= t("views.admin.users.unpublish_logs.subtitle_html", user: link_to(@unpublish_all_data.audit_log.user.username, @unpublish_all_data.audit_log.user.path), time: l(@unpublish_all_data.audit_log.created_at, format: :admin_user)) %></h3>
   <div class="crayons-card p-6 mb-5">
     <h4 class="mb-2"><%= t("views.admin.users.unpublish_logs.posts") %></h4>
     <% @unpublish_all_data.target_articles.each do |article| %>

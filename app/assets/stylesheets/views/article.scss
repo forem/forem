@@ -413,7 +413,7 @@
 
   flex-direction: column;
 
-  @media (min-width: $breakpoint-s) {
+  @media (min-width: $breakpoint-m) {
     max-width: 360px;
     width: max-content;
     top: -5px;
