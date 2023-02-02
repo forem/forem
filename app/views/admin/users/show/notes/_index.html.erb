@@ -2,7 +2,7 @@
   <h2 class="crayons-subtitle-1"><%= t("views.admin.users.notes.previous", num: @notes.count) %></h2>
   <% if @notes.load.empty? %>
     <div class="align-center flex flex-col justify-center my-auto py-7">
-      <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.notes.empty1", user: @user.name) %></h3>
+      <h3 class="crayons-subtitle-2 mb-2"><%= t("views.admin.users.notes.empty1", user: @user.name) %></h3>
       <p class="color-secondary"><%= t("views.admin.users.notes.empty2", user: @user.name) %></p>
     </div>
   <% else %>

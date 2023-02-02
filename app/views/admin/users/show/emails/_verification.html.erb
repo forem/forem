@@ -1,7 +1,7 @@
 <%= form_with url: verify_email_ownership_admin_user_path(@user), local: true, class: "crayons-card mb-4 p-3 m:p-4 s:pl-4 m:pl-7 pr-4 flex flex-col s:flex-row justify-between gap-4 s:items-center" do |f| %>
   <% unless @last_email_verification_date %>
     <div>
-      <h2 class="crayons-subtitle-2"><%= t("views.admin.users.emails.not_verified.subtitle") %></h2>
+      <h2 class="crayons-subtitle-1"><%= t("views.admin.users.emails.not_verified.subtitle") %></h2>
       <p class="color-secondary"><%= t("views.admin.users.emails.not_verified.desc", user: @user.name) %></p>
     </div>
     <%= f.button t("views.admin.users.emails.verify"), class: "c-btn c-btn--secondary whitespace-nowrap" %>

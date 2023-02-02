@@ -3,7 +3,7 @@
 <% unless smtp_enabled %>
   <div class="crayons-card">
     <div class="crayons-card__body p-4">
-      <h1 class="fw-heavy fs-3xl">Setup SMTP to invite users</h1>
+      <h1 class="crayons-title">Setup SMTP to invite users</h1>
       <div class="my-4">
         SMTP settings are required so that your Forem can send emails.
         If you wish to send invites, email digests and activity notifications you will need to
@@ -21,7 +21,7 @@
 <% end %>
 
 <% if smtp_enabled %>
-  <h1 class="fw-heavy fs-3xl">Invite Users</h1>
+  <h1 class="crayons-title">Invite Users</h1>
   <%= form_for(User.new, url: admin_invitations_path) do |f| %>
     <div class="crayons-field mt-6">
       <%= f.label :email, class: "crayons-field__label" %>
