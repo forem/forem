@@ -340,6 +340,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               joined_at: { type: :string },
               profile_image: { type: :string }
             }
+          },
+          UserInviteParam: {
+            description: "User invite parameters",
+            type: :object,
+            properties: {
+              email: { type: :string },
+              name: { type: :string, nullable: true }
+            }
           }
         }
       }
