@@ -24,26 +24,26 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9891,
+                  "id": 11069,
                   "title": "New article",
                   "description": "New post example",
                   "readable_publish_date": "Feb 3",
-                  "slug": "new-article-5gfn",
-                  "path": "/username383/new-article-5gfn",
-                  "url": "http://localhost:3000/username383/new-article-5gfn",
+                  "slug": "new-article-907",
+                  "path": "/username383/new-article-907",
+                  "url": "http://localhost:3000/username383/new-article-907",
                   "comments_count": 0,
                   "public_reactions_count": 0,
-                  "collection_id": 305,
-                  "published_timestamp": "2023-02-03T11:51:56Z",
+                  "collection_id": 349,
+                  "published_timestamp": "2023-02-03T17:07:43Z",
                   "positive_reactions_count": 0,
                   "cover_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
                   "social_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
                   "canonical_url": "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
-                  "created_at": "2023-02-03T11:51:56Z",
+                  "created_at": "2023-02-03T17:07:43Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:51:56Z",
-                  "last_comment_at": "2023-02-03T11:51:56Z",
+                  "published_at": "2023-02-03T17:07:43Z",
+                  "last_comment_at": "2023-02-03T17:07:43Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
                   "tags": [
@@ -52,14 +52,14 @@
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
-                    "name": "Sulema \"Willis\" \\:/ Hand",
+                    "name": "Darrel \"Clarice\" \\:/ Schowalter",
                     "username": "username383",
                     "twitter_username": "twitter383",
                     "github_username": "github383",
-                    "user_id": 22492,
+                    "user_id": 25330,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/22492/af71d618-4691-482e-89fa-c0de71e63059.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/22492/af71d618-4691-482e-89fa-c0de71e63059.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25330/2b332008-ffd8-4a56-bd4e-bcf40661276c.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/25330/2b332008-ffd8-4a56-bd4e-bcf40661276c.jpeg"
                   }
                 }
               }
@@ -202,47 +202,47 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 9894,
-                    "title": "The Soldier's Art175",
-                    "description": "Carry ethical you probably haven't heard of them irony lumbersexual hoodie cred. Farm-to-table...",
+                    "id": 11072,
+                    "title": "The Way of All Flesh175",
+                    "description": "Vinyl five dollar toast portland ennui blue bottle single-origin coffee +1 brooklyn. Xoxo typewriter...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "the-soldiers-art175-3flf",
-                    "path": "/username387/the-soldiers-art175-3flf",
-                    "url": "http://localhost:3000/username387/the-soldiers-art175-3flf",
+                    "slug": "the-way-of-all-flesh175-57kn",
+                    "path": "/username387/the-way-of-all-flesh175-57kn",
+                    "url": "http://localhost:3000/username387/the-way-of-all-flesh175-57kn",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:51:56Z",
+                    "published_timestamp": "2023-02-03T17:07:43Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
-                    "social_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
-                    "canonical_url": "http://localhost:3000/username387/the-soldiers-art175-3flf",
-                    "created_at": "2023-02-03T11:51:57Z",
+                    "cover_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                    "social_image": "http://localhost:3000/assets/12-f9d673ae4ff98002f782ab82c641f2f26673be728e8f5409bea83f2d1de15323.png",
+                    "canonical_url": "http://localhost:3000/username387/the-way-of-all-flesh175-57kn",
+                    "created_at": "2023-02-03T17:07:43Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:51:56Z",
-                    "last_comment_at": "2023-02-03T11:51:56Z",
+                    "published_at": "2023-02-03T17:07:43Z",
+                    "last_comment_at": "2023-02-03T17:07:43Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "discuss"
                     ],
                     "tags": "discuss",
                     "user": {
-                      "name": "Lydia \"Buster\" \\:/ Lockman",
+                      "name": "Isreal \"Bernardo\" \\:/ Ullrich",
                       "username": "username387",
                       "twitter_username": "twitter387",
                       "github_username": "github387",
-                      "user_id": 22496,
+                      "user_id": 25334,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/22496/c09dc4d5-70e8-4e24-831b-5ed743022805.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/22496/c09dc4d5-70e8-4e24-831b-5ed743022805.jpeg"
+                      "profile_image": "/uploads/user/profile_image/25334/013f87ad-0182-4713-8775-0b2d7373fe97.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/25334/013f87ad-0182-4713-8775-0b2d7373fe97.jpeg"
                     },
                     "organization": {
-                      "name": "Bayer LLC",
+                      "name": "Murphy, Pfannerstill and Hartmann",
                       "username": "org70",
                       "slug": "org70",
-                      "profile_image": "/uploads/organization/profile_image/3966/ea313363-4e14-40c5-9d3b-1bf45dc0961c.png",
-                      "profile_image_90": "/uploads/organization/profile_image/3966/ea313363-4e14-40c5-9d3b-1bf45dc0961c.png"
+                      "profile_image": "/uploads/organization/profile_image/4466/90dfd188-917c-458e-82bf-73154becbc53.png",
+                      "profile_image_90": "/uploads/organization/profile_image/4466/90dfd188-917c-458e-82bf-73154becbc53.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -290,26 +290,26 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 9897,
-                    "title": "A Farewell to Arms178",
-                    "description": "Semiotics beard vhs wolf williamsburg. Banjo listicle paleo brooklyn.  Vhs chicharrones whatever...",
+                    "id": 11075,
+                    "title": "The Wealth of Nations178",
+                    "description": "Farm-to-table artisan church-key. Cred swag organic brooklyn cray. Listicle quinoa raw denim.  Kale...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "a-farewell-to-arms178-1k27",
-                    "path": "/username390/a-farewell-to-arms178-1k27",
-                    "url": "http://localhost:3000/username390/a-farewell-to-arms178-1k27",
+                    "slug": "the-wealth-of-nations178-2bm8",
+                    "path": "/username390/the-wealth-of-nations178-2bm8",
+                    "url": "http://localhost:3000/username390/the-wealth-of-nations178-2bm8",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:51:57Z",
+                    "published_timestamp": "2023-02-03T17:07:43Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/26-90c7a1dfb33e271f477a60763fa64d842858635cdd7a508d0ffa2df59ced9d1d.png",
-                    "social_image": "http://localhost:3000/assets/26-90c7a1dfb33e271f477a60763fa64d842858635cdd7a508d0ffa2df59ced9d1d.png",
-                    "canonical_url": "http://localhost:3000/username390/a-farewell-to-arms178-1k27",
-                    "created_at": "2023-02-03T11:51:57Z",
+                    "cover_image": "http://localhost:3000/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
+                    "social_image": "http://localhost:3000/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
+                    "canonical_url": "http://localhost:3000/username390/the-wealth-of-nations178-2bm8",
+                    "created_at": "2023-02-03T17:07:43Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:51:57Z",
-                    "last_comment_at": "2023-02-03T11:51:57Z",
+                    "published_at": "2023-02-03T17:07:43Z",
+                    "last_comment_at": "2023-02-03T17:07:43Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "javascript",
@@ -318,14 +318,14 @@
                     ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Jamey \"Jordan\" \\:/ Frami",
+                      "name": "Antonina \"Tory\" \\:/ Prohaska",
                       "username": "username390",
                       "twitter_username": "twitter390",
                       "github_username": "github390",
-                      "user_id": 22499,
+                      "user_id": 25337,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/22499/a8dec7f7-c511-4222-8724-2ba14e5fa6c0.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/22499/a8dec7f7-c511-4222-8724-2ba14e5fa6c0.jpeg"
+                      "profile_image": "/uploads/user/profile_image/25337/bf2ed6c9-1f70-4e98-8ade-12db9f27cb58.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/25337/bf2ed6c9-1f70-4e98-8ade-12db9f27cb58.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -335,26 +335,26 @@
                   },
                   {
                     "type_of": "article",
-                    "id": 9896,
-                    "title": "Françoise Sagan177",
-                    "description": "Mumblecore you probably haven't heard of them occupy chartreuse. Cleanse gentrify aesthetic +1...",
+                    "id": 11074,
+                    "title": "The Daffodil Sky177",
+                    "description": "Phlogiston flexitarian try-hard jean shorts blue bottle aesthetic church-key. Wolf mixtape art party...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "francoise-sagan177-1l2h",
-                    "path": "/username389/francoise-sagan177-1l2h",
-                    "url": "http://localhost:3000/username389/francoise-sagan177-1l2h",
+                    "slug": "the-daffodil-sky177-5f5m",
+                    "path": "/username389/the-daffodil-sky177-5f5m",
+                    "url": "http://localhost:3000/username389/the-daffodil-sky177-5f5m",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:51:57Z",
+                    "published_timestamp": "2023-02-03T17:07:43Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
-                    "canonical_url": "http://localhost:3000/username389/francoise-sagan177-1l2h",
-                    "created_at": "2023-02-03T11:51:57Z",
+                    "cover_image": "http://localhost:3000/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
+                    "social_image": "http://localhost:3000/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
+                    "canonical_url": "http://localhost:3000/username389/the-daffodil-sky177-5f5m",
+                    "created_at": "2023-02-03T17:07:43Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:51:57Z",
-                    "last_comment_at": "2023-02-03T11:51:57Z",
+                    "published_at": "2023-02-03T17:07:43Z",
+                    "last_comment_at": "2023-02-03T17:07:43Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "javascript",
@@ -363,14 +363,14 @@
                     ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Joseph \"Wyatt\" \\:/ Maggio",
+                      "name": "Phil \"Xavier\" \\:/ Huels",
                       "username": "username389",
                       "twitter_username": "twitter389",
                       "github_username": "github389",
-                      "user_id": 22498,
+                      "user_id": 25336,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/22498/e7e0ad1b-adf5-42c2-83d5-6e67dc5e86e8.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/22498/e7e0ad1b-adf5-42c2-83d5-6e67dc5e86e8.jpeg"
+                      "profile_image": "/uploads/user/profile_image/25336/6cffe539-dc37-4a40-a858-d99f43d211e0.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/25336/6cffe539-dc37-4a40-a858-d99f43d211e0.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -380,26 +380,26 @@
                   },
                   {
                     "type_of": "article",
-                    "id": 9895,
-                    "title": "Where Angels Fear to Tread176",
-                    "description": "Farm-to-table wes anderson single-origin coffee literally. Biodiesel normcore migas +1.  Artisan...",
+                    "id": 11073,
+                    "title": "Ah, Wilderness!176",
+                    "description": "Disrupt park authentic. Cliche pug yr cronut.  Brunch chartreuse cred hella ethical food truck mlkshk.",
                     "readable_publish_date": "Feb 3",
-                    "slug": "where-angels-fear-to-tread176-2gb2",
-                    "path": "/username388/where-angels-fear-to-tread176-2gb2",
-                    "url": "http://localhost:3000/username388/where-angels-fear-to-tread176-2gb2",
+                    "slug": "ah-wilderness176-18m1",
+                    "path": "/username388/ah-wilderness176-18m1",
+                    "url": "http://localhost:3000/username388/ah-wilderness176-18m1",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:51:57Z",
+                    "published_timestamp": "2023-02-03T17:07:43Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
-                    "social_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
-                    "canonical_url": "http://localhost:3000/username388/where-angels-fear-to-tread176-2gb2",
-                    "created_at": "2023-02-03T11:51:57Z",
+                    "cover_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                    "social_image": "http://localhost:3000/assets/17-c3d951980f63ed0823e9ba3e0324b187c8c7842f2e07dd3064978a070650a5ee.png",
+                    "canonical_url": "http://localhost:3000/username388/ah-wilderness176-18m1",
+                    "created_at": "2023-02-03T17:07:43Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:51:57Z",
-                    "last_comment_at": "2023-02-03T11:51:57Z",
+                    "published_at": "2023-02-03T17:07:43Z",
+                    "last_comment_at": "2023-02-03T17:07:43Z",
                     "reading_time_minutes": 1,
                     "tag_list": [
                       "javascript",
@@ -408,14 +408,14 @@
                     ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Deandre \"Chung\" \\:/ Macejkovic",
+                      "name": "Flossie \"Christi\" \\:/ Braun",
                       "username": "username388",
                       "twitter_username": "twitter388",
                       "github_username": "github388",
-                      "user_id": 22497,
+                      "user_id": 25335,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/22497/484d55a0-4c6c-4d0e-943d-fdc706fa0173.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/22497/484d55a0-4c6c-4d0e-943d-fdc706fa0173.jpeg"
+                      "profile_image": "/uploads/user/profile_image/25335/60dcabd4-4785-436a-acfe-790e182b5410.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/25335/60dcabd4-4785-436a-acfe-790e182b5410.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -464,42 +464,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9898,
-                  "title": "The Moving Finger179",
-                  "description": "Selfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston...",
+                  "id": 11076,
+                  "title": "The Other Side of Silence179",
+                  "description": "Retro paleo pbr&amp;b offal pork belly slow-carb pinterest. Letterpress yolo crucifix single-origin...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "the-moving-finger179-481e",
-                  "path": "/username391/the-moving-finger179-481e",
-                  "url": "http://localhost:3000/username391/the-moving-finger179-481e",
+                  "slug": "the-other-side-of-silence179-559a",
+                  "path": "/username391/the-other-side-of-silence179-559a",
+                  "url": "http://localhost:3000/username391/the-other-side-of-silence179-559a",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:51:57Z",
+                  "published_timestamp": "2023-02-03T17:07:43Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
-                  "social_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
-                  "canonical_url": "http://localhost:3000/username391/the-moving-finger179-481e",
-                  "created_at": "2023-02-03T11:51:57Z",
+                  "cover_image": "http://localhost:3000/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
+                  "social_image": "http://localhost:3000/assets/38-3b0c46cc0d5367229799d282c99b2c42f33501201cac1ceb5c643f9ee11f06c6.png",
+                  "canonical_url": "http://localhost:3000/username391/the-other-side-of-silence179-559a",
+                  "created_at": "2023-02-03T17:07:43Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:51:57Z",
-                  "last_comment_at": "2023-02-03T11:51:57Z",
+                  "published_at": "2023-02-03T17:07:43Z",
+                  "last_comment_at": "2023-02-03T17:07:43Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
                   "tags": [
                     "discuss"
                   ],
-                  "body_html": "<p>Selfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston kitsch.</p>\n\n<p>Seitan cold-pressed tilde forage chicharrones selvage.</p>\n\n",
-                  "body_markdown": "---\ntitle: The Moving Finger179\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nSelfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston kitsch.\n\n\nSeitan cold-pressed tilde forage chicharrones selvage.\n\n",
+                  "body_html": "<p>Retro paleo pbr&amp;b offal pork belly slow-carb pinterest. Letterpress yolo crucifix single-origin coffee pickled godard retro. Green juice cray food truck muggle magic godard kale chips crucifix.</p>\n\n<p>Vinyl ramps hammock.</p>\n\n",
+                  "body_markdown": "---\ntitle: The Other Side of Silence179\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nRetro paleo pbr&b offal pork belly slow-carb pinterest. Letterpress yolo crucifix single-origin coffee pickled godard retro. Green juice cray food truck muggle magic godard kale chips crucifix.\n\n\nVinyl ramps hammock.\n\n",
                   "user": {
-                    "name": "Chris \"Lakisha\" \\:/ Hand",
+                    "name": "Quincy \"Bret\" \\:/ Muller",
                     "username": "username391",
                     "twitter_username": "twitter391",
                     "github_username": "github391",
-                    "user_id": 22500,
+                    "user_id": 25338,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/22500/ffb577b4-015c-4677-906a-fd1bfc398afd.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/22500/ffb577b4-015c-4677-906a-fd1bfc398afd.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25338/21683da8-d3dd-4304-a608-2033241b9f83.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/25338/21683da8-d3dd-4304-a608-2033241b9f83.jpeg"
                   },
                   "flare_tag": {
                     "name": "discuss",
@@ -557,26 +557,26 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9899,
-                  "title": "Wildfire at Midnight180",
-                  "description": "Poutine 3 wolf moon fanny pack blog jean shorts cold-pressed. Five dollar toast microdosing photo...",
+                  "id": 11077,
+                  "title": "The Lathe of Heaven180",
+                  "description": "Yr yuccie bicycle rights seitan. Heirloom yuccie everyday tacos chicharrones. Distillery pinterest...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "wildfire-at-midnight180-1le3",
-                  "path": "/username392/wildfire-at-midnight180-1le3",
-                  "url": "http://localhost:3000/username392/wildfire-at-midnight180-1le3",
+                  "slug": "the-lathe-of-heaven180-3gpe",
+                  "path": "/username392/the-lathe-of-heaven180-3gpe",
+                  "url": "http://localhost:3000/username392/the-lathe-of-heaven180-3gpe",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:51:57Z",
+                  "published_timestamp": "2023-02-03T17:07:43Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
-                  "social_image": "http://localhost:3000/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
-                  "canonical_url": "http://localhost:3000/username392/wildfire-at-midnight180-1le3",
-                  "created_at": "2023-02-03T11:51:57Z",
-                  "edited_at": "2023-02-03T11:51:57Z",
+                  "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                  "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                  "canonical_url": "http://localhost:3000/username392/the-lathe-of-heaven180-3gpe",
+                  "created_at": "2023-02-03T17:07:43Z",
+                  "edited_at": "2023-02-03T17:07:43Z",
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:51:57Z",
-                  "last_comment_at": "2023-02-03T11:51:57Z",
+                  "published_at": "2023-02-03T17:07:43Z",
+                  "last_comment_at": "2023-02-03T17:07:43Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
                   "tags": [
@@ -585,14 +585,14 @@
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
-                    "name": "Jerold \"Neil\" \\:/ O'Connell",
+                    "name": "Lorrine \"Columbus\" \\:/ Halvorson",
                     "username": "username392",
                     "twitter_username": "twitter392",
                     "github_username": "github392",
-                    "user_id": 22501,
+                    "user_id": 25339,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/22501/1dafc334-4994-4de9-9ad4-94c2db1a5ca9.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/22501/1dafc334-4994-4de9-9ad4-94c2db1a5ca9.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25339/542f4c5c-7a1f-40a5-af4d-3cb8ad5a46a7.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/25339/542f4c5c-7a1f-40a5-af4d-3cb8ad5a46a7.jpeg"
                   }
                 }
               }
@@ -679,42 +679,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9902,
-                  "title": "Cabbages and Kings183",
-                  "description": "Normcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt...",
+                  "id": 11080,
+                  "title": "Arms and the Man183",
+                  "description": "Phlogiston brunch williamsburg narwhal neutra carry shabby chic. Sartorial lo-fi asymmetrical carry...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "cabbages-and-kings183-1020",
-                  "path": "/username396/cabbages-and-kings183-1020",
-                  "url": "http://localhost:3000/username396/cabbages-and-kings183-1020",
+                  "slug": "arms-and-the-man183-3h9k",
+                  "path": "/username396/arms-and-the-man183-3h9k",
+                  "url": "http://localhost:3000/username396/arms-and-the-man183-3h9k",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:51:57Z",
+                  "published_timestamp": "2023-02-03T17:07:43Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                  "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
-                  "canonical_url": "http://localhost:3000/username396/cabbages-and-kings183-1020",
-                  "created_at": "2023-02-03T11:51:57Z",
+                  "cover_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                  "social_image": "http://localhost:3000/assets/6-52ee7e994a1369d112d656dfffbf324d1f209a7372a761776f77aeea47b0e4a8.png",
+                  "canonical_url": "http://localhost:3000/username396/arms-and-the-man183-3h9k",
+                  "created_at": "2023-02-03T17:07:43Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:51:57Z",
-                  "last_comment_at": "2023-02-03T11:51:57Z",
+                  "published_at": "2023-02-03T17:07:43Z",
+                  "last_comment_at": "2023-02-03T17:07:43Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
                   "tags": [
                     "discuss"
                   ],
-                  "body_html": "<p>Normcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt mustache slow-carb lo-fi umami. Salvia before they sold out gluten-free fanny pack. Thundercats locavore small batch.</p>\n\n<p>Shoreditch godard cleanse yolo. Meditation beard hoodie seitan goth xoxo occupy. Marfa ennui cliche chillwave.</p>\n\n",
-                  "body_markdown": "---\ntitle: Cabbages and Kings183\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nNormcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt mustache slow-carb lo-fi umami. Salvia before they sold out gluten-free fanny pack. Thundercats locavore small batch.\n\n\nShoreditch godard cleanse yolo. Meditation beard hoodie seitan goth xoxo occupy. Marfa ennui cliche chillwave.\n\n",
+                  "body_html": "<p>Phlogiston brunch williamsburg narwhal neutra carry shabby chic. Sartorial lo-fi asymmetrical carry drinking brunch skateboard.</p>\n\n<p>Banjo goth chillwave leggings.</p>\n\n",
+                  "body_markdown": "---\ntitle: Arms and the Man183\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nPhlogiston brunch williamsburg narwhal neutra carry shabby chic. Sartorial lo-fi asymmetrical carry drinking brunch skateboard.\n\n\nBanjo goth chillwave leggings.\n\n",
                   "user": {
-                    "name": "Abbey \"Trenton\" \\:/ Hackett",
+                    "name": "Kenia \"Alvin\" \\:/ Monahan",
                     "username": "username396",
                     "twitter_username": "twitter396",
                     "github_username": "github396",
-                    "user_id": 22505,
+                    "user_id": 25343,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/22505/e53b2865-50d6-417d-be6e-fac93930e497.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/22505/e53b2865-50d6-417d-be6e-fac93930e497.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25343/93c3f830-bce6-4ef2-93d8-117ba4829917.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/25343/93c3f830-bce6-4ef2-93d8-117ba4829917.jpeg"
                   },
                   "flare_tag": {
                     "name": "discuss",
@@ -1039,18 +1039,18 @@
                 "example": [
                   {
                     "type_of": "comment",
-                    "id_code": "7cf",
-                    "created_at": "2023-02-03T11:51:58Z",
-                    "body_html": "<p>Occupy sriracha franzen tacos.</p>\n\n",
+                    "id_code": "8aj",
+                    "created_at": "2023-02-03T17:07:44Z",
+                    "body_html": "<p>Narwhal umami you probably haven't heard of them.</p>\n\n",
                     "user": {
-                      "name": "Ryan \"Burt\" \\:/ Dooley",
+                      "name": "Marry \"Laverne\" \\:/ McDermott",
                       "username": "username410",
                       "twitter_username": "twitter410",
                       "github_username": "github410",
-                      "user_id": 22519,
+                      "user_id": 25357,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/22519/278b2042-417b-4036-9d47-73169e4cb47f.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/22519/278b2042-417b-4036-9d47-73169e4cb47f.jpeg"
+                      "profile_image": "/uploads/user/profile_image/25357/e0b4ffab-0eb6-49c7-980b-df5c40f7b046.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/25357/e0b4ffab-0eb6-49c7-980b-df5c40f7b046.jpeg"
                     },
                     "children": [
 
@@ -1110,18 +1110,18 @@
               "application/json": {
                 "example": {
                   "type_of": "comment",
-                  "id_code": "7ch",
-                  "created_at": "2023-02-03T11:51:58Z",
-                  "body_html": "<p>Swag iphone mustache shoreditch kale chips.</p>\n\n",
+                  "id_code": "8al",
+                  "created_at": "2023-02-03T17:07:44Z",
+                  "body_html": "<p>Next level vhs forage helvetica quinoa.</p>\n\n",
                   "user": {
-                    "name": "Eric \"Roxie\" \\:/ Hegmann",
+                    "name": "Norris \"Raeann\" \\:/ Jones",
                     "username": "username414",
                     "twitter_username": "twitter414",
                     "github_username": "github414",
-                    "user_id": 22523,
+                    "user_id": 25361,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/22523/c3a325fa-dc2b-4ed0-8809-9651d8b1b65d.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/22523/c3a325fa-dc2b-4ed0-8809-9651d8b1b65d.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25361/ad813836-169e-4fd9-b567-10d47b3e4aaf.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/25361/ad813836-169e-4fd9-b567-10d47b3e4aaf.jpeg"
                   },
                   "children": [
 
@@ -1190,12 +1190,12 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 436,
+                  "id": 500,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T14:51:59.179+03:00",
+                  "created_at": "2023-02-03T18:07:45.105+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -1205,7 +1205,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T14:51:59.179+03:00",
+                  "updated_at": "2023-02-03T18:07:45.105+01:00",
                   "tag_list": ""
                 }
               }
@@ -1339,22 +1339,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 437,
+                  "id": 501,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T14:51:59.312+03:00",
+                  "created_at": "2023-02-03T18:07:45.237+01:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 437",
-                  "organization_id": 3967,
+                  "name": "Display Ad 501",
+                  "organization_id": 4467,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T14:51:59.315+03:00",
+                  "updated_at": "2023-02-03T18:07:45.240+01:00",
                   "tag_list": ""
                 }
               }
@@ -1413,19 +1413,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 438",
-                  "organization_id": 3968,
+                  "name": "Display Ad 502",
+                  "organization_id": 4468,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 438,
+                  "id": 502,
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T14:51:59.474+03:00",
+                  "created_at": "2023-02-03T18:07:45.390+01:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T14:51:59.476+03:00",
+                  "updated_at": "2023-02-03T18:07:45.393+01:00",
                   "tag_list": ""
                 }
               }
@@ -1594,12 +1594,12 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 16133,
+                    "id": 18293,
                     "name": "tag3",
                     "points": 1.0
                   },
                   {
-                    "id": 16134,
+                    "id": 18294,
                     "name": "tag4",
                     "points": 1.0
                   }
@@ -1650,23 +1650,23 @@
                 "example": [
                   {
                     "type_of": "user_follower",
-                    "id": 555,
-                    "created_at": "2023-02-03T11:52:00Z",
-                    "user_id": 22544,
-                    "name": "Darrell \"Moshe\" \\:/ Bechtelar",
+                    "id": 639,
+                    "created_at": "2023-02-03T17:07:45Z",
+                    "user_id": 25382,
+                    "name": "Salvatore \"Katerine\" \\:/ Crooks",
                     "path": "/username435",
                     "username": "username435",
-                    "profile_image": "/uploads/user/profile_image/22544/f6c32025-4147-42e3-8f69-7090a0618a43.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25382/90bb6f27-95f4-4351-8ffe-3193911f1720.jpeg"
                   },
                   {
                     "type_of": "user_follower",
-                    "id": 554,
-                    "created_at": "2023-02-03T11:51:59Z",
-                    "user_id": 22542,
-                    "name": "Josh \"Lottie\" \\:/ Cronin",
+                    "id": 638,
+                    "created_at": "2023-02-03T17:07:45Z",
+                    "user_id": 25380,
+                    "name": "Georgine \"Phebe\" \\:/ Prosacco",
                     "path": "/username433",
                     "username": "username433",
-                    "profile_image": "/uploads/user/profile_image/22542/9514fa56-fe86-4c62-92c2-b620b6609c7e.jpeg"
+                    "profile_image": "/uploads/user/profile_image/25380/6e68f375-31ad-4fe9-abb9-d3b01a997b3a.jpeg"
                   }
                 ],
                 "schema": {
@@ -1737,16 +1737,16 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 371,
-                    "title": "The Monkey's Raincoat",
-                    "slug": "cruelty_strikebreaker",
-                    "description": "Delectus rerum in itaque.",
+                    "id": 471,
+                    "title": "Mr Standfast",
+                    "slug": "dictate-nursery",
+                    "description": "Voluptatem tempore sint dolore.",
                     "is_top_level_path": false,
                     "landing_page": false,
                     "body_html": null,
                     "body_json": null,
-                    "body_markdown": "Illum et voluptate quia.",
-                    "processed_html": "<p>Illum et voluptate quia.</p>\n\n",
+                    "body_markdown": "Quasi aperiam ut consequatur.",
+                    "processed_html": "<p>Quasi aperiam ut consequatur.</p>\n\n",
                     "social_image": {
                       "url": null
                     },
@@ -1779,7 +1779,7 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 373,
+                  "id": 473,
                   "title": "Example Page",
                   "slug": "example1",
                   "description": "a new page",
@@ -1910,16 +1910,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 376,
-                  "title": "The Torment of Others",
-                  "slug": "vegetarian_minister",
-                  "description": "Excepturi culpa nisi enim.",
+                  "id": 476,
+                  "title": "In a Dry Season",
+                  "slug": "onion_cutting",
+                  "description": "Minima nam architecto dolore.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Aperiam temporibus ut earum.",
-                  "processed_html": "<p>Aperiam temporibus ut earum.</p>\n\n",
+                  "body_markdown": "Fugiat non qui aspernatur.",
+                  "processed_html": "<p>Fugiat non qui aspernatur.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -1959,16 +1959,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 377,
+                  "id": 477,
                   "title": "New Title",
-                  "slug": "hypothesis-strikebreaker",
-                  "description": "Nisi ut exercitationem reiciendis.",
+                  "slug": "onion-corn",
+                  "description": "Sed aspernatur nisi voluptatibus.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Placeat quod laudantium officiis.",
-                  "processed_html": "<p>Placeat quod laudantium officiis.</p>\n\n",
+                  "body_markdown": "Quos officiis non laboriosam.",
+                  "processed_html": "<p>Quos officiis non laboriosam.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -1996,16 +1996,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 379,
-                  "title": "Moab Is My Washpot",
-                  "slug": "introduction_rung",
-                  "description": "Ea delectus vero quas.",
+                  "id": 479,
+                  "title": "No Highway",
+                  "slug": "doctor_offensive",
+                  "description": "Earum similique ut reiciendis.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Fugiat asperiores ea earum.",
-                  "processed_html": "<p>Sunt ut mollitia qui.</p>\n\n",
+                  "body_markdown": "Architecto ea et reprehenderit.",
+                  "processed_html": "<p>Eos nihil ut ut.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -2051,16 +2051,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 380,
-                  "title": "Tiger! Tiger!",
-                  "slug": "general-judge",
-                  "description": "Est aliquam eaque sed.",
+                  "id": 480,
+                  "title": "Antic Hay",
+                  "slug": "push_polish",
+                  "description": "Similique labore rem incidunt.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Aut fuga magnam provident.",
-                  "processed_html": "<p>Aut fuga magnam provident.</p>\n\n",
+                  "body_markdown": "Sint sed tempore qui.",
+                  "processed_html": "<p>Sint sed tempore qui.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -2140,14 +2140,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 596,
+                    "id": 684,
                     "path": "/codenewbie/slug-4",
-                    "title": "3",
-                    "image_url": "/uploads/podcast/image/461/9fc8b634-3040-4b84-a981-84a3b4e06584.jpeg",
+                    "title": "19",
+                    "image_url": "/uploads/podcast/image/529/be9cc7d7-7b25-4ddb-8584-6331d6f0b1a3.jpeg",
                     "podcast": {
-                      "title": "La Fin Du Monde",
+                      "title": "Brooklyn Black",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/461/9fc8b634-3040-4b84-a981-84a3b4e06584.jpeg"
+                      "image_url": "/uploads/podcast/image/529/be9cc7d7-7b25-4ddb-8584-6331d6f0b1a3.jpeg"
                     }
                   }
                 ],
@@ -2202,8 +2202,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/22559/aa81cb62-13da-4a51-ac9a-56b46072c4dc.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/22559/aa81cb62-13da-4a51-ac9a-56b46072c4dc.jpeg"
+                  "profile_image": "/uploads/user/profile_image/25397/92d70920-4e76-4a69-96b8-b174f99c0e4d.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/25397/92d70920-4e76-4a69-96b8-b174f99c0e4d.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -2282,8 +2282,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 376,
-                  "reactable_id": 9910,
+                  "id": 432,
+                  "reactable_id": 11088,
                   "reactable_type": "Article"
                 }
               }
@@ -2357,8 +2357,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 378,
-                  "reactable_id": 9912,
+                  "id": 434,
+                  "reactable_id": 11090,
                   "reactable_type": "Article"
                 }
               }
@@ -2451,20 +2451,20 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 16147,
-                    "name": "tag5",
+                    "id": 18309,
+                    "name": "tag7",
                     "bg_color_hex": null,
                     "text_color_hex": null
                   },
                   {
-                    "id": 16148,
+                    "id": 18308,
                     "name": "tag6",
                     "bg_color_hex": null,
                     "text_color_hex": null
                   },
                   {
-                    "id": 16149,
-                    "name": "tag7",
+                    "id": 18307,
+                    "name": "tag5",
                     "bg_color_hex": null,
                     "text_color_hex": null
                   }
@@ -2496,16 +2496,16 @@
               "application/json": {
                 "example": {
                   "type_of": "user",
-                  "id": 22571,
+                  "id": 25409,
                   "username": "username462",
-                  "name": "Reuben \"Rodrick\" \\:/ Fisher",
+                  "name": "Micah \"Carol\" \\:/ Feeney",
                   "twitter_username": "twitter462",
                   "github_username": "github462",
                   "summary": null,
                   "location": null,
                   "website_url": null,
                   "joined_at": "Feb  3, 2023",
-                  "profile_image": "/uploads/user/profile_image/22571/8ba30df3-d16d-4225-adc6-590437073bcf.jpeg"
+                  "profile_image": "/uploads/user/profile_image/25409/96ee9ad2-96a6-43a3-a40b-c4cb5f725172.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -2710,6 +2710,71 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/UserInviteParam"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/videos": {
+      "get": {
+        "summary": "Articles with a video",
+        "tags": [
+          "videos",
+          "articles"
+        ],
+        "security": [
+
+        ],
+        "description": "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.\n\nIt will only return published video articles ordered by descending popularity.\n\nIt supports pagination, each page will contain 24 articles by default.",
+        "operationId": "videos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam24to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of all articles with videos",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "video_article",
+                    "id": 11092,
+                    "path": "/username481/a-darkling-plain195-5a20",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "title": "A Darkling Plain195",
+                    "user_id": 25429,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Sadye \"Kylee\" \\:/ Batz"
+                    }
+                  },
+                  {
+                    "type_of": "video_article",
+                    "id": 11093,
+                    "path": "/username482/no-country-for-old-men196-5758",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "title": "No Country for Old Men196",
+                    "user_id": 25430,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Dagny \"Mose\" \\:/ Feeney"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VideoArticle"
+                  }
+                }
               }
             }
           }
@@ -2974,6 +3039,47 @@
           "user",
           "reading_time_minutes"
         ]
+      },
+      "VideoArticle": {
+        "description": "Representation of an Article with video",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "string"
+          },
+          "cloudinary_video_url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "video_duration_in_minutes": {
+            "type": "string"
+          },
+          "video_source_url": {
+            "type": "string"
+          },
+          "user": {
+            "description": "Author of the article",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
       },
       "Article": {
         "description": "Representation of an Article to be created/updated",
