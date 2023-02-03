@@ -17,6 +17,31 @@ RSpec.describe "Api::V1::Docs::Users" do
     user.add_role(:admin)
   end
 
+  describe "GET /users/me" do
+    path "/api/users/me" do
+      get "The authenticated user" do
+        tags "users"
+        description "This endpoint allows the client to retrieve information about the authenticated user"
+        operationId "getUserMe"
+        produces "application/json"
+
+        response 200, "successful" do
+          let(:"api-key") { api_secret.secret }
+          schema type: :object,
+                 items: { "$ref": "#/components/schemas/User" }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { "bad_api_secret" }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "GET /users/:id" do
     path "/api/users/{id}" do
       get "A User" do
@@ -32,6 +57,8 @@ For complete documentation, see the v0 API docs: https://developers.forem.com/ap
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
           let(:id) { user.id }
+          schema type: :object,
+                 items: { "$ref": "#/components/schemas/User" }
 
           run_test!
         end
@@ -150,6 +177,51 @@ in the UI, so if you want them to know about this, you must notify them."
           let(:id) { 10_000 }
           add_examples
 
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "POST /api/admin/users" do
+    before do
+      user.add_role(:super_admin)
+    end
+
+    path "/api/admin/users" do
+      post "Invite a User" do
+        tags "users"
+        description "This endpoint allows the client to trigger an invitation to the provided email address.
+
+        It requires a token from a user with `super_admin` privileges."
+        operationId "postAdminUsersCreate"
+        produces "application/json"
+        consumes "application/json"
+        parameter name: :invitation,
+                  in: :body,
+                  description: "User invite params",
+                  schema: { "$ref": "#/components/schemas/UserInviteParam" }
+
+        response "200", "Successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:invitation) { { name: "User McUser", email: "user@mcuser.com" } }
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:invitation) { { name: "User McUser", email: "user@mcuser.com" } }
+          add_examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:invitation) { {} }
+          add_examples
           run_test!
         end
       end

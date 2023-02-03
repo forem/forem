@@ -22,9 +22,6 @@
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.body.classList.add("dev-ios-native-body");
     }
-    if (window.frameElement) { // Hide top bar and footer when loaded within iframe
-      document.body.classList.add("hidden-shell");
-    }
     if (userString && userString.length > 0) {
       const user = JSON.parse(userString)
       const numTags = JSON.parse(user.followed_tags).length
