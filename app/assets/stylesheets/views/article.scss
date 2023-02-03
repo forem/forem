@@ -187,6 +187,10 @@
       border-radius: 0;
       transition: all var(--transition-props);
     }
+
+    @media (max-width: $breakpoint-m) {
+      padding-bottom: 4px;
+    }
   }
 
   &__count {
