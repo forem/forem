@@ -6,5 +6,4 @@
 # API Versioning MIME Types - Read more:
 # - https://jsonapi.org/#mime-types
 # - https://www.iana.org/assignments/media-types/application/vnd.api+json
-Mime::Type.register "application/vnd.forem.api-v0+json", :api_v0
 Mime::Type.register "application/vnd.forem.api-v1+json", :api_v1

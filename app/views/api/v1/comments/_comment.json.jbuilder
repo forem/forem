@@ -10,5 +10,5 @@ elsif comment.hidden_by_commentable_user?
   json.set! :user, {}
 else
   json.body_html comment.processed_html
-  json.partial! "api/v0/shared/user", user: comment.user
+  json.partial! "api/v1/shared/user", user: comment.user
 end

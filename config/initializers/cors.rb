@@ -5,7 +5,7 @@
 
 # Read more: https://github.com/cyu/rack-cors
 
-# Enable CORS for API v0 (logging is only activated when debug is enabled)
+# Enable CORS for API v1 (logging is only activated when debug is enabled)
 Rails.application.config.middleware.insert_before(
   0,
   Rack::Cors,
