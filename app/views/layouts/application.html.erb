@@ -20,9 +20,9 @@
       <%= render "layouts/styles", qualifier: "main" %>
       <%= javascript_include_tag "base", defer: true %>
       <% if user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", "onboardingRedirectCheck", "contentDisplayPolicy", "baseTracking", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "baseInitializers", "Search", "runtimeBanner", "onboardingRedirectCheck", "contentDisplayPolicy", "baseTracking", defer: true %>
       <% else %>
-        <%= javascript_packs_with_chunks_tag "base", "Search", "runtimeBanner", "baseTracking", defer: true %>
+        <%= javascript_packs_with_chunks_tag "base", "baseInitializers", "Search", "runtimeBanner", "baseTracking", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">

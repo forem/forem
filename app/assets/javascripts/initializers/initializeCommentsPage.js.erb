@@ -451,6 +451,14 @@ function updateCommentsCount() {
   commentsSidebarCountDiv.innerHTML = `${commentsCountData}`;
 }
 
+function initializeCommentDate() {
+  const commentsDates = document.querySelectorAll('.comment-date time');
+
+  if (commentsDates) {
+    addLocalizedDateTimeToElementsTitles(commentsDates, 'datetime');
+  }
+}
+
 function handleHiddenComments(commentableType){
   const currentUser = userData();
   const commentableAuthorIds = [];
