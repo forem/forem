@@ -6,10 +6,7 @@ ignore:
   - "lib/generators"
 flag_management:
   default_rules:
-    carryforward: true
     statuses:
       - type: project
         target: auto
         threshold: 1%
-      - type: patch
-        target: 90%
