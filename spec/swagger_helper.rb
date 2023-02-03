@@ -244,45 +244,6 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               story: { type: :string, nullable: true }
             }
           },
-          Listing: {
-            description: "Representation of a Listing",
-            type: :object,
-            properties: {
-              type_of: { type: :string },
-              id: { type: :integer, format: :int64 },
-              title: { type: :string },
-              slug: { type: :string },
-              body_markdown: { type: :string },
-              tag_list: { type: :string },
-              tags: { type: :array, items: { type: "string" } },
-              category: { type: :string },
-              processed_html: { type: :string },
-              published: { type: :boolean },
-              user: {
-                type: :object,
-                properties: {
-                  name: { type: :string },
-                  username: { type: :string },
-                  twitter_username: { type: :string },
-                  github_username: { type: :string },
-                  user_id: { type: :integer, format: :int64 },
-                  website_url: { type: :string, nullable: true },
-                  profile_image: { type: :string },
-                  profile_image_90: { type: :string }
-                }
-              },
-              organization: {
-                type: :object,
-                properties: {
-                  name: { type: :string },
-                  username: { type: :string },
-                  slug: { type: :string },
-                  profile_image: { type: :string },
-                  profile_image_90: { type: :string }
-                }
-              }
-            }
-          },
           FollowedTag: {
             description: "Representation of a followed tag",
             type: :object,
