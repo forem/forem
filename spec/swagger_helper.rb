@@ -275,6 +275,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             },
             required: %w[id name points]
           },
+          Tag: {
+            description: "Representation of a tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            }
+          },
           Page: {
             description: "Representation of a page object",
             type: :object,

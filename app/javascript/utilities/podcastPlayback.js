@@ -58,7 +58,7 @@ export function initializePodcastPlayback() {
   function currentAudioState() {
     try {
       const currentState = JSON.parse(
-        localStorage.getItem('media_playback_state_v2'),
+        localStorage.getItem('media_playback_state_v3'),
       );
       if (!currentState) {
         return newAudioState();
@@ -114,7 +114,7 @@ export function initializePodcastPlayback() {
     newState.muted = currentState.muted;
     newState.volume = currentState.volume;
     newState.duration = currentState.duration;
-    localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
+    localStorage.setItem('media_playback_state_v3', JSON.stringify(newState));
     return newState;
   }
 
