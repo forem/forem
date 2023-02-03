@@ -25,16 +25,6 @@ export function initializeVideoPlayback() {
     return document.getElementById(name);
   }
 
-  function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-    const results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
-
   function timeToSeconds(hms) {
     let a;
     if (hms.length < 3) {
@@ -148,7 +138,7 @@ export function initializeVideoPlayback() {
   }
 
   function initializePlayer(videoSource) {
-    const seconds = timeToSeconds(getParameterByName('t') || '0');
+    const seconds = timeToSeconds('0');
     const metadata = videoMetadata(videoSource);
 
     if (window.Forem.Runtime.isNativeIOS('video')) {
