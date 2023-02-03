@@ -42,7 +42,7 @@ Rails.application.routes.draw do
     end
 
     namespace :api, defaults: { format: "json" } do
-      scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
+      scope module: :v1, constraints: ApiConstraints.new(version: 1, default: true) do
         # V1 only endpoints
         put "/users/:id/suspend", to: "users#suspend", as: :user_suspend
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
@@ -57,10 +57,6 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
-        draw :api
-      end
-
-      scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
         draw :api
       end
     end
