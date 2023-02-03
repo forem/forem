@@ -1,7 +1,7 @@
 /*
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllTagEditButtons, initializeUserFollowButts,
-  initializeBaseTracking, initializeCommentsPage,
+  initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeSettings,
   initializeCommentPreview, initializeRuntimeBanner,
@@ -15,7 +15,6 @@
 */
 
 function callInitializers() {
-  initializeBaseTracking();
   initializePaymentPointers();
   initializeCommentsPage();
   initializeArticleDate();

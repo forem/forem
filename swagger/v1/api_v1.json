@@ -9,10 +9,14 @@
     "/api/articles": {
       "post": {
         "summary": "Publish article",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
         "operationId": "createArticle",
-        "parameters": [],
+        "parameters": [
+
+        ],
         "responses": {
           "201": {
             "description": "An Article",
@@ -20,40 +24,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9601,
+                  "id": 9891,
                   "title": "New article",
                   "description": "New post example",
                   "readable_publish_date": "Feb 3",
-                  "slug": "new-article-1ela",
-                  "path": "/username383/new-article-1ela",
-                  "url": "http://localhost:3000/username383/new-article-1ela",
+                  "slug": "new-article-5gfn",
+                  "path": "/username383/new-article-5gfn",
+                  "url": "http://localhost:3000/username383/new-article-5gfn",
                   "comments_count": 0,
                   "public_reactions_count": 0,
-                  "collection_id": 294,
-                  "published_timestamp": "2023-02-03T11:48:54Z",
+                  "collection_id": 305,
+                  "published_timestamp": "2023-02-03T11:51:56Z",
                   "positive_reactions_count": 0,
                   "cover_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
                   "social_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
                   "canonical_url": "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
-                  "created_at": "2023-02-03T11:48:54Z",
+                  "created_at": "2023-02-03T11:51:56Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:48:54Z",
-                  "last_comment_at": "2023-02-03T11:48:54Z",
+                  "published_at": "2023-02-03T11:51:56Z",
+                  "last_comment_at": "2023-02-03T11:51:56Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
-                  "tags": [],
+                  "tags": [
+
+                  ],
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
-                    "name": "Arturo \"Troy\" \\:/ Little",
+                    "name": "Sulema \"Willis\" \\:/ Hand",
                     "username": "username383",
                     "twitter_username": "twitter383",
                     "github_username": "github383",
-                    "user_id": 21815,
+                    "user_id": 22492,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/21815/a73c3ea6-c4c6-44f0-a067-2aff44fe5a13.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/21815/a73c3ea6-c4c6-44f0-a067-2aff44fe5a13.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22492/af71d618-4691-482e-89fa-c0de71e63059.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/22492/af71d618-4691-482e-89fa-c0de71e63059.jpeg"
                   }
                 }
               }
@@ -94,8 +100,12 @@
       },
       "get": {
         "summary": "Published articles",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -152,7 +162,11 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": ["fresh", "rising", "all"]
+              "enum": [
+                "fresh",
+                "rising",
+                "all"
+              ]
             },
             "example": "fresh"
           },
@@ -188,45 +202,47 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 9604,
-                    "title": "His Dark Materials175",
-                    "description": "8-bit gentrify small batch yr wolf pop-up hashtag diy. Pug chillwave slow-carb gastropub church-key....",
+                    "id": 9894,
+                    "title": "The Soldier's Art175",
+                    "description": "Carry ethical you probably haven't heard of them irony lumbersexual hoodie cred. Farm-to-table...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "his-dark-materials175-214e",
-                    "path": "/username387/his-dark-materials175-214e",
-                    "url": "http://localhost:3000/username387/his-dark-materials175-214e",
+                    "slug": "the-soldiers-art175-3flf",
+                    "path": "/username387/the-soldiers-art175-3flf",
+                    "url": "http://localhost:3000/username387/the-soldiers-art175-3flf",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:48:55Z",
+                    "published_timestamp": "2023-02-03T11:51:56Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "social_image": "http://localhost:3000/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
-                    "canonical_url": "http://localhost:3000/username387/his-dark-materials175-214e",
-                    "created_at": "2023-02-03T11:48:55Z",
+                    "cover_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
+                    "social_image": "http://localhost:3000/assets/24-377bc0861a9a539e8d1875ea9d4eea9e0226d93e1b6e9317e0c73c754699cc14.png",
+                    "canonical_url": "http://localhost:3000/username387/the-soldiers-art175-3flf",
+                    "created_at": "2023-02-03T11:51:57Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:48:55Z",
-                    "last_comment_at": "2023-02-03T11:48:55Z",
+                    "published_at": "2023-02-03T11:51:56Z",
+                    "last_comment_at": "2023-02-03T11:51:56Z",
                     "reading_time_minutes": 1,
-                    "tag_list": ["discuss"],
+                    "tag_list": [
+                      "discuss"
+                    ],
                     "tags": "discuss",
                     "user": {
-                      "name": "Domenic \"Cordell\" \\:/ Gleason",
+                      "name": "Lydia \"Buster\" \\:/ Lockman",
                       "username": "username387",
                       "twitter_username": "twitter387",
                       "github_username": "github387",
-                      "user_id": 21819,
+                      "user_id": 22496,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21819/a56c26aa-7845-4268-a0ab-bab38ce8e82c.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21819/a56c26aa-7845-4268-a0ab-bab38ce8e82c.jpeg"
+                      "profile_image": "/uploads/user/profile_image/22496/c09dc4d5-70e8-4e24-831b-5ed743022805.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/22496/c09dc4d5-70e8-4e24-831b-5ed743022805.jpeg"
                     },
                     "organization": {
-                      "name": "Medhurst-Schimmel",
+                      "name": "Bayer LLC",
                       "username": "org70",
                       "slug": "org70",
-                      "profile_image": "/uploads/organization/profile_image/3844/6efe4a40-5541-4b7e-974a-fc52a590f071.png",
-                      "profile_image_90": "/uploads/organization/profile_image/3844/6efe4a40-5541-4b7e-974a-fc52a590f071.png"
+                      "profile_image": "/uploads/organization/profile_image/3966/ea313363-4e14-40c5-9d3b-1bf45dc0961c.png",
+                      "profile_image_90": "/uploads/organization/profile_image/3966/ea313363-4e14-40c5-9d3b-1bf45dc0961c.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -250,8 +266,12 @@
     "/api/articles/latest": {
       "get": {
         "summary": "Published articles sorted by published date",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a list of articles. ordered by descending publish date.\n\nIt supports pagination, each page will contain 30 articles by default.",
         "operationId": "getLatestArticles",
         "parameters": [
@@ -270,38 +290,42 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 9607,
-                    "title": "Antic Hay178",
-                    "description": "Letterpress taxidermy mlkshk vinegar echo. Cray leggings disrupt butcher pitchfork. Waistcoat...",
+                    "id": 9897,
+                    "title": "A Farewell to Arms178",
+                    "description": "Semiotics beard vhs wolf williamsburg. Banjo listicle paleo brooklyn.  Vhs chicharrones whatever...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "antic-hay178-329m",
-                    "path": "/username390/antic-hay178-329m",
-                    "url": "http://localhost:3000/username390/antic-hay178-329m",
+                    "slug": "a-farewell-to-arms178-1k27",
+                    "path": "/username390/a-farewell-to-arms178-1k27",
+                    "url": "http://localhost:3000/username390/a-farewell-to-arms178-1k27",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:48:55Z",
+                    "published_timestamp": "2023-02-03T11:51:57Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
-                    "social_image": "http://localhost:3000/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
-                    "canonical_url": "http://localhost:3000/username390/antic-hay178-329m",
-                    "created_at": "2023-02-03T11:48:55Z",
+                    "cover_image": "http://localhost:3000/assets/26-90c7a1dfb33e271f477a60763fa64d842858635cdd7a508d0ffa2df59ced9d1d.png",
+                    "social_image": "http://localhost:3000/assets/26-90c7a1dfb33e271f477a60763fa64d842858635cdd7a508d0ffa2df59ced9d1d.png",
+                    "canonical_url": "http://localhost:3000/username390/a-farewell-to-arms178-1k27",
+                    "created_at": "2023-02-03T11:51:57Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:48:55Z",
-                    "last_comment_at": "2023-02-03T11:48:55Z",
+                    "published_at": "2023-02-03T11:51:57Z",
+                    "last_comment_at": "2023-02-03T11:51:57Z",
                     "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Seth \"Teddy\" \\:/ Gerhold",
+                      "name": "Jamey \"Jordan\" \\:/ Frami",
                       "username": "username390",
                       "twitter_username": "twitter390",
                       "github_username": "github390",
-                      "user_id": 21822,
+                      "user_id": 22499,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21822/87b05069-c15b-4925-99cd-833ec8fff0b6.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21822/87b05069-c15b-4925-99cd-833ec8fff0b6.jpeg"
+                      "profile_image": "/uploads/user/profile_image/22499/a8dec7f7-c511-4222-8724-2ba14e5fa6c0.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/22499/a8dec7f7-c511-4222-8724-2ba14e5fa6c0.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -311,38 +335,42 @@
                   },
                   {
                     "type_of": "article",
-                    "id": 9606,
-                    "title": "The Yellow Meads of Asphodel177",
-                    "description": "Crucifix locavore vinegar cray biodiesel. Bushwick shabby chic actually 8-bit narwhal distillery....",
+                    "id": 9896,
+                    "title": "Françoise Sagan177",
+                    "description": "Mumblecore you probably haven't heard of them occupy chartreuse. Cleanse gentrify aesthetic +1...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "the-yellow-meads-of-asphodel177-1lo4",
-                    "path": "/username389/the-yellow-meads-of-asphodel177-1lo4",
-                    "url": "http://localhost:3000/username389/the-yellow-meads-of-asphodel177-1lo4",
+                    "slug": "francoise-sagan177-1l2h",
+                    "path": "/username389/francoise-sagan177-1l2h",
+                    "url": "http://localhost:3000/username389/francoise-sagan177-1l2h",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:48:55Z",
+                    "published_timestamp": "2023-02-03T11:51:57Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
-                    "social_image": "http://localhost:3000/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
-                    "canonical_url": "http://localhost:3000/username389/the-yellow-meads-of-asphodel177-1lo4",
-                    "created_at": "2023-02-03T11:48:55Z",
+                    "cover_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "social_image": "http://localhost:3000/assets/19-ed58d3e8defcefc445020631589697a05e725243e834b5192aee4e6b91a3e927.png",
+                    "canonical_url": "http://localhost:3000/username389/francoise-sagan177-1l2h",
+                    "created_at": "2023-02-03T11:51:57Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:48:55Z",
-                    "last_comment_at": "2023-02-03T11:48:55Z",
+                    "published_at": "2023-02-03T11:51:57Z",
+                    "last_comment_at": "2023-02-03T11:51:57Z",
                     "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Juan \"Wiley\" \\:/ Spencer",
+                      "name": "Joseph \"Wyatt\" \\:/ Maggio",
                       "username": "username389",
                       "twitter_username": "twitter389",
                       "github_username": "github389",
-                      "user_id": 21821,
+                      "user_id": 22498,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21821/f5aaf38c-54c5-4919-9ee7-5a64965b24a3.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21821/f5aaf38c-54c5-4919-9ee7-5a64965b24a3.jpeg"
+                      "profile_image": "/uploads/user/profile_image/22498/e7e0ad1b-adf5-42c2-83d5-6e67dc5e86e8.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/22498/e7e0ad1b-adf5-42c2-83d5-6e67dc5e86e8.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -352,38 +380,42 @@
                   },
                   {
                     "type_of": "article",
-                    "id": 9605,
-                    "title": "Mother Night176",
-                    "description": "Listicle ennui flannel shabby chic brunch whatever. Butcher shoreditch wolf everyday mlkshk.  Cliche...",
+                    "id": 9895,
+                    "title": "Where Angels Fear to Tread176",
+                    "description": "Farm-to-table wes anderson single-origin coffee literally. Biodiesel normcore migas +1.  Artisan...",
                     "readable_publish_date": "Feb 3",
-                    "slug": "mother-night176-kf0",
-                    "path": "/username388/mother-night176-kf0",
-                    "url": "http://localhost:3000/username388/mother-night176-kf0",
+                    "slug": "where-angels-fear-to-tread176-2gb2",
+                    "path": "/username388/where-angels-fear-to-tread176-2gb2",
+                    "url": "http://localhost:3000/username388/where-angels-fear-to-tread176-2gb2",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2023-02-03T11:48:55Z",
+                    "published_timestamp": "2023-02-03T11:51:57Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                    "social_image": "http://localhost:3000/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                    "canonical_url": "http://localhost:3000/username388/mother-night176-kf0",
-                    "created_at": "2023-02-03T11:48:55Z",
+                    "cover_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
+                    "social_image": "http://localhost:3000/assets/31-2a89a91581ce9080fed8d62dd9c70a3fd5f92472da8c023e7b29256e04811b2e.png",
+                    "canonical_url": "http://localhost:3000/username388/where-angels-fear-to-tread176-2gb2",
+                    "created_at": "2023-02-03T11:51:57Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2023-02-03T11:48:55Z",
-                    "last_comment_at": "2023-02-03T11:48:55Z",
+                    "published_at": "2023-02-03T11:51:57Z",
+                    "last_comment_at": "2023-02-03T11:51:57Z",
                     "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
+                    "tag_list": [
+                      "javascript",
+                      "html",
+                      "discuss"
+                    ],
                     "tags": "javascript, html, discuss",
                     "user": {
-                      "name": "Edwina \"Elwood\" \\:/ Rice",
+                      "name": "Deandre \"Chung\" \\:/ Macejkovic",
                       "username": "username388",
                       "twitter_username": "twitter388",
                       "github_username": "github388",
-                      "user_id": 21820,
+                      "user_id": 22497,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21820/818fd2d2-b89a-45f1-8788-0646ab093b27.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21820/818fd2d2-b89a-45f1-8788-0646ab093b27.jpeg"
+                      "profile_image": "/uploads/user/profile_image/22497/484d55a0-4c6c-4d0e-943d-fdc706fa0173.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/22497/484d55a0-4c6c-4d0e-943d-fdc706fa0173.jpeg"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -407,8 +439,12 @@
     "/api/articles/{id}": {
       "get": {
         "summary": "Published article by id",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
         "operationId": "getArticleById",
         "parameters": [
@@ -428,40 +464,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9608,
-                  "title": "The Wives of Bath179",
-                  "description": "Aesthetic listicle salvia farm-to-table cold-pressed microdosing. Cred small batch pop-up brunch...",
+                  "id": 9898,
+                  "title": "The Moving Finger179",
+                  "description": "Selfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "the-wives-of-bath179-1am1",
-                  "path": "/username391/the-wives-of-bath179-1am1",
-                  "url": "http://localhost:3000/username391/the-wives-of-bath179-1am1",
+                  "slug": "the-moving-finger179-481e",
+                  "path": "/username391/the-moving-finger179-481e",
+                  "url": "http://localhost:3000/username391/the-moving-finger179-481e",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:48:55Z",
+                  "published_timestamp": "2023-02-03T11:51:57Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
-                  "social_image": "http://localhost:3000/assets/30-08b2d52669e0680784f50291966e33f77cbee815907e6abbacf74018fa3f3567.png",
-                  "canonical_url": "http://localhost:3000/username391/the-wives-of-bath179-1am1",
-                  "created_at": "2023-02-03T11:48:55Z",
+                  "cover_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
+                  "social_image": "http://localhost:3000/assets/3-93b6b57b5a6115cffe5d63d29a22825eb9e65f647bfef57a88244bc2b98186f0.png",
+                  "canonical_url": "http://localhost:3000/username391/the-moving-finger179-481e",
+                  "created_at": "2023-02-03T11:51:57Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:48:55Z",
-                  "last_comment_at": "2023-02-03T11:48:55Z",
+                  "published_at": "2023-02-03T11:51:57Z",
+                  "last_comment_at": "2023-02-03T11:51:57Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
-                  "tags": ["discuss"],
-                  "body_html": "<p>Aesthetic listicle salvia farm-to-table cold-pressed microdosing. Cred small batch pop-up brunch seitan chicharrones butcher park.</p>\n\n<p>Diy phlogiston craft beer.</p>\n\n",
-                  "body_markdown": "---\ntitle: The Wives of Bath179\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nAesthetic listicle salvia farm-to-table cold-pressed microdosing. Cred small batch pop-up brunch seitan chicharrones butcher park.\n\n\nDiy phlogiston craft beer.\n\n",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Selfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston kitsch.</p>\n\n<p>Seitan cold-pressed tilde forage chicharrones selvage.</p>\n\n",
+                  "body_markdown": "---\ntitle: The Moving Finger179\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nSelfies forage freegan pickled. Try-hard meh craft beer blog biodiesel tilde phlogiston kitsch.\n\n\nSeitan cold-pressed tilde forage chicharrones selvage.\n\n",
                   "user": {
-                    "name": "Billy \"Denver\" \\:/ Torp",
+                    "name": "Chris \"Lakisha\" \\:/ Hand",
                     "username": "username391",
                     "twitter_username": "twitter391",
                     "github_username": "github391",
-                    "user_id": 21823,
+                    "user_id": 22500,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/21823/f1091235-830b-4dbe-a8bb-fb34aba14f2d.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/21823/f1091235-830b-4dbe-a8bb-fb34aba14f2d.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22500/ffb577b4-015c-4677-906a-fd1bfc398afd.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/22500/ffb577b4-015c-4677-906a-fd1bfc398afd.jpeg"
                   },
                   "flare_tag": {
                     "name": "discuss",
@@ -493,7 +531,9 @@
       },
       "put": {
         "summary": "Update an article by id",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
         "operationId": "updateArticle",
         "parameters": [
@@ -517,40 +557,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9609,
-                  "title": "Endless Night180",
-                  "description": "Sriracha salvia humblebrag green juice iphone put a bird on it yuccie. Celiac drinking...",
+                  "id": 9899,
+                  "title": "Wildfire at Midnight180",
+                  "description": "Poutine 3 wolf moon fanny pack blog jean shorts cold-pressed. Five dollar toast microdosing photo...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "endless-night180-1ni6",
-                  "path": "/username392/endless-night180-1ni6",
-                  "url": "http://localhost:3000/username392/endless-night180-1ni6",
+                  "slug": "wildfire-at-midnight180-1le3",
+                  "path": "/username392/wildfire-at-midnight180-1le3",
+                  "url": "http://localhost:3000/username392/wildfire-at-midnight180-1le3",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:48:55Z",
+                  "published_timestamp": "2023-02-03T11:51:57Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/10-56ac1726da8a3bcbe4f93b48752287ea41bb79199cd8a8a61a9e4280ce9ae5b8.png",
-                  "social_image": "http://localhost:3000/assets/10-56ac1726da8a3bcbe4f93b48752287ea41bb79199cd8a8a61a9e4280ce9ae5b8.png",
-                  "canonical_url": "http://localhost:3000/username392/endless-night180-1ni6",
-                  "created_at": "2023-02-03T11:48:55Z",
-                  "edited_at": "2023-02-03T11:48:55Z",
+                  "cover_image": "http://localhost:3000/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
+                  "social_image": "http://localhost:3000/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
+                  "canonical_url": "http://localhost:3000/username392/wildfire-at-midnight180-1le3",
+                  "created_at": "2023-02-03T11:51:57Z",
+                  "edited_at": "2023-02-03T11:51:57Z",
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:48:55Z",
-                  "last_comment_at": "2023-02-03T11:48:55Z",
+                  "published_at": "2023-02-03T11:51:57Z",
+                  "last_comment_at": "2023-02-03T11:51:57Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
-                  "tags": [],
+                  "tags": [
+
+                  ],
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
-                    "name": "Odell \"Tynisha\" \\:/ Feeney",
+                    "name": "Jerold \"Neil\" \\:/ O'Connell",
                     "username": "username392",
                     "twitter_username": "twitter392",
                     "github_username": "github392",
-                    "user_id": 21824,
+                    "user_id": 22501,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/21824/51887835-9f58-4674-8824-913fef5e8f2b.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/21824/51887835-9f58-4674-8824-913fef5e8f2b.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22501/1dafc334-4994-4de9-9ad4-94c2db1a5ca9.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/22501/1dafc334-4994-4de9-9ad4-94c2db1a5ca9.jpeg"
                   }
                 }
               }
@@ -604,8 +646,12 @@
     "/api/articles/{username}/{slug}": {
       "get": {
         "summary": "Published article by path",
-        "security": [],
-        "tags": ["articles"],
+        "security": [
+
+        ],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
         "operationId": "getArticleByPath",
         "parameters": [
@@ -633,40 +679,42 @@
               "application/json": {
                 "example": {
                   "type_of": "article",
-                  "id": 9612,
-                  "title": "Great Work of Time183",
-                  "description": "Asymmetrical salvia stumptown yuccie forage biodiesel migas banh mi. Trust fund semiotics viral marfa...",
+                  "id": 9902,
+                  "title": "Cabbages and Kings183",
+                  "description": "Normcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt...",
                   "readable_publish_date": "Feb 3",
-                  "slug": "great-work-of-time183-1f3n",
-                  "path": "/username396/great-work-of-time183-1f3n",
-                  "url": "http://localhost:3000/username396/great-work-of-time183-1f3n",
+                  "slug": "cabbages-and-kings183-1020",
+                  "path": "/username396/cabbages-and-kings183-1020",
+                  "url": "http://localhost:3000/username396/cabbages-and-kings183-1020",
                   "comments_count": 0,
                   "public_reactions_count": 0,
                   "collection_id": null,
-                  "published_timestamp": "2023-02-03T11:48:55Z",
+                  "published_timestamp": "2023-02-03T11:51:57Z",
                   "positive_reactions_count": 0,
-                  "cover_image": "http://localhost:3000/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
-                  "social_image": "http://localhost:3000/assets/34-d27f3a4a9f6f1f373003c74b31749764691f510b2a18b55039478583864a067e.png",
-                  "canonical_url": "http://localhost:3000/username396/great-work-of-time183-1f3n",
-                  "created_at": "2023-02-03T11:48:55Z",
+                  "cover_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                  "social_image": "http://localhost:3000/assets/18-0c8db7667732647d3000787a9481d38dc0dbe1b8ebc0b097db816f8db8cd097a.png",
+                  "canonical_url": "http://localhost:3000/username396/cabbages-and-kings183-1020",
+                  "created_at": "2023-02-03T11:51:57Z",
                   "edited_at": null,
                   "crossposted_at": null,
-                  "published_at": "2023-02-03T11:48:55Z",
-                  "last_comment_at": "2023-02-03T11:48:55Z",
+                  "published_at": "2023-02-03T11:51:57Z",
+                  "last_comment_at": "2023-02-03T11:51:57Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
-                  "tags": ["discuss"],
-                  "body_html": "<p>Asymmetrical salvia stumptown yuccie forage biodiesel migas banh mi. Trust fund semiotics viral marfa chia migas. Ethical godard you probably haven't heard of them selfies authentic polaroid cred. Drinking kinfolk tousled deep v.</p>\n\n<p>Forage health single-origin coffee intelligentsia vice hashtag meditation. Skateboard food truck everyday lumbersexual wes anderson.</p>\n\n",
-                  "body_markdown": "---\ntitle: Great Work of Time183\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nAsymmetrical salvia stumptown yuccie forage biodiesel migas banh mi. Trust fund semiotics viral marfa chia migas. Ethical godard you probably haven't heard of them selfies authentic polaroid cred. Drinking kinfolk tousled deep v.\n\n\nForage health single-origin coffee intelligentsia vice hashtag meditation. Skateboard food truck everyday lumbersexual wes anderson.\n\n",
+                  "tags": [
+                    "discuss"
+                  ],
+                  "body_html": "<p>Normcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt mustache slow-carb lo-fi umami. Salvia before they sold out gluten-free fanny pack. Thundercats locavore small batch.</p>\n\n<p>Shoreditch godard cleanse yolo. Meditation beard hoodie seitan goth xoxo occupy. Marfa ennui cliche chillwave.</p>\n\n",
+                  "body_markdown": "---\ntitle: Cabbages and Kings183\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nNormcore vice diy chia portland wolf. You probably haven't heard of them synth hashtag disrupt mustache slow-carb lo-fi umami. Salvia before they sold out gluten-free fanny pack. Thundercats locavore small batch.\n\n\nShoreditch godard cleanse yolo. Meditation beard hoodie seitan goth xoxo occupy. Marfa ennui cliche chillwave.\n\n",
                   "user": {
-                    "name": "Alba \"Delmer\" \\:/ Cole",
+                    "name": "Abbey \"Trenton\" \\:/ Hackett",
                     "username": "username396",
                     "twitter_username": "twitter396",
                     "github_username": "github396",
-                    "user_id": 21828,
+                    "user_id": 22505,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/21828/d06e76e2-3521-4c73-b4ee-f4610945b9c7.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/21828/d06e76e2-3521-4c73-b4ee-f4610945b9c7.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22505/e53b2865-50d6-417d-be6e-fac93930e497.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/22505/e53b2865-50d6-417d-be6e-fac93930e497.jpeg"
                   },
                   "flare_tag": {
                     "name": "discuss",
@@ -700,7 +748,10 @@
     "/api/articles/me": {
       "get": {
         "summary": "User's articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles",
+          "users"
+        ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserArticles",
         "parameters": [
@@ -727,7 +778,9 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -743,7 +796,10 @@
     "/api/articles/me/published": {
       "get": {
         "summary": "User's published articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles",
+          "users"
+        ],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserPublishedArticles",
         "parameters": [
@@ -770,7 +826,9 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -786,7 +844,10 @@
     "/api/articles/me/unpublished": {
       "get": {
         "summary": "User's unpublished articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles",
+          "users"
+        ],
         "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserUnpublishedArticles",
         "parameters": [
@@ -813,7 +874,9 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -829,7 +892,10 @@
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
-        "tags": ["articles"],
+        "tags": [
+          "articles",
+          "users"
+        ],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
         "operationId": "getUserAllArticles",
         "parameters": [
@@ -856,7 +922,9 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -872,7 +940,9 @@
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": ["articles"],
+        "tags": [
+          "articles"
+        ],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -931,8 +1001,12 @@
     "/api/comments": {
       "get": {
         "summary": "Comments",
-        "security": [],
-        "tags": ["comments"],
+        "security": [
+
+        ],
+        "tags": [
+          "comments"
+        ],
         "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.",
         "operationId": "getCommentsByArticleId",
         "parameters": [
@@ -965,20 +1039,22 @@
                 "example": [
                   {
                     "type_of": "comment",
-                    "id_code": "76e",
-                    "created_at": "2023-02-03T11:48:56Z",
-                    "body_html": "<p>Selfies fixie yr migas direct trade poutine swag. Mixtape banh mi truffaut.</p>\n\n",
+                    "id_code": "7cf",
+                    "created_at": "2023-02-03T11:51:58Z",
+                    "body_html": "<p>Occupy sriracha franzen tacos.</p>\n\n",
                     "user": {
-                      "name": "Gordon \"Tisha\" \\:/ Swift",
+                      "name": "Ryan \"Burt\" \\:/ Dooley",
                       "username": "username410",
                       "twitter_username": "twitter410",
                       "github_username": "github410",
-                      "user_id": 21842,
+                      "user_id": 22519,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/21842/8780f2c1-94bc-4957-b9b9-c9af5558821c.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/21842/8780f2c1-94bc-4957-b9b9-c9af5558821c.jpeg"
+                      "profile_image": "/uploads/user/profile_image/22519/278b2042-417b-4036-9d47-73169e4cb47f.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/22519/278b2042-417b-4036-9d47-73169e4cb47f.jpeg"
                     },
-                    "children": []
+                    "children": [
+
+                    ]
                   }
                 ],
                 "schema": {
@@ -1007,8 +1083,12 @@
     "/api/comments/{id}": {
       "get": {
         "summary": "Comment by id",
-        "security": [],
-        "tags": ["comments"],
+        "security": [
+
+        ],
+        "tags": [
+          "comments"
+        ],
         "description": "This endpoint allows the client to retrieve a comment as well as his descendants comments.\n\n  It will return the required comment (the root) with its nested descendants as a thread.\n\n  See the format specification for further details.",
         "operationId": "getCommentById",
         "parameters": [
@@ -1030,20 +1110,22 @@
               "application/json": {
                 "example": {
                   "type_of": "comment",
-                  "id_code": "76g",
-                  "created_at": "2023-02-03T11:48:56Z",
-                  "body_html": "<p>Artisan small batch wes anderson occupy skateboard drinking swag.</p>\n\n",
+                  "id_code": "7ch",
+                  "created_at": "2023-02-03T11:51:58Z",
+                  "body_html": "<p>Swag iphone mustache shoreditch kale chips.</p>\n\n",
                   "user": {
-                    "name": "Daryl \"Arline\" \\:/ Beahan",
+                    "name": "Eric \"Roxie\" \\:/ Hegmann",
                     "username": "username414",
                     "twitter_username": "twitter414",
                     "github_username": "github414",
-                    "user_id": 21846,
+                    "user_id": 22523,
                     "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/21846/de440b9a-863b-450d-a807-8acd6d4470b5.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/21846/de440b9a-863b-450d-a807-8acd6d4470b5.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22523/c3a325fa-dc2b-4ed0-8809-9651d8b1b65d.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/22523/c3a325fa-dc2b-4ed0-8809-9651d8b1b65d.jpeg"
                   },
-                  "children": []
+                  "children": [
+
+                  ]
                 }
               }
             }
@@ -1065,14 +1147,18 @@
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
-        "tags": ["display ads"],
+        "tags": [
+          "display ads"
+        ],
         "description": "This endpoint allows the client to retrieve a list of all display ads.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": []
+                "example": [
+
+                ]
               }
             }
           },
@@ -1091,21 +1177,25 @@
       },
       "post": {
         "summary": "display ads",
-        "tags": ["display ads"],
+        "tags": [
+          "display ads"
+        ],
         "description": "This endpoint allows the client to create a new display ad.",
-        "parameters": [],
+        "parameters": [
+
+        ],
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
                 "example": {
-                  "id": 420,
+                  "id": 436,
                   "approved": true,
                   "body_markdown": "# Hi, this is ad\nYep, it's an ad",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T08:48:57.135-03:00",
+                  "created_at": "2023-02-03T14:51:59.179+03:00",
                   "display_to": "all",
                   "impressions_count": 0,
                   "name": "Example Ad",
@@ -1115,7 +1205,7 @@
                   "published": true,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T08:48:57.135-03:00",
+                  "updated_at": "2023-02-03T14:51:59.179+03:00",
                   "tag_list": ""
                 }
               }
@@ -1187,7 +1277,11 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": ["all", "logged_in", "logged_out"],
+                    "enum": [
+                      "all",
+                      "logged_in",
+                      "logged_out"
+                    ],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -1207,7 +1301,11 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": ["name", "body_markdown", "placement_area"]
+                "required": [
+                  "name",
+                  "body_markdown",
+                  "placement_area"
+                ]
               }
             }
           }
@@ -1217,7 +1315,9 @@
     "/api/display_ads/{id}": {
       "get": {
         "summary": "display ad",
-        "tags": ["display ads"],
+        "tags": [
+          "display ads"
+        ],
         "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
         "parameters": [
           {
@@ -1239,22 +1339,22 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 421,
+                  "id": 437,
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 9",
                   "cached_tag_list": "",
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T08:48:57.269-03:00",
+                  "created_at": "2023-02-03T14:51:59.312+03:00",
                   "display_to": "all",
                   "impressions_count": 0,
-                  "name": "Display Ad 421",
-                  "organization_id": 3845,
+                  "name": "Display Ad 437",
+                  "organization_id": 3967,
                   "placement_area": "sidebar_left",
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 9</p>",
                   "published": false,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T08:48:57.272-03:00",
+                  "updated_at": "2023-02-03T14:51:59.315+03:00",
                   "tag_list": ""
                 }
               }
@@ -1286,7 +1386,9 @@
       },
       "put": {
         "summary": "display ads",
-        "tags": ["display ads"],
+        "tags": [
+          "display ads"
+        ],
         "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
         "parameters": [
           {
@@ -1311,19 +1413,19 @@
                   "approved": false,
                   "body_markdown": "Hello _hey_ Hey hey 10",
                   "display_to": "all",
-                  "name": "Display Ad 422",
-                  "organization_id": 3846,
+                  "name": "Display Ad 438",
+                  "organization_id": 3968,
                   "placement_area": "sidebar_left",
                   "published": false,
                   "processed_html": "<p>Hello <em>hey</em> Hey hey 10</p>",
                   "cached_tag_list": "",
-                  "id": 422,
+                  "id": 438,
                   "clicks_count": 0,
-                  "created_at": "2023-02-03T08:48:57.431-03:00",
+                  "created_at": "2023-02-03T14:51:59.474+03:00",
                   "impressions_count": 0,
                   "success_rate": 0.0,
                   "type_of": "in_house",
-                  "updated_at": "2023-02-03T08:48:57.433-03:00",
+                  "updated_at": "2023-02-03T14:51:59.476+03:00",
                   "tag_list": ""
                 }
               }
@@ -1380,7 +1482,11 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": ["all", "logged_in", "logged_out"],
+                    "enum": [
+                      "all",
+                      "logged_in",
+                      "logged_out"
+                    ],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -1400,7 +1506,11 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": ["name", "body_markdown", "placement_area"]
+                "required": [
+                  "name",
+                  "body_markdown",
+                  "placement_area"
+                ]
               }
             }
           }
@@ -1410,7 +1520,9 @@
     "/api/display_ads/{id}/unpublish": {
       "put": {
         "summary": "unpublish",
-        "tags": ["display ads"],
+        "tags": [
+          "display ads"
+        ],
         "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
         "parameters": [
           {
@@ -1458,7 +1570,10 @@
     "/api/follows/tags": {
       "get": {
         "summary": "Followed Tags",
-        "tags": ["followed_tags", "tags"],
+        "tags": [
+          "followed_tags",
+          "tags"
+        ],
         "description": "This endpoint allows the client to retrieve a list of the tags they follow.",
         "operationId": "getFollowedTags",
         "responses": {
@@ -1479,12 +1594,12 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 15602,
+                    "id": 16133,
                     "name": "tag3",
                     "points": 1.0
                   },
                   {
-                    "id": 15603,
+                    "id": 16134,
                     "name": "tag4",
                     "points": 1.0
                   }
@@ -1504,7 +1619,9 @@
     "/api/followers/users": {
       "get": {
         "summary": "Followers",
-        "tags": ["followers"],
+        "tags": [
+          "followers"
+        ],
         "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
         "operationId": "getFollowers",
         "parameters": [
@@ -1533,23 +1650,23 @@
                 "example": [
                   {
                     "type_of": "user_follower",
-                    "id": 534,
-                    "created_at": "2023-02-03T11:48:57Z",
-                    "user_id": 21867,
-                    "name": "Valentin \"Cythia\" \\:/ Wolf",
+                    "id": 555,
+                    "created_at": "2023-02-03T11:52:00Z",
+                    "user_id": 22544,
+                    "name": "Darrell \"Moshe\" \\:/ Bechtelar",
                     "path": "/username435",
                     "username": "username435",
-                    "profile_image": "/uploads/user/profile_image/21867/ab701472-cc3e-4f24-afb5-78a2cfdcbfa1.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22544/f6c32025-4147-42e3-8f69-7090a0618a43.jpeg"
                   },
                   {
                     "type_of": "user_follower",
-                    "id": 533,
-                    "created_at": "2023-02-03T11:48:57Z",
-                    "user_id": 21865,
-                    "name": "Cliff \"Abe\" \\:/ Ondricka",
+                    "id": 554,
+                    "created_at": "2023-02-03T11:51:59Z",
+                    "user_id": 22542,
+                    "name": "Josh \"Lottie\" \\:/ Cronin",
                     "path": "/username433",
                     "username": "username433",
-                    "profile_image": "/uploads/user/profile_image/21865/e2713938-d3f4-4e11-bae1-8224b9ee0ca9.jpeg"
+                    "profile_image": "/uploads/user/profile_image/22542/9514fa56-fe86-4c62-92c2-b620b6609c7e.jpeg"
                   }
                 ],
                 "schema": {
@@ -1606,8 +1723,12 @@
     "/api/pages": {
       "get": {
         "summary": "show details for all pages",
-        "security": [],
-        "tags": ["pages"],
+        "security": [
+
+        ],
+        "tags": [
+          "pages"
+        ],
         "description": "This endpoint allows the client to retrieve details for all Page objects.",
         "responses": {
           "200": {
@@ -1616,16 +1737,16 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 366,
-                    "title": "The Way Through the Woods",
-                    "slug": "glow-copy",
-                    "description": "Qui vel asperiores voluptate.",
+                    "id": 371,
+                    "title": "The Monkey's Raincoat",
+                    "slug": "cruelty_strikebreaker",
+                    "description": "Delectus rerum in itaque.",
                     "is_top_level_path": false,
                     "landing_page": false,
                     "body_html": null,
                     "body_json": null,
-                    "body_markdown": "Iste rerum quis impedit.",
-                    "processed_html": "<p>Iste rerum quis impedit.</p>\n\n",
+                    "body_markdown": "Illum et voluptate quia.",
+                    "processed_html": "<p>Illum et voluptate quia.</p>\n\n",
                     "social_image": {
                       "url": null
                     },
@@ -1642,13 +1763,132 @@
             }
           }
         }
+      },
+      "post": {
+        "summary": "pages",
+        "tags": [
+          "pages"
+        ],
+        "description": "This endpoint allows the client to create a new page.",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 373,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": "<h1>\n  <a name=\"hi-this-is-a-new-page\" href=\"#hi-this-is-a-new-page\">\n  </a>\n  Hi, this is a New Page\n</h1>\n\n<p>Yep, it's an a new page</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": null,
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the page"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "description": "Used to link to this page in URLs, must be unique and URL-safe"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "For internal use, helps similar pages from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "body_json": {
+                    "type": "string",
+                    "description": "For JSON pages, the JSON body"
+                  },
+                  "is_top_level_path": {
+                    "type": "boolean",
+                    "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
+                  },
+                  "template": {
+                    "type": "string",
+                    "enum": [
+                      "contained",
+                      "full_within_layout",
+                      "nav_bar_included",
+                      "json"
+                    ],
+                    "default": "contained",
+                    "description": "Controls what kind of layout the page is rendered in"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/pages/{id}": {
       "get": {
         "summary": "show details for a page",
-        "security": [],
-        "tags": ["pages"],
+        "security": [
+
+        ],
+        "tags": [
+          "pages"
+        ],
         "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
         "parameters": [
           {
@@ -1670,16 +1910,16 @@
             "content": {
               "application/json": {
                 "example": {
-                  "id": 367,
-                  "title": "Little Hands Clapping",
-                  "slug": "award_relationship",
-                  "description": "Qui aut ipsa et.",
+                  "id": 376,
+                  "title": "The Torment of Others",
+                  "slug": "vegetarian_minister",
+                  "description": "Excepturi culpa nisi enim.",
                   "is_top_level_path": false,
                   "landing_page": false,
                   "body_html": null,
                   "body_json": null,
-                  "body_markdown": "Sit sequi id voluptatum.",
-                  "processed_html": "<p>Sit sequi id voluptatum.</p>\n\n",
+                  "body_markdown": "Aperiam temporibus ut earum.",
+                  "processed_html": "<p>Aperiam temporibus ut earum.</p>\n\n",
                   "social_image": {
                     "url": null
                   },
@@ -1692,13 +1932,185 @@
             }
           }
         }
+      },
+      "put": {
+        "summary": "update details for a page",
+        "tags": [
+          "pages"
+        ],
+        "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 377,
+                  "title": "New Title",
+                  "slug": "hypothesis-strikebreaker",
+                  "description": "Nisi ut exercitationem reiciendis.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Placeat quod laudantium officiis.",
+                  "processed_html": "<p>Placeat quod laudantium officiis.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 379,
+                  "title": "Moab Is My Washpot",
+                  "slug": "introduction_rung",
+                  "description": "Ea delectus vero quas.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Fugiat asperiores ea earum.",
+                  "processed_html": "<p>Sunt ut mollitia qui.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "remove a page",
+        "tags": [
+          "pages"
+        ],
+        "description": "This endpoint allows the client to delete a single Page object, specified by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 380,
+                  "title": "Tiger! Tiger!",
+                  "slug": "general-judge",
+                  "description": "Est aliquam eaque sed.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Aut fuga magnam provident.",
+                  "processed_html": "<p>Aut fuga magnam provident.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "doubled_module": {
+                    "const_name": "Page",
+                    "object": "Page"
+                  },
+                  "__expired": false,
+                  "name": null,
+                  "__sending_message": null
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/podcast_episodes": {
       "get": {
         "summary": "Podcast Episodes",
-        "security": [],
-        "tags": ["podcast_episodes"],
+        "security": [
+
+        ],
+        "tags": [
+          "podcast_episodes"
+        ],
         "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
         "operationId": "getPodcastEpisodes",
         "parameters": [
@@ -1728,14 +2140,14 @@
                   {
                     "type_of": "podcast_episodes",
                     "class_name": "PodcastEpisode",
-                    "id": 574,
+                    "id": 596,
                     "path": "/codenewbie/slug-4",
-                    "title": "22",
-                    "image_url": "/uploads/podcast/image/444/581fc70c-87c0-45c9-abe9-f06a4f227cf4.jpeg",
+                    "title": "3",
+                    "image_url": "/uploads/podcast/image/461/9fc8b634-3040-4b84-a981-84a3b4e06584.jpeg",
                     "podcast": {
-                      "title": "Bell’s Expedition",
+                      "title": "La Fin Du Monde",
                       "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/444/581fc70c-87c0-45c9-abe9-f06a4f227cf4.jpeg"
+                      "image_url": "/uploads/podcast/image/461/9fc8b634-3040-4b84-a981-84a3b4e06584.jpeg"
                     }
                   }
                 ],
@@ -1765,7 +2177,9 @@
     "/api/profile_images/{username}": {
       "get": {
         "summary": "A Users or organizations profile image",
-        "tags": ["profile images"],
+        "tags": [
+          "profile images"
+        ],
         "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
         "operationId": "getProfileImage",
         "parameters": [
@@ -1788,8 +2202,8 @@
                 "example": {
                   "type_of": "profile_image",
                   "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/21873/a3fa243a-d232-4f88-b316-e8e827350010.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/21873/a3fa243a-d232-4f88-b316-e8e827350010.jpeg"
+                  "profile_image": "/uploads/user/profile_image/22559/aa81cb62-13da-4a51-ac9a-56b46072c4dc.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/22559/aa81cb62-13da-4a51-ac9a-56b46072c4dc.jpeg"
                 },
                 "schema": {
                   "type": "object",
@@ -1817,7 +2231,9 @@
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
-        "tags": ["reactions"],
+        "tags": [
+          "reactions"
+        ],
         "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
         "parameters": [
           {
@@ -1850,7 +2266,11 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["Comment", "Article", "User"]
+              "enum": [
+                "Comment",
+                "Article",
+                "User"
+              ]
             }
           }
         ],
@@ -1862,8 +2282,8 @@
                 "example": {
                   "result": "create",
                   "category": "like",
-                  "id": 362,
-                  "reactable_id": 9620,
+                  "id": 376,
+                  "reactable_id": 9910,
                   "reactable_type": "Article"
                 }
               }
@@ -1886,7 +2306,9 @@
     "/api/reactions": {
       "post": {
         "summary": "create reaction",
-        "tags": ["reactions"],
+        "tags": [
+          "reactions"
+        ],
         "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
         "parameters": [
           {
@@ -1919,7 +2341,11 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["Comment", "Article", "User"]
+              "enum": [
+                "Comment",
+                "Article",
+                "User"
+              ]
             }
           }
         ],
@@ -1931,8 +2357,8 @@
                 "example": {
                   "result": "none",
                   "category": "like",
-                  "id": 364,
-                  "reactable_id": 9622,
+                  "id": 378,
+                  "reactable_id": 9912,
                   "reactable_type": "Article"
                 }
               }
@@ -1955,7 +2381,9 @@
     "/api/readinglist": {
       "get": {
         "summary": "Readinglist",
-        "tags": ["readinglist"],
+        "tags": [
+          "readinglist"
+        ],
         "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
         "operationId": "getReadinglist",
         "parameters": [
@@ -1982,7 +2410,9 @@
             "description": "A list of articles in the users readinglist",
             "content": {
               "application/json": {
-                "example": [],
+                "example": [
+
+                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1998,8 +2428,12 @@
     "/api/tags": {
       "get": {
         "summary": "Tags",
-        "tags": ["tags"],
-        "security": [],
+        "tags": [
+          "tags"
+        ],
+        "security": [
+
+        ],
         "description": "This endpoint allows the client to retrieve a list of tags that can be used to tag articles.\n\nIt will return tags ordered by popularity.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
@@ -2017,19 +2451,19 @@
               "application/json": {
                 "example": [
                   {
-                    "id": 15616,
+                    "id": 16147,
                     "name": "tag5",
                     "bg_color_hex": null,
                     "text_color_hex": null
                   },
                   {
-                    "id": 15617,
+                    "id": 16148,
                     "name": "tag6",
                     "bg_color_hex": null,
                     "text_color_hex": null
                   },
                   {
-                    "id": 15618,
+                    "id": 16149,
                     "name": "tag7",
                     "bg_color_hex": null,
                     "text_color_hex": null
@@ -2047,10 +2481,61 @@
         }
       }
     },
+    "/api/users/me": {
+      "get": {
+        "summary": "The authenticated user",
+        "tags": [
+          "users"
+        ],
+        "description": "This endpoint allows the client to retrieve information about the authenticated user",
+        "operationId": "getUserMe",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "user",
+                  "id": 22571,
+                  "username": "username462",
+                  "name": "Reuben \"Rodrick\" \\:/ Fisher",
+                  "twitter_username": "twitter462",
+                  "github_username": "github462",
+                  "summary": null,
+                  "location": null,
+                  "website_url": null,
+                  "joined_at": "Feb  3, 2023",
+                  "profile_image": "/uploads/user/profile_image/22571/8ba30df3-d16d-4225-adc6-590437073bcf.jpeg"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/users/{id}": {
       "get": {
         "summary": "A User",
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
         "operationId": "getUser",
         "parameters": [
@@ -2065,7 +2550,17 @@
         ],
         "responses": {
           "200": {
-            "description": "successful"
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2073,7 +2568,9 @@
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
         "operationId": "unpublishUser",
         "parameters": [
@@ -2122,7 +2619,9 @@
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
-        "tags": ["users"],
+        "tags": [
+          "users"
+        ],
         "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
         "operationId": "suspendUser",
         "parameters": [
@@ -2167,6 +2666,55 @@
           }
         }
       }
+    },
+    "/api/admin/users": {
+      "post": {
+        "summary": "Invite a User",
+        "tags": [
+          "users"
+        ],
+        "description": "This endpoint allows the client to trigger an invitation to the provided email address.\n\n        It requires a token from a user with `super_admin` privileges.",
+        "operationId": "postAdminUsersCreate",
+        "parameters": [
+
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: email",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInviteParam"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "servers": [
@@ -2177,7 +2725,9 @@
   ],
   "security": [
     {
-      "api-key": []
+      "api-key": [
+
+      ]
     }
   ],
   "components": {
@@ -2485,7 +3035,11 @@
             "format": "float"
           }
         },
-        "required": ["id", "name", "points"]
+        "required": [
+          "id",
+          "name",
+          "points"
+        ]
       },
       "Tag": {
         "description": "Representation of a tag",
@@ -2555,7 +3109,12 @@
             "description": "Controls what kind of layout the page is rendered in"
           }
         },
-        "required": ["title", "slug", "description", "template"]
+        "required": [
+          "title",
+          "slug",
+          "description",
+          "template"
+        ]
       },
       "PodcastEpisodeIndex": {
         "description": "Representation of a podcast episode returned in a list",

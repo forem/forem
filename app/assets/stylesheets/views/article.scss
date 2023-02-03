@@ -178,6 +178,15 @@
     &--active {
       display: none;
     }
+    // This overrides some of the styles for the temporarily feature-flaged
+    &--borderless {
+      padding: var(--su-2);
+      box-shadow: none;
+      background: none;
+      color: var(--reaction-color);
+      border-radius: 0;
+      transition: all var(--transition-props);
+    }
   }
 
   &__count {

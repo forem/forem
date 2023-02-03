@@ -11,15 +11,6 @@ body {
   flex-direction: column;
   min-height: 100vh;
 
-  &.hidden-shell {
-    padding-top: 0 !important;
-
-    .crayons-header,
-    .crayons-footer {
-      display: none;
-    }
-  }
-
   &.user-tags-followed-0,
   &.user-tags-followed-1,
   &.user-tags-followed-2 {
