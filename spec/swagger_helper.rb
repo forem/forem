@@ -163,8 +163,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             type: :object,
             properties: {
               name: { type: :string },
-              bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
-              text_color_hex: { description: "Text color (hexadecimal)", type: :string }
+              bg_color_hex: { description: "Background color (hexadecimal)", type: :string, nullable: true },
+              text_color_hex: { description: "Text color (hexadecimal)", type: :string, nullable: true }
             }
           },
           ArticleIndex: {
@@ -222,6 +222,63 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                   description: { type: :string },
                   tags: { type: :string },
                   organization_id: { type: :integer, nullable: true }
+                }
+              }
+            }
+          },
+          Organization: {
+            description: "Representation of an Organization",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              url: { type: :string },
+              location: { type: :string },
+              joined_at: { type: :string },
+              tech_stack: { type: :string },
+              tag_line: { type: :string, nullable: true },
+              story: { type: :string, nullable: true }
+            }
+          },
+          Listing: {
+            description: "Representation of a Listing",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              title: { type: :string },
+              slug: { type: :string },
+              body_markdown: { type: :string },
+              tag_list: { type: :string },
+              tags: { type: :array, items: { type: "string" } },
+              category: { type: :string },
+              processed_html: { type: :string },
+              published: { type: :boolean },
+              user: {
+                type: :object,
+                properties: {
+                  name: { type: :string },
+                  username: { type: :string },
+                  twitter_username: { type: :string },
+                  github_username: { type: :string },
+                  user_id: { type: :integer, format: :int64 },
+                  website_url: { type: :string, nullable: true },
+                  profile_image: { type: :string },
+                  profile_image_90: { type: :string }
+                }
+              },
+              organization: {
+                type: :object,
+                properties: {
+                  name: { type: :string },
+                  username: { type: :string },
+                  slug: { type: :string },
+                  profile_image: { type: :string },
+                  profile_image_90: { type: :string }
                 }
               }
             }
@@ -303,6 +360,23 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               slug: { type: :string },
               profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
+            }
+          },
+          User: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string }
             }
           },
           SharedPodcast: {
