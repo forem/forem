@@ -45,6 +45,13 @@ class NotificationDecorator < ApplicationDecorator
     self
   end
 
+  # In many cases, we render a partial specific to a notification's notifiable_type
+  # (Milestone, Article, Comment, etc.) However, reacting-to-an-article or
+  # reacting-to-a-comment will have a misleading "Article" or "Comment" notifiable_type
+  # (respectively), so a "reaction-type notification" is somewhat more involved. We also have
+  # distinct partials for aggregate reactions ("Username and several others reacted to...")
+  # and individual reactions. This has become further complicated by the multiple_reactions
+  # feature flag.
   def to_partial_path
     return "notifications/#{notifiable_type.downcase}" unless reaction?
 
