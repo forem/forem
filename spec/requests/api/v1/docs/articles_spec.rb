@@ -307,7 +307,7 @@ It supports pagination, each page will contain 30 articles by default."
   describe "GET /articles/me" do
     path "/api/articles/me" do
       get "User's articles" do
-        tags "articles"
+        tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -340,7 +340,7 @@ It will return published articles with pagination. By default a page will contai
 
     path "/api/articles/me/published" do
       get "User's published articles" do
-        tags "articles"
+        tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -373,7 +373,7 @@ It will return published articles with pagination. By default a page will contai
 
     path "/api/articles/me/unpublished" do
       get "User's unpublished articles" do
-        tags "articles"
+        tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
@@ -406,7 +406,7 @@ It will return unpublished articles with pagination. By default a page will cont
 
     path "/api/articles/me/all" do
       get "User's all articles" do
-        tags "articles"
+        tags "articles", "users"
         description "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.
 
 \"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.
