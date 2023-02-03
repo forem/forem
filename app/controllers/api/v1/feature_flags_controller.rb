@@ -10,7 +10,7 @@ module Api
     class FeatureFlagsController < ApiController
       def show
         flag = params[:flag]
-        render json: { flag: FeatureFlag.enabled?(flag) }
+        render json: { flag => FeatureFlag.enabled?(flag) }
       end
 
       def create
