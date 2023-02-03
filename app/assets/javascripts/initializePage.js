@@ -7,11 +7,11 @@
   initializeCommentPreview, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
-  initializeProfileInfoToggle, initializePodcastPlayback,
-  initializeVideoPlayback, initializeDrawerSliders, initializeProfileBadgesToggle,
-  initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
-  nextPage:writable, fetching:writable, done:writable, 
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
+  initializeProfileInfoToggle, initializeDrawerSliders,
+  initializeProfileBadgesToggle, initializeHeroBannerClose,
+  initializeOnboardingTaskCard, initScrolling, nextPage:writable,
+  fetching:writable, done:writable, initializePaymentPointers,
+  initializeBroadcast, initializeDateHelpers
 */
 
 function callInitializers() {
@@ -52,11 +52,6 @@ function initializePage() {
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
-      initializePodcastPlayback();
-      initializeVideoPlayback();
-
-      // Initialize data-runtime context to the body data-attribute
-      document.body.dataset.runtime = window.Forem.Runtime.currentContext();
     }
   }, 1);
 
