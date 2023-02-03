@@ -4,6 +4,7 @@ ignore:
   - "**/*.svg"
   - "lib/sitemap_generator"
   - "lib/generators"
+  - "app/assets/javascripts"
 flag_management:
   default_rules:
     statuses:
