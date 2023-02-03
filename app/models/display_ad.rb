@@ -104,7 +104,9 @@ class DisplayAd < ApplicationRecord
   def extracted_process_markdown
     fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self)
+    sanitize_options = { tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
+                         attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD }
+    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, sanitize_options: sanitize_options)
     self.processed_html = parsed_markdown.finalize
     self.processed_html = processed_html.delete("\n")
   end

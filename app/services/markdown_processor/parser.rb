@@ -14,17 +14,21 @@ module MarkdownProcessor
     # @param source [Object] The thing associated with the content.  This might be an article.
     # @param user [User] Who's the one writing the content?
     # @param liquid_tag_options [Hash]
+    # @param sanitize_options [Hash]
     #
     # @note This is a place to pass in a different policy object.  But like, maybe don't do
     #       that with user input, but perhaps via a data migration script.
     #
     # @see LiquidTagBase for more information regarding the liquid tag options.
 
-    def initialize(content, source: nil, user: nil, **liquid_tag_options)
+    def initialize(content, source: nil, user: nil,
+                   liquid_tag_options: {},
+                   sanitize_options: { scrubber: RenderedMarkdownScrubber.new })
       @content = content
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
+      @sanitize_options = sanitize_options
     end
 
     def finalize(link_attributes: {})
@@ -35,9 +39,7 @@ module MarkdownProcessor
       code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      # sanitized_content = sanitize_rendered_markdown(html)
-
-      sanitized_content = ActionController::Base.helpers.sanitize html, scrubber: RenderedMarkdownScrubber.new
+      sanitized_content = ActionController::Base.helpers.sanitize html, @sanitize_options
 
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
