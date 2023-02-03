@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe JsonApiSortParam do
   let!(:controller) do
-    Class.new(Api::V0::ApiController) { include JsonApiSortParam }.new
+    Class.new(Api::V1::ApiController) { include JsonApiSortParam }.new
   end
 
   it "uses the `sort` param of the controller by default" do

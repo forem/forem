@@ -66,7 +66,6 @@ class ApplicationController < ActionController::Base
   #   By default, all actions are *not* an `api_action?`
   #   @return [TrueClass] if the current requested action is for the API
   #   @return [FalseClass] if the current requested action is not part of the API
-  #   @see Api::V0::ApiController
   #   @see Api::V1::ApiController
   #   @see ApplicationController.api_action
   #   @see ApplicationController#verify_private_forem
