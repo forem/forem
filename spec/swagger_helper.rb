@@ -344,6 +344,31 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               created_at: { type: :string, format: "date-time" },
               image_url: { description: "Podcast image url", type: :string, format: :url }
             }
+          },
+          User: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :string },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              website_url: { type: :string },
+              location: { type: :string },
+              joined_at: { type: :string },
+              profile_image: { type: :string }
+            }
+          },
+          UserInviteParam: {
+            description: "User invite parameters",
+            type: :object,
+            properties: {
+              email: { type: :string },
+              name: { type: :string, nullable: true }
+            }
           }
         }
       }

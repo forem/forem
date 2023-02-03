@@ -11,6 +11,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validates :slug, unique_cross_model_slug: true, if: :slug_changed?
+  validates :slug, uniqueness: true
 
   before_validation :set_default_template
   before_save :evaluate_markdown
