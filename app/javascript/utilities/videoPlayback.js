@@ -12,63 +12,54 @@
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 /* eslint no-useless-escape: 0 */
-/* global jwplayer, ahoy */
+/* global jwplayer */
 
-function initializeVideoPlayback() {
-  var currentTime = '0';
-  var deviceType = 'web';
-  var lastEvent = '';
+import ahoy from 'ahoy.js';
+
+export function initializeVideoPlayback() {
+  let currentTime = '0';
+  let deviceType = 'web';
+  let lastEvent = '';
 
   function getById(name) {
     return document.getElementById(name);
   }
 
-  function getParameterByName(name, url) {
-    if (!url) url = window.location.href;
-    name = name.replace(/[\[\]]/g, '\\$&');
-    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
-      results = regex.exec(url);
-    if (!results) return null;
-    if (!results[2]) return '';
-    return decodeURIComponent(results[2].replace(/\+/g, ' '));
-  }
-
   function timeToSeconds(hms) {
-    var a;
+    let a;
     if (hms.length < 3) {
       return hms;
     } else if (hms.length < 6) {
       a = hms.split(':');
       return (hms = +a[0] * 60 + +a[1]);
-    } else {
-      a = hms.split(':');
-      return (hms = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]);
     }
+    a = hms.split(':');
+    return (hms = +a[0] * 60 * 60 + +a[1] * 60 + +a[2]);
   }
 
   function videoPlayerEvent(isPlaying) {
     // jwtplayer tends to send multiple 'play' actions. This check makes sure
     // we're not tracking repeated 'play' events for a single interaction.
-    var eventName = isPlaying ? 'play' : 'pause';
+    const eventName = isPlaying ? 'play' : 'pause';
     if (lastEvent === eventName) {
       return;
     }
     lastEvent = eventName;
 
-    var metadata = videoMetadata(getById('video-player-source'));
-    var properties = {
+    const metadata = videoMetadata(getById('video-player-source'));
+    const properties = {
       article: metadata.id,
-      deviceType: deviceType,
+      deviceType,
       action: eventName,
     };
     ahoy.track('Video Player Streaming', properties);
   }
 
   function initWebPlayer(seconds, metadata) {
-    var waitingOnJWP = setInterval(function () {
+    const waitingOnJWP = setInterval(() => {
       if (typeof jwplayer !== 'undefined') {
         clearInterval(waitingOnJWP);
-        var playerInstance = jwplayer(`video-player-${metadata.id}`);
+        const playerInstance = jwplayer(`video-player-${metadata.id}`);
         playerInstance.setup({
           file: metadata.video_source_url,
           mediaid: metadata.video_code,
@@ -84,13 +75,13 @@ function initializeVideoPlayback() {
           ],
         });
         if (seconds) {
-          jwplayer().on('firstFrame', function () {
+          jwplayer().on('firstFrame', () => {
             jwplayer().seek(seconds);
           });
-          jwplayer().on('play', function () {
+          jwplayer().on('play', () => {
             videoPlayerEvent(true);
           });
-          jwplayer().on('pause', function () {
+          jwplayer().on('pause', () => {
             videoPlayerEvent(false);
           });
         }
@@ -107,8 +98,7 @@ function initializeVideoPlayback() {
   }
 
   function requestFocus() {
-    var metadata = videoMetadata(videoSource);
-    var playerElement = getById(`video-player-${metadata.id}`);
+    const metadata = videoMetadata(videoSource);
 
     getById('pause-butt').classList.add('active');
     getById('play-butt').classList.remove('active');
@@ -148,8 +138,8 @@ function initializeVideoPlayback() {
   }
 
   function initializePlayer(videoSource) {
-    var seconds = timeToSeconds(getParameterByName('t') || '0');
-    var metadata = videoMetadata(videoSource);
+    const seconds = timeToSeconds('0');
+    const metadata = videoMetadata(videoSource);
 
     if (window.Forem.Runtime.isNativeIOS('video')) {
       deviceType = 'iOS';
@@ -165,7 +155,7 @@ function initializeVideoPlayback() {
       window.ForemMobile.injectNativeMessage('video', msg);
     };
 
-    var playerElement = getById(`video-player-${metadata.id}`);
+    const playerElement = getById(`video-player-${metadata.id}`);
     playerElement.addEventListener('click', requestFocus);
 
     playerElement.classList.add('native');
@@ -177,7 +167,7 @@ function initializeVideoPlayback() {
   }
 
   // If an video player element is found initialize it
-  var videoSource = getById('video-player-source');
+  const videoSource = getById('video-player-source');
   if (videoSource !== null) {
     initializePlayer(videoSource);
   }
