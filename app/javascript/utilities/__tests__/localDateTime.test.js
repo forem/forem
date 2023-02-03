@@ -11,6 +11,11 @@ describe('LocalDateTime Utilities', () => {
     expect(localTime).toEqual('5/3/2019');
   });
 
+  it('should return formatted year when year option added', () => {
+    const localTime = timestampToLocalDateTime('2019-05-03T16:02:50.908Z', 'default', {year: '2-digit'})
+    expect(localTime).toEqual('19');
+  });
+
   it('should add datetime attribute to element', () => {
     document.body.setAttribute('datetime', 2222)
     addLocalizedDateTimeToElementsTitles(document.querySelectorAll("body"), 'datetime')
