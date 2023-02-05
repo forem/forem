@@ -664,7 +664,7 @@ GEM
       ffi (~> 1.0)
     recaptcha (5.12.3)
       json
-    redcarpet (3.5.1)
+    redcarpet (3.6.0)
     redis (4.7.1)
     redis-actionpack (5.3.0)
       actionpack (>= 5, < 8)
