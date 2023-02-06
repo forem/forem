@@ -14,7 +14,7 @@
           <% end %>
         </span>
         <div class="flex-1">
-          <h3 class="crayons-subtitle-3 mb-1">
+          <h3 class="crayons-subtitle-2 mb-1">
             <%= link_to flag.reactable.path, class: "c-link" do %>
               <% if flag.reactable_type == "Article" %>
                 <%= t("views.admin.users.flags.type.article", title: flag.reactable.title) %>
@@ -37,7 +37,7 @@
   </div>
 <% else %>
   <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="fs-xl fw-normal mb-2"><%= t("views.admin.users.flags.empty1", user: @user.name) %></h3>
+    <h3 class="crayons-subtitle-2 mb-2"><%= t("views.admin.users.flags.empty1", user: @user.name) %></h3>
     <p class="color-secondary"><%= t("views.admin.users.flags.empty2", user: @user.name) %></p>
   </div>
 <% end %>

@@ -11,7 +11,7 @@ on:
 jobs:
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
       COVERAGE: true
       RAILS_ENV: test
@@ -37,8 +37,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [6]
-        ci_node_index: [0, 1, 2, 3, 4, 5]
+        ci_node_total: [9]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
     steps:
       - uses: actions/checkout@v3
@@ -60,6 +60,8 @@ jobs:
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - uses: codecov/codecov-action@v3
+        with:
+          flags: ruby
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -72,7 +74,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
       RAILS_ENV: test
       NODE_ENV: test
@@ -101,11 +103,13 @@ jobs:
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
+        with:
+          flags: javascript
       - run: yarn build-storybook
 
   Build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -152,7 +156,7 @@ jobs:
 
   Cypress:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 10
     env:
       RAILS_ENV: test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
@@ -174,8 +178,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [6]
-        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
+        ci_node_total: [9]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, non-seed]
 
     steps:
       - uses: actions/checkout@v3

@@ -31,7 +31,7 @@
     <% @analytics.each do |entity, current, previous, values| %>
       <div>
         <header class="color-secondary">
-          <h3 class="fs-l fw-normal"><span class="color-primary fw-bold"><%= current %></span> <%= entity.pluralize(current) %></h3>
+          <h3 class="crayons-subtitle-2 fw-normal"><span class="fw-bold"><%= current %></span> <%= entity.pluralize(current) %></h3>
           <p class="flex items-center fs-s mb-1">
             <% if previous != 0 %>
               <% change = (Float(previous - current) / previous * 100).ceil.abs %>

@@ -21,7 +21,7 @@ RSpec.describe "Api::V1::Docs::FollowedTags" do
   describe "GET /follows/tags" do
     path "/api/follows/tags" do
       get "Followed Tags" do
-        tags "followed_tags"
+        tags "followed_tags", "tags"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of the tags they follow.
         DESCRIBE

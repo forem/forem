@@ -105,7 +105,7 @@ class Notification < ApplicationRecord
       return unless notifiable.commentable
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
-      Notifications::ModerationNotificationWorker.perform_async(notifiable.id)
+      Notifications::CreateRoundRobinModerationNotificationsWorker.perform_async(notifiable.id)
     end
 
     def send_tag_adjustment_notification(tag_adjustment)

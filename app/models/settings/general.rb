@@ -92,7 +92,8 @@ module Settings
       facebook: nil,
       github: nil,
       instagram: nil,
-      twitch: nil
+      twitch: nil,
+      mastodon: nil
     }
     setting :twitter_hashtag, type: :string
 
