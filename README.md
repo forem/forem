@@ -125,7 +125,6 @@ Please see our installation guides, such as the
 - [@maestromac](https://dev.to/maestromac)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@ridhwana](https://dev.to/ridhwana)
-- [@fdoxyz](https://dev.to/fdoxyz)
 - [@rt4914](https://dev.to/rt4914)
 - [@jaw6](https://dev.to/jaw6)
 - [@lboogie2004](https://dev.to/lboogie2004)

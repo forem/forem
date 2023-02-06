@@ -6,8 +6,8 @@
  *
  * The media is initialized (once) and the "state" is stored using localStorage.
  * When playback is the website's responsability it's run using the `audio` HTML
- * element. The iOS app uses a bridging strategy that sends messages using
- * webkit messageHandlers and receives incoming messages through the
+ * element. The iOS/Android apps uses a bridging strategy that sends messages
+ * using webkit messageHandlers and receives incoming messages through the
  * `contentaudio` element, which allows for native audio playback.
  *
  * The high level functions are the following:
@@ -22,14 +22,13 @@
  * the problem of using a method before it's defined:
  */
 
-/* global ahoy, Runtime */
 /* eslint no-use-before-define: 0 */
 /* eslint no-param-reassign: 0 */
 
-var audioInitialized = false;
+import ahoy from 'ahoy.js';
 
-function initializePodcastPlayback() {
-  var deviceType = 'web';
+export function initializePodcastPlayback() {
+  let deviceType = 'web';
 
   function getById(name) {
     return document.getElementById(name);
@@ -40,9 +39,10 @@ function initializePodcastPlayback() {
   }
 
   function newAudioState() {
-    if (!window.name) {
-      window.name = Math.random();
-    }
+    const audio = getById('audio');
+    window.activeEpisode = audio?.dataset?.episode;
+    window.activePodcast = audio?.dataset?.podcast;
+
     return {
       html: getById('audiocontent').innerHTML,
       currentTime: 0,
@@ -51,29 +51,26 @@ function initializePodcastPlayback() {
       volume: 1,
       duration: 1,
       updated: new Date().getTime(),
-      windowName: window.name,
+      playbackName: audio?.dataset?.episode,
     };
   }
 
   function currentAudioState() {
     try {
-      var currentState = JSON.parse(
-        localStorage.getItem('media_playback_state_v2'),
+      const currentState = JSON.parse(
+        localStorage.getItem('media_playback_state_v3'),
       );
-      if (!currentState || window.name !== currentState.windowName) {
+      if (!currentState) {
         return newAudioState();
       }
       return currentState;
     } catch (e) {
-      console.log(e); // eslint-disable-line no-console
       return newAudioState();
     }
   }
 
   function audioExistAndIsPlaying() {
-    var audio = getById('audio');
-    var currentState = currentAudioState();
-    return audio && currentState.playing;
+    return getById('audio') && currentAudioState().playing;
   }
 
   function recordExist() {
@@ -82,16 +79,18 @@ function initializePodcastPlayback() {
 
   function spinPodcastRecord(customMessage) {
     if (audioExistAndIsPlaying() && recordExist()) {
-      var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
+      const podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
       podcastPlaybackButton.classList.add('playing');
       podcastPlaybackButton.setAttribute('aria-pressed', 'true');
       changeStatusMessage(customMessage);
+    } else {
+      stopRotatingActivePodcastIfExist();
     }
   }
 
   function stopRotatingActivePodcastIfExist() {
     if (window.activeEpisode && getById(`record-${window.activeEpisode}`)) {
-      var podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
+      const podcastPlaybackButton = getById(`record-${window.activeEpisode}`);
       podcastPlaybackButton.classList.remove('playing');
       podcastPlaybackButton.setAttribute('aria-pressed', 'false');
       window.activeEpisode = undefined;
@@ -99,8 +98,8 @@ function initializePodcastPlayback() {
   }
 
   function findRecords() {
-    var podcastPageRecords = getByClass('record-wrapper');
-    var podcastLiquidTagrecords = getByClass('podcastliquidtag__record');
+    const podcastPageRecords = getByClass('record-wrapper');
+    const podcastLiquidTagrecords = getByClass('podcastliquidtag__record');
     if (podcastPageRecords.length > 0) {
       return podcastPageRecords;
     }
@@ -108,19 +107,19 @@ function initializePodcastPlayback() {
   }
 
   function saveMediaState(state) {
-    var currentState = state || currentAudioState();
-    var newState = newAudioState();
+    const currentState = state || currentAudioState();
+    const newState = newAudioState();
     newState.currentTime = currentState.currentTime;
     newState.playing = currentState.playing;
     newState.muted = currentState.muted;
     newState.volume = currentState.volume;
     newState.duration = currentState.duration;
-    localStorage.setItem('media_playback_state_v2', JSON.stringify(newState));
+    localStorage.setItem('media_playback_state_v3', JSON.stringify(newState));
     return newState;
   }
 
   function applyOnclickToPodcastBar(audio) {
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     getById('barPlayPause').onclick = function () {
       playPause(audio);
     };
@@ -150,10 +149,10 @@ function initializePodcastPlayback() {
   }
 
   function updateProgressListener(audio) {
-    return function (e) {
-      var bufferValue = 0;
+    return () => {
+      let bufferValue = 0;
       if (audio.currentTime > 0) {
-        var bufferEnd = audio.buffered.end(audio.buffered.length - 1);
+        const bufferEnd = audio.buffered.end(audio.buffered.length - 1);
         bufferValue = (bufferEnd / audio.duration) * 100;
       }
       updateProgress(audio.currentTime, audio.duration, bufferValue);
@@ -175,7 +174,7 @@ function initializePodcastPlayback() {
     getById('audiocontent').innerHTML = getById(
       `hidden-audio-${episodeSlug}`,
     ).innerHTML;
-    var audio = getById('audio');
+    const audio = getById('audio');
     audio.addEventListener('timeupdate', updateProgressListener(audio), false);
     loadAudio(audio);
     playPause(audio);
@@ -183,14 +182,12 @@ function initializePodcastPlayback() {
   }
 
   function findAndApplyOnclickToRecords() {
-    var records = findRecords();
-    Array.prototype.forEach.call(records, function (record) {
-      var episodeSlug = record.getAttribute('data-episode');
-      var podcastSlug = record.getAttribute('data-podcast');
-
-      var togglePodcastState = function (e) {
+    const records = findRecords();
+    Array.prototype.forEach.call(records, (record) => {
+      const episodeSlug = record.getAttribute('data-episode');
+      const togglePodcastState = () => {
         if (podcastBarAlreadyExistAndPlayingTargetEpisode(episodeSlug)) {
-          var audio = getById('audio');
+          const audio = getById('audio');
           if (audio) {
             playPause(audio);
           }
@@ -204,16 +201,16 @@ function initializePodcastPlayback() {
   }
 
   function changePlaybackRate(audio) {
-    var currentState = currentAudioState();
-    var el = getById('speed');
-    var speed = parseFloat(el.getAttribute('data-speed'));
+    const currentState = currentAudioState();
+    const el = getById('speed');
+    const speed = parseFloat(el.getAttribute('data-speed'));
     if (speed === 2) {
       el.setAttribute('data-speed', 0.5);
       el.innerHTML = '0.5x';
       currentState.playbackRate = 0.5;
     } else {
       el.setAttribute('data-speed', speed + 0.5);
-      el.innerHTML = speed + 0.5 + 'x';
+      el.innerHTML = `${speed + 0.5}x`;
       currentState.playbackRate = speed + 0.5;
     }
     saveMediaState(currentState);
@@ -229,7 +226,8 @@ function initializePodcastPlayback() {
   }
 
   function changeStatusMessage(message) {
-    var statusBox = getById(`status-message-${window.activeEpisode}`);
+    const currentState = currentAudioState();
+    const statusBox = getById(`status-message-${currentState.playbackName}`);
     if (statusBox) {
       if (message) {
         statusBox.classList.add('showing');
@@ -257,8 +255,8 @@ function initializePodcastPlayback() {
   }
 
   function playAudio(audio) {
-    return new Promise(function (resolve, reject) {
-      var currentState = currentAudioState();
+    return new Promise((resolve, reject) => {
+      const currentState = currentAudioState();
       if (window.Forem.Runtime.podcastMessage) {
         window.Forem.Runtime.podcastMessage({
           action: 'play',
@@ -271,12 +269,11 @@ function initializePodcastPlayback() {
         audio.currentTime = currentState.currentTime;
         audio
           .play()
-          .then(function () {
+          .then(() => {
             setPlaying(true);
             resolve();
           })
-          .catch(function (error) {
-            console.log(error); // eslint-disable-line no-console
+          .catch(() => {
             setPlaying(false);
             reject();
           });
@@ -285,7 +282,7 @@ function initializePodcastPlayback() {
   }
 
   function fetchMetadataString() {
-    var episodeContainer = getByClass('podcast-episode-container')[0];
+    let episodeContainer = getByClass('podcast-episode-container')[0];
     if (episodeContainer === undefined) {
       episodeContainer = getByClass('podcastliquidtag')[0];
     }
@@ -295,7 +292,7 @@ function initializePodcastPlayback() {
   function sendMetadataMessage() {
     if (window.Forem.Runtime.podcastMessage) {
       try {
-        var metadata = JSON.parse(fetchMetadataString());
+        const metadata = JSON.parse(fetchMetadataString());
         window.Forem.Runtime.podcastMessage({
           action: 'metadata',
           episodeName: metadata.episodeName,
@@ -312,13 +309,13 @@ function initializePodcastPlayback() {
     sendMetadataMessage();
 
     playAudio(audio)
-      .then(function () {
+      .then(() => {
         spinPodcastRecord();
         startPodcastBar();
       })
-      .catch(function (error) {
+      .catch(() => {
         playAudio(audio);
-        setTimeout(function () {
+        setTimeout(() => {
           spinPodcastRecord('initializing...');
           startPodcastBar();
         }, 5);
@@ -337,33 +334,36 @@ function initializePodcastPlayback() {
   }
 
   function ahoyMessage(action) {
-    window.activeEpisode = audio.getAttribute('data-episode');
-    window.activePodcast = audio.getAttribute('data-podcast');
-
-    var properties = {
-      action: action,
+    const properties = {
+      action,
       episode: window.activeEpisode,
       podcast: window.activePodcast,
-      deviceType: deviceType,
+      deviceType,
     };
     ahoy.track('Podcast Player Streaming', properties);
   }
 
   function playPause(audio) {
-    var currentState = currentAudioState();
+    let currentState = currentAudioState();
+    if (currentState.playbackName != getById('audio').dataset.episode) {
+      currentState = newAudioState();
+      saveMediaState(currentState);
+    }
+
     if (!currentState.playing) {
       ahoyMessage('play');
-      changeStatusMessage('initializing...');
+      changeStatusMessage(null);
       startAudioPlayback(audio);
     } else {
       ahoyMessage('pause');
       pauseAudioPlayback(audio);
       changeStatusMessage(null);
     }
+    spinPodcastRecord();
   }
 
   function muteUnmute(audio) {
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     getById('mutebutt').classList.add(
       currentState.muted ? 'hidden' : 'showing',
     );
@@ -390,7 +390,7 @@ function initializePodcastPlayback() {
   }
 
   function updateVolume(e, audio) {
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     currentState.volume = e.target.value / 100;
     if (window.Forem.Runtime.podcastMessage) {
       window.Forem.Runtime.podcastMessage({
@@ -404,37 +404,37 @@ function initializePodcastPlayback() {
   }
 
   function updateProgress(currentTime, duration, bufferValue) {
-    var progress = getById('progress');
-    var buffer = getById('buffer');
-    var time = getById('time');
-    var value = 0;
-    var firstDecimal = currentTime - Math.floor(currentTime);
+    const progress = getById('progress');
+    const buffer = getById('buffer');
+    const time = getById('time');
+    let value = 0;
+    const firstDecimal = currentTime - Math.floor(currentTime);
     if (currentTime > 0) {
       value = Math.floor((100.0 / duration) * currentTime);
       if (firstDecimal < 0.4) {
         // Rewrite to mediaState storage every few beats.
-        var currentState = currentAudioState();
+        const currentState = currentAudioState();
         currentState.duration = duration;
         currentState.currentTime = currentTime;
         saveMediaState(currentState);
       }
     }
     if (progress && time && currentTime > 0) {
-      progress.style.width = value + '%';
-      buffer.style.width = bufferValue + '%';
-      time.innerHTML =
-        readableDuration(currentTime) + ' / ' + readableDuration(duration);
+      progress.style.width = `${value}%`;
+      buffer.style.width = `${bufferValue}%`;
+      time.innerHTML = `${readableDuration(currentTime)} / ${readableDuration(
+        duration,
+      )}`;
     }
   }
 
   function goToTime(e, audio) {
-    var currentState = currentAudioState();
-    var progress = getById('progress');
-    var time = getById('time');
+    const currentState = currentAudioState();
+    const progress = getById('progress');
+    const time = getById('time');
     if (e.clientX > 128) {
-      var percent = (e.clientX - 128) / (window.innerWidth - 133);
-      var duration = currentState.duration;
-      currentState.currentTime = duration * percent; // jumps to 29th secs
+      const percent = (e.clientX - 128) / (window.innerWidth - 133);
+      currentState.currentTime = currentState.duration * percent; // jumps to 29th secs
 
       if (window.Forem.Runtime.podcastMessage) {
         window.Forem.Runtime.podcastMessage({
@@ -445,21 +445,20 @@ function initializePodcastPlayback() {
         audio.currentTime = currentState.currentTime;
       }
 
-      time.innerHTML =
-        readableDuration(currentState.currentTime) +
-        ' / ' +
-        readableDuration(currentState.duration);
-      progress.style.width = percent * 100.0 + '%';
+      const currentTime = readableDuration(currentState.currentTime);
+      const duration = readableDuration(currentState.duration);
+      time.innerHTML = `${currentTime} / ${duration}`;
+      progress.style.width = `${percent * 100.0}%`;
     }
   }
 
   function readableDuration(seconds) {
-    var sec = Math.floor(seconds);
-    var min = Math.floor(sec / 60);
-    min = min >= 10 ? min : '0' + min;
+    let sec = Math.floor(seconds);
+    let min = Math.floor(sec / 60);
+    min = min >= 10 ? min : `0${min}`;
     sec = Math.floor(sec % 60);
-    sec = sec >= 10 ? sec : '0' + sec;
-    return min + ':' + sec;
+    sec = sec >= 10 ? sec : `0${sec}`;
+    return `${min}:${sec}`;
   }
 
   function terminatePodcastBar(audio) {
@@ -482,7 +481,7 @@ function initializePodcastPlayback() {
       return;
     }
 
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     switch (message.action) {
       case 'init':
         getById('time').innerHTML = 'initializing...';
@@ -527,11 +526,11 @@ function initializePodcastPlayback() {
   }
 
   function initializeMedia() {
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     document.getElementById('audiocontent').innerHTML = currentState.html;
-    var audio = getById('audio');
+    const audio = getById('audio');
     if (audio === undefined || audio === null) {
-      audioInitialized = false;
+      window.Forem.audioInitialized = false;
       return;
     }
     if (window.Forem.Runtime.podcastMessage) {
@@ -539,11 +538,11 @@ function initializePodcastPlayback() {
     }
     loadAudio(audio);
     if (currentState.playing) {
-      playAudio(audio).catch(function (error) {
+      playAudio(audio).catch(() => {
         pausePodcastBar();
       });
     }
-    setTimeout(function () {
+    setTimeout(() => {
       audio.addEventListener(
         'timeupdate',
         updateProgressListener(audio),
@@ -555,7 +554,7 @@ function initializePodcastPlayback() {
   }
 
   function setPlaying(playing) {
-    var currentState = currentAudioState();
+    const currentState = currentAudioState();
     currentState.playing = playing;
     saveMediaState(currentState);
   }
@@ -563,12 +562,12 @@ function initializePodcastPlayback() {
   initRuntime();
   spinPodcastRecord();
   findAndApplyOnclickToRecords();
-  if (!audioInitialized) {
-    audioInitialized = true;
+  if (!window.Forem.audioInitialized) {
+    window.Forem.audioInitialized = true;
     initializeMedia();
   }
-  var audio = getById('audio');
-  var audioContent = getById('audiocontent');
+  const audio = getById('audio');
+  const audioContent = getById('audiocontent');
   if (audio && audioContent && audioContent.innerHTML.length < 25) {
     // audio not already loaded
     loadAudio(audio);

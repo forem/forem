@@ -11,10 +11,8 @@
 
 <div class="grid gap-6">
   <div class="crayons-card p-6">
-    <div class="crayons-card__header">
-      <h4 class="crayons-card__headline">Moderators</h4>
-    </div>
-    <div class="crayons-card__body flex flex-col gap-2">
+    <h2 class="crayons-subtitle-1">Moderators</h2>
+    <div class="flex flex-col gap-2">
       <% if @tag_moderators.exists? %>
         <ul class="list-none">
           <% @tag_moderators.each do |user| %>
@@ -28,7 +26,7 @@
           <% end %>
         </ul>
       <% else %>
-        <div class="crayons-notice mb-5" aria-live="polite">
+        <div class="crayons-notice p-0 mt-1 mb-5" aria-live="polite">
           This tag currently has no moderators.
         </div>
       <% end %>
@@ -43,7 +41,7 @@
   </div>
 
   <div class="crayons-card crayons-card--content-rows">
-    <h4>Edit details</h4>
+    <h2 class="crayons-subtitle-1">Edit details</h2>
     <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
   </div>
 </div>
