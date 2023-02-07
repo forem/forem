@@ -5,6 +5,8 @@ import {
   initializeMemberMenu,
 } from '../topNavigation/utilities';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
+import { initializePodcastPlayback } from '../utilities/podcastPlayback';
+import { initializeVideoPlayback } from '../utilities/videoPlayback';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
@@ -19,6 +21,7 @@ Document.prototype.ready = new Promise((resolve) => {
 
 // Namespace for functions which need to be accessed in plain JS initializers
 window.Forem = {
+  audioInitialized: false,
   preactImport: undefined,
   getPreactImport() {
     if (!this.preactImport) {
@@ -61,6 +64,16 @@ window.Forem = {
   closeModal: () => closeWindowModal(),
   Runtime,
 };
+
+initializePodcastPlayback();
+initializeVideoPlayback();
+InstantClick.on('change', () => {
+  initializePodcastPlayback();
+  initializeVideoPlayback();
+});
+
+// Initialize data-runtime context to the body data-attribute
+document.body.dataset.runtime = window.Forem.Runtime.currentContext();
 
 function getPageEntries() {
   return Object.entries({
