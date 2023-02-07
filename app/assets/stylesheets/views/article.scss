@@ -449,6 +449,8 @@
 }
 
 .multiple_reactions_engagement {
+  display: flex;
+  align-items: center;
   padding: 0.5em 0;
 
   span {
@@ -460,9 +462,9 @@
 }
 
 .multiple_reactions_aggregate {
-  padding-right: 1em;
   display: flex;
   align-items: center;
+  padding-right: 1em;
 
   .crayons_icon_container {
     display: inline-block;
@@ -471,11 +473,6 @@
     margin-right: -0.5em;
     width: 24px;
     height: 24px;
-  }
-
-  .crayons_reaction_icon {
-    width: 18px;
-    height: 18px;
   }
 
   svg {
