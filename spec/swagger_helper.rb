@@ -163,8 +163,8 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             type: :object,
             properties: {
               name: { type: :string },
-              bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
-              text_color_hex: { description: "Text color (hexadecimal)", type: :string }
+              bg_color_hex: { description: "Background color (hexadecimal)", type: :string, nullable: true },
+              text_color_hex: { description: "Text color (hexadecimal)", type: :string, nullable: true }
             }
           },
           ArticleIndex: {
@@ -247,6 +247,24 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               }
             }
           },
+          Organization: {
+            description: "Representation of an Organization",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              url: { type: :string },
+              location: { type: :string },
+              joined_at: { type: :string },
+              tech_stack: { type: :string },
+              tag_line: { type: :string, nullable: true },
+              story: { type: :string, nullable: true }
+            }
+          },
           FollowedTag: {
             description: "Representation of a followed tag",
             type: :object,
@@ -256,6 +274,16 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               points: { type: :number, format: :float }
             },
             required: %w[id name points]
+          },
+          Tag: {
+            description: "Representation of a tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            }
           },
           Page: {
             description: "Representation of a page object",
@@ -326,6 +354,23 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
             }
           },
+          User: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string }
+            }
+          },
           SharedPodcast: {
             description: "The podcast that the resource belongs to",
             type: :object,
@@ -343,23 +388,6 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               id_code: { type: :string },
               created_at: { type: :string, format: "date-time" },
               image_url: { description: "Podcast image url", type: :string, format: :url }
-            }
-          },
-          User: {
-            description: "The representation of a user",
-            type: :object,
-            properties: {
-              type_of: { type: :string },
-              id: { type: :string },
-              username: { type: :string },
-              name: { type: :string },
-              summary: { type: :string },
-              twitter_username: { type: :string },
-              github_username: { type: :string },
-              website_url: { type: :string },
-              location: { type: :string },
-              joined_at: { type: :string },
-              profile_image: { type: :string }
             }
           },
           UserInviteParam: {
