@@ -461,14 +461,21 @@
 
 .multiple_reactions_aggregate {
   padding-right: 1em;
+  display: flex;
+  align-items: center;
 
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
     border-radius: 15px;
-    margin-right: -0.75em;
+    margin-right: -0.5em;
     width: 24px;
     height: 24px;
+  }
+
+  .crayons_reaction_icon {
+    width: 18px;
+    height: 18px;
   }
 
   svg {
@@ -476,6 +483,6 @@
   }
 
   .aggregate_reactions_counter {
-    margin-left: 0.75em;
+    margin-left: 1em;
   }
 }
