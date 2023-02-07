@@ -19,11 +19,9 @@
             actors: link_to(notification.user_name, notification.user_path, class: "crayons-link fw-bold"),
             title: title_link,
             end: "",
-            reactions: tag.span(crayons_icon_tag(reaction_image(notification.reaction_category),
-                                                 native: true,
-                                                 force_unique: true,
-                                                 class: "reaction-image mx-1 reaction-icon--#{notification.reaction_category}",
-                                                 title: t("views.reactions.category.#{notification.reaction_category}")))) %>
+            reactions: tag.span(image_tag(reaction_image(notification.reaction_category),
+                                          class: "reaction-image mx-1 reaction-icon--#{notification.reaction_category}",
+                                          title: t("views.reactions.category.#{notification.reaction_category}")))) %>
     </div>
   </div>
 </div>
