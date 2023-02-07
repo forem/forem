@@ -288,7 +288,7 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    field_test (0.5.4)
+    field_test (0.5.5)
       activerecord (>= 5.2)
       browser (>= 2.0)
       railties (>= 5.2)
