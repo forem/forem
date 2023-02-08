@@ -121,6 +121,7 @@
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
             <% if FeatureFlag.enabled?(:multiple_reactions) %>
+              <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <div class="multiple_reactions_aggregate">
                 <% ReactionCategory.for_view.each do |reaction_type| %>
                   <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
@@ -133,6 +134,7 @@
                                                                 start: tag("span", { class: %w[hidden s:inline] }, true),
                                                                 end: "</span>".html_safe) %></span>
               </div>
+              </a>
             <% else %>
               <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
                 <%= crayons_icon_tag("small-heart", title: t("views.reactions.summary.title")) %>
