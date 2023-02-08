@@ -187,10 +187,6 @@
       border-radius: 0;
       transition: all var(--transition-props);
     }
-
-    @media (max-width: $breakpoint-m) {
-      padding-bottom: 4px;
-    }
   }
 
   &__count {
@@ -258,6 +254,7 @@
 .reaction-drawer .crayons-reaction {
   border: 1px solid var(--card-bg);
   flex-direction: column;
+  padding: 8px 8px 4px 8px;
 
   &.user-activated {
     background-color: var(--body-bg);
@@ -437,6 +434,7 @@
     min-width: auto;
     margin-left: 0;
     display: block;
+    font-size: 14px;
   }
 }
 
