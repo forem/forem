@@ -122,12 +122,14 @@
           <% if story.public_reactions_count > 0 %>
             <% if FeatureFlag.enabled?(:multiple_reactions) %>
               <div class="multiple_reactions_aggregate">
-                <% ReactionCategory.for_view.each do |reaction_type| %>
-                  <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
-                  <span class="crayons_icon_container">
-                    <%= image_tag reaction_type.icon, size: "18x18" %>
-                  </span>
-                <% end %>
+                <span dir="rtl">
+                  <% ReactionCategory.for_view.each do |reaction_type| %>
+                    <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
+                    <span class="crayons_icon_container">
+                      <%= image_tag reaction_type.icon, size: "18x18" %>
+                    </span>
+                  <% end %>
+                </span>
                 <span class="aggregate_reactions_counter"><%= t("views.reactions.summary.count_html",
                                                                 count: story.public_reactions_count,
                                                                 start: tag("span", { class: %w[hidden s:inline] }, true),

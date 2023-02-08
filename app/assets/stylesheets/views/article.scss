@@ -466,12 +466,13 @@
   span {
     margin-right: 1em;
   }
-  svg {
+  img {
     display: inline-block;
   }
 }
 
 .multiple_reactions_aggregate {
+  margin-top: 0.25em;
   padding-right: 1em;
 
   .crayons_icon_container {
@@ -483,11 +484,13 @@
     height: 24px;
   }
 
-  svg {
+  img {
     margin: 3px 3px;
   }
 
   .aggregate_reactions_counter {
-    margin-left: 0.75em;
+    margin-left: 1em;
+    line-height: 1.75em;
+    vertical-align: top;
   }
 }
