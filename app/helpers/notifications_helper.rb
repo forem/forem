@@ -9,8 +9,35 @@ module NotificationsHelper
     "vomit" => "twemoji/suspicious.svg"
   }.freeze
 
-  def reaction_image(category)
-    REACTION_IMAGES[category]
+  def reaction_image(slug)
+    if FeatureFlag.enabled?(:multiple_reactions)
+      if (category = ReactionCategory[slug] || ReactionCategory["like"])
+        "#{category.icon}.svg"
+      end
+    else
+      # This is mostly original behavior, pre-multiple_reactions, modified to return
+      # a "like" image if the actual reaction is one of the new ones
+      REACTION_IMAGES[slug] || REACTION_IMAGES["like"]
+    end
+  end
+
+  def reaction_category_name(slug)
+    ReactionCategory[slug]&.name.presence || "unknown"
+  end
+
+  def render_each_notification_or_error(notifications, error:, &block)
+    notifications.each do |notification|
+      concat render_notification_or_error(notification, error: error, &block)
+    end
+  end
+
+  def render_notification_or_error(notification, error:)
+    capture { yield(notification) }
+  rescue StandardError => e
+    raise if Rails.env.development?
+
+    Honeybadger.notify(e, context: { notification_id: notification.id })
+    capture { render error }
   end
 
   def message_user_acted_maybe_org(data, action, if_org: "")

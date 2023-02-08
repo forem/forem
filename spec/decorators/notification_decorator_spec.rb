@@ -74,4 +74,119 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(notification.decorate.milestone_count).to eq("64")
     end
   end
+
+  describe "reaction to a article" do
+    subject(:decorated) { notification.decorate }
+
+    let!(:notification) do
+      article = build(:article)
+      reaction = build(:reaction, reactable: article)
+
+      build(:notification,
+            notifiable: reaction,
+            action: "Reaction",
+            json_data: {
+              reaction: {
+                category: "like",
+                reactable_type: "Article",
+                reactable_id: 123,
+                reactable: {
+                  path: "path/to/article",
+                  title: "This is the article's title here",
+                  class: {
+                    name: "Article"
+                  }
+                }
+              }
+            })
+    end
+
+    it "responds to reactable_class" do
+      expect(decorated.reactable_class).to eq("Article")
+    end
+
+    it "responds to reactable_path" do
+      expect(decorated.reactable_path).to eq("path/to/article")
+    end
+
+    it "responds to reactable_title (even if blank)" do
+      expect(decorated.reactable_title).to eq("This is the article's title here")
+    end
+
+    it "responds to reaction_category" do
+      expect(decorated.reaction_category).to eq("like")
+    end
+
+    it "is a reaction?" do
+      expect(decorated).to be_reaction
+    end
+
+    it "responds to user fields (even if blank)" do
+      expect(decorated.user_id).to be_nil
+      expect(decorated.user_name).to be_nil
+      expect(decorated.user_path).to be_nil
+      expect(decorated.user_profile_image_90).to be_nil
+    end
+  end
+
+  describe "reaction to a comment" do
+    subject(:decorated) { notification.decorate }
+
+    let!(:notification) do
+      article = build(:article)
+      comment = build(:comment, commentable: article)
+      reaction = build(:reaction, reactable: comment)
+
+      build(:notification,
+            notifiable: reaction,
+            action: "Reaction",
+            json_data: {
+              reaction: {
+                category: "like",
+                reactable_type: "Comment",
+                reactable_id: 123,
+                reactable: {
+                  path: "path/to/comment",
+                  title: nil,
+                  class: {
+                    name: "Comment"
+                  }
+                }
+              },
+              user: {
+                id: 456,
+                name: "Commentator",
+                path: "path/to/user",
+                profile_image_90: "path/to/profile/image"
+              }
+            })
+    end
+
+    it "responds to reactable_class" do
+      expect(decorated.reactable_class).to eq("Comment")
+    end
+
+    it "responds to reactable_path" do
+      expect(decorated.reactable_path).to eq("path/to/comment")
+    end
+
+    it "responds to reactable_title (even if blank)" do
+      expect(decorated.reactable_title).to be_nil
+    end
+
+    it "responds to reaction_category" do
+      expect(decorated.reaction_category).to eq("like")
+    end
+
+    it "is a reaction?" do
+      expect(decorated).to be_reaction
+    end
+
+    it "responds to user fields (even if blank)" do
+      expect(decorated.user_id).to eq(456)
+      expect(decorated.user_name).to eq("Commentator")
+      expect(decorated.user_path).to eq("path/to/user")
+      expect(decorated.user_profile_image_90).to eq("path/to/profile/image")
+    end
+  end
 end
