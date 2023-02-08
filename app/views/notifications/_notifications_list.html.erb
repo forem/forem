@@ -1,17 +1,8 @@
-<% @notifications.each do |notification| %>
+<% render_each_notification_or_error @notifications, error: "notifications/shared/error" do |notification| %>
   <div
     class="mb-2 spec-notification <%= "unseen" unless notification.read? %>"
     data-notification-id="<%= notification.id %>">
-    <%= render notification.notifiable_type.downcase.to_s, notification: notification %>
-  </div>
-
-  <% rescue => e %>
-
-  <% Honeybadger.notify(e, context: { notification_id: notification.id }) %>
-
-  <div class="align-center p-9 py-10 color-base-80 crayons-card mb-2">
-    <h2 class="fw-bold fs-l"><%= t("views.notifications.error.subtitle") %></h2>
-    <p class="color-base-60 pt-2"><%= t("views.notifications.error.desc") %></p>
+    <%= render notification, notification: notification %>
   </div>
 <% end %>
 

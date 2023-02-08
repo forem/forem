@@ -389,6 +389,14 @@
   flex-direction: row;
   align-items: center;
 
+  // Disables text selection to help "long tap" work on mobile
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
   }
@@ -436,6 +444,10 @@
   }
 }
 
+.crayons-reaction_total_count {
+  color: var(--btn-color); // Mobile safari button text blue bug
+}
+
 .reaction-drawer__outer:hover .reaction-drawer {
   @media (min-width: $breakpoint-m) {
     display: block;
@@ -460,15 +472,17 @@
 }
 
 .multiple_reactions_aggregate {
-  padding-right: 1em;
+  display: flex;
+  align-items: center;
 
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
+    border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.75em;
-    width: 24px;
-    height: 24px;
+    margin-right: -0.5em;
+    width: 28px;
+    height: 28px;
   }
 
   svg {
@@ -476,6 +490,6 @@
   }
 
   .aggregate_reactions_counter {
-    margin-left: 0.75em;
+    margin-left: 1em;
   }
 }
