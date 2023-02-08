@@ -5,14 +5,12 @@
   class="crayons-reaction crayons-tooltip__activator relative"
   data-category="<%= category %>">
     <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
-      <%= crayons_icon_tag(image_path, native: true, aria_hidden: true, force_unique: true) %>
-      <%#= image_tag image_path, aria_hidden: true, height: 24, width: 24 %>
+      <%= image_tag image_path, aria_hidden: true, height: 24, width: 24 %>
     </span>
     <%# TODO: This can be straightened out after feature-flag -- double icons are not required now %>
     <% if user_signed_in? # We cannot trigger the action state unless the user is signed in, so no need to render. %>
       <span class="crayons-reaction__icon crayons-reaction__icon--active">
-        <%= crayons_icon_tag(image_active_path, native: true, aria_hidden: true, force_unique: true) %>
-        <%#= image_tag image_active_path, aria_hidden: true, height: 24, width: 24 %>
+        <%= image_tag image_active_path, aria_hidden: true, height: 24, width: 24 %>
       </span>
     <% end %>
     <span class="crayons-reaction__count" id="reaction-number-<%= category %>"><span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span></span>

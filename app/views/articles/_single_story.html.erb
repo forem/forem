@@ -126,7 +126,7 @@
                   <% ReactionCategory.for_view.each do |reaction_type| %>
                     <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
                     <span class="crayons_icon_container">
-                      <%= crayons_icon_tag(reaction_type.icon, width: "18px", height: "18px", native: true, aria_hidden: true) %>
+                      <%= image_tag reaction_type.icon, size: "18x18" %>
                     </span>
                   <% end %>
                   <span class="aggregate_reactions_counter"><%= t("views.reactions.summary.count_html",
