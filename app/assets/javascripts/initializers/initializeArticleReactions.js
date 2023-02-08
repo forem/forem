@@ -39,7 +39,7 @@ function showUserReaction(reactionName, animatedClass) {
   );
 
   // the rest only applies to multiple reactions feature flag
-  if (!reactionDrawerButton) {
+  if (!reactionDrawerButton || reactionName == 'readinglist') {
     return;
   }
 
@@ -49,7 +49,7 @@ function showUserReaction(reactionName, animatedClass) {
 
   if (animatedClass == 'user-animated') {
     const activeIcon = reactionButton.querySelector(
-      '.crayons-reaction__icon--active svg',
+      '.crayons-reaction__icon--active img',
     );
 
     if (activeIcon) {
@@ -63,7 +63,7 @@ function showUserReaction(reactionName, animatedClass) {
       setTimeout(function () {
         document
           .getElementById('reaction-drawer-trigger')
-          .querySelector('.crayons-reaction__icon--active svg').outerHTML =
+          .querySelector('.crayons-reaction__icon--active img').outerHTML =
           reactionDrawerButton.originalIcon;
       }, 1500);
     }
