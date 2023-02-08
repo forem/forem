@@ -29,8 +29,8 @@ module CrayonsHelper
       opts.delete(:class),
     ].compact.join(" ")
 
-    opts[:width] ||= 24
-    opts[:height] ||= 24
+    opts[:width] ||= 32
+    opts[:height] ||= 32
 
     inline_svg_tag(icon_name, aria: true, class: icon_class, **opts)
   end
