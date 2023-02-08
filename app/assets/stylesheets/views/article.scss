@@ -466,10 +466,13 @@
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
+    border: solid;
+    border-color: var(--card-bg);
     border-radius: 15px;
+    border-width: 2px;
     margin-right: -0.5em;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
   }
 
   svg {
