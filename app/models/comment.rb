@@ -222,19 +222,12 @@ class Comment < ApplicationRecord
     end
   end
 
-  def processed_content
-    return @processed_content if @processed_content && !body_markdown_changed?
+  def extracted_evaluate_markdown
     return unless user
 
-    @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
-  end
-
-  def extracted_evaluate_markdown
-    content_renderer = processed_content
-
-    return unless content_renderer
-
-    self.processed_html = content_renderer.process(link_attributes: { rel: "nofollow" })
+    renderer = BasicContentRenderer.new(body_markdown, source: self, user: user)
+    self.processed_html = renderer.process(link_attributes: { rel: "nofollow" },
+                                           sanitize_options: { scrubber: RenderedMarkdownScrubber.new })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
   rescue ContentRenderer::ContentParsingError => e
