@@ -24,7 +24,6 @@ module Moderator
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
-      resolve_all_abuse_reports
     end
 
     private
@@ -48,10 +47,6 @@ module Moderator
 
     def delete_vomit_reactions
       Reaction.where(reactable: user, category: "vomit").delete_all
-    end
-
-    def resolve_all_abuse_reports
-      FeedbackMessage.where(offender_id: user.id).open_abuse_reports.update_all(status: "Resolved")
     end
   end
 end
