@@ -57,7 +57,7 @@ function handleCommentPreview(event) {
   }
 }
 
-function initializeCommentPreview() {
+export function initializeCommentPreview() {
   const previewButton = document.getElementsByClassName('preview-toggle')[0];
 
   if (!previewButton) {

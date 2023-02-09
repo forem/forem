@@ -3,8 +3,7 @@
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
-  initializeSettings,
-  initializeCommentPreview, initializeRuntimeBanner,
+  initializeSettings, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
   initializeProfileInfoToggle, initializeDrawerSliders,
@@ -21,7 +20,6 @@ function callInitializers() {
   initializeArticleReactions();
   initNotifications();
   initializeSettings();
-  initializeCommentPreview();
   initializeTimeFixer();
   initializeDashboardSort();
   initializeArchivedPostFilter();
