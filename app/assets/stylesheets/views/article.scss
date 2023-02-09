@@ -474,14 +474,17 @@
 .multiple_reactions_aggregate {
   margin-top: 0.25em;
   padding-right: 1em;
+  display: flex;
+  align-items: center;
 
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
+    border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.75em;
-    width: 24px;
-    height: 24px;
+    margin-right: -0.5em;
+    width: 28px;
+    height: 28px;
   }
 
   img {
