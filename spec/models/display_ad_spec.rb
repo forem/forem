@@ -67,7 +67,6 @@ RSpec.describe DisplayAd do
     it "renders username embed" do
       user = create(:user)
       url = "#{URL.url}/#{user.username}"
-      # allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
       allow(UnifiedEmbed::Tag).to receive(:validate_link).with(any_args).and_return(url)
       username_ad = create(:display_ad, body_markdown: "Hello! {% embed #{url}} %}")
       expect(username_ad.processed_html).to include("/#{user.username}")
