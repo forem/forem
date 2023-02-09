@@ -13,12 +13,12 @@
         </div>
         <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <div class="crayons-sponsorship__header relative">
-            <button id="sponsorship-dropdown-trigger" aria-controls="sponsorship-dropdown" aria-expanded="false" aria-haspopup="true" 
+            <button id="sponsorship-dropdown-trigger-<%= @left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
                 class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
                 aria-label="Sponsorship dropdown">
                 <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
             </button>
-            <div id="sponsorship-dropdown" class="crayons-dropdown right-0">
+            <div id="sponsorship-dropdown-<%= @left_sidebar_ad.id %>" class="crayons-dropdown right-0">
               Left Sponsorship dropdown 1
             </div>
           </div>
@@ -36,12 +36,12 @@
         </div>
         <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
           <div class="crayons-sponsorship__header relative">
-            <button id="sponsorship-dropdown-trigger" aria-controls="sponsorship-dropdown" aria-expanded="false" aria-haspopup="true" 
+            <button id="sponsorship-dropdown-trigger-<%= @second_left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @second_left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
                 class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
                 aria-label="Sponsorship dropdown">
                 <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
             </button>
-            <div id="sponsorship-dropdown" class="crayons-dropdown right-0">
+            <div id="sponsorship-dropdown-<%= @second_left_sidebar_ad.id %>" class="crayons-dropdown right-0">
               Left Sponsorship dropdown 2
             </div>
           </div>

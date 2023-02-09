@@ -79,16 +79,16 @@ function renderSidebar() {
 }
 
 function setupSponsorshipDropdown(){
-  const sponsorshipDropdownButtons = document.querySelectorAll('#sponsorship-dropdown-trigger');
+  const sponsorshipDropdownButtons = document.querySelectorAll('button[id^=sponsorship-dropdown-trigger-]');
 
   if(sponsorshipDropdownButtons.length){
     sponsorshipDropdownButtons.forEach((sponsorshipDropdownButton) => {
-      console.log("Rajat: icons: ")
+      const dropdownContentId = sponsorshipDropdownButton.getAttribute('aria-controls');
       if (sponsorshipDropdownButton && sponsorshipDropdownButton.dataset.initialized !== 'true') {
         console.log("Rajat: initializeDropdown: ")
         initializeDropdown({
-          triggerElementId: 'sponsorship-dropdown-trigger',
-          dropdownContentId: 'sponsorship-dropdown'
+          triggerElementId: sponsorshipDropdownButton.id,
+          dropdownContentId
         });
 
         sponsorshipDropdownButton.dataset.initialized = 'true';
