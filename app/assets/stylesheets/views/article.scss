@@ -466,14 +466,12 @@
   span {
     margin-right: 1em;
   }
-  img {
+  svg {
     display: inline-block;
   }
 }
 
 .multiple_reactions_aggregate {
-  margin-top: 0.25em;
-  padding-right: 1em;
   display: flex;
   align-items: center;
 
@@ -493,7 +491,5 @@
 
   .aggregate_reactions_counter {
     margin-left: 1em;
-    line-height: 1.75em;
-    vertical-align: top;
   }
 }
