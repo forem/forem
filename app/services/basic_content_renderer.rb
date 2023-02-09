@@ -1,3 +1,4 @@
+# Render markdown, like ContentRenderer, but without frontmatter (Comments, DisplayAds)
 class BasicContentRenderer
   class_attribute :front_matter_parser, default: FrontMatterParser::Parser.new(:md)
   class_attribute :processor, default: MarkdownProcessor::Parser

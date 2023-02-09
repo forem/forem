@@ -1,3 +1,4 @@
+# Render markdown with frontmatter (Articles)
 class ContentRenderer
   class_attribute :fixer, default: MarkdownProcessor::Fixer::FixAll
   class_attribute :front_matter_parser, default: FrontMatterParser::Parser.new(:md)

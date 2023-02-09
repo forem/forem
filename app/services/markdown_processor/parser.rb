@@ -1,7 +1,5 @@
 module MarkdownProcessor
   class Parser
-    # include ApplicationHelper
-
     BAD_XSS_REGEX = [
       /src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
