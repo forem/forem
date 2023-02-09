@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
 import ahoy from 'ahoy.js';
+import { initializeDropdown } from '../utilities/dropdownUtils';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
@@ -72,7 +73,27 @@ function renderSidebar() {
       .then((res) => res.text())
       .then((response) => {
         sidebarContainer.innerHTML = response;
+        setupSponsorshipDropdown();
       });
+  }
+}
+
+function setupSponsorshipDropdown(){
+  const sponsorshipDropdownButtons = document.querySelectorAll('#sponsorship-dropdown-trigger');
+
+  if(sponsorshipDropdownButtons.length){
+    sponsorshipDropdownButtons.forEach((sponsorshipDropdownButton) => {
+      console.log("Rajat: icons: ")
+      if (sponsorshipDropdownButton && sponsorshipDropdownButton.dataset.initialized !== 'true') {
+        console.log("Rajat: initializeDropdown: ")
+        initializeDropdown({
+          triggerElementId: 'sponsorship-dropdown-trigger',
+          dropdownContentId: 'sponsorship-dropdown'
+        });
+
+        sponsorshipDropdownButton.dataset.initialized = 'true';
+      }
+    })
   }
 }
 

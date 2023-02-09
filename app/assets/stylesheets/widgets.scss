@@ -315,6 +315,17 @@
   padding: var(--content-padding-y) var(--content-padding-x);
 }
 
+.crayons-sponsorship {
+  &__header {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  &__dropdown {
+    margin: 4px 4px 4px auto;
+  }
+}
+
 .crayons-sponsorship-widget {
   img {
     width: 100%;

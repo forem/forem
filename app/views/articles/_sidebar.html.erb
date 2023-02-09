@@ -11,6 +11,21 @@
         <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <%= @left_sidebar_ad.processed_html.html_safe %>
         </div>
+        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
+          <div class="crayons-sponsorship__header relative">
+            <button id="sponsorship-dropdown-trigger" aria-controls="sponsorship-dropdown" aria-expanded="false" aria-haspopup="true" 
+                class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+                aria-label="Sponsorship dropdown">
+                <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
+            </button>
+            <div id="sponsorship-dropdown" class="crayons-dropdown right-0">
+              Left Sponsorship dropdown 1
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <%= @left_sidebar_ad.processed_html.html_safe %>
+          </div>
+        </div>
       <% end %>
     <% end %>
     <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
@@ -18,6 +33,21 @@
       <% if @second_left_sidebar_ad %>
         <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
           <%= @second_left_sidebar_ad.processed_html.html_safe %>
+        </div>
+        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
+          <div class="crayons-sponsorship__header relative">
+            <button id="sponsorship-dropdown-trigger" aria-controls="sponsorship-dropdown" aria-expanded="false" aria-haspopup="true" 
+                class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+                aria-label="Sponsorship dropdown">
+                <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
+            </button>
+            <div id="sponsorship-dropdown" class="crayons-dropdown right-0">
+              Left Sponsorship dropdown 2
+            </div>
+          </div>
+          <div class="p-4 pt-0">
+            <%= @second_left_sidebar_ad.processed_html.html_safe %>
+          </div>
         </div>
       <% end %>
     <% end %>

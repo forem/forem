@@ -5,6 +5,21 @@
       <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget text-styles" data-display-unit data-id="<%= @sidebar_ad.id %>">
         <%= @sidebar_ad.processed_html.html_safe %>
       </div>
+      <div class="crayons-card crayons-card--secondary crayons-sponsorship-widget text-styles" data-display-unit data-id="<%= @sidebar_ad.id %>">
+        <div class="crayons-sponsorship__header relative">
+          <button id="sponsorship-dropdown-trigger" aria-controls="sponsorship-dropdown" aria-expanded="false" aria-haspopup="true" 
+              class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+              aria-label="Sponsorship dropdown">
+              <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
+          </button>
+          <div id="sponsorship-dropdown" class="crayons-dropdown right-0">
+            Sponsorship dropdown
+          </div>
+        </div>
+        <div class="p-4 pt-0">
+          <%= @sidebar_ad.processed_html.html_safe %>
+        </div>
+      </div>
     <% end %>
 
     <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
