@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
-    "yarn": ">=1.21.x",
+    "yarn": "1.22.18",
     "node": "16.x"
   },
   "main": "index.js",
