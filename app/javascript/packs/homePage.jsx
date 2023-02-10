@@ -1,7 +1,7 @@
 import { h, render } from 'preact';
 import ahoy from 'ahoy.js';
-import { initializeDropdown } from '../utilities/dropdownUtils';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
+import { setupDisplayAdDropdown } from '@utilities/displayAdDropdown';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
@@ -73,27 +73,8 @@ function renderSidebar() {
       .then((res) => res.text())
       .then((response) => {
         sidebarContainer.innerHTML = response;
-        setupSponsorshipDropdown();
+        setupDisplayAdDropdown();
       });
-  }
-}
-
-function setupSponsorshipDropdown(){
-  const sponsorshipDropdownButtons = document.querySelectorAll('button[id^=sponsorship-dropdown-trigger-]');
-
-  if(sponsorshipDropdownButtons.length){
-    sponsorshipDropdownButtons.forEach((sponsorshipDropdownButton) => {
-      const dropdownContentId = sponsorshipDropdownButton.getAttribute('aria-controls');
-      if (sponsorshipDropdownButton && sponsorshipDropdownButton.dataset.initialized !== 'true') {
-        console.log("Rajat: initializeDropdown: ")
-        initializeDropdown({
-          triggerElementId: sponsorshipDropdownButton.id,
-          dropdownContentId
-        });
-
-        sponsorshipDropdownButton.dataset.initialized = 'true';
-      }
-    })
   }
 }
 

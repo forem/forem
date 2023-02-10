@@ -59,12 +59,24 @@
   <% sidebar_ad = DisplayAd.for_display("post_sidebar", user_signed_in?, @article.decorate.cached_tag_list_array) %>
   <% if @article.permit_adjacent_sponsors? && sidebar_ad %>
     <div class="crayons-article-sticky grid gap-4 break-word pt-3">
-      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget crayons-post_sidebar_display_ad text-styles"
+      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget crayons-post_sidebar_display_ad"
            data-display-unit data-id="<%= sidebar_ad.id %>"
            data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
            data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
            data-context-type="<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>">
-        <%= sidebar_ad.processed_html.html_safe %>
+        <div class="crayons-sponsorship__header relative">
+          <button id="sponsorship-dropdown-trigger-<%= sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
+              class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+              aria-label="Sponsorship dropdown">
+              <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none") %>
+          </button>
+          <div id="sponsorship-dropdown-<%= sidebar_ad.id %>" class="crayons-dropdown right-0">
+            <%= render "shared/display_ad_dropdown_content" %>
+          </div>
+        </div>
+        <div class="p-4 pt-0 text-styles">
+          <%= sidebar_ad.processed_html.html_safe %>
+        </div>
       </div>
     </div>
   <% end %>
