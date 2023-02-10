@@ -62,6 +62,17 @@ RSpec.describe NotificationDecorator, type: :decorator do
       notification = build(:notification, action: "Milestone::Reaction::64")
       expect(notification.decorate.milestone_type).to eq("Reaction")
     end
+
+    it "is a milestone type" do
+      notification = build(:notification, action: "Milestone::Reaction::64")
+      expect(notification.notifiable_type).to eq("Article")
+      expect(notification.decorate).to be_milestone
+    end
+
+    it "is also a milestone type if has milestone type" do
+      notification = build(:notification, notifiable_type: "Milestone")
+      expect(notification.decorate).to be_milestone
+    end
   end
 
   describe "#milestone_count" do
@@ -111,6 +122,10 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to reactable_title (even if blank)" do
       expect(decorated.reactable_title).to eq("This is the article's title here")
+    end
+
+    it "responds to reactable_type" do
+      expect(decorated.reactable_type).to be_nil
     end
 
     it "responds to reaction_category" do
@@ -172,6 +187,10 @@ RSpec.describe NotificationDecorator, type: :decorator do
 
     it "responds to reactable_title (even if blank)" do
       expect(decorated.reactable_title).to be_nil
+    end
+
+    it "responds to reactable_type" do
+      expect(decorated.reactable_type).to be_nil
     end
 
     it "responds to reaction_category" do
