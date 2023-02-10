@@ -211,10 +211,6 @@
     .crayons-reaction__icon--active {
       display: block;
     }
-
-    .crayons-reaction__count {
-      color: var(--reaction-color);
-    }
   }
 
   &--like {
@@ -444,10 +440,6 @@
     display: block;
     font-size: 14px;
   }
-}
-
-.crayons-reaction_total_count {
-  color: var(--btn-color); // Mobile safari button text blue bug
 }
 
 .reaction-drawer__outer:hover .reaction-drawer {
