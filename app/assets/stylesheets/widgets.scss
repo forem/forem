@@ -319,10 +319,17 @@
   &__header {
     display: flex;
     align-items: flex-end;
+    padding: var(--su-4);
+  }
+
+  &__title {
+    color: var(--label-secondary);
+    font-size: var(--fs-s);
+    line-height: var(--lh-base);
   }
 
   &__dropdown {
-    margin: 4px 4px 4px auto;
+    margin-left: auto;
   }
 }
 
