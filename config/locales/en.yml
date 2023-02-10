@@ -134,6 +134,9 @@ en:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
+  display_ads:
+    what_is_a_billboard: What's a billboard?
+    manage_preferences: Manage preferences
   errors:
     messages:
       accepted: must be accepted
