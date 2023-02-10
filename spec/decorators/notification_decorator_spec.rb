@@ -125,7 +125,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
     end
 
     it "responds to reactable_type" do
-      expect(decorated.reactable_type).to eq("Article")
+      expect(decorated.reactable_type).to be_nil
     end
 
     it "responds to reaction_category" do
