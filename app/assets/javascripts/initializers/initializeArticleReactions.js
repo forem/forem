@@ -216,16 +216,30 @@ function openDrawerOnHover() {
       el.addEventListener('mouseout', function (event) {
         timer = setTimeout(function (event) {
           document.querySelector('.hoverdown.open').classList.remove('open');
-        }, 1000);
+        }, 500);
       });
     });
   }
+}
+
+function closeDrawerOnOutsideClick() {
+  document.addEventListener('click', function (event) {
+    const reactionElement = document.querySelector('.reaction-drawer');
+    if (reactionElement) {
+      const isClickInside = reactionElement.contains(event.target);
+
+      if (!isClickInside) {
+        document.querySelector('.hoverdown.open').classList.remove('open');
+      }
+    }
+  });
 }
 
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
   openDrawerOnHover();
+  closeDrawerOnOutsideClick();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');
