@@ -29,7 +29,7 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
-      @filtered_display_ads.order(success_rate: :desc)
+      @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
       @filtered_display_ads = sample_ads
     end
 
