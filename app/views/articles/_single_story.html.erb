@@ -123,12 +123,14 @@
             <% if FeatureFlag.enabled?(:multiple_reactions) %>
               <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
                 <div class="multiple_reactions_aggregate">
-                  <% ReactionCategory.for_view.each do |reaction_type| %>
-                    <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
-                    <span class="crayons_icon_container">
-                      <%= image_tag reaction_type.icon, size: "18x18" %>
-                    </span>
-                  <% end %>
+                  <span dir="rtl">
+                    <% ReactionCategory.for_view.reverse_each do |reaction_type| %>
+                      <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
+                      <span class="crayons_icon_container">
+                        <%= image_tag reaction_type.icon, size: "18x18" %>
+                      </span>
+                    <% end %>
+                  </span>
                   <span class="aggregate_reactions_counter"><%= t("views.reactions.summary.count_html",
                                                                   count: story.public_reactions_count,
                                                                   start: tag("span", { class: %w[hidden s:inline] }, true),
