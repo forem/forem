@@ -1,18 +1,12 @@
 <ul class="list-none m-0">
     <li>
-        <a
-        target="_blank"
-        class="crayons-link crayons-link--block"
-        rel="noopener"
-        href='/billboard'>
-        <%= crayons_icon_tag("info", aria_hidden: true, class: "c-btn__icon") %>
-        <%= I18n.t("display_ads.what_is_a_billboard") %>
+        <a class="crayons-link crayons-link--block" href='/billboard'>
+            <%= crayons_icon_tag("info", aria_hidden: true, class: "c-btn__icon") %>
+            <%= I18n.t("display_ads.what_is_a_billboard") %>
         </a>
     </li>
     <li>
-        <a
-        class="crayons-link crayons-link--block"
-        href='/settings/customization'>
+        <a class="crayons-link crayons-link--block" href='/settings/customization'>
         <%= crayons_icon_tag("setting", aria_hidden: true, class: "c-btn__icon") %>
         <%= I18n.t("display_ads.manage_preferences") %>
         </a>
