@@ -8,10 +8,7 @@
     <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
       <% if @left_sidebar_ad %>
-        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
-          <%= @left_sidebar_ad.processed_html.html_safe %>
-        </div>
-        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
+        <div class="crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
           <div class="crayons-sponsorship__header relative">
             <button id="sponsorship-dropdown-trigger-<%= @left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
                 class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
@@ -31,10 +28,7 @@
     <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
-        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
-          <%= @second_left_sidebar_ad.processed_html.html_safe %>
-        </div>
-        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
+        <div class="mt-4 crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
           <div class="crayons-sponsorship__header relative">
             <button id="sponsorship-dropdown-trigger-<%= @second_left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @second_left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
                 class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
