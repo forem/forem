@@ -1,544 +1,495 @@
-// Place all the styles related to the Articles controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-@import 'variables';
-@import '_mixins';
-@import 'config/import';
+@import '../config/import';
 
-.home {
-  position: relative;
-  margin: 0 auto;
-  max-width: var(--site-width);
-  text-align: left;
+.article-wrapper {
+  // Hack preventing content exceeding its container - it works for scenarios where we have
+  // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+  // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+  // widths...
+  min-width: 0;
+}
 
-  @media screen and (max-width: 949px) {
-    .sidebar-wrapper {
-      position: fixed;
+.crayons-article {
+  &__cover {
+    position: relative;
+    width: 100%;
+    padding-top: 42%;
+
+    &__image {
+      position: absolute;
       top: 0;
       left: 0;
+      right: 0;
       bottom: 0;
-      overflow-y: auto;
-      width: 200%;
+      border-radius: var(--radius-auto);
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+      object-fit: scale-down;
+      width: 100%;
       height: 100%;
-      display: none;
-      -webkit-overflow-scrolling: touch;
-      .sidebar-bg {
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        overflow: scroll;
-        position: fixed;
-        background: rgba(0, 0, 0, 0.5);
-        animation: fade-in 0.48s;
-      }
-      &.swiped-in {
-        display: block;
-        z-index: var(--z-drawer);
-        .side-bar {
-          display: block;
-          background: var(--card-bg);
-          height: 100%;
-          overflow-y: auto;
-        }
-      }
-    }
-    .sidebar-wrapper-left {
-      transform: translate(-280px, 0);
-      &.swiped-in {
-        transform: translate(0em, 0);
-        animation: swipe-in-from-left 0.18s;
-      }
-    }
-    .sidebar-wrapper-right {
-      transform: translate(calc(-100vw + 280px), 0);
-      .side-bar {
-        float: right;
-      }
-      &.swiped-in {
-        transform: translate(-100vw, 0);
-        animation: swipe-in-from-right 0.18s;
+
+      &__feed {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 100%;
+        width: 100%;
+        aspect-ratio: auto 650 / 273;
+        object-fit: scale-down;
+        border-radius: var(--radius-auto) var(--radius) 0 0;
       }
     }
   }
-  .side-bar {
-    float: left;
-    width: 280px;
-    font-size: 0.85em;
-    line-height: 1.35em;
-    display: none;
-    position: relative;
-    padding: 16px 0;
-    box-sizing: border-box;
-    color: var(--card-secondary-color);
-    &.sidebar-additional {
-      display: none;
-      &.showing {
-        @media screen and (min-width: 1120px) {
-          display: block;
-        }
+
+  &__video {
+    background: black;
+
+    &__player {
+      &:empty {
+        width: 100%;
+        padding-top: 56.25%;
       }
     }
-    @media screen and (min-width: 950px) {
+  }
+
+  &__header {
+    // overflow-wrap: anywhere isn't supported in Safari, in which case this fallback applies
+    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+
+    &__meta {
+      padding: var(--content-padding-y) var(--content-padding-x) 0
+        var(--content-padding-x);
+    }
+  }
+
+  &__actions {
+    &:empty {
+      display: none;
+    }
+    background: var(--accent-warning-a10);
+    border: 1px solid var(--accent-warning-a10);
+    border-radius: var(--radius);
+    padding: var(--su-1);
+  }
+
+  &__subheader {
+    font-size: var(--fs-base);
+    color: var(--base-60);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  &__main {
+    padding: var(--content-padding-y) var(--content-padding-x);
+  }
+
+  &__body {
+    overflow-wrap: break-word;
+  }
+
+  .reaction-button[disabled] {
+    cursor: pointer;
+  }
+}
+
+.crayons-article-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  background: var(--body-color-inverted);
+  padding: var(--su-2);
+  box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.2);
+  z-index: var(--z-sticky);
+
+  @media (min-width: $breakpoint-m) {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding: 0;
+    padding-bottom: 0;
+    background: var(--body-bg);
+    display: grid;
+    gap: var(--su-6);
+    position: -webkit-sticky;
+    position: sticky;
+    box-shadow: none;
+    justify-content: stretch;
+    top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+    z-index: var(--z-elevate);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+
+    @media (min-width: $breakpoint-m) {
+      display: grid;
+      gap: var(--su-4);
+      justify-content: stretch;
+    }
+  }
+}
+
+.crayons-reaction {
+  --reaction-color: var(--button-ghost-color);
+  --reaction-border: inset 0 0 0 0 transparent;
+  --reaction-bg: transparent;
+
+  border: none;
+  padding: var(--su-1);
+  background: transparent;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  .crayons-tooltip {
+    &__content {
+      // display tooltip on top of the icon
+      @media (max-width: $breakpoint-m) {
+        top: -100%;
+      }
+    }
+  }
+
+  // We don't show tooltips on touch-only devices
+  @media (hover: none) {
+    .crayons-tooltip__content {
+      display: none;
+    }
+  }
+
+  &__icon {
+    box-shadow: var(--reaction-border);
+    background: var(--reaction-bg);
+    color: var(--reaction-color);
+    border-radius: 50%;
+    transition: all var(--transition-props);
+
+    &--active {
+      display: none;
+    }
+    // This overrides some of the styles for the temporarily feature-flaged
+    &--borderless {
+      padding: var(--su-2);
+      box-shadow: none;
+      background: none;
+      color: var(--reaction-color);
+      border-radius: 0;
+      transition: all var(--transition-props);
+    }
+  }
+
+  &__count {
+    color: var(--base-70);
+    font-size: var(--fs-s);
+    display: inline-flex;
+    margin-left: var(--su-1);
+    min-width: var(--su-6);
+
+    @media (min-width: $breakpoint-m) {
+      min-width: auto;
+      margin-left: 0;
       display: block;
     }
   }
+
+  &.user-activated {
+    --reaction-border: inset 0 0 0 2px var(--reaction-color);
+    .crayons-reaction__icon--inactive {
+      display: none;
+    }
+    .crayons-reaction__icon--active {
+      display: block;
+    }
+
+    .crayons-reaction__count {
+      color: var(--reaction-color);
+    }
+  }
+
+  &--like {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-like-color);
+      --reaction-bg: var(--reaction-like-bg);
+    }
+  }
+
+  &--unicorn {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-custom-color);
+      --reaction-bg: var(--reaction-custom-bg);
+    }
+  }
+
+  &--readinglist {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-save-color);
+      --reaction-bg: var(--reaction-save-bg);
+    }
+  }
+
+  &--comment {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-comment-color);
+      --reaction-bg: var(--reaction-comment-bg);
+    }
+  }
 }
 
-.sidebar-navigation-link .c-link__icon {
+// This overrides some of the styles for the temporarily feature-flaged
+.reaction-drawer .crayons-reaction {
+  border: 0px solid var(--card-bg);
+  flex-direction: column;
+  padding: 8px 8px 4px 8px;
+
+  &.user-activated {
+    background-color: var(--body-bg);
+    border: 0px solid #d4d4d4;
+    border-radius: 20px;
+
+    .crayons-reaction__icon--active {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+}
+
+.user-animated {
+  .crayons-reaction__icon {
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px currentColor;
+      opacity: 0;
+      transform: scale(2);
+      animation-name: ringPop;
+      animation-duration: 0.25s;
+    }
+
+    &:after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 transparent;
+      opacity: 0;
+      transform: scale(1);
+      animation-name: ringPop2;
+      animation-duration: 0.75s;
+    }
+
+    animation-name: iconPop;
+    animation-duration: 0.25s;
+  }
+
+  @keyframes iconPop {
+    0% {
+      transform: scale(0.65);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes ringPop {
+    0% {
+      transform: scale(2);
+      box-shadow: 0 0 0 4px currentColor;
+      opacity: var(--opacity-0);
+    }
+
+    100% {
+      box-shadow: 0 0 0 1px currentColor;
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes ringPop2 {
+    0% {
+      box-shadow: 0 0 0 currentColor;
+      transform: scale(1);
+      opacity: 0.6;
+    }
+
+    100% {
+      box-shadow: 0 0 1px 1px transparent;
+      transform: scale(4);
+      opacity: var(--opacity-0);
+    }
+  }
+}
+
+.crayons-article-sticky:last-child {
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(var(--header-height) + var(--layout-padding));
+  .static-header & {
+    top: var(--layout-padding);
+  }
+}
+
+.crayons-post_sidebar_display_ad {
+  @media screen and (max-width: $breakpoint-l) {
+    display: none;
+  }
+}
+
+.user-metadata-details {
+  li + li {
+    margin-top: var(--su-3);
+  }
+  .key {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    color: var(--card-color-tertiary);
+  }
+}
+
+// TODO: The drawer__outer contains the trigger button and the drawer itself,
+// enabling hover, however this then requires the __outer wrapping div to be
+// styled similarly to the other action buttons in the sidebar, which we can
+// clean up significantly *after* the multiple_reactions feature flag is
+// fully rolled-out.
+.reaction-drawer__outer {
+  border: none;
+  padding: 0;
+  background: transparent;
   display: inline-flex;
-  flex-shrink: 0;
+  flex-direction: row;
+  align-items: center;
+
+  // Disables text selection to help "long tap" work on mobile
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  &.open .reaction-drawer {
+    display: block;
+  }
+
+  .hidden {
+    display: none;
+  }
+}
+
+.reaction-drawer {
+  min-width: auto;
+  border-radius: 32px;
+  position: absolute;
+  top: -80px;
+  left: 15px;
+  display: none; // Initially hidden
+
+  // Copying from Dropdown for now
+  padding: var(--su-3);
+  min-width: 250px;
+  margin-top: var(--su-1);
+  z-index: var(--z-dropdown);
+  background: var(--card-bg);
+  color: var(--card-color);
+  box-shadow: var(--shadow-1);
+
+  flex-direction: column;
+
+  @media (min-width: $breakpoint-m) {
+    max-width: 450px;
+    width: max-content;
+    top: -5px;
+    left: 55px;
+  }
+
+  .crayons-reaction__count {
+    min-width: auto;
+    margin-left: 0;
+    display: block;
+    font-size: 14px;
+  }
+}
+
+.crayons-reaction_total_count {
+  color: var(--btn-color); // Mobile safari button text blue bug
+}
+
+.reaction-drawer__outer:hover .reaction-drawer {
+  @media (min-width: $breakpoint-m) {
+    display: block;
+  }
+}
+
+.reaction-drawer__container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--su-3);
+}
+
+.multiple_reactions_engagement {
+  padding: 0.5em 0;
+
+  span {
+    margin-right: 1em;
+  }
+  svg {
+    display: inline-block;
+  }
+}
+
+.multiple_reactions_aggregate {
+  display: flex;
+  align-items: center;
+
+  .crayons_icon_container {
+    display: inline-block;
+    background-color: var(--body-bg);
+    border: 2px solid var(--card-bg);
+    border-radius: 15px;
+    margin-right: -0.5em;
+    width: 28px;
+    height: 28px;
+  }
 
   svg {
-    height: 24px;
-    width: 24px;
-    vertical-align: middle;
-    display: inline-block;
-  }
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: var(--opacity-0);
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes swipe-in-from-left {
-  0% {
-    transform: translate(-280px, 0);
-  }
-  100% {
-    transform: translate(0em, 0);
-  }
-}
-@keyframes swipe-in-from-right {
-  0% {
-    transform: translate(calc(-100vw + 280px), 0);
-  }
-  100% {
-    transform: translate(-100vw, 0);
-  }
-}
-
-////////////////////////////////////////////////
-// TO COMPONENTIZE //////////////////////////////
-////////////////////////////////////////////////
-
-// Filtering tabs on top of the feed.
-.on-page-nav-controls {
-  height: 45px;
-  position: relative;
-  opacity: 0.85;
-  text-align: center;
-  margin-bottom: 8px;
-  &.user-nav-controls {
-    @media screen and (min-width: 950px) {
-      display: none;
-    }
-  }
-  .on-page-nav-butt {
-    position: absolute;
-    top: 14px;
-    border: 0px;
-    background: transparent;
-    border-radius: 8px;
-    img {
-      height: 24px;
-    }
-    &.on-page-nav-butt-left {
-      left: 3%;
-    }
-    &.on-page-nav-butt-right {
-      right: 3%;
-    }
-    @media screen and (min-width: 950px) {
-      display: none;
-    }
-  }
-  .on-page-nav-label {
-    position: absolute;
-    right: 0;
-    left: 0;
-    font-family: $helvetica-condensed;
-    font-stretch: condensed;
-    top: 18px;
-    font-weight: 600;
-    &.sub-home-nav {
-      top: 12px;
-    }
-    .wide-nav-links {
-      display: none;
-    }
-    @media screen and (min-width: 650px) {
-      .narrow-nav-select {
-        display: none;
-      }
-      .wide-nav-links {
-        display: block;
-        cursor: default;
-      }
-    }
-    @media screen and (min-width: 950px) {
-      top: 9px;
-      &.sub-home-nav {
-        top: 8px;
-      }
-    }
-  }
-  .separator {
-    border-left: 2px solid $light-medium-gray;
-    display: inline-block;
-    margin: 0px 7px;
-    height: 15px;
-  }
-  .nav-chronofiter-link {
-    display: inline-block;
-    padding: 2px 8px;
-    font-size: 0.95em;
-    border-radius: 2px;
-    border: 1px solid transparent;
-    &.selected {
-      background: $purple;
-      color: $black;
-      border: 1px solid $dark-purple;
-      box-shadow: 3px 4px 0px $dark-purple;
-    }
-    &:hover {
-      opacity: 1;
-      background: $dark-purple;
-      color: white;
-      border: 1px solid $purple;
-      box-shadow: 3px 4px 0px $purple;
-    }
-  }
-  .narrow-nav-select {
-    button {
-      all: unset;
-      background: transparent;
-      border: 0;
-      font-family: $helvetica-condensed;
-      font-stretch: condensed;
-      font-weight: 600;
-      cursor: pointer;
-    }
-  }
-}
-
-.nav-icon {
-  width: 24px;
-  height: 24px;
-}
-
-//  Loading // TODO
-.loading {
-  padding: calc(3vw + 15px) 0px 60px;
-  text-align: center;
-  opacity: 0.7;
-  display: none;
-}
-
-// Loading articles...
-.loading-articles {
-  padding: calc(3vw + 15px) 0px 60px;
-  text-align: center;
-  opacity: 0.7;
-  display: none;
-}
-
-// Generally Feed...
-.articles-list:not(.crayons-layout__content) {
-  margin: auto;
-  max-width: 100%;
-  position: relative;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); //Invisible black
-  box-sizing: border-box;
-
-  @media screen and (min-width: 950px) {
-    float: left;
-    width: 100%;
-    max-width: calc(100% - 280px); // 280: width of the sidebar
-    padding: 16px;
+    margin: 3px 3px;
   }
 
-  @media screen and (min-width: 1120px) {
-    max-width: calc(100% - 560px); // 560 = 2*280: two sidebars
-  }
-
-  .placeholder-div {
-    // TOOD: what is this?
-    display: block;
-    width: 100%;
-  }
-
-  .single-article {
-    cursor: pointer;
-    margin: 0 auto;
-    position: relative;
-    @include dev-card;
-
-    &.single-article-small-pic {
-      vertical-align: top;
-      overflow: hidden;
-    }
-    &.single-article-single-podcast {
-      h4 {
-        bottom: 10px;
-      }
-      .content {
-        padding-bottom: 40px;
-      }
-    }
-    &.single-article-podcast-div {
-      @include dev-card;
-      padding-bottom: 8px;
-      h3 {
-        margin: 0;
-        padding: 16px;
-      }
-      p {
-        margin-left: 14px;
-      }
-    }
-    h4 {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .small-pic {
-      float: left;
-      height: 40px;
-      width: 40px;
-      margin: 16px 0 0 16px;
-      overflow: hidden;
-      font-size: 11px;
-      border-radius: 50%;
-      img,
-      .color {
-        // TODO: what is .color for?
-        height: 100%;
-        width: 100%;
-        border-radius: 50%;
-      }
-    }
-    .content {
-      float: left;
-      width: calc(100% - 72px);
-      box-sizing: border-box; // TODO: this should be applied globally, not only .content
-      padding: 16px 16px 100px 16px; // TODO: my, oh my...
-      h3 {
-        margin: 0px;
-        font-size: var(--fs-xl);
-        font-weight: 700;
-        line-height: 28px;
-        padding: 0px;
-        word-break: break-word;
-        color: var(--card-color);
-        .tag-identifier {
-          font-size: 14px;
-          background: $blue;
-          color: white;
-          padding: 2px 4px 3px;
-          margin-right: 5px;
-          border-radius: 4px;
-          vertical-align: 3px;
-          &.red-identifier {
-            background: $red;
-          }
-          &.black-identifier {
-            background: $black;
-          }
-        }
-        a {
-          color: inherit;
-
-          &:hover {
-            color: var(--link-color-hover);
-          }
-        }
-      }
-      @media (min-width: $breakpoint-s) {
-        h3 {
-          line-height: 32px;
-          font-size: var(--fs-2xl);
-          .tag-identifier {
-            font-size: 15px;
-            padding: 2px 6px 3px;
-            vertical-align: 4px;
-          }
-        }
-        h4 {
-          font-size: 15px;
-        }
-      }
-    }
-    .time-ago-indicator {
-      color: var(--card-color-tertiary);
-      display: inline-block;
-      margin-left: 4px;
-      font-weight: 400;
-      font-size: 0.8em;
-      vertical-align: 0.07em;
-    }
-    .emoji {
-      display: inline-block;
-      margin-right: 4px;
-    }
-    h4 {
-      padding: 0px;
-      margin: 0;
-      font-weight: 500;
-      position: absolute;
-      bottom: 50px;
-      left: 72px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      font-size: 0.8em;
-      a {
-        color: var(--card-color-tertiary);
-      }
-
-      &:hover {
-        opacity: 0.9;
-        text-decoration: underline;
-      }
-    }
-    .tags {
-      margin-top: 0px;
-      font-size: 0.8em;
-      position: absolute;
-      display: inline-block;
-      z-index: 5;
-      left: 72px;
-      bottom: 75px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: $black;
-      width: calc(
-        100% - 72px
-      ); // improving ellipsis for tags. 72px = avatar_width + spacing around
-      a {
-        display: inline-block;
-      }
-      .tag {
-        margin-right: 8px;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-    }
-
-    p {
-      margin: 6px auto;
-      line-height: 20px;
-      font-size: 16px;
-      color: rgb(163, 188, 201);
-      padding-bottom: 16px;
-    }
-  }
-  .article-engagement-count {
-    font-size: 13px;
-    font-weight: bold;
-    position: absolute;
-    bottom: 12px;
-    font-weight: 400;
-    padding: 3px 6px;
-    background: transparent;
-    border: 0;
-    -webkit-appearance: none;
-    color: var(--card-color-tertiary);
-    a {
-      &:hover {
-        opacity: 1;
-      }
-      color: var(--card-color-tertiary);
-    }
-    img {
-      height: 18px;
-      border: 0px;
-      vertical-align: -4px;
-      margin-right: 7px;
-    }
-    &.comments-count {
-      left: 85px;
-      img {
-        width: 28px;
-      }
-    }
-    &.reactions-count {
-      left: 16px;
-    }
-    &.engage-button {
-      right: 12px;
-      border: 2px solid transparent;
-      border-radius: 3px;
-      text-align: center;
-      bottom: 12px;
-      background: darken($purple, 38%);
-      color: white;
-      letter-spacing: 1px;
-      &:hover,
-      &:focus {
-        background: darken($purple, 50%);
-      }
-      .bm-success {
-        display: none;
-        position: relative;
-        top: 1px;
-      }
-      &.selected {
-        color: darken($purple, 33%);
-        background: transparent;
-        padding-right: 0px;
-        .bm-initial {
-          display: none;
-        }
-        .bm-success {
-          display: inline-block;
-        }
-      }
-    }
-  }
-}
-
-// Podcast episode that goes within the <TodaysPodcast /> component.
-.individual-podcast-link {
-  display: flex;
-  padding: 8px 16px;
-  font-size: 0.8em;
-  color: var(--card-color-tertiary);
-
-  img {
-    height: 50px;
-    width: 50px;
-    border-radius: 50%;
-    vertical-align: top;
-  }
-
-  .individual-podcast-link-details {
-    padding-left: 16px;
-    flex: 1 auto;
-  }
-
-  strong {
-    display: block;
-    margin-bottom: 4px;
-    @media screen and (min-width: 500px) {
-      font-size: 1.2em;
-    }
-    padding-top: 0.2em;
-    font-weight: 500;
-    color: var(--card-color);
-  }
-  &:hover {
-    @include themeable(
-      background,
-      theme-container-background-hover,
-      $light-gray
-    );
+  .aggregate_reactions_counter {
+    margin-left: 1em;
   }
 }
