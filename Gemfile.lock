@@ -692,7 +692,7 @@ GEM
       nokogiri
     rexml (3.2.5)
     rice (4.0.4)
-    rolify (6.0.0)
+    rolify (6.0.1)
     rouge (3.30.0)
     rpush (7.0.1)
       activesupport (>= 5.2)
