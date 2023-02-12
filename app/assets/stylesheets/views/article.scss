@@ -168,6 +168,7 @@
   }
 
   &__icon {
+    padding: var(--su-2);
     box-shadow: var(--reaction-border);
     background: var(--reaction-bg);
     color: var(--reaction-color);
@@ -430,7 +431,7 @@
   flex-direction: column;
 
   @media (min-width: $breakpoint-m) {
-    max-width: 450px;
+    max-width: 360px;
     width: max-content;
     top: -5px;
     left: 55px;
@@ -442,10 +443,6 @@
     display: block;
     font-size: 14px;
   }
-}
-
-.crayons-reaction_total_count {
-  color: var(--btn-color); // Mobile safari button text blue bug
 }
 
 .reaction-drawer__outer:hover .reaction-drawer {
@@ -485,7 +482,7 @@
     height: 28px;
   }
 
-  svg {
+  img {
     margin: 3px 3px;
   }
 
