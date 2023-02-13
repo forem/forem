@@ -141,7 +141,7 @@
   --reaction-bg: transparent;
 
   border: none;
-  padding: var(--su-1);
+  padding: 0;
   background: transparent;
   display: inline-flex;
   flex-direction: row;
@@ -252,13 +252,12 @@
 
 // This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
-  border: 0px solid var(--card-bg);
+  border: 1px solid var(--card-bg);
   flex-direction: column;
-  padding: 8px 8px 4px 8px;
 
   &.user-activated {
     background-color: var(--body-bg);
-    border: 0px solid #d4d4d4;
+    border: 1px solid #d4d4d4;
     border-radius: 20px;
 
     .crayons-reaction__icon--active {
@@ -420,7 +419,7 @@
   display: none; // Initially hidden
 
   // Copying from Dropdown for now
-  padding: var(--su-3);
+  padding: var(--su-2);
   min-width: 250px;
   margin-top: var(--su-1);
   z-index: var(--z-dropdown);
@@ -441,7 +440,6 @@
     min-width: auto;
     margin-left: 0;
     display: block;
-    font-size: 14px;
   }
 }
 
@@ -462,9 +460,13 @@
 
   span {
     margin-right: 1em;
+    vertical-align: middle;
   }
   svg {
     display: inline-block;
+  }
+  img {
+    vertical-align: middle;
   }
 }
 
@@ -477,13 +479,13 @@
     background-color: var(--body-bg);
     border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.5em;
+    margin-right: -0.9em;
     width: 28px;
     height: 28px;
   }
 
   img {
-    margin: 3px 3px;
+    vertical-align: middle;
   }
 
   .aggregate_reactions_counter {
