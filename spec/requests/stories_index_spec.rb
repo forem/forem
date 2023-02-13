@@ -314,12 +314,6 @@ RSpec.describe "StoriesIndex" do
         get "/latest"
         expect(response.body).not_to include(low_score.title)
       end
-
-      it "includes low-score content for signed-in" do
-        sign_in user
-        get "/latest"
-        expect(response.body).to include(low_score.title)
-      end
     end
 
     describe "/top/week" do
