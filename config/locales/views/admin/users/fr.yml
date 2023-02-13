@@ -275,7 +275,8 @@ en:
           email: Email
           github: GitHub
           twitter: Twitter
-          visit: Visit profile
+          visit_profile: Visit profile
+          visit_dashboard: Visit dashboard
           options:
             icon: Options
             export: Export data
