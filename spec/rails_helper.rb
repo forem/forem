@@ -146,7 +146,17 @@ RSpec.configure do |config|
     allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
   end
 
+  config.verbose_retry = true
+
   config.around(:each, :flaky) do |ex|
+    ex.run_with_retry retry: 3
+  end
+
+  config.around(:each, type: :request) do |ex|
+    ex.run_with_retry retry: 3
+  end
+
+  config.around(:each, type: :system) do |ex|
     ex.run_with_retry retry: 3
   end
 
