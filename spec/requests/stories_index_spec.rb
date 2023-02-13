@@ -290,6 +290,7 @@ RSpec.describe "StoriesIndex" do
   describe "GET stories index with timeframe" do
     describe "/latest" do
       let(:user) { create(:user) }
+      let!(:low_score) { create(:article, score: -10) }
 
       before do
         create_list(:article, 3)
@@ -309,11 +310,15 @@ RSpec.describe "StoriesIndex" do
         expect(response.body).to match(/Sign in.*to see all latest/)
       end
 
-      it "does not include alink to sign in for signed-in" do
+      it "excludes low-score content for signed-out" do
+        get "/latest"
+        expect(response.body).not_to include(low_score.title)
+      end
+
+      it "includes low-score content for signed-in" do
         sign_in user
         get "/latest"
-        expect(response.body).not_to include("Some latest posts are only visible for members")
-        expect(response.body).not_to match(/Sign in.*to see all latest/)
+        expect(response.body).to include(low_score.title)
       end
     end
 
