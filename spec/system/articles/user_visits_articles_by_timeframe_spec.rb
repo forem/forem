@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by timeframe", type: :system do
+RSpec.describe "User visits articles by timeframe" do
   let(:author) { create(:user) }
   let!(:article) { create(:article, user: author, published_at: Time.current) }
   let!(:days_old_article) { create(:article, :past, past_published_at: 2.days.ago, user: author) }
@@ -9,7 +9,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
   let!(:years_old_article) { create(:article, :past, past_published_at: 2.years.ago, user: author) }
 
   def shows_correct_articles_count(count)
-    expect(page).to have_selector(".crayons-story", visible: :visible, count: count)
+    expect(page).to have_selector(".crayons-story__title", visible: :visible, count: count)
   end
 
   def shows_correct_articles_count_via_xpath(count)
