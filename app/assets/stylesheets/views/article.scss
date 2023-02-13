@@ -141,7 +141,6 @@
   --reaction-bg: transparent;
 
   border: none;
-  padding: var(--su-1);
   background: transparent;
   display: inline-flex;
   flex-direction: row;
@@ -168,6 +167,7 @@
   }
 
   &__icon {
+    padding: var(--su-2);
     box-shadow: var(--reaction-border);
     background: var(--reaction-bg);
     color: var(--reaction-color);
@@ -210,10 +210,6 @@
     .crayons-reaction__icon--active {
       display: block;
     }
-
-    .crayons-reaction__count {
-      color: var(--reaction-color);
-    }
   }
 
   &--like {
@@ -251,13 +247,12 @@
 
 // This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
-  border: 0px solid var(--card-bg);
+  border: 1px solid var(--card-bg);
   flex-direction: column;
-  padding: 8px 8px 4px 8px;
 
   &.user-activated {
     background-color: var(--body-bg);
-    border: 0px solid #d4d4d4;
+    border: 1px solid #d4d4d4;
     border-radius: 20px;
 
     .crayons-reaction__icon--active {
@@ -430,7 +425,7 @@
   flex-direction: column;
 
   @media (min-width: $breakpoint-m) {
-    max-width: 450px;
+    max-width: 360px;
     width: max-content;
     top: -5px;
     left: 55px;
@@ -440,12 +435,7 @@
     min-width: auto;
     margin-left: 0;
     display: block;
-    font-size: 14px;
   }
-}
-
-.crayons-reaction_total_count {
-  color: var(--btn-color); // Mobile safari button text blue bug
 }
 
 .reaction-drawer__outer:hover .reaction-drawer {
@@ -465,9 +455,13 @@
 
   span {
     margin-right: 1em;
+    vertical-align: middle;
   }
   svg {
     display: inline-block;
+  }
+  img {
+    vertical-align: middle;
   }
 }
 
@@ -480,13 +474,13 @@
     background-color: var(--body-bg);
     border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.5em;
+    margin-right: -0.9em;
     width: 28px;
     height: 28px;
   }
 
-  svg {
-    margin: 3px 3px;
+  img {
+    vertical-align: middle;
   }
 
   .aggregate_reactions_counter {
