@@ -141,7 +141,6 @@
   --reaction-bg: transparent;
 
   border: none;
-  padding: 0;
   background: transparent;
   display: inline-flex;
   flex-direction: row;
@@ -210,10 +209,6 @@
     }
     .crayons-reaction__icon--active {
       display: block;
-    }
-
-    .crayons-reaction__count {
-      color: var(--reaction-color);
     }
   }
 
@@ -419,7 +414,7 @@
   display: none; // Initially hidden
 
   // Copying from Dropdown for now
-  padding: var(--su-2);
+  padding: var(--su-3);
   min-width: 250px;
   margin-top: var(--su-1);
   z-index: var(--z-dropdown);

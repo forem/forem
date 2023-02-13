@@ -2,14 +2,14 @@
   id="reaction-butt-<%= category %>"
   aria-label="<%= aria_label %>"
   aria-pressed="false"
-  class="crayons-reaction crayons-tooltip__activator relative"
+  class="crayons-reaction crayons-tooltip__activator relative pt-2 pr-2 pb-1 pl-2"
   data-category="<%= category %>">
-    <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+    <span class="crayons-reaction__icon crayons-reaction__icon--inactive p-0">
       <%= image_tag image_path, aria_hidden: true, height: 32, width: 32 %>
     </span>
     <%# TODO: This can be straightened out after feature-flag -- double icons are not required now %>
     <% if user_signed_in? # We cannot trigger the action state unless the user is signed in, so no need to render. %>
-      <span class="crayons-reaction__icon crayons-reaction__icon--active">
+      <span class="crayons-reaction__icon crayons-reaction__icon--active p-0">
         <%= image_tag image_active_path, aria_hidden: true, height: 32, width: 32 %>
       </span>
     <% end %>
