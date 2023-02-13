@@ -14,7 +14,7 @@ describe('Logged out Home feed', () => {
     cy.findAllByTestId('profile-preview-card')
       .first()
       .within(() => {
-        cy.focused(); // Explicitly ask or focused element
+        cy.focused(); // Explicitly ask for focused element
 
         cy.findByRole('link', {
           name: 'Admin McAdmin',
