@@ -46,28 +46,6 @@ function showUserReaction(reactionName, animatedClass) {
   if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
   }
-
-  if (animatedClass == 'user-animated') {
-    const activeIcon = reactionButton.querySelector(
-      '.crayons-reaction__icon--active img',
-    );
-
-    if (activeIcon) {
-      const activeDrawerIcon = reactionDrawerButton.querySelector(
-        '.crayons-reaction__icon--active img',
-      );
-
-      reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
-      activeDrawerIcon.outerHTML = activeIcon.outerHTML;
-
-      setTimeout(function () {
-        document
-          .getElementById('reaction-drawer-trigger')
-          .querySelector('.crayons-reaction__icon--active img').outerHTML =
-          reactionDrawerButton.originalIcon;
-      }, 1500);
-    }
-  }
 }
 
 function hideUserReaction(reactionName) {
@@ -238,16 +216,30 @@ function openDrawerOnHover() {
       el.addEventListener('mouseout', function (event) {
         timer = setTimeout(function (event) {
           document.querySelector('.hoverdown.open').classList.remove('open');
-        }, 1000);
+        }, 500);
       });
     });
   }
+}
+
+function closeDrawerOnOutsideClick() {
+  document.addEventListener('click', function (event) {
+    const reactionElement = document.querySelector('.reaction-drawer');
+    if (reactionElement) {
+      const isClickInside = reactionElement.contains(event.target);
+
+      if (!isClickInside) {
+        document.querySelector('.hoverdown.open').classList.remove('open');
+      }
+    }
+  });
 }
 
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
   openDrawerOnHover();
+  closeDrawerOnOutsideClick();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');
