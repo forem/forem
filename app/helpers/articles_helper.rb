@@ -1,12 +1,10 @@
 module ArticlesHelper
-  # rubocop:disable Rails/HelperInstanceVariable
-  def should_show_latest_spam_suppression?(stories = @stories)
+  def should_show_latest_spam_suppression?(stories)
     return false if user_signed_in?
     return false unless stories.size > 1
 
     params[:timeframe] == Timeframe::LATEST_TIMEFRAME
   end
-  # rubocop:enable Rails/HelperInstanceVariable
 
   def sort_options
     [
