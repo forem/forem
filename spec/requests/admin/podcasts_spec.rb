@@ -105,14 +105,14 @@ RSpec.describe "/admin/content_manager/podcasts" do
 
     it "schedules a worker to fetch episodes" do
       sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker,
-                                   args: [{ podcast_id: podcast.id, limit: 5, force: false }]) do
+                                   args: [{ podcast_id: podcast.id, limit: 5, force_update: false }]) do
         post fetch_admin_podcast_path(podcast.id), params: { limit: "5", force: nil }
       end
     end
 
     it "schedules a worker without limit and with force" do
       sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker,
-                                   args: [{ podcast_id: podcast.id, force: true, limit: nil }]) do
+                                   args: [{ podcast_id: podcast.id, force_update: true, limit: nil }]) do
         post fetch_admin_podcast_path(podcast.id), params: { force: "1", limit: "" }
       end
     end
