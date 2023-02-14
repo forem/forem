@@ -85,7 +85,6 @@ describe('Namespaced ForemMobile functions', () => {
       it('should return empty user data and can inject messages with CustomEvent', () => {
         cy.testSetup();
         cy.visitAndWaitForUserSideEffects('/', runtimeStub, false);
-        // waitForBaseDataLoaded();
 
         // ensures the dynamic import had time to complete before
         // referencing the attribute
