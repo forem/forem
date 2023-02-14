@@ -293,7 +293,7 @@ RSpec.describe "StoriesIndex" do
       let!(:low_score) { create(:article, score: -10) }
 
       before do
-        create_list(:article, 3)
+        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
       end
 
       it "includes a link to Relevant", :aggregate_failures do
