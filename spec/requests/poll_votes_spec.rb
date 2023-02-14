@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "PollVotes", type: :request do
+RSpec.describe "PollVotes" do
   let(:user) { create(:user) }
   let(:article) { create(:article) }
   let(:poll) { create(:poll, article_id: article.id) }

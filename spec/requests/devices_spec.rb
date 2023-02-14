@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Devices", type: :request do
+RSpec.describe "Devices" do
   let(:user) { create(:user) }
   let(:consumer_app) { create(:consumer_app) }
 

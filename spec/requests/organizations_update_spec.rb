@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "OrganizationsUpdate", type: :request do
+RSpec.describe "OrganizationsUpdate" do
   let(:user) { create(:user, :org_admin) }
   let(:org_id) { user.organizations.first.id }
   let(:article) { create(:article, user_id: user.id) }

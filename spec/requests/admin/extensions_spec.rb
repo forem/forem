@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/advanced/extensions", type: :request do
+RSpec.describe "/admin/advanced/extensions" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

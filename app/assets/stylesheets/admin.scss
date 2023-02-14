@@ -11,6 +11,18 @@ label {
   margin-bottom: 0 !important;
 }
 
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0,0,0,.1);
+}
+
+a:hover {
+  color: var(--link-branded-color-hover);
+  text-decoration: underline var(--link-branded-color-hover) solid 1px;
+}
+
 .pagination {
   justify-content: right;
 

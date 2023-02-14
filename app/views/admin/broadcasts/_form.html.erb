@@ -11,16 +11,16 @@
 
   <div class="crayons-field">
     <%= label_tag :type_of, "Type", class: "crayons-field__label" %>
-    <%= select_tag :type_of, options_for_select(%w[Welcome Announcement],  selected: @broadcast.type_of), class: "crayons-select"%>
+    <%= select_tag :type_of, options_for_select(%w[Welcome Announcement],  selected: @broadcast.type_of), class: "crayons-select" %>
   </div>
 
   <div class="crayons-field">
     <%= label_tag :banner_style, "Banner Style", class: "crayons-field__label" %>
-    <%= select_tag :banner_style, options_for_select(%w[default brand success warning error], selected: @broadcast.banner_style), include_blank: true, class: "crayons-select"%>
+    <%= select_tag :banner_style, options_for_select(%w[default brand success warning error], selected: @broadcast.banner_style), include_blank: true, class: "crayons-select" %>
   </div>
 
   <div class="crayons-field">
     <%= label_tag :active, "Active", class: "crayons-field__label" %>
-    <%= select_tag :active, options_for_select([false, true], selected: @broadcast.active), class: "crayons-select"%>
+    <%= select_tag :active, options_for_select([false, true], selected: @broadcast.active), class: "crayons-select" %>
   </div>
 </div>

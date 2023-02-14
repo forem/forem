@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NavigationLinks", type: :request do
+RSpec.describe "NavigationLinks" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

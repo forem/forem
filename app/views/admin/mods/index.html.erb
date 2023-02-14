@@ -1,13 +1,15 @@
+<h1 class="crayons-title mb-3">Mods</h1>
+
 <div class="mb-6 flex items-center flex-col m:flex-row">
   <ul class="crayons-navigation crayons-navigation--horizontal">
     <li>
       <a href="<%= admin_mods_path %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state].blank? %>">General Community</a>
     </li>
     <li>
-      <a href="<%= admin_mods_path(state: :tag_moderator) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == 'tag_moderator' %>">Tag Mods</a>
+      <a href="<%= admin_mods_path(state: :tag_moderator) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == "tag_moderator" %>">Tag Mods</a>
     </li>
     <li>
-      <a href="<%= admin_mods_path(state: :potential) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == 'potential' %>">Potential Mods</a>
+      <a href="<%= admin_mods_path(state: :potential) %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if params[:state] == "potential" %>">Potential Mods</a>
     </li>
   </ul>
 

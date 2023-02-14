@@ -1,55 +1,51 @@
 <div class="crayons-card notification">
-  <% if notification.action == "Reaction" %>
-    <%= render "reaction", notification: notification %>
-  <% else %>
-    <% json_data = notification.json_data %>
-    <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
-      <%= render "notifications/shared/profile_pic", json_data: json_data %>
-    <% end %>
-
-    <div class="notification__content">
-      <% params = { user: link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold"), title: link_to(h(json_data["comment"]["commentable"]["title"]), json_data["comment"]["commentable"]["path"], class: "crayons-link fw-bold") } %>
-      <% if notification.action.blank? %>
-        <% if json_data["comment"]["created_at"] %>
-          <header class="mb-4">
-            <h2 class="fs-base fw-normal">
-              <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
-                <%= t("views.notifications.comment.replied_html", **params) %>
-              <% else %>
-                <%= t("views.notifications.comment.commented_html", **params) %>
-              <% end %>
-            </h2>
-            <p class="lh-tight"><a href="<%= json_data["comment"]["path"] %>" class="crayons-link fs-s crayons-link--secondary"><%= time_ago_in_words json_data["comment"]["created_at"], scope: :"datetime.distance_in_words_ago" %></a></p>
-          </header>
-        <% end %>
-
-        <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
-
-      <% elsif notification.action == "Moderation" %>
-        <header class="mb-4">
-          <h2 class="fs-base fw-normal">
-            <%= t("views.notifications.comment.left_html", user: link_to(json_data["comment"]["path"].split("/")[1], "/#{json_data['comment']['path'].split('/')[1]}", class: "crayons-link fw-bold"), title: params[:title]) %>
-          </h2>
-          <p><%= t("views.notifications.comment.welcome_html") %></p>
-        </header>
-
-        <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
-
-        <p class="fs-s color-base-60 pt-4"><%= t("views.notifications.comment.report") %></p>
-
-      <% elsif notification.action == "First" %>
-        <header class="mb-4">
-          <h2 class="fs-base fw-normal">
-            <%= t("views.notifications.comment.first_html", **params) %>
-          </h2>
-          <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>
-
-          <p><%= t("views.notifications.comment.first_reply") %></p>
-        </header>
-
-        <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
-
-      <% end %>
-    </div>
+  <% json_data = notification.json_data %>
+  <% cache "activity-profile-pic-#{json_data['user']['id']}-#{json_data['user']['profile_image_90']}" do %>
+    <%= render "notifications/shared/profile_pic", json_data: json_data %>
   <% end %>
+
+  <div class="notification__content">
+    <% params = { user: link_to(json_data["user"]["name"], json_data["user"]["path"], class: "crayons-link fw-bold"), title: link_to(h(json_data["comment"]["commentable"]["title"]), json_data["comment"]["commentable"]["path"], class: "crayons-link fw-bold") } %>
+    <% if notification.action.blank? %>
+      <% if json_data["comment"]["created_at"] %>
+        <header class="mb-4">
+          <h2 class="fs-base fw-normal">
+            <% if json_data["comment"]["depth"] && json_data["comment"]["depth"] > 0 %>
+              <%= t("views.notifications.comment.replied_html", **params) %>
+            <% else %>
+              <%= t("views.notifications.comment.commented_html", **params) %>
+            <% end %>
+          </h2>
+          <p class="lh-tight"><a href="<%= json_data["comment"]["path"] %>" class="crayons-link fs-s crayons-link--secondary"><%= time_ago_in_words json_data["comment"]["created_at"], scope: :"datetime.distance_in_words_ago" %></a></p>
+        </header>
+      <% end %>
+
+      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+
+    <% elsif notification.action == "Moderation" %>
+      <header class="mb-4">
+        <h2 class="fs-base fw-normal">
+          <%= t("views.notifications.comment.left_html", user: link_to(json_data["comment"]["path"].split("/")[1], "/#{json_data['comment']['path'].split('/')[1]}", class: "crayons-link fw-bold"), title: params[:title]) %>
+        </h2>
+        <p><%= t("views.notifications.comment.welcome_html") %></p>
+      </header>
+
+      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
+
+      <p class="fs-s color-base-60 pt-4"><%= t("views.notifications.comment.report") %></p>
+
+    <% elsif notification.action == "First" %>
+      <header class="mb-4">
+        <h2 class="fs-base fw-normal">
+          <%= t("views.notifications.comment.first_html", **params) %>
+        </h2>
+        <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words notification.created_at, scope: :"datetime.distance_in_words_ago" %></small></p>
+
+        <p><%= t("views.notifications.comment.first_reply") %></p>
+      </header>
+
+      <%= render "notifications/shared/comment_box", activity: activity, context: "moderation" %>
+
+    <% end %>
+  </div>
 </div>

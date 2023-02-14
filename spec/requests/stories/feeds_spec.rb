@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Stories::Feeds", type: :request do
+RSpec.describe "Stories::Feeds" do
   let(:title) { "My post" }
   let(:user) { create(:user, name: "Josh") }
   let(:organization) { create(:organization, name: "JoshCo") }
