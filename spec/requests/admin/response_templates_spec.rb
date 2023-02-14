@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/advanced/response_templates", type: :request do
+RSpec.describe "/admin/advanced/response_templates" do
   let(:admin) { create(:user, :admin) }
 
   before { sign_in admin }

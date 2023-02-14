@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesCreate", type: :request do
+RSpec.describe "ArticlesCreate" do
   let(:user) { create(:user, :org_member) }
   let(:template) { file_fixture("article_published.txt").read }
   let(:new_title) { "NEW TITLE #{rand(100)}" }

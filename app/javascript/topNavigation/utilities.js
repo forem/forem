@@ -1,3 +1,5 @@
+/* global isTouchDevice */
+
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
@@ -26,17 +28,6 @@ function openHeaderMenu(memberMenu, menuNavButton) {
     // https://swizec.com/blog/how-to-wait-for-dom-elements-to-show-up-in-modern-browsers
     window.requestAnimationFrame(focusFirstItem);
   })();
-}
-
-/**
- * Determines whether or not a device is a touch device.
- *
- * @returns true if a touch device, otherwise false.
- */
-export function isTouchDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
-    navigator.userAgent,
-  );
 }
 
 /**

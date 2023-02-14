@@ -166,6 +166,9 @@
 
   /* Code */
   --code-inline-bg: rgb(var(--black), 0.1);
+
+  /* Onboarding suggested people */
+  --content-row-hover-bg: rgb(var(--grey-100));
 }
 
 :root {

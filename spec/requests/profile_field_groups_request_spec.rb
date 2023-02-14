@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ProfileFieldGroups", type: :request do
+RSpec.describe "ProfileFieldGroups" do
   let(:user) { create(:user) }
 
   describe "GET /profile_field_groups" do

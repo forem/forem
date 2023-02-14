@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Universal Links (Apple)", type: :request do
+RSpec.describe "Universal Links (Apple)" do
   let(:aasa_route) { "/.well-known/apple-app-site-association" }
   let(:forem_app_id) { "R9SWHSQNV8.com.forem.app" }
   let(:expected_paths) { ["/*", "NOT /users/auth/*"] }

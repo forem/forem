@@ -76,9 +76,6 @@ Cypress.Commands.add(
 Cypress.Commands.add('testSetup', () => {
   const MAX_RETRIES = 3;
 
-  // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
-  cy.clearCookies();
-
   function retryClearCookies(retryCount) {
     if (retryCount > MAX_RETRIES) {
       cy.log('Could not clear cookies');

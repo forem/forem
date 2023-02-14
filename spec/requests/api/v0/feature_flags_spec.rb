@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::FeatureFlagsController", type: :request do
+RSpec.describe "Api::V0::FeatureFlagsController" do
   let(:flag) { "test_flag" }
   let(:params) { { flag: flag } }
 

@@ -36,6 +36,7 @@
 
   --radius: 0.375rem;
   --radius-large: 0.75rem;
+  --radius-xl: 2rem;
   // 1. this is a trick for conditional border-radius: https://ishadeed.com/article/conditional-border-radius/
   // 2. intentionally using uppercase Max and Min because SCSS have issues otherwise...
   --radius-auto: Max(0px, Min(var(--radius), calc((100vw - 4px - 100%) * 9999))) /

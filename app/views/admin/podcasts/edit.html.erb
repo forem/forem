@@ -60,7 +60,7 @@
   <div class="crayons-card p-6">
     <%= form_for [:admin, @podcast] do |f| %>
       <div class="flex flex-col gap-4">
-        <h2 class="mb-4">Edit Podcast</h2>
+        <h2 class="crayons-subtitle-1 mb-4">Edit Podcast</h2>
         <div class="crayons-field">
           <%= f.label :title, for: "podcast_title", class: "crayons-field__label" %>
           <%= f.text_field :title, class: "crayons-textfield" %>
