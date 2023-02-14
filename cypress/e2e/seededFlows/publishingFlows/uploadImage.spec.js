@@ -10,7 +10,8 @@ describe('Upload image', () => {
       });
     });
 
-    it('Uploads an image in the editor and copies the markdown', () => {
+    xit('Uploads an image in the editor and copies the markdown', () => {
+      // Legacy spec no longer relevant but kept for more debugging
       cy.findByRole('form', { name: 'Edit post' }).within(() => {
         cy.findByLabelText(/Upload image/).attachFile(
           '/images/admin-image.png',

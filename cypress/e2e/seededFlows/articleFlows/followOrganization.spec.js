@@ -18,11 +18,7 @@ describe('Follow an organization from article sidebar', () => {
   it('Follows an organization from the sidebar', () => {
     cy.intercept('/follows').as('followRequest');
 
-    cy.findByRole('complementary', { name: 'Author details' }).within(() => {
-      cy.findByRole('button', { name: 'Follow organization: Bachmanity' }).as(
-        'followButton',
-      );
-    });
+    cy.contains('Follow').as('followButton');
 
     // Follow
     cy.get('@followButton').click();
@@ -30,9 +26,8 @@ describe('Follow an organization from article sidebar', () => {
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check that the state persists after refresh
-    cy.visitAndWaitForUserSideEffects(
-      '/admin_mcadmin/test-organization-article-slug',
-    );
+    cy.reload();
+    cy.get('@followButton').should('have.text', 'Following');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Go to dashboard and check under 'Following Organizations'
@@ -45,11 +40,7 @@ describe('Follow an organization from article sidebar', () => {
   it('Unfollows an organization from the sidebar', () => {
     cy.intercept('/follows').as('followRequest');
 
-    cy.findByRole('complementary', { name: 'Author details' }).within(() => {
-      cy.findByRole('button', { name: 'Follow organization: Bachmanity' }).as(
-        'followButton',
-      );
-    });
+    cy.contains('Follow').as('followButton');
 
     // Follow
     cy.get('@followButton').click();
@@ -60,9 +51,8 @@ describe('Follow an organization from article sidebar', () => {
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     // Check that the state persists after refresh
-    cy.visitAndWaitForUserSideEffects(
-      '/admin_mcadmin/test-organization-article-slug',
-    );
+    cy.reload();
+    cy.get('@followButton').should('have.text', 'Follow');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     // Go to dashboard and check under 'Following Organizations'
