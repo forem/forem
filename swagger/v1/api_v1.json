@@ -9,14 +9,10 @@
     "/api/articles": {
       "post": {
         "summary": "Publish article",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
         "operationId": "createArticle",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "201": {
             "description": "An Article",
@@ -46,9 +42,7 @@
                   "last_comment_at": "2023-02-03T20:35:01Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
-                  "tags": [
-
-                  ],
+                  "tags": [],
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
@@ -100,12 +94,8 @@
       },
       "get": {
         "summary": "Published articles",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles.\n\n\"Articles\" are all the posts that users create on DEV that typically\nshow up in the feed. They can be a blog post, a discussion question,\na help thread etc. but is referred to as article within the code.\n\nBy default it will return featured, published articles ordered\nby descending popularity.\n\nIt supports pagination, each page will contain `30` articles by default.",
         "operationId": "getArticles",
         "parameters": [
@@ -162,11 +152,7 @@
             "description": "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username`, only if set to `all`.",
             "schema": {
               "type": "string",
-              "enum": [
-                "fresh",
-                "rising",
-                "all"
-              ]
+              "enum": ["fresh", "rising", "all"]
             },
             "example": "fresh"
           },
@@ -223,9 +209,7 @@
                     "published_at": "2023-02-03T20:35:01Z",
                     "last_comment_at": "2023-02-03T20:35:01Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "discuss"
-                    ],
+                    "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
                       "name": "Arron \"Temple\" \\:/ Beahan",
@@ -266,12 +250,8 @@
     "/api/articles/latest": {
       "get": {
         "summary": "Published articles sorted by published date",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a list of articles. ordered by descending publish date.\n\nIt supports pagination, each page will contain 30 articles by default.",
         "operationId": "getLatestArticles",
         "parameters": [
@@ -311,11 +291,7 @@
                     "published_at": "2023-02-03T20:35:01Z",
                     "last_comment_at": "2023-02-03T20:35:01Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "javascript",
-                      "html",
-                      "discuss"
-                    ],
+                    "tag_list": ["javascript", "html", "discuss"],
                     "tags": "javascript, html, discuss",
                     "user": {
                       "name": "Royce \"Melodi\" \\:/ Bosco",
@@ -356,11 +332,7 @@
                     "published_at": "2023-02-03T20:35:01Z",
                     "last_comment_at": "2023-02-03T20:35:01Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "javascript",
-                      "html",
-                      "discuss"
-                    ],
+                    "tag_list": ["javascript", "html", "discuss"],
                     "tags": "javascript, html, discuss",
                     "user": {
                       "name": "Chauncey \"Fabiola\" \\:/ Abshire",
@@ -401,11 +373,7 @@
                     "published_at": "2023-02-03T20:35:01Z",
                     "last_comment_at": "2023-02-03T20:35:01Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "javascript",
-                      "html",
-                      "discuss"
-                    ],
+                    "tag_list": ["javascript", "html", "discuss"],
                     "tags": "javascript, html, discuss",
                     "user": {
                       "name": "Nelle \"Cristobal\" \\:/ Blick",
@@ -439,12 +407,8 @@
     "/api/articles/{id}": {
       "get": {
         "summary": "Published article by id",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
         "operationId": "getArticleById",
         "parameters": [
@@ -486,9 +450,7 @@
                   "last_comment_at": "2023-02-03T20:35:01Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
-                  "tags": [
-                    "discuss"
-                  ],
+                  "tags": ["discuss"],
                   "body_html": "<p>Small batch street distillery. Hammock intelligentsia cleanse. Craft beer meh semiotics chartreuse occupy letterpress taxidermy carry. Dreamcatcher flexitarian skateboard truffaut vegan ugh blog paleo.</p>\n\n<p>Cleanse mlkshk scenester letterpress bicycle rights occupy ramps authentic.</p>\n\n",
                   "body_markdown": "---\ntitle: Blithe Spirit179\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nSmall batch street distillery. Hammock intelligentsia cleanse. Craft beer meh semiotics chartreuse occupy letterpress taxidermy carry. Dreamcatcher flexitarian skateboard truffaut vegan ugh blog paleo.\n\n\nCleanse mlkshk scenester letterpress bicycle rights occupy ramps authentic.\n\n",
                   "user": {
@@ -531,9 +493,7 @@
       },
       "put": {
         "summary": "Update an article by id",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
         "operationId": "updateArticle",
         "parameters": [
@@ -579,9 +539,7 @@
                   "last_comment_at": "2023-02-03T20:35:01Z",
                   "reading_time_minutes": 1,
                   "tag_list": "",
-                  "tags": [
-
-                  ],
+                  "tags": [],
                   "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
                   "body_markdown": "**New** body for the article",
                   "user": {
@@ -646,12 +604,8 @@
     "/api/articles/{username}/{slug}": {
       "get": {
         "summary": "Published article by path",
-        "security": [
-
-        ],
-        "tags": [
-          "articles"
-        ],
+        "security": [],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
         "operationId": "getArticleByPath",
         "parameters": [
@@ -701,9 +655,7 @@
                   "last_comment_at": "2023-02-03T20:35:02Z",
                   "reading_time_minutes": 1,
                   "tag_list": "discuss",
-                  "tags": [
-                    "discuss"
-                  ],
+                  "tags": ["discuss"],
                   "body_html": "<p>Vinyl pbr&amp;b brunch dreamcatcher hella. Deep v meh flexitarian actually.</p>\n\n<p>Godard authentic kombucha 3 wolf moon neutra. Fixie chia put a bird on it bicycle rights whatever organic slow-carb.</p>\n\n",
                   "body_markdown": "---\ntitle: In a Dry Season183\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nVinyl pbr&b brunch dreamcatcher hella. Deep v meh flexitarian actually.\n\n\nGodard authentic kombucha 3 wolf moon neutra. Fixie chia put a bird on it bicycle rights whatever organic slow-carb.\n\n",
                   "user": {
@@ -748,10 +700,7 @@
     "/api/articles/me": {
       "get": {
         "summary": "User's articles",
-        "tags": [
-          "articles",
-          "users"
-        ],
+        "tags": ["articles", "users"],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserArticles",
         "parameters": [
@@ -778,9 +727,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -796,10 +743,7 @@
     "/api/articles/me/published": {
       "get": {
         "summary": "User's published articles",
-        "tags": [
-          "articles",
-          "users"
-        ],
+        "tags": ["articles", "users"],
         "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserPublishedArticles",
         "parameters": [
@@ -826,9 +770,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -844,10 +786,7 @@
     "/api/articles/me/unpublished": {
       "get": {
         "summary": "User's unpublished articles",
-        "tags": [
-          "articles",
-          "users"
-        ],
+        "tags": ["articles", "users"],
         "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
         "operationId": "getUserUnpublishedArticles",
         "parameters": [
@@ -874,9 +813,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -892,10 +829,7 @@
     "/api/articles/me/all": {
       "get": {
         "summary": "User's all articles",
-        "tags": [
-          "articles",
-          "users"
-        ],
+        "tags": ["articles", "users"],
         "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
         "operationId": "getUserAllArticles",
         "parameters": [
@@ -922,9 +856,7 @@
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -940,9 +872,7 @@
     "/api/articles/{id}/unpublish": {
       "put": {
         "summary": "Unpublish an article",
-        "tags": [
-          "articles"
-        ],
+        "tags": ["articles"],
         "description": "This endpoint allows the client to unpublish an article.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThe article will be unpublished and will no longer be visible to the public. It will remain\nin the database and will set back to draft status on the author's posts dashboard. Any\nnotifications associated with the article will be deleted. Any comments on the article\nwill remain.",
         "operationId": "unpublishArticle",
         "parameters": [
@@ -1001,12 +931,8 @@
     "/api/comments": {
       "get": {
         "summary": "Comments",
-        "security": [
-
-        ],
-        "tags": [
-          "comments"
-        ],
+        "security": [],
+        "tags": ["comments"],
         "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.",
         "operationId": "getCommentsByArticleId",
         "parameters": [
@@ -1052,9 +978,7 @@
                       "profile_image": "/uploads/user/profile_image/30326/b987403f-d698-4ad0-87af-548b66292750.jpeg",
                       "profile_image_90": "/uploads/user/profile_image/30326/b987403f-d698-4ad0-87af-548b66292750.jpeg"
                     },
-                    "children": [
-
-                    ]
+                    "children": []
                   }
                 ],
                 "schema": {
@@ -1083,12 +1007,8 @@
     "/api/comments/{id}": {
       "get": {
         "summary": "Comment by id",
-        "security": [
-
-        ],
-        "tags": [
-          "comments"
-        ],
+        "security": [],
+        "tags": ["comments"],
         "description": "This endpoint allows the client to retrieve a comment as well as his descendants comments.\n\n  It will return the required comment (the root) with its nested descendants as a thread.\n\n  See the format specification for further details.",
         "operationId": "getCommentById",
         "parameters": [
@@ -1123,9 +1043,7 @@
                     "profile_image": "/uploads/user/profile_image/30330/c66ad8ff-ac65-49d2-af37-6b1d6bf4cf8e.jpeg",
                     "profile_image_90": "/uploads/user/profile_image/30330/c66ad8ff-ac65-49d2-af37-6b1d6bf4cf8e.jpeg"
                   },
-                  "children": [
-
-                  ]
+                  "children": []
                 }
               }
             }
@@ -1147,18 +1065,14 @@
     "/api/display_ads": {
       "get": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a list of all display ads.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [
-
-                ]
+                "example": []
               }
             }
           },
@@ -1177,13 +1091,9 @@
       },
       "post": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to create a new display ad.",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successful",
@@ -1277,11 +1187,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -1301,11 +1207,7 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
@@ -1315,9 +1217,7 @@
     "/api/display_ads/{id}": {
       "get": {
         "summary": "display ad",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
         "parameters": [
           {
@@ -1386,9 +1286,7 @@
       },
       "put": {
         "summary": "display ads",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to update the attributes of a single display ad, via its id.",
         "parameters": [
           {
@@ -1482,11 +1380,7 @@
                   },
                   "display_to": {
                     "type": "string",
-                    "enum": [
-                      "all",
-                      "logged_in",
-                      "logged_out"
-                    ],
+                    "enum": ["all", "logged_in", "logged_out"],
                     "default": "all",
                     "description": "Potentially limits visitors to whom the ad is visible"
                   },
@@ -1506,11 +1400,7 @@
                     "description": "Tags on which this ad can be displayed (blank is all/any tags)"
                   }
                 },
-                "required": [
-                  "name",
-                  "body_markdown",
-                  "placement_area"
-                ]
+                "required": ["name", "body_markdown", "placement_area"]
               }
             }
           }
@@ -1520,9 +1410,7 @@
     "/api/display_ads/{id}/unpublish": {
       "put": {
         "summary": "unpublish",
-        "tags": [
-          "display ads"
-        ],
+        "tags": ["display ads"],
         "description": "This endpoint allows the client to remove a display ad from rotation by un-publishing it.",
         "parameters": [
           {
@@ -1570,10 +1458,7 @@
     "/api/follows/tags": {
       "get": {
         "summary": "Followed Tags",
-        "tags": [
-          "followed_tags",
-          "tags"
-        ],
+        "tags": ["followed_tags", "tags"],
         "description": "This endpoint allows the client to retrieve a list of the tags they follow.",
         "operationId": "getFollowedTags",
         "responses": {
@@ -1619,9 +1504,7 @@
     "/api/followers/users": {
       "get": {
         "summary": "Followers",
-        "tags": [
-          "followers"
-        ],
+        "tags": ["followers"],
         "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
         "operationId": "getFollowers",
         "parameters": [
@@ -1723,12 +1606,8 @@
     "/api/organizations/{username}": {
       "get": {
         "summary": "An organization",
-        "tags": [
-          "organizations"
-        ],
-        "security": [
-
-        ],
+        "tags": ["organizations"],
+        "security": [],
         "description": "This endpoint allows the client to retrieve a single organization by their username",
         "operationId": "getOrganization",
         "parameters": [
@@ -1788,13 +1667,8 @@
     "/api/organizations/{username}/users": {
       "get": {
         "summary": "Organization's users",
-        "tags": [
-          "organizations",
-          "users"
-        ],
-        "security": [
-
-        ],
+        "tags": ["organizations", "users"],
+        "security": [],
         "description": "This endpoint allows the client to retrieve a list of users belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
         "operationId": "getOrgUsers",
         "parameters": [
@@ -1872,13 +1746,8 @@
     "/api/organizations/{username}/articles": {
       "get": {
         "summary": "Organization's Articles",
-        "tags": [
-          "organizations",
-          "articles"
-        ],
-        "security": [
-
-        ],
+        "tags": ["organizations", "articles"],
+        "security": [],
         "description": "This endpoint allows the client to retrieve a list of Articles belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
         "operationId": "getOrgArticles",
         "parameters": [
@@ -1926,11 +1795,7 @@
                     "published_at": "2023-02-03T20:35:05Z",
                     "last_comment_at": "2023-02-03T20:35:05Z",
                     "reading_time_minutes": 1,
-                    "tag_list": [
-                      "javascript",
-                      "html",
-                      "discuss"
-                    ],
+                    "tag_list": ["javascript", "html", "discuss"],
                     "tags": "javascript, html, discuss",
                     "user": {
                       "name": "Ismael \"Dannie\" \\:/ Stoltenberg",
@@ -1977,12 +1842,8 @@
     "/api/pages": {
       "get": {
         "summary": "show details for all pages",
-        "security": [
-
-        ],
-        "tags": [
-          "pages"
-        ],
+        "security": [],
+        "tags": ["pages"],
         "description": "This endpoint allows the client to retrieve details for all Page objects.",
         "responses": {
           "200": {
@@ -2020,13 +1881,9 @@
       },
       "post": {
         "summary": "pages",
-        "tags": [
-          "pages"
-        ],
+        "tags": ["pages"],
         "description": "This endpoint allows the client to create a new page.",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "successful",
@@ -2137,12 +1994,8 @@
     "/api/pages/{id}": {
       "get": {
         "summary": "show details for a page",
-        "security": [
-
-        ],
-        "tags": [
-          "pages"
-        ],
+        "security": [],
+        "tags": ["pages"],
         "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
         "parameters": [
           {
@@ -2189,9 +2042,7 @@
       },
       "put": {
         "summary": "update details for a page",
-        "tags": [
-          "pages"
-        ],
+        "tags": ["pages"],
         "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
         "parameters": [
           {
@@ -2281,9 +2132,7 @@
       },
       "delete": {
         "summary": "remove a page",
-        "tags": [
-          "pages"
-        ],
+        "tags": ["pages"],
         "description": "This endpoint allows the client to delete a single Page object, specified by ID.",
         "parameters": [
           {
@@ -2359,12 +2208,8 @@
     "/api/podcast_episodes": {
       "get": {
         "summary": "Podcast Episodes",
-        "security": [
-
-        ],
-        "tags": [
-          "podcast_episodes"
-        ],
+        "security": [],
+        "tags": ["podcast_episodes"],
         "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
         "operationId": "getPodcastEpisodes",
         "parameters": [
@@ -2431,9 +2276,7 @@
     "/api/profile_images/{username}": {
       "get": {
         "summary": "A Users or organizations profile image",
-        "tags": [
-          "profile images"
-        ],
+        "tags": ["profile images"],
         "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
         "operationId": "getProfileImage",
         "parameters": [
@@ -2485,9 +2328,7 @@
     "/api/reactions/toggle": {
       "post": {
         "summary": "toggle reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to toggle the user's reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will remove the \"like\" from the user",
         "parameters": [
           {
@@ -2499,7 +2340,7 @@
               "enum": [
                 "like",
                 "unicorn",
-                "exploding-head",
+                "exploding_head",
                 "raised_hands",
                 "fire"
               ]
@@ -2520,11 +2361,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -2560,9 +2397,7 @@
     "/api/reactions": {
       "post": {
         "summary": "create reaction",
-        "tags": [
-          "reactions"
-        ],
+        "tags": ["reactions"],
         "description": "This endpoint allows the client to create a reaction to a specified reactable (eg, Article, Comment, or User). For examples:\n        * \"Like\"ing an Article will create a new \"like\" Reaction from the user for that Articles\n        * \"Like\"ing that Article a second time will return the previous \"like\"",
         "parameters": [
           {
@@ -2574,7 +2409,7 @@
               "enum": [
                 "like",
                 "unicorn",
-                "exploding-head",
+                "exploding_head",
                 "raised_hands",
                 "fire"
               ]
@@ -2595,11 +2430,7 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": [
-                "Comment",
-                "Article",
-                "User"
-              ]
+              "enum": ["Comment", "Article", "User"]
             }
           }
         ],
@@ -2635,9 +2466,7 @@
     "/api/readinglist": {
       "get": {
         "summary": "Readinglist",
-        "tags": [
-          "readinglist"
-        ],
+        "tags": ["readinglist"],
         "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
         "operationId": "getReadinglist",
         "parameters": [
@@ -2664,9 +2493,7 @@
             "description": "A list of articles in the users readinglist",
             "content": {
               "application/json": {
-                "example": [
-
-                ],
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2682,12 +2509,8 @@
     "/api/tags": {
       "get": {
         "summary": "Tags",
-        "tags": [
-          "tags"
-        ],
-        "security": [
-
-        ],
+        "tags": ["tags"],
+        "security": [],
         "description": "This endpoint allows the client to retrieve a list of tags that can be used to tag articles.\n\nIt will return tags ordered by popularity.\n\nIt supports pagination, each page will contain 10 tags by default.",
         "operationId": "getTags",
         "parameters": [
@@ -2738,9 +2561,7 @@
     "/api/users/me": {
       "get": {
         "summary": "The authenticated user",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to retrieve information about the authenticated user",
         "operationId": "getUserMe",
         "responses": {
@@ -2787,9 +2608,7 @@
     "/api/users/{id}": {
       "get": {
         "summary": "A User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
         "operationId": "getUser",
         "parameters": [
@@ -2822,9 +2641,7 @@
     "/api/users/{id}/unpublish": {
       "put": {
         "summary": "Unpublish a User's Articles and Comments",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to unpublish all of the articles and\ncomments created by a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user's articles and comments will be unpublished and will no longer be\nvisible to the public. They will remain in the database and will set back to draft status\non the specified user's  dashboard. Any notifications associated with the specified user's\narticles and comments will be deleted.\n\nNote this endpoint unpublishes articles and comments asychronously: it will return a 204 NO CONTENT\nstatus code immediately, but the articles and comments will not be unpublished until the\nrequest is completed on the server.",
         "operationId": "unpublishUser",
         "parameters": [
@@ -2873,9 +2690,7 @@
     "/api/users/{id}/suspend": {
       "put": {
         "summary": "Suspend a User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
         "operationId": "suspendUser",
         "parameters": [
@@ -2924,14 +2739,10 @@
     "/api/admin/users": {
       "post": {
         "summary": "Invite a User",
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "description": "This endpoint allows the client to trigger an invitation to the provided email address.\n\n        It requires a token from a user with `super_admin` privileges.",
         "operationId": "postAdminUsersCreate",
-        "parameters": [
-
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Successful"
@@ -2973,13 +2784,8 @@
     "/api/videos": {
       "get": {
         "summary": "Articles with a video",
-        "tags": [
-          "videos",
-          "articles"
-        ],
-        "security": [
-
-        ],
+        "tags": ["videos", "articles"],
+        "security": [],
         "description": "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.\n\nIt will only return published video articles ordered by descending popularity.\n\nIt supports pagination, each page will contain 24 articles by default.",
         "operationId": "videos",
         "parameters": [
@@ -3044,9 +2850,7 @@
   ],
   "security": [
     {
-      "api-key": [
-
-      ]
+      "api-key": []
     }
   ],
   "components": {
@@ -3441,11 +3245,7 @@
             "format": "float"
           }
         },
-        "required": [
-          "id",
-          "name",
-          "points"
-        ]
+        "required": ["id", "name", "points"]
       },
       "Tag": {
         "description": "Representation of a tag",
@@ -3515,12 +3315,7 @@
             "description": "Controls what kind of layout the page is rendered in"
           }
         },
-        "required": [
-          "title",
-          "slug",
-          "description",
-          "template"
-        ]
+        "required": ["title", "slug", "description", "template"]
       },
       "PodcastEpisodeIndex": {
         "description": "Representation of a podcast episode returned in a list",
