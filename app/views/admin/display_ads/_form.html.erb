@@ -3,18 +3,18 @@
     <% if @display_ad.creator.present? %>
       <div class="crayons-field">
         <%= label_tag :creator, "Created by:", class: "crayons-field__label" %>
-        <%= text_field_tag :creator, @display_ad.creator.name, class: "crayons-textfield", disabled: true %>
+        <%= text_field_tag :creator, @display_ad.creator.name, class: "crayons-textfield", disabled: true, autocomplete: "off" %>
       </div>
     <% end %>
 
     <div class="crayons-field">
       <%= label_tag :name, "Name:", class: "crayons-field__label" %>
-      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield" %>
+      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :organization_id, "Organization ID:", class: "crayons-field__label" %>
-      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234" %>
+      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
@@ -33,7 +33,7 @@
 
     <div class="crayons-field hidden">
       <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
-      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield" %>
+      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
