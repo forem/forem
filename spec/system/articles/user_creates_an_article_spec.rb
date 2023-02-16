@@ -44,19 +44,19 @@ RSpec.describe "Creating an article with the editor", type: :system do
   context "with Runkit tag", js: true do
     it "creates a new article with a Runkit tag" do
       visit new_path
-      fill_in "article_body_markdown", with: ""
       fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "Save changes"
 
+      expect(page).not_to have_current_path(new_path)
       expect_runkit_tag_to_be_active
     end
 
     it "creates a new article with a Runkit tag with complex preamble" do
       visit new_path
-      fill_in "article_body_markdown", with: ""
       fill_in "article_body_markdown", with: template_with_runkit_tag_with_preamble
       click_button "Save changes"
 
+      expect(page).not_to have_current_path(new_path)
       expect_runkit_tag_to_be_active(count: 2)
     end
 
