@@ -105,18 +105,23 @@ Cypress.Commands.add('testSetup', () => {
  * @param credentials
  * @param credentials.email {string} An email address
  * @param credentials.password {string} A password
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
  */
 Cypress.Commands.add('loginUser', ({ email, password }) => {
-  cy.session(email, () => {
-    cy.visit('/users/sign_in');
-    cy.get('input[name="user[email]"]').type(email);
-    cy.get('input[name="user[password]"]').type(`${password}{enter}`, {
-      log: false,
-    });
-    cy.url().should('include', '/?signin=true');
-  });
+  cy.session(
+    [email, password],
+    () => {
+      cy.visit('/users/sign_in');
+      cy.get('input[name="user[email]"]').type(email);
+      cy.get('input[name="user[password]"]').type(`${password}{enter}`);
+      cy.url().should('include', '/?signin=true');
+    },
+    {
+      validate() {
+        cy.visit('/settings');
+        cy.url().should('contains', 'settings');
+      },
+    },
+  );
 });
 
 /**
