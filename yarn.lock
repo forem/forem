@@ -2016,21 +2016,21 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
-"@knapsack-pro/core@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-3.2.0.tgz#8df372db3562b25223a4205d9902d7770de33581"
-  integrity sha512-MxCcxkb+de9bobMEWkY4lo7A4+ojTFsr6i+GmEukGmaY/QLeLjFmVO/Em2z86X7lm/bTesrOTsL8U/TtplGeOQ==
+"@knapsack-pro/core@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-4.0.0.tgz#3b00ef9bde572ab46618a0fd76b42bbad1b64b8a"
+  integrity sha512-I7bMzDA9i517BPAObrTUTPLiA0IhXjkHvsy6hBMJ2dwv1Fl6wZG62/KUiXScYq3Vms1kRTKKXW9rU1KQWEkNpg==
   dependencies:
     axios "^0.27.2"
     axios-retry "^3.2.5"
     winston "^3.7.2"
 
-"@knapsack-pro/cypress@^5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.2.0.tgz#0df8bd5889ad9e9839398dc7a1d8229220a208e5"
-  integrity sha512-5jUgtokQr2f31cVWZ2fSnnLoNmjMV/ohNIiGkqgkQ0CxC8Fs22P/fE6u8LNIdCdWEmsA4YASSe/qfraWbh+9nA==
+"@knapsack-pro/cypress@^5.3.1":
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.3.1.tgz#5ae9d634f4a8ddc914f68fd378c57645eaf50cfd"
+  integrity sha512-ICdan64CRxE+RXtlpcfZb3QpAJpQTkI5chMPczGpXoOI6DirMdieCqAP8QexZYLRieB76NjZoD3BT7Op580T5w==
   dependencies:
-    "@knapsack-pro/core" "^3.2.0"
+    "@knapsack-pro/core" "^4.0.0"
     glob "^8.1.0"
     minimatch "^5.1.4"
     minimist "^1.2.6"
@@ -4075,10 +4075,10 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ahoy.js@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.4.0.tgz#92c0247866b167015e1fdd0bc9cda8b3a61fadbe"
-  integrity sha512-jq4aidHv8QWvZzN7YYnkQ1JgO6RyDBNrobcimJRtlfKiIP8B9ZaeMOIP4qieVrNawgI6JXpxvYMllfRb+sWZew==
+ahoy.js@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.4.1.tgz#30d1f411df8bd073abd2e50615a2934c772be1a5"
+  integrity sha512-tIYE3+zOrLWyK9UtPqJ5Cti+LlbWYtUf0wGdzJDlYgLQdhQjpyKUu0BNpSjdXOWUlfExDN/h8gvEtg+d0mKiPA==
 
 airbnb-js-shims@^2.2.1:
   version "2.2.1"
@@ -7305,10 +7305,10 @@ eslint-plugin-react@^7.27.0:
     semver "^6.3.0"
     string.prototype.matchall "^4.0.8"
 
-eslint-plugin-react@^7.32.1:
-  version "7.32.1"
-  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.32.1.tgz#88cdeb4065da8ca0b64e1274404f53a0f9890200"
-  integrity sha512-vOjdgyd0ZHBXNsmvU+785xY8Bfe57EFbTYYk8XrROzWpr9QBvpjITvAXt9xqcE6+8cjR/g1+mfumPToxsl1www==
+eslint-plugin-react@^7.32.2:
+  version "7.32.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.32.2.tgz#e71f21c7c265ebce01bcbc9d0955170c55571f10"
+  integrity sha512-t2fBMa+XzonrrNkyVirzKlvn5RXzzPwRHtMvLAtVZrt8oxgnTQaYbU6SXTOO1mwQgp1y5+toMSKInnzGr0Knqg==
   dependencies:
     array-includes "^3.1.6"
     array.prototype.flatmap "^1.3.1"
@@ -10648,10 +10648,10 @@ linkstate@^2.0.1:
   dependencies:
     esm "^3.2.25"
 
-lint-staged@^13.1.0:
-  version "13.1.0"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.1.0.tgz#d4c61aec939e789e489fa51987ec5207b50fd37e"
-  integrity sha512-pn/sR8IrcF/T0vpWLilih8jmVouMlxqXxKuAojmbiGX5n/gDnz+abdPptlj0vYnbfE0SQNl3CY/HwtM0+yfOVQ==
+lint-staged@^13.1.2:
+  version "13.1.2"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-13.1.2.tgz#443636a0cfd834d5518d57d228130dc04c83d6fb"
+  integrity sha512-K9b4FPbWkpnupvK3WXZLbgu9pchUJ6N7TtVZjbaPsoizkqFUDkUReUL25xdrCljJs7uLUF3tZ7nVPeo/6lp+6w==
   dependencies:
     cli-truncate "^3.1.0"
     colorette "^2.0.19"
@@ -13260,10 +13260,10 @@ postscribe@^2.0.8:
   dependencies:
     prescribe ">=1.1.2"
 
-preact@^10.11.2:
-  version "10.11.3"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.11.3.tgz#8a7e4ba19d3992c488b0785afcc0f8aa13c78d19"
-  integrity sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==
+preact@^10.12.1:
+  version "10.12.1"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.12.1.tgz#8f9cb5442f560e532729b7d23d42fd1161354a21"
+  integrity sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==
 
 prelude-ls@^1.2.1:
   version "1.2.1"
@@ -13290,10 +13290,10 @@ prescribe@>=1.1.2:
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.0.tgz#b6a5bf1284026ae640f17f7ff5658a7567fc0d18"
   integrity sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w==
 
-prettier@^2.8.3:
-  version "2.8.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.3.tgz#ab697b1d3dd46fb4626fbe2f543afe0cc98d8632"
-  integrity sha512-tJ/oJ4amDihPoufT5sM0Z1SKEuKay8LfVAMlbbhnnkvt6BUserZylqo2PN+p9KeljLr0OHa2rXHU1T8reeoTrw==
+prettier@^2.8.4:
+  version "2.8.4"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
+  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
 
 pretty-bytes@^5.6.0:
   version "5.6.0"
