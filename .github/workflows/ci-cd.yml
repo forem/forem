@@ -215,7 +215,9 @@ jobs:
         if: failure()
         with:
           name: cypress-snapshots
-          path: tmp/cypress_screenshots
+          path: |
+            tmp/cypress_screenshots
+            cypress/logs
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master

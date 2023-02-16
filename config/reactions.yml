@@ -7,7 +7,7 @@ unicorn:
   position: 2
   name: Unicorn
   icon: multi-unicorn
-exploding-head:
+exploding_head:
   position: 3
   icon: exploding-head
 raised_hands:

@@ -12,7 +12,7 @@
       <%= text_field_tag :limit, 5, size: 2, class: "crayons-textfield w-25" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
-      <%= check_box_tag :force, {}, false, { class: "crayons-checkbox" } %>
+      <%= check_box_tag :force, 1, false, { class: "crayons-checkbox" } %>
       <%= label_tag :force, class: "crayons-field__label" do %>
         Force
         <p class="crayons-field__description">When checked, the existing episodes' urls will be re-checked and episodes reachable and https fields will be updated accordingly if needed.</p>
