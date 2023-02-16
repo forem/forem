@@ -148,7 +148,7 @@
             <% end %>
           <% end %>
           <% if story.comments_count > 0 %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <%= t("views.comments.summary.count_html",
                     count: story.comments_count,
@@ -156,7 +156,7 @@
                     end: "</span>".html_safe) %>
             </a>
           <% else %>
-            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
               <%= crayons_icon_tag("small-comment", title: t("views.comments.summary.title")) %>
               <span class="hidden s:inline"><%= t("views.comments.add") %></span>
             </a>

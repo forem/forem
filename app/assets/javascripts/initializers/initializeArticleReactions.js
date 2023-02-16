@@ -198,6 +198,11 @@ function openDrawerOnHover() {
   });
 
   if (isTouchDevice()) {
+    drawerTrigger.addEventListener('click', function () {
+      var articleId = document.getElementById('article-body').dataset.articleId;
+
+      reactToArticle(articleId, 'like');
+    });
     watchForLongTouch(drawerTrigger);
     drawerTrigger.addEventListener('longTouch', function () {
       drawerTrigger.parentElement.classList.add('open');

@@ -3,7 +3,7 @@
 // for the element, as otherwise device will default to opening a context menu instead.
 function watchForLongTouch(element) {
   const longTouchEvent = new Event('longTouch');
-  const minDuration = 800;
+  const minDuration = 500;
   let timer;
 
   // In the event of a long touch, dispatch the "longTouch" event
