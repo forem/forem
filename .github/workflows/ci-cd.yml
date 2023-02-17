@@ -43,6 +43,9 @@ jobs:
 
   assets_precompile:
     runs-on: ubuntu-latest
+    needs:
+      - bundle_install
+      - yarn_install
     timeout-minutes: 15
     env:
       RAILS_ENV: test
@@ -65,10 +68,6 @@ jobs:
           - 5432:5432
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
       - uses: actions/cache@v3
         with:
           path: node_modules
@@ -80,6 +79,14 @@ jobs:
         with:
           path: public/assets
           key: ${{ runner.os }}-assets_precompile
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
       - run: yarn install --frozen-lockfile
       - run: bundle exec rails assets:precompile
       - run: yarn run postcss
