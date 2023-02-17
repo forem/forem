@@ -189,6 +189,7 @@ RSpec.describe "Reactions" do
 
     context "when reacting to an article" do
       before do
+        allow(EdgeCache::BustArticle).to receive(:call)
         sign_in user
       end
 
@@ -209,6 +210,17 @@ RSpec.describe "Reactions" do
       it "has success http status" do
         post "/reactions", params: article_params
         expect(response).to be_successful
+      end
+
+      it "busts edge cache if creating first reaction" do
+        post "/reactions", params: article_params
+        expect(EdgeCache::BustArticle).to have_received(:call)
+      end
+
+      it "does not edge cache if more than 1 reaction already exists" do
+        article.update_column(:public_reactions_count, 2)
+        post "/reactions", params: article_params
+        expect(EdgeCache::BustArticle).not_to have_received(:call)
       end
     end
 
