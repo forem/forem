@@ -9,9 +9,48 @@ on:
       - main
 
 jobs:
+  bundle_install:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
+      RAILS_ENV: test
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+  yarn_install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'yarn'
+      - uses: actions/cache@v3
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+            ${{ runner.os }}-node-modules-
+      - name: Yarn Install
+        run: yarn install --frozen-lockfile
+
+
+
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    needs:
+      - bundle_install
+      - yarn_install
+    timeout-minutes: 10
     env:
       COVERAGE: true
       RAILS_ENV: test
@@ -21,6 +60,8 @@ jobs:
       KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
       DATABASE_NAME_TEST: Forem_test
+      BUNDLE_JOBS: 3
+      BUNDLE_RETRY: 3
 
     services:
       postgres:
