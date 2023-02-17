@@ -1,15 +1,22 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by timeframe", type: :system do
+RSpec.describe "User visits articles by timeframe" do
   let(:author) { create(:user) }
-  let!(:article) { create(:article, user: author, published_at: Time.current) }
-  let!(:days_old_article) { create(:article, :past, past_published_at: 2.days.ago, user: author) }
-  let!(:weeks_old_article) { create(:article, :past, past_published_at: 2.weeks.ago, user: author) }
-  let!(:months_old_article) { create(:article, :past, past_published_at: 2.months.ago, user: author) }
-  let!(:years_old_article) { create(:article, :past, past_published_at: 2.years.ago, user: author) }
+  let(:minimum_score) { Settings::UserExperience.home_feed_minimum_score + 1 }
+  let!(:article) { create(:article, score: minimum_score, user: author, published_at: Time.current) }
+  let!(:days_old_article) { create(:article, :past, past_published_at: 2.days.ago, score: minimum_score, user: author) }
+  let!(:weeks_old_article) do
+    create(:article, :past, past_published_at: 2.weeks.ago, score: minimum_score, user: author)
+  end
+  let!(:months_old_article) do
+    create(:article, :past, past_published_at: 2.months.ago, score: minimum_score, user: author)
+  end
+  let!(:years_old_article) do
+    create(:article, :past, past_published_at: 2.years.ago, score: minimum_score, user: author)
+  end
 
   def shows_correct_articles_count(count)
-    expect(page).to have_selector(".crayons-story", visible: :visible, count: count)
+    expect(page).to have_selector(".crayons-story__title", visible: :visible, count: count)
   end
 
   def shows_correct_articles_count_via_xpath(count)
