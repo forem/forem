@@ -432,3 +432,11 @@ Cypress.Commands.add('inviteUser', ({ name, email }) => {
     `utf8=%E2%9C%93&user%5Bemail%5D=${email}&user%5Bname%5D=${name}&commit=Invite+User`,
   );
 });
+
+Cypress.Commands.add('assertValueCopiedToClipboard', (value) => {
+  cy.window().then((win) => {
+    win.navigator.clipboard.readText().then((text) => {
+      expect(text).to.contain(value);
+    });
+  });
+});

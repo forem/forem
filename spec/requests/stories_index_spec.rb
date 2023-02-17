@@ -289,12 +289,30 @@ RSpec.describe "StoriesIndex" do
 
   describe "GET stories index with timeframe" do
     describe "/latest" do
+      let(:user) { create(:user) }
+      let!(:low_score) { create(:article, score: -10) }
+
+      before do
+        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
+      end
+
       it "includes a link to Relevant", :aggregate_failures do
         get "/latest"
 
         # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
+      end
+
+      it "includes message and a link to sign in for signed-out" do
+        get "/latest"
+        expect(response.body).to include("Some latest posts are only visible for members")
+        expect(response.body).to match(/Sign in.*to see all latest/)
+      end
+
+      it "excludes low-score content for signed-out" do
+        get "/latest"
+        expect(response.body).not_to include(low_score.title)
       end
     end
 
