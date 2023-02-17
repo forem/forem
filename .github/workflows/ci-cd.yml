@@ -32,9 +32,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-            ${{ runner.os }}-node-modules-
+          restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -75,9 +73,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-            ${{ runner.os }}-node-modules-
+          restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           node-version: 16
@@ -111,9 +107,7 @@ jobs:
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-            ${{ runner.os }}-node-modules-
+          restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           node-version: 16
