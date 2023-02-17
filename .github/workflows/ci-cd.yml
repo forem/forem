@@ -62,7 +62,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: public/assets
-        key: ${{ runner.os }}-assets_precompile
+          key: ${{ runner.os }}-assets_precompile
       - run: bundle exec rails db:test:prepare assets:precompile
 
   RSpec:
