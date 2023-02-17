@@ -82,7 +82,9 @@ jobs:
       - name: Cache public/assets
         uses: actions/cache@v3
         with:
-          path: public/assets
+          path: |
+            public/assets
+            public/packs-test
           key: ${{ runner.os }}-assets_precompile
       - uses: ruby/setup-ruby@v1
         with:
