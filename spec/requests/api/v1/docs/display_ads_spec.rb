@@ -59,7 +59,7 @@ RSpec.describe "api/v1/display_ads" do
                           description: "Potentially limits visitors to whom the ad is visible" },
             type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
                        description: <<~DESCRIBE
-                         Types of the billboads:
+                         Types of the billboards:
                          in_house (created by admins),
                          community (created by an entity, appears on entity's content),
                          external ( created by an entity, or a non-entity, can appear everywhere)
