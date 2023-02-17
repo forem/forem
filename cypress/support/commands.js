@@ -110,15 +110,14 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
   cy.session(
     [email, password],
     () => {
-      cy.visit('/users/sign_in');
+      cy.visit('/new');
       cy.get('input[name="user[email]"]').type(email);
       cy.get('input[name="user[password]"]').type(`${password}{enter}`);
-      cy.url().should('include', '/?signin=true');
+      cy.url().should('include', '/new?signin=true');
     },
     {
       validate() {
-        cy.visit('/settings');
-        cy.url().should('contains', 'settings');
+        cy.request('/api/users/me').its('status').should('eq', 200);
       },
     },
   );
