@@ -130,3 +130,70 @@ jobs:
         with:
           flags: javascript
       - run: yarn build-storybook
+
+  RSpec:
+    runs-on: ubuntu-latest
+    needs:
+      - bundle_install
+      - yarn_install
+    timeout-minutes: 15
+    env:
+      COVERAGE: true
+      RAILS_ENV: test
+      KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+      KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+      KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+      DATABASE_NAME_TEST: Forem_test
+
+    services:
+      postgres:
+        image: postgres:13-alpine
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ci_node_total: [9]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+      - run: yarn install --immutable-cache
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec rails db:test:prepare
+      - name: RSpec
+        run: bin/knapsack_pro_rspec
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: ruby
+      - name: Upload test results to BuildPulse for flaky test detection
+        if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
+        uses: Workshop64/buildpulse-action@master
+        with:
+          account: ${{ secrets.BUILDPULSE_ACCOUNT }}
+          repository: ${{ secrets.BUILDPULSE_REPOSITORY }}
+          path: tmp/rspec_final_results.xml
+          key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
+          secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
