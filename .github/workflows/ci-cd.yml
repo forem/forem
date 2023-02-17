@@ -115,7 +115,9 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    needs:
+      - yarn_install
+    timeout-minutes: 10
     env:
       RAILS_ENV: test
       NODE_ENV: test
