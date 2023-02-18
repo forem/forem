@@ -10,7 +10,12 @@ class DetailsTag < Liquid::Block
 
   def render(_context)
     content = Nokogiri::HTML.parse(super)
-    parsed_content = sanitize(content.xpath("//html/body").inner_html)
+    parsed_content = sanitize(
+      content.xpath("//html/body").inner_html,
+      tags: MarkdownProcessor::AllowedTags::RENDERED_MARKDOWN_SCRUBBER,
+      attributes: MarkdownProcessor::AllowedAttributes::RENDERED_MARKDOWN_SCRUBBER |
+        MarkdownProcessor::AllowedAttributes::DISPLAY_AD,
+    )
 
     ApplicationController.render(
       partial: PARTIAL,
