@@ -8,6 +8,12 @@ on:
     branches:
       - main
 
+env:
+    RAILS_ENV: test
+    NODE_ENV: test
+    DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
+    DATABASE_NAME: Forem_prod_test
+
 jobs:
   bundle_install:
     runs-on: ubuntu-latest
@@ -105,7 +111,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -114,7 +120,6 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --immutable-cache
       - run: yarn lint:frontend
       - run: yarn test --colors --ci --reporters=jest-junit
       - name: Upload test results to BuildPulse for flaky test detection
@@ -177,7 +182,6 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --immutable-cache
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
