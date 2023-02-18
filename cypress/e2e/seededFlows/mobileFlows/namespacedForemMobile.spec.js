@@ -82,28 +82,20 @@ describe('Namespaced ForemMobile functions', () => {
     });
 
     describe('when logged out', () => {
-      it('should return empty user data when logged out', () => {
+      it('should return empty user data and can inject messages with CustomEvent', () => {
         cy.testSetup();
         cy.visitAndWaitForUserSideEffects('/', runtimeStub, false);
-        waitForBaseDataLoaded();
 
         // ensures the dynamic import had time to complete before
         // referencing the attribute
+        cy.document().then((doc) => {
+          doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
+        });
         cy.window().should('have.attr', 'ForemMobile');
         cy.window().then((win) => {
           assert.isUndefined(win.ForemMobile.getUserData());
+          win.ForemMobile.injectJSMessage({ action: 'test' });
         });
-      });
-
-      it('should inject messages using CustomEvent', () => {
-        cy.document()
-          .then((doc) => {
-            doc.addEventListener('ForemMobile', cy.stub().as('bridgeEvent'));
-          })
-          .then(() => cy.window())
-          .then((win) => {
-            win.ForemMobile.injectJSMessage({ action: 'test' });
-          });
 
         // on load the app should have sent an event
         cy.get('@bridgeEvent')

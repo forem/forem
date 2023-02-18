@@ -105,6 +105,7 @@ fr:
       missing: Article No Longer Available
       published_html: Posted on %{date}
       scheduled_html: Scheduled for %{date}
+      sign_in_for_full_latest_html: Some latest posts are only visible for members. <a href="%{link}">Sign in</a> to see all latest.
       read_next: Lire ensuite
       reading_time:
         one: "1 min read"

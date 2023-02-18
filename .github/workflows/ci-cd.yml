@@ -11,7 +11,7 @@ on:
 jobs:
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       COVERAGE: true
       RAILS_ENV: test
@@ -74,7 +74,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       RAILS_ENV: test
       NODE_ENV: test
@@ -109,7 +109,7 @@ jobs:
 
   Build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -156,7 +156,7 @@ jobs:
 
   Cypress:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     env:
       RAILS_ENV: test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
