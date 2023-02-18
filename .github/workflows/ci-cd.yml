@@ -37,7 +37,7 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --frozen-lock
+      - run: yarn install --immutable
 
   assets_precompile:
     runs-on: ubuntu-latest
