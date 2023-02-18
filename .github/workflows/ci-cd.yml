@@ -33,12 +33,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node_modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
           node-version: 16
