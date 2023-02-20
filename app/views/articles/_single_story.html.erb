@@ -123,7 +123,7 @@
             <% if FeatureFlag.enabled?(:multiple_reactions) %>
               <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
                 <div class="multiple_reactions_aggregate">
-                  <span class="icons" dir="rtl">
+                  <span class="multiple_reactions_icons_container" dir="rtl">
                     <% ReactionCategory.for_view.reverse_each do |reaction_type| %>
                       <% next unless story.reaction_categories.include?(reaction_type.slug.to_s) %>
                       <span class="crayons_icon_container">
