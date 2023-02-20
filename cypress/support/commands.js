@@ -70,32 +70,7 @@ Cypress.Commands.add(
   },
 );
 
-/**
- * Runs necessary test setup to run a clean test.
- */
 Cypress.Commands.add('testSetup', () => {
-  const MAX_RETRIES = 3;
-
-  function retryClearCookies(retryCount) {
-    if (retryCount > MAX_RETRIES) {
-      cy.log('Could not clear cookies');
-    }
-
-    cy.getCookies().then((cookie) => {
-      if (cookie.length === 0) {
-        return;
-      }
-
-      // Instead of always waiting, only wait if the cookies aren't
-      // cleared yet and attempt to clear again.
-      cy.log(`Cookies not cleared yet, retrying... (attempt ${retryCount})`);
-      cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
-      cy.clearCookies();
-      retryClearCookies(retryCount + 1);
-    });
-  }
-
-  retryClearCookies(1);
   cy.request('/cypress_rails_reset_state');
 });
 
@@ -105,44 +80,23 @@ Cypress.Commands.add('testSetup', () => {
  * @param credentials
  * @param credentials.email {string} An email address
  * @param credentials.password {string} A password
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
  */
 Cypress.Commands.add('loginUser', ({ email, password }) => {
-  const encodedEmail = encodeURIComponent(email);
-  const encodedPassword = encodeURIComponent(password);
-
-  function getLoginRequest() {
-    return cy.request(
-      'POST',
-      '/users/sign_in',
-      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-    );
-  }
-
-  return getLoginRequest()
-    .then((response) => {
-      if (response.status === 200) {
-        return response;
-      }
-
-      cy.log(
-        'Login failed. Attempting one more login after 0.2s delay to avoid retrying too quickly.',
-      );
-
-      // If we have a login failure, try one more time.
-      // This is to combat some flaky tests where the login fails occasionally.
-      return new Promise((resolve) => setTimeout(resolve(response), 200));
-    })
-    .then((response) => {
-      if (response.status === 200) {
-        // First login request was successful
-        return response;
-      } else {
-        // Retry login request
-        return getLoginRequest();
-      }
-    });
+  cy.session(
+    [email, password],
+    () => {
+      cy.visit('/new');
+      cy.get('input[name="user[email]"]').type(email);
+      cy.get('input[name="user[password]"]').type(`${password}{enter}`);
+      cy.url().should('include', '/new?signin=true');
+    },
+    {
+      validate() {
+        cy.request('/api/users/me').its('status').should('eq', 200);
+      },
+      cacheAcrossSpecs: true,
+    },
+  );
 });
 
 /**
