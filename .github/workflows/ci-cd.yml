@@ -50,6 +50,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
+          node-version: 16
           cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
@@ -89,6 +90,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
+          node-version: 16
           cache: yarn
       - run: yarn install --frozen-lockfile
       - run: yarn lint:frontend
@@ -144,6 +146,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
+          node-version: 16
           cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
@@ -191,6 +194,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
+          node-version: 16
           cache: yarn
       - run: yarn install --frozen-lockfile
       - name: setup ruby
