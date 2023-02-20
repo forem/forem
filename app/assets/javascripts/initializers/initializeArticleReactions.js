@@ -200,8 +200,9 @@ function openDrawerOnHover() {
   if (isTouchDevice()) {
     drawerTrigger.addEventListener('click', function () {
       var articleId = document.getElementById('article-body').dataset.articleId;
-
       reactToArticle(articleId, 'like');
+      
+      drawerTrigger.parentElement.classList.add('open');
     });
     watchForLongTouch(drawerTrigger);
     drawerTrigger.addEventListener('longTouch', function () {
