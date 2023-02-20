@@ -9,18 +9,8 @@
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
       <% if @left_sidebar_ad %>
         <div class="crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
-          <div class="crayons-sponsorship__header relative">
-            <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
-            <button id="sponsorship-dropdown-trigger-<%= @left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
-                class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon p-0"
-                aria-label="Sponsorship dropdown">
-                <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none p-1", width: 24, height: 24) %>
-            </button>
-            <div id="sponsorship-dropdown-<%= @left_sidebar_ad.id %>" class="crayons-dropdown right-0">
-              <%= render "shared/display_ad_dropdown_content" %>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
+          <%= render partial: "shared/display_ad_header_content", locals: {display_ad: @left_sidebar_ad } %>
+          <div class="p-4 pt-0 text-styles">
             <%= @left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>
@@ -30,18 +20,8 @@
       <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
         <div class="mt-4 crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
-          <div class="crayons-sponsorship__header relative">
-            <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
-            <button id="sponsorship-dropdown-trigger-<%= @second_left_sidebar_ad.id %>" aria-controls="sponsorship-dropdown-<%= @second_left_sidebar_ad.id %>" aria-expanded="false" aria-haspopup="true" 
-                class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon p-0"
-                aria-label="Sponsorship dropdown">
-                <%= crayons_icon_tag("overflow-vertical", class: "pointer-events-none p-1", width: 24, height: 24) %>
-            </button>
-            <div id="sponsorship-dropdown-<%= @second_left_sidebar_ad.id %>" class="crayons-dropdown right-0">
-              <%= render "shared/display_ad_dropdown_content" %>
-            </div>
-          </div>
-          <div class="p-4 pt-0">
+          <%= render partial: "shared/display_ad_header_content", locals: {display_ad: @second_left_sidebar_ad } %>
+          <div class="p-4 pt-0 text-styles">
             <%= @second_left_sidebar_ad.processed_html.html_safe %>
           </div>
         </div>

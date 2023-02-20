@@ -319,7 +319,7 @@
   &__header {
     display: flex;
     align-items: flex-end;
-    padding: var(--su-4);
+    padding: var(--su-4) var(--su-4) var(--su-3) var(--su-4);
   }
 
   &__title {
