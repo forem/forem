@@ -14,7 +14,7 @@ describe('Logged out Home feed', () => {
     cy.findAllByTestId('profile-preview-card')
       .first()
       .within(() => {
-        cy.focused().then(($el) => { console.log($el); })
+        cy.focused().then(($el) => { cy.task('log', $el); })
 
         cy.findByRole('link', {
           name: 'Admin McAdmin',
