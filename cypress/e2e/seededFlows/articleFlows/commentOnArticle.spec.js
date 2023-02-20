@@ -623,11 +623,7 @@ describe('Comment on articles', () => {
     cy.findByRole('main').within(() => {
       cy.findByRole('heading', { name: 'Top comments (0)' });
 
-      cy.findByRole('textbox', {
-        name: /^Add a comment to the discussion$/i,
-      })
-        .as('textArea')
-        .focus();
+      cy.get('#text-area').as('textArea').focus();
       cy.findByRole('toolbar').as('toolbar');
 
       cy.get('@toolbar').findByRole('button', { name: 'Bold' }).click();

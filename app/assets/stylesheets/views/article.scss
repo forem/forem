@@ -141,7 +141,6 @@
   --reaction-bg: transparent;
 
   border: none;
-  padding: 0;
   background: transparent;
   display: inline-flex;
   flex-direction: row;
@@ -210,10 +209,6 @@
     }
     .crayons-reaction__icon--active {
       display: block;
-    }
-
-    .crayons-reaction__count {
-      color: var(--reaction-color);
     }
   }
 
@@ -389,6 +384,14 @@
   flex-direction: row;
   align-items: center;
 
+  // Disables text selection to help "long tap" work on mobile
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
   }
@@ -411,14 +414,13 @@
   display: none; // Initially hidden
 
   // Copying from Dropdown for now
-  padding: var(--su-2);
+  padding: var(--su-3);
   min-width: 250px;
   margin-top: var(--su-1);
   z-index: var(--z-dropdown);
   background: var(--card-bg);
   color: var(--card-color);
   box-shadow: var(--shadow-1);
-  border-radius: var(--radius);
 
   flex-direction: column;
 
@@ -450,32 +452,40 @@
 
 .multiple_reactions_engagement {
   padding: 0.5em 0;
+  height: 43px;
+  cursor: default;
 
   span {
     margin-right: 1em;
+    vertical-align: middle;
   }
   svg {
     display: inline-block;
+  }
+  img {
+    vertical-align: middle;
   }
 }
 
 .multiple_reactions_aggregate {
-  padding-right: 1em;
+  display: flex;
+  align-items: center;
 
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
+    border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.75em;
-    width: 24px;
-    height: 24px;
+    margin-right: -0.9em;
+    width: 28px;
+    height: 28px;
   }
 
-  svg {
-    margin: 3px 3px;
+  img {
+    vertical-align: middle;
   }
 
   .aggregate_reactions_counter {
-    margin-left: 0.75em;
+    margin-left: 1em;
   }
 }
