@@ -1,7 +1,7 @@
 <div class="multiple_reactions_engagement">
   <% ReactionCategory.for_view.each do |reaction_type| %>
     <span class="reaction_engagement_<%= reaction_type.slug %> hidden">
-      <%= image_tag reaction_type.icon, size: "24x24" %>
+      <%= image_tag "#{reaction_type.icon}.svg", size: "24x24" %>
       <span id="reaction_engagement_<%= reaction_type.slug %>_count">&nbsp;</span>
     </span>
   <% end %>
