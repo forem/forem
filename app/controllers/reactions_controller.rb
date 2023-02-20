@@ -101,12 +101,5 @@ class ReactionsController < ApplicationController
     return unless params[:reactable_type] == "Article"
 
     Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
-    article = Article.find_by(id: params[:reactable_id])
-    return unless article&.public_reactions_count.presence <= 1 && Reaction.public_reaction_types.include?(params[:category])
-
-    # Bust edge if article count is 1 or zero to alter state of cache.
-    # If 1 or 0, we account for both creation and deletion of the first reaction
-    # Without knowing that at this stage yet.
-    EdgeCache::BustArticle.call(article)
   end
 end
