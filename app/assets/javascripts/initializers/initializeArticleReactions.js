@@ -41,7 +41,7 @@ function setSumReactionCount(counts) {
 }
 function showCommentCount() {
   let commentCountObj = document.getElementById('reaction-number-comment');
-  if (commentCountObj.dataset.count) {
+  if (commentCountObj && commentCountObj.dataset.count) {
     commentCountObj.textContent = commentCountObj.dataset.count;
   }
 }
