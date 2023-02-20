@@ -18,7 +18,7 @@ module Reactions
 
         # We only want to bust on the creation or deletion of the "first" reaction.
         # This is logically called *after* creation, but *before* deletion. So "1" is correct in each case.
-        if article && article.reactions.public_category.size == 1
+        if Reaction.for_articles([reaction.reactable_id]).public_category.size == 1
           EdgeCache::BustArticle.call(article)
         end
       when "Comment"
