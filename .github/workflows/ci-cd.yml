@@ -240,9 +240,10 @@ jobs:
 
     steps:
       - name: Decide whether the needed jobs succeeded or failed
-        uses: re-actors/alls-green@release/v1
-        with:
-          jobs: ${{ toJSON(needs) }}
+        if: (needs.rspec.result != 'sucess' || needs.jest.result != 'sucess' || needs.cypress.result != 'cypress' || needs.build-test.result != 'sucess')
+        run: exit 1
+      - name: report-success
+        run: exit 0
 
       - name: Report failure to Slack channel
         uses: slackapi/slack-github-action@v1
