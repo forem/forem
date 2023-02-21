@@ -27,6 +27,25 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
+function setSumReactionCount(counts) {
+  let totalCountObj = document.getElementById('reaction_total_count');
+  if (totalCountObj && counts.length > 2) {
+    let sum = 0;
+    for (let i in counts) {
+      if (counts[i]['category'] != 'readinglist') {
+        sum += counts[i]['count'];
+      }
+    }
+    totalCountObj.textContent = sum;
+  }
+}
+function showCommentCount() {
+  let commentCountObj = document.getElementById('reaction-number-comment');
+  if (commentCountObj && commentCountObj.dataset.count) {
+    commentCountObj.textContent = commentCountObj.dataset.count;
+  }
+}
+
 function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
@@ -172,6 +191,8 @@ function requestReactionCounts(articleId) {
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(ajaxReq.response);
+      setSumReactionCount(json.article_reaction_counts)
+      showCommentCount();
       json.article_reaction_counts.forEach((reaction) => {
         setReactionCount(reaction.category, reaction.count);
       });
