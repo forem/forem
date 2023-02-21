@@ -251,9 +251,10 @@ function openDrawerOnHover() {
 
 function closeDrawerOnOutsideClick() {
   document.addEventListener('click', function (event) {
-    const reactionElement = document.querySelector('.reaction-drawer');
-    if (reactionElement) {
-      const isClickInside = reactionElement.contains(event.target);
+    const reactionDrawerElement = document.querySelector('.reaction-drawer');
+    const reactionDrawerTriggerElement = document.querySelector('#reaction-drawer-trigger');
+    if (reactionDrawerElement) {
+      const isClickInside = reactionDrawerElement.contains(event.target) || reactionDrawerTriggerElement.contains(event.target);
 
       if (!isClickInside) {
         document.querySelector('.hoverdown.open').classList.remove('open');
