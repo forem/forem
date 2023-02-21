@@ -35,6 +35,3 @@ en:
         aria_label: Add to reading list
         icon: Save button
         text: Save
-      readinglist:
-        title: Save
-        aria_label: Add to reading list
