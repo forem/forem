@@ -1,5 +1,7 @@
 <% accent_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).biggest %>
-<% dark_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8) %>
+<% dark_color = Color::CompareHex.new([user_colors(@article.user)[:bg], user_colors(@article.user)[:text]]).brightness(0.8). %>
+<% then {|color| "##{Color::Accessibility.new(color).reduce_brightness}" } %>
+
 <style>
   body {
     background: <%= accent_color %>;
