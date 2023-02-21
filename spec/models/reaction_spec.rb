@@ -253,6 +253,19 @@ RSpec.describe Reaction do
       reaction.destroy
       expect(reaction).to have_received(:bust_reactable_cache_without_delay)
     end
+
+    it "busts article if it is the last public reaction" do
+      allow(EdgeCache::BustArticle).to receive(:call)
+      reaction.destroy
+      expect(EdgeCache::BustArticle).to have_received(:call)
+    end
+
+    it "does not bust article if it is not the last public reaction" do
+      create(:reaction, reactable: article, user: create(:user))
+      allow(EdgeCache::BustArticle).to receive(:call)
+      reaction.destroy
+      expect(EdgeCache::BustArticle).not_to have_received(:call)
+    end
   end
 
   describe ".related_negative_reactions_for_user" do
