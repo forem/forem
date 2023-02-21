@@ -14,6 +14,8 @@ fr:
         lightbulb: Lightbulb
         raised_hands: Raised hands
         rocket: Rocket
+        exploding_head: Exploding head
+        fire: Fire
       drawer_button: Add reaction
       summary:
         count_html:
@@ -29,11 +31,6 @@ fr:
         title: Licorne
         aria_label: React with unicorn
       readingList:
-        title: Sauver
-        aria_label: Add to reading list
-        icon: Save button
-        text: Save
-      readinglist:
         title: Sauver
         aria_label: Add to reading list
         icon: Save button

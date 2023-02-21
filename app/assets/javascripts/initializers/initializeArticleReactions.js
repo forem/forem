@@ -27,6 +27,25 @@ function setReactionCount(reactionName, newCount) {
   }
 }
 
+function setSumReactionCount(counts) {
+  let totalCountObj = document.getElementById('reaction_total_count');
+  if (totalCountObj && counts.length > 2) {
+    let sum = 0;
+    for (let i in counts) {
+      if (counts[i]['category'] != 'readinglist') {
+        sum += counts[i]['count'];
+      }
+    }
+    totalCountObj.textContent = sum;
+  }
+}
+function showCommentCount() {
+  let commentCountObj = document.getElementById('reaction-number-comment');
+  if (commentCountObj && commentCountObj.dataset.count) {
+    commentCountObj.textContent = commentCountObj.dataset.count;
+  }
+}
+
 function showUserReaction(reactionName, animatedClass) {
   const reactionButton = document.getElementById(
     'reaction-butt-' + reactionName,
@@ -45,28 +64,6 @@ function showUserReaction(reactionName, animatedClass) {
 
   if (reactionDrawerButton && reactionName !== 'readinglist') {
     reactionDrawerButton.classList.add('user-activated', 'user-animated');
-  }
-
-  if (animatedClass == 'user-animated') {
-    const activeIcon = reactionButton.querySelector(
-      '.crayons-reaction__icon--active svg',
-    );
-
-    if (activeIcon) {
-      const activeDrawerIcon = reactionDrawerButton.querySelector(
-        '.crayons-reaction__icon--active img',
-      );
-
-      reactionDrawerButton.originalIcon = activeDrawerIcon.outerHTML;
-      activeDrawerIcon.outerHTML = activeIcon.outerHTML;
-
-      setTimeout(function () {
-        document
-          .getElementById('reaction-drawer-trigger')
-          .querySelector('.crayons-reaction__icon--active svg').outerHTML =
-          reactionDrawerButton.originalIcon;
-      }, 1500);
-    }
   }
 }
 
@@ -194,6 +191,8 @@ function requestReactionCounts(articleId) {
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(ajaxReq.response);
+      setSumReactionCount(json.article_reaction_counts)
+      showCommentCount();
       json.article_reaction_counts.forEach((reaction) => {
         setReactionCount(reaction.category, reaction.count);
       });
@@ -220,6 +219,11 @@ function openDrawerOnHover() {
   });
 
   if (isTouchDevice()) {
+    drawerTrigger.addEventListener('click', function () {
+      var articleId = document.getElementById('article-body').dataset.articleId;
+
+      reactToArticle(articleId, 'like');
+    });
     watchForLongTouch(drawerTrigger);
     drawerTrigger.addEventListener('longTouch', function () {
       drawerTrigger.parentElement.classList.add('open');
@@ -238,16 +242,30 @@ function openDrawerOnHover() {
       el.addEventListener('mouseout', function (event) {
         timer = setTimeout(function (event) {
           document.querySelector('.hoverdown.open').classList.remove('open');
-        }, 1000);
+        }, 500);
       });
     });
   }
+}
+
+function closeDrawerOnOutsideClick() {
+  document.addEventListener('click', function (event) {
+    const reactionElement = document.querySelector('.reaction-drawer');
+    if (reactionElement) {
+      const isClickInside = reactionElement.contains(event.target);
+
+      if (!isClickInside) {
+        document.querySelector('.hoverdown.open').classList.remove('open');
+      }
+    }
+  });
 }
 
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
   openDrawerOnHover();
+  closeDrawerOnOutsideClick();
 
   setTimeout(() => {
     var reactionButts = document.getElementsByClassName('crayons-reaction');

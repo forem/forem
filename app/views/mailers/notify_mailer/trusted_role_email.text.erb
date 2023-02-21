@@ -10,6 +10,13 @@ Here's an overview of your new abilities:
 - Quickly flag rule-breaking behavior with the 🧐 icon
 - Rate the appropriate "experience level" of a post
 
+<% if Page.find_by(slug: "trusted-member") %>
+  For full details on how to use your new permissions:
+
+  <%= app_url("trusted-member") %>
+<% end %>
+
+
 Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
 
 <%= community_name %> Team
