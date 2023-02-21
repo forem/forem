@@ -2,12 +2,12 @@
   <div class="flex flex-col gap-4">
     <div class="crayons-field">
       <%= label_tag :name, "Name:", class: "crayons-field__label" %>
-      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield" %>
+      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :organization_id, "Organization ID:", class: "crayons-field__label" %>
-      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234" %>
+      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
@@ -26,7 +26,7 @@
 
     <div class="crayons-field hidden">
       <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
-      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield" %>
+      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
@@ -54,7 +54,6 @@
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="type-of-description">
         <legend class="crayons-field crayons-field__label pl-0">Type</legend>
-        <p id="display-to-description" class="crayons-field__description mb-2">For internal use</p>
 
         <label class="crayons-field crayons-field--radio mb-2">
           <%= radio_button_tag :type_of, "in_house", @display_ad.in_house?, class: "crayons-radio" %>
@@ -68,7 +67,7 @@
 
         <label class="crayons-field crayons-field--radio mb-2">
           <%= radio_button_tag :type_of, "external", @display_ad.external?, class: "crayons-radio" %>
-          <div class="crayons-field__label">External advertiser</div>
+          <div class="crayons-field__label">External</div>
         </label>
       </fieldset>
     </div>
