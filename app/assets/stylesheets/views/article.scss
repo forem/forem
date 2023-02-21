@@ -471,17 +471,24 @@
   display: flex;
   align-items: center;
 
+  .multiple_reactions_icons_container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
   .crayons_icon_container {
     display: inline-block;
     background-color: var(--body-bg);
     border: 2px solid var(--card-bg);
     border-radius: 15px;
-    margin-right: -0.9em;
+    margin-right: -0.75em;
     width: 28px;
     height: 28px;
   }
 
   img {
+    margin-top: -3px;
     vertical-align: middle;
   }
 
