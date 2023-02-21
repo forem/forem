@@ -15,6 +15,11 @@
     <li>Rate the appropriate "experience level" of a post</li>
   </ul>
 </p>
+<% if Page.find_by(slug: "trusted-member") %>
+  <p>
+    <mark>For full details on how to use your new permissions, <b><a href="<%= app_url("trusted-member") %>">check out this page</a></b></mark>.
+  </p>
+<% end %>
 <p>
   Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
 </p>

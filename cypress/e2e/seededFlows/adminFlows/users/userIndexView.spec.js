@@ -109,10 +109,7 @@ describe('User index view', () => {
           .should('have.focus');
 
         // Check the correct text is on the clipboard
-        cy.window()
-          .its('navigator.clipboard')
-          .invoke('readText')
-          .should('equal', 'admin@forem.local');
+        cy.assertValueCopiedToClipboard('admin@forem.local');
       });
     });
 
@@ -216,10 +213,7 @@ describe('User index view', () => {
           .should('have.focus');
 
         // Check the correct text is on the clipboard
-        cy.window()
-          .its('navigator.clipboard')
-          .invoke('readText')
-          .should('equal', 'admin@forem.local');
+        cy.assertValueCopiedToClipboard('admin@forem.local');
       });
 
       it('Opens the assign role modal', () => {

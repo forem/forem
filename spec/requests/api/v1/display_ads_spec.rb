@@ -1,7 +1,5 @@
 require "rails_helper"
 
-# rubocop:disable RSpec/InstanceVariable
-
 RSpec.describe "Api::V1::DisplayAds" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
@@ -13,14 +11,12 @@ RSpec.describe "Api::V1::DisplayAds" do
       display_to: "all",
       placement_area: "post_comments",
       body_markdown: "## This ad is a new ad.\n\nYay!",
+      type_of: "community",
       published: true,
       approved: true
     }
   end
-
-  before do
-    @ad1 = create(:display_ad, published: true, approved: true)
-  end
+  let!(:ad1) { create(:display_ad, published: true, approved: true, type_of: "in_house") }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
@@ -35,7 +31,6 @@ RSpec.describe "Api::V1::DisplayAds" do
     describe "GET /api/display_ads" do
       it "returns json response" do
         get api_display_ads_path, headers: auth_header
-
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.size).to eq(1)
@@ -67,14 +62,15 @@ RSpec.describe "Api::V1::DisplayAds" do
 
     describe "GET /api/display_ads/:id" do
       it "returns json response" do
-        get api_display_ad_path(@ad1.id), headers: auth_header
+        get api_display_ad_path(ad1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body).to include(
-          "id" => @ad1.id,
+          "id" => ad1.id,
           "published" => true,
           "approved" => true,
+          "type_of" => "in_house",
           "cached_tag_list" => "",
           "clicks_count" => 0,
         )
@@ -82,14 +78,16 @@ RSpec.describe "Api::V1::DisplayAds" do
     end
 
     describe "PUT /api/display_ads/:id" do
-      it "creates a new display_ad" do
-        put api_display_ad_path(@ad1.id),
-            params: display_ad_params.merge(name: "Updated!").to_json,
+      it "updates an existing display_ad" do
+        put api_display_ad_path(ad1.id),
+            params: display_ad_params.merge(name: "Updated!", type_of: "external").to_json,
             headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
-        expect(@ad1.reload.name).to eq("Updated!")
+        ad1.reload
+        expect(ad1.name).to eq("Updated!")
+        expect(ad1.type_of).to eq("external")
         expect(response.parsed_body.keys).to \
           contain_exactly("approved", "body_markdown", "cached_tag_list",
                           "clicks_count", "created_at", "display_to", "id",
@@ -101,10 +99,10 @@ RSpec.describe "Api::V1::DisplayAds" do
 
     describe "PUT /api/display_ads/:id/unpublish" do
       it "unpublishes the display_ad" do
-        put unpublish_api_display_ad_path(@ad1.id), headers: auth_header
+        put unpublish_api_display_ad_path(ad1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
-        expect(@ad1.reload).not_to be_published
+        expect(ad1.reload).not_to be_published
       end
     end
   end
@@ -118,10 +116,9 @@ RSpec.describe "Api::V1::DisplayAds" do
 
   context "when unauthorized and get to show" do
     it "returns unauthorized" do
-      get api_display_ads_path, params: { id: @ad1.id },
+      get api_display_ads_path, params: { id: ad1.id },
                                 headers: v1_headers.merge({ "api-key" => "invalid api key" })
       expect(response).to have_http_status(:unauthorized)
     end
   end
 end
-# rubocop:enable RSpec/InstanceVariable

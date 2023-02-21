@@ -24,7 +24,7 @@
                   <a
                     class="c-link c-link--block inline-block"
                     href="<%= admin_path %>/<%= group_name %>/<%= item.controller %>"
-                    <% if deduced_controller(request) == item.controller.to_s %>
+                    <% if sidebar_item_active?(item) %>
                       style="--bg: transparent"
                       aria-current="page"
                     <% end %>>
