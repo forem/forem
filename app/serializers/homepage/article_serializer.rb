@@ -28,6 +28,7 @@ module Homepage
       :reading_time,
       :title,
       :user_id,
+      :public_reaction_categories,
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes
