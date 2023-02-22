@@ -12,4 +12,20 @@ module Reactable
   def reaction_categories
     reactions.distinct(:category).pluck(:category)
   end
+
+  def public_reaction_categories
+    @public_reaction_categories ||= ReactionCategory.for_view
+      .select do |reaction_type|
+        reaction_categories.include?(reaction_type.slug.to_s)
+      end
+  end
+
+  def public_reaction_category_count_hash
+    @public_reaction_category_count_hash ||= reactions.public_category
+      .order(:category)
+      .select("category, COUNT(*)")
+      .group("category")
+      .distinct("category")
+      .to_h { |result| [result["category"], result["count"]] }
+  end
 end
