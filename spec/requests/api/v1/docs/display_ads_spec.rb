@@ -57,6 +57,14 @@ RSpec.describe "api/v1/display_ads" do
             organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs" },
             display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                           description: "Potentially limits visitors to whom the ad is visible" },
+            type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
+                       description: <<~DESCRIBE
+                         Types of the billboards:
+                         in_house (created by admins),
+                         community (created by an entity, appears on entity's content),
+                         external ( created by an entity, or a non-entity, can appear everywhere)
+                       DESCRIBE
+                    },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
                               description: "Identifies which area of site layout the ad can appear in" },
             tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" }
