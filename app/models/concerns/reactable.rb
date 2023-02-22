@@ -19,13 +19,4 @@ module Reactable
         reaction_categories.include?(reaction_type.slug.to_s)
       end
   end
-
-  def public_reaction_category_count_hash
-    @public_reaction_category_count_hash ||= reactions.public_category
-      .order(:category)
-      .select("category, COUNT(*)")
-      .group("category")
-      .distinct("category")
-      .to_h { |result| [result["category"], result["count"]] }
-  end
 end
