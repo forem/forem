@@ -8,23 +8,13 @@
     <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
       <% if @left_sidebar_ad %>
-        <div class="crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
-          <%= render partial: "shared/display_ad_header_content", locals: {display_ad: @left_sidebar_ad } %>
-          <div class="p-4 pt-0 text-styles">
-            <%= @left_sidebar_ad.processed_html.html_safe %>
-          </div>
-        </div>
+        <%= render partial: "shared/display_ad", locals: {display_ad: @left_sidebar_ad } %>
       <% end %>
     <% end %>
     <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
-        <div class="mt-4 crayons-card crayons-card--secondary crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
-          <%= render partial: "shared/display_ad_header_content", locals: {display_ad: @second_left_sidebar_ad } %>
-          <div class="p-4 pt-0 text-styles">
-            <%= @second_left_sidebar_ad.processed_html.html_safe %>
-          </div>
-        </div>
+        <%= render partial: "shared/display_ad", locals: {display_ad: @second_left_sidebar_ad } %>
       <% end %>
     <% end %>
   </aside>
