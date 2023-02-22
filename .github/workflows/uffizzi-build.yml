@@ -54,6 +54,7 @@ jobs:
         run: |
           APP_IMAGE=$(echo ${{ needs.build-application.outputs.tags }})
           export APP_IMAGE
+          export UFFIZZI_URL=\$UFFIZZI_URL
           # Render simple template from environment variables.
           envsubst < ./uffizzi/docker-compose.uffizzi.yml > docker-compose.rendered.yml
           cat docker-compose.rendered.yml
