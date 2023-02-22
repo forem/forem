@@ -140,7 +140,7 @@ export class FollowTags extends Component {
                     style={{
                       boxShadow: selected
                         ? `inset 0 0 0 100px ${tag.bg_color_hex}`
-                        : `inset 0 0 0 2px ${tag.bg_color_hex}`,
+                        : `inset 0 0 0 0px ${tag.bg_color_hex}`,
                       color: selected ? tag.text_color_hex : '',
                     }}
                     key={tag.id}

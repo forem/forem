@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "GithubRepos", type: :request do
+RSpec.describe "GithubRepos" do
   let(:fake_github_client) do
     Class.new(Github::OauthClient) do
       def repositories(*_args); end

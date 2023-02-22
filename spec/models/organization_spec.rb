@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Organization, type: :model do
+RSpec.describe Organization do
   let(:organization) { create(:organization) }
 
   describe "validations" do
@@ -27,7 +27,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:name).is_at_most(50) }
       it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
-      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
       it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
@@ -273,6 +273,8 @@ RSpec.describe Organization, type: :model do
           organization.save!
         end.to change { organization.reload.profile_image_url }
 
+        sidekiq_perform_enqueued_jobs
+
         # I want to collect reloaded versions of the organization's articles so I can see their
         # cached organization profile image
         articles_profile_image_urls = organization.articles
@@ -303,6 +305,8 @@ RSpec.describe Organization, type: :model do
           old_reading_list_document = article.reading_list_document
 
           organization.update(name: "ACME Org")
+
+          sidekiq_perform_enqueued_jobs
 
           expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
         end

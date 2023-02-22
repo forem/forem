@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "CommentsDestroy", type: :request do
+RSpec.describe "CommentsDestroy" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
 

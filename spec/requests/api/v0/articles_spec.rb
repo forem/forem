@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Articles", type: :request do
+RSpec.describe "Api::V0::Articles" do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
@@ -39,13 +39,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "returns correct tag list" do
       get api_articles_path
 
-      expect(response.parsed_body.first["tag_list"]).to be_a_kind_of Array
+      expect(response.parsed_body.first["tag_list"]).to be_a Array
     end
 
     it "returns correct tags" do
       get api_articles_path
 
-      expect(response.parsed_body.first["tags"]).to be_a_kind_of String
+      expect(response.parsed_body.first["tags"]).to be_a String
     end
 
     context "without params" do
@@ -353,13 +353,13 @@ RSpec.describe "Api::V0::Articles", type: :request do
     it "returns correct tag list" do
       get api_article_path(article.id)
 
-      expect(response.parsed_body["tag_list"]).to be_a_kind_of String
+      expect(response.parsed_body["tag_list"]).to be_a String
     end
 
     it "returns correct tags" do
       get api_article_path(article.id)
 
-      expect(response.parsed_body["tags"]).to be_a_kind_of Array
+      expect(response.parsed_body["tags"]).to be_a Array
     end
 
     it "returns proper article" do
@@ -546,7 +546,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
         get "/api/articles/me/unpublished", headers: headers
-        expected_order = response.parsed_body.map { |resp| resp["id"] }
+        expected_order = response.parsed_body.map.pluck("id")
         expect(expected_order).to eq([newer.id, older.id])
       end
 
@@ -554,7 +554,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
         get "/api/articles/me/all", headers: headers
-        expected_order = response.parsed_body.map { |resp| resp["published"] }
+        expected_order = response.parsed_body.pluck("published")
         expect(expected_order).to eq([false, true])
       end
 

@@ -66,6 +66,10 @@
     display: none;
   }
 
+  &::-webkit-date-and-time-value {
+    min-height: 1.5em;
+  }
+
   &--icon {
     padding-left: var(--su-7);
   }
@@ -210,6 +214,11 @@
     margin: 0.1875em; // centering checkbox within 1.5em grid cell.
     justify-self: center;
   }
+}
+
+input[type=file]::file-selector-button {
+  @extend .crayons-btn;
+  @extend .crayons-btn--secondary;
 }
 
 .crayons-fields {

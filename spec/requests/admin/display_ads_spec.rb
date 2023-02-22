@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/customization/display_ads", type: :request do
+RSpec.describe "/admin/customization/display_ads" do
   let(:get_resource) { get admin_display_ads_path }
   let(:org) { create(:organization) }
   let(:params) do
@@ -56,6 +56,11 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         post_resource
         expect(EdgeCache::BustSidebar).to have_received(:call).once
       end
+
+      it "sets creator to current_user" do
+        post_resource
+        expect(DisplayAd.last.creator_id).to eq(super_admin.id)
+      end
     end
 
     describe "PUT /admin/customization/display_ads" do
@@ -103,6 +108,11 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           post_resource
         end.to change { DisplayAd.all.count }.by(1)
+      end
+
+      it "sets creator to current_user" do
+        post_resource
+        expect(DisplayAd.last.creator_id).to eq(single_resource_admin.id)
       end
     end
 

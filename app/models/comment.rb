@@ -108,6 +108,17 @@ class Comment < ApplicationRecord
     includes(user: :profile).new(params, &blk)
   end
 
+  def self.build_sort_query(order)
+    case order
+    when "latest"
+      "created_at DESC"
+    when "oldest"
+      "created_at ASC"
+    else
+      "score DESC"
+    end
+  end
+
   def search_id
     "comment_#{id}"
   end
@@ -177,17 +188,6 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
-  def self.build_sort_query(order)
-    case order
-    when "latest"
-      "created_at DESC"
-    when "oldest"
-      "created_at ASC"
-    else
-      "score DESC"
-    end
-  end
-
   private_class_method :build_sort_query
 
   private
@@ -215,6 +215,33 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
+      extracted_evaluate_markdown
+    else
+      original_evaluate_markdown
+    end
+  end
+
+  def processed_content
+    return @processed_content if @processed_content && !body_markdown_changed?
+    return unless user
+
+    @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
+  end
+
+  def extracted_evaluate_markdown
+    content_renderer = processed_content
+
+    return unless content_renderer
+
+    self.processed_html = content_renderer.process(link_attributes: { rel: "nofollow" })
+    wrap_timestamps_if_video_present! if commentable
+    shorten_urls!
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def original_evaluate_markdown
     fixed_body_markdown = MarkdownProcessor::Fixer::FixForComment.call(body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })

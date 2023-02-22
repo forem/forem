@@ -9,7 +9,7 @@ module Api
   end
 end
 
-RSpec.describe "Api::V0::ApiController", type: :request do
+RSpec.describe "Api::V0::ApiController" do
   let(:path) { "/api/tests" }
 
   before do

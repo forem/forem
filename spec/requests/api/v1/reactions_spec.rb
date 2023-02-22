@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Reactions", type: :request do
+RSpec.describe "Api::V1::Reactions" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:params) do
     {
@@ -9,8 +9,6 @@ RSpec.describe "Api::V1::Reactions", type: :request do
       category: "like"
     }
   end
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }

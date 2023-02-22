@@ -1,14 +1,17 @@
 # Send notifications from moderation
 module Notifications
   module Moderation
+    MODERATORS_AVAILABILITY_DELAY = 22.hours
     class Send
-      def initialize(moderator, notifiable)
-        @moderator = moderator
-        @notifiable = notifiable
-      end
+      SUPPORTED = [Comment].freeze
 
       def self.call(...)
         new(...).call
+      end
+
+      def initialize(moderator, notifiable)
+        @moderator = moderator
+        @notifiable = notifiable
       end
 
       delegate :user_data, :comment_data, to: Notifications

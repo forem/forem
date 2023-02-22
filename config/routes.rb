@@ -55,6 +55,8 @@ Rails.application.routes.draw do
           put "unpublish", on: :member
         end
 
+        resources :pages, only: %i[index show create update destroy]
+
         draw :api
       end
 
@@ -269,7 +271,7 @@ Rails.application.routes.draw do
                                      constraints: {
                                        which: /organization/
                                      }
-    get "/dashboard/:username", to: "dashboards#show"
+    get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
     # for testing rails mailers
     unless Rails.env.production?

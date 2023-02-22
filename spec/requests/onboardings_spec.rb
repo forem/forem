@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Onboardings", type: :request do
+RSpec.describe "Onboardings" do
   let(:user) { create(:user, saw_onboarding: false) }
 
   describe "GET /onboarding" do
