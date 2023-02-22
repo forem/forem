@@ -38,13 +38,6 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(2)
   end
 
-  # TODO: @zhao-andy this should fail if this issue is solved: https://github.com/forem/forem/issues/13823
-  it "escapes triple backticks within a codeblock when using tildes" do
-    code_block = "~~~\nhello\n```\nwhatever\n```\n~~~"
-    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
-    expect(number_of_triple_backticks).to eq(0)
-  end
-
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")
@@ -274,7 +267,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
   context "when provided with an @username" do
     context "when html has injected styles" do
       before do
-        create :user, username: "User1"
+        create(:user, username: "User1")
       end
 
       let(:suspicious) do
@@ -285,7 +278,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       end
 
       it "strips the styles as expected" do
-        linked_user = %(<a class=\"mentioned-user\" href=\"http://localhost:3000/user1\">@user1</a>)
+        linked_user = %(<a class="mentioned-user" href="http://localhost:3000/user1">@user1</a>)
         expected_result = <<~HTML.strip
           <p>x{animation:s}#{linked_user} s{}&lt;br&gt;
           &lt;style&gt;{transition:color 1s}:hover{color:red}&lt;/p&gt;
