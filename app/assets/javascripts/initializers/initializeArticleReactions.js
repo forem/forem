@@ -215,16 +215,13 @@ function openDrawerOnHover() {
   }
 
   drawerTrigger.addEventListener('click', function (event) {
-    event.preventDefault();
+    var articleId = document.getElementById('article-body').dataset.articleId;
+    reactToArticle(articleId, 'like');
+    
+    drawerTrigger.parentElement.classList.add('open');
   });
 
   if (isTouchDevice()) {
-    drawerTrigger.addEventListener('click', function () {
-      var articleId = document.getElementById('article-body').dataset.articleId;
-      reactToArticle(articleId, 'like');
-      
-      drawerTrigger.parentElement.classList.add('open');
-    });
     watchForLongTouch(drawerTrigger);
     drawerTrigger.addEventListener('longTouch', function () {
       drawerTrigger.parentElement.classList.add('open');
