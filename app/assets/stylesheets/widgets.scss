@@ -316,24 +316,24 @@
 }
 
 .crayons-sponsorship {
+  padding: var(--su-3);
+
   &__header {
     display: flex;
-    align-items: flex-end;
-    padding: var(--su-4) var(--su-4) var(--su-3) var(--su-4);
+    align-items: center;
   }
 
   &__title {
     color: var(--label-secondary);
     font-size: var(--fs-s);
     line-height: var(--lh-base);
+    margin-left: var(--su-1);
   }
 
   &__dropdown {
     margin-left: auto;
   }
-}
 
-.crayons-sponsorship-widget {
   img {
     width: 100%;
     height: auto;
