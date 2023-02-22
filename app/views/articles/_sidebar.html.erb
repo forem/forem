@@ -14,7 +14,9 @@
     <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
       <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
-        <%= render partial: "shared/display_ad", locals: {display_ad: @second_left_sidebar_ad } %>
+        <div class="pt-4">
+          <%= render partial: "shared/display_ad", locals: {display_ad: @second_left_sidebar_ad } %>
+        </div>
       <% end %>
     <% end %>
   </aside>
