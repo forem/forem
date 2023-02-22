@@ -67,7 +67,8 @@ RSpec.describe "api/v1/display_ads" do
                     },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
                               description: "Identifies which area of site layout the ad can appear in" },
-            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" }
+            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
+            creator_id: { type: :integer, description: "Identifies the user who created the ad." }
           },
           required: %w[name body_markdown placement_area]
         }
@@ -189,7 +190,8 @@ RSpec.describe "api/v1/display_ads" do
                           description: "Potentially limits visitors to whom the ad is visible" },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
                               description: "Identifies which area of site layout the ad can appear in" },
-            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" }
+            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
+            creator_id: { type: :integer, description: "Identifies the user who created the ad." }
           },
           required: %w[name body_markdown placement_area]
         }
