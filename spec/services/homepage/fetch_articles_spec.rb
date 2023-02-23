@@ -12,11 +12,12 @@ RSpec.describe Homepage::FetchArticles, type: :service do
       result = described_class.call.first
 
       keys = %i[
-        class_name cloudinary_video_url comments_count flare_tag id path public_reactions_count
+        class_name cloudinary_video_url comments_count flare_tag id path
+        public_reactions_count public_reaction_categories
         published_at_int readable_publish_date reading_time tag_list title
         user user_id video_duration_string
       ]
-      expect(result.keys.sort).to eq(keys)
+      expect(result.keys.sort).to contain_exactly(*keys)
 
       expect(result[:class_name]).to eq("Article")
       expect(result[:cloudinary_video_url]).to eq(article.cloudinary_video_url)
