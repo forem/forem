@@ -168,7 +168,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    color (1.8)
     concurrent-ruby (1.2.0)
     connection_pool (2.3.0)
     counter_culture (3.3.0)
@@ -972,7 +971,6 @@ DEPENDENCIES
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
   cloudinary (~> 1.23)
-  color (~> 1.8)
   counter_culture (~> 3.2)
   cuprite (~> 0.13)
   cypress-rails (~> 0.5)
