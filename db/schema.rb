@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -459,6 +459,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
+    t.integer "creator_id"
     t.integer "display_to", default: 0, null: false
     t.integer "impressions_count", default: 0
     t.string "name"

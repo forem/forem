@@ -2,6 +2,7 @@ class DisplayAd < ApplicationRecord
   include Taggable
   acts_as_taggable_on :tags
   resourcify
+  belongs_to :creator, class_name: "User", optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_sidebar post_comments].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",

@@ -60,6 +60,13 @@ jobs:
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
+      - name: Upload RSpec artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: rspec-artifacts
+          path: |
+            tmp/capybara
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
@@ -214,11 +221,11 @@ jobs:
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
         if: ${{ matrix.ci_node_index == 'non-seed' }}
-      - name: Upload screenshots
+      - name: Upload Cypress artifacts
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: cypress-snapshots
+          name: cypress-artifacts
           path: |
             tmp/cypress_screenshots
             cypress/logs

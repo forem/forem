@@ -23,6 +23,7 @@ module Admin
 
     def create
       @display_ad = DisplayAd.new(display_ad_params)
+      @display_ad.creator = current_user
 
       if @display_ad.save
         flash[:success] = I18n.t("admin.display_ads_controller.created")
