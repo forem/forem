@@ -35,7 +35,8 @@ module ValidRequest
     when Proc
       _compute_redirect_to_location request, instance_eval(&options)
     else
-      url_for(options)
+      url_for
+      # url_for(options)
     end.delete("\0\r\n")
   end
 end
