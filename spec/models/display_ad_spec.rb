@@ -37,6 +37,16 @@ RSpec.describe DisplayAd do
       display_ad.placement_area = "sidebar_left_2"
       expect(display_ad.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
     end
+
+    it "allows creator_id to be set" do
+      display_ad.creator = build(:user)
+      expect(display_ad).to be_valid
+    end
+
+    it "does not require creator to be valid" do
+      display_ad.creator = nil
+      expect(display_ad).to be_valid
+    end
   end
 
   context "when callbacks are triggered before save" do
