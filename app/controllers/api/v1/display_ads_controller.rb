@@ -50,8 +50,9 @@ module Api
       end
 
       def permitted_params
-        params.permit :approved, :body_markdown, :display_to, :name, :type_of,
-                      :organization_id, :placement_area, :published, :tag_list
+        params.permit :approved, :body_markdown, :creator_id, :display_to,
+                      :name, :organization_id, :placement_area, :published,
+                      :tag_list, :type_of
       end
     end
   end
