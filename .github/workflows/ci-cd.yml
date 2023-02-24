@@ -7,26 +7,27 @@ on:
   pull_request:
     branches:
       - main
+env:
+  COVERAGE: true
+  RAILS_ENV: test
+  NODE_ENV: test
+  DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+  DATABASE_NAME_TEST: Forem_test
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  POSTGRES_PASSWORD: postgres
 
 jobs:
   RSpec:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      COVERAGE: true
-      RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
 
     services:
       postgres:
         image: postgres:13-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
       redis:
@@ -83,9 +84,6 @@ jobs:
   Jest:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
-      RAILS_ENV: test
-      NODE_ENV: test
 
     steps:
       - uses: actions/checkout@v3
@@ -120,7 +118,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
@@ -129,13 +126,10 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
         image: postgres:13-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
       redis:
@@ -168,16 +162,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      RAILS_ENV: test
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
         image: postgres:13-alpine
-        env:
-          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
       redis:
