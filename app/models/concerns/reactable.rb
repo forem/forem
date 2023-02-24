@@ -9,14 +9,13 @@ module Reactable
     update_column(:public_reactions_count, reactions.public_category.size)
   end
 
-  def reaction_categories
-    reactions.distinct(:category).pluck(:category)
-  end
-
   def public_reaction_categories
-    @public_reaction_categories ||= ReactionCategory.for_view
-      .select do |reaction_type|
-        reaction_categories.include?(reaction_type.slug.to_s)
+    @public_reaction_categories ||= begin
+      reacted = reactions.distinct(:category).pluck(:category)
+      ReactionCategory.for_view
+        .select do |reaction_type|
+        reacted.include?(reaction_type.slug.to_s)
       end
+    end
   end
 end

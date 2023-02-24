@@ -1342,7 +1342,7 @@ RSpec.describe Article do
     end
   end
 
-  describe "#reaction_categories reports unique associated reaction categories" do
+  describe "#public_reaction_categories reports unique associated reaction categories" do
     before do
       user2 = create(:user)
       user2.add_role(:trusted)
@@ -1354,7 +1354,8 @@ RSpec.describe Article do
     end
 
     it "reports accurately" do
-      expect(article.reaction_categories).to contain_exactly("like", "readinglist", "vomit")
+      categories = article.public_reaction_categories
+      expect(categories.map(&:slug)).to contain_exactly(*%i[like])
     end
   end
 end
