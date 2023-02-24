@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Rack, ".attack", type: :request, throttle: true do
+describe Rack, ".attack", throttle: true, type: :request do
   before do
     allow(Rails).to receive(:cache) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
     allow(Honeycomb).to receive(:add_field)
@@ -171,21 +171,20 @@ describe Rack, ".attack", type: :request, throttle: true do
   end
 
   describe "forgot_password_throttle" do
-    it "works" do
+    it "throttles after 3 attempts" do
       params = { user: { email: "yo@email.com" } }
       admin_headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
 
       Timecop.freeze do
-        valid_responses = Array.new(3).map do
+        3.times do
           post "/users/password", params: params, headers: admin_headers
+          expect(response).to have_http_status(:found)
         end
-
-        valid_responses.each { |r| expect(r).not_to eq(429) }
-        post "/users/password", params: params, headers: admin_headers
-        expect(response.status).to eq(429)
-        # expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(3).times
+        3.times do
+          post "/users/password", params: params, headers: admin_headers
+          expect(response).to have_http_status(:too_many_requests)
+        end
       end
     end
-
   end
 end
