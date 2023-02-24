@@ -243,7 +243,7 @@ jobs:
   CI-status-report:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress, build-test]
-    if: always()
+    if: success() || failure()
 
     steps:
       - name: Decide whether the needed jobs succeeded or failed
