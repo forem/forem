@@ -161,7 +161,6 @@ jobs:
   Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    env:
 
     services:
       postgres:
