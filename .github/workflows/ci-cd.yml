@@ -11,7 +11,7 @@ on:
 jobs:
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       COVERAGE: true
       RAILS_ENV: test
@@ -37,8 +37,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5]
 
     steps:
       - uses: actions/checkout@v3
@@ -82,7 +82,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       RAILS_ENV: test
       NODE_ENV: test
@@ -118,7 +118,7 @@ jobs:
 
   Build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -166,7 +166,7 @@ jobs:
 
   Cypress:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       RAILS_ENV: test
       DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
@@ -188,8 +188,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, non-seed]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
 
     steps:
       - uses: actions/checkout@v3
