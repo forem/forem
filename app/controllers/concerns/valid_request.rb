@@ -34,10 +34,10 @@ module ValidRequest
       "#{URL.protocol || request.protocol}#{request.host_with_port}#{options}"
     when Proc
       _compute_redirect_to_location request, instance_eval(&options)
-    when Hash
-      url_for(options)
-    else
+    when Array
       url_for
+    else
+      url_for(options)
     end.delete("\0\r\n")
   end
 end
