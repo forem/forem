@@ -2,8 +2,8 @@
 fr:
   views:
     pagination:
-      aria_next: "Next page"
-      aria_previous: "Previous page"
+      aria_next: "Page suivante"
+      aria_previous: "Page précédente"
       first: "&laquo; Premier"
       last: Dernier &raquo;
       next: Suivant &rsaquo;
@@ -12,4 +12,4 @@ fr:
   helpers:
     page_entries_info:
       more_pages:
-        display_entries: "%{first}&nbsp;-&nbsp;%{last} of %{total}"
+        display_entries: "%{first}&nbsp;-&nbsp;%{last} sur %{total}"
