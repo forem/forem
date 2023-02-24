@@ -13,6 +13,7 @@ fr:
     create:
       success: créé avec succès
       failure: commentaire déjà existant
+      authorization_error: Vos privilèges ont été suspendus.
     delete:
       error: Un problème est survenu ; le commentaire n'a PAS été supprimé.
       notice: Le commentaire a été supprimé avec succès.
