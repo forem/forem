@@ -2,16 +2,14 @@ require "rails_helper"
 
 describe Rack, ".attack", type: :request, throttle: true do
   before do
-    cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
-    allow(Rails).to receive(:cache) { cache_db }
-    cache_db.redis.flushdb
+    allow(Rails).to receive(:cache) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
     allow(Honeycomb).to receive(:add_field)
-
     ENV["FASTLY_API_KEY"] = "12345"
   end
 
   after do
     ENV["FASTLY_API_KEY"] = nil
+    Rails.cache.clear
   end
 
   describe "search_throttle" do
@@ -170,5 +168,24 @@ describe Rack, ".attack", type: :request, throttle: true do
       end
     end
     # rubocop:enable RSpec/AnyInstance, RSpec/ExampleLength
+  end
+
+  describe "forgot_password_throttle" do
+    it "works" do
+      params = { user: { email: "yo@email.com" } }
+      admin_headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+      Timecop.freeze do
+        valid_responses = Array.new(3).map do
+          post "/users/password", params: params, headers: admin_headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        post "/users/password", params: params, headers: admin_headers
+        expect(response.status).to eq(429)
+        # expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(3).times
+      end
+    end
+
   end
 end
