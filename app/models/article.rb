@@ -47,7 +47,8 @@ class Article < ApplicationRecord
 
   # The date that we began limiting the number of user mentions in an article.
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
-  PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
+  # all BIDI control marks (a part of them are expected to be removed during #normalize_title, but still)
+  BIDI_CONTROL_CHARACTERS = /[\u061C\u200E\u200F\u202a-\u202e\u2066-\u2069]/
 
   MAX_TAG_LIST_SIZE = 4
 
@@ -62,8 +63,12 @@ class Article < ApplicationRecord
     \u00a3        # GBP symbol
     \u00a9        # Copyright symbol
     \u00ae        # Registered trademark symbol
+    \u061c        # BIDI: Arabic letter mark
     \u200d        # Zero-width joiner, for multipart emojis such as family
+    \u200e-\u200f # BIDI: LTR and RTL mark (standalone)
+    \u202c-\u202e # BIDI: POP, LTR, and RTL override
     \u203c        # !! emoji
+    \u2066-\u2069 # BIDI: POP, LTR, and RTL isolate
     \u20e3        # Combining enclosing keycap
     \u2122        # Trademark symbol
     \u2139        # Information symbol
@@ -170,8 +175,8 @@ class Article < ApplicationRecord
   validate :validate_co_authors_exist, unless: -> { co_author_ids.blank? }
 
   before_validation :evaluate_markdown, :create_slug, :set_published_date
-  before_validation :remove_prohibited_unicode_characters
   before_validation :normalize_title
+  before_validation :remove_prohibited_unicode_characters
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -964,9 +969,10 @@ class Article < ApplicationRecord
   end
 
   def remove_prohibited_unicode_characters
-    return unless title&.match?(PROHIBITED_UNICODE_CHARACTERS_REGEX)
+    return unless title&.match?(BIDI_CONTROL_CHARACTERS)
 
-    self.title = title.gsub(PROHIBITED_UNICODE_CHARACTERS_REGEX, "")
+    bidi_stripped = title.gsub(BIDI_CONTROL_CHARACTERS, "")
+    self.title = bidi_stripped if bidi_stripped.blank? # title only contains BIDI characters = blank title
   end
 
   def record_field_test_event
