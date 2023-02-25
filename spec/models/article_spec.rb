@@ -255,12 +255,12 @@ RSpec.describe Article do
       end
 
       it "sanitizes the title with deprecated BIDI marks" do
-        test_article = build(:article, title: "\u202bThis starts with BIDI embedding")
+        test_article = build(:article, title: "\u202bThis starts with BIDI embedding\u202c")
 
         test_article.validate
 
         expect(test_article.title).not_to match(/\u202b/)
-        expect(test_article.title).to eq("This starts with BIDI embedding")
+        expect(test_article.title).to eq("This starts with BIDI embedding\u202c")
       end
 
       it "rejects empty titles after sanitizing" do
