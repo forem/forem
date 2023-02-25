@@ -68,7 +68,7 @@ class Article < ApplicationRecord
     \u200e-\u200f # BIDI: LTR and RTL mark (standalone)
     \u202c-\u202e # BIDI: POP, LTR, and RTL override
     \u203c        # !! emoji
-    \u2066-\u2069 # BIDI: POP, LTR, and RTL isolate
+    \u2066-\u2069 # BIDI: LTR, RTL, FSI, and POP isolate
     \u20e3        # Combining enclosing keycap
     \u2122        # Trademark symbol
     \u2139        # Information symbol
