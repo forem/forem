@@ -149,7 +149,7 @@ fr:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
-  display_ads:
+  display_ad:
     menu:
       aria_label: Basculer le menu déroulant
       icon: Menu déroulant
