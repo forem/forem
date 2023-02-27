@@ -185,7 +185,8 @@ RSpec.describe "api/v1/display_ads" do
             body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
             approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
             published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-            organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs" },
+            organization_id: { type: :integer,
+                               description: "Identifies the organization to which the ad belongs, required for 'community' type ads" }, # rubocop:disable Layout/LineLength
             display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                           description: "Potentially limits visitors to whom the ad is visible" },
             placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
