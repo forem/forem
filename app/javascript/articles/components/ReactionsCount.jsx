@@ -26,7 +26,11 @@ export const ReactionsCount = ({ article }) => {
       );
     });
 
-    return <span dir="rtl">{icons}</span>;
+    return (
+      <span className="multiple_reactions_icons_container" dir="rtl">
+        {icons}
+      </span>
+    );
   }
 
   function buildCounter() {

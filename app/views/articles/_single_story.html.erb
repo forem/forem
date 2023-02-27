@@ -122,7 +122,7 @@
           <% if story.public_reactions_count > 0 %>
           <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
             <div class="multiple_reactions_aggregate">
-              <span dir="rtl">
+              <span class="multiple_reactions_icons_container" dir="rtl">
                 <% story.public_reaction_categories.reverse_each do |reaction_type| %>
                   <span class="crayons_icon_container">
                     <%= image_tag reaction_type.icon, size: "18x18" %>
