@@ -168,7 +168,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.2.0)
+    concurrent-ruby (1.2.2)
     connection_pool (2.3.0)
     counter_culture (3.3.0)
       activerecord (>= 4.2)
@@ -868,7 +868,7 @@ GEM
       dante (>= 0.2.0)
       multi_json (~> 1.0)
       stripe (> 5, < 6)
-    strong_migrations (1.4.2)
+    strong_migrations (1.4.3)
       activerecord (>= 5.2)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
