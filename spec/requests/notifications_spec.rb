@@ -320,7 +320,7 @@ RSpec.describe "NotificationsIndex" do
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(amount, %w[unicorn like], special_characters_article)
 
         get notifications_path(filter: :org, org_id: organization.id)
         expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
