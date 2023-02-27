@@ -7,20 +7,23 @@ on:
   pull_request:
     branches:
       - main
+env:
+  COVERAGE: true
+  RAILS_ENV: test
+  NODE_ENV: test
+  DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+  DATABASE_NAME_TEST: Forem_test
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  POSTGRES_PASSWORD: postgres
 
 jobs:
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      COVERAGE: true
-      RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
 
     services:
       postgres:
@@ -37,8 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5]
 
     steps:
       - uses: actions/checkout@v3
@@ -82,10 +85,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      RAILS_ENV: test
-      NODE_ENV: test
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v3
@@ -118,9 +118,8 @@ jobs:
 
   Build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
@@ -129,7 +128,6 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
@@ -166,12 +164,7 @@ jobs:
 
   Cypress:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      RAILS_ENV: test
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -188,8 +181,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, non-seed]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
 
     steps:
       - uses: actions/checkout@v3
