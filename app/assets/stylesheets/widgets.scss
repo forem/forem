@@ -315,7 +315,25 @@
   padding: var(--content-padding-y) var(--content-padding-x);
 }
 
-.crayons-sponsorship-widget {
+.crayons-sponsorship {
+  padding: var(--su-3);
+
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    color: var(--label-secondary);
+    font-size: var(--fs-s);
+    line-height: var(--lh-base);
+    margin-left: var(--su-1);
+  }
+
+  &__dropdown {
+    margin-left: auto;
+  }
+
   img {
     width: 100%;
     height: auto;
