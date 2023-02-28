@@ -16,14 +16,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
   end
 
   def shows_correct_articles_count(count)
-    expect(page).to have_selector(".crayons-story__title", visible: :visible, count: count)
-  end
-
-  def shows_correct_articles_count_via_xpath(count)
-    expect(page).to have_xpath(
-      "//article[contains(@class, 'crayons-story') and not(contains(@class, 'crayons-story--featured'))]",
-      count: count,
-    )
+    expect(page).to have_selector(".crayons-story", visible: :visible, count: count)
   end
 
   def shows_main_article
@@ -97,7 +90,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/latest" }
 
       it "shows correct articles and cta-count", :aggregate_failures do
-        shows_correct_articles_count(5)
+        shows_correct_articles_count(6)
         shows_main_article
         expect(page).to have_selector("#in-feed-cta", count: 1)
 
@@ -121,7 +114,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/top/week" }
 
       it "shows correct articles", :aggregate_failures do
-        shows_correct_articles_count_via_xpath(1)
+        shows_correct_articles_count(2)
         shows_main_article
 
         within("#main-content") do
@@ -135,7 +128,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/top/month" }
 
       it "shows correct articles", :aggregate_failures do
-        shows_correct_articles_count_via_xpath(2)
+        shows_correct_articles_count(3)
         shows_main_article
 
         within("#main-content") do
@@ -150,7 +143,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/top/year" }
 
       it "shows correct articles", :aggregate_failures do
-        shows_correct_articles_count_via_xpath(3)
+        shows_correct_articles_count(4)
         shows_main_article
 
         within("#main-content") do
@@ -166,7 +159,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/top/infinity" }
 
       it "shows correct articles", :aggregate_failures do
-        shows_correct_articles_count_via_xpath(4)
+        shows_correct_articles_count(5)
         shows_main_article
 
         within("#main-content") do
@@ -183,7 +176,7 @@ RSpec.describe "User visits articles by timeframe", flaky: true do
       before { visit "/latest" }
 
       it "shows correct articles", :aggregate_failures do
-        shows_correct_articles_count_via_xpath(4)
+        shows_correct_articles_count(5)
         shows_main_article
 
         within("#main-content") do
