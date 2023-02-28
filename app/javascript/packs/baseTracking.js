@@ -1,9 +1,11 @@
+/*eslint-disable prefer-rest-params*/
+
 function initializeBaseTracking() {
   trackGoogleAnalytics3();
   trackGoogleAnalytics4();
   trackCustomImpressions();
 }
-  
+
 function trackGoogleAnalytics3() {
   let wait = 0;
   let addedGA = false;
@@ -11,10 +13,25 @@ function trackGoogleAnalytics3() {
   if (gaTrackingCode) {
     const waitingOnGA = setInterval(() => {
       if (!addedGA) {
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                                  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+          i['GoogleAnalyticsObject'] = r;
+          (i[r] =
+            i[r] ||
+            function () {
+              (i[r].q = i[r].q || []).push(arguments);
+            }),
+            (i[r].l = 1 * new Date());
+          (a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]);
+          a.async = 1;
+          a.src = g;
+          m.parentNode.insertBefore(a, m);
+        })(
+          window,
+          document,
+          'script',
+          '//www.google-analytics.com/analytics.js',
+          'ga',
+        );
       }
       addedGA = true;
       wait++;
@@ -42,7 +59,7 @@ function trackGoogleAnalytics4() {
       if (!addedGA4) {
         //Dynamically add the Google Analytics 4 script tag
         const script = document.createElement('script');
-        script.src = `//www.googletagmanager.com/gtag/js?id=${  ga4MeasurementCode}`;
+        script.src = `//www.googletagmanager.com/gtag/js?id=${ga4MeasurementCode}`;
         script.async = true;
         document.head.appendChild(script);
       }
@@ -52,14 +69,18 @@ function trackGoogleAnalytics4() {
         //Define the gtag function and call it. Adapted from https://stackoverflow.com/questions/22716542/google-analytics-code-explanation %>
         window.dataLayer = window.dataLayer || [];
         // eslint-disable-next-line no-inner-declarations
-        function gtag(){window.dataLayer.push(arguments);}
-
-        window['gtag'] = window['gtag'] || function () {
-          window.dataLayer.push(arguments)
+        function gtag() {
+          window.dataLayer.push(arguments);
         }
 
+        window['gtag'] =
+          window['gtag'] ||
+          function () {
+            window.dataLayer.push(arguments);
+          };
+
         gtag('js', new Date());
-        gtag('config', ga4MeasurementCode, { 'anonymize_ip': true });
+        gtag('config', ga4MeasurementCode, { anonymize_ip: true });
         clearInterval(waitingOnGA4);
       }
       if (wait > 85) {
@@ -73,15 +94,20 @@ function trackGoogleAnalytics4() {
   }
 }
 
-
 function fallbackActivityRecording() {
-  const tokenMeta = document.querySelector("meta[name='csrf-token']")
+  const tokenMeta = document.querySelector("meta[name='csrf-token']");
   if (!tokenMeta) {
-    return
+    return;
   }
-  const csrfToken = tokenMeta.getAttribute('content')
-  const w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-  const h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+  const csrfToken = tokenMeta.getAttribute('content');
+  const w = Math.max(
+    document.documentElement.clientWidth,
+    window.innerWidth || 0,
+  );
+  const h = Math.max(
+    document.documentElement.clientHeight,
+    window.innerHeight || 0,
+  );
   const screenW = window.screen.availWidth;
   const screenH = window.screen.availHeight;
   const dataBody = {
@@ -89,8 +115,8 @@ function fallbackActivityRecording() {
     user_language: navigator.language,
     referrer: document.referrer,
     user_agent: navigator.userAgent,
-    viewport_size: `${h  }x${  w}`,
-    screen_resolution: `${screenH  }x${  screenW}`,
+    viewport_size: `${h}x${w}`,
+    screen_resolution: `${screenH}x${screenW}`,
     document_title: document.title,
     document_encoding: document.characterSet,
     document_path: location.pathname + location.search,
@@ -102,31 +128,35 @@ function fallbackActivityRecording() {
       'X-CSRF-Token': csrfToken,
     },
     body: JSON.stringify(dataBody),
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   });
 }
 
-function eventListening(){
-  const registerNowButt = document.getElementById("cta-comment-register-now-link");
+function eventListening() {
+  const registerNowButt = document.getElementById(
+    'cta-comment-register-now-link',
+  );
   if (registerNowButt) {
-    registerNowButt.onclick = function(){
+    registerNowButt.onclick = function () {
       ga('send', 'event', 'click', 'register-now-click', null, null);
-    }
+    };
   }
 }
 
 // eslint-disable-next-line no-unused-vars
-function ga4eventListening(){
-  const registerNowButt = document.getElementById("cta-comment-register-now-link");
+function ga4eventListening() {
+  const registerNowButt = document.getElementById(
+    'cta-comment-register-now-link',
+  );
   if (registerNowButt) {
-    registerNowButt.onclick = function(){
-      gtag('event', 'register-now-click' );
-    }
+    registerNowButt.onclick = function () {
+      gtag('event', 'register-now-click');
+    };
   }
 }
 
 function checkUserLoggedIn() {
-  const {body} = document;
+  const { body } = document;
   if (!body) {
     return false;
   }
@@ -135,12 +165,17 @@ function checkUserLoggedIn() {
 }
 
 function trackCustomImpressions() {
-  setTimeout(()=> {
-    const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
-    const tokenMeta = document.querySelector("meta[name='csrf-token']")
-    const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
+  setTimeout(() => {
+    const ArticleElement =
+      document.getElementById('article-body') ||
+      document.getElementById('comment-article-indicator');
+    const tokenMeta = document.querySelector("meta[name='csrf-token']");
+    const isBot =
+      /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
+        navigator.userAgent,
+      ); // is crawler
     // eslint-disable-next-line no-unused-vars
-    const windowBigEnough =  window.innerWidth > 1023
+    const windowBigEnough = window.innerWidth > 1023;
 
     // page view
     if (ArticleElement && tokenMeta && !isBot) {
@@ -159,21 +194,25 @@ function trackCustomImpressions() {
       const csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
       let timeOnSiteCounter = 0;
-      const timeOnSiteInterval = setInterval(()=> {
-        timeOnSiteCounter++
-        const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
+      const timeOnSiteInterval = setInterval(() => {
+        timeOnSiteCounter++;
+        const ArticleElement =
+          document.getElementById('article-body') ||
+          document.getElementById('comment-article-indicator');
         if (ArticleElement && checkUserLoggedIn()) {
-          trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
+          trackFifteenSecondsOnPage(
+            ArticleElement.dataset.articleId,
+            csrfToken,
+          );
         } else {
           clearInterval(timeOnSiteInterval);
         }
-        if ( timeOnSiteCounter > 118 ) {
+        if (timeOnSiteCounter > 118) {
           clearInterval(timeOnSiteInterval);
         }
-      }, 15000)
+      }, 15000);
     }
-
-  }, 1800)
+  }, 1800);
 }
 
 function trackPageView(dataBody, csrfToken) {
@@ -185,18 +224,20 @@ function trackPageView(dataBody, csrfToken) {
     },
     body: JSON.stringify(dataBody),
     credentials: 'same-origin',
-  })
+  });
 }
 
 function trackFifteenSecondsOnPage(articleId, csrfToken) {
-  window.fetch(`/page_views/${  articleId}`, {
-    method: 'PATCH',
-    headers: {
-      'X-CSRF-Token': csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  }).catch((error) => console.error(error))
+  window
+    .fetch(`/page_views/${articleId}`, {
+      method: 'PATCH',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+    .catch((error) => console.error(error));
 }
 
 initializeBaseTracking();
