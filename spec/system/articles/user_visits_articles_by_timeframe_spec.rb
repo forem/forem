@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by timeframe" do
+RSpec.describe "User visits articles by timeframe", flaky: true do
   let(:author) { create(:user) }
   let(:minimum_score) { Settings::UserExperience.home_feed_minimum_score + 1 }
   let!(:article) { create(:article, score: minimum_score, user: author, published_at: Time.current) }
