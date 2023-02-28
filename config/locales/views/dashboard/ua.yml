@@ -13,7 +13,7 @@ ua:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
-        posts: Пости
+        posts: Дописи
         series: Series
         followers: Followers
         following_tags: Following tags

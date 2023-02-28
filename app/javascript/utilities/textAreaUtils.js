@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import { calculateTextAreaHeight } from '@utilities/calculateTextAreaHeight';
+import { debounceAction } from '@utilities/debounceAction';
 
 /**
  * A helper function to get the X/Y coordinates of the current cursor position within an element.
@@ -287,7 +288,7 @@ export const useTextAreaAutoResize = () => {
       const height = Math.max(...allContentHeights);
       const newHeight = `${height}px`;
 
-      [textArea, ...additionalElements].forEach((element) => {
+      allElements.forEach((element) => {
         element.style['min-height'] = newHeight;
         if (constrainToContentHeight) {
           // Don't allow the textarea to grow to a size larger than the content
@@ -298,10 +299,19 @@ export const useTextAreaAutoResize = () => {
 
     // Resize on first attach
     resizeTextArea();
+
+    // Resize on window size changes
+    const resizeCallback = debounceAction(() => resizeTextArea(), 300);
+    const resizeObserver = new ResizeObserver(resizeCallback);
+    resizeObserver.observe(textArea);
+
     // Resize on subsequent value changes
     textArea.addEventListener('input', resizeTextArea);
 
-    return () => textArea.removeEventListener('input', resizeTextArea);
+    return () => {
+      resizeObserver.disconnect();
+      textArea.removeEventListener('input', resizeTextArea);
+    };
   }, [textArea, additionalElements, constrainToContentHeight]);
 
   return { setTextArea, setAdditionalElements, setConstrainToContentHeight };

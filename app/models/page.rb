@@ -11,6 +11,7 @@ class Page < ApplicationRecord
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validates :slug, unique_cross_model_slug: true, if: :slug_changed?
+  validates :slug, uniqueness: true
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -55,6 +56,12 @@ class Page < ApplicationRecord
 
   def feature_flag_name
     "page_#{slug}"
+  end
+
+  def as_json(...)
+    super(...).slice(*%w[id title slug description is_top_level_path landing_page
+                         body_html body_json body_markdown processed_html
+                         social_image template ])
   end
 
   private

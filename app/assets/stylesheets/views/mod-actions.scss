@@ -402,10 +402,12 @@
           }
         }
         &:hover {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         &.active {
-          background: rgba(59, 73, 223, 0.05);
+          background: var(--base-10);
+          border-radius: 8px;
         }
         // &.selected {}
       }
@@ -428,7 +430,8 @@
         justify-content: space-between;
 
         &:hover {
-          background: rgba(59, 73, 223, 0.05);
+          background: rgba(var(--accent-brand-lighter-rgb), 0.2);
+          border-radius: 8px;
         }
 
         .level-rating-content {
@@ -464,7 +467,8 @@
       }
 
       .level-rating-button.selected {
-        background: rgba(59, 73, 223, 0.05);
+        background: rgba(var(--accent-brand-lighter-rgb), 0.2);
+        border-radius: 8px;
         svg {
           display: inline;
         }

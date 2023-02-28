@@ -15,8 +15,10 @@ class DisplayAdEventsController < ApplicationMetalController
   private
 
   def update_display_ads_data
-    ThrottledCall.perform(:display_ads_data_update, throttle_for: 15.minutes) do
-      @display_ad = DisplayAd.find(display_ad_event_params[:display_ad_id])
+    display_ad_event_id = display_ad_event_params[:display_ad_id]
+
+    ThrottledCall.perform("display_ads_data_update-#{display_ad_event_id}", throttle_for: 15.minutes) do
+      @display_ad = DisplayAd.find(display_ad_event_id)
 
       num_impressions = @display_ad.display_ad_events.impressions.sum(:counts_for)
       num_clicks = @display_ad.display_ad_events.clicks.sum(:counts_for)

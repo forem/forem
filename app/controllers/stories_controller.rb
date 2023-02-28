@@ -38,10 +38,11 @@ class StoriesController < ApplicationController
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
-    else
-      @podcast = Podcast.available.find_by!(slug: params[:username])
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    else
+      not_found
     end
   end
 
@@ -230,7 +231,7 @@ class StoriesController < ApplicationController
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = Articles::Feeds::Latest.call
+      @stories = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score)
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])

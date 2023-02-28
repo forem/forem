@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Users", type: :request do
+RSpec.describe "Api::V0::Users" do
   describe "GET /api/users/:id" do
     let!(:user) do
       create(:user,

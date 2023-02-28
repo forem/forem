@@ -10,7 +10,7 @@
     </p>
 
     <%= form_for @discussion_lock, method: :post do |f| %>
-      <div class="form-group">
+      <div class="crayons-field">
         <%= f.hidden_field :article_id, value: @article.id %>
         <div class="crayons-field mb-5">
           <%= f.label :reason, t("views.articles.lock.reason.label"), class: "crayons-field__label" %>
@@ -26,8 +26,10 @@
                            class: "crayons-textfield" %>
         </div>
       </div>
-      <%= f.submit t("views.articles.lock.submit"), class: "crayons-btn crayons-btn--danger" %>
-      <a data-no-instant href="<%= dashboard_path %>" class="crayons-btn crayons-btn--ghost"><%= t("views.articles.lock.cancel") %></a>
+      <div>
+        <%= f.submit t("views.articles.lock.submit"), class: "crayons-btn crayons-btn--danger" %>
+        <a data-no-instant href="<%= dashboard_path %>" class="crayons-btn crayons-btn--ghost"><%= t("views.articles.lock.cancel") %></a>
+      </div>
     <% end %>
   </div>
 </main>

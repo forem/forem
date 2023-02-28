@@ -100,7 +100,7 @@
     <% if article.user&.notes&.any? %>
       <div class="crayons-card crayons-card--secondary p-4 pt-3">
         <div class="flex gap-2 items-center">
-          <h3 class="crayons-subtitle-3"><%= article.user&.notes&.size %> user notes</h3>
+          <h3 class="crayons-subtitle-2"><%= article.user&.notes&.size %> user notes</h3>
           <a href="<%= admin_user_path(article.user_id) %>" class="c-link c-link--block c-link--branded">View all</a>
         </div>
         <% article.user&.notes&.last(3)&.each do |note| %>

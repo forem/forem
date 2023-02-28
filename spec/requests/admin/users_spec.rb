@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/member_manager/users", type: :request do
+RSpec.describe "/admin/member_manager/users" do
   let!(:user) do
     omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])

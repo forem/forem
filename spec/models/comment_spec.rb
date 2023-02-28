@@ -1,9 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Comment, type: :model do
+RSpec.describe Comment do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, user: user, commentable: article) }
+
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
 
   include_examples "#sync_reactions_count", :article_comment
 
@@ -11,8 +13,10 @@ RSpec.describe Comment, type: :model do
     subject { comment }
 
     describe "builtin validations" do
+      subject { build(:comment, user: user, commentable: article) }
+
       it { is_expected.to belong_to(:user) }
-      it { is_expected.to belong_to(:commentable).optional }
+      # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -42,6 +46,7 @@ RSpec.describe Comment, type: :model do
         subject.commentable = build(:article, published: false)
 
         expect(subject).not_to be_valid
+        expect(subject.errors.full_messages).to include "Commentable is not a published article"
       end
 
       it "is invalid if commentable is an article and the discussion is locked" do

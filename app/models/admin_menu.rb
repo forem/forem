@@ -48,7 +48,6 @@ class AdminMenu
       item(name: "response templates"),
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),
-             item(name: "vault secrets", controller: "secrets"),
              item(name: "data update scripts", visible: -> { FeatureFlag.enabled?(:data_update_scripts) }),
              item(name: "extensions", controller: "extensions"),
            ]),

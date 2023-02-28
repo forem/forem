@@ -70,9 +70,7 @@
     background-color: var(--body-color-inverted);
     display: inline-block;
     padding: calc(0.4vw + 8px) calc(0.8vw + 8px);
-    padding-top: calc(0.5vw + 12px);
     padding-right: 8px;
-    margin-right: 2px;
     box-sizing: border-box;
     &::after {
       content: '';
@@ -89,7 +87,7 @@
   }
   .ltag__link__org__pic > img {
     display: inline-block;
-    width: calc(2.5vw + 40px);
+    width: calc(2.2vw + 45px);
     height: calc(2.5vw + 40px);
     margin: auto auto !important;
     border-radius: var(--radius);
@@ -98,7 +96,7 @@
   .ltag__link__user__pic {
     display: inline-block;
     position: absolute;
-    right: calc(0.5vw * -1);
+    right: 0;
     bottom: calc(1vw);
     border: 2px solid var(--base-inverted);
     border-radius: 100%;

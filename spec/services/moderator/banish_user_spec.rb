@@ -5,17 +5,13 @@ RSpec.describe Moderator::BanishUser, type: :service do
   let(:moderator) { create(:user, :trusted) }
   let(:admin) { create(:user, :super_admin) }
 
-  it "updates the user's username" do
+  it "updates username, clears profile, and add BanishedUser record", :aggregate_failures do
+    original_username = user.username
     sidekiq_perform_enqueued_jobs do
       described_class.call(user: user, admin: admin)
     end
-    expect(user.username).to include "spam_"
-  end
 
-  it "clears their profile" do
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user: user, admin: admin)
-    end
+    expect(user.username).to include "spam_"
     expect(user.profile.summary).to be_blank
     expect(user.profile.location).to be_blank
     expect(user.profile.website_url).to be_blank
@@ -23,52 +19,25 @@ RSpec.describe Moderator::BanishUser, type: :service do
     expect(user.github_username).to be_blank
     expect(user.twitter_username).to be_blank
     expect(user.facebook_username).to be_blank
+    expect(BanishedUser.exists?(username: original_username)).to be true
   end
 
-  it "removes all their articles" do
-    create(:article, user: user, published: true)
-    sidekiq_perform_enqueued_jobs
-
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user: user, admin: admin)
-    end
-    expect(user.articles.count).to eq 0
-  end
-
-  it "removes all their comments" do
+  it "removes all their articles, comments, podcasts, abuse_reports, and vomit reactions", :aggregate_failures do
     article = create(:article, user: user, published: true)
-    create(:comment, user: user, commentable: article)
-    sidekiq_perform_enqueued_jobs
-
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user: user, admin: admin)
-    end
-    expect(user.comments.count).to eq 0
-  end
-
-  it "removes all their podcasts" do
     podcast = create(:podcast, creator: user)
     create(:podcast_ownership, owner: user, podcast: podcast)
+    create(:comment, user: user, commentable: article)
+    create(:reaction, category: "vomit", reactable: user, user: moderator)
+    create(:feedback_message, :abuse_report, reporter_id: moderator.id, offender_id: user.id)
+
     expect do
       sidekiq_perform_enqueued_jobs do
         described_class.call(user: user, admin: admin)
       end
-    end.to change(Podcast, :count).by(-1)
-  end
-
-  it "creates a BanishedUser record with their original username" do
-    original_username = user.username
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user: user, admin: admin)
-    end
-    expect(BanishedUser.exists?(username: original_username)).to be true
-  end
-
-  it "deletes existing vomit reactions on the banished user" do
-    create(:reaction, category: "vomit", reactable: user, user: moderator)
-    sidekiq_perform_enqueued_jobs do
-      described_class.call(user: user, admin: admin)
-    end
-    expect(Reaction.where(reactable: user).count).to eq 0
+    end.to change { user.comments.count }.by(-1)
+      .and change { user.articles.count }.by(-1)
+      .and change { user.created_podcasts.count }.by(-1)
+      .and change { Reaction.where(reactable: user).count }.by(-1)
+      .and change { user.offender_feedback_messages.first.status }.from("Open").to("Resolved")
   end
 end

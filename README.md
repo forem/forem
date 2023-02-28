@@ -5,8 +5,8 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://app.travis-ci.com/github/forem/forem">
-    <img src="https://api.travis-ci.com/forem/forem.svg?branch=main" alt="Build Status">
+  <a href="https://github.com/forem/forem/actions/workflows/ci-cd.yml">
+    <img src="https://github.com/forem/forem/actions/workflows/ci-cd.yml/badge.svg" alt="Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
@@ -51,6 +51,7 @@ within our community. ❤️
 - [Developer Documentation](#developer-documentation)
 - [Core team](#core-team)
 - [Vulnerability disclosure](#vulnerability-disclosure)
+- [Acknowledgements](#acknowledgements)
 - [License](#license)
 
 ## Community
@@ -124,9 +125,9 @@ Please see our installation guides, such as the
 - [@maestromac](https://dev.to/maestromac)
 - [@lightalloy](https://dev.to/lightalloy)
 - [@ridhwana](https://dev.to/ridhwana)
-- [@fdoxyz](https://dev.to/fdoxyz)
 - [@rt4914](https://dev.to/rt4914)
 - [@jaw6](https://dev.to/jaw6)
+- [@lboogie2004](https://dev.to/lboogie2004)
 
 ## Vulnerability disclosure
 
@@ -135,7 +136,7 @@ Forem is the open source software which powers [DEV](https://dev.to).
 We welcome security research on DEV under the terms of our
 [vulnerability disclosure policy](https://dev.to/security).
 
-## Acknowledgments
+## Acknowledgements
 
 Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
 usage of their emojis.

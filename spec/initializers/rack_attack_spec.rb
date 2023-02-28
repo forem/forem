@@ -1,17 +1,15 @@
 require "rails_helper"
 
-describe Rack, ".attack", type: :request, throttle: true do
+describe Rack, ".attack", throttle: true, type: :request do
   before do
-    cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
-    allow(Rails).to receive(:cache) { cache_db }
-    cache_db.redis.flushdb
+    allow(Rails).to receive(:cache) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
     allow(Honeycomb).to receive(:add_field)
-
     ENV["FASTLY_API_KEY"] = "12345"
   end
 
   after do
     ENV["FASTLY_API_KEY"] = nil
+    Rails.cache.clear
   end
 
   describe "search_throttle" do
@@ -48,6 +46,20 @@ describe Rack, ".attack", type: :request, throttle: true do
         expect(new_ip_response).not_to eq(429)
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(7).times
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
+      end
+    end
+
+    it "doesn't throttle when API key provided belongs to admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+
+      Timecop.freeze do
+        headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8", "api-key" => admin_api_key.secret }
+        valid_responses = Array.new(10).map do
+          get api_articles_path, headers: headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(10).times
       end
     end
   end
@@ -100,6 +112,26 @@ describe Rack, ".attack", type: :request, throttle: true do
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
       end
     end
+
+    it "doesn't throttle api write endpoints when API key provided belongs to admin" do
+      admin_api_key = create(:api_secret, user: create(:user, :admin))
+      params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
+      admin_headers = {
+        "api-key" => admin_api_key.secret,
+        "content-type" => "application/json",
+        "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8"
+      }
+
+      Timecop.freeze do
+        valid_responses = Array.new(10).map do
+          post api_articles_path, params: params, headers: admin_headers
+        end
+
+        valid_responses.each { |r| expect(r).not_to eq(429) }
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(10).times
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", admin_api_key.secret).exactly(10).times
+      end
+    end
   end
 
   describe "tag_throttle" do
@@ -136,5 +168,23 @@ describe Rack, ".attack", type: :request, throttle: true do
       end
     end
     # rubocop:enable RSpec/AnyInstance, RSpec/ExampleLength
+  end
+
+  describe "forgot_password_throttle" do
+    it "throttles after 3 attempts" do
+      params = { user: { email: "yo@email.com" } }
+      admin_headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+      Timecop.freeze do
+        3.times do
+          post "/users/password", params: params, headers: admin_headers
+          expect(response).to have_http_status(:found)
+        end
+        3.times do
+          post "/users/password", params: params, headers: admin_headers
+          expect(response).to have_http_status(:too_many_requests)
+        end
+      end
+    end
   end
 end

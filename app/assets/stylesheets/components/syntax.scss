@@ -133,6 +133,10 @@ code {
   padding: 0.1em 0.25em;
 }
 
+p > code {
+  background: var(--code-inline-bg);
+}
+
 .highlight .hll {
   background-color: #49483e;
 }

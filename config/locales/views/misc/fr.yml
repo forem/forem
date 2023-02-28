@@ -4,13 +4,13 @@ fr:
     badges:
       meta:
         title: Badges
-        name: "%{title} Badge"
       all:
         one: Show one badge
         other: Show all %{count} badges
       heading: Badges
       desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
-      name: "🏅 %{title} Badge 🏅"
+      icon_close: Close
+      gotit: Got it
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
@@ -49,7 +49,7 @@ fr:
     onboardings:
       meta:
         title: Welcome to %{community}
-      heading: Ти тепер частина спільноти!
+      heading: You're now a part of the community!
       subtitle: SUGGESTED THINGS YOU CAN DO
       close: Close Welcome Message
       settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"

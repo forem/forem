@@ -304,9 +304,9 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
-      Reaction.readinglist.where(
-        user_id: id, reactable_type: "Article",
-      ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
+      readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
+      readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
   end
 
@@ -510,7 +510,7 @@ class User < ApplicationRecord
   end
 
   def receives_follower_email_notifications?
-    email.present? && subscribed_to_email_follower_notifications?
+    email.present? && notification_setting.subscribed_to_email_follower_notifications?
   end
 
   def authenticated_through?(provider_name)
@@ -533,18 +533,6 @@ class User < ApplicationRecord
 
   def flipper_id
     "User:#{id}"
-  end
-
-  def subscribed_to_welcome_notifications?
-    notification_setting.welcome_notifications
-  end
-
-  def subscribed_to_mod_roundrobin_notifications?
-    notification_setting.mod_roundrobin_notifications
-  end
-
-  def subscribed_to_email_follower_notifications?
-    notification_setting.email_follower_notifications
   end
 
   def reactions_to

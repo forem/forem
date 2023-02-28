@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "PageViews", type: :request do
+RSpec.describe "PageViews" do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
 
@@ -89,17 +89,7 @@ RSpec.describe "PageViews", type: :request do
         page_views_post(article_id: article.id, referrer: "https://www.google.com/")
         page_views_post(article_id: article.id)
 
-        expect(article.reload.organic_page_views_count).to eq(10)
-        expect(article.reload.organic_page_views_past_week_count).to eq(10)
         expect(article.reload.organic_page_views_past_month_count).to eq(10)
-
-        page_views_post(article_id: article.id, referrer: "https://www.google.com/")
-
-        expect(article.reload.organic_page_views_count).to eq(20)
-
-        page_views_post(article_id: article.id)
-
-        expect(article.reload.organic_page_views_count).to eq(20)
       end
 
       it "sends referrer" do

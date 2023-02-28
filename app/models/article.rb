@@ -2,6 +2,7 @@ class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
   include Reactable
+  include Taggable
   include UserSubscriptionSourceable
   include PgSearch::Model
 
@@ -104,8 +105,6 @@ class Article < ApplicationRecord
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
-  has_many :html_variant_successes, dependent: :nullify
-  has_many :html_variant_trials, dependent: :nullify
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
@@ -289,47 +288,6 @@ class Article < ApplicationRecord
       .tagged_with(tag_name)
   }
 
-  scope :cached_tagged_with, lambda { |tag|
-    case tag
-    when String, Symbol
-      # In Postgres regexes, the [[:<:]] and [[:>:]] are equivalent to "start of
-      # word" and "end of word", respectively. They're similar to `\b` in Perl-
-      # compatible regexes (PCRE), but that matches at either end of a word.
-      # They're more comparable to how vim's `\<` and `\>` work.
-      where("cached_tag_list ~ ?", "[[:<:]]#{tag}[[:>:]]")
-    when Array
-      tag.reduce(self) { |acc, elem| acc.cached_tagged_with(elem) }
-    when Tag
-      cached_tagged_with(tag.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tag.inspect}"
-    end
-  }
-
-  scope :cached_tagged_with_any, lambda { |tags|
-    case tags
-    when String, Symbol
-      cached_tagged_with(tags)
-    when Array
-      tags
-        .map { |tag| cached_tagged_with(tag) }
-        .reduce { |acc, elem| acc.or(elem) }
-    when Tag
-      cached_tagged_with(tags.name)
-    else
-      raise TypeError, "Cannot search tags for: #{tags.inspect}"
-    end
-  }
-
-  # We usually try to avoid using Arel directly like this. However, none of the more
-  # straight-forward ways of negating the above scope worked:
-  # 1. A subquery doesn't work because we're not dealing with a simple NOT IN scenario.
-  # 2. where.not(cached_tagged_with_any(tags).where_values_hash) doesn't work because where_values_hash
-  #    only works for simple conditions and returns an empty hash in this case.
-  scope :not_cached_tagged_with_any, lambda { |tags|
-    where(cached_tagged_with_any(tags).arel.constraints.reduce(:or).not)
-  }
-
   scope :active_help, lambda {
     stories = published.cached_tagged_with("help").order(created_at: :desc)
 
@@ -487,6 +445,14 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
+      processed_content.has_front_matter?
+    else
+      original_has_frontmatter?
+    end
+  end
+
+  def original_has_frontmatter?
     fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
     begin
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
@@ -662,7 +628,42 @@ class Article < ApplicationRecord
       .strip
   end
 
+  def processed_content
+    return @processed_content if @processed_content && !body_markdown_changed?
+    return unless user
+
+    @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
+  end
+
   def evaluate_markdown
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
+      extracted_evaluate_markdown
+    else
+      original_evaluate_markdown
+    end
+  end
+
+  def extracted_evaluate_markdown
+    content_renderer = processed_content
+    return unless content_renderer
+
+    self.processed_html = content_renderer.process(calculate_reading_time: true)
+    self.reading_time = content_renderer.reading_time
+
+    front_matter = content_renderer.front_matter
+
+    if front_matter.any?
+      evaluate_front_matter(front_matter)
+    elsif tag_list.any?
+      set_tag_list(tag_list)
+    end
+
+    self.description = processed_description if description.blank?
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def original_evaluate_markdown
     fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
@@ -728,31 +729,31 @@ class Article < ApplicationRecord
     Articles::BustMultipleCachesWorker.perform_bulk(job_params)
   end
 
-  def evaluate_front_matter(front_matter)
-    self.title = front_matter["title"] if front_matter["title"].present?
-    set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
-    self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
+  def evaluate_front_matter(hash)
+    self.title = hash["title"] if hash["title"].present?
+    set_tag_list(hash["tags"]) if hash["tags"].present?
+    self.published = hash["published"] if %w[true false].include?(hash["published"].to_s)
 
-    self.published_at = front_matter["published_at"] if front_matter["published_at"]
-    self.published_at ||= parse_date(front_matter["date"]) if published
+    self.published_at = hash["published_at"] if hash["published_at"]
+    self.published_at ||= parse_date(hash["date"]) if published
 
-    set_main_image(front_matter)
-    self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
+    set_main_image(hash)
+    self.canonical_url = hash["canonical_url"] if hash["canonical_url"].present?
 
-    update_description = front_matter["description"].present? || front_matter["title"].present?
-    self.description = front_matter["description"] if update_description
+    update_description = hash["description"].present? || hash["title"].present?
+    self.description = hash["description"] if update_description
 
-    self.collection_id = nil if front_matter["title"].present?
-    self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
+    self.collection_id = nil if hash["title"].present?
+    self.collection_id = Collection.find_series(hash["series"], user).id if hash["series"].present?
   end
 
-  def set_main_image(front_matter)
+  def set_main_image(hash)
     # At one point, we have set the main_image based on the front matter. Forever will that now dictate the behavior.
     if main_image_from_frontmatter?
-      self.main_image = front_matter["cover_image"]
-    elsif front_matter.key?("cover_image")
+      self.main_image = hash["cover_image"]
+    elsif hash.key?("cover_image")
       # They've chosen the set cover image in the front matter, so we'll proceed with that assumption.
-      self.main_image = front_matter["cover_image"]
+      self.main_image = hash["cover_image"]
       self.main_image_from_frontmatter = true
     end
   end
@@ -770,12 +771,7 @@ class Article < ApplicationRecord
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
-    # check tags names aren't too long and don't contain non alphabet characters
-    tag_list.each do |tag|
-      new_tag = Tag.new(name: tag)
-      new_tag.validate_name
-      new_tag.errors.messages[:name].each { |message| errors.add(:tag, "\"#{tag}\" #{message}") }
-    end
+    validate_tag_name(tag_list)
   end
 
   def remove_tag_adjustments_from_tag_list
@@ -837,10 +833,11 @@ class Article < ApplicationRecord
   def correct_published_at?
     return unless changes["published_at"]
 
-    # for drafts (that were never published before) or scheduled articles => allow future or current dates
+    # for drafts (that were never published before) or scheduled articles
+    # => allow future or current dates, or no published_at
     if !published_at_was || published_at_was > Time.current
       # for articles published_from_feed (exported from rss) we allow past published_at
-      if (!published_at || published_at < 15.minutes.ago) && !published_from_feed
+      if (published_at && published_at < 15.minutes.ago) && !published_from_feed
         errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
       end
     else
@@ -925,7 +922,7 @@ class Article < ApplicationRecord
   end
 
   def title_to_slug
-    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}" # rubocop:disable Rails/ToSWithArgument
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
   end
 
   def touch_actor_latest_article_updated_at(destroying: false)

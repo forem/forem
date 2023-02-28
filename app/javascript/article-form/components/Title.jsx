@@ -32,8 +32,8 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
         className="crayons-textfield crayons-textfield--ghost fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"
         id="article-form-title"
-        aria-label="Заголовок"
-        placeholder="Заголовок"
+        aria-label="Post Title"
+        placeholder="New post title here..."
         autoComplete="off"
         value={defaultValue}
         onFocus={switchHelpContext}

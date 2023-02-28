@@ -5,15 +5,15 @@ export const ArticleFormTitle = () => (
     data-testid="title-help"
     className="crayons-article-form__help crayons-article-form__help--title"
   >
-    <h4 className="mb-2 fs-l">Написання крутого заголовку</h4>
+    <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-		Подумайте про назву вашого допису як про дуже короткий (але переконливий!)
-		опис - як огляд самої публікації в одному короткому реченні.
+        Think of your post title as a super short (but compelling!) description
+        — like an overview of the actual post in one short sentence.
       </li>
       <li>
-        Використовуйте ключові слова там, де це доречно, щоб люди могли знайти
-		вашу публікацію за допомогою пошуку.
+        Use keywords where appropriate to help ensure people can find your post
+        by search.
       </li>
     </ul>
   </div>

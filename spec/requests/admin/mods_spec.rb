@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/moderation/mods", type: :request do
+RSpec.describe "/admin/moderation/mods" do
   let!(:admin) { create(:user, :admin) }
   let!(:regular_user) { create(:user) }
   let!(:moderator) { create(:user, :trusted) }

@@ -1,8 +1,10 @@
 require "rails_helper"
 
-RSpec.describe DisplayAd, type: :model do
-  let(:organization) { create(:organization) }
-  let(:display_ad) { create(:display_ad, organization_id: organization.id) }
+RSpec.describe DisplayAd do
+  let(:organization) { build(:organization) }
+  let(:display_ad) { build(:display_ad, organization: nil) }
+
+  it_behaves_like "Taggable"
 
   describe "validations" do
     describe "builtin validations" do
@@ -13,6 +15,7 @@ RSpec.describe DisplayAd, type: :model do
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
+      it { is_expected.to have_many(:tags) }
     end
 
     it "allows sidebar_right" do
@@ -34,9 +37,33 @@ RSpec.describe DisplayAd, type: :model do
       display_ad.placement_area = "sidebar_left_2"
       expect(display_ad.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
     end
+
+    it "allows creator_id to be set" do
+      display_ad.creator = build(:user)
+      expect(display_ad).to be_valid
+    end
+
+    it "does not require creator to be valid" do
+      display_ad.creator = nil
+      expect(display_ad).to be_valid
+    end
+
+    it "requires organization_id for community-type ads" do
+      expect(display_ad).to be_valid
+
+      display_ad.type_of = "community"
+      expect(display_ad).not_to be_valid
+      expect(display_ad.errors[:organization]).not_to be_blank
+
+      display_ad.organization = organization
+      expect(display_ad).to be_valid
+      expect(display_ad.errors[:organization]).to be_blank
+    end
   end
 
   context "when callbacks are triggered before save" do
+    before { display_ad.save! }
+
     it "generates #processed_html from #body_markdown" do
       expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey")
     end
@@ -62,58 +89,6 @@ RSpec.describe DisplayAd, type: :model do
     end
   end
 
-  describe ".for_display" do
-    context "when updating the published and approved values" do
-      let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
-
-      it "does not return unpublished ads" do
-        display_ad.update!(published: false, approved: true)
-        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
-      end
-
-      it "does not return unapproved ads" do
-        display_ad.update!(published: true, approved: false)
-        expect(described_class.for_display(display_ad.placement_area, false)).to be_nil
-      end
-
-      it "returns published and approved ads" do
-        display_ad.update!(published: true, approved: true)
-        expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
-      end
-    end
-
-    context "when display_to is set to 'logged_in' or 'logged_out'" do
-      let!(:display_ad2) do
-        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_in")
-      end
-      let!(:display_ad3) do
-        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_out")
-      end
-
-      it "shows ads that have a display_to of 'logged_in' if a user is signed in" do
-        expect(described_class.for_display(display_ad2.placement_area, true)).to eq(display_ad2)
-      end
-
-      it "shows ads that have a display_to of 'logged_out' if a user is signed in" do
-        expect(described_class.for_display(display_ad3.placement_area, false)).to eq(display_ad3)
-      end
-    end
-
-    context "when display_to is set to 'all'" do
-      let!(:display_ad) do
-        create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "all")
-      end
-
-      it "shows ads that have a display_to of 'all' if a user is signed in" do
-        expect(described_class.for_display(display_ad.placement_area, true)).to eq(display_ad)
-      end
-
-      it "shows ads that have a display_to of 'all' if a user is not signed in" do
-        expect(described_class.for_display(display_ad.placement_area, false)).to eq(display_ad)
-      end
-    end
-  end
-
   describe ".search_ads" do
     let!(:ad) { create(:display_ad, name: "This is an Ad", body_markdown: "Ad Body", placement_area: "post_comments") }
 
@@ -135,6 +110,46 @@ RSpec.describe DisplayAd, type: :model do
 
     it "returns empty when no match" do
       expect(described_class.search_ads("foo")).to eq([])
+    end
+  end
+
+  describe ".validate_tag" do
+    it "rejects more than 10 tags" do
+      eleven_tags = "one, two, three, four, five, six, seven, eight, nine, ten, eleven"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: eleven_tags).valid?).to be(false)
+    end
+
+    it "rejects tags with length > 30" do
+      tags = "'testing tag length with more than 30 chars', tag"
+      expect(build(:display_ad,
+                   name: "This is an Ad",
+                   body_markdown: "Ad Body",
+                   placement_area: "post_comments",
+                   tag_list: tags).valid?).to be(false)
+    end
+
+    it "rejects tag with non-alphanumerics" do
+      expect do
+        build(:display_ad,
+              name: "This is an Ad",
+              body_markdown: "Ad Body",
+              placement_area: "post_comments",
+              tag_list: "c++").validate!
+      end.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "always downcase tags" do
+      tags = "UPPERCASE, CAPITALIZE"
+      display_ad = create(:display_ad,
+                          name: "This is an Ad",
+                          body_markdown: "Ad Body",
+                          placement_area: "post_comments",
+                          tag_list: tags)
+      expect(display_ad.tag_list).to eq(tags.downcase.split(", "))
     end
   end
 end

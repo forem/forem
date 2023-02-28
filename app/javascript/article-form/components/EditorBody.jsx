@@ -70,7 +70,7 @@ export const EditorBody = ({
         name="body_markdown"
         id="article_body_markdown"
         defaultValue={defaultValue}
-        placeholder="Тут пишіть свій допис..."
+        placeholder="Write your post content here..."
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field ff-monospace fs-l h-100"
       />
     </div>

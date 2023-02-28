@@ -54,7 +54,7 @@ ua:
       close: Закрити
       settings_html: "<span class=\"emoji\">💅🏼</span>Налаштуй свій профіль"
       welcome_html: "<span class=\"emoji\">😊</span>Заходь до треду новачків"
-      write_html: "<span class=\"emoji\">✍🏾</span>Напиши свій перший %{community} пост"
+      write_html: "<span class=\"emoji\">✍🏾</span>Напиши свій перший %{community} допис"
     pins:
       article: Закріплено
       pinned: "📌 Закріплено! (закріплені пости показуються хронологічно, 5 максимум)"

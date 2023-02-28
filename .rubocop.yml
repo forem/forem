@@ -673,7 +673,7 @@ Style/SwapValues:
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   Enabled: false
-# We're disabling it for the time being until a new version of rubocop 
+# We're disabling it for the time being until a new version of rubocop
 # (> 1.31.2) is released with a fix for false positives that are coming up.
 # These files below were the original files excluded from this rule.
 #  Exclude:
@@ -965,3 +965,10 @@ RSpec/Rails/AvoidSetupHook:
   Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
+
+RSpec/NoExpectationExample:
+  Enabled: false
+  AllowedPatterns:
+    - ^expect_
+    - ^assert_
+    - sidekiq_assert_
