@@ -6,6 +6,7 @@ module Reactable
     has_many :distinct_reaction_categories, -> { order(:category).merge(Reaction.distinct_categories) },
              as: :reactable,
              inverse_of: :reactable,
+             dependent: nil,
              class_name: "Reaction"
   end
 
