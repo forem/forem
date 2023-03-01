@@ -39,6 +39,7 @@ class Reaction < ApplicationRecord
   scope :unarchived, -> { where.not(status: "archived") }
   scope :from_user, ->(user) { where(user: user) }
   scope :readinglist_for_user, ->(user) { readinglist.unarchived.only_articles.from_user(user) }
+  scope :distinct_categories, -> { select("distinct(reactions.category) as category, reactable_id, reactable_type") }
 
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }

@@ -3,6 +3,10 @@ module Reactable
 
   included do
     has_many :reactions, as: :reactable, inverse_of: :reactable, dependent: :destroy
+    has_many :distinct_reaction_categories, -> { order(:category).merge(Reaction.distinct_categories) },
+             as: :reactable,
+             inverse_of: :reactable,
+             class_name: "Reaction"
   end
 
   def sync_reactions_count
@@ -11,9 +15,9 @@ module Reactable
 
   def public_reaction_categories
     @public_reaction_categories ||= begin
-      reacted = reactions.distinct(:category).pluck(:category)
-      ReactionCategory.for_view
-        .select do |reaction_type|
+      # .map is intentional below - .pluck would break eager-loaded association!
+      reacted = distinct_reaction_categories.map(&:category)
+      ReactionCategory.for_view.select do |reaction_type|
         reacted.include?(reaction_type.slug.to_s)
       end
     end
