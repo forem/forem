@@ -150,7 +150,7 @@
               </div>
             </div>
 
-            <%= render "articles/multiple_engagements" if FeatureFlag.enabled?(:multiple_reactions) && @article.public_reactions_count? %>
+            <%= render "articles/multiple_engagements" unless @article.public_reactions_count.zero? %>
 
             <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
