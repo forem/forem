@@ -16,7 +16,7 @@ describe('Logged out Home feed', () => {
       .within(() => {
         cy.findByRole('link', {
           name: 'Admin McAdmin',
-        });
+        }).should('have.focus');
 
         // Check all the expected user data sections are present
         cy.findByText('Admin user summary');
