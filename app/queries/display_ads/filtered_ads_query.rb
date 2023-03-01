@@ -60,7 +60,7 @@ module DisplayAds
     end
 
     def community_or_in_house_ads
-      #community type ads matching author OR any/all in-house ads
+      # community type ads matching author OR any/all in-house ads
       # Whats considered an "ads matching author"?
       @filtered_display_ads.where(type_of: %w[community in_house])
     end
