@@ -1,8 +1,3 @@
-codecov:
-  notify:
-    after_n_builds: 10
-comment:
-  after_n_builds: 10
 ignore:
   - "vendor"
   - "bin"
@@ -11,7 +6,10 @@ ignore:
   - "lib/generators"
 flag_management:
   default_rules:
+    carryforward: true
     statuses:
       - type: project
         target: auto
         threshold: 1%
+      - type: patch
+        target: 90%
