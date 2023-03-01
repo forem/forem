@@ -29,6 +29,9 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
+      ## Should we be checking for type_of? Should we be passing type in the initializer?
+      @filtered_display_ads = community_or_in_house_ads
+
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
       @filtered_display_ads = sample_ads
     end
@@ -54,6 +57,12 @@ module DisplayAds
 
     def authenticated_ads(display_auth_audience)
       @filtered_display_ads.where(display_to: display_auth_audience)
+    end
+
+    def community_or_in_house_ads
+      #community type ads matching author OR any/all in-house ads
+      # Whats considered an "ads matching author"?
+      @filtered_display_ads.where(type_of: ["community", "in_house"])
     end
 
     # Business Logic Context:
