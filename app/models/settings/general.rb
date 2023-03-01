@@ -1,6 +1,9 @@
 module Settings
   class General < Base
     self.table_name = "site_configs"
+    SOCIAL_MEDIA_SERVICES = %w[
+      twitter facebook github instagram twitch mastodon
+    ].freeze
 
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
@@ -118,5 +121,11 @@ module Settings
     setting :feed_pinned_article_id, type: :integer, validates: {
       existing_published_article_id: true, allow_nil: true
     }
+
+    def self.social_media_services
+      SOCIAL_MEDIA_SERVICES.index_with do |name|
+        social_media_handles[name]
+      end
+    end
   end
 end
