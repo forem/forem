@@ -921,7 +921,7 @@ class Article < ApplicationRecord
     self.nth_published_by_author = (index || published_article_ids.size) + 1
   end
 
-def title_to_slug title
+def title_to_slug
 
     ru = { 'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'h', 'д' => 'd', \
     'е' => 'e', 'ё' => 'e', 'ж' => 'j', 'з' => 'z', 'и' => 'y', \
@@ -933,17 +933,21 @@ def title_to_slug title
 
     identifier = ''
 
-    cyrillic_string.downcase.each_char do |char|
+    title.downcase.each_char do |char|
       identifier += ru[char] ? ru[char] : char
     end
 
     identifier.gsub!(/[^a-z0-9_]+/, '_'); # remaining non-alphanumeric => hyphen
     identifier.gsub(/^[-_]*|[-_]*$/, ''); # remove hyphens/underscores and numbers at beginning and hyphens/underscores at end
+	
+	"#{identifier}-#{rand(100_000).to_s(26)}"
 end
 
 
 
-
+  def title_to_slug
+    "#{Sterile.sluggerize(title)}-#{rand(100_000).to_s(26)}"
+  end
 
   def touch_actor_latest_article_updated_at(destroying: false)
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
