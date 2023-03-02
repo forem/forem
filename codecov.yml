@@ -4,6 +4,9 @@ ignore:
   - "**/*.svg"
   - "lib/sitemap_generator"
   - "lib/generators"
+coverage:
+  status:
+    patch: 90%
 flag_management:
   default_rules:
     carryforward: true
@@ -11,5 +14,3 @@ flag_management:
       - type: project
         target: auto
         threshold: 1%
-      - type: patch
-        target: 90%
