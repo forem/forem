@@ -6,7 +6,7 @@
   <div class="crayons-sponsorship__header relative">
     <% if Page.exists?(slug: "billboards") && display_ad.organization_id? && display_ad.type_of == "community" %>
       <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-      <div class="crayons-sponsorship__title pl-2 fs-s"><%= display_ad.organization.name %></div>
+      <div class="crayons-sponsorship__title pl-1 fs-s"><%= display_ad.organization.name %></div>
     <% else %>
       <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
     <% end %>
