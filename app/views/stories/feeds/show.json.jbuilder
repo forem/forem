@@ -7,7 +7,6 @@ article_methods_to_include = %i[
   readable_publish_date flare_tag class_name
   cloudinary_video_url video_duration_in_minutes published_at_int
   published_timestamp main_image_background_hex_color
-  public_reaction_categories
 ]
 
 json.array!(@stories) do |article|
