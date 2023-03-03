@@ -24,7 +24,9 @@ class DisplayAd < ApplicationRecord
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
+  validates :organization, presence: true, if: :community?
   validate :validate_tag
+
   before_save :process_markdown
   after_save :generate_display_ad_name
 

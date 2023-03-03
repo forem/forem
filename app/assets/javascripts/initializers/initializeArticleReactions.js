@@ -250,11 +250,12 @@ function closeDrawerOnOutsideClick() {
   document.addEventListener('click', function (event) {
     const reactionDrawerElement = document.querySelector('.reaction-drawer');
     const reactionDrawerTriggerElement = document.querySelector('#reaction-drawer-trigger');
-    if (reactionDrawerElement) {
+    if (reactionDrawerElement && reactionDrawerTriggerElement) {
       const isClickInside = reactionDrawerElement.contains(event.target) || reactionDrawerTriggerElement.contains(event.target);
 
-      if (!isClickInside) {
-        document.querySelector('.hoverdown.open').classList.remove('open');
+      const openDrawerElement = document.querySelector('.hoverdown.open')
+      if (!isClickInside && openDrawerElement) {
+        openDrawerElement.classList.remove('open');
       }
     }
   });
