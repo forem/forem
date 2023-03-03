@@ -75,6 +75,10 @@ RSpec.describe Tag, type: :model do
         # chinese is allowed
         tag.name = "你好"
         expect(tag).to be_valid
+		
+        # Ukrainian is allowed
+        tag.name = "Українська"
+        expect(tag).to be_valid
 
         # Polish characters are allowed
         tag.name = "Cześć"
