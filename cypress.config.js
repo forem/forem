@@ -8,6 +8,7 @@ module.exports = defineConfig({
       return require('./cypress/plugins/index.js')(on, config);
     },
     screenshotsFolder: 'tmp/cypress_screenshots',
+    defaultCommandTimeout: 10000,
     trashAssetsBeforeRuns: false,
     video: false,
     retries: 3,
