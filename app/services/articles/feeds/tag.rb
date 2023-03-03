@@ -17,7 +17,6 @@ module Articles
           .published
           .limited_column_select
           .includes(top_comments: :user)
-          .includes(:distinct_reaction_categories)
           .page(page)
           .per(number_of_articles)
       end
