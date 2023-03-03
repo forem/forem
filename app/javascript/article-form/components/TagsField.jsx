@@ -34,11 +34,11 @@ export const TagsField = ({ onInput, defaultValue, switchHelpContext }) => {
       staticSuggestionsHeading={
         <h2 className="c-autocomplete--multi__top-tags-heading">Популярні теґи</h2>
       }
-      labelText="Додайте до 5 теґів"
+      labelText="Додайте до 4 теґів"
       showLabel={false}
-      placeholder="Додайте до 5 теґів"
+      placeholder="Додайте до 4 теґів"
       border={false}
-      maxSelections={5}
+      maxSelections={4}
       SuggestionTemplate={TagAutocompleteOption}
       SelectionTemplate={TagAutocompleteSelection}
       onSelectionsChanged={syncSelections}
