@@ -203,7 +203,7 @@ RSpec.describe "Stories::Feeds" do
     context "when there are low-scoring articles" do
       let!(:article) { create(:article, featured: false) }
       let!(:article_with_mid_score) do
-        minimum = Articles::Feeds::Latest::MINIMUM_SCORE + 1
+        minimum = Articles::Feeds::Latest::MINIMUM_SCORE
         maximum = Settings::UserExperience.home_feed_minimum_score
         score = (minimum..maximum).to_a.sample
         create(:article, score: score)
