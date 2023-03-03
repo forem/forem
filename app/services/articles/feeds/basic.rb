@@ -15,6 +15,7 @@ module Articles
           .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
           .limited_column_select.includes(top_comments: :user)
+          .includes(:distinct_reaction_categories)
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
