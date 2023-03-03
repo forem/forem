@@ -26,11 +26,11 @@ class ReactionCategory
     end
 
     def to_a
-      @list ||= to_h.values
+      @to_a ||= to_h.values
     end
 
     def to_h
-      @hash ||= REACTION_CATEGORY_LIST.each_pair.to_h do |slug, category_or_attributes|
+      @to_h ||= REACTION_CATEGORY_LIST.each_pair.to_h do |slug, category_or_attributes|
         as_category = if category_or_attributes.is_a?(ReactionCategory)
                         category_or_attributes
                       else
