@@ -20,11 +20,20 @@ ua:
     search: Пошук
     success_settings: Налаштування успішно оновлені.
   date:
-    formats:
-      full: "%-d %B, %Y - %A"
-      full_month: "%B, %Y"
-      full_day: "%-d %B, %Y"
-      week_abbr: "%a"
+    abbr_month_names:
+    - 
+    - січ
+    - лют
+    - бер
+    - кві
+    - тра
+    - чер
+    - лип
+    - сер
+    - вер
+    - жов
+    - лис
+    - гру
     month_names_with_day:
       -
       - січня
