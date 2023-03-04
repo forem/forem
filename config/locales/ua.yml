@@ -20,20 +20,39 @@ ua:
     search: Пошук
     success_settings: Налаштування успішно оновлені.
   date:
-    abbr_month_names:
-    - 
-    - січ
-    - лют
-    - бер
-    - кві
-    - тра
-    - чер
-    - лип
-    - сер
-    - вер
-    - жов
-    - лис
-    - гру
+    formats:
+      full: "%-d %B, %Y - %A"
+      full_month: "%B, %Y"
+      full_day: "%-d %B, %Y"
+      week_abbr: "%a"
+    month_names_with_day:
+      -
+      - січня
+      - лютого
+      - березня
+      - квітня
+      - травня
+      - червня
+      - липня
+      - серпня
+      - вересня
+      - жовтня
+      - листопада
+      - грудня
+    month_names_standalone:
+     -
+     - Січень
+     - Лютий
+     - Березень
+     - Квітень
+     - Травень
+     - Червень
+     - Липень
+     - Серпень
+     - Вересень
+     - Жовтень
+     - Листопад
+     - Грудень
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
