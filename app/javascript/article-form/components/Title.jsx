@@ -33,7 +33,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
         type="text"
         id="article-form-title"
         aria-label="Post Title"
-        placeholder="New post title here..."
+        placeholder="Заголовок"
         autoComplete="off"
         value={defaultValue}
         onFocus={switchHelpContext}

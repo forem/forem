@@ -1,6 +1,6 @@
 module DateHelper
   def local_date(datetime, show_year: true)
-    datetime = Time.zone.parse(datetime) if datetime.is_a?(String)
+
     format = show_year ? :short_with_year : :short
 
     tag.time(
