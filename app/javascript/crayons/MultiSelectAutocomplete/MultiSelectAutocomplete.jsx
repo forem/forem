@@ -15,8 +15,8 @@ const KEYS = {
   SPACE: ' ',
 };
 
-const ALLOWED_CHARS_REGEX = /([a-zA-Z0-9])/;
-const PLACEHOLDER_SELECTIONS_MADE = 'Add another...';
+const ALLOWED_CHARS_REGEX = /([а-яА-ЯїЇєЄґҐіІa-zA-Z0-9]+)/;
+const PLACEHOLDER_SELECTIONS_MADE = 'Ще один...';
 
 const reducer = (state, action) => {
   switch (action.type) {
