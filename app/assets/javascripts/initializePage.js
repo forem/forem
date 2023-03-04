@@ -20,7 +20,6 @@ function callInitializers() {
   initializeArticleReactions();
   initNotifications();
   initializeSettings();
-  initializeTimeFixer();
   initializeDashboardSort();
   initializeArchivedPostFilter();
   initializeCreditsPage();
