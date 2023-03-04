@@ -29,7 +29,6 @@ function callInitializers() {
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();
-  initializeDateHelpers();
 }
 
 function initializePage() {
