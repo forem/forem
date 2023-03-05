@@ -20,7 +20,6 @@ ua:
     search: Пошук
     success_settings: Налаштування успішно оновлені.
   date:
-  formats:
     abbr_month_names:
     - 
     - січ
@@ -35,6 +34,7 @@ ua:
     - жов
     - лис
     - гру
+    formats:
     full: "%-d %B, %Y - %A"
     full_month: "%B, %Y"
     full_day: "%-d %B, %Y"
