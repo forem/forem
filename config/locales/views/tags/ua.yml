@@ -3,24 +3,24 @@ ua:
   views:
     tags:
       meta:
-        title: Tags
-        description: Tags to follow on %{community}
+        title: Теґи
+        description: Теґ для підписки на %{community}
         og:
-          description: "%{community} is great!"
+          description: "%{community} це круто"
       heading:
-        default: Top tags
-        search_results: Search results for %{q}
+        default: Популярні теґи
+        search_results: Пошукова видача %{q}
       search:
         aria_labels:
-          search_input: Tag search term
-          submit: Search tags
-        placeholder: Search for tag
+          search_input: Теґ пошукового запиту
+          submit: Шукати теґ
+        placeholder: Шукати теґ
       edit:
         meta:
           title: Edit %{tag}
         admin: "Admin"
         help: "Help"
-        view: "View"
+        view: "Переглянути"
         form:
           pretty_name:
             label: Pretty name
@@ -37,26 +37,26 @@ ua:
             label: Rules markdown
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
-      follow: Follow
-      following_tags: Following tags
+      follow: Підписатися
+      following_tags: Підписка на теґи
       moderator:
         text_html: "comma separated, space is optional. Example: %{code}"
         code: 123
         placeholder: "comma separated, space is optional. Example: 1,2,3"
       published:
-        one: 1 post published
-        other: "%{count} posts published"
+        one: 1 допис опубліковано
+        other: "%{count} дописів опубліковано"
       sidebar:
-        about: 'about #%{tag}'
-        admin: Admin
-        edit: Edit
+        about: 'про #%{tag}'
+        admin: Адмін
+        edit: Редагувати
         guidelines: submission guidelines
         moderate: Moderate
         mods: tag moderators
-        new: Create Post
-        older: 'Older #%{tag} posts'
+        new: Створити допис
+        older: 'Старіші #%{tag} дописи'
         published:
           one: 1 Post Published
-          other: "%{count} Posts Published"
-        sponsor: "%{tag} is sponsored by"
-      sponsor: "| Sponsored by %{org} ❤️"
+          other: "%{count} дописів опубліковано"
+        sponsor: "%{tag} спонсорується"
+      sponsor: "| Спонсор: %{org} ❤️"

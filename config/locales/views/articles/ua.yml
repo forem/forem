@@ -18,7 +18,7 @@ ua:
         subscribe: Subscribe
       conduct:
         aria_label: Conduct controls
-        code: Code of Conduct
+        code: Норми поведінки
         report: Поскаржитися
       delete:
         heading: Ви впевнені що хочете видалити цю статтю?
@@ -49,43 +49,43 @@ ua:
         one: '#discuss <img src="%{image}" />%{count}'
         other: '#discuss <img src="%{image}" />%{count}'
       save:
-        title: Save to reading list
-        aria_label: Save to reading list
-        initial: Save
-        success: Saved
+        title: Додати до збереженого 
+        aria_label: Додати до збереженого 
+        initial: Зберегти
+        success: Збережено
       scheduled:
-        subtitle: Scheduled Post.
-        text: " This URL is public but secret, so share at your own discretion."
-        edit: Click to edit
+        subtitle: Запланований допис.
+        text: " Ця URL-адреса є публічною, але секретною, тож діліться нею на власний розсуд"
+        edit: Натисніть, щоб змінити
       series:
         subtitle: "%{slug} (%{size})"
         size:
-          one: "%{count} Part Series"
-          other: "%{count} Part Series"
+          one: "%{count} частина серії"
+          other: "%{count} частина серії"
         published: Published %{date}
         inbetween:
           num: "..."
           text:
-            one: one more part...
-            other: "%{count} more parts..."
+            one: ще одна частина...
+            other: "%{count} частин..."
           title: View more
       unlock:
         meta:
           title: Confirm Discussion Unlock
-        heading: Are you sure you want to unlock the discussion on this post?
-        desc: Users will be able to add new comments. You can lock the discussion at any time to prevent users from leaving comments again.
+        heading: Ви впевнені, що хочете розблокувати обговорення цього допису?
+        desc: Користувачі зможуть додавати нові коментарі. Ви можете будь-коли заблокувати обговорення, щоб користувачі більше не могли залишати коментарі.
         cancel: Відмінити
         notes: 'Notes from when this discussion was locked (only visible to you and admins):'
         reason: 'Reason this discussion was locked (publicly visible):'
         submit: Unlock discussion
       unpublished:
-        subtitle: Unpublished Post.
-        text: " This URL is public but secret, so share at your own discretion."
-        edit: Click to edit
+        subtitle: Неопублікований допис.
+        text: " Ця URL-адреса є публічною, але секретною, тож діліться нею на власний розсуд."
+        edit: Натисніть, щоб змінити
       co_authors_html: with %{names}
       crossposted:
-        text_html: Originally published at %{url} %{on}
-        on_html: on %{date}
+        text_html: Спочатку опубліковано на %{url} %{on}
+        on_html: о %{date}
       edited: Оновлено %{date}
       edited_html: Оновлено %{date}
       for_org_html: "%{start} for %{end}%{org}"

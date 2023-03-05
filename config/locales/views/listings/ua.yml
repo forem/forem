@@ -47,9 +47,9 @@ ua:
         expiry:
           description: If applicable for time sensitive events, deadlines, etc.
         location:
-          description: 32 characters max, plain text
-          label: Location (If applicable for events, etc.)
-          placeholder: New York
+          description: Не більше 32 символів, звичайний текст
+          label: Місце
+          placeholder: Житомир
         no_credit: You need at least one credit to create a listing.
         organization:
           description: Posting on behalf of an organization spends the organization's credits.
@@ -59,9 +59,9 @@ ua:
         save: Save draft
         save_notice: You will not be charged credits to save a draft.
         tags:
-          placeholder: Add up to 8 tags...
+          placeholder: Додайте до 8 тегів...
         title:
-          placeholder: 128 characters max, plain text
+          placeholder: 128 символів максимум, звичайний текст
       nav:
         aria_label: Listings
         create: Create

@@ -26,7 +26,7 @@ ua:
         admin: Адмін
         dashboard: Панель управління
         placeholder: "..."
-        list: Закладки
+        list: Збережене
         moderator_center: Центр модерації
         other: Інше
         settings: Налаштування
@@ -38,7 +38,7 @@ ua:
         Listings: Списки
         Podcasts: Подкасти
         Privacy Policy: Політика конфіденційності
-        Reading List: Закладки
+        Reading List: Збережене
         Sponsors: Спонсори
         Tags: Теґи
         Terms of use: Умови використання
@@ -57,7 +57,7 @@ ua:
         popular_tags: Популярні теґи
       footer:
         built:
-          text_html: "Ternox "
+          text_html: "by <a href="https://ternox.com"/Ternox</a> "
           forem: Forem
           opensource: open source
           dev: DEV

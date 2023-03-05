@@ -4,10 +4,10 @@ ua:
     auth:
       background: forem background
       create:
-        aria_label: Create new account
-        text: Create account
+        aria_label: Створити профіль
+        text: Створити профіль
       creator:
-        text1: Let's start your Forem journey!
+        text1: Відкрийте для себе Бéзмір!
         text2: Create your admin account first.
         text3: Then we'll walk you through your Forem setup.
         hint:
@@ -16,17 +16,17 @@ ua:
           text_html: "%{start}Your username will be\_%{end}%{button}"
         submit: Create my account
       login:
-        aria_label: Log in
-        text: Log in
-        continue: Continue
+        aria_label: Увійти
+        text: Увійти
+        continue: Продовжити
         forgot: I forgot my password
       provider:
         text: "%{action} with %{provider}"
-        login: Continue
-        signup: Sign up
+        login: Продовжити
+        signup: Зареєструватися
         email:
           icon: email
-          text: Sign up with Email
+          text: Зареєструватися через Email
       register:
         errors:
           one: Whoops, we found %{count} problem
@@ -37,27 +37,27 @@ ua:
         create: Create your account
         field:
           name:
-            aria_label: Name
-            label: Name
+            aria_label: Ім'я
+            label: Ім'я
           username:
-            aria_label: Username
-            desc: A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.
-            label: Username
+            aria_label: Юзернейм
+            desc: Юзернейм може містити лише літери, цифри та символи підкреслення. Максимальна довжина імені користувача може становити 30 символів.
+            label: Юзернейм
           email:
             aria_label: Email
             label: Email
-            placeholder: john@example.com
+            placeholder: fedir@example.com
           password:
-            aria_label: Password
-            desc: Minimum 8 characters
-            label: Password
+            aria_label: Пароль
+            desc: Мінімум 8 символів
+            label: Пароль
             placeholder: "••••••••"
-            hide: Hide password
-            show: Show password
+            hide: Сховати пароль
+            show: Показати пароль
           confirm:
-            aria_label: Password Confirmation
-            label: Password Confirmation
-          required: "* - required"
+            aria_label: Підтвердження паролю
+            label: Підтвердження паролю
+          required: "* - обов'язкове поле"
         secret:
           label: New Forem Secret
           placeholder: As provided by your Forem host
