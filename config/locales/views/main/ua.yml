@@ -57,7 +57,7 @@ ua:
         popular_tags: Популярні теґи
       footer:
         built:
-          text_html: "by <a href="https://ternox.com"/Ternox</a> "
+          text_html: by <a href="https://ternox.com/">Ternox</a>
           forem: Forem
           opensource: open source
           dev: DEV
