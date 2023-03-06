@@ -110,11 +110,14 @@ function buildArticleHTML(article, currentUserId = null) {
     var reactionsCount = article.public_reactions_count;
     var reactionsDisplay = '';
     var reactionsText = reactionsCount === 1 ? 'reaction' : 'reactions';
+    var reactionIcons = document.getElementById('reaction-category-resources');
 
     if (article.class_name !== 'User' && reactionsCount > 0) {
       var icons = [];
       for (var category of article.public_reaction_categories) {
-        var icon = `<img src="/assets/${category.icon}.svg" width="18" height="18" />`;
+        var icon = reactionIcons.querySelector(
+          `img[data-slug=${category.slug}]`,
+        ).outerHTML;
         icons = icons.concat(
           `<span class="crayons_icon_container">${icon}</span>`,
         );

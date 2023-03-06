@@ -11,13 +11,19 @@ export const ReactionsCount = ({ article }) => {
 
   function buildIcons() {
     const reversable = article.public_reaction_categories;
+    const reactionIcons = document.getElementById(
+      'reaction-category-resources',
+    );
+
     if (reversable === undefined) {
       return;
     }
     reversable.reverse();
 
     const icons = reversable.map((category) => {
-      const path = `/assets/${category.icon}.svg`;
+      const path = reactionIcons?.querySelector(
+        `img[data-slug=${category.slug}]`,
+      )?.src;
       const alt = category.name;
       return (
         <span className="crayons_icon_container" key={category.slug}>
