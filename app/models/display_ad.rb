@@ -2,6 +2,7 @@ class DisplayAd < ApplicationRecord
   include Taggable
   acts_as_taggable_on :tags
   resourcify
+  belongs_to :creator, class_name: "User", optional: true
 
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_sidebar post_comments].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
@@ -23,7 +24,9 @@ class DisplayAd < ApplicationRecord
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
+  validates :organization, presence: true, if: :community?
   validate :validate_tag
+
   before_save :process_markdown
   after_save :generate_display_ad_name
 

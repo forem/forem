@@ -7,20 +7,23 @@ on:
   pull_request:
     branches:
       - main
+env:
+  COVERAGE: true
+  RAILS_ENV: test
+  NODE_ENV: test
+  DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
+  DATABASE_NAME_TEST: Forem_test
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  POSTGRES_PASSWORD: postgres
 
 jobs:
   RSpec:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      COVERAGE: true
-      RAILS_ENV: test
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
       KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
       KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
 
     services:
       postgres:
@@ -37,8 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5]
 
     steps:
       - uses: actions/checkout@v3
@@ -60,6 +63,13 @@ jobs:
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
+      - name: Upload RSpec artifacts
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: rspec-artifacts
+          path: |
+            tmp/capybara
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
@@ -75,10 +85,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      RAILS_ENV: test
-      NODE_ENV: test
+    timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v3
@@ -111,9 +118,8 @@ jobs:
 
   Build-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
-      RAILS_ENV: test
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
@@ -122,7 +128,6 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
 
     services:
       postgres:
@@ -159,12 +164,7 @@ jobs:
 
   Cypress:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      RAILS_ENV: test
-      DATABASE_URL_TEST: postgres://postgres:postgres@localhost:5432/Forem_test
-      DATABASE_NAME_TEST: Forem_test
-      KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -181,8 +181,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [9]
-        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, 8, non-seed]
+        ci_node_total: [6]
+        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
 
     steps:
       - uses: actions/checkout@v3
@@ -214,11 +214,11 @@ jobs:
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
         if: ${{ matrix.ci_node_index == 'non-seed' }}
-      - name: Upload screenshots
+      - name: Upload Cypress artifacts
         uses: actions/upload-artifact@v3
         if: failure()
         with:
-          name: cypress-snapshots
+          name: cypress-artifacts
           path: |
             tmp/cypress_screenshots
             cypress/logs

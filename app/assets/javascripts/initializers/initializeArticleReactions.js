@@ -215,15 +215,13 @@ function openDrawerOnHover() {
   }
 
   drawerTrigger.addEventListener('click', function (event) {
-    event.preventDefault();
+    var articleId = document.getElementById('article-body').dataset.articleId;
+    reactToArticle(articleId, 'like');
+    
+    drawerTrigger.parentElement.classList.add('open');
   });
 
   if (isTouchDevice()) {
-    drawerTrigger.addEventListener('click', function () {
-      var articleId = document.getElementById('article-body').dataset.articleId;
-
-      reactToArticle(articleId, 'like');
-    });
     watchForLongTouch(drawerTrigger);
     drawerTrigger.addEventListener('longTouch', function () {
       drawerTrigger.parentElement.classList.add('open');
@@ -250,12 +248,14 @@ function openDrawerOnHover() {
 
 function closeDrawerOnOutsideClick() {
   document.addEventListener('click', function (event) {
-    const reactionElement = document.querySelector('.reaction-drawer');
-    if (reactionElement) {
-      const isClickInside = reactionElement.contains(event.target);
+    const reactionDrawerElement = document.querySelector('.reaction-drawer');
+    const reactionDrawerTriggerElement = document.querySelector('#reaction-drawer-trigger');
+    if (reactionDrawerElement && reactionDrawerTriggerElement) {
+      const isClickInside = reactionDrawerElement.contains(event.target) || reactionDrawerTriggerElement.contains(event.target);
 
-      if (!isClickInside) {
-        document.querySelector('.hoverdown.open').classList.remove('open');
+      const openDrawerElement = document.querySelector('.hoverdown.open')
+      if (!isClickInside && openDrawerElement) {
+        openDrawerElement.classList.remove('open');
       }
     }
   });
