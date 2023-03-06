@@ -139,18 +139,6 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
                                 organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
     end
 
-    # it "shows ads that have that are of type external and associated with the organization" do
-    #   display_ad = create(:display_ad, organization_id: organization.id,
-    #                                    published: true,
-    #                                    approved: true,
-    #                                    placement_area: "post_comments",
-    #                                    type_of: "external",
-    #                                    display_to: "all")
-
-    #   expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-    #                             organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
-    # end
-
     it "shows ads that have that are of type in house" do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
