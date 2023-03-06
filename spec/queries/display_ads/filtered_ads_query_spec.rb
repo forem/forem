@@ -131,7 +131,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
-                                       type_of: "community"
+                                       type_of: "community",
                                        display_to: "all")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
@@ -142,7 +142,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
-                                       type_of: "external"
+                                       type_of: "external",
                                        display_to: "all")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
@@ -153,7 +153,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
-                                       type_of: "in_house"
+                                       type_of: "in_house",
                                        display_to: "all")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
