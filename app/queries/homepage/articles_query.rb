@@ -38,6 +38,7 @@ module Homepage
       per_page: DEFAULT_PER_PAGE
     )
       @relation = Article.published.select(*ATTRIBUTES)
+        .includes(:distinct_reaction_categories)
 
       @approved = approved
       @published_at = published_at

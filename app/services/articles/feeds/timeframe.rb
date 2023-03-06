@@ -6,6 +6,7 @@ module Articles
 
         articles
           .where("published_at > ?", ::Timeframe.datetime(timeframe))
+          .includes(:distinct_reaction_categories)
           .order(score: :desc)
           .page(page)
           .per(number_of_articles)

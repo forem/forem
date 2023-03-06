@@ -9,6 +9,7 @@ module Articles
 
         Articles::Feeds::Tag.call(tag)
           .order(published_at: :desc)
+          .includes(:distinct_reaction_categories)
           .where("score > ?", minimum_score)
           .page(page)
           .per(number_of_articles)
