@@ -131,6 +131,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
+                                       placement_area: "post_comments",
                                        type_of: "community",
                                        display_to: "all")
 
@@ -142,6 +143,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
+                                       placement_area: "post_comments",
                                        type_of: "external",
                                        display_to: "all")
 
@@ -153,6 +155,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       display_ad = create(:display_ad, organization_id: organization.id,
                                        published: true,
                                        approved: true,
+                                       placement_area: "post_comments",
                                        type_of: "in_house",
                                        display_to: "all")
 
