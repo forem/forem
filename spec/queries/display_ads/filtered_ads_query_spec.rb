@@ -160,7 +160,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
                                        display_to: "all")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
+                                  organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
     end
   end
 end
