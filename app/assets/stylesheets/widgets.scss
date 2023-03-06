@@ -309,14 +309,9 @@
   }
 }
 
-// Sidebar sponsors
-.crayons-sponsorship-article {
-  margin-bottom: 10px;
-  padding: var(--content-padding-y) var(--content-padding-x);
-}
-
 .crayons-sponsorship {
   padding: var(--su-3);
+  padding-bottom: var(--su-4);
 
   &__header {
     display: flex;
@@ -341,3 +336,19 @@
     vertical-align: middle;
   }
 }
+
+.crayons-article-sticky {
+  .crayons-card {
+    .text-styles {
+      font-size: var(--fs-base);
+    }
+  }
+}
+
+.crayons-layout__comments-display-ad {
+  .crayons-sponsorship {
+    padding-left: var(--content-padding-x);
+    padding-bottom: var(--content-padding-y);
+  }
+}
+
