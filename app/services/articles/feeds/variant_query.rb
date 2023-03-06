@@ -134,6 +134,7 @@ module Articles
         Article.joins(join_fragment)
           .limited_column_select
           .includes(top_comments: :user)
+          .includes(:distinct_reaction_categories)
           .order(config.order_by.to_sql)
       end
 
