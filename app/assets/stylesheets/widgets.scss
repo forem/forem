@@ -349,6 +349,9 @@
   .crayons-sponsorship {
     padding-left: var(--content-padding-x);
     padding-bottom: var(--content-padding-y);
+    .text-styles {
+      padding-right: var(--su-6);
+    }
   }
 }
 
