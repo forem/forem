@@ -63,7 +63,7 @@ module DisplayAds
       @filtered_display_ads.where(
         "(type_of = :in_house) OR
          (type_of = :community AND organization_id = :organization_id) OR
-	       (type_of = :external AND organization_id != :organization_id)", 
+	       (type_of = :external AND organization_id != :organization_id)",
           DisplayAd.type_ofs.merge({organization_id: @organization_id}),
       )
     end
