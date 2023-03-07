@@ -193,7 +193,7 @@
       </article>
 
       <% cache("article-bottom-content-#{rand(5)}-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 15.minutes) do %>
-        <% @display_ad = DisplayAd.for_display("post_comments", user_signed_in?, @article.decorate.cached_tag_list_array) %>
+        <% @display_ad = DisplayAd.for_display(area: "post_comments", user_signed_in: user_signed_in?, organization_id: @article.organization_id, article_tags: @article.decorate.cached_tag_list_array) %>
         <% if @display_ad %>
           <div class="pb-4">
             <%= render partial: "shared/display_ad", locals: {display_ad: @display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>

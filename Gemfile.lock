@@ -85,7 +85,7 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    ahoy_matey (4.2.0)
+    ahoy_matey (4.2.1)
       activesupport (>= 5.2)
       device_detector
       safely_block (>= 0.2.1)
@@ -589,7 +589,7 @@ GEM
     parallel (1.22.1)
     parser (3.2.0.0)
       ast (~> 2.4.1)
-    pg (1.4.4)
+    pg (1.4.6)
     pg_query (4.2.0)
       google-protobuf (>= 3.19.2)
     pg_search (2.3.6)
