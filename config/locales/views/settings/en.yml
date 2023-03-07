@@ -57,7 +57,7 @@ en:
         github: Connect your github account as well to complete your identity.
         twitter: Connect your twitter account as well to complete your identity.
       custom:
-        adjacent: Permit Nearby Sponsors (When publishing)
+        adjacent: Permit Nearby External Sponsors (Peter will update copy)
         announce: Announcements
         announce_desc: Announcements inform you on important site-wide information, like updates and events.
         announce_field: Display Announcements (When browsing)
@@ -74,7 +74,7 @@ en:
         save: Save
         sponsor: Sponsors
         sponsor_desc: You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.
-        sponsor_field: Display Sponsors (When browsing)
+        sponsor_field: Display External Sponsors (Peter will update copy)
         static: Static top of page
         theme: Site Theme
         writing: Writing

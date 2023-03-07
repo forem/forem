@@ -8,7 +8,7 @@ function initializeDisplayAdVisibility() {
   var user = userData();
 
   displayAds.forEach((ad) => {
-    if (user && !user.display_sponsors) {
+    if (user && !user.display_sponsors && ad.dataset['typeOf'] == 'external') {
       ad.classList.add('hidden');
     } else {
       ad.classList.remove('hidden');
