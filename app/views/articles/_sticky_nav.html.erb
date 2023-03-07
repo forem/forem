@@ -56,10 +56,14 @@
 </div>
 
 <%# cache("article-sidebar-content-#{rand(5)}-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 15.minutes) do %>
-  <% sidebar_ad = DisplayAd.for_display(area: "post_sidebar", user_signed_in: user_signed_in?, organization_id: @article.organization_id, article_tags: @article.decorate.cached_tag_list_array) %>
-  <% if @article.permit_adjacent_sponsors? && sidebar_ad %>
+  <% sidebar_ad = DisplayAd.for_display(area: "post_sidebar",
+                                        user_signed_in: user_signed_in?,
+                                        organization_id: @article.organization_id,
+                                        article_tags: @article.decorate.cached_tag_list_array,
+                                        permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?) %>
+  <% if sidebar_ad %>
     <div class="crayons-article-sticky grid gap-4 break-word pt-4">
-      <%= render partial: "shared/display_ad", locals: {display_ad: sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
+      <%= render partial: "shared/display_ad", locals: { display_ad: sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
     </div>
   <% end %>
 <%# end %>
