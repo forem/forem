@@ -4,7 +4,8 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(display_ads: DisplayAd, area:, user_signed_in:, organization_id: nil, article_tags: [], permit_adjacent_sponsors: true)
+    def initialize(area:, user_signed_in:, display_ads: DisplayAd, organization_id: nil, article_tags: [],
+                   permit_adjacent_sponsors: true)
       @filtered_display_ads = display_ads
       @area = area
       @user_signed_in = user_signed_in
@@ -65,22 +66,20 @@ module DisplayAds
 
       # If this is an article that belongs to an organization, we might show community-type ads
       community = if @organization_id
-        "(type_of = :community AND organization_id = :organization_id)"
-      end
+                    "(type_of = :community AND organization_id = :organization_id)"
+                  end
 
       # If the article's author permits adjacent sponsors, we might show an external-type ad
       # *if* the organization_id doesn't match the current article's organization id
       external = if @permit_adjacent_sponsors && @organization_id
-        "(type_of = :external AND organization_id != :organization_id)"
-      elsif @permit_adjacent_sponsors
-        "(type_of = :external)"
-      else
-        nil
-      end
+                   "(type_of = :external AND organization_id != :organization_id)"
+                 elsif @permit_adjacent_sponsors
+                   "(type_of = :external)"
+                 end
 
       types_matching = [in_house, community, external].compact.join(" OR ")
       @filtered_display_ads.where(types_matching,
-        DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
+                                  DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
     end
   end
 end

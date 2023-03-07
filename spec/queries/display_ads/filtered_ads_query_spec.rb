@@ -1,6 +1,14 @@
 require "rails_helper"
 
 RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
+  subject(:filtered_ads) do
+    described_class.call area: placement_area,
+                         organization_id: organization_id,
+                         user_signed_in: user_signed_in,
+                         article_tags: article_tags,
+                         permit_adjacent_sponsors: permit_adjacent_sponsors
+  end
+
   let(:placement_area) { "post_sidebar" }
 
   def create_display_ad(**options)
@@ -10,22 +18,14 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       placement_area: placement_area,
       display_to: :all
     }
-    create :display_ad, **options.reverse_merge(defaults)
+    create(:display_ad, **options.reverse_merge(defaults))
   end
 
   def filter_ads(**options)
     defaults = {
       display_ads: DisplayAd, area: placement_area, user_signed_in: false
     }
-    described_class.call **options.reverse_merge(defaults)
-  end
-
-  subject(:filtered_ads) do
-    described_class.call area: placement_area,
-                         organization_id: organization_id,
-                         user_signed_in: user_signed_in,
-                         article_tags: article_tags,
-                         permit_adjacent_sponsors: permit_adjacent_sponsors
+    described_class.call(**options.reverse_merge(defaults))
   end
 
   context "when ads are not approved or published" do
@@ -34,7 +34,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:display_ad) { create_display_ad }
 
     it "does not display unapproved or unpublished ads" do
-      filtered = filter_ads()
+      filtered = filter_ads
       expect(filtered).not_to include(unapproved)
       expect(filtered).not_to include(unpublished)
       expect(filtered).to include(display_ad)
@@ -65,7 +65,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).to include(no_tags)
     end
 
-    context "and available ads have matching tags" do
+    context "when available ads have matching tags" do
       let!(:matching) { create_display_ad cached_tag_list: "linux, git, go" }
 
       it "will show the display ads that contain tags that match any of the article tags" do
@@ -75,7 +75,6 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
         expect(filtered).to include(no_tags)
       end
     end
-
   end
 
   context "when considering users_signed_in" do
@@ -95,8 +94,8 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
   context "when considering ads with organization_id" do
     let!(:in_house_ad) { create_display_ad type_of: :in_house }
 
-    let(:organization) { create :organization }
-    let(:other_org) { create :organization }
+    let(:organization) { create(:organization) }
+    let(:other_org) { create(:organization) }
     let!(:community_ad) { create_display_ad organization_id: organization.id, type_of: :community }
     let!(:other_community) { create_display_ad organization_id: other_org.id, type_of: :community }
 
@@ -106,17 +105,21 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     it "always shows :in_house, only shows community/external appropriately" do
       filtered = filter_ads organization_id: organization.id
       expect(filtered).to contain_exactly(community_ad, in_house_ad, other_external)
+      expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
+      expect(filtered).not_to include(other_community)
     end
 
     it "suppresses external ads when permit_adjacent_sponsors is false" do
       filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
       expect(filtered).to contain_exactly(community_ad, in_house_ad)
+      expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
       expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).not_to include(other_community)
     end
   end
 end
