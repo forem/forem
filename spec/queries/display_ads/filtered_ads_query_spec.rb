@@ -1,14 +1,6 @@
 require "rails_helper"
 
 RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
-  subject(:filtered_ads) do
-    described_class.call area: placement_area,
-                         organization_id: organization_id,
-                         user_signed_in: user_signed_in,
-                         article_tags: article_tags,
-                         permit_adjacent_sponsors: permit_adjacent_sponsors
-  end
-
   let(:placement_area) { "post_sidebar" }
 
   def create_display_ad(**options)
