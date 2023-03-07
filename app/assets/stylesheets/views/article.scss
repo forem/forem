@@ -262,6 +262,11 @@
   }
 }
 
+.reaction-drawer .crayons-reaction:hover {
+  background-color: var(--body-bg);
+  border-radius: 20px;
+}
+
 .user-animated {
   .crayons-reaction__icon {
     position: relative;
