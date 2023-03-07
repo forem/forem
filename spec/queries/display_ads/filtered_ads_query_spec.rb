@@ -110,5 +110,13 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       filtered = filter_ads organization_id: nil
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
     end
+
+    it "suppresses external ads when permit_adjacent_sponsors is false" do
+      filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
+      expect(filtered).to contain_exactly(community_ad, in_house_ad)
+
+      filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
+      expect(filtered).to contain_exactly(in_house_ad)
+    end
   end
 end
