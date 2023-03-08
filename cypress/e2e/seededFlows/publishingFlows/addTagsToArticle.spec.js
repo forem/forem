@@ -38,19 +38,19 @@ describe('Add tags to article', () => {
     cy.clearLocalStorage();
   });
 
-  it('properly suggests top tags when field is focused', () => {
+  it('properly suggests Топ теґи when field is focused', () => {
     cy.intercept('search/tags**', exampleSearchResult);
 
-    // It is possible in slow running tests that the fetched "top tags" will not be available in the autocomplete before the focus event triggered below.
+    // It is possible in slow running tests that the fetched "Топ теґи" will not be available in the autocomplete before the focus event triggered below.
     // Here we retry the focus event until the combobox expands.
     const focusInputAndGetParentCombobox = ($el) =>
       $el.focus().blur().focus().parents('div');
 
-    // Focus the input automatically return 'top tags'
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+    // Focus the input automatically return 'Топ теґи'
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .pipe(focusInputAndGetParentCombobox)
       .should('have.attr', 'aria-expanded', 'true');
-    cy.findByRole('heading', { name: 'Top tags' }).should('exist');
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('exist');
     cy.findByRole('option', { name: '# tagone' }).should('exist');
     cy.findByRole('option', { name: '# tagtwo tag two short summary' }).should(
       'exist',
@@ -59,34 +59,34 @@ describe('Add tags to article', () => {
     // User select first tag option
     // - Check input has 'reset' and still has focus
     // - Check only the unselected top tag is presented
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' }).as('input').focus();
     cy.findByRole('option', { name: '# tagone' }).click();
     cy.get('@input').should('have.value', '').should('have.focus');
-    cy.findByRole('heading', { name: 'Top tags' }).should('exist');
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('exist');
     cy.findByRole('option', {
       name: '# tagtwo tag two short summary',
     }).should('exist');
     cy.findByRole('option', { name: '# tagone' }).should('not.exist');
 
     // User searches for a tag
-    // - Top tags should not be shown when a search starts
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).type('a');
-    cy.findByRole('heading', { name: 'Top tags' }).should('not.exist');
+    // - Топ теґи should not be shown when a search starts
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' }).type('a');
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('not.exist');
     cy.findByRole('option', { name: '# suggestion suggestion summary' }).should(
       'exist',
     );
 
     // displays currently typed text as a suggestion if no suggestions are returned
-    // - Top tags should not be shown when a search starts
+    // - Топ теґи should not be shown when a search starts
     cy.intercept('search/tags**', { result: [] });
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).type('a');
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' }).type('a');
 
-    cy.findByRole('heading', { name: 'Top tags' }).should('not.exist');
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('not.exist');
     cy.findByRole('option', { name: '# aa' }).should('exist');
   });
 
   it('selects a tag by clicking, typing a comma or space', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' }).as('input').focus();
     cy.findByRole('option', { name: '# tagone' }).click();
     cy.findByRole('button', { name: 'Edit tagone' }).should('exist');
     cy.findByRole('button', { name: 'Remove tagone' }).should('exist');
@@ -98,7 +98,7 @@ describe('Add tags to article', () => {
     cy.findByRole('button', { name: 'Remove another' }).should('exist');
 
     // selects currently entered text when input blurs
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .type('something')
       .blur();
 
@@ -107,7 +107,7 @@ describe('Add tags to article', () => {
   });
 
   it('edits and deletes a previous selection', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .as('input')
       .type('something,');
 
@@ -117,16 +117,16 @@ describe('Add tags to article', () => {
 
     cy.findByRole('button', { name: 'Remove somethingelse' }).click();
 
-    // Buttons should be removed and top tags should be showing again
+    // Buttons should be removed and Топ теґи should be showing again
     cy.findByRole('button', { name: 'Edit somethingelse' }).should('not.exist');
     cy.findByRole('button', { name: 'Remove somethingelse' }).should(
       'not.exist',
     );
-    cy.findByRole('heading', { name: 'Top tags' }).should('exist');
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('exist');
   });
 
   it('edits a previous tag when backspace typed', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .as('input')
       .type('something,');
 
@@ -146,7 +146,7 @@ describe('Add tags to article', () => {
   });
 
   it('splits an edited value if space or comma are typed', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .as('input')
       .type('onetwothree,');
 
@@ -173,16 +173,16 @@ describe('Add tags to article', () => {
     cy.get('@input').should('have.value', 'two');
   });
 
-  it('shows a message and prevents further selections when the maximum tags (4) have been added', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
+  it('shows a message and prevents further selections when the maximum tags (8) have been added', () => {
+    cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .as('input')
       .type('one, two, three, four,');
 
     cy.get('@input').should('have.focus').should('have.value', '');
 
-    // Top tags should not be shown when max has been reached
-    cy.findByRole('heading', { name: 'Top tags' }).should('not.exist');
-    cy.findByText('Only 4 selections allowed').should('exist');
+    // Топ теґи should not be shown when max has been reached
+    cy.findByRole('heading', { name: 'Топ теґи' }).should('not.exist');
+    cy.findByText('Максимум 8 теґів').should('exist');
 
     // Disabled state should be communicated to screen reader users
     cy.get('@input').should('have.attr', 'aria-disabled', 'true');
@@ -190,7 +190,7 @@ describe('Add tags to article', () => {
     // Try to select another tag by typing
     cy.get('@input').type('a');
     // Message should still exist
-    cy.findByText('Only 4 selections allowed').should('exist');
+    cy.findByText('Максимум 8 теґів').should('exist');
     // No options should be shown
     cy.findAllByRole('option').should('have.length', 0);
 

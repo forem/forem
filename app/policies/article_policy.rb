@@ -1,5 +1,5 @@
 class ArticlePolicy < ApplicationPolicy
-  MAX_TAG_LIST_SIZE = 4
+  MAX_TAG_LIST_SIZE = 8
   # @return [TrueClass] when only Forem admins can post an Article.
   # @return [FalseClass] when most any Forem user can post an Article.
   #

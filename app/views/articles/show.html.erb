@@ -202,7 +202,7 @@
       <% end %>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
-        <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
+        <% suggested_articles = Articles::Suggest.call(@article, max: 8) %>
         <%= render "articles/bottom_content", articles: suggested_articles %>
       <% end %>
     </div>

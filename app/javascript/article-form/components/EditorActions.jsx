@@ -48,7 +48,7 @@ export const EditorActions = ({
 
   let saveButtonText;
   if (isVersion1) {
-    saveButtonText = 'Зміни збережено';
+    saveButtonText = 'Зберегти зміни';
   } else if (schedule) {
     saveButtonText = 'Запланувати';
   } else if (wasScheduled || !published) {
@@ -56,7 +56,7 @@ export const EditorActions = ({
     // to make it clear that the article is going to be published right away
     saveButtonText = 'Публікувати';
   } else {
-    saveButtonText = 'Зміни збережено';
+    saveButtonText = 'Зберегти зміни';
   }
 
   return (
