@@ -14,13 +14,13 @@ ua:
         subtitle_html: "%{start}Discussion on: %{end}%{title}"
         metadata_html: "%{name}%{on}"
         date: " on %{date}"
-        full: Full discussion
-        read: Read full post
-        view: View post
+        full: Уся дискусія
+        read: Читати повністю
+        view: Переглянути допис
         view_full:
-          one: View full discussion (%{count} comment)
-          other: View full discussion (%{count} comments)
-        reply_html: "%{start}Replies for:%{end} %{title}"
+          one: Читати повністю (%{count} коментарь)
+          other: Читати повністю (%{count} коментарів)
+        reply_html: "%{start}Відповіді для:%{end} %{title}"
       delete:
         heading: Ви впевнені, що хочете видалити цей коментар?
         desc_html: Ви не зможете це відмінити. Може потрібна функція %{action}?
@@ -36,46 +36,46 @@ ua:
         on_html: on %{date}
       expand: Розвернути
       hidden:
-        text_html: Some comments have been hidden by the post's author - %{info}
-        info: find out more
-        comment_hidden: Comment hidden by post author
+        text_html: Деякі коментарі були приховані автором допису - %{info}
+        info: дізнатися більше
+        comment_hidden: Коментар приховано автором допису
       hider:
-        description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
-        hide_child: Hide child comments as well
+        description_html: Ви впевнені, що хочете приховати цей коментар? Він буде прихований у вашому дописі, але все ще буде видимим через %{permalink} коментаря.
+        hide_child: Приховати внутрішні коментрі
         note_html: For further actions, you may consider blocking this person and/or %{reporting}
-        permalink: permalink
-        reporting: reporting abuse
-        submit: Confirm
-      locked: The discussion has been locked. New comments can't be added.
+        permalink: постійне посилання
+        reporting: повідомити про порушення
+        submit: Підтвердити
+      locked: Обговорення закрито. Нові коментарі не можуть бути додані.
       orphan:
-        deleted: "[Comment from a deleted post]"
+        deleted: "[Коментар з видаленого допису]"
       re:
         text_html: "%{re}%{title}"
         re: 'Re: '
       settings:
         meta:
-          title: Comment Settings
-        heading: Comment Settings
+          title: Налаштування коментарів
+        heading: Налаштування коментарів
         state:
           show:
-            subtitle: Showing thread notifications
-            desc: You will receive all notifications for this comment and any of your comments in this chain.
+            subtitle: Показувати сповіщення теми
+            desc: Ви отримаєте всі сповіщення щодо цього коментаря та всіх ваших коментарів у цьому ланцюжку.
           mute:
-            subtitle: Muting thread notifications
-            desc: All notifications for this comment and any of your comments in the thread are currently muted.
+            subtitle: Вимкнення сповіщень теми
+            desc: Усі сповіщення для цього коментаря та будь-яких інших ваших коментарів у темі наразі вимкнено.
         subscribe:
-          subtitle: Subscription
-          desc: You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.
-          mute: Mute notifications
-          unmute: Unmute notifications
+          subtitle: Підписка
+          desc: Ви вже підписані на всі коментарі в ширшій гілці, а це означає, що ви все ще отримуватимете сповіщення про відповіді на цей коментар.
+          mute: Вимкнути сповіщення
+          unmute: Увімкнути сповіщення
       quality:
-        low: Comment marked as low quality/non-constructive by the community.
-        conduct: View Code of Conduct
+        low: Коментар, позначений спільнотою як низькоякісний/неконструктивний.
+        conduct: Почитати норми поведінки
         hidden:
           icon: Info
           text:
-            visible_in_permalink: Comment hidden by post author - thread only visible in this permalink
-            accessible_via_permalink: Comment hidden by post author - thread only accessible via permalink
+            visible_in_permalink: Коментар приховано автором допису - тему видно лише за цим посиланням
+            accessible_via_permalink: Коментар приховано автором повідомлення - тема доступна лише за перманентним посиланням
       write:
         errors:
           one: '1 error prohibited this comment from being saved:'
@@ -83,37 +83,37 @@ ua:
         field:
           aria_label: Add a comment to the discussion
           placeholder: Add to the discussion
-          submit: Upload
+          submit: Завантажити
           templates: Templates
-          upload: Upload image
+          upload: Завантажити зображення
           use: Use a response template
           guide:
-            title: Markdown Guide
-            icon: Editor guide
+            title: Посібник з розмітки
+            icon: Ґайд редактора
         template:
           article: This post comes with a comment template
           create:
             subtitle: Create template
             desc: Templates let you quickly answer FAQs or store snippets for re-use.
-          moderator: Trusted User
-          personal: Personal
-        submit: Submit
-        preview: Preview
-        cancel: Dismiss
+          moderator: Довірений користувач
+          personal: Особистий
+        submit: Відправити
+        preview: Прев'ю
+        cancel: Відмінити
       menu:
         aria_label: Toggle dropdown menu
         icon: Dropdown menu
         copy:
           aria_label: Copy link to %{user}'s comment
-          text: Copy link
+          text: Скопіювати посилання
         settings:
           aria_label: Go to %{user}'s comment settings
         action:
           aria_label: "%{action} %{user}'s comment"
-          hide: Hide
-          unhide: Unhide
-          hide_text: Hide
-          unhide_text: Unhide
+          hide: Приховати
+          unhide: Показати
+          hide_text: Приховати
+          unhide_text: Показати
         moderate:
           aria_label: Moderate %{user}'s comment
         report:
@@ -126,8 +126,8 @@ ua:
           count_html: "%{num}%{likes}"
           text: Лайк
         reply:
-          aria_label: Reply to a comment...
-          icon: Comment button
+          aria_label: Відповідь на коментар...
+          icon: Кнопка коментаря
           done: Відповідь надано
           text: Відповісти
           placeholder: Відповідь...
@@ -135,15 +135,15 @@ ua:
           icon: Тред
           text: Тред
         view:
-          icon: View button
+          icon: Кнопка перегляду
           text: Показати
       count:
         one: "%{count} коментар"
         other: "%{count} коментаря(ів)"
-      empty: New
-      add: "Add\_Comment"
+      empty: Новий
+      add: "Додати\_коментар"
       summary:
         count_html:
-          one: "%{count}%{start}\_comment%{end}"
-          other: "%{count}%{start}\_comments%{end}"
+          one: "%{count}%{start}\коментар%{end}"
+          other: "%{count}%{start}\коментарі%{end}"
         title: Коментарі

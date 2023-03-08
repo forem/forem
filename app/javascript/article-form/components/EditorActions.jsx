@@ -32,7 +32,7 @@ export const EditorActions = ({
           disabled
         >
           {published && isVersion2
-            ? 'Publishing...'
+            ? 'Публікується...'
             : `Saving ${isVersion2 ? 'draft' : ''}...`}
         </Button>
       </div>
@@ -48,15 +48,15 @@ export const EditorActions = ({
 
   let saveButtonText;
   if (isVersion1) {
-    saveButtonText = 'Save changes';
+    saveButtonText = 'Зміни збережено';
   } else if (schedule) {
-    saveButtonText = 'Schedule';
+    saveButtonText = 'Запланувати';
   } else if (wasScheduled || !published) {
     // if the article was saved as scheduled, and the user clears publishedAt in the post options, the save button text is changed to "Publish"
     // to make it clear that the article is going to be published right away
-    saveButtonText = 'Publish';
+    saveButtonText = 'Публікувати';
   } else {
-    saveButtonText = 'Save changes';
+    saveButtonText = 'Зміни збережено';
   }
 
   return (

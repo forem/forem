@@ -21,7 +21,7 @@ ua:
     markdown_html: "<p>😔 There was an error in your markdown</p><hr><p>%{error}</p>"
     moderated: Not allowed due to moderation action
   confirmations_controller:
-    email_sent: Email sent! Please contact support at %{email} if you are having trouble receiving your confirmation instructions.
+    email_sent: Лист  наділасно! Будь ласка, зверніться за адресою %{email} якщо у вас виникли проблеми з отриманням інструкцій щодо підтвердження.
   credits_controller:
     done:
       one: "%{count} new credits purchased!"

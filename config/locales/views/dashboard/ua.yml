@@ -7,23 +7,23 @@ ua:
       heading: Дашборд
       actions:
         mobile:
-          posts: Posts (%{num})
-          followers: Followers (%{num})
-          following_tags: Following tags (%{num})
-          following_users: Following users (%{num})
-          following_orgs: Following organizations (%{num})
-          following_pods: Following podcasts (%{num})
+          posts: Дописи (%{num})
+          followers: Підписники (%{num})
+          following_tags: Цікаві теґи (%{num})
+          following_users: Цікаві користувачі (%{num})
+          following_orgs: Цікаві проєкти (%{num})
+          following_pods: Цікаві подкасти (%{num})
         posts: Дописи
-        series: Series
-        followers: Followers
-        following_tags: Following tags
-        following_users: Following users
-        following_orgs: Following organizations
-        following_pods: Following podcasts
+        series: Серії
+        followers: Підписники
+        following_tags: Цікаві теґи
+        following_users: Цікаві користувачі
+        following_orgs: Цікаві проєкти
+        following_pods: Цікаві подкасти
         listings: Listings
-        analytics: Analytics
-        for_org: Analytics for %{org}
-        upload: Upload a video
+        analytics: Аналітика
+        for_org: Аналітика для %{org}
+        upload: Завантажити відео
       analytics:
         meta:
           title: Аналітика
@@ -40,113 +40,113 @@ ua:
         archived: Archived
         published: 'Published:'
         published_html: 'Published: %{date}'
-        edited: 'Edited:'
-        edited_html: 'Edited: %{date}'
-        series: 'Series:'
-        series_html: "<strong>Series:</strong> %{series}"
-        draft: Draft
-        scheduled: Scheduled
-        scheduled_at: 'Scheduled:'
+        edited: 'Відргедаговано:'
+        edited_html: 'Відргедаговано: %{date}'
+        series: 'Серія:'
+        series_html: "<strong>Серія:</strong> %{series}"
+        draft: Чернетка
+        scheduled: Заплановано
+        scheduled_at: 'Заплановано:'
         reactions:
-          title: Reactions
-          icon: Reactions
+          title: Реакції
+          icon: Реакції
           text_html:
-            one: "%{num} reaction"
-            other: "%{num} reactions"
+            one: "%{num} реакція"
+            other: "%{num} реакцій"
         comments:
-          title: Comments
-          icon: Comments
+          title: Коментарі
+          icon: Коментарі
           text_html:
-            one: "%{num} comment"
-            other: "%{num} comments"
+            one: "%{num} коментар"
+            other: "%{num} коментарі"
         views:
-          title: Views
-          icon: Views
+          title: Перегляди
+          icon: Перегляди
           lt_25: "< 25"
           text_html:
-            one: "%{scale} view"
-            other: "%{scale} views"
-          u_25: under 25
+            one: "%{scale} перегляд"
+            other: "%{scale} переглядів"
+          u_25: більше 25
         subscriptions:
-          title: Subscriptions
+          title: Підписки
           icon: Data
-          number: Subscriptions (%{num})
-        delete: Delete
-        unpin: Unpin
+          number: Підписки (%{num})
+        delete: Видалити
+        unpin: Відкріпити
         pin:
-          title: Pin to profile
-          button: Pin to profile
-          text: Pin
+          title: Прикріпити до профілю
+          button: Прикріпити до профілю
+          text: Прикріпити
         manage:
-          aria_label: 'Manage post: %{title}'
-          text: Manage
-        lock: Lock discussion
-        unlock: Unlock discussion
+          aria_label: 'Керувати дописом: %{title}'
+          text: Керувати
+        lock: Закрити дискусію
+        unlock: Відкрити дискусію
         edit:
-          aria_label: 'Edit post: %{title}'
-          text: Edit
+          aria_label: 'Редагувати допис: %{title}'
+          text: Редагувати
         more:
-          title: 'More options for post: %{title}'
-          icon: More...
-        stats: Stats
-        archive: Archive post
-        unarchive: Unarchive post
-        author: Author
-        author_is: 'AUTHOR: '
-        save: Save
-        submit: Submit author change
+          title: 'Більше налаштувань: %{title}'
+          icon: Більше...
+        stats: Статистика
+        archive: До архіву
+        unarchive: Разархівувати
+        author: Автор
+        author_is: 'АВТОР: '
+        save: Зберегти
+        submit: Подати зміну автора
       followers:
-        heading: Dashboard » Followers
-        empty: You don't have any followers yet...
+        heading: Панель інструментів » Підписники
+        empty: У вас ще немає підписників...
       following_orgs:
-        heading: Dashboard » Following organizations
-        empty: You don't follow any organizations yet...
+        heading: Панель інструментів » Цікаві проєкти
+        empty: Ви поки що не слідкуєте за жодним проєктом...
       following_pods:
-        heading: Dashboard » Following podcasts
-        empty: You don't follow any podcasts yet...
+        heading: Панель інструментів » Цікаві подкасти
+        empty: Ви поки що не слідкуєте за жодним подкастом...
       following_tags:
-        heading: Dashboard » Following tags
-        adjust: Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
+        heading: Панель інструментів » Цікаві теґи
+        adjust: Налаштуйте вагу теґу, щоб змінити домашню стрічку. Вищі значення означають більше показів для цього теґу.
         anti:
-          title: This tag has negative follow weight
+          title: Цей тег має від'ємну вагу підписки
           text: Anti-follow
         default: Default 1.0
-        empty: You don't follow any tags yet...
+        empty: Ви не стежите за жодними теґами...
         number:
-          aria_label: "%{name} tag weight"
-        update: Update Weights
+          aria_label: "%{name} вага теґу"
+        update: Оновити ваги
       following_users:
-        heading: Dashboard » Following users
-        empty: You don't follow any users...
+        heading: Панель інструментів » Цікаві користувачі
+        empty: Ви не стежите за жодним користувачем...
       listings:
         meta:
-          title: Listings Dashboard
+          title: Listings Панель інструментів
       posts:
-        heading: Posts
-        archived: Show archived
+        heading: Дописи
+        archived: Показати архівні
         option:
-          creation-desc: Recently Created
-          published-desc: Recently Published
-          views-desc: Most Views
-          reactions-desc: Most Reactions
-          comments-desc: Most Comments
-          aria_label: Sort By
+          creation-desc: Нещодавно створено
+          published-desc: Нещодавно опубліковано
+          views-desc: Найбільше переглядів
+          reactions-desc: Найбільше реакцій
+          comments-desc: Найбільше коментарів
+          aria_label: Сортувати
         org: "%{name} (%{num})"
-        personal: Personal
+        personal: Особистий
         empty:
-          desc: This is where you can manage your posts, but you haven't written anything yet.
-          new: Write your first post now
+          desc: Тут ви можете керувати своїми дописами, але ви ще нічого не написали.
+          new: Напишіть свій перший допис зараз
       subscriptions:
         meta:
-          title: Subscriptions %{title}
-        heading: Subscriptions
+          title: Підписки %{title}
+        heading: Підписки
         subhead:
           text_html: "%{for} %{source}"
-          for: for
-        empty: You don't have any subscribers for this %{kind} yet...
+          for: для
+        empty: У вас немає підписників для цього %{kind}...
       summary:
-        reactions: Total post reactions
-        views: Total post views
-        listings: Listings created
+        reactions: Всього реакцій на пост
+        views: Загальна кількість переглядів допису
+        listings: Створено списки
         credits: Credits available
         lt_500: "< 500"
