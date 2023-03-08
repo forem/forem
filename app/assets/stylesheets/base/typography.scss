@@ -98,7 +98,7 @@ body {
   }
 
   a {
-    text-decoration: underline;
+    border-bottom: 1px solid var(--accent-brand-lighter);
     color: var(--link-branded-color);
 
     &:hover {

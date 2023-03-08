@@ -16,6 +16,7 @@
   --base-0: #f9f9f9;
 
   /* Brand */
+  --accent-brand-lighter2: rgb(var(--accent-brand-lighter2-rgb));
   --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
   --accent-brand: rgb(var(--accent-brand-rgb));
   --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
@@ -68,8 +69,8 @@
   /* Links */
   --link-bg-hover-alt: var(--base-inverted);
   --link-color-current: var(--base-100);
-  --link-color-secondary: var(--base-60);
-  --link-color-secondary-hover: var(--base-70);
+  --link-color-secondary: var(--base-50);
+  --link-color-secondary-hover: var(--base-60);
   --link-bg-current: var(--base-inverted);
 
   /* Primary buttons */

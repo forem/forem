@@ -9,10 +9,10 @@ class CloudCoverUrl
     return if url.blank?
     return url if Rails.env.development?
 
-    width = 1000
+    width = 1920
     img_src = url_without_prefix_nesting(url, width)
 
-    Images::Optimizer.call(img_src, width: width, height: 420, crop: "imagga_scale")
+    Images::Optimizer.call(img_src, width: width, height: 1080, crop: "imagga_scale")
   end
 
   private
