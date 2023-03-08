@@ -11,7 +11,7 @@ export const PageTitle = ({
   return (
     <div className="crayons-field__label flex items-center flex-1">
       <span className="hidden s:inline-block mr-2 whitespace-nowrap">
-        {previewLoading ? 'Loading preview' : 'Create Post'}
+        {previewLoading ? 'Loading preview' : 'Створити допис'}
       </span>
       {organizations && organizations.length > 0 && (
         <div>
@@ -22,7 +22,7 @@ export const PageTitle = ({
             organizations={organizations}
             organizationId={organizationId}
             onToggle={onToggle}
-            emptyLabel="Personal"
+            emptyLabel="Особистий блоґ"
           />
         </div>
       )}
@@ -37,4 +37,4 @@ PageTitle.propTypes = {
   previewLoading: PropTypes.bool.isRequired,
 };
 
-PageTitle.displayName = 'Organization';
+PageTitle.displayName = 'Проєкт';
