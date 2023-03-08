@@ -37,15 +37,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:no_tags) { create_display_ad cached_tag_list: "" }
     let!(:mismatched) { create_display_ad cached_tag_list: "career" }
 
-    # This original test name seems misleading, it does not do what it says
-    pending "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
-      filtered = filter_ads(article_tags: %w[javascript])
-      expect(filtered).not_to include(mismatched)
-      expect(filtered).not_to include(no_tags)
-    end
-
-    # Actual behavior of the above test, with more accurate name
-    it "will only show no-tag display ads if the article tags do not contain matching tags" do
+    it "will show no-tag display ads if the article tags do not contain matching tags" do
       filtered = filter_ads(article_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
