@@ -94,6 +94,8 @@ class DisplayAd < ApplicationRecord
   end
 
   def process_markdown
+    return unless body_markdown_changed?
+
     if FeatureFlag.enabled?(:consistent_rendering)
       extracted_process_markdown
     else

@@ -99,9 +99,31 @@ RSpec.describe DisplayAd do
     end
   end
 
-  describe "after_create callbacks" do
+  describe "#process_markdown" do
+    # FastImage.size is called when synchronous_detail_detection: true is passed to Html::Parser#prefix_all_images
+    # which should be the case for DisplayAd
+    it "calls Html::Parser#prefix_all_images with parameters" do
+      # Html::Parser.new(html).prefix_all_images(prefix_width, synchronous_detail_detection: true).html
+      allow(FastImage).to receive(:size)
+      image_url = "https://dummyimage.com/100x100"
+      image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
+      create(:display_ad, body_markdown: image_md)
+      expect(FastImage).to have_received(:size).with(image_url, { timeout: 10 })
+    end
+
+    it "keeps the same processed_html if markdown was not changed" do
+      display_ad = create(:display_ad)
+      html = display_ad.processed_html
+      display_ad.update(name: "Sample display ad")
+      display_ad.reload
+      expect(display_ad.processed_html).to eq(html)
+    end
+  end
+
+  describe "after_save callbacks" do
+    let!(:display_ad) { create(:display_ad, name: nil) }
+
     it "generates a name when one does not exist" do
-      display_ad = create(:display_ad, name: nil)
       display_ad_with_name = create(:display_ad, name: "Test")
 
       expect(display_ad.name).to eq("Display Ad #{display_ad.id}")

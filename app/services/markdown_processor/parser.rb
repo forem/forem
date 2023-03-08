@@ -134,7 +134,7 @@ module MarkdownProcessor
       Html::Parser
         .new(html)
         .remove_nested_linebreak_in_list
-        .prefix_all_images
+        .prefix_all_images # (880, synchronous_detail_detection: true)
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
