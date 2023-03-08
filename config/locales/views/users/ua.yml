@@ -7,32 +7,32 @@ ua:
           title: "%{user} — %{community} профіль"
       comments:
         all:
-          one: All %{count} comments
-          other: All %{count} comments
+          one: Усі коментарі (%{count})
+          other: Усі коментарі (%{count})
         last:
-          one: Last %{count} comments
-          other: Last %{count} comments
-        recent: Recent comments
-        view: View all activity
+          one: Останні коментарі (%{count})
+          other: Останні коментарі (%{count})
+        recent: Останні коментарі
+        view: Переглянути всю активність
         view_all:
-          one: View all %{count} comments
-          other: View all %{count} comments
+          one: Подивитися усі коментарі (%{count})
+          other: Подивитися усі коментарі (%{count})
         view_last:
-          one: View last 1 Comment
-          other: View last %{count} Comments
+          one: Подивитися останній коментар
+          other: Подивитися останні коментарі (%{count})
       github:
         heading: GitHub Repositories
         fork: Fork
         stars:
-          one: 1 star
-          other: "%{count} stars"
-      pin_icon: Pin
-      pinned: Pinned
+          one: 1 зірка
+          other: "%{count} зірок"
+      pin_icon: Прикріпити
+      pinned: Прикріплено
       profile_fields:
         bio:
           label: Біо
           placeholder: Коротка інформація про вас...
-        display_email_on_profile: Display email on profile
+        display_email_on_profile: Відображати email у профілі
         location:
           label: Місцезнаходження
           placeholder: Запоріжжя
@@ -51,9 +51,9 @@ ua:
           text:
             one: 1 comment written
             other: "%{count} comments written"
-        org: Проекти
+        org: Проєкти
         post:
-          icon: Post
+          icon: Допис
           text:
             one: автор 1 допису
             other: "автор %{count} дописів"
@@ -75,16 +75,16 @@ ua:
       flag: Flag @%{user}
       follow: Підписатися
       joined:
-        icon: Joined
+        icon: Доєднався
         text_html: "У спільності з \_%{date}"
       location_icon: Location
-      logo: "%{user} profile picture"
+      logo: "%{user} зображення профілю"
       more: More info about @%{user}
       send_pm:
-        code: code of conduct
+        code: норми поведінки
         notice_html: All private interactions <b>must</b> abide by the %{code}.
-        placeholder: Enter your message here...
-        submit: Send
-      social: "%{service} website"
+        placeholder: Пишіть сюди...
+        submit: Відправити
+      social: "%{service} сайт"
       unflag: Unflag @%{user}
-      website: Personal website
+      website: Особистий сайт

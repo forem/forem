@@ -38,7 +38,7 @@ ua:
         Article: Стаття
         item: item
         PodcastEpisode: Випуск подкасту
-      suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
+      suspended_too_many: Користувача призупинено за надмірну кількість спам-взаємодій, спровокованих автоботом.
       mention_too_many:
         one: Ви  не можете згадувати більше ніж  %{count} користувача у коментарі!
         other: Ви  не можете згадувати більше ніж %{count} користувачів у коментарі!
@@ -85,7 +85,7 @@ ua:
       limit_reached: Вичерпано ліміт шаблонів відповідей - 30 на одного користувача
     settings:
       campaign:
-        share_your_project: Поділіться своїм проектом
+        share_your_project: Поділіться своїм проєктом
       community:
         message: may not include the "<" nor ">" character
         new_forem: New Forem
@@ -97,17 +97,17 @@ ua:
         message: 'must be be a 3 or 6 character hex (starting with #)'
     sponsorship:
       invalid_type: is not a sponsorable type
-      already_sponsored: The tag is already sponsored
-      only_one_level: You can have only one sponsorship of %{levels}
+      already_sponsored: Теґ вже спонсорується
+      only_one_level: Ви можете мати лише одну спонсорську підтримку від %{levels}
       level:
-        gold: gold
-        silver: silver
-        bronze: bronze
+        gold: золото
+        silver: сврібло
+        bronze: бронза
     tag:
-      alias_for: alias_for must refer to an existing tag
+      alias_for: alias_for повинен посилатися на існуючий тег
     tag_adjustment:
-      too_many_tags: 4 tags max per article.
-      unpermitted: does not have privilege to adjust these tags
+      too_many_tags: Максимум 4 теґи на статтю.
+      unpermitted: не має повноважень на зміну цих теґів
       not_live: selected for removal is not a current live tag.
       unique: can't be an already adjusted tag
     tweet:
@@ -116,10 +116,10 @@ ua:
     user:
       could_not_send: confirmation could not be sent. %{e_message}
       password_not_matched: doesn't match password confirmation
-      has_been_banished: has been banished.
-      is_taken: '%{username} is taken.'
-      user_could_not_be_saved: User could not be saved. %{e_message}
-      username_is_reserved: username is reserved
+      has_been_banished: заблокованно.
+      is_taken: '%{username} вже зайнято.'
+      user_could_not_be_saved: Користувача не вдалося зберегти. %{e_message}
+      username_is_reserved: юзернейм зарезервовано
     user_block:
       cant_be_the_same: can't be the same as the blocked_id
     user_subscription:
@@ -128,7 +128,7 @@ ua:
       not_enabled: User subscriptions are not enabled for the source.
     users:
       deleted_user:
-        name: '[Deleted User]'
+        name: '[Видалений користувач]'
       setting:
-        invalid_hex: is not a valid hex color
-        invalid_rss: is not a valid RSS/Atom feed
+        invalid_hex: неправильний кольор hex
+        invalid_rss: неправильний кольор RSS/Atom feed

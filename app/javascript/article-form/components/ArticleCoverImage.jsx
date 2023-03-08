@@ -47,7 +47,7 @@ const StandardImageUpload = ({
           data-max-file-size-mb="25"
         />
         <span data-testid="tooltip" className="crayons-tooltip__content">
-          Use a ratio of 100:42 for best results.
+          Використовуйте картинку 16:9 для  найкращого результату.
         </span>
       </label>
     </Fragment>

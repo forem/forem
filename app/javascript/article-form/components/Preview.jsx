@@ -52,9 +52,9 @@ function titleArea({
           <img
             className="crayons-article__cover__image"
             src={coverImage}
-            width="1000"
-            height="420"
-            alt="Post preview cover"
+            width="1280"
+            height="720"
+            alt="Огляд обкладинки"
           />
         </div>
       )}

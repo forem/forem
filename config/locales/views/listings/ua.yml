@@ -54,7 +54,7 @@ ua:
         organization:
           description: Posting on behalf of an organization spends the organization's credits.
           none: None
-        publish: Publish listing
+        publish: Публікувати перелік
         purchase: Purchase credits
         save: Save draft
         save_notice: You will not be charged credits to save a draft.
@@ -68,8 +68,8 @@ ua:
         manage: Manage
       new:
         meta:
-          title: New Listing
-        heading: Create a Community Listing
+          title: Новий перелік
+        heading: Створити новий перелік
         buy: Buy more
         disclaimer:
           subtitle: Disclaimer

@@ -45,7 +45,7 @@ ua:
         description_html: Used for texts (usually put on <em>Brand color 1</em>).
       preview:
         icon: App logo
-        text: 'Preview:'
+        text: 'Попперегляд:'
     onboardings:
       meta:
         title: Welcome to %{community}
