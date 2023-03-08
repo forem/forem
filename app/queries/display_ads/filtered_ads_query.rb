@@ -32,7 +32,7 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
-      @filtered_display_ads = type_matched_ads
+      @filtered_display_ads = type_of_ads
 
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
     end
@@ -60,7 +60,7 @@ module DisplayAds
       @filtered_display_ads.where(display_to: display_auth_audience)
     end
 
-    def type_matched_ads
+    def type_of_ads
       # Always match in-house-type ads
       in_house = "(type_of = :in_house)"
 
