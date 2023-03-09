@@ -134,7 +134,7 @@
         <% else %>
           <%= render "users/comments_locked_cta" %>
         <% end %>
-      <% elsif @stories.any? || @comments.any? || @pinned_stories.any? %>
+      <% elsif @stories.any? || @user.comments_count.positive? || @pinned_stories.any? %>
         <%= render "users/main_feed" %>
       <% end %>
     </div>
