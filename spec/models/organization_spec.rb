@@ -25,7 +25,6 @@ RSpec.describe Organization do
       it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
       it { is_expected.to validate_length_of(:location).is_at_most(64) }
       it { is_expected.to validate_length_of(:name).is_at_most(50) }
-      it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
       it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }

@@ -74,15 +74,7 @@
       <%= f.text_area :summary, class: "crayons-textfield", rows: 3 %>
     </div>
 
-    <div class="crayons-field">
-      <%= f.label :proof, class: "crayons-field__label" do |translation| %>
-        <%= translation %>
-        <span class="crayons-field__required" title="<%= t("views.settings.org.create.required") %>">*</span>
-      <% end %>
-      <p class="crayons-field__description"><%= t("views.settings.org.create.proof") %></p>
-      <%= f.text_area :proof, class: "crayons-textfield" %>
-      <p class="crayons-field__description"><%= t("views.settings.org.create.notice") %></p>
-    </div>
+
 
     <button class="crayons-btn w-max" type="submit"><%= t("views.settings.org.create.submit") %></button>
   <% end %>

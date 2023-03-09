@@ -19,12 +19,12 @@ ua:
         github_username: GitHub юзернейм
         url: Сайт url
         tag_line: Набір теґів
-        summary: Висновки
-        location: Місце
-        email: Підтримка email
+        summary: Про що проєкт (коротко)
+        location: Місцезнаходження
+        email: Email проєкту (буде доступним для бажачаючих)
         company_size: Розмір організації
         story: Наша історія
-        tech_stack: Наші заслуги
+        tech_stack: Що ми робимо
         cta_body_markdown: Текст допису
         cta_button_text: Текст посилання
         cta_button_url: Посилання url
