@@ -16,7 +16,7 @@
   --base-0: #f9f9f9;
 
   /* Brand */
-  --accent-brand-lighter2: rgb(var(--accent-brand-lighter2-rgb));
+  --accent-brand-lighter2: rgb(var(--accent-brand-lighter-rgb2));
   --accent-brand-lighter: rgb(var(--accent-brand-lighter-rgb));
   --accent-brand: rgb(var(--accent-brand-rgb));
   --accent-brand-darker: rgb(var(--accent-brand-darker-rgb));
