@@ -56,10 +56,10 @@ export const ReactionsCount = ({ article }) => {
 
   return (
     <a
-      href="{article.path}"
+      href={article.path}
       className="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"
       data-reaction-count
-      data-reactable-id="{article.id}"
+      data-reactable-id={article.id}
     >
       <div className="multiple_reactions_aggregate">
         {buildIcons()}
