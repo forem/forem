@@ -28,7 +28,7 @@
   <div id="body-styles">
     <style>
       :root {
-        --accent-brand-lighter-rgb2: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).opacity(0.2, only_values: true) %>;
+        --accent-brand-lighter-rgb2: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.45, only_values: true) %>;
         --accent-brand-lighter-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1.35, only_values: true) %>;
         --accent-brand-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(1, only_values: true) %>;
         --accent-brand-darker-rgb: <%= Color::CompareHex.new([Settings::UserExperience.primary_brand_color_hex]).brightness(0.7, only_values: true) %>;
