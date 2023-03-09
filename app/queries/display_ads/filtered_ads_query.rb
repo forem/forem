@@ -4,10 +4,11 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(display_ads:, area:, user_signed_in:, article_tags: [])
+    def initialize(display_ads:, area:, user_signed_in:, organization_id: nil, article_tags: [])
       @filtered_display_ads = display_ads
       @area = area
       @user_signed_in = user_signed_in
+      @organization_id = organization_id
       @article_tags = article_tags
     end
 
@@ -28,6 +29,8 @@ module DisplayAds
                               else
                                 authenticated_ads(%w[all logged_out])
                               end
+
+      @filtered_display_ads = community_or_in_house_ads
 
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
       @filtered_display_ads = sample_ads
@@ -54,6 +57,15 @@ module DisplayAds
 
     def authenticated_ads(display_auth_audience)
       @filtered_display_ads.where(display_to: display_auth_audience)
+    end
+
+    def community_or_in_house_ads
+      @filtered_display_ads.where(
+        "(type_of = :in_house) OR
+         (type_of = :community AND organization_id = :organization_id) OR
+	       (type_of = :external AND organization_id != :organization_id)",
+        DisplayAd.type_ofs.merge({ organization_id: @organization_id }),
+      )
     end
 
     # Business Logic Context:
