@@ -63,8 +63,8 @@ ua:
     secret_updated: Your org secret was updated
     deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'
     not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
-    created: Your organization was successfully created and you are an admin.
-    updated: Your organization was successfully updated.
+    created: Ваш проєкт успішно створено, і ви є адміністратором.
+    updated: Ваш проєкт було оновлено.
   podcasts_controller:
     podcast_suggested: Podcast suggested
   profiles_controller:

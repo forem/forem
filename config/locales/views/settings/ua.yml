@@ -253,7 +253,7 @@ ua:
             cta_body_markdown: "Обмежене форматування: _italic_ та **bold** можна.
               Посилання, заголовки не працюватимуть. Максимум 256 символів."
             cta_button_text: Максимум 20 символів
-            submit: Збергти
+            submit: Зберегти
           gen:
             confirm: Ви впевнені, що хочете створити новий секретний код? Усі ісрнучи коди
               стануть недійсними.
@@ -320,7 +320,7 @@ ua:
         Customization: Персоналізація
         Notifications: Сповіщення
         Account: Акаунт
-        Billing: Billing
-        Organization: Organization
-        Extensions: Extensions
-      save_profile: Save Profile Information
+        Billing: Сплата
+        Organization: Проєкт
+        Extensions: Розширення
+      save_profile: Зберегти профіль

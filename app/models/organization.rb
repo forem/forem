@@ -34,8 +34,6 @@ class Organization < ApplicationRecord
 
   validates :articles_count, presence: true
   validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
-  validates :company_size, format: { with: INTEGER_REGEXP, message: :integer_only, allow_blank: true }
-  validates :company_size, length: { maximum: 7 }, allow_nil: true
   validates :credits_count, presence: true
   validates :cta_body_markdown, length: { maximum: 256 }
   validates :cta_button_text, length: { maximum: 20 }

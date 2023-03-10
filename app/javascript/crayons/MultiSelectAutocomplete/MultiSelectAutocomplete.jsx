@@ -78,7 +78,7 @@ export const MultiSelectAutocomplete = ({
   staticSuggestions = [],
   staticSuggestionsHeading,
   border = true,
-  placeholder = 'Add...',
+  placeholder = 'Додайте...',
   inputId,
   maxSelections,
   onSelectionsChanged,
@@ -572,7 +572,7 @@ export const MultiSelectAutocomplete = ({
         {labelText}
       </label>
       <span id="input-description" className="screen-reader-only">
-        {maxSelections ? `Maximum ${maxSelections} selections` : ''}
+        {maxSelections ? `Максимум ${maxSelections} теґів` : ''}
       </span>
 
       {/* A visually hidden list provides confirmation messages to screen reader users as an item is selected or removed */}
@@ -641,7 +641,7 @@ export const MultiSelectAutocomplete = ({
         </div>
         {showMaxSelectionsReached ? (
           <div className="c-autocomplete--multi__popover">
-            <span className="p-3">Only {maxSelections} selections allowed</span>
+            <span className="p-3">Максимум {maxSelections} теґів</span>
           </div>
         ) : null}
         {suggestions.length > 0 && allowSelections ? (

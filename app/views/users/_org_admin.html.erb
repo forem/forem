@@ -88,7 +88,7 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :profile_image, "Profile image *", class: "crayons-field__label" %>
+      <%= f.label :profile_image, "Зображення профілю *", class: "crayons-field__label" %>
       <div class="flex items-center">
           <span class="crayons-logo crayons-logo--xl mr-2">
             <% if @organization.profile_image_url.present? %>
@@ -100,7 +100,7 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :nav_image, "Logo for light themes", class: "crayons-field__label" %>
+      <%= f.label :nav_image, "Логотип для світлої теми", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.nav_image_url.present? %>
           <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.nav_image_url, width: 50) %>" />
@@ -110,7 +110,7 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :dark_nav_image, "Logo for dark themes", class: "crayons-field__label" %>
+      <%= f.label :dark_nav_image, "Логотип для нічної теми", class: "crayons-field__label" %>
       <div class="flex items-center">
         <% if @organization.dark_nav_image_url.present? %>
           <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.dark_nav_image_url, width: 50) %>" />
@@ -120,15 +120,15 @@
     </div>
 
     <div class="crayons-field">
-      <%= f.label :twitter_username, "Twitter username", class: "crayons-field__label" %>
+      <%= f.label :twitter_username, "Twitter юзернейм", class: "crayons-field__label" %>
       <%= f.text_field :twitter_username, class: "crayons-textfield" %>
     </div>
     <div class="crayons-field">
-      <%= f.label :github_username, "GitHub username", class: "crayons-field__label" %>
+      <%= f.label :github_username, "GitHub юзернейм", class: "crayons-field__label" %>
       <%= f.text_field :github_username, class: "crayons-textfield" %>
     </div>
     <div class="crayons-field">
-      <%= f.label :url, "Website url", class: "crayons-field__label" %>
+      <%= f.label :url, "Сайт url", class: "crayons-field__label" %>
       <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", class: "crayons-textfield" %>
     </div>
     <div class="crayons-field">
