@@ -6,13 +6,13 @@
       <%= render "layouts/sidebar_tags" %>
     <% end %>
     <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
+      <% @left_sidebar_ad = DisplayAd.for_display(area: "sidebar_left", user_signed_in: user_signed_in?) %>
       <% if @left_sidebar_ad %>
         <%= render partial: "shared/display_ad", locals: {display_ad: @left_sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
       <% end %>
     <% end %>
     <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
-      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
+      <% @second_left_sidebar_ad = DisplayAd.for_display(area: "sidebar_left_2", user_signed_in: user_signed_in?) %>
       <% if @second_left_sidebar_ad %>
         <div class="pt-4">
           <%= render partial: "shared/display_ad", locals: {display_ad: @second_left_sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
