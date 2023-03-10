@@ -238,7 +238,7 @@ RSpec.describe "NotificationsIndex" do
 
       it "properly renders reactable titles for multiple reactions" do
         amount = rand(3..10)
-        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
+        mock_heart_reaction_notifications(amount, %w[unicorn like], special_characters_article)
         get "/notifications"
         expect(response.body).to include ERB::Util.html_escape(special_characters_article.title)
       end
