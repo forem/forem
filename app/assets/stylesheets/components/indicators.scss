@@ -35,6 +35,10 @@
     padding: var(--su-2);
   }
 
+  &--round {
+    border-radius: var(--radius-large);
+  }
+
   &:empty {
     display: none;
   }
