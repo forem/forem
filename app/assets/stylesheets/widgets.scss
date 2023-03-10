@@ -309,14 +309,9 @@
   }
 }
 
-// Sidebar sponsors
-.crayons-sponsorship-article {
-  margin-bottom: 10px;
-  padding: var(--content-padding-y) var(--content-padding-x);
-}
-
 .crayons-sponsorship {
   padding: var(--su-3);
+  padding-bottom: var(--su-4);
 
   &__header {
     display: flex;
@@ -339,5 +334,30 @@
     border-radius: var(--radius);
     display: inline-block;
     vertical-align: middle;
+  }
+}
+
+.crayons-article-sticky,
+.sidebar-wrapper {
+  .crayons-card {
+    .text-styles {
+      font-size: var(--fs-base);
+    }
+  }
+}
+
+.crayons-layout__comments-display-ad {
+  .crayons-sponsorship {
+    .crayons-sponsorship__title {
+      padding-top: var(--su-5);
+    }
+    .crayons-sponsorship__dropdown {
+      margin-top: -15px;
+    }
+    padding-left: var(--content-padding-x);
+    padding-bottom: var(--su-6);
+    .text-styles {
+      padding-right: var(--su-8);
+    }
   }
 }
