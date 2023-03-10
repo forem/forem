@@ -202,21 +202,16 @@ RSpec.describe "Stories::Feeds" do
 
     context "when there are low-scoring articles" do
       let!(:article) { create(:article, featured: false) }
-      let!(:article_with_mid_score) do
-        minimum = Articles::Feeds::Latest::MINIMUM_SCORE
-        maximum = Settings::UserExperience.home_feed_minimum_score
-        score = (minimum..maximum).to_a.sample
-        create(:article, score: score)
-      end
-      let!(:article_with_low_score) do
-        create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE)
-      end
 
       it "excludes low-score article but not mid-score" do
+        article_with_mid_score = create(:article, score: Settings::UserExperience.home_feed_minimum_score)
+        article_with_low_score = create(:article, score: Articles::Feeds::Latest::MINIMUM_SCORE)
+
         get timeframe_stories_feed_path(:latest)
-        expect(response.body).to include(article.title)
-        expect(response.body).to include(article_with_mid_score.title)
-        expect(response.body).not_to include(article_with_low_score.title)
+
+        response_array = response.parsed_body.pluck("title")
+        expect(response_array).to contain_exactly(article.title, article_with_mid_score.title)
+        expect(response_array).not_to include(article_with_low_score.title)
       end
     end
   end

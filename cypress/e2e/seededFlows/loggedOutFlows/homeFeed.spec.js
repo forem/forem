@@ -5,17 +5,17 @@ describe('Logged out Home feed', () => {
   });
 
   it("shows a profile preview card for an article's author", () => {
-    cy.findAllByRole('button', { name: 'Admin McAdmin profile details' })
+    cy.get('[aria-label="Admin McAdmin profile details"]')
       .first()
       .as('previewButton');
     cy.get('@previewButton').should('have.attr', 'data-initialized');
     cy.get('@previewButton').click();
+    cy.get('@previewButton').should('have.attr', 'aria-expanded', 'true');
 
-    cy.findAllByTestId('profile-preview-card')
+    cy.get('[aria-expanded="true"]')
+      .siblings('div')
       .first()
       .within(() => {
-        cy.focused(); // Explicitly ask for focused element
-
         cy.findByRole('link', {
           name: 'Admin McAdmin',
         }).should('have.focus');
