@@ -13,7 +13,6 @@ class OrganizationsController < ApplicationController
     nav_image
     dark_nav_image
     location
-    company_size
     tech_stack
     email
     story
