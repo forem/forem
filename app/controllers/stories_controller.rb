@@ -292,7 +292,7 @@ class StoriesController < ApplicationController
 
     @comments = @user.comments.where(deleted: false)
       .order(created_at: :desc)
-      .includes(:commentable)
+      .includes(commentable: [:podcast])
       .limit(comment_count)
   end
 
