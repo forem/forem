@@ -119,7 +119,7 @@ en:
       recently_published: Recently Published
     authentication_helper:
       any_of_those: any of those
-      email_password: Email & Password
+      email_password: Email & Пароль
       reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
       that: that
       invite_only: You cannot do this until you disable Invite Only Mode

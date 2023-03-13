@@ -22,7 +22,7 @@ describe('User Login', () => {
         .findByText(/^Email$/)
         .type(user.email);
       cy.get('@loginForm')
-        .findByText(/^Password$/)
+        .findByText(/^Пароль$/)
         .type(user.password);
     });
 
@@ -51,7 +51,7 @@ describe('User Login', () => {
         .findByText(/^Email$/)
         .type(user.email);
       cy.get('@loginForm')
-        .findByText(/^Password$/)
+        .findByText(/^Пароль$/)
         .type(user.password);
     });
 

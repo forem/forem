@@ -64,14 +64,14 @@ ua:
             other: "слідкує за %{count} тегами"
       signout:
         meta:
-          title: Confirm Signout - %{community}
-        heading: Are you sure you want to sign out?
-        'yes': Yes, sign out
+          title: Підвердити вихід - %{community}
+        heading: Ви впевнені, що хочете вийти?
+        'yes': Так, вийти
       block: Block @%{user}
       details: "%{user} profile details"
       dropdown: User actions
       email_icon: Email address
-      empty: 404 bio not found
+      empty: 404 біографія не знайдена
       flag: Flag @%{user}
       follow: Підписатися
       joined:

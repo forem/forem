@@ -266,13 +266,13 @@ RSpec.describe "UserSettings" do
     it "returns error message if user can't be saved" do
       put "/users/#{user.id}", params: { user: { password: "1", password_confirmation: "1" } }
 
-      expect(flash[:error]).to include("Password is too short")
+      expect(flash[:error]).to include("Пароль занадтно короткий")
     end
 
     it "returns an error message if the passwords do not match" do
       put "/users/#{user.id}", params: { user: { password: "asdfghjk", password_confirmation: "qwertyui" } }
 
-      expect(flash[:error]).to include("Password doesn't match password confirmation")
+      expect(flash[:error]).to include("Паролі не співпадають")
     end
 
     context "when requesting an export of the articles" do

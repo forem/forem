@@ -57,14 +57,14 @@ ua:
         popular_tags: Популярні теґи
       footer:
         built:
-          text_html: by <a href="https://ternox.com/" target="_blank">Ternox</a>
+          text_html: Створено на базі %{forem} — %{opensource} ПО, що підтримує %{dev} та інші дружні спільноти.
           forem: Forem
-          opensource: open source
+          opensource: відкритого
           dev: DEV
         desc_html: "%{community} — %{desc}"
         logo: Forem logo
         powered:
-          text_html: <span title="copyright">&copy;</span> %{copyright}.
+          text_html: На базі %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
       home: Головна
       create_post: Створити допис
