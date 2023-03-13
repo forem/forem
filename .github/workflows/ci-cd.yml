@@ -33,12 +33,19 @@ jobs:
       - uses: actions/checkout@v3
       - name: Cache node_modules
         id: cache
+        uses: actions/cache/restore@v3
+        lookup-only: true
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
-      - run: echo "hi ${{ steps.cache.outputs.cache-hit }}"
+        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
         if: steps.cache.outputs.cache-hit != 'true'
         with:
