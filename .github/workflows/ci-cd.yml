@@ -34,8 +34,8 @@ jobs:
       - name: Cache node_modules
         id: cache
         uses: actions/cache/restore@v3
-        lookup-only: true
         with:
+          lookup-only: true
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
