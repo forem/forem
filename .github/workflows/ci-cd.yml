@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v3
       - name: Cache node_modules
         id: cache
         uses: actions/cache@v3
@@ -38,8 +39,6 @@ jobs:
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
       - run: echo "hi ${{ steps.cache.outputs.cache-hit }}"
-      - uses: actions/checkout@v3
-        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
         if: steps.cache.outputs.cache-hit != 'true'
         with:
