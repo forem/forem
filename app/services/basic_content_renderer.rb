@@ -12,10 +12,13 @@ class BasicContentRenderer
     @fixer = fixer
   end
 
-  def process(link_attributes: {}, sanitize_options: {})
+  def process(link_attributes: {}, sanitize_options: {},
+              prefix_images_options: { width: 800, synchronous_detail_detection: false })
     fixed = fixer.call(input)
-    processed = processor.new(fixed, source: source, user: user, sanitize_options: sanitize_options)
-    processed.finalize(link_attributes: link_attributes)
+    processed = processor.new(fixed, source: source, user: user)
+    processed.finalize(link_attributes: link_attributes,
+                       sanitize_options: sanitize_options,
+                       prefix_images_options: prefix_images_options)
   rescue StandardError => e
     raise ContentParsingError, e.message
   end

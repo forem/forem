@@ -107,7 +107,9 @@ class DisplayAd < ApplicationRecord
     renderer = BasicContentRenderer.new(body_markdown || "", source: self)
     sanitize_options = { tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
                          attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD }
-    self.processed_html = renderer.process(sanitize_options: sanitize_options)
+    self.processed_html = renderer.process(sanitize_options: sanitize_options,
+                                           prefix_images_options: { width: prefix_width,
+                                                                    synchronous_detail_detection: true })
     self.processed_html = processed_html.delete("\n")
   end
 
@@ -120,7 +122,7 @@ class DisplayAd < ApplicationRecord
                                                             attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html)
-      .prefix_all_images(prefix_width, synchronous_detail_detection: true).html
+      .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html
   end
 
   def prefix_width

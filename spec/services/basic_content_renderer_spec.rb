@@ -20,14 +20,26 @@ RSpec.describe BasicContentRenderer do
 
     it "calls finalize with link_attributes" do
       renderer.process(link_attributes: { rel: "nofollow" })
-      expect(parser).to have_received(:finalize).with(link_attributes: { rel: "nofollow" })
+      finalize_attrs = {
+        link_attributes: { rel: "nofollow" },
+        sanitize_options: {},
+        prefix_images_options: { width: 800, synchronous_detail_detection: false }
+      }
+      expect(parser).to have_received(:finalize).with(finalize_attrs)
     end
 
-    it "calls processor with sanitize_options" do
+    it "calls finalize with sanitize_options" do
       allow(MarkdownProcessor::Fixer::FixAll).to receive(:call).and_return("text")
+      sanitize_options = { tags: %w[div] }
+      # attrs = ["text", { source: nil, user: nil }]
+      # expect(MarkdownProcessor::Parser).to have_received(:new).with(*attrs)
+      finalize_attrs = {
+        link_attributes: {},
+        sanitize_options: sanitize_options,
+        prefix_images_options: { width: 800, synchronous_detail_detection: false }
+      }
       renderer.process(sanitize_options: { tags: %w[div] })
-      attrs = ["text", { source: nil, user: nil, sanitize_options: { tags: %w[div] } }]
-      expect(MarkdownProcessor::Parser).to have_received(:new).with(*attrs)
+      expect(parser).to have_received(:finalize).with(finalize_attrs)
     end
   end
 

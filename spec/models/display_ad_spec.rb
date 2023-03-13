@@ -102,13 +102,18 @@ RSpec.describe DisplayAd do
   describe "#process_markdown" do
     # FastImage.size is called when synchronous_detail_detection: true is passed to Html::Parser#prefix_all_images
     # which should be the case for DisplayAd
+    # Images::Optimizer is also called with widht
     it "calls Html::Parser#prefix_all_images with parameters" do
       # Html::Parser.new(html).prefix_all_images(prefix_width, synchronous_detail_detection: true).html
-      allow(FastImage).to receive(:size)
       image_url = "https://dummyimage.com/100x100"
+      allow(FastImage).to receive(:size)
+      allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
-      create(:display_ad, body_markdown: image_md)
+      create(:display_ad, body_markdown: image_md, placement_area: "post_comments")
       expect(FastImage).to have_received(:size).with(image_url, { timeout: 10 })
+      # width is display_ad.prefix_width
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::POST_WIDTH)
+      # Images::Optimizer.call(source, width: width)
     end
 
     it "keeps the same processed_html if markdown was not changed" do

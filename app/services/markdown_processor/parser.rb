@@ -12,7 +12,6 @@ module MarkdownProcessor
     # @param source [Object] The thing associated with the content.  This might be an article.
     # @param user [User] Who's the one writing the content?
     # @param liquid_tag_options [Hash]
-    # @param sanitize_options [Hash]
     #
     # @note This is a place to pass in a different policy object.  But like, maybe don't do
     #       that with user input, but perhaps via a data migration script.
@@ -20,16 +19,18 @@ module MarkdownProcessor
     # @see LiquidTagBase for more information regarding the liquid tag options.
 
     def initialize(content, source: nil, user: nil,
-                   liquid_tag_options: {},
-                   sanitize_options: { scrubber: RenderedMarkdownScrubber.new })
+                   liquid_tag_options: {})
       @content = content
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
-      @sanitize_options = sanitize_options
+      # @sanitize_options = sanitize_options
     end
 
-    def finalize(link_attributes: {})
+    # @param prefix_images_options [Hash] params, that need to be passed further to HtmlParser#prefix_all_images
+    # @param sanitize_options [Hash]
+    def finalize(link_attributes: {}, prefix_images_options: { width: 800, synchronous_detail_detection: false },
+                 sanitize_options: { scrubber: RenderedMarkdownScrubber.new })
       options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
@@ -37,7 +38,7 @@ module MarkdownProcessor
       code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      sanitized_content = ActionController::Base.helpers.sanitize html, @sanitize_options
+      sanitized_content = ActionController::Base.helpers.sanitize html, sanitize_options
 
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
@@ -50,7 +51,7 @@ module MarkdownProcessor
         html = e.message
       end
 
-      parse_html(html)
+      parse_html(html, prefix_images_options)
     end
 
     def calculate_reading_time
@@ -128,13 +129,13 @@ module MarkdownProcessor
 
     private
 
-    def parse_html(html)
+    def parse_html(html, prefix_images_options)
       return html if html.blank?
 
       Html::Parser
         .new(html)
         .remove_nested_linebreak_in_list
-        .prefix_all_images # (880, synchronous_detail_detection: true)
+        .prefix_all_images(**prefix_images_options)
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
