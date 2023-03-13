@@ -37,7 +37,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
-      - run: echo "hi {{ steps.cache.outputs.cache-hit }}{ steps.cache.outputs.cache-hit }"
+      - run: echo "hi ${{ steps.cache.outputs.cache-hit }}"
       - uses: actions/checkout@v3
         if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
