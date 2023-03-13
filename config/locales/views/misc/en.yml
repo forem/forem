@@ -4,16 +4,16 @@ en:
     badges:
       meta:
         title: Badges
+        name: "%{title} Badge"
       all:
         one: Show one badge
         other: Show all %{count} badges
       heading: Badges
       desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
-      icon_close: Close
-      gotit: Got it
+      name: "🏅 %{title} Badge 🏅"
     campaign:
       subtitle: Stories (%{count})
-      view: See all posts
+      view: Усі пости
     deep_links:
       subtitle: Opening the mobile app...
       alert:
@@ -32,63 +32,63 @@ en:
         description_html: Please %{signin} to manage your email preferences.
         signin: sign-in
     hamburger:
-      icon: Navigation menu
-      icon_close: Close
-      icon_left: Left menu
-      icon_right: Right menu
+      icon: Меню
+      icon_close: Закрити
+      icon_left: Ліве меню
+      icon_right: Праве меню
     logo:
       color_1:
-        label: Brand color 1
-        description: Used for backgrounds, borders etc.
+        label: Колір 1
+        description: Використовується для фону, рамок, тощо...
       color_2:
-        label: Brand color 2
-        description_html: Used for texts (usually put on <em>Brand color 1</em>).
+        label: Колір 2
+        description_html: Використувоється для тексту (зазвичай поверх <em>Кольору 1</em>).
       preview:
         icon: App logo
-        text: 'Preview:'
+        text: 'Попперегляд:'
     onboardings:
       meta:
-        title: Welcome to %{community}
-      heading: You're now a part of the community!
-      subtitle: SUGGESTED THINGS YOU CAN DO
-      close: Close Welcome Message
-      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
-      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
-      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+        title: Ласкаво просимо до %{community}
+      heading: Тепер ви частина спільноти!
+      subtitle: ДИВИ, ЯКІ ШТУКИ ТЕПЕР МОЖЕШ РОБИТИ
+      close: Закрити
+      settings_html: "<span class=\"emoji\">💅🏼</span>Налаштуй свій профіль"
+      welcome_html: "<span class=\"emoji\">😊</span>Заходь до треду новачків"
+      write_html: "<span class=\"emoji\">✍🏾</span>Напиши свій перший %{community} допис"
     pins:
-      article: Pinned
-      pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
-      removed: "🗑 Pin removed"
-      error: You can only have five pins
+      article: Закріплено
+      pinned: "📌 Закріплено! (закріплені пости показуються хронологічно, 5 максимум)"
+      removed: "🗑 Відкріплено"
+      error: Максимум 5 закріплень одночасно
     profile:
       color:
-        label: Brand color
-        description: Used for backgrounds, borders etc.
+        label: Колір
+        description: Використовуються для фону, рамок, тощо.
     reading_list:
       meta:
-        title: Reading List
-        description: My saved posts.
+        title: Читальний перелік
+        description: Мої збережені пости
         og:
-          title: Reading List - %{community}
+          title: Читальний перелік - %{community}
     search:
-      heading: Search results%{for}
+      heading: Результати пошуку%{for}
       for: " for %{query}"
-      placeholder: Search...
+      placeholder: Пошук...
       icon:
-        aria_label: Search
-        title: Search
+        aria_label: Пошук
+        title: Пошук
       nav:
-        posts: Posts
-        podcasts: Podcasts
-        people: People
-        comments: Comments
-        my_posts: My posts only
-        tags: Tags
+        posts: Пости
+        podcasts: Подкасти
+        people: Люди
+        comments: Коментарі
+        my_posts: Тільки мої пости
+        tags: Теги
       sort:
-        aria_label: Search result sort options
-        relevance: Most Relevant
-        newest: Newest
-        oldest: Oldest
+        aria_label: Налаштування пошуку
+        relevance: Відповідні
+        newest: Спочатку нові
+        oldest: Спочатку  старі
       meta:
         title: Search Results%{for}
         for: " for %{query}"
@@ -102,14 +102,16 @@ en:
         heading: "%{series} Series' Articles"
         back: Back to %{user}'s Series
         empty: This series doesn't have any articles
+    sponsor:
+      seek: Стати спонсором
     stats:
       meta:
         title: Stats for Your Article
       heading_html: Stats for "%{article}"
       period:
         aria_label: Analytics period
-        week: Week
-        month: Month
+        week: Тиждень
+        month: Місяць
         infinity: Infinity
       readers: Readers Summary
       followers: New Followers Summary
@@ -120,8 +122,8 @@ en:
         source: Source
         views: Views
     sticky:
-      joined: Joined
-      default_cta: Learn more
+      joined: Доєднався
+      default_cta: Дізнатися більше
       email: Email
       hot: Hot
       location: Location
@@ -130,9 +132,9 @@ en:
       trending_html: Trending on %{app}
     videos:
       meta:
-        title: Videos
+        title: Відео
         og:
-          description: All videos on %{community}
-      heading: "%{community} on Video"
-      beta_html: "<strong>Video is beta:</strong> %{contact}"
-      upload: "🎥 Upload Video File 🙌"
+          description: Усі відео з %{community}
+      heading: "Відео  з %{community}"
+      beta_html: "<strong>Відео бета:</strong> %{contact}"
+      upload: "🎥 Завантажити відео 🙌"

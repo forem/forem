@@ -1,8 +1,8 @@
 ---
-ua:
+en:
   views:
     main:
-      aria_home: "%{community}"
+      aria_home: "%{community} Головна"
       header:
         create_account: Створити акаунт
         login: Увійти
