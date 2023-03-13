@@ -37,15 +37,15 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
-      - name: cache found, skipping
-        if: steps.cache.outputs.cache-hit == 'true'
-        run: exit 0
       - uses: actions/checkout@v3
+        if: steps.cache.outputs.cache-hit == 'false'
       - uses: actions/setup-node@v3
+        if: steps.cache.outputs.cache-hit == 'false'
         with:
           node-version: 16
           cache: yarn
       - run: yarn install --immutable
+        if: steps.cache.outputs.cache-hit == 'false'
 
   assets-precompile:
     runs-on: ubuntu-latest
