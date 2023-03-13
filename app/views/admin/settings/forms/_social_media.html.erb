@@ -14,7 +14,7 @@
                            placeholder: Constants::Settings::General.details[:twitter_hashtag][:placeholder] %>
         </div>
         <%= f.fields_for :social_media_handles do |social_media_field| %>
-          <% Settings::General.social_media_handles.each do |platform, username| %>
+          <% Settings::General.social_media_services.each do |platform, username| %>
             <div class="crayons-field">
               <%= admin_config_label platform %>
               <p class="crayons-field__description">

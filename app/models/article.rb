@@ -51,19 +51,24 @@ class Article < ApplicationRecord
 
   MAX_TAG_LIST_SIZE = 4
 
-  # Filter out anything that isn't a word, space, punctuation mark, or
-  # recognized emoji.
+  # Filter out anything that isn't a word, space, punctuation mark,
+  # recognized emoji, and other auxiliary marks.
   # See: https://github.com/forem/forem/pull/16787#issuecomment-1062044359
+  #
+  # NOTE: try not to use hyphen (- U+002D) in comments inside regex,
+  # otherwise it may break parser randomly.
+  # Use underscore or Unicode hyphen (‐ U+2010) instead.
   # rubocop:disable Lint/DuplicateRegexpCharacterClassElement
   TITLE_CHARACTERS_ALLOWED = /[^
     [:word:]
     [:space:]
     [:punct:]
-    \u00a3        # GBP symbol
+    \p{Sc}        # All currency symbols
     \u00a9        # Copyright symbol
     \u00ae        # Registered trademark symbol
-    \u200d        # Zero-width joiner, for multipart emojis such as family
-    \u203c        # !! emoji
+    \u180e        # Mongolian vowel separator
+    \u200c        # Zero‐width non‐joiner, for complex scripts
+    \u200d        # Zero‐width joiner, for multipart emojis such as family
     \u20e3        # Combining enclosing keycap
     \u2122        # Trademark symbol
     \u2139        # Information symbol
@@ -73,15 +78,26 @@ class Article < ApplicationRecord
     \u231b        # Hourglass emoji
     \u2328        # Keyboard emoji
     \u23cf        # Eject symbol
-    \u23e9-\u23f3 # Various VCR-actions emoji and clocks
+    \u23e9-\u23f3 # Various VCR‐actions emoji and clocks
     \u23f8-\u23fa # More VCR emoji
     \u24c2        # Blue circle with a white M in it
     \u25aa        # Black box
     \u25ab        # White box
-    \u25b6        # VCR-style play emoji
-    \u25c0        # VCR-style play backwards emoji
+    \u25b6        # VCR‐style play emoji
+    \u25c0        # VCR‐style play backwards emoji
     \u25fb-\u25fe # More black and white squares
     \u2600-\u273f # Weather, zodiac, coffee, hazmat, cards, music, other misc emoji
+    \u2744        # Snowflake emoji
+    \u2747        # Sparkle emoji
+    \u274c        # Cross mark
+    \u274e        # Cross mark box
+    \u2753-\u2755 # Big red and white ? emoji, big white ! emoji
+    \u2757        # Big red ! emoji
+    \u2763-\u2764 # Heart ! and heart emoji
+    \u2795-\u2797 # Math operator emoji
+    \u27a1        # Right arrow
+    \u27b0        # One loop
+    \u27bf        # Two loops
     \u2934        # Curved arrow pointing up to the right
     \u2935        # Curved arrow pointing down to the right
     \u2b00-\u2bff # More arrows, geometric shapes
@@ -89,7 +105,6 @@ class Article < ApplicationRecord
     \u303d        # Either a line chart plummeting or the letter M, not sure
     \u3297        # Circled Ideograph Congratulation
     \u3299        # Circled Ideograph Secret
-    \u20ac        # Euro symbol (€)
     \u{1f000}-\u{1ffff} # More common emoji
   ]+/m
   # rubocop:enable Lint/DuplicateRegexpCharacterClassElement
