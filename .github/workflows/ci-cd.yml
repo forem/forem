@@ -143,7 +143,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
-    needs: [bundle-install, yarn-install]
+    needs: [yarn-install]
     timeout-minutes: 20
 
     steps:
@@ -263,7 +263,7 @@ jobs:
         with:
           bundler-cache: true
       - name: Cache precompiled asset
-        uses: actions/cache/retrieve@v3
+        uses: actions/cache/restore@v3
         with:
           path: |
             public/assets
