@@ -297,7 +297,6 @@ jobs:
             public/packs-test
           key: ${{ runner.os }}-assets-precompile
       - run: bundle exec rails db:test:prepare
-      - run: yarn cypress install
       - name: cypress
         env:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
