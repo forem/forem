@@ -5,7 +5,7 @@
         <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
           <%= community_name %> is invite only.
         <% else %>
-          Welcome to <%= community_name %>
+          Вітаємо на сайті <%= community_name %>
         <% end %>
       </h1>
       <p class="registration__description">
@@ -32,7 +32,7 @@
           <% if Settings::Authentication.allow_email_password_login %>
             <div class="registration__hr">
               <span class="registration__hr-label">
-                Have a password? Continue with your email address
+                Маєте акаунт? Пишіть свою пошту та пароль.
               </span>
             </div>
             <%= render partial: "shared/authentication/email_login_form" %>

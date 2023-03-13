@@ -129,11 +129,11 @@ RSpec.describe "Authenticating with Email" do
   context "when requesting a password reset mail" do
     it "does not let malicious users enumerate email addresses" do
       visit new_user_session_path
-      click_link "I forgot my password"
+      click_link "Я забув свій пароль"
       fill_in "Email", with: "doesnotexist@example.com"
-      click_button "Send me reset password instructions"
+      click_button "Відправте мені інструкцію"
 
-      expect(page).not_to have_text("Email not found")
+      expect(page).not_to have_text("Email не знайдено")
     end
   end
 

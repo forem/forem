@@ -7,7 +7,7 @@ ua:
         aria_label: Створити профіль
         text: Створити профіль
       creator:
-        text1: Відкрийте для себе Бéзмір!
+        text1: Знайдіть для себе свій Куток!
         text2: Create your admin account first.
         text3: Then we'll walk you through your Forem setup.
         hint:
@@ -19,7 +19,7 @@ ua:
         aria_label: Увійти
         text: Увійти
         continue: Продовжити
-        forgot: I forgot my password
+        forgot: Я забув свій пароль
       provider:
         text: "%{action} with %{provider}"
         login: Продовжити
@@ -32,9 +32,9 @@ ua:
           one: Whoops, we found %{count} problem
           other: Whoops, we found %{count} problems
         allow:
-          one_html: Registration restricted to <strong>@%{domain}</strong> emails.
-          list: Registration restricted to the following emails
-        create: Create your account
+          one_html: Реєстрація заборонена за <strong>@%{domain}</strong> пошт.
+          list: Реєстрація заборонена з наступних адрес
+        create: Створити акаунт
         field:
           name:
             aria_label: Ім'я
