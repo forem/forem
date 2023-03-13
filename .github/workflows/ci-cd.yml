@@ -78,10 +78,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            public/assets
             public/packs-test
-          key: ${{ runner.os }}-assets-precompile
-      - run: bundle exec rails assets:precompile
+          key: ${{ runner.os }}-assets-precompile-packs
+      - run: bin/webpack
 
   RSpec:
     runs-on: ubuntu-latest
@@ -130,9 +129,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets
             public/packs-test
-          key: ${{ runner.os }}-assets-precompile
+          key: ${{ runner.os }}-assets-precompile-packs
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
@@ -252,9 +250,9 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets
             public/packs-test
-          key: ${{ runner.os }}-assets-precompile
+          key: ${{ runner.os }}-assets-precompile-packs
+      - run: bundle exec rails assets:precompile
       - run: bin/test-console-check
 
   Cypress:
@@ -300,9 +298,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets
             public/packs-test
-          key: ${{ runner.os }}-assets-precompile
+          key: ${{ runner.os }}-assets-precompile-packs
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
