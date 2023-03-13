@@ -5,6 +5,6 @@ FactoryBot.define do
     user
     type_of { "personal_comment" }
     content_type { "body_markdown" }
-    title { generate :title }
+    title { generate(:title) }
   end
 end

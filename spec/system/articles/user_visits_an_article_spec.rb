@@ -159,7 +159,7 @@ RSpec.describe "Views an article", type: :system do
 
     it "doesn't show the article manage link, even for the author", js: true do
       visit scheduled_article_path
-      expect(page).to have_no_link("article-action-space-manage")
+      expect(page).not_to have_link("article-action-space-manage")
     end
 
     it "doesn't show an article edit link for the non-authorized user" do

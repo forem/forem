@@ -7,7 +7,7 @@ FactoryBot.define do
     title           { Faker::Beer.name }
     image           { Rack::Test::UploadedFile.new(image_path, "image/jpeg") }
     description     { Faker::Hipster.paragraph(sentence_count: 1) }
-    slug            { generate :podcast_slug }
+    slug            { generate(:podcast_slug) }
     feed_url        { Faker::Internet.url }
     main_color_hex  { "ffffff" }
     published       { true }

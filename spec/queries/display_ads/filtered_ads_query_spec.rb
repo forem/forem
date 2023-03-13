@@ -59,7 +59,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
       article_tags = %w[productivity java]
       expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments", user_signed_in: false,
-                                organization_id: display_ad.organization.id, article_tags: article_tags)).to eq(display_ad)
+                                  organization_id: display_ad.organization.id, article_tags: article_tags)).to eq(display_ad)
     end
 
     it "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
@@ -87,7 +87,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
                                                     cached_tag_list: "")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments",
-                                organization_id: nil, user_signed_in: false)).to eq(display_ad_without_tags)
+                                  organization_id: nil, user_signed_in: false)).to eq(display_ad_without_tags)
     end
   end
 
@@ -101,12 +101,12 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
     it "shows ads that have a display_to of 'logged_in' if a user is signed in" do
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad2.placement_area,
-                                organization_id: display_ad2.organization.id, user_signed_in: true)).to eq(display_ad2)
+                                  organization_id: display_ad2.organization.id, user_signed_in: true)).to eq(display_ad2)
     end
 
     it "shows ads that have a display_to of 'logged_out' if a user is signed in" do
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad3.placement_area,
-                                organization_id: display_ad3.organization.id, user_signed_in: false)).to eq(display_ad3)
+                                  organization_id: display_ad3.organization.id, user_signed_in: false)).to eq(display_ad3)
     end
   end
 
@@ -117,12 +117,12 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
     it "shows ads that have a display_to of 'all' if a user is signed in" do
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: true)).to eq(display_ad)
+                                  organization_id: display_ad.organization.id, user_signed_in: true)).to eq(display_ad)
     end
 
     it "shows ads that have a display_to of 'all' if a user is not signed in" do
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
+                                  organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
     end
   end
 
@@ -136,7 +136,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
                                        display_to: "all")
 
       expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
+                                  organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
     end
 
     it "shows ads that have that are of type in house" do

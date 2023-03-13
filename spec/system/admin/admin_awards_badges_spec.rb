@@ -20,7 +20,7 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   before do
-    create_list :badge, 5
+    create_list(:badge, 5)
     sign_in admin
     visit admin_badge_achievements_award_badges_path
   end

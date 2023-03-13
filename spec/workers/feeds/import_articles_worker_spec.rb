@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Feeds::ImportArticlesWorker, type: :worker, sidekiq: :inline do
+RSpec.describe Feeds::ImportArticlesWorker, sidekiq: :inline, type: :worker do
   let(:worker) { subject }
   let(:feed_url) { "https://medium.com/feed/@vaidehijoshi" }
 

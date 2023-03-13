@@ -100,7 +100,7 @@ RSpec.describe "Using the editor", type: :system do
       visit "/new"
       within "form#article-form" do
         fill_in "article-form-title", with: "This is a <span> test"
-        find("#tag-input").native.send_keys("what", :return)
+        find_by_id("tag-input").native.send_keys("what", :return)
         fill_in "article_body_markdown", with: "Hello"
       end
       click_button "Publish"
