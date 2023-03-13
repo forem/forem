@@ -85,7 +85,7 @@ jobs:
 
   RSpec:
     runs-on: ubuntu-latest
-    needs: [bundle-install, yarn-install]
+    needs: [bundle-install, yarn-install, assets-precompile]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -126,6 +126,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Cache precompiled asset
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            public/assets
+            public/packs-test
+          key: ${{ runner.os }}-assets-precompile
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
