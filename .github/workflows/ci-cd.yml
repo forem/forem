@@ -49,8 +49,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
       - name: Cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -221,7 +225,7 @@ jobs:
   Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [bundle-install, yarn-install]
+    needs: [bundle-install, yarn-install, assets-precompile]
 
     services:
       postgres:
@@ -258,7 +262,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails db:test:prepare assets:precompile
+      - name: Cache precompiled asset
+        uses: actions/cache/retrieve@v3
+        with:
+          path: |
+            public/assets
+            public/packs-test
+          key: ${{ runner.os }}-assets-precompile
+      - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
         env:
