@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin invites user", type: :system do
+RSpec.describe "Admin invites user" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

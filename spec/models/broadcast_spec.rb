@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Broadcast, type: :model do
+RSpec.describe Broadcast do
   it { is_expected.to validate_presence_of(:title) }
   it { is_expected.to validate_presence_of(:type_of) }
   it { is_expected.to validate_presence_of(:processed_html) }

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User uses response templates settings", type: :system do
+RSpec.describe "User uses response templates settings" do
   let(:user) { create(:user) }
   let(:response_template) { create(:response_template, user: user) }
 

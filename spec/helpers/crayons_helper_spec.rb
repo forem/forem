@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe CrayonsHelper, type: :helper do
+RSpec.describe CrayonsHelper do
   describe "#crayons_icon_tag" do
     let(:icon_tag) { helper.crayons_icon_tag("twitter.svg") }
 

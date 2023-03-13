@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system do
+RSpec.describe "Views an article" do
   let(:user) { create(:user) }
   let(:article) do
     create(:article, :with_notification_subscription, user: user)

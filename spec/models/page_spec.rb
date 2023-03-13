@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Page, type: :model do
+RSpec.describe Page do
   describe ".render_safe_html_for" do
     let(:slug) { "the-given-slug" }
 

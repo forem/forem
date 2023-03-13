@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe GithubRepo, type: :model do
+RSpec.describe GithubRepo do
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { create(:github_repo, user: user) }
   let(:cache_bust) { instance_double(EdgeCache::Bust) }

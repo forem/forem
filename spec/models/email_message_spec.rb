@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EmailMessage, type: :model do
+RSpec.describe EmailMessage do
   describe "validations" do
     subject { create(:email_message) }
 

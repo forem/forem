@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ConsumerApp, type: :model do
+RSpec.describe ConsumerApp do
   let(:consumer_app_android) { create(:consumer_app, platform: :android) }
   let(:consumer_app_ios) { create(:consumer_app, platform: :ios) }
 

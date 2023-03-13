@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe OrganizationMembership, type: :model do
+RSpec.describe OrganizationMembership do
   describe "validations" do
     subject { build(:organization_membership) }
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits a podcast page", type: :system do
+RSpec.describe "User visits a podcast page" do
   let(:podcast) { create(:podcast) }
   let!(:podcast_episode1) { create(:podcast_episode, podcast_id: podcast.id, published_at: 2.hours.ago) }
   let!(:podcast_episode2) { create(:podcast_episode, podcast_id: podcast.id) }

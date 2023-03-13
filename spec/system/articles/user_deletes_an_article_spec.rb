@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Article", type: :system do
+RSpec.describe "Deleting Article" do
   let(:article) { create(:article) }
 
   before do

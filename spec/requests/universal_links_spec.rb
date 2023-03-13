@@ -14,7 +14,7 @@ RSpec.describe "Universal Links (Apple)" do
         create(:consumer_app, platform: Device::ANDROID)
 
         get aasa_route
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
 
         both_app_ids = [forem_app_id, ios_app.app_bundle]
         expect(response).to have_http_status(:ok)
@@ -29,7 +29,7 @@ RSpec.describe "Universal Links (Apple)" do
     context "without any custom ConsumerApps" do
       it "responds with applinks support for Forem app" do
         get aasa_route
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(response).to have_http_status(:ok)
 
         expect(json_response.dig("applinks", "apps")).to be_empty
@@ -44,7 +44,7 @@ RSpec.describe "Universal Links (Apple)" do
       it "responds with applinks support for Forem app", :aggregate_failures do
         allow(Settings::UserExperience).to receive(:public).and_return(false)
         get aasa_route
-        json_response = JSON.parse(response.body)
+        json_response = response.parsed_body
         expect(response).to have_http_status(:ok)
 
         expect(json_response.dig("applinks", "apps")).to be_empty

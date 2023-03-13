@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Flagging users from profile pages", js: true, type: :system do
+RSpec.describe "Flagging users from profile pages", js: true do
   let(:user) { create(:user) }
   let(:unflag_text) { "Unflag @#{user.username}" }
   let(:flag_text) { "Flag @#{user.username}" }

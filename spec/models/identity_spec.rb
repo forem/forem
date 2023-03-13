@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Identity, type: :model do
+RSpec.describe Identity do
   let(:identity) { create(:identity, user: create(:user), uid: SecureRandom.hex) }
 
   describe "validations" do

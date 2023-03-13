@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages pages", type: :system do
+RSpec.describe "Admin manages pages" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

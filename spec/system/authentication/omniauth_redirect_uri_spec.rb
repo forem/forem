@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Omniauth redirect_uri", type: :system do
+RSpec.describe "Omniauth redirect_uri" do
   let!(:test_app_domain) { Settings::General.app_domain }
 
   # Avoid messing with other tests by resetting back Settings::General.app_domain

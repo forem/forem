@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ProfileFieldGroup, type: :model do
+RSpec.describe ProfileFieldGroup do
   subject { group }
 
   let!(:group) { create(:profile_field_group) }

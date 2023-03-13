@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "i8n routes", type: :routing do
+RSpec.describe "i8n routes" do
   let(:locale) { "fr-ca" }
   let(:i18n_route) { "/locale/#{locale}" }
   let(:user) { create(:user) }

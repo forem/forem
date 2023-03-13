@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe GithubIssue, type: :model, vcr: true do
+RSpec.describe GithubIssue, vcr: true do
   let(:url_issue) { "https://api.github.com/repos/forem/forem/issues/7434" }
   let(:url_pull_request) { "https://api.github.com/repos/forem/forem/pulls/7653" }
   let(:url_comment) { "https://api.github.com/repos/forem/forem/issues/comments/621043602" }

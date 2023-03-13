@@ -75,7 +75,7 @@ RSpec.describe "Tags", proper_status: true do
 
       expect(response).to have_http_status(:ok)
       expect(response.content_type).to match(%r{application/json; charset=utf-8}i)
-      response_tag = JSON.parse(response.body).first
+      response_tag = response.parsed_body.first
       expect(response_tag["name"]).to eq(tag.name)
       expect(response_tag).to have_key("rules_html")
       expect(response_tag).to have_key("short_summary")

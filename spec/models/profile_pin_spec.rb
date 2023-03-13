@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ProfilePin, type: :model do
+RSpec.describe ProfilePin do
   let(:user) { create(:user) }
 
   describe "validations" do

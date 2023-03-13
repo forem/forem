@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits podcast show page", js: true, type: :system do
+RSpec.describe "User visits podcast show page", js: true do
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }

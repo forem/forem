@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Visiting collections", type: :system do
+RSpec.describe "Visiting collections" do
   let(:user) { create(:user) }
   let!(:collection1_with_articles) { create(:collection, :with_articles, user: user) }
   let!(:collection2_with_articles) { create(:collection, :with_articles, user: user) }

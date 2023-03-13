@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Creating an article with the editor", type: :system do
+RSpec.describe "Creating an article with the editor" do
   include_context "with runkit_tag"
 
   let(:user) do

@@ -44,12 +44,12 @@ RSpec.describe "/admin/reactions" do
 
     it "returns expected JSON upon status update" do
       put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmed" }
-      expect(JSON.parse(response.body)).to eq("outcome" => "Success")
+      expect(response.parsed_body).to eq("outcome" => "Success")
     end
 
     it "returns error upon status update failure" do
       put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmedsssss" }
-      expect(JSON.parse(response.body)).to include("error")
+      expect(response.parsed_body).to include("error")
     end
   end
 

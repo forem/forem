@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Settings::Base, type: :model do
+RSpec.describe Settings::Base do
   with_model :TestSetting, superclass: described_class do
     table do |t|
       t.string :var, null: false

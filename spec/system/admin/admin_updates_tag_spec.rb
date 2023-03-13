@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin updates a tag", type: :system do
+RSpec.describe "Admin updates a tag" do
   let(:super_admin) { create(:user, :super_admin) }
   let(:bg_color_hex) { "#000000" }
 
