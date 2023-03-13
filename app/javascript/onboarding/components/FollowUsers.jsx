@@ -96,13 +96,13 @@ export class FollowUsers extends Component {
     const { users, selectedUsers } = this.state;
     let followingStatus;
     if (selectedUsers.length === 0) {
-      followingStatus = "You're not following anyone";
+      followingStatus = "Ви нікого не обрали";
     } else if (selectedUsers.length === 1) {
       followingStatus = "You're following 1 person";
     } else if (selectedUsers.length === users.length) {
-      followingStatus = `You're following ${selectedUsers.length} people (everyone) -`;
+      followingStatus = `Ви підписалися на ${selectedUsers.length} людей (everyone) -`;
     } else {
-      followingStatus = `You're following ${selectedUsers.length} people -`;
+      followingStatus = `Ви підписалися на ${selectedUsers.length} людину -`;
     }
     const klassName =
       selectedUsers.length > 0
@@ -163,10 +163,10 @@ export class FollowUsers extends Component {
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Suggested people to follow
+                Підпишіться на цікавих людей
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Let&apos;s review a few things first
+                Давайте пошукаємо когось цікавого...
               </h2>
               <div className="onboarding-selection-status">
                 {this.renderFollowCount()}

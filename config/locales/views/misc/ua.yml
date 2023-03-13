@@ -38,17 +38,17 @@ ua:
       icon_right: Праве меню
     logo:
       color_1:
-        label: Brand color 1
-        description: Used for backgrounds, borders etc.
+        label: Колір 1
+        description: Використовується для фону, рамок, тощо...
       color_2:
-        label: Brand color 2
-        description_html: Used for texts (usually put on <em>Brand color 1</em>).
+        label: Колір 2
+        description_html: Використувоється для тексту (зазвичай поверх <em>Кольору 1</em>).
       preview:
         icon: App logo
         text: 'Попперегляд:'
     onboardings:
       meta:
-        title: Welcome to %{community}
+        title: Ласкаво просимо до %{community}
       heading: Тепер ви частина спільноти!
       subtitle: ДИВИ, ЯКІ ШТУКИ ТЕПЕР МОЖЕШ РОБИТИ
       close: Закрити

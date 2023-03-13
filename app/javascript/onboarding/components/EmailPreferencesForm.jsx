@@ -74,13 +74,13 @@ export class EmailPreferencesForm extends Component {
                 Almost there!
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Review your email preferences before we continue.
+                Перегляньте свої налаштування електронної пошти, перш ніж ми продовжимо.
               </h2>
             </header>
 
             <form>
               <fieldset>
-                <legend>Email preferences</legend>
+                <legend>Email налаштування</legend>
                 <ul>
                   <li className="checkbox-item">
                     <label htmlFor="email_newsletter">
@@ -88,10 +88,10 @@ export class EmailPreferencesForm extends Component {
                         type="checkbox"
                         id="email_newsletter"
                         name="email_newsletter"
-                        checked={email_newsletter}
+                        checked={boolean('checked', true)}
                         onChange={this.handleChange}
                       />
-                      I want to receive weekly newsletter emails.
+                      Я хочу отримувати (не)регулярну розсилку на електронну пошту..
                     </label>
                   </li>
                   <li className="checkbox-item">
@@ -100,11 +100,10 @@ export class EmailPreferencesForm extends Component {
                         type="checkbox"
                         id="email_digest_periodic"
                         name="email_digest_periodic"
-                        checked={email_digest_periodic}
+                        checked={boolean('checked', true)}
                         onChange={this.handleChange}
                       />
-                      I want to receive a periodic digest of top posts from my
-                      tags.
+                      Я хочу отримувати новини згідно моїх теґів.
                     </label>
                   </li>
                 </ul>

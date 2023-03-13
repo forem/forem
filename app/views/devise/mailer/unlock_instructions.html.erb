@@ -1,7 +1,7 @@
-<p>Hello <%= @resource.email %>!</p>
+<p>Привіт <%= @resource.email %>!</p>
 
-<p>Your account has been locked due to an excessive number of unsuccessful sign in attempts.</p>
+<p>Ваш акаунт було тимчасово заблоковано через велику кількість невдалих спроб авторизації у ваш акаунт на сайті kutok.io.</p>
 
-<p>Click the link below to unlock your account:</p>
+<p>Натисність на посилання нижче, щоб разблокувати акаунт:</p>
 
-<p><%= link_to "Unlock my account", unlock_url(@resource, unlock_token: @token) %></p>
+<p><%= link_to "Разблокуйте мій акаунт", unlock_url(@resource, unlock_token: @token) %></p>

@@ -192,16 +192,14 @@ export class ProfileForm extends Component {
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Build your profile
+                Налаштуйте свій профіль
               </h1>
               <h2
                 id="subtitle"
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >
-                Tell us a little bit about yourself — this is how others will
-                see you on {communityConfig.communityName}. You’ll always be
-                able to edit this later in your Settings.
+                Розкажіть про себе трохи більше нашій спільності! Ви завжди можете змінити цю інформацію пізніше у налаштуваннях.
               </h2>
             </header>
             <div className="current-user-info">
@@ -217,8 +215,8 @@ export class ProfileForm extends Component {
             <div className="onboarding-profile-sub-section">
               <TextInput
                 field={{
-                  attribute_name: 'username',
-                  label: 'Username',
+                  attribute_name: 'юзернейм',
+                  label: 'Юзернейм',
                   default_value: username,
                   required: true,
                   maxLength: 20,
@@ -230,8 +228,8 @@ export class ProfileForm extends Component {
               <TextArea
                 field={{
                   attribute_name: 'summary',
-                  label: 'Bio',
-                  placeholder_text: 'Tell us a little about yourself',
+                  label: 'Про вас',
+                  placeholder_text: 'Розкашіть щось про себе',
                   required: false,
                   maxLength: SUMMARY_MAXLENGTH,
                 }}

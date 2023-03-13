@@ -84,9 +84,9 @@ export class FollowTags extends Component {
     const { selectedTags } = this.state;
     let followingStatus;
     if (selectedTags.length === 1) {
-      followingStatus = `${selectedTags.length} tag selected`;
+      followingStatus = `${selectedTags.length} теґ обрано`;
     } else {
-      followingStatus = `${selectedTags.length} tags selected`;
+      followingStatus = `${selectedTags.length} теґа(ів) обрано`;
     }
 
     const classStyle =
@@ -122,10 +122,10 @@ export class FollowTags extends Component {
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                What are you interested in?
+                Що вам цікаво?
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Follow tags to customize your feed
+                Підпишіться на цікаві вам теґи, щоб підлаштувати стрічку під себе
               </h2>
               {this.renderFollowCount()}
             </header>
@@ -175,7 +175,7 @@ export class FollowTags extends Component {
                             <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
                           </svg>
                         )}
-                        {selected ? 'Following' : 'Follow'}
+                        {selected ? 'Підписано' : 'Підписатися'}
                       </button>
                     </div>
                   </div>

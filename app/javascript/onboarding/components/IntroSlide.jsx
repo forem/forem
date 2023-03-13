@@ -117,7 +117,7 @@ export class IntroSlide extends Component {
               className="introduction-title"
             >
               {this.user.name}
-              &mdash; welcome to {communityConfig.communityName}!
+              &#44; ласкаво просимо у {communityConfig.communityName}!
             </h1>
             <h2 id="subtitle" className="introduction-subtitle">
               {communityConfig.communityDescription}
@@ -141,13 +141,13 @@ export class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      You agree to uphold our&nbsp;
+                      Ви обіцяєете дотримуватись наших&nbsp;
                       <a
                         href="/code-of-conduct"
                         data-no-instant
                         onClick={(e) => this.handleShowText(e, 'coc')}
                       >
-                        Code of Conduct
+                        Норм Поведінки
                       </a>
                       .
                     </label>
@@ -166,13 +166,13 @@ export class IntroSlide extends Component {
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
                       />
-                      You agree to our&nbsp;
+                      Ви згодні з нашими&nbsp;
                       <a
                         href="/terms"
                         data-no-instant
                         onClick={(e) => this.handleShowText(e, 'terms')}
                       >
-                        Terms and Conditions
+                        Правилами
                       </a>
                       .
                     </label>
