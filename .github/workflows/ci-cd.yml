@@ -56,7 +56,6 @@ jobs:
 
   assets-precompile:
     runs-on: ubuntu-latest
-    needs: [bundle-install, yarn-install]
 
     steps:
       - uses: actions/checkout@v3
@@ -74,6 +73,7 @@ jobs:
         with:
           node-version: 16
           cache: yarn
+      - run: yarn install --immutable
       - name: Cache precompiled aaset
         uses: actions/cache@v3
         with:
