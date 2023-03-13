@@ -17,8 +17,35 @@ env:
   POSTGRES_PASSWORD: postgres
 
 jobs:
+  bundle_install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+  yarn_install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
+      - run: yarn install --immutable
+
   RSpec:
     runs-on: ubuntu-latest
+    needs: [bundle_install, yarn_install]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -85,6 +112,7 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
+    needs: [bundle_install, yarn_install]
     timeout-minutes: 20
 
     steps:
@@ -118,6 +146,7 @@ jobs:
 
   Build-test:
     runs-on: ubuntu-latest
+    needs: [bundle_install, yarn_install]
     timeout-minutes: 20
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -165,6 +194,7 @@ jobs:
   Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: [bundle_install, yarn_install]
 
     services:
       postgres:
