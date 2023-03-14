@@ -59,7 +59,7 @@
   --card-secondary-border: rgba(var(--grey-900), 0.05);
 
   /* Header */
-  --header-bg: rgba(240, 248, 255, 1);
+  --header-bg: rgb(var(--white));
   --header-shadow: rgba(var(--black), 0.1);
 
   /* Footer */

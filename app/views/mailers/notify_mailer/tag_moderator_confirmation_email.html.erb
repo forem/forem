@@ -2,39 +2,38 @@
   Hey <%= @user.name %>!
 </p>
 <p>
-  Thanks for volunteering to be a <%= community_name %> tag moderator. We’ve added you as a moderator for <a href="<%= tag_url(@tag) %>">#<%= @tag.name %></a>. Note that your profile picture is now visible on this page.
+  Вітаємо! Вам довірені права модератора для теґу <a href="<%= tag_url(@tag) %>">#<%= @tag.name %></a> на нашій спільноті <%= community_name %>. Зверніть увагу, що зображення вашого профілю тепер видно на цій сторінці.
 </p>
 <p>
-  As a tag moderator, you are able to:
+  Як модератор теґу, ви можете:
 </p>
 <ul>
   <li>
-     Remove #<%= @tag.name %> if it’s been added to an irrelevant post.
+    Видаляти теґ #<%= @tag.name %> з дописів, яким він не підходить.
   </li>
   <li>
-    Add #<%= @tag %> to posts if applicable.
+    Додвати теґ #<%= @tag %> до постів, якщо він підходить.
   </li>
   <li>
-    Update the #<%= @tag %> tag landing page, including submission guidelines and design visible in the sidebar.
+    Оновлювати сторінку теґу #<%= @tag %>.
   </li>
 </ul>
 
 <p>
-  <strong>For details on how to access them, visit our
-  <a href="<%= app_url(tag_moderation_url) %>">tag moderation</a> page.</strong>
+  <strong>Для деталей можете зайти на <a href="<%= app_url(tag_moderation_url) %>">ґайд модерації теґів</a> page.</strong>
 </p>
 
 <p>
-  Tag moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback. We regularly send out a biweekly Mod Newsletter to keep mods up to date on these changes, so look out for it!
-  Of course, don't hesitate to reach out to us at any moment if you have any feedback — feel free to write to <%= contact_link %> and share your thoughts.
+  Модерація тегів - це те, над чим ми постійно працюємо, тому ви можете очікувати коригувань і розширення функцій з часом, коли ми отримаємо відгуки.
+   Звичайно, не соромтеся звертатися до нас у будь-який момент, якщо у вас є якісь зауваження - не соромтеся писати на <%= contact_link %> і ділитися своїми думками.
 </p>
 
 <p>
-  Thanks so much for volunteering your time to benefit <%= community_name %>. We sincerely appreciate your help!.</p>
+  Щиро дякуємо за те, що ви приділили свій час, щоб принести користь <%= community_name %>. Ми щиро вдячні за вашу допомогу!.</p>
 <p>
 
 <p>
-  Happy Modding!
+  Гарного вам дня та будьте здорові!
   <br>
-  - <%= community_name %> Team
+  - <%= community_name %> Команда
 </p>
