@@ -82,7 +82,7 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -125,7 +125,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -170,7 +170,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -200,7 +200,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -240,7 +240,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -282,7 +282,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache node modules
+      - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
