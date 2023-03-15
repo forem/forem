@@ -67,7 +67,7 @@ jobs:
           path: |
             public/assets/
             public/packs-test/
-          key: ${{ runner.os }}-assets-precompile-packs-${{ hashFiles('app/assets/**', 'app/javascript/**') }}
+          key: ${{ runner.os }}-assets-precompile-packs-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -148,6 +148,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
+        with:
+          path: |
+            public/assets/
+            public/packs-test/
+          key: ${{ runner.os }}-assets-precompile-packs-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -320,14 +327,13 @@ jobs:
         with:
           bundler-cache: true
         id: assets-hashFiles
-      - name: Look up if compiled assets exist
-        id: precompiled-asset
-        uses: actions/cache@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
         with:
           path: |
             public/assets/
             public/packs-test/
-          key: ${{ runner.os }}-assets-precompile-packs-${{ hashFiles('app/assets/**', 'app/javascript/**') }}
+          key: ${{ runner.os }}-assets-precompile-packs-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
