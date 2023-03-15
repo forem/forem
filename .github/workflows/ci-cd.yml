@@ -77,6 +77,11 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - uses: actions/setup-node@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          node-version: 16
+          cache: yarn
       - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
