@@ -17,8 +17,46 @@ env:
   POSTGRES_PASSWORD: postgres
 
 jobs:
+  bundle-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+  yarn-install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Look up if node_module cache exist
+        id: cache
+        uses: actions/cache/restore@v3
+        with:
+          lookup-only: true
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - name: Cache node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+        if: steps.cache.outputs.cache-hit != 'true'
+      - uses: actions/setup-node@v3
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          node-version: 16
+          cache: yarn
+      - run: yarn install --immutable
+        if: steps.cache.outputs.cache-hit != 'true'
+
   RSpec:
     runs-on: ubuntu-latest
+    needs: [bundle-install, yarn-install]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -40,13 +78,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [6]
-        ci_node_index: [0, 1, 2, 3, 4, 5]
+        ci_node_total: [8]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -55,11 +93,11 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: bin/webpack
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
@@ -85,12 +123,13 @@ jobs:
 
   Jest:
     runs-on: ubuntu-latest
+    needs: [yarn-install]
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -99,7 +138,6 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --frozen-lockfile
       - run: yarn lint:frontend
       - run: yarn test --colors --ci --reporters=jest-junit
       - name: Upload test results to BuildPulse for flaky test detection
@@ -114,10 +152,28 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: javascript
+
+  Storybook:
+    runs-on: ubuntu-latest
+    needs: [yarn-install]
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache node modules
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: yarn
       - run: yarn build-storybook
 
   Build-test:
     runs-on: ubuntu-latest
+    needs: [bundle-install, yarn-install]
     timeout-minutes: 20
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -144,7 +200,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -153,18 +209,17 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails assets:precompile
-      - run: yarn run postcss
       - run: bin/test-console-check
 
   Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    needs: [bundle-install, yarn-install]
 
     services:
       postgres:
@@ -181,13 +236,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ci_node_total: [6]
-        ci_node_index: [0, 1, 2, 3, 4, 5, non-seed]
+        ci_node_total: [8]
+        ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, non-seed]
 
     steps:
       - uses: actions/checkout@v3
       - name: Cache node modules
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
@@ -196,12 +251,12 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn install --frozen-lockfile
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails db:test:prepare assets:precompile
+      - run: bin/webpack
+      - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
         env:
