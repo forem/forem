@@ -59,7 +59,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - run: echo "find app/assets app/javascript -type f | sort | xargs md5sum | cut -c1-32 | md5sum | cut -c1-32" >> $GITHUB_OUTPUT
+      - run: find app/assets app/javascript -type f | sort | xargs md5sum | cut -c1-32 | md5sum | cut -c1-32 >> $GITHUB_OUTPUT
         id: assets-hashFiles
       - name: Look up if compiled assets exist
         id: precompiled-asset
