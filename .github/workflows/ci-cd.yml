@@ -54,6 +54,43 @@ jobs:
       - run: yarn install --immutable
         if: steps.cache.outputs.cache-hit != 'true'
 
+  audit:
+    runs-on: ubuntu-latest
+    needs: [bundle-install]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: bundle exec bundle-audit check --update
+
+  Lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    needs: [bundle-install]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Cache node modules
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-
+      - name: rubocop
+        uses: reviewdog/action-rubocop@v2
+        with:
+          rubocop_version: gemfile
+          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile
+          reporter: github-pr-review # Default is github-pr-check
+      - run: yarn lint:frontend
+
   RSpec:
     runs-on: ubuntu-latest
     needs: [bundle-install, yarn-install]
@@ -138,7 +175,6 @@ jobs:
         with:
           node-version: 16
           cache: yarn
-      - run: yarn lint:frontend
       - run: yarn test --colors --ci --reporters=jest-junit
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
