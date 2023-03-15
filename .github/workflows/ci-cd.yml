@@ -337,6 +337,7 @@ jobs:
           path: |
             public/assets
             public/packs-test
+            tmp/cache/webpacker
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
