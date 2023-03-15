@@ -64,19 +64,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec bundle-audit check --update
-
-  Lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    needs: [bundle-install]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
       - uses: actions/setup-node@v3
         if: steps.cache.outputs.cache-hit != 'true'
         with:
@@ -95,6 +82,7 @@ jobs:
           rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile
           reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
+      - run: bundle exec bundle-audit check --update
 
   RSpec:
     runs-on: ubuntu-latest
