@@ -296,6 +296,12 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Cache compiled webpack assets
+        uses: actions/cache@v3
+        with:
+          path: |
+            public/packs-test
+          key: ${{ runner.os }}-assets-precompile-packs
       - run: bin/webpack
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
