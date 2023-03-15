@@ -21,7 +21,6 @@ const frontPageFeedPathNames = new Map([
  * @param {HTMLElement} tagsFollowedContainer DOM element to render tags followed.
  * @param {object} user The currently logged on user, null if not logged on.
  */
-// checking if cache would get invalidated
 
 function renderTagsFollowed(user = userData()) {
   const tagsFollowedContainer = document.getElementById(
