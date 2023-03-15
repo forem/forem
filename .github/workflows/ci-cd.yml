@@ -59,28 +59,37 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - run: echo "find app/assets app/javascript -type f | sort | xargs md5sum | cut -c1-32 | md5sum | cut -c1-32" >> $GITHUB_OUTPUT
+        id: assets-hashFiles
+      - name: Look up if compiled assets exist
+        id: precompiled-asset
+        uses: actions/cache@v3
+        with:
+          path: |
+            public/assets/
+            public/packs-test/
+          key: ${{ runner.os }}-assets-precompile-packs-${{ steps.assets-hashFiles.output }}
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+        if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - name: Cache node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
+        if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           cache: yarn
+        if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: yarn install --immutable
-      - name: Cache precompiled aaset
-        uses: actions/cache@v3
-        with:
-          path: |
-            public/packs-test
-          key: ${{ runner.os }}-assets-precompile-packs
-      - run: bin/webpack
+        if: steps.precompiled-asset.outputs.cache-hit != 'true'
+      - run: bundle exec rails assets:precompile
+        if: steps.precompiled-asset.outputs.cache-hit != 'true'
 
   audit:
     runs-on: ubuntu-latest
@@ -311,12 +320,16 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Cache compiled webpack assets
-        uses: actions/cache/restore@v3
+      - run: echo "find app/assets app/javascript -type f | sort | xargs md5sum | cut -c1-32 | md5sum | cut -c1-32" >> $GITHUB_OUTPUT
+        id: assets-hashFiles
+      - name: Look up if compiled assets exist
+        id: precompiled-asset
+        uses: actions/cache@v3
         with:
           path: |
-            public/packs-test
-          key: ${{ runner.os }}-assets-precompile-packs
+            public/assets/
+            public/packs-test/
+          key: ${{ runner.os }}-assets-precompile-packs-${{ steps.assets-hashFiles.output }}
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress

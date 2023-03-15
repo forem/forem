@@ -1,2 +1,0 @@
-#!/bin/bash
-bundle install --local --jobs 3
