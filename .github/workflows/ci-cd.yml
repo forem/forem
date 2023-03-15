@@ -59,7 +59,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-        id: assets-hashFiles
       - name: Look up if compiled assets exist
         id: precompiled-asset
         uses: actions/cache@v3
@@ -332,7 +331,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-        id: assets-hashFiles
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
