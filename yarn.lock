@@ -1615,20 +1615,25 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@eslint/eslintrc@^1.4.1":
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-1.4.1.tgz#af58772019a2d271b7e2d4c23ff4ddcba3ccfb3e"
-  integrity sha512-XXrH9Uarn0stsyldqDYq8r++mROmWRI1xKMXa640Bb//SY1+ECYX6VzT6Lcx5frD0V30XieqJ0oX9I2Xj5aoMA==
+"@eslint/eslintrc@^2.0.0":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-2.0.1.tgz#7888fe7ec8f21bc26d646dbd2c11cd776e21192d"
+  integrity sha512-eFRmABvW2E5Ho6f5fHLqgena46rOj7r7OKHYfLElqcBfGFHHpjBhivyi5+jOEQuSpdc/1phIZJlbC2te+tZNIw==
   dependencies:
     ajv "^6.12.4"
     debug "^4.3.2"
-    espree "^9.4.0"
+    espree "^9.5.0"
     globals "^13.19.0"
     ignore "^5.2.0"
     import-fresh "^3.2.1"
     js-yaml "^4.1.0"
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
+
+"@eslint/js@8.35.0":
+  version "8.35.0"
+  resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.35.0.tgz#b7569632b0b788a0ca0e438235154e45d42813a7"
+  integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
 "@etchteam/storybook-addon-css-variables-theme@^1.4.0":
   version "1.4.0"
@@ -7192,10 +7197,10 @@ eslint-config-preact@^1.3.0:
     eslint-plugin-react "^7.27.0"
     eslint-plugin-react-hooks "^4.3.0"
 
-eslint-config-prettier@^8.6.0:
-  version "8.6.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.6.0.tgz#dec1d29ab728f4fa63061774e1672ac4e363d207"
-  integrity sha512-bAF0eLpLVqP5oEVUFKpMA+NnRFICwn9X8B5jrR9FcqnYBuPbqWEjTEspPWMj5ye6czoSLDweCzSo3Ko7gGrZaA==
+eslint-config-prettier@^8.7.0:
+  version "8.7.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.7.0.tgz#f1cc58a8afebc50980bd53475451df146c13182d"
+  integrity sha512-HHVXLSlVUhMSmyW4ZzEuvjpwqamgmlfkutD53cYXLikh4pt/modINRcCIApJ84czDxM4GZInwUrromsDdTImTA==
 
 eslint-import-resolver-node@^0.3.7:
   version "0.3.7"
@@ -7413,12 +7418,13 @@ eslint-visitor-keys@^3.3.0:
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-3.3.0.tgz#f6480fa6b1f30efe2d1968aa8ac745b862469826"
   integrity sha512-mQ+suqKJVyeuwGYHAdjMFqjCyfl8+Ldnxuyp3ldiMBFKkvytrXUZWaiPCEav8qDHKty44bD+qV1IP4T+w+xXRA==
 
-eslint@^8.34.0:
-  version "8.34.0"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.34.0.tgz#fe0ab0ef478104c1f9ebc5537e303d25a8fb22d6"
-  integrity sha512-1Z8iFsucw+7kSqXNZVslXS8Ioa4u2KM7GPwuKtkTFAqZ/cHMcEaR+1+Br0wLlot49cNxIiZk5wp8EAbPcYZxTg==
+eslint@^8.35.0:
+  version "8.35.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-8.35.0.tgz#fffad7c7e326bae606f0e8f436a6158566d42323"
+  integrity sha512-BxAf1fVL7w+JLRQhWl2pzGeSiGqbWumV4WNvc9Rhp6tiCtm4oHnyPBSEtMGZwrQgudFQ+otqzWoPB7x+hxoWsw==
   dependencies:
-    "@eslint/eslintrc" "^1.4.1"
+    "@eslint/eslintrc" "^2.0.0"
+    "@eslint/js" "8.35.0"
     "@humanwhocodes/config-array" "^0.11.8"
     "@humanwhocodes/module-importer" "^1.0.1"
     "@nodelib/fs.walk" "^1.2.8"
@@ -7432,7 +7438,7 @@ eslint@^8.34.0:
     eslint-utils "^3.0.0"
     eslint-visitor-keys "^3.3.0"
     espree "^9.4.0"
-    esquery "^1.4.0"
+    esquery "^1.4.2"
     esutils "^2.0.2"
     fast-deep-equal "^3.1.3"
     file-entry-cache "^6.0.1"
@@ -7472,15 +7478,24 @@ espree@^9.4.0:
     acorn-jsx "^5.3.2"
     eslint-visitor-keys "^3.3.0"
 
+espree@^9.5.0:
+  version "9.5.0"
+  resolved "https://registry.yarnpkg.com/espree/-/espree-9.5.0.tgz#3646d4e3f58907464edba852fa047e6a27bdf113"
+  integrity sha512-JPbJGhKc47++oo4JkEoTe2wjy4fmMwvFpgJT9cQzmfXKp22Dr6Hf1tdCteLz1h0P3t+mGvWZ+4Uankvh8+c6zw==
+  dependencies:
+    acorn "^8.8.0"
+    acorn-jsx "^5.3.2"
+    eslint-visitor-keys "^3.3.0"
+
 esprima@^4.0.0, esprima@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-4.0.1.tgz#13b04cdb3e6c5d19df91ab6987a8695619b0aa71"
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
-esquery@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.4.0.tgz#2148ffc38b82e8c7057dfed48425b3e61f0f24a5"
-  integrity sha512-cCDispWt5vHHtwMY2YrAQ4ibFkAL8RbH5YGBnZBc90MolvvfkkQcJro/aZiAQUlQ3qgrYS6D6v8Gc5G5CQsc9w==
+esquery@^1.4.2:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.5.0.tgz#6ce17738de8577694edd7361c57182ac8cb0db0b"
+  integrity sha512-YQLXUplAwJgCydQ78IMJywZCceoqk1oH01OERdSAJc/7U2AylwjhSCLDEtqwg811idIS/9fIU5GjG73IgjKMVg==
   dependencies:
     estraverse "^5.1.0"
 
@@ -8965,13 +8980,14 @@ husky@^8.0.3:
   resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
   integrity sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==
 
-i18n-js@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.2.2.tgz#fa3904564877e387d9ff8d26d14a9f1d5a17f13a"
-  integrity sha512-Mpr6g9T3uB7xHD4LpuyeCEKVRKxedeTFduT+ft0Xu+i0qqWRJ3T+bIcb73bd0/qH2u2IHnCTRMfAKtjf6NsjJg==
+i18n-js@^4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.2.3.tgz#572a892dfb9572a09aa7619f8f8eb2063903f695"
+  integrity sha512-UPt7tQTLsMNX2ylYmcfkromOlU4Azo0ueMJ6DG1n1Dv2bfp/szDeB7i/0Ie/Luzx24P00Fz4vsKuMluoLGdYjw==
   dependencies:
     bignumber.js "*"
     lodash "*"
+    make-plural "*"
 
 iconv-lite@0.4.24:
   version "0.4.24"
@@ -10974,6 +10990,11 @@ make-dir@^3.0.0, make-dir@^3.0.2, make-dir@^3.1.0:
   integrity sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==
   dependencies:
     semver "^6.0.0"
+
+make-plural@*:
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/make-plural/-/make-plural-7.2.0.tgz#93174b1419672a48a2340db6c1d3fb217530c684"
+  integrity sha512-WkdI+iaWaBCFM2wUXwos8Z7spg5Dt64Xe/VI6NpRaly21cDtD76N6S97K//UtzV0dHOiXX+E90TnszdXHG0aMg==
 
 makeerror@1.0.12:
   version "1.0.12"
