@@ -64,8 +64,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            public/assets/
-            public/packs-test/
+            public/assets
+            public/packs-test
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -151,8 +151,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets/
-            public/packs-test/
+            public/assets
+            public/packs-test
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -272,8 +272,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets/
-            public/packs-test/
+            public/assets
+            public/packs-test
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -334,11 +334,10 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: |
-            public/assets/
-            public/packs-test/
+            public/assets
+            public/packs-test
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - run: bundle exec rails db:test:prepare
-      - run: bundle exec rails assets:precompile
       - run: yarn cypress install
       - name: cypress
         env:
