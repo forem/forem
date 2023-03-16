@@ -380,7 +380,7 @@ jobs:
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
 
-  ci-status-report:
+  CI-status-report:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress, build_test]
     if: always()
