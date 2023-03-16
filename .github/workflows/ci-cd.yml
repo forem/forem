@@ -276,6 +276,7 @@ jobs:
           path: |
             public/assets
             public/packs-test
+            tmp/cache/webpacker
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
