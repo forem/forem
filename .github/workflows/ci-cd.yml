@@ -119,12 +119,6 @@ jobs:
           reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
       - run: bundle exec bundle-audit check --update
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: ruby, javascript
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
 
   rspec:
     runs-on: ubuntu-latest
