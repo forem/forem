@@ -63,7 +63,6 @@ jobs:
         id: precompiled-asset
         uses: actions/cache@v3
         with:
-          fail-on-cache-miss: true
           path: |
             public/assets
             public/packs-test
