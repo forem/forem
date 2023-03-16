@@ -63,11 +63,12 @@ jobs:
         id: precompiled-asset
         uses: actions/cache@v3
         with:
+          fail-on-cache-miss: true
           path: |
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', 'package.json', '**/yarn.lock') }}
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -151,11 +152,12 @@ jobs:
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
+          fail-on-cache-miss: true
           path: |
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', 'package.json', '**/yarn.lock') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -270,14 +272,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+      - name: Cache compiled assets
+        uses: actions/cache/@v3
         with:
           path: |
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', 'package.json', '**/yarn.lock') }}
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -292,6 +294,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: bundle exec rails assets:precompile
       - run: bin/test-console-check
 
   cypress:
@@ -336,11 +339,12 @@ jobs:
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
+          fail-on-cache-miss: true
           path: |
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', 'package.json', '**/yarn.lock') }}
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
