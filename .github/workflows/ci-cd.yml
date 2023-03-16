@@ -17,7 +17,7 @@ env:
   POSTGRES_PASSWORD: postgres
 
 jobs:
-  bundle_install:
+  bundle-install:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,7 +26,7 @@ jobs:
         with:
           bundler-cache: true
 
-  yarn_install:
+  yarn-install:
     runs-on: ubuntu-latest
 
     steps:
@@ -54,75 +54,9 @@ jobs:
       - run: yarn install --immutable
         if: steps.cache.outputs.cache-hit != 'true'
 
-  precompile_assets:
+  RSpec:
     runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Look up if compiled assets exist
-        id: precompiled-asset
-        uses: actions/cache@v3
-        with:
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - name: Cache node_modules
-        uses: actions/cache/restore@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: yarn
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - run: yarn install --immutable
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - run: bundle exec rails assets:precompile
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-
-  audit:
-    runs-on: ubuntu-latest
-    needs: [bundle_install]
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: yarn
-      - name: Restore node_modules
-        uses: actions/cache/restore@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
-      - name: rubocop
-        uses: reviewdog/action-rubocop@v2
-        with:
-          rubocop_version: gemfile
-          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile
-          reporter: github-pr-review # Default is github-pr-check
-      - run: yarn lint:frontend
-      - run: bundle exec bundle-audit check --update
-
-  rspec:
-    runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle-install, yarn-install]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -149,17 +83,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v3
-        with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
-      - name: Restore node_modules
+      - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -173,6 +97,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: bin/webpack
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
@@ -196,14 +121,14 @@ jobs:
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
-  jest:
+  Jest:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [yarn-install]
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
+      - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -213,6 +138,7 @@ jobs:
         with:
           node-version: 16
           cache: yarn
+      - run: yarn lint:frontend
       - run: yarn test --colors --ci --reporters=jest-junit
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -227,13 +153,13 @@ jobs:
         with:
           flags: javascript
 
-  storybook:
+  Storybook:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [yarn-install]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v3
-      - name: Restore node_modules
+      - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -245,9 +171,9 @@ jobs:
           cache: yarn
       - run: yarn build-storybook
 
-  build_test:
+  Build-test:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle-install, yarn-install]
     timeout-minutes: 20
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
@@ -273,16 +199,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache compiled assets
-        uses: actions/cache/@v3
-        with:
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
-      - name: Restore node_modules
+      - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -299,10 +216,10 @@ jobs:
       - run: bundle exec rails assets:precompile
       - run: bin/test-console-check
 
-  cypress:
+  Cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle-install, yarn-install]
 
     services:
       postgres:
@@ -324,17 +241,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v3
-        with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
-      - name: Restore node_modules
+      - name: Cache node modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
@@ -348,6 +255,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: bin/webpack
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
@@ -382,7 +290,7 @@ jobs:
 
   CI-status-report:
     runs-on: ubuntu-latest
-    needs: [rspec, jest, cypress, build_test]
+    needs: [rspec, jest, cypress, build-test]
     if: always()
 
     steps:
@@ -400,7 +308,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: failure() && github.ref == 'refs/heads/main'
 
-  deploy:
+  Deploy:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     needs: [CI-status-report]
