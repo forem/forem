@@ -391,15 +391,6 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
 
-      - name: Report failure to Slack channel
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            { "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: failure() && github.ref == 'refs/heads/main'
-
   deploy:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
