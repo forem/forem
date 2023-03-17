@@ -1,154 +1,109 @@
 require "rails_helper"
 
 RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
-  let(:organization) { create(:organization) }
+  let(:placement_area) { "post_sidebar" }
 
-  context "when updating the published and approved values" do
-    let!(:display_ad) { create(:display_ad, organization_id: organization.id) }
+  def create_display_ad(**options)
+    defaults = {
+      approved: true,
+      published: true,
+      placement_area: placement_area,
+      display_to: :all
+    }
+    create(:display_ad, **options.reverse_merge(defaults))
+  end
 
-    it "does not return unpublished ads" do
-      display_ad.update!(published: false, approved: true)
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                  organization_id: nil, user_signed_in: false)).to be_nil
-    end
+  def filter_ads(**options)
+    defaults = {
+      display_ads: DisplayAd, area: placement_area, user_signed_in: false
+    }
+    described_class.call(**options.reverse_merge(defaults))
+  end
 
-    it "does not return unapproved ads" do
-      display_ad.update!(published: true, approved: false)
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                  organization_id: nil, user_signed_in: false)).to be_nil
-    end
+  context "when ads are not approved or published" do
+    let!(:unapproved) { create_display_ad approved: false }
+    let!(:unpublished) { create_display_ad published: false }
+    let!(:display_ad) { create_display_ad }
 
-    it "returns published and approved ads" do
-      display_ad.update!(published: true, approved: true)
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                  organization_id: nil, user_signed_in: false)).to eq(display_ad)
+    it "does not display unapproved or unpublished ads" do
+      filtered = filter_ads
+      expect(filtered).not_to include(unapproved)
+      expect(filtered).not_to include(unpublished)
+      expect(filtered).to include(display_ad)
     end
   end
 
   context "when considering article_tags" do
-    it "will show the display ads that contain tags that match any of the article tags" do
-      display_ad = create(:display_ad, organization_id: organization.id,
-                                       placement_area: "post_comments",
-                                       published: true,
-                                       approved: true,
-                                       cached_tag_list: "linux, git, go")
+    let!(:no_tags) { create_display_ad cached_tag_list: "" }
+    let!(:mismatched) { create_display_ad cached_tag_list: "career" }
 
-      create(:display_ad, organization_id: organization.id,
-                          placement_area: "post_comments",
-                          published: true,
-                          approved: true,
-                          cached_tag_list: "career")
-
-      article_tags = %w[linux productivity]
-      expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments", user_signed_in: false,
-                                  organization_id: nil, article_tags: article_tags)).to eq(display_ad)
-    end
-
-    it "will show display ads that have no tags set" do
-      display_ad = create(:display_ad, organization_id: organization.id,
-                                       placement_area: "post_comments",
-                                       published: true,
-                                       approved: true,
-                                       cached_tag_list: "")
-
-      create(:display_ad, organization_id: organization.id,
-                          placement_area: "post_comments",
-                          published: true,
-                          approved: true,
-                          cached_tag_list: "career")
-
-      article_tags = %w[productivity java]
-      expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments", user_signed_in: false,
-                                organization_id: display_ad.organization.id, article_tags: article_tags)).to eq(display_ad)
-    end
-
-    it "will show no display ads if the available display ads have no tags set or do not contain matching tags" do
-      create(:display_ad, organization_id: organization.id,
-                          placement_area: "post_comments",
-                          published: true,
-                          approved: true,
-                          cached_tag_list: "productivity")
-      article_tags = %w[javascript]
-      expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments", user_signed_in: false,
-                                  organization_id: nil, article_tags: article_tags)).to be_nil
+    it "will show no-tag display ads if the article tags do not contain matching tags" do
+      filtered = filter_ads(article_tags: %w[javascript])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
     end
 
     it "will show display ads with no tags set if there are no article tags" do
-      create(:display_ad, organization_id: organization.id,
-                          placement_area: "post_comments",
-                          published: true,
-                          approved: true,
-                          cached_tag_list: "productivity")
+      filtered = filter_ads(article_tags: [])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
+    end
 
-      display_ad_without_tags = create(:display_ad, organization_id: organization.id,
-                                                    placement_area: "post_comments",
-                                                    published: true,
-                                                    approved: true,
-                                                    cached_tag_list: "")
+    context "when available ads have matching tags" do
+      let!(:matching) { create_display_ad cached_tag_list: "linux, git, go" }
 
-      expect(described_class.call(display_ads: DisplayAd.all, area: "post_comments",
-                                organization_id: nil, user_signed_in: false)).to eq(display_ad_without_tags)
+      it "will show the display ads that contain tags that match any of the article tags" do
+        filtered = filter_ads article_tags: %w[linux productivity]
+        expect(filtered).not_to include(mismatched)
+        expect(filtered).to include(matching)
+        expect(filtered).to include(no_tags)
+      end
     end
   end
 
-  context "when display_to is set to 'logged_in' or 'logged_out'" do
-    let!(:display_ad2) do
-      create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_in")
-    end
-    let!(:display_ad3) do
-      create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "logged_out")
-    end
+  context "when considering users_signed_in" do
+    let!(:for_logged_in) { create_display_ad display_to: :logged_in }
+    let!(:for_logged_out) { create_display_ad display_to: :logged_out }
+    let!(:for_all_users) { create_display_ad display_to: :all }
 
-    it "shows ads that have a display_to of 'logged_in' if a user is signed in" do
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad2.placement_area,
-                                organization_id: display_ad2.organization.id, user_signed_in: true)).to eq(display_ad2)
-    end
+    it "always shows :all, only shows -in/-out appropriately" do
+      filtered = filter_ads user_signed_in: true
+      expect(filtered).to contain_exactly(for_logged_in, for_all_users)
 
-    it "shows ads that have a display_to of 'logged_out' if a user is signed in" do
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad3.placement_area,
-                                organization_id: display_ad3.organization.id, user_signed_in: false)).to eq(display_ad3)
+      filtered = filter_ads user_signed_in: false
+      expect(filtered).to contain_exactly(for_logged_out, for_all_users)
     end
   end
 
-  context "when display_to is set to 'all'" do
-    let!(:display_ad) do
-      create(:display_ad, organization_id: organization.id, published: true, approved: true, display_to: "all")
+  context "when considering ads with organization_id" do
+    let!(:in_house_ad) { create_display_ad type_of: :in_house }
+
+    let(:organization) { create(:organization) }
+    let(:other_org) { create(:organization) }
+    let!(:community_ad) { create_display_ad organization_id: organization.id, type_of: :community }
+    let!(:other_community) { create_display_ad organization_id: other_org.id, type_of: :community }
+
+    let!(:external_ad) { create_display_ad organization_id: organization.id, type_of: :external }
+    let!(:other_external) { create_display_ad organization_id: other_org.id, type_of: :external }
+
+    it "always shows :in_house, only shows community/external appropriately" do
+      filtered = filter_ads organization_id: organization.id
+      expect(filtered).to contain_exactly(community_ad, in_house_ad, other_external)
+      expect(filtered).not_to include(other_community)
+
+      filtered = filter_ads organization_id: nil
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
+      expect(filtered).not_to include(other_community)
     end
 
-    it "shows ads that have a display_to of 'all' if a user is signed in" do
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: true)).to eq(display_ad)
-    end
+    it "suppresses external ads when permit_adjacent_sponsors is false" do
+      filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
+      expect(filtered).to contain_exactly(community_ad, in_house_ad)
+      expect(filtered).not_to include(other_community)
 
-    it "shows ads that have a display_to of 'all' if a user is not signed in" do
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
-    end
-  end
-
-  context "when organization is set on ad" do
-    it "shows ads that have that are of type community and associated with the organization" do
-      display_ad = create(:display_ad, organization_id: organization.id,
-                                       published: true,
-                                       approved: true,
-                                       placement_area: "post_comments",
-                                       type_of: "community",
-                                       display_to: "all")
-
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
-    end
-
-    it "shows ads that have that are of type in house" do
-      display_ad = create(:display_ad, organization_id: organization.id,
-                                       published: true,
-                                       approved: true,
-                                       placement_area: "post_comments",
-                                       type_of: "in_house",
-                                       display_to: "all")
-
-      expect(described_class.call(display_ads: DisplayAd.all, area: display_ad.placement_area,
-                                  organization_id: display_ad.organization.id, user_signed_in: false)).to eq(display_ad)
+      filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
+      expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).not_to include(other_community)
     end
   end
 end

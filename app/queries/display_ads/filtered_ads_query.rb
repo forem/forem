@@ -4,12 +4,14 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(display_ads:, area:, user_signed_in:, organization_id: nil, article_tags: [])
+    def initialize(area:, user_signed_in:, display_ads: DisplayAd, organization_id: nil, article_tags: [],
+                   permit_adjacent_sponsors: true)
       @filtered_display_ads = display_ads
       @area = area
       @user_signed_in = user_signed_in
       @organization_id = organization_id
       @article_tags = article_tags
+      @permit_adjacent_sponsors = permit_adjacent_sponsors
     end
 
     def call
@@ -30,10 +32,9 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
-      @filtered_display_ads = community_or_in_house_ads
+      @filtered_display_ads = type_of_ads
 
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
-      @filtered_display_ads = sample_ads
     end
 
     private
@@ -59,33 +60,26 @@ module DisplayAds
       @filtered_display_ads.where(display_to: display_auth_audience)
     end
 
-    def community_or_in_house_ads
-      @filtered_display_ads.where(
-        "(type_of = :in_house) OR
-         (type_of = :community AND organization_id = :organization_id) OR
-	       (type_of = :external AND organization_id != :organization_id)",
-        DisplayAd.type_ofs.merge({ organization_id: @organization_id }),
-      )
-    end
+    def type_of_ads
+      # Always match in-house-type ads
+      in_house = "(type_of = :in_house)"
 
-    # Business Logic Context:
-    # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
-    # rise to the top. 1 out of every 8 times we show an ad (12.5%), it is totally random. This gives "not yet
-    # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
-    # stays in this area.
+      # If this is an article that belongs to an organization, we might show community-type ads
+      community = if @organization_id
+                    "(type_of = :community AND organization_id = :organization_id)"
+                  end
 
-    # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
-    # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
-    # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
-    # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
-    # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
-    # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
-    def sample_ads
-      if rand(8) == 1
-        @filtered_display_ads.sample
-      else
-        @filtered_display_ads.limit(rand(1..15)).sample
-      end
+      # If the article's author permits adjacent sponsors, we might show an external-type ad
+      # *if* the organization_id doesn't match the current article's organization id
+      external = if @permit_adjacent_sponsors && @organization_id
+                   "(type_of = :external AND organization_id != :organization_id)"
+                 elsif @permit_adjacent_sponsors
+                   "(type_of = :external)"
+                 end
+
+      types_matching = [in_house, community, external].compact.join(" OR ")
+      @filtered_display_ads.where(types_matching,
+                                  DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
     end
   end
 end
