@@ -13,33 +13,57 @@ RSpec.describe BasicContentRenderer do
     let(:renderer) { described_class.new(markdown, source: nil, user: nil, fixer: MarkdownProcessor::Fixer::FixAll) }
     let(:parser) { instance_double(MarkdownProcessor::Parser) }
 
-    before do
-      allow(MarkdownProcessor::Parser).to receive(:new).and_return(parser)
-      allow(parser).to receive(:finalize)
+    context "with double parser" do
+      before do
+        allow(MarkdownProcessor::Parser).to receive(:new).and_return(parser)
+        allow(parser).to receive(:finalize)
+        allow(parser).to receive(:calculate_reading_time).and_return(1)
+      end
+
+      it "calls finalize with link_attributes" do
+        renderer.process(link_attributes: { rel: "nofollow" })
+        finalize_attrs = {
+          link_attributes: { rel: "nofollow" },
+          sanitize_options: {},
+          prefix_images_options: { width: 800, synchronous_detail_detection: false }
+        }
+        expect(parser).to have_received(:finalize).with(finalize_attrs)
+      end
+
+      it "calls finalize with sanitize_options" do
+        allow(MarkdownProcessor::Fixer::FixAll).to receive(:call).and_return("text")
+        sanitize_options = { tags: %w[div] }
+        # attrs = ["text", { source: nil, user: nil }]
+        # expect(MarkdownProcessor::Parser).to have_received(:new).with(*attrs)
+        finalize_attrs = {
+          link_attributes: {},
+          sanitize_options: sanitize_options,
+          prefix_images_options: { width: 800, synchronous_detail_detection: false }
+        }
+        renderer.process(sanitize_options: { tags: %w[div] })
+        expect(parser).to have_received(:finalize).with(finalize_attrs)
+      end
     end
 
-    it "calls finalize with link_attributes" do
-      renderer.process(link_attributes: { rel: "nofollow" })
-      finalize_attrs = {
-        link_attributes: { rel: "nofollow" },
-        sanitize_options: {},
-        prefix_images_options: { width: 800, synchronous_detail_detection: false }
-      }
-      expect(parser).to have_received(:finalize).with(finalize_attrs)
+    it "calculates reading time if asked for" do
+      result = renderer.process(calculate_reading_time: true)
+      expect(result.reading_time).to eq(1)
     end
 
-    it "calls finalize with sanitize_options" do
-      allow(MarkdownProcessor::Fixer::FixAll).to receive(:call).and_return("text")
-      sanitize_options = { tags: %w[div] }
-      # attrs = ["text", { source: nil, user: nil }]
-      # expect(MarkdownProcessor::Parser).to have_received(:new).with(*attrs)
-      finalize_attrs = {
-        link_attributes: {},
-        sanitize_options: sanitize_options,
-        prefix_images_options: { width: 800, synchronous_detail_detection: false }
-      }
-      renderer.process(sanitize_options: { tags: %w[div] })
-      expect(parser).to have_received(:finalize).with(finalize_attrs)
+    it "sets front_matter if it exists" do
+      frontmatter_markdown = <<~HEREDOC
+        ---
+        title: Hello
+        published: false
+        description: Hello Hello
+        ---
+        lalalalala
+      HEREDOC
+      md_renderer = described_class.new(frontmatter_markdown, source: nil, user: nil,
+                                                              fixer: MarkdownProcessor::Fixer::FixAll)
+      result = md_renderer.process
+      expect(result.front_matter["title"]).to eq("Hello")
+      expect(result.front_matter["description"]).to eq("Hello Hello")
     end
   end
 
@@ -51,7 +75,7 @@ RSpec.describe BasicContentRenderer do
 
     it "processes markdown" do
       result = described_class.new(markdown, source: build(:comment), user: build(:user)).process
-      expect(result).to eq(expected_result)
+      expect(result.processed_html).to eq(expected_result)
     end
   end
 
@@ -75,6 +99,16 @@ RSpec.describe BasicContentRenderer do
       expect do
         described_class.new(markdown, source: source, user: user).process
       end.to raise_error(BasicContentRenderer::ContentParsingError, /This liquid tag can only be used in Articles/)
+    end
+  end
+
+  context "when markdown has invalid frontmatter" do
+    let(:markdown) { "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n" }
+
+    it "raises ContentParsingError" do
+      expect do
+        described_class.new(markdown, source: nil, user: nil).process
+      end.to raise_error(BasicContentRenderer::ContentParsingError, /while scanning a simple key/)
     end
   end
 end

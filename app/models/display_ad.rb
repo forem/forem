@@ -109,7 +109,7 @@ class DisplayAd < ApplicationRecord
                          attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD }
     self.processed_html = renderer.process(sanitize_options: sanitize_options,
                                            prefix_images_options: { width: prefix_width,
-                                                                    synchronous_detail_detection: true })
+                                                                    synchronous_detail_detection: true }).processed_html
     self.processed_html = processed_html.delete("\n")
   end
 
