@@ -78,19 +78,19 @@ export function addReactionButtonListeners() {
         let message;
         /* eslint-disable no-restricted-globals */
         if (outcome.result === 'create' && outcome.category === 'thumbsup') {
-          message = 'This post will be more visible.';
+          message = 'Цей допис буде  частіше показуватися.';
         } else if (
           outcome.result === 'create' &&
           outcome.category === 'thumbsdown'
         ) {
-          message = 'This post will be less visible.';
+          message = 'Цей допис буде менше видно.';
         } else if (
           outcome.result === 'create' &&
           outcome.category === 'vomit'
         ) {
-          message = "You've flagged this post as abusive or spam.";
+          message = "Ви помітили цей допис як образливий чи спам.";
         } else if (outcome.result === 'destroy') {
-          message = 'Your quality rating was removed.';
+          message = 'Ваша оцінка якості була видалена.';
         } else if (outcome.error) {
           message = `Error: ${outcome.error}`;
         }
@@ -254,7 +254,7 @@ async function adjustTag(el) {
 
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: `The #${adjustedTagName} tag was ${
+        message: `Теґ #${adjustedTagName} був ${
           outcome.result === 'addition' ? 'added' : 'removed'
         }.`,
         addCloseButton: true,
@@ -262,7 +262,7 @@ async function adjustTag(el) {
     } else {
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: `An error occurred: ${outcome.error}`,
+        message: `Помилка: ${outcome.error}`,
         addCloseButton: true,
       });
     }

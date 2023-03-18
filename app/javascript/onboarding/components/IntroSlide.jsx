@@ -141,7 +141,7 @@ export class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      Ви обіцяєете дотримуватись наших&nbsp;
+                      Ви обіцяєте дотримуватись наших&nbsp;
                       <a
                         href="/code-of-conduct"
                         data-no-instant

@@ -176,7 +176,7 @@ describe('Add tags to article', () => {
   it('shows a message and prevents further selections when the maximum tags (8) have been added', () => {
     cy.findByRole('textbox', { name: 'Додайте до 8 теґів' })
       .as('input')
-      .type('one, two, three, four,');
+      .type('one, two, three, four, five, sex, seven, eight');
 
     cy.get('@input').should('have.focus').should('have.value', '');
 

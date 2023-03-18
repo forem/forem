@@ -17,8 +17,8 @@ ua:
         placeholder: Шукати теґ
       edit:
         meta:
-          title: Edit %{tag}
-        admin: "Admin"
+          title: Редагувати %{tag}
+        admin: "Адмін"
         help: "Help"
         view: "Переглянути"
         form:
@@ -51,8 +51,8 @@ ua:
         admin: Адмін
         edit: Редагувати
         guidelines: submission guidelines
-        moderate: Moderate
-        mods: tag moderators
+        moderate: Модерувати
+        mods: модератори теґу
         new: Створити допис
         older: 'Старіші #%{tag} дописи'
         published:

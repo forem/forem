@@ -41,7 +41,7 @@ RSpec.describe AuthenticationHelper, type: :helper do
     it "returns an authentication reminder when a user signs up with email" do
       allow(Authentication::Providers).to receive(:enabled).and_return([])
 
-      expect(helper.signed_up_with(user)).to match(/Email & Пароль/)
+      expect(helper.signed_up_with(user)).to match(/Email & Password/)
       expect(helper.signed_up_with(user)).to match(/use that/)
     end
   end

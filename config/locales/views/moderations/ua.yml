@@ -31,7 +31,7 @@ ua:
           subtitle: Delete This Comment
           button: Delete Comment
         edit:
-          post: Edit Post
+          post: Редагувати допис
           article_admin: Admin:Article
           comment_admin: Admin:Comment
           user_admin: Admin:User

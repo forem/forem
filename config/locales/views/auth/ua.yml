@@ -11,10 +11,10 @@ ua:
         text2: Create your admin account first.
         text3: Then we'll walk you through your Forem setup.
         hint:
-          aria_label: Edit username
-          icon: Edit username
+          aria_label: Змінити юзернейм
+          icon: Змінити юзернейм
           text_html: "%{start}Your username will be\_%{end}%{button}"
-        submit: Create my account
+        submit: Створити  акаунт
       login:
         aria_label: Увійти
         text: Увійти

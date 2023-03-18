@@ -442,7 +442,7 @@ export class ArticleForm extends Component {
         className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
-        aria-label="Edit post"
+        aria-label="Редагувати допис"
       >
         <Header
           onPreview={this.fetchPreview}

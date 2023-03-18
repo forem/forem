@@ -28,7 +28,7 @@ ua:
         report: All negative reactions are 100% private. If this comment violates the code of conduct, please downvote/report as inappropriate.
         welcome_html: Since they are new to the community, could you leave a nice reply to help them feel welcome? <strong>Thank you!</strong>
       error:
-        subtitle: An error occurred!
+        subtitle: Виникла помилка!
         desc: This has been logged and we're tracking it.
       follow:
         and_html: "%{first} and %{second} followed you!"
@@ -58,25 +58,25 @@ ua:
             one: "%{count} reactions"
             other: "%{count} reactions"
       nav:
-        aria_label: Notifications
-        all: All
-        comments: Comments
-        posts: Posts
+        aria_label: Повідомлення
+        all: Усе
+        comments: Коментарі
+        posts: Дописи
       new_post:
         if_org_html: " under %{org}"
-        verb_html: "%{user} made a new post%{if_org}"
+        verb_html: "Новий допис  від %{user} %{if_org}"
       reacted:
-        and_html: "%{first} and %{last}"
+        and_html: "%{first} та %{last}"
         and_other_html:
-          one: "%{first} and %{count} others"
-          other: "%{first} and %{count} others"
+          one: "%{first} та %{count} інші"
+          other: "%{first} та %{count} інші"
         verb_html:
           one: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
           other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
         your:
-          article: your article
-          comment: your comment
-      settings: Settings
+          article: ваші статті
+          comment: ваші коментарі
+      settings: Налаштування
       tag:
         heading: "Hey there 👋"
         add_html: Moderators added the <strong>%{tag}</strong> tag to your post %{title}. Mods felt this tag represented your article.

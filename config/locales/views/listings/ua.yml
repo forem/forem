@@ -30,8 +30,8 @@ ua:
         publish: Publish listing
         unpublish: Unpublish listing
         update: Update listing
-        update_draft: Update draft
-      to_edit: Edit
+        update_draft: Оновити чернетку
+      to_edit: Редагувати
       errors:
         one: '1 error prohibited this listing from being saved:'
         other: "%{count} errors prohibited this listing from being saved:"
