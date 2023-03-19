@@ -72,6 +72,19 @@ body {
   font-family: var(--content-font-family);
   overflow-wrap: break-word;
 
+  &--display-ad {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    img,
+    p {
+      margin-top: 0 !important;
+    }
+  }
+
   &--secondary {
     font-size: var(--content-secondary-font-size);
   }

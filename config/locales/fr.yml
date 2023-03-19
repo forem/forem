@@ -149,6 +149,12 @@ fr:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
+  display_ad:
+    menu:
+      aria_label: Basculer le menu déroulant
+      icon: Menu déroulant
+      manage_preferences: Gérer les préférences
+      what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
   errors:
     messages:
       accepted: doit être accepté

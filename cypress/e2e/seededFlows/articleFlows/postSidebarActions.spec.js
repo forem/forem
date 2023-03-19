@@ -67,10 +67,7 @@ describe('Post sidebar actions', () => {
     cy.findByText('Copied to Clipboard').should('be.visible');
 
     // Check the clipboard was populated
-    cy.window()
-      .its('navigator.clipboard')
-      .invoke('readText')
-      .should('contain', '/article_editor_v2_user/');
+    cy.assertValueCopiedToClipboard('/article_editor_v2_user/');
 
     // Close the dropdown, and reopen it to check the message has disappeared
     cy.get('@dropdownButton').click();

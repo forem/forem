@@ -1,9 +1,11 @@
+/*eslint-disable prefer-rest-params*/
+
 function initializeBaseTracking() {
   trackGoogleAnalytics3();
   trackGoogleAnalytics4();
   trackCustomImpressions();
 }
-  
+
 function trackGoogleAnalytics3() {
   let wait = 0;
   let addedGA = false;

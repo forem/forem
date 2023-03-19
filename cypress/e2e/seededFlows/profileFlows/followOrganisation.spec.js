@@ -12,9 +12,7 @@ describe('Follow user from profile page', () => {
   it('follows and unfollows an organisation', () => {
     cy.intercept('/follows').as('followsRequest');
 
-    cy.findByRole('button', { name: 'Follow organization: Bachmanity' }).as(
-      'followButton',
-    );
+    cy.get('#user-follow-butt').as('followButton');
 
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 

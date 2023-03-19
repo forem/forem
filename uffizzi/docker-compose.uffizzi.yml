@@ -26,7 +26,7 @@ services:
       APP_DOMAIN: localhost:3000
       APP_PROTOCOL: https://
     entrypoint: ["dockerize", "-wait", "tcp://localhost:5432", "-wait", "tcp://localhost:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "5400s"]
-    command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
+    command: [ "bash", "-c", "./uffizzi/entrypoint.sh bootstrap"]
     deploy:
       resources:
         limits:

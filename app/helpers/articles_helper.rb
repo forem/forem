@@ -1,4 +1,11 @@
 module ArticlesHelper
+  def should_show_latest_spam_suppression?(stories)
+    return false if user_signed_in?
+    return false unless stories.size > 1
+
+    params[:timeframe] == Timeframe::LATEST_TIMEFRAME
+  end
+
   def sort_options
     [
       [I18n.t("helpers.articles_helper.recently_created"), "creation-desc"],

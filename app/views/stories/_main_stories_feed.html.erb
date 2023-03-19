@@ -1,3 +1,12 @@
+<% if should_show_latest_spam_suppression?(@stories) %>
+  <div class="crayons-story">
+    <p class="crayons-story__body">
+      <%= t "views.articles.sign_in_for_full_latest_html",
+            link: sign_up_path(state: "new-user") %>
+    </p>
+  </div>
+<% end %>
+
 <% if @pinned_article %>
   <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
 <% end %>

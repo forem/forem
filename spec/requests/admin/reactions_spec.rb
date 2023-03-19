@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "/admin/reactions" do
   let(:user)             { create(:user) }
-  let(:article)          { create(:article, user_id: user.id) }
+  let(:article)          { create(:article, user: user) }
   let(:admin)            { create(:user, :super_admin) }
 
   describe "PUT /admin/reactions as admin" do
@@ -11,7 +11,7 @@ RSpec.describe "/admin/reactions" do
       sign_in admin
     end
 
-    let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable: article) }
+    let(:reaction) { create(:reaction, category: "vomit", user: user, reactable: article) }
 
     it "updates reaction to be confirmed" do
       put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "confirmed" }
@@ -19,7 +19,11 @@ RSpec.describe "/admin/reactions" do
     end
 
     it "updates reaction to be invalid" do
+      initial_updated_at = reaction.reactable.updated_at
+
       put admin_reaction_path(reaction.id), params: { id: reaction.id, status: "invalid" }
+
+      expect(reaction.reload.reactable.updated_at).not_to eq(initial_updated_at)
       expect(reaction.reload.status).to eq("invalid")
     end
 

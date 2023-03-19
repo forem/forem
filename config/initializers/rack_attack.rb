@@ -46,6 +46,12 @@ module Rack
       end
     end
 
+    throttle("forgot_password_throttle", limit: 3, period: 1) do |request|
+      if request.path.starts_with?("/users/password") && request.post?
+        request.track_and_return_ip
+      end
+    end
+
     throttle("api_write_throttle", limit: 1, period: 1) do |request|
       api_endpoint = request.path.starts_with?("/api/")
       if api_endpoint && (request.put? || request.post? || request.delete?)

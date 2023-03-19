@@ -32,8 +32,8 @@ en:
       collapse: Collapse
       edit: Editing comment
       edited:
-        text_html: "&bull; Edited %{on}"
-        on_html: on %{date}
+        text_html: "&bull; Edited on %{date}"
+        short_html: "&bull; Edited"
       expand: Expand
       visible_signed_in:
         text_html: "Some comments may only be visible to logged-in visitors. %{sign_in} to view all comments."

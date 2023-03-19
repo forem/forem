@@ -11,6 +11,7 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
     let(:cache_bust) { instance_double(EdgeCache::Bust) }
 
     before do
+      allow(EdgeCache::BustArticle).to receive(:call)
       allow(EdgeCache::Bust).to receive(:new).and_return(cache_bust)
       allow(cache_bust).to receive(:call)
     end
@@ -19,6 +20,17 @@ RSpec.describe Reactions::BustReactableCacheWorker, type: :worker do
       worker.perform(reaction.id)
       expect(cache_bust).to have_received(:call).with(user.path).once
       expect(cache_bust).to have_received(:call).with("/reactions?article_id=#{article.id}").once
+    end
+
+    it "busts the article if there were previously no reactions" do
+      worker.perform(reaction.id)
+      expect(EdgeCache::BustArticle).to have_received(:call)
+    end
+
+    it "does not bust the article if there were previously one reactions" do
+      create(:reaction, reactable: article, user: create(:user))
+      worker.perform(reaction.id)
+      expect(EdgeCache::BustArticle).not_to have_received(:call)
     end
 
     it "busts the reactable comment cache" do

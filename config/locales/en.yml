@@ -134,6 +134,12 @@ en:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
+  display_ad:
+    menu:
+      aria_label: Toggle dropdown menu
+      icon: Dropdown menu
+      manage_preferences: Manage preferences
+      what_is_a_billboard: What's a billboard?
   errors:
     messages:
       accepted: must be accepted

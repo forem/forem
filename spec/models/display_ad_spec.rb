@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe DisplayAd do
-  let(:organization) { create(:organization) }
-  let(:display_ad) { create(:display_ad, organization_id: organization.id) }
+  let(:organization) { build(:organization) }
+  let(:display_ad) { build(:display_ad, organization: nil) }
 
   it_behaves_like "Taggable"
 
@@ -37,9 +37,33 @@ RSpec.describe DisplayAd do
       display_ad.placement_area = "sidebar_left_2"
       expect(display_ad.human_readable_placement_area).to eq("Sidebar Left (Second Position)")
     end
+
+    it "allows creator_id to be set" do
+      display_ad.creator = build(:user)
+      expect(display_ad).to be_valid
+    end
+
+    it "does not require creator to be valid" do
+      display_ad.creator = nil
+      expect(display_ad).to be_valid
+    end
+
+    it "requires organization_id for community-type ads" do
+      expect(display_ad).to be_valid
+
+      display_ad.type_of = "community"
+      expect(display_ad).not_to be_valid
+      expect(display_ad.errors[:organization]).not_to be_blank
+
+      display_ad.organization = organization
+      expect(display_ad).to be_valid
+      expect(display_ad.errors[:organization]).to be_blank
+    end
   end
 
   context "when callbacks are triggered before save" do
+    before { display_ad.save! }
+
     it "generates #processed_html from #body_markdown" do
       expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey")
     end
