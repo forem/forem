@@ -9,7 +9,7 @@ on:
       - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{  github.ref != 'main' }}
+  cancel-in-progress: ${{  github.ref != 'refs/heads/main' }}
 
 env:
   COVERAGE: true
