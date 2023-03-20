@@ -245,6 +245,17 @@
   }
 }
 
+.js-focus-visible .crayons-reaction.focus-visible:focus,
+.js-focus-visible .crayons-reaction.focus-visible:focus-within
+{
+  background-color: var(--btn-current-bg);
+  border-radius: 20px;
+  --horizontal-padding: var(--su-2);
+  padding-left: calc(var(--horizontal-padding) - var(--border-width));
+  padding-right: calc(var(--horizontal-padding) - var(--border-width));
+  border-radius: 1000px;
+}
+
 // This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
   border: 1px solid var(--card-bg);
