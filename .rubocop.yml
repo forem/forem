@@ -928,6 +928,7 @@ RSpec/DescribeClass:
     - 'spec/requests/**/*'
     - 'spec/system/**/*'
     - 'spec/tasks/**/*'
+    - 'spec/views/**/*'
 
 RSpec/DescribedClassModuleWrapping:
   Description: Avoid opening modules and defining specs within them.
