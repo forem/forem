@@ -8,23 +8,51 @@ describe('User Profile', () => {
     });
   });
 
-  it("should show the relevant sections when clicking on the 'more info button' on mobile", () => {
-    cy.get('@user').then((user) => {
-      // The 'more info' button is only for the mobile view
-      cy.viewport('iphone-x');
+  describe('toggle profile information toggle on mobile', () => {
+    it("should show the relevant sections when clicking on the 'more info button'", () => {
+      cy.get('@user').then((user) => {
+        // The 'more info' button is only for the mobile view
+        cy.viewport('iphone-x');
+        cy.findByRole('button', {
+          name: `More info about @${user.username}`,
+        }).click();
+
+        cy.get('.js-user-info').contains('Organizations').should('be.visible');
+
+        cy.get('.js-user-info').contains('Badges').should('be.visible');
+
+        cy.get('.js-user-info').contains('posts published').should('be.visible');
+
+        cy.get('.js-user-info').contains('comments written').should('be.visible');
+
+        cy.get('.js-user-info').contains('tags followed').should('be.visible');
+      });
+    });
+
+  });
+
+  describe('toggle profile badges', () => {
+    it("should show 6 badges by default if there are more than 6", () => {
+      cy.get('.js-profile-badges')
+        .findAllByRole('button')
+        .should('have.length', 6);
+    });
+
+    it("should show a button to show all the badges if there are more than 6", () => {
       cy.findByRole('button', {
-        name: `More info about @${user.username}`,
+        name: 'Show all 7 badges',
+      }).should('be.visible');
+    });
+
+    it("should show 7 badges when the button is clicked", () => {
+      cy.findByRole('button', {
+        name: 'Show all 7 badges',
       }).click();
-
-      cy.get('.js-user-info').contains('Organizations').should('be.visible');
-
-      cy.get('.js-user-info').contains('Badges').should('be.visible');
-
-      cy.get('.js-user-info').contains('posts published').should('be.visible');
-
-      cy.get('.js-user-info').contains('comments written').should('be.visible');
-
-      cy.get('.js-user-info').contains('tags followed').should('be.visible');
+      cy.get('.js-profile-badges')
+        .findAllByRole('button')
+        .should('have.length', 7);
     });
   });
 });
+
+
