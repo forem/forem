@@ -13,9 +13,9 @@
 <% end %>
 <% if @stories.present? %>
   <%= render "articles/single_story", story: @stories.first, featured: false %>
-  <%= render user_comments_section(@comments) if @user.comments_count.positive? %>
+  <%= render user_comments_section if @user.comments_count.positive? %>
   <%= render partial: "articles/single_story", collection: @stories[1, @stories.size], as: :story, locals: { featured: false } %>
   <div class="placeholder-div"></div>
 <% else %>
-  <%= render user_comments_section(@comments) if @user.comments_count.positive? %>
+  <%= render user_comments_section if @user.comments_count.positive? %>
 <% end %>
