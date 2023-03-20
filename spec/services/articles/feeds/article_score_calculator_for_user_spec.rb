@@ -189,7 +189,7 @@ RSpec.describe Articles::Feeds::ArticleScoreCalculatorForUser, type: :service do
       end
 
       it "returns a non-zero score for commented upon articles" do
-        expect(applicator.score_comments(article_with_one_comment)).to be.positive?
+        expect(applicator.score_comments(article_with_one_comment)).to be > 0
       end
 
       it "scores article with more comments high than others" do

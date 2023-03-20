@@ -107,7 +107,7 @@ RSpec.describe Articles::Feeds::LargeForemExperimental, type: :service do
           create(:field_test_membership,
                  experiment: experiment, variant: "base", participant_id: user.id)
           stories = feed.default_home_feed(user_signed_in: true)
-          expect(stories.size).to be.positive?
+          expect(stories.size).to be > 0
         end
       end
     end

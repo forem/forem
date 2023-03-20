@@ -29,7 +29,7 @@ RSpec.describe Follows::UpdatePointsWorker, type: :worker do
       worker.perform(reaction.reactable_id, reaction.user_id)
       follow.reload
 
-      expect(follow.implicit_points).to be.positive?
+      expect(follow.implicit_points).to be > 0
       expect(follow.reload.points.round(2)).to eq (follow.implicit_points + follow.explicit_points).round(2)
     end
 

@@ -14,7 +14,7 @@ RSpec.describe AsyncInfo do
 
     it "has a policies key with an array of policies", :aggregate_failures do
       policies = async_info.fetch(:policies)
-      expect(policies.length).to be.positive?
+      expect(policies.length).to be > 0
 
       # All policy keys will have dom_class and forbidden
       expect(policies.map(&:keys).uniq).to eq([%i[dom_class visible]])
