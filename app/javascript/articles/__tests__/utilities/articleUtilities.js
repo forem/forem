@@ -161,6 +161,11 @@ export const articleWithoutReactions = {
   public_reactions_count: 428,
 };
 
+export const articleWithOneReaction = {
+  ...article,
+  public_reactions_count: 1,
+};
+
 export const articleWithComments = {
   id: 62407,
   title: 'Unbranded Home Loan Account',

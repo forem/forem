@@ -5,6 +5,7 @@ import { ReactionsCount } from '..';
 import {
   articleWithReactions,
   articleWithoutReactions,
+  articleWithOneReaction,
 } from '../../__tests__/utilities/articleUtilities.js';
 
 describe('<ReactionsCount /> component', () => {
@@ -14,6 +15,14 @@ describe('<ReactionsCount /> component', () => {
     );
 
     expect(queryByText('0 reactions')).toBeNull();
+  });
+
+  it('should display reaction count when there are exactly one reaction', async () => {
+    const { queryByText } = render(
+      <ReactionsCount article={articleWithOneReaction} />,
+    );
+
+    expect(queryByText('1 reaction')).toBeNull();
   });
 
   it('should display reactions data when there are reactions', async () => {
