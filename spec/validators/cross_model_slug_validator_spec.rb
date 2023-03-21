@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UniqueCrossModelSlugValidator do
+RSpec.describe CrossModelSlugValidator do
   subject(:record) { validatable.new.tap { |m| m.name = name } }
 
   let(:validatable) do
