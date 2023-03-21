@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Redirects authentication using Referer", type: :system do
+RSpec.describe "Redirects authentication using Referer" do
   let(:article) { build(:article) }
   let(:user) do
     create(:user, :with_identity, identities: [:twitter])
