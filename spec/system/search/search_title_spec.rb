@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Search page title", type: :system do
+RSpec.describe "Search page title" do
   let!(:current_user) { create(:user) }
 
   before do

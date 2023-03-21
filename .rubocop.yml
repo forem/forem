@@ -6,6 +6,7 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-capybara
 
 AllCops:
   Exclude:
@@ -925,10 +926,11 @@ RSpec/DescribeClass:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
   Exclude:
-    - 'spec/requests/**/*'
-    - 'spec/system/**/*'
-    - 'spec/tasks/**/*'
-    - 'spec/views/**/*'
+    - '**/spec/features/**/*'
+    - '**/spec/requests/**/*'
+    - '**/spec/routing/**/*'
+    - '**/spec/system/**/*'
+    - '**/spec/views/**/*'
 
 RSpec/DescribedClassModuleWrapping:
   Description: Avoid opening modules and defining specs within them.

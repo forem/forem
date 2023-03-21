@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PodcastEpisodeAppearance, type: :model do
+RSpec.describe PodcastEpisodeAppearance do
   let(:podcast_episode_appearance) { create(:podcast_episode_appearance) }
 
   describe "validations" do

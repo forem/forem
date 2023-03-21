@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Reactions::UpdateRelevantScoresWorker, type: :worker, throttled_call: true do
+RSpec.describe Reactions::UpdateRelevantScoresWorker, throttled_call: true, type: :worker do
   describe "#perform" do
     let(:article) { create(:article) }
     let(:reaction) { create(:reaction, reactable: article) }
