@@ -60,7 +60,7 @@
 
   /* Header */
   --header-bg: rgb(var(--white));
-  --header-logo-invert: 0;
+  --header-logo-invert: 0.00001;
   --header-shadow: rgba(var(--black), 0.1);
 
   /* Footer */
