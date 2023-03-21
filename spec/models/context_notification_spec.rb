@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ContextNotification, type: :model do
+RSpec.describe ContextNotification do
   let(:context_notification) { create(:context_notification) }
 
   describe "validations" do

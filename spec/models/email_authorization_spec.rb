@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe EmailAuthorization, type: :model do
+RSpec.describe EmailAuthorization do
   let(:email_authorization) { create(:email_authorization) }
 
   describe "validations" do

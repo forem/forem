@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits the videos page", type: :system do
+RSpec.describe "User visits the videos page" do
   context "when user hasn't logged in" do
     before { visit "/videos" }
 

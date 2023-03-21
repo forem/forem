@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system do
+RSpec.describe "Views an article" do
   let(:user) { create(:user) }
   let(:moderator) { create(:user, :trusted) }
   let(:article) { create(:article, :with_notification_subscription, user: user) }
@@ -17,7 +17,6 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
-  # rubocop:disable Rspec/Capybara/SpecificMatcher
   it "lets moderators visit /mod", js: true do
     visit "/#{user.username}/#{article.slug}/mod"
     expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')
@@ -25,7 +24,6 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="User"]')
     expect(page).to have_button(class: "level-rating-button")
   end
-  # rubocop:enable Rspec/Capybara/SpecificMatcher
 
   it "shows hidden comments on /mod" do
     commenter = create(:user)

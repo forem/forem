@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Viewing a collection", type: :system do
+RSpec.describe "Viewing a collection" do
   let(:user) { create(:user) }
   let(:collection) { create(:collection, :with_articles, user: user) }
 

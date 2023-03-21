@@ -1,6 +1,6 @@
 require "rails_helper"
 # rubocop:disable Layout/LineLength
-RSpec.describe Users::Setting, type: :model do
+RSpec.describe Users::Setting do
   let(:user) { create(:user) }
   let(:setting) { described_class.find_by(user_id: user.id) }
 
