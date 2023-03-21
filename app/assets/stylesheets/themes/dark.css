@@ -26,6 +26,21 @@
   --base-10: #242424;
   --base-0: #090909;
 
+  &__img,
+  svg {
+    max-width: 100%;
+    width: auto;
+    height: calc(
+      var(--header-height) - var(--su-2) * 2
+    ); // making calculations instead of setting fixed value so should be smooth change if we ever decide to change header's height.
+    object-fit: contain;
+    vertical-align: middle;
+    display: inline-block;
+    outline: 0;
+    filter: invert(1);
+  }
+
+
   /* Brand */
   --accent-brand-lighter: rgb(var(--indigo-400));
   --accent-brand: rgb(var(--indigo-500));
@@ -70,7 +85,6 @@
 
   /* Header */
   --header-bg: rgb(var(--grey-900));
-  --header-logo-invert: 1;
   --header-shadow: rgb(var(--black));
 
   /* Footer */
