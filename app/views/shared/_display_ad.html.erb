@@ -32,6 +32,15 @@
             <%= I18n.t("display_ad.menu.manage_preferences") %>
           </a>
         </li>
+        <% if Page.exists?(slug: "billboards") %>
+          <hr />
+          <li>
+            <a class="crayons-link crayons-link--block" href="/report-abuse?billboard=<%= request.original_url %>?display_id=<%= display_ad.id %>">
+              <%= crayons_icon_tag("flag", aria_hidden: true, class: "c-btn__icon") %>
+              <%= I18n.t("display_ad.menu.report_billboard") %>
+            </a>
+          </li>
+        <% end %>
       </ul>
     </div>
   </div>
