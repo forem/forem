@@ -20,7 +20,7 @@ RSpec.describe "User with suspended username tried to sign up via OAuth" do
       click_on("Continue with Twitter", match: :first)
       expect(page).to have_current_path(root_path)
 
-      expected_message = ::Authentication::Errors::PreviouslySuspended.new.message
+      expected_message = Authentication::Errors::PreviouslySuspended.new.message
       expect(page).to have_content(expected_message)
       expect(ForemStatsClient)
         .to have_received(:increment)

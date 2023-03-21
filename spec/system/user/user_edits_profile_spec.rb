@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User edits their profile", type: :system do
+RSpec.describe "User edits their profile" do
   let(:user) { create(:user) }
   let!(:profile_field_group) { create(:profile_field_group, name: "Ice Cream") }
   let!(:left_sidebar_profile_field) do

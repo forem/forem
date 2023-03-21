@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin updates SMTP Settings", type: :system do
+RSpec.describe "Admin updates SMTP Settings" do
   let(:admin) { create(:user, :super_admin) }
 
   before do

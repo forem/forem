@@ -18,7 +18,7 @@ describe BulkSqlDelete, type: :service do
 
   describe "#delete_in_batches" do
     it "logs batch deletion" do
-      create_list :notification, 3, created_at: 1.month.ago
+      create_list(:notification, 3, created_at: 1.month.ago)
       allow(logger).to receive(:info)
       described_class.delete_in_batches(sql)
       expect(logger).to have_received(:info).exactly(4).times.with(
@@ -40,7 +40,7 @@ describe BulkSqlDelete, type: :service do
     end
 
     it "deletes all records in batches" do
-      create_list :notification, 5, created_at: 1.month.ago
+      create_list(:notification, 5, created_at: 1.month.ago)
       result = described_class.delete_in_batches(sql)
       expect(result).to eq(5)
     end

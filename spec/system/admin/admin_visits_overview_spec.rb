@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin visits overview page", type: :system, js: true do
+RSpec.describe "Admin visits overview page", js: true do
   let(:super_admin) { create(:user, :super_admin) }
 
   before do

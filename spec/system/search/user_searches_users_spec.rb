@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User searches users", type: :system do
+RSpec.describe "User searches users" do
   let(:current_user) { create(:user) }
   let(:followed_user) { create(:user) }
   let(:not_followed_user) { create(:user) }

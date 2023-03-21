@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PageView, type: :model do
+RSpec.describe PageView do
   let(:page_view) { create(:page_view, referrer: "http://example.com/page") }
 
   it { is_expected.to belong_to(:user).optional }
