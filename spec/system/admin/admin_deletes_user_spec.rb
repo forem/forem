@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin deletes user", type: :system do
+RSpec.describe "Admin deletes user" do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
 

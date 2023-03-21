@@ -9,7 +9,7 @@ on:
       - main
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{  github.ref != 'main' }}
+  cancel-in-progress: ${{  github.ref != 'refs/heads/main' }}
 
 env:
   COVERAGE: true
@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ruby/setup-ruby@v1.144.0
+      - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
 
@@ -74,7 +74,7 @@ jobs:
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: setup ruby
-        uses: ruby/setup-ruby@v1.144.0
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
@@ -102,7 +102,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: setup ruby
-        uses: ruby/setup-ruby@v1.144.0
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - uses: actions/setup-node@v3
@@ -174,7 +174,7 @@ jobs:
           node-version: 16
           cache: yarn
       - name: setup ruby
-        uses: ruby/setup-ruby@v1.144.0
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
@@ -297,7 +297,7 @@ jobs:
           node-version: 16
           cache: yarn
       - name: setup ruby
-        uses: ruby/setup-ruby@v1.144.0
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails assets:precompile
@@ -349,7 +349,7 @@ jobs:
           node-version: 16
           cache: yarn
       - name: setup ruby
-        uses: ruby/setup-ruby@v1.144.0
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare

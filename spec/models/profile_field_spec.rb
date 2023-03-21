@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ProfileField, type: :model do
+RSpec.describe ProfileField do
   describe "associations" do
     it { is_expected.to belong_to(:profile_field_group) }
   end

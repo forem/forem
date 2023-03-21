@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::SuspendedUsername, type: :model do
+RSpec.describe Users::SuspendedUsername do
   describe "validations" do
     subject { create(:suspended_username) }
 

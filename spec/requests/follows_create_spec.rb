@@ -32,7 +32,7 @@ RSpec.describe "Follows #create" do
 
     it "returns an error for too many follows in a day" do
       post "/follows", headers: headers, params: follow_payload
-      json_response = JSON.parse(response.body)
+      json_response = response.parsed_body
 
       expect(response).to have_http_status(:too_many_requests)
       expect(json_response["error"]).to eq("Daily account follow limit reached!")
@@ -43,7 +43,7 @@ RSpec.describe "Follows #create" do
     post "/follows", headers: headers, params: follow_payload
 
     expect(response).to have_http_status(:ok)
-    expect(JSON.parse(response.body)["outcome"]).to eq("followed")
+    expect(response.parsed_body["outcome"]).to eq("followed")
   end
 
   it "unfollows" do
@@ -52,6 +52,6 @@ RSpec.describe "Follows #create" do
                      params: { followable_type: "User", followable_id: user.id, verb: "unfollow" }.to_json
 
     expect(response).to have_http_status(:ok)
-    expect(JSON.parse(response.body)["outcome"]).to eq("unfollowed")
+    expect(response.parsed_body["outcome"]).to eq("unfollowed")
   end
 end

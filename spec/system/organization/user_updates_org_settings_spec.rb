@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Organization setting page(/settings/organization)", type: :system, js: true do
+RSpec.describe "Organization setting page(/settings/organization)", js: true do
   def fill_in_org_form
     fill_in "organization[name]", with: "Organization Name"
     fill_in "organization[slug]", with: "Organization"
