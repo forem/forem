@@ -26,8 +26,8 @@
   --base-10: #242424;
   --base-0: #090909;
 
-  &__img,
-  svg {
+
+.site-logo__img, .site-logo svg{
     max-width: 100%;
     width: auto;
     height: calc(
@@ -38,7 +38,7 @@
     display: inline-block;
     outline: 0;
     filter: invert(1);
-  }
+}
 
 
   /* Brand */
