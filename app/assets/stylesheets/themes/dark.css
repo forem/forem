@@ -70,6 +70,7 @@
 
   /* Header */
   --header-bg: rgb(var(--grey-900));
+  --header-logo-invert: 1;
   --header-shadow: rgb(var(--black));
 
   /* Footer */
