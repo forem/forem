@@ -37,6 +37,7 @@ module.exports = function (api) {
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
+      isTestEnv && 'babel-plugin-istanbul',
       '@babel/plugin-transform-destructuring',
       [
         '@babel/plugin-proposal-class-properties',
