@@ -652,7 +652,7 @@ class Article < ApplicationRecord
     return @processed_content if @processed_content && !body_markdown_changed?
     return unless user
 
-    @processed_content = ContentRenderer.new(body_markdown, source: self, user: user)
+    @processed_content = BasicContentRenderer.new(body_markdown, source: self, user: user)
   end
 
   def evaluate_markdown
@@ -667,10 +667,12 @@ class Article < ApplicationRecord
     content_renderer = processed_content
     return unless content_renderer
 
-    self.processed_html = content_renderer.process(calculate_reading_time: true)
-    self.reading_time = content_renderer.reading_time
+    result = content_renderer.process_article # (calculate_reading_time: true)
 
-    front_matter = content_renderer.front_matter
+    self.processed_html = result.processed_html
+    self.reading_time = result.reading_time
+
+    front_matter = result.front_matter
 
     if front_matter.any?
       evaluate_front_matter(front_matter)
@@ -679,7 +681,7 @@ class Article < ApplicationRecord
     end
 
     self.description = processed_description if description.blank?
-  rescue ContentRenderer::ContentParsingError => e
+  rescue BasicContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 

@@ -45,8 +45,8 @@ RSpec.describe BasicContentRenderer do
       end
     end
 
-    it "calculates reading time if asked for" do
-      result = renderer.process(calculate_reading_time: true)
+    it "calculates reading time if processing an article" do
+      result = renderer.process_article
       expect(result.reading_time).to eq(1)
     end
 
@@ -61,7 +61,7 @@ RSpec.describe BasicContentRenderer do
       HEREDOC
       md_renderer = described_class.new(frontmatter_markdown, source: nil, user: nil,
                                                               fixer: MarkdownProcessor::Fixer::FixAll)
-      result = md_renderer.process
+      result = md_renderer.process_article
       expect(result.front_matter["title"]).to eq("Hello")
       expect(result.front_matter["description"]).to eq("Hello Hello")
     end
@@ -107,7 +107,7 @@ RSpec.describe BasicContentRenderer do
 
     it "raises ContentParsingError" do
       expect do
-        described_class.new(markdown, source: nil, user: nil).process
+        described_class.new(markdown, source: nil, user: nil).process_article
       end.to raise_error(BasicContentRenderer::ContentParsingError, /while scanning a simple key/)
     end
   end
