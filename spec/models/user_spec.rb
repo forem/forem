@@ -328,6 +328,12 @@ RSpec.describe User do
         user.username = create(:organization).slug
         expect(user).not_to be_valid
       end
+
+      it "is not valid if generate username returns nil" do
+        user.username = ""
+        allow(user).to receive(:generate_username).and_return(nil)
+        expect(user).not_to be_valid
+      end
     end
   end
 

@@ -569,33 +569,11 @@ class User < ApplicationRecord
   end
 
   def set_username
-    set_temp_username if username.blank?
-    self.username = username&.downcase
+    self.username = username&.downcase&.presence || generate_username
   end
 
-  # @todo Should we do something to ensure that we don't create a username that violates our
-  # USERNAME_MAX_LENGTH constant?
-  #
-  # @see USERNAME_MAX_LENGTH
-  def set_temp_username
-    self.username = if temp_name_exists?
-                      "#{temp_username}_#{rand(100)}"
-                    else
-                      temp_username
-                    end
-  end
-
-  def temp_name_exists?
-    User.exists?(username: temp_username) || Organization.exists?(slug: temp_username)
-  end
-
-  def temp_username
-    Authentication::Providers.username_fields.each do |username_field|
-      value = public_send(username_field)
-      next if value.blank?
-
-      return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
-    end
+  def generate_username
+    Users::UsernameGenerator.call(self)
   end
 
   def downcase_email
