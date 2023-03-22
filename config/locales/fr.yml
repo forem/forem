@@ -21,7 +21,7 @@ fr:
     success_settings: Successfully updated settings.
   date:
     abbr_month_names:
-    - 
+    -
     - janv
     - févr
     - mars
@@ -150,6 +150,7 @@ fr:
         one: Expires in 1 year
         other: Expires in %{count} years
   display_ad:
+    promoted: Promu
     menu:
       aria_label: Basculer le menu déroulant
       icon: Menu déroulant

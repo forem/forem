@@ -9,8 +9,7 @@
       <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
       <div class="crayons-sponsorship__title pl-1 fs-s fw-medium"><%= display_ad.organization.name %></div>
       <% if display_ad.type_of == "external" %>
-        <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-xs fw-medium ml-1 py-1 px-2">PROMOTED</span>
-      <% end %>
+ <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-xs fw-medium ml-1 py-1 px-2"> <%= I18n.t("display_ad.promoted") %></span>      <% end %>
     <% else %>
       <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
     <% end %>
