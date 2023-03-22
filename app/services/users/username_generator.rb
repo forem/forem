@@ -4,28 +4,20 @@ module Users
       new(...).call
     end
 
-    def initialize(user)
-      @user = user
+    def initialize(list = [])
+      @list = list
     end
 
     def call
-      username = from_auth_providers
-      return username if username.present? && !username_exists?(username)
-
-      3.times do
-        username = random_letters
-
-        break unless username_exists?(username)
-
-        username = nil
-      end
-
-      username
+      from_list(modified_list) || from_list(list_with_suffix) || from_list(Array.new(3) { random_letters })
     end
 
     private
 
-    # @todo bit heavy check, maybe keep all usernames in redis?
+    def from_list(list)
+      list.detect { |username| !username_exists?(username) }
+    end
+
     def username_exists?(username)
       User.exists?(username: username) ||
         Organization.exists?(slug: username) ||
@@ -33,10 +25,16 @@ module Users
         Podcast.exists?(slug: username)
     end
 
-    def from_auth_providers
-      provider = Authentication::Providers.username_fields.detect { |u| @user.public_send(u).present? }
-      provider_username = @user.public_send(provider)
-      provider_username.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") if provider_username
+    def filtered_list
+      @list.select { |s| s.is_a?(String) && s.present? }
+    end
+
+    def modified_list
+      filtered_list.map { |s| s.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") }
+    end
+
+    def list_with_suffix
+      modified_list.map { |s| [s, rand(100)].join("_") }
     end
 
     def random_letters

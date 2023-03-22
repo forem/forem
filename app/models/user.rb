@@ -572,8 +572,16 @@ class User < ApplicationRecord
     self.username = username&.downcase&.presence || generate_username
   end
 
+  def auth_provider_usernames
+    attributes
+      .with_indifferent_access
+      .slice(*Authentication::Providers.username_fields)
+      .values.compact || []
+  end
+
   def generate_username
-    Users::UsernameGenerator.call(self)
+    Users::UsernameGenerator
+      .call(auth_provider_usernames)
   end
 
   def downcase_email
