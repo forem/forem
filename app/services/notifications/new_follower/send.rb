@@ -2,6 +2,10 @@
 module Notifications
   module NewFollower
     class Send
+      def self.call(...)
+        new(...).call
+      end
+
       # @param follow_data [Hash]
       #   * :followable_id [Integer]
       #   * :followable_type [String] - "User" or "Organization"
@@ -15,10 +19,6 @@ module Notifications
       end
 
       delegate :user_data, to: Notifications
-
-      def self.call(...)
-        new(...).call
-      end
 
       def call
         recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id)
@@ -34,7 +34,7 @@ module Notifications
 
         followers = User.where(id: recent_follows.select(:follower_id))
         aggregated_siblings = followers.map { |follower| user_data(follower) }
-        if aggregated_siblings.size.zero?
+        if aggregated_siblings.empty?
           notification = Notification.find_by(notification_params)&.destroy
         else
           json_data = { user: user_data(follower), aggregated_siblings: aggregated_siblings }

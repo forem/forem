@@ -10,6 +10,19 @@ module Articles
     # @see config/feed-variants/README.md
     # @see app/models/articles/feeds/README.md
     class VariantQuery
+      Config = Struct.new(
+        :variant,
+        :description,
+        :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
+        :order_by, # Articles::Feeds::OrderByLever
+        :max_days_since_published,
+        # when true, each time you call the query you will get different randomized numbers; when
+        # false, the resulting randomized numbers will be the same within a window of time.
+        :reseed_randomizer_on_each_request,
+        keyword_init: true,
+      ) do
+        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
+      end
       # @api public
       #
       # @param variant [Symbol, #to_sym] the name of the variant query we're building.
@@ -23,20 +36,6 @@ module Articles
       def self.build_for(variant:, assembler: VariantAssembler, **kwargs)
         config = assembler.call(variant: variant)
         new(config: config, **kwargs)
-      end
-
-      Config = Struct.new(
-        :variant,
-        :description,
-        :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
-        :order_by, # Articles::Feeds::OrderByLever
-        :max_days_since_published,
-        # when true, each time you call the query you will get different randomized numbers; when
-        # false, the resulting randomized numbers will be the same within a window of time.
-        :reseed_randomizer_on_each_request,
-        keyword_init: true,
-      ) do
-        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
       end
 
       # @param config [Articles::Feeds::VariantQuery::Config]

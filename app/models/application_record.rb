@@ -26,25 +26,6 @@ class ApplicationRecord < ActiveRecord::Base
     count
   end
 
-  # Decorate object with appropriate decorator
-  def decorate
-    self.class.decorator_class.new(self)
-  end
-
-  def decorated?
-    false
-  end
-
-  # In our view objects, we often ask "What's this object's class's name?"
-  #
-  # We can either first check "Are you decorated?"  If so, ask for the decorated object's class
-  # name.  Or we can add a helper method for that very thing.
-  #
-  # @return [String]
-  def class_name
-    self.class.name
-  end
-
   # Decorate collection with appropriate decorator
   def self.decorate
     decorator_class.decorate_collection(all)
@@ -79,6 +60,25 @@ class ApplicationRecord < ActiveRecord::Base
   ensure
     milliseconds = original_timeout.to_i * 1000
     connection.execute "SET statement_timeout = #{milliseconds}"
+  end
+
+  # Decorate object with appropriate decorator
+  def decorate
+    self.class.decorator_class.new(self)
+  end
+
+  def decorated?
+    false
+  end
+
+  # In our view objects, we often ask "What's this object's class's name?"
+  #
+  # We can either first check "Are you decorated?"  If so, ask for the decorated object's class
+  # name.  Or we can add a helper method for that very thing.
+  #
+  # @return [String]
+  def class_name
+    self.class.name
   end
 
   def errors_as_sentence
