@@ -19,6 +19,7 @@ env:
   DATABASE_NAME_TEST: Forem_test
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   POSTGRES_PASSWORD: postgres
+  PRECOMPILED_ASSET_KEY: ${{ runner.os }}-precompiled-assets-${{ hashFiles('**/babel.config.js', 'app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
 
 jobs:
   bundle_install:
@@ -71,7 +72,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: $PRECOMPILED_ASSET_KEY
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -161,7 +162,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: PRECOMPILED_ASSET_KEY
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -284,7 +285,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: PRECOMPILED_ASSET_KEY
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -336,7 +337,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: PRECOMPILED_ASSET_KEY
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
