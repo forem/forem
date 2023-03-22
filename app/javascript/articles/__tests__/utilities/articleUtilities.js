@@ -128,11 +128,42 @@ export const articleWithReactions = {
   readable_publish_date: 'February 18',
   top_comments: [],
   public_reactions_count: 232,
+  public_reaction_categories: [
+    {
+      slug: 'like',
+      name: 'Like',
+      icon: 'sparkle-heart',
+      position: 1,
+    },
+    {
+      slug: 'unicorn',
+      name: 'Unicorn',
+      icon: 'multi-unicorn',
+      position: 2,
+    },
+    {
+      slug: 'raised_hands',
+      name: 'Raised Hands',
+      icon: 'raised-hands',
+      position: 4,
+    },
+    {
+      slug: 'fire',
+      name: 'Fire',
+      icon: 'fire',
+      position: 5,
+    },
+  ],
 };
 
 export const articleWithoutReactions = {
   ...article,
   public_reactions_count: 428,
+};
+
+export const articleWithOneReaction = {
+  ...article,
+  public_reactions_count: 1,
 };
 
 export const articleWithComments = {
