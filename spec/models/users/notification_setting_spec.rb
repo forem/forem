@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::NotificationSetting, type: :model do
+RSpec.describe Users::NotificationSetting do
   let!(:user) { create(:user) }
   let(:notification_setting) { user.notification_setting.reload }
 

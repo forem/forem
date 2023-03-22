@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits a homepage", type: :system do
+RSpec.describe "User visits a homepage" do
   let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
   let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
   # Let's use yesterday's date for this instead of relying on a magic date.
