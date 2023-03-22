@@ -1,0 +1,5 @@
+<div id="reaction-category-resources" class="hidden" aria-hidden="true">
+  <% ReactionCategory.for_view.each do |category| %>
+    <%= image_tag "#{category.icon}.svg", size: "18x18", data: { name: category.name, slug: category.slug, position: category.position } %>
+  <% end %>
+</div>
