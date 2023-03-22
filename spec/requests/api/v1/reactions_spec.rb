@@ -50,8 +50,8 @@ RSpec.describe "Api::V1::Reactions" do
 
       it "responds with expected JSON" do
         post api_reactions_toggle_path, params: params.to_json, headers: auth_header
-        expect(JSON.parse(response.body).keys).to contain_exactly("id", "result", "category", "reactable_type",
-                                                                  "reactable_id")
+        expect(response.parsed_body.keys).to contain_exactly("id", "result", "category", "reactable_type",
+                                                             "reactable_id")
       end
     end
 
@@ -103,8 +103,8 @@ RSpec.describe "Api::V1::Reactions" do
 
       it "responds with expected JSON" do
         post api_reactions_path, params: params.to_json, headers: auth_header
-        expect(JSON.parse(response.body).keys).to contain_exactly("id", "result", "category", "reactable_type",
-                                                                  "reactable_id")
+        expect(response.parsed_body.keys).to contain_exactly("id", "result", "category", "reactable_type",
+                                                             "reactable_id")
       end
     end
 

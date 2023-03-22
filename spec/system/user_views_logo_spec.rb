@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Logo behaviour", type: :system do
+RSpec.describe "Logo behaviour" do
   let!(:user) { create(:user) }
   let(:resized_logo) { "default.png" }
 

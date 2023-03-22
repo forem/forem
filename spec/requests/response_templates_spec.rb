@@ -39,7 +39,7 @@ RSpec.describe "ResponseTemplate" do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: user, type_of: "personal_comment")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.keys).to contain_exactly("personal_comment")
         expect(json.values.flatten.count).to eq(2)
       end
@@ -83,14 +83,14 @@ RSpec.describe "ResponseTemplate" do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 2
+        expect(response.parsed_body.length).to eq 2
       end
 
       it "returns both personal and moderator response templates if type_of unspecified" do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.keys).to contain_exactly("mod_comment", "personal_comment")
         expect(json.values.flatten.count).to eq(4)
       end
@@ -114,7 +114,7 @@ RSpec.describe "ResponseTemplate" do
       it "allows access and returns an array of admin level response templates" do
         create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
         get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 2
+        expect(response.parsed_body.length).to eq 2
       end
     end
   end
