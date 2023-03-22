@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Podcast, type: :model do
+RSpec.describe Podcast do
   let(:podcast) { create(:podcast) }
 
   it "has a creator" do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Feeds::LargeForemExperimental, type: :system, js: true do
+RSpec.describe Articles::Feeds::LargeForemExperimental, js: true do
   let(:user) { create(:user) }
   let(:second_user) { create(:user) }
   let!(:hot_story) do

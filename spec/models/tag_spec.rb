@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Tag, type: :model do
+RSpec.describe Tag do
   let(:tag) { build(:tag) }
 
   describe "#class_name" do

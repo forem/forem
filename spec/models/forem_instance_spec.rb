@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ForemInstance, type: :model do
+RSpec.describe ForemInstance do
   describe "deployed_at" do
     before do
       allow(ENV).to receive(:[])
