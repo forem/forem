@@ -58,7 +58,7 @@ function showUserReaction(reactionName, animatedClass) {
   );
 
   // special-case for readinglist, it's not in the drawer
-  if (reactionName == 'readinglist') {
+  if (reactionName === 'readinglist') {
     return;
   }
 
