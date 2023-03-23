@@ -230,7 +230,7 @@ class Comment < ApplicationRecord
                                            sanitize_options: { scrubber: RenderedMarkdownScrubber.new }).processed_html
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
-  rescue ContentRenderer::ContentParsingError => e
+  rescue BasicContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 

@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe BasicContentRenderer do
   let(:markdown) { "hello, hey" }
+  let(:renderer) { described_class.new(markdown, source: nil, user: nil, fixer: MarkdownProcessor::Fixer::FixAll) }
 
   it "calls fixer" do
     allow(MarkdownProcessor::Fixer::FixAll).to receive(:call).and_call_original
@@ -10,7 +11,6 @@ RSpec.describe BasicContentRenderer do
   end
 
   describe "#process" do
-    let(:renderer) { described_class.new(markdown, source: nil, user: nil, fixer: MarkdownProcessor::Fixer::FixAll) }
     let(:parser) { instance_double(MarkdownProcessor::Parser) }
 
     context "with double parser" do
@@ -44,7 +44,9 @@ RSpec.describe BasicContentRenderer do
         expect(parser).to have_received(:finalize).with(finalize_attrs)
       end
     end
+  end
 
+  describe "#process_article" do
     it "calculates reading time if processing an article" do
       result = renderer.process_article
       expect(result.reading_time).to eq(1)

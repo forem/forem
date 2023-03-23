@@ -1,4 +1,4 @@
-# Render markdown, like ContentRenderer, but without frontmatter (Comments, DisplayAds)
+# render markdown for Article's, DisplayAd's, Comment's
 class BasicContentRenderer
   Result = Struct.new(:front_matter, :reading_time, :processed_html, keyword_init: true)
 
