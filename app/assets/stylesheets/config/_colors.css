@@ -269,6 +269,10 @@
   --indicator-bg: rgb(var(--grey-300));
   --indicator-color: rgb(var(--grey-700));
 
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-200));
+  --indicator-subtle-color: rgb(var(--grey-600));
+
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-400));
   --indicator-success-color: rgb(var(--green-900));
@@ -347,7 +351,7 @@
   /***********************************************
   ** Banners *************************************
   ***********************************************/
-  
+
   --banner-bg: rgb(var(--grey-800));
   --banner-color: var(--white);
   --banner-accent: var(--accent-brand);

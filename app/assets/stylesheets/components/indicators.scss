@@ -35,6 +35,15 @@
     padding: var(--su-2);
   }
 
+  &--subtle {
+    --bg: var(--indicator-subtle-bg);
+    --color: var(--indicator-subtle-color);
+  }
+
+  &--round {
+    border-radius: var(--radius-large);
+  }
+
   &:empty {
     display: none;
   }

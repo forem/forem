@@ -2,48 +2,48 @@
 fr:
   admin:
     articles_controller:
-      saved: Article saved!
-      pinned: Article Pinned!
-      unpinned: Article Unpinned!
+      saved: Article sauvegardé !
+      pinned: Article épinglé !
+      unpinned: Article désépinglé !
     badge_achievements_controller:
-      deleted: Badge achievement has been deleted!
-      rewarded: Badges are being rewarded. The task will finish shortly.
-      congrats: Congrats!
-      award: Please choose a badge to award
-      wrong: Something went wrong.
+      deleted: La réalisation du badge a été supprimée !
+      rewarded: Les badges sont en train d'être récompensés. La tâche sera bientôt terminée.
+      congrats: Félicitations !
+      award: Veuillez choisir un badge à décerner
+      wrong: Quelque chose a mal fonctionné.
     badges_controller:
-      created: Badge has been created!
-      updated: Badge has been updated!
+      created: Le badge a été créé !
+      updated: Le badge a été mis à jour !
     broadcasts_controller:
-      created: Broadcast has been created!
-      deleted: Broadcast has been deleted!
-      updated: Broadcast has been updated!
-      wrong: Something went wrong with deleting the broadcast.
+      created: Le Broadcast a été créée !
+      deleted: Le Broadcast a été supprimée !
+      updated: Le Broadcast a été mise à jour !
+      wrong: Quelque chose s'est mal passé avec la suppression du Broadcast.
     consumer_apps_controller:
-      created: '%{app} has been created!'
-      deleted: '%{app} has been deleted!'
-      updated: '%{app} has been updated!'
-      wrong: Something went wrong with deleting %{app}.
+      created: '%{app} a été créé !'
+      deleted: '%{app} a été supprimé !'
+      updated: '%{app} a été mis à jour !'
+      wrong: Quelque chose s'est mal passé en supprimant %{app}.
     display_ads_controller:
-      created: Display Ad has been created!
-      deleted: Display Ad has been deleted!
-      updated: Display Ad has been updated!
-      wrong: Something went wrong with deleting the Display Ad.
+      created: L'annonce publicitaire a été créée !
+      deleted: L'annonce a été supprimée !
+      updated: L'annonce publicitaire a été mise à jour !
+      wrong: Quelque chose s'est mal passé avec la suppression de l'annonce publicitaire.
     extensions_controller:
       update_success: Les extensions ont été mises à jour.
     gdpr_delete_requests_controller:
-      deleted: Successfully marked as deleted
+      deleted: Marqué comme supprimé avec succès
     html_variants_controller:
       fork: '%{name} FORK-%{rand}'
-      created: HTML Variant has been created!
-      deleted: HTML Variant has been deleted!
-      updated: HTML Variant has been updated!
-      wrong: Something went wrong with deleting the HTML Variant.
+      created: La variante HTML a été créée !
+      deleted: La variante HTML a été supprimée !
+      updated: La variante HTML a été mise à jour !
+      wrong: Quelque chose s'est mal passé avec la suppression de la variante HTML.
     invitations_controller:
-      duplicate: 'Invitation was not sent. There is already a registered user with the email: %{email}'
-      create_success: The invite has been sent to the user's email.
-      destroy_success: Invite cancelled for %{email}.
-      resend_success: Invite resent to %{email}.
+      duplicate: "L'invitation n'a pas été envoyée. Il y a déjà un utilisateur enregistré avec l'email : %{email}"
+      create_success: L'invitation a été envoyée à l'email de l'utilisateur.
+      destroy_success: Invitation annulée pour %{email}.
+      resend_success: Invitation envoyée à %{email}.
     listing_categories_controller:
       created: Listing Category has been created!
       updated: Listing Category has been updated!
@@ -53,100 +53,100 @@ fr:
       destroyed: "'%{title}' was destroyed successfully"
       no_credit: Not enough available credits
     mods_controller:
-      trusted: '%{username} now has a Trusted role!'
+      trusted: '%{username} a maintenant un rôle de confiance !'
     navigation_links_controller:
-      deleted: Navigation Link %{link} deleted
-      created: 'Successfully created navigation link: %{link}'
-      updated: 'Successfully updated navigation link: %{link}'
+      deleted: Lien de navigation %{link} supprimé
+      created: 'Le lien de navigation a été créé avec succès : %{link}'
+      updated: 'Le lien de navigation a été mis à jour avec succès : %{link}'
     organization_memberships_controller:
-      not_exist: 'Organization #%{org_id} does not exist.'
-      wrong: Something went wrong with removing the user from %{org}
-      added: User was successfully added to %{org}
-      removed: User was successfully removed from %{org}
-      updated: User was successfully updated to %{type}
+      not_exist: "L'organisation #%{org_id} n'existe pas."
+      wrong: Quelque chose s'est mal passé en retirant l'utilisateur de %{org}
+      added: L'utilisateur a été ajouté avec succès à %{org}
+      removed: L'utilisateur a été supprimé avec succès de %{org}
+      updated: L'utilisateur a été mis à jour avec succès vers %{type}
     organizations_controller:
-      credit_updated: Successfully updated credits
+      credit_updated: Crédits actualisés avec succès
     pages_controller:
-      updated: Page has been successfully updated.
-      created: Page has been successfully created.
-      deleted: Page has been successfully deleted.
+      updated: La page a été mise à jour avec succès.
+      created: La page a été créée avec succès.
+      deleted: La page a été supprimée avec succès.
       code_of_conduct:
-        title: Code of Conduct
-        description: A page that describes how to behave on this platform
+        title: Code de conduite
+        description: Une page qui décrit comment se comporter sur cette plateforme
       privacy_policy:
-        title: Privacy Policy
-        description: A page that describes the privacy policy
+        title: Politique de confidentialité
+        description: Une page qui décrit la politique de confidentialité
       terms_of_use:
-        title: Terms of Use
-        description: A page that describes the terms of use for the application
+        title: Conditions d'utilisation
+        description: Une page qui décrit les conditions d'utilisation de l'application.
     podcasts_controller:
-      new_owner_added: New owner added!
-      no_such_user: No such user
-      scheduled: "Podcast's episodes fetching was scheduled (%{title}, #%{id})"
-      updated: Podcast updated
+      new_owner_added: Nouveau propriétaire ajouté !
+      no_such_user: Aucun utilisateur n'existe
+      scheduled: "La récupération des épisodes du podcast a été programmée (%{title}, #%{id})"
+      updated: Podcast mis à jour
     profile_field_groups_controller:
-      deleted: Group %{group} deleted
-      updated: Group %{group} updated
-      created: 'Successfully created group: %{group}'
+      deleted: Groupe %{group} supprimé
+      updated: Groupe %{group} mis à jour
+      created: 'Le groupe a été créé avec succès : %{group}'
     profile_fields_controller:
-      created: Profile field %{field} created
-      deleted: Profile field %{field} deleted
-      updated: Profile field %{field} updated
+      created: Champ de profil %{field} créé
+      deleted: Champ de profil %{field} supprimé
+      updated: Champ de profil %{field} mis à jour
     response_templates_controller:
-      saved: 'Response Template: "%{title}" saved successfully.'
-      updated: The response template "%{title}" was updated.
-      deleted: The response template "%{title}" was deleted.
+      saved: 'Modèle de réponse : "%{title}" enregistré avec succès.'
+      updated: Le modèle de réponse "%{title}" a été mis à jour.
+      deleted: Le modèle de réponse "%{title}" a été supprimé.
     secrets_controller:
-      not_in_vault: Not In Vault
-      updated: Secret %{key} was successfully updated in Vault.
+      not_in_vault: Pas dans le coffre-fort
+      updated: Le secret %{key} a été mis à jour avec succès dans le coffre-fort.
       value: '%{first8}******'
     settings_controller:
-      confirmation: My username is @%{username} and this action is 100% safe and appropriate.
+      confirmation: Mon nom d'utilisateur est @%{username} et cette action est 100% sûre et appropriée.
     spaces_controller:
       update_success: L'espace a été mis à jour.
     tags:
       moderators_controller:
-        not_found: 'User ID #%{user_id} was not found'
-        not_found_or: 'User ID #%{user_id} was not found, or their account has errors: %{errors}'
-        removed: '@%{username} - ID #%{user_id} was removed as a tag moderator.'
-        added: '%{username} was added as a tag moderator!'
+        not_found: "L'ID utilisateur #%{user_id} n'a pas été trouvé"
+        not_found_or: "L'identifiant de l'utilisateur #%{user_id} n'a pas été trouvé, ou son compte présente des erreurs : %{errors}"
+        removed: "@%{username} - ID #%{user_id} a été supprimé en tant que modérateur de tags."
+        added: "%{username} a été ajouté en tant que modérateur de tags !"
     tags_controller:
-      created: '%{tag_name} has been created!'
-      updated: '%{tag_name} tag successfully updated!'
-      update_fail: 'The tag update failed: %{errors}'
+      created: '%{tag_name} a été créé !'
+      updated: '%{tag_name} tag mis à jour avec succès !'
+      update_fail: 'La mise à jour de la balise a échoué : %{errors}'
     tools_controller:
-      article_busted: 'Article #%{article} was successfully busted'
-      user_busted: 'User #%{user} was successfully busted'
-      link_busted: '%{link} was successfully busted'
+      article_busted: "L'article #%{article} a été bloqué avec succès."
+      user_busted: "L'utilisateur #%{user} a été arrêté avec succès."
+      link_busted: "%{link} a été cassé avec succès"
     users_controller:
-      exported: Data exported to the %{receiver}. The job will complete momentarily.
-      email_fail: Email failed to send!
-      email_sent: Email sent!
-      verify_sent: Verification email sent!
-      full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
-      no_email: no email
-      parameter_missing: Both subject and body are required!
-      role_removed: 'Role: %{role} has been successfully removed from the user!'
-      identity_removed: The %{provider} identity was successfully deleted and backed up.
-      the_page: the page
-      banished: This user is being banished in the background. The job will complete soon.
-      unlocked: Unlocked User account!
-      unpublished: Posts are being unpublished in the background. The job will complete soon.
-      updated: User has been updated
-      updated_json: Success! %{username} has been updated.
-      credits_added: Credits have been added!
-      credits_removed: Credits have been removed.
+      exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
+      email_fail: L'envoi de l'e-mail a échoué !
+      email_sent: Courriel envoyé !
+      verify_sent: E-mail de vérification envoyé !
+      full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
+      no_email: Aucun e-mail
+      parameter_missing: Le sujet et le corps sont tous deux requis !
+      role_removed: "Le rôle : %{role} a été supprimé avec succès de l'utilisateur !"
+      identity_removed: L'identité %{provider} a été supprimée et sauvegardée avec succès.
+      the_page: la page
+      banished: Cet utilisateur est en train d'être banni en arrière-plan. Le travail sera bientôt terminé.
+      unlocked: Compte utilisateur débloqué !
+      unpublished: Les messages sont en train d'être dépubliés en arrière-plan. Le travail sera bientôt terminé.
+      updated: L'utilisateur a été mis à jour
+      updated_json: Succès ! %{username} a été mis à jour.
+      credits_added: Les crédits ont été ajoutés !
+      credits_removed: Les crédits ont été supprimés.
     welcome_controller:
       thread_content: |
         ---
-        title: Welcome Thread - v0
+        title: Fil de bienvenue - v0
         published: false
-        description: Introduce yourself to the community!
+        description: Présentez-vous à la communauté !
         tags: welcome
         ---
 
-        Hey there! Welcome to %{community}!
+        Bonjour à tous ! Bienvenue sur %{community}!
 
-        ![WELCOME TO THE INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
+        ![BIENVENUE SUR INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
-        Leave a comment below to introduce yourself to the community!✌️
+        Laissez un commentaire ci-dessous pour vous présenter à la communauté!✌️
