@@ -21,30 +21,33 @@ describe('User Profile', () => {
 
         cy.get('.js-user-info').contains('Badges').should('be.visible');
 
-        cy.get('.js-user-info').contains('posts published').should('be.visible');
+        cy.get('.js-user-info')
+          .contains('posts published')
+          .should('be.visible');
 
-        cy.get('.js-user-info').contains('comments written').should('be.visible');
+        cy.get('.js-user-info')
+          .contains('comments written')
+          .should('be.visible');
 
         cy.get('.js-user-info').contains('tags followed').should('be.visible');
       });
     });
-
   });
 
   describe('toggle profile badges', () => {
-    it("should show 6 badges by default if there are more than 6", () => {
+    it('should show 6 badges by default if there are more than 6', () => {
       cy.get('.js-profile-badges')
         .findAllByRole('button')
         .should('have.length', 6);
     });
 
-    it("should show a button to show all the badges if there are more than 6", () => {
+    it('should show a button to show all the badges if there are more than 6', () => {
       cy.findByRole('button', {
         name: 'Show all 7 badges',
       }).should('be.visible');
     });
 
-    it("should show 7 badges when the button is clicked", () => {
+    it('should show 7 badges when the button is clicked', () => {
       cy.findByRole('button', {
         name: 'Show all 7 badges',
       }).click();
@@ -54,5 +57,3 @@ describe('User Profile', () => {
     });
   });
 });
-
-
