@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @q = FeedbackMessage.includes(:reporter, :offender, :affected)
+      @q = FeedbackMessage.includes(:offender, :affected)
         .order(created_at: :desc)
         .ransack(params[:q])
       @feedback_messages = @q.result.page(params[:page] || 1).per(5)
