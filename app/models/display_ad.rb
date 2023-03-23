@@ -104,7 +104,7 @@ class DisplayAd < ApplicationRecord
   end
 
   def extracted_process_markdown
-    renderer = BasicContentRenderer.new(body_markdown || "", source: self)
+    renderer = ContentRenderer.new(body_markdown || "", source: self)
     sanitize_options = { tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
                          attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD }
     self.processed_html = renderer.process(sanitize_options: sanitize_options,

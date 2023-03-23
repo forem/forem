@@ -225,12 +225,12 @@ class Comment < ApplicationRecord
   def extracted_evaluate_markdown
     return unless user
 
-    renderer = BasicContentRenderer.new(body_markdown, source: self, user: user)
+    renderer = ContentRenderer.new(body_markdown, source: self, user: user)
     self.processed_html = renderer.process(link_attributes: { rel: "nofollow" },
                                            sanitize_options: { scrubber: RenderedMarkdownScrubber.new }).processed_html
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
-  rescue BasicContentRenderer::ContentParsingError => e
+  rescue ContentRenderer::ContentParsingError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
