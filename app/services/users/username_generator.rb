@@ -1,9 +1,17 @@
+# Generates available username based on
+# multiple generators in the following order:
+#   * list of supplied usernames
+#   * list of supplied usernames with suffix
+#   * random generated letters
+#
+# @todo Extract username validation in separate class
 module Users
   class UsernameGenerator
     def self.call(...)
       new(...).call
     end
 
+    # @param list [Array<String>] a list of usernames
     def initialize(list = [])
       @list = list
     end
