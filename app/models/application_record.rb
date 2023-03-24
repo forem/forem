@@ -62,6 +62,11 @@ class ApplicationRecord < ActiveRecord::Base
     connection.execute "SET statement_timeout = #{milliseconds}"
   end
 
+  def self.unique_across_models(attribute, **options)
+    CrossModelSlug.register(self, attribute)
+    validates attribute, presence: true, cross_model_slug: true, **options, if: :"#{attribute}_changed?"
+  end
+
   # Decorate object with appropriate decorator
   def decorate
     self.class.decorator_class.new(self)
@@ -83,10 +88,5 @@ class ApplicationRecord < ActiveRecord::Base
 
   def errors_as_sentence
     errors.full_messages.to_sentence
-  end
-
-  def self.unique_across_models(attribute, **options)
-    CrossModelSlug.register(self, attribute)
-    validates attribute, presence: true, cross_model_slug: true, **options, if: :"#{attribute}_changed?"
   end
 end

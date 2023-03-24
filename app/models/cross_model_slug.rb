@@ -24,13 +24,13 @@ class CrossModelSlug
     #    Page.exists?(slug: username) ||
     #    Podcast.exists?(slug: username)
     def exists?(value)
-      # Presence check is likely redundant, but is **much** cheaper than the 
+      # Presence check is likely redundant, but is **much** cheaper than the
       # cross-model check
-      return false unless value.present?
+      return false if value.blank?
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
       (@registered_models || []).detect do |klass, attribute|
-        klass.exists?(Hash[attribute, value])
+        klass.exists?({ attribute => value })
       end
     end
   end
