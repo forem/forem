@@ -335,6 +335,11 @@
     display: inline-block;
     vertical-align: middle;
   }
+
+  &__indicator {
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
 }
 
 .crayons-article-sticky,
@@ -348,8 +353,8 @@
 
 .crayons-layout__comments-display-ad {
   .crayons-sponsorship {
-    .crayons-sponsorship__title {
-      padding-top: var(--su-5);
+    .c-indicator.crayons-sponsorship__indicator {
+      line-height: 150%;
     }
     .crayons-sponsorship__dropdown {
       margin-top: -15px;

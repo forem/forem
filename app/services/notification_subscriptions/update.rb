@@ -1,11 +1,11 @@
 module NotificationSubscriptions
   class Update
-    def initialize(notifiable)
-      @notifiable = notifiable
-    end
-
     def self.call(...)
       new(...).call
+    end
+
+    def initialize(notifiable)
+      @notifiable = notifiable
     end
 
     def call

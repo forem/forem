@@ -29,8 +29,11 @@
           </h3>
           <h3 class="crayons-subtitle-2 fw-normal">
             <% if feedback_message.reporter_id? %>
-              <%= feedback_message.reporter.name %>
-              <a href="<%= feedback_message.reporter.path %>">@<%= feedback_message.reporter.username %></a>
+              <div class="flex flex-1 items-center">
+                <%= feedback_message.reporter.name %>
+                <a href="<%= feedback_message.reporter.path %>">@<%= feedback_message.reporter.username %></a>
+                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.reporter} %>
+              </div>
             <% else %>
               Anonymous
             <% end %>
@@ -41,8 +44,11 @@
               Offender:
             </h3>
             <h3 class="crayons-subtitle-2 fw-normal">
-              <%= feedback_message.offender.name %>
-              <a href="<%= feedback_message.offender.path %>">@<%= feedback_message.offender.username %></a>
+              <div class="flex flex-1 items-center">
+                <%= feedback_message.offender.name %>
+                <a href="<%= feedback_message.offender.path %>">@<%= feedback_message.offender.username %></a>
+                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.offender} %>
+              </div>
             </h3>
           <% else %>
             <h3 class="crayons-subtitle-2">

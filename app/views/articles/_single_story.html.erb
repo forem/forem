@@ -120,13 +120,21 @@
       <div class="crayons-story__bottom">
         <div class="crayons-story__details">
           <% if story.public_reactions_count > 0 %>
-            <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
-              <%= crayons_icon_tag("small-heart", title: t("views.reactions.summary.title")) %>
-              <%= t("views.reactions.summary.count_html",
-                    count: story.public_reactions_count,
-                    start: tag("span", { class: %w[hidden s:inline] }, true),
-                    end: "</span>".html_safe) %>
-            </a>
+          <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">
+            <div class="multiple_reactions_aggregate">
+              <span class="multiple_reactions_icons_container" dir="rtl">
+                <% story.public_reaction_categories.reverse_each do |reaction_type| %>
+                  <span class="crayons_icon_container">
+                    <%= image_tag "#{reaction_type.icon}.svg", size: "18x18" %>
+                  </span>
+                <% end %>
+              </span>
+              <span class="aggregate_reactions_counter"><%= t("views.reactions.summary.count_html",
+                                                              count: story.public_reactions_count,
+                                                              start: tag("span", { class: %w[hidden s:inline] }, true),
+                                                              end: "</span>".html_safe) %></span>
+            </div>
+          </a>
           <% end %>
           <% if story.comments_count > 0 %>
             <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left flex items-center" aria-label="<%= t("views.articles.comments.aria_label", title: story.title) %>">

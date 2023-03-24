@@ -2,14 +2,14 @@ class AuditLog
   class UnpublishAllsQuery
     Result = Struct.new(:exists?, :audit_log, :target_articles, :target_comments, keyword_init: true)
 
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user_id)
       @user_id = user_id
       @target_articles = []
       @target_comments = []
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call
