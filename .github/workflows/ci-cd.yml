@@ -328,16 +328,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+      - uses: ./.github/actions/precompiled-assets-cache.yml
         with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          failed-on-cache-miss: true
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:

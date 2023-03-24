@@ -1,0 +1,20 @@
+name: 'Cache compiled assets'
+inputs:
+  failed-on-cache-miss:
+    required: false
+    default: false
+  restore-only:
+    required: false
+    default: false
+runs:
+  using: "composite"
+  steps:
+  - uses: actions/cache/restore@v3
+    with:
+      fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
+    path: |
+      public/assets
+      public/packs-test
+      tmp/cache/webpacker
+    key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+    restore-keys: ${{ runner.os }}-precompiled-assets-
