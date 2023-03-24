@@ -57,7 +57,7 @@ ua:
         popular_tags: Популярні теґи
       footer:
         built:
-          text_html: Створено на базі %{forem} — %{opensource} ПО, що підтримує %{dev} та інші дружні спільноти.
+          text_html: Створено на базі %{forem} — %{opensource} ПО.
           forem: Forem
           opensource: відкритого
           dev: DEV

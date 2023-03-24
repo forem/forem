@@ -145,7 +145,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
 
     if (event.dataTransfer.files.length > 1) {
       addSnackbarItem({
-        message: 'Only one image can be dropped at a time.',
+        message: 'Тільки одну картинку за раз.',
         addCloseButton: true,
       });
       return;
@@ -154,7 +154,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
     handleMainImageUpload(event);
   };
 
-  const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
+  const uploadLabel = mainImage ? 'Змінити' : 'Додайте обкладинку';
 
   // When the component is rendered in an environment that supports a native
   // image picker for image upload we want to add the aria-label attr and the

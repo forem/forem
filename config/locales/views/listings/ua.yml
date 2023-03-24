@@ -56,10 +56,10 @@ ua:
           none: None
         publish: Публікувати перелік
         purchase: Purchase credits
-        save: Save draft
+        save: Зберегти чорнетку
         save_notice: You will not be charged credits to save a draft.
         tags:
-          placeholder: Додайте до 8 тегів...
+          placeholder: Додайте до 6 тегів...
         title:
           placeholder: 128 символів максимум, звичайний текст
       nav:

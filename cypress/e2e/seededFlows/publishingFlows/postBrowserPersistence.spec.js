@@ -30,7 +30,7 @@ describe('Post Editor', () => {
           .type(updatedContent, { force: true })
           .should('have.value', updatedContent);
 
-        cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+        cy.findByRole('button', { name: /^Відкатити зміни$/i }).click();
 
         // The post editor should reset to it's initial values
         getPostContent().should('have.value', initialContent);
@@ -74,7 +74,7 @@ describe('Post Editor', () => {
           getPostContent().type(updatedContent, { force: true });
           getPostContent().should('have.value', updatedContent);
 
-          cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+          cy.findByRole('button', { name: /^Відкатити зміни$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
           getPostContent().should('have.value', initialContent);
@@ -97,7 +97,7 @@ describe('Post Editor', () => {
           .should('have.value', updatedContent);
 
         cy.findByRole('button', {
-          name: /^Revert new changes$/i,
+          name: /^Відкатити зміни$/i,
         }).click();
 
         cy.on('window:confirm', () => false);
@@ -151,7 +151,7 @@ describe('Post Editor', () => {
           'This is some text that should be reverted',
         );
 
-        cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+        cy.findByRole('button', { name: /^Відкатити зміни$/i }).click();
 
         // The post editor should reset to it's initial values
         // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
@@ -245,7 +245,7 @@ describe('Post Editor', () => {
             { force: true },
           );
 
-          cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+          cy.findByRole('button', { name: /^Відкатити зміни$/i }).click();
 
           // The post editor should reset to it's saved version from the server that was initially loaded into the editor.
           // NOTE: The aliases for the title and tags input are not being used because the DOM nodes
@@ -294,7 +294,7 @@ describe('Post Editor', () => {
 
         getPostContent().should('have.value', content);
 
-        cy.findByRole('button', { name: /^Revert new changes$/i }).click();
+        cy.findByRole('button', { name: /^Відкатити зміни$/i }).click();
 
         cy.on('window:confirm', () => false);
 
