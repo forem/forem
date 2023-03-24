@@ -7,6 +7,21 @@ module Authentication
       TRUSTED_CALLBACK_ORIGIN = "https://appleid.apple.com".freeze
       CALLBACK_PATH = "/users/auth/apple/callback".freeze
 
+      def self.official_name
+        OFFICIAL_NAME
+      end
+
+      def self.settings_url
+        SETTINGS_URL
+      end
+
+      def self.sign_in_path(**kwargs)
+        ::Authentication::Paths.sign_in_path(
+          provider_name,
+          **kwargs,
+        )
+      end
+
       def new_user_data
         # Apple sends `first_name` and `last_name` as separate fields
         name = I18n.t("services.authentication.providers.apple.name", first: info.first_name, last: info.last_name)
@@ -17,11 +32,11 @@ module Authentication
           name: name
         }
 
-        if Rails.env.test?
-          user_data[:profile_image] = Settings::General.mascot_image_url
-        else
-          user_data[:profile_image] = Users::ProfileImageGenerator.call
-        end
+        user_data[:profile_image] = if Rails.env.test?
+                                      Settings::General.mascot_image_url
+                                    else
+                                      Users::ProfileImageGenerator.call
+                                    end
 
         user_data
       end
@@ -57,21 +72,6 @@ module Authentication
           # to work with other than the email
           ["user", Digest::SHA512.hexdigest(info.email)].join("_")[0...15]
         end
-      end
-
-      def self.official_name
-        OFFICIAL_NAME
-      end
-
-      def self.settings_url
-        SETTINGS_URL
-      end
-
-      def self.sign_in_path(**kwargs)
-        ::Authentication::Paths.sign_in_path(
-          provider_name,
-          **kwargs,
-        )
       end
 
       protected

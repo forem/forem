@@ -2,14 +2,14 @@ module Articles
   class Updater
     Result = Struct.new(:success, :article, keyword_init: true)
 
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user, article, article_params)
       @user = user
       @article = article
       @article_params = article_params
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call
