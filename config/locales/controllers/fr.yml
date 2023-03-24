@@ -1,123 +1,123 @@
 ---
 fr:
   api_secrets_controller:
-    generated: 'Your API Key has been generated: %{secret}'
-    revoked: Your API Key has been revoked.
+    generated: 'Votre clé d API a été générée : %{secret}'
+    revoked: Votre clé API a été révoquée.
   application_controller:
-    bad_request: 'Error: Bad Request'
-    not_authorized: 'Error: not authorized'
-    please_sign_in: Please sign in
+    bad_request: 'Erreur : mauvaise demande'
+    not_authorized: 'Erreur : non autorisé'
+    please_sign_in : Veuillez vous connecter
   articles_controller:
-    deleted: Article was successfully deleted.
+    deleted: L'article a été supprimé avec succès.
   comments_controller:
     create:
-      success: created
-      failure: comment already exists
-      authorization_error: Your privileges have been suspended.
+      success: créé avec succès
+      failure: commentaire déjà existant
+      authorization_error: Vos privilèges ont été suspendus.
     delete:
-      error: Something went wrong; Comment NOT deleted.
-      notice: Comment was successfully deleted.
-    markdown: 'There was an error in your markdown: %{error}'
-    markdown_html: "<p>😔 There was an error in your markdown</p><hr><p>%{error}</p>"
-    moderated: Not allowed due to moderation action
+      error: Un problème est survenu ; le commentaire n'a PAS été supprimé.
+      notice: Le commentaire a été supprimé avec succès.
+    markdown: 'Il y a une erreur dans votre markdown : %{error}'
+    markdown_html: "<p>😔 Il y a une erreur dans votre markdown</p><hr><p>%{error}</p>"
+    moderated: Non autorisé en raison d'une action de modération.
   confirmations_controller:
-    email_sent: Email sent! Please contact support at %{email} if you are having trouble receiving your confirmation instructions.
+    email_sent: E-mail envoyé ! Veuillez contacter le service d'assistance à l'adresse %{email} si vous avez des difficultés à recevoir les instructions de confirmation.
   credits_controller:
     done:
-      one: "%{count} new credits purchased!"
-      other: "%{count} new credits purchased!"
+      one: "%{count} nouveau crédit acheté !"
+      other: "%{count} nouveaux crédits achetés !"
   devices_controller:
-    not_found: Not Found
+    not_found: Non trouvé
   discussion_locks_controller:
-    locked: Discussion was successfully locked!
-    unlocked: Discussion was successfully unlocked!
+    locked: La discussion a été verrouillée avec succès !
+    unlocked: La discussion a été déverrouillée avec succès !
   email_subscriptions_controller:
-    badge_notifications: badge notifications
-    comment_notifications: comment notifications
-    digest_emails: "%{community} digest emails"
-    follower_notifications: follower notifications
-    mention_notifications: mention notifications
-    this_list: this list
-    unread_notifications: unread notifications
+    badge_notifications: notifications de badges
+    comment_notifications: notifications de commentaires
+    digest_emails: "%{community} e-mails récapitulatifs"
+    follower_notifications: notifications de followers
+    mention_notifications: notifications de mentions
+    this_list: cette liste
+    unread_notifications: notifications non lues
   feedback_messages_controller:
-    error_fill: "Make sure the forms are filled. 🤖 Other possible errors: %{errors}"
-    n_a: N/A
-    submitted: Your report is submitted
+    error_fill: "Assurez-vous que les formulaires sont remplis. 🤖 Autres erreurs possibles : %{errors}"
+    n_a: NON DISPONIBLE
+    submitted: Votre rapport est soumis
   follows_controller:
-    already_followed: already followed
-    daily_limit: Daily account follow limit reached!
-    followed: followed
-    unfollowed: unfollowed
+    already_followed: déjà suivi
+    daily_limit: La limite de suivi quotidien des comptes est atteinte !
+    followed: suivi
+    unfollowed: non-suivi
   github_repos_controller:
-    repo_not_found: GitHub repository not found
-    github_unauthorized: 'GitHub Unauthorized: %{e_message}'
+    repo_not_found: Dépôt GitHub non trouvé
+    github_unauthorized: 'GitHub non autorisé : %{e_message}'
   image_uploads_controller:
-    server_error: A server error has occurred!
+    server_error: Une erreur de serveur s'est produite !
   listings_controller:
-    deleted: Listing was successfully deleted.
-    no_credit: Not enough available credits
+    deleted: L'inscription a été supprimée avec succès.
+    no_credit: Pas assez de crédits disponibles
   omniauth_callbacks_controller:
-    log_in_error: 'Log in error: %{e}'
-    username_taken: username has already been taken
+    log_in_error: 'Erreur de connexion: %{e}'
+    username_taken: le nom d'utilisateur a déjà été pris
   organizations_controller:
-    secret_updated: Your org secret was updated
-    deletion_scheduled: 'Your organization: "%{organization_name}" deletion is scheduled. You''ll be notified when it''s deleted.'
-    not_deleted: Your organization was not deleted; you must be an admin, the only member in the organization, and have no articles connected to the organization.
-    created: Your organization was successfully created and you are an admin.
-    updated: Your organization was successfully updated.
+    secret_updated: Votre secret d'organisation a été mis à jour
+    deletion_scheduled: "Votre organisation: %{organization_name}. la suppression est prévue. Vous serez averti lorsqu'il sera supprimé."
+    not_deleted: Votre organisation n'a pas été supprimée ; vous devez être un administrateur, le seul membre de l'organisation, et n'avoir aucun article connecté à l'organisation.
+    created: Votre organisation a été créée avec succès et vous êtes un administrateur.
+    updated: Votre organisation a été mise à jour avec succès.
   podcasts_controller:
-    podcast_suggested: Podcast suggested
+    podcast_suggested: Podcast proposé
   profiles_controller:
-    updated: Your profile has been updated
+    updated: Votre profil a été mis à jour
   rating_votes_controller:
-    not_upserted_successfully: Not Upserted Successfully
+    not_upserted_successfully: Pas d'insertion réussie
   registrations_controller:
     error:
-      recaptcha: You must complete the recaptcha ✅
-      domain: is not included in allowed domains.
+      recaptcha: Vous devez remplir le recaptcha ✅
+      domain: n'est pas inclus dans les domaines autorisés.
   response_templates_controller:
-    response_template_error: 'Response template error: %{errors}'
-    created: Your response template "%{title}" was created.
-    deleted: Your response template "%{title}" was deleted.
-    updated: Your response template "%{title}" was updated.
+    response_template_error: 'Erreur de modèle de réponse: %{errors}'
+    created: Votre modèle de réponse "%{title}" a été créée.
+    deleted: Votre modèle de réponse "%{title}" a été supprimée.
+    updated: Votre modèle de réponse "%{title}" a été mis à jour.
   social_previews_controller:
     fonts: Roboto|Roboto+Condensed
   stories:
     pinned_articles_controller:
-      not_found: not found
+      not_found: non trouvé
   stories_controller:
-    404_bio_not_found: 404 bio not found
-    searching: "...searching"
+    404_bio_not_found: 404 bio non trouvé
+    searching: "...recherche"
   stripe_active_cards_controller:
-    cannot_remove: Can't remove card if you have an active membership. Please cancel your membership first.
-    cannot_update: There was a problem updating your billing info.
-    updated: Your billing information has been updated
-    removed: Your card has been successfully removed.
+    cannot_remove: Vous ne pouvez pas retirer la carte si vous avez une adhésion active. Veuillez d'abord annuler votre adhésion.
+    cannot_update: Il y a eu un problème pour mettre à jour vos informations de facturation.
+    updated: Vos informations de facturation ont été mises à jour
+    removed: Votre carte a été retirée avec succès.
   tag_adjustments_controller:
-    failure: 'Failure: %{errors}'
-    destroyed: Tag adjustment destroyed
+    failure: 'Échec : %{errors}'
+    destroyed: Tag détruit
   tags_controller:
-    tag_successfully_updated: "Tag successfully updated! 👍 "
+    tag_successfully_updated: "Tag mis à jour avec succès ! 👍 "
   users_controller:
-    removed_admin: "%{name} is no longer an admin."
-    removed_member: "%{name} is no longer part of your organization."
-    added_admin: "%{name} is now an admin."
-    provide_email: Please, provide an email to delete your account.
-    provide_email_delete: Please, provide an email to delete your account
-    send_export: " The export will be emailed to you shortly."
-    invalid_secret: The given organization secret was invalid.
-    username_blank: Username cannot be blank
-    deletion_in_progress: You have already requested account deletion. Please, check your email for further instructions.
-    joined_org: You have joined the %{organization_name} organization.
-    left_org: You have left your organization.
-    deletion_requested: You have requested account deletion. Please, check your email for further instructions.
-    log_in_to_delete: You must be logged in to proceed with account deletion.
-    deletion_scheduled: Your account deletion is scheduled. You'll be notified when it's deleted.
-    removed_identity: Your %{provider} account was successfully removed.
-    updated_config: Your config has been updated. Refresh to see all changes.
-    updated_profile: Your profile was successfully updated.
-    token_expired: Your token has expired, please request a new one. Tokens only last for 12 hours after account deletion is initiated.
-    notifications_settings_updated: Your notifications settings have been updated.
+    removed_admin: "%{name} n'est plus un administrateur."
+    removed_member: "%{name} ne fait plus partie de votre organisation."
+    added_admin: "%{name} est maintenant un administrateur."
+    provide_email: Veuillez fournir une adresse e-mail pour supprimer votre compte
+    provide_email_delete: Veuillez fournir une adresse e-mail pour supprimer votre compte
+    send_export: " L'exportation vous sera envoyée par e-mail sous peu."
+    invalid_secret: Le secret d'organisation donné n'est pas valide.
+    username_blank: Le nom d'utilisateur ne peut pas être vide
+    deletion_in_progress: Vous avez déjà demandé la suppression de votre compte. Veuillez vérifier votre e-mail pour de nouvelles instructions.
+    joined_org: Vous avez rejoint l'organisation %{organization_name}.
+    left_org: Vous avez quitté votre organisation.
+    deletion_requested: Vous avez demandé la suppression de votre compte. Veuillez vérifier votre e-mail pour de plus amples instructions.
+    log_in_to_delete: Vous devez être connecté pour procéder à la suppression du compte.
+    deletion_scheduled: La suppression de votre compte est programmée. Vous serez notifié quand il sera supprimé.
+    removed_identity: Votre compte %{provider} a été supprimé avec succès.
+    updated_config: Votre configuration a été mise à jour. Rafraîchissez pour voir tous les changements.
+    updated_profile: Votre profil a été mis à jour avec succès.
+    token_expired: Votre jeton a expiré, veuillez en demander un nouveau. Les jetons ne durent que 12 heures après la suppression du compte.
+    notifications_settings_updated: Vos paramètres de notification ont été mis à jour.
   video_states_controller:
-    related_article_not_found: Related article not found
-    video_state_updated: Video state updated
+    related_article_not_found: Article connexe non trouvé
+    video_state_updated: Mise à jour de l'état de la vidéo

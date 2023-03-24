@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/confirm-email", type: :system do
+RSpec.describe "/confirm-email" do
   it "stays on the same page and displays a flash message", :aggregate_failures do
     visit confirm_email_path
     fill_in "user_email", with: "test@example.com"

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe OrganizationHelper, type: :helper do
+describe OrganizationHelper do
   it "displays the correct options" do
     org1 = create(:organization, name: "ACME")
     org2 = create(:organization, name: "Pied Piper")

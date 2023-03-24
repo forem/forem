@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Followers Dashboard", type: :system, js: true do
+RSpec.describe "Followers Dashboard", js: true do
   let(:default_per_page) { 3 }
   let(:user) { create(:user) }
   let(:followed_user) { create(:user) }

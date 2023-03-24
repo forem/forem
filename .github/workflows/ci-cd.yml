@@ -7,6 +7,10 @@ on:
   pull_request:
     branches:
       - main
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{  github.ref != 'refs/heads/main' }}
+
 env:
   COVERAGE: true
   RAILS_ENV: test
@@ -390,15 +394,6 @@ jobs:
         uses: re-actors/alls-green@release/v1
         with:
           jobs: ${{ toJSON(needs) }}
-
-      - name: Report failure to Slack channel
-        uses: slackapi/slack-github-action@v1
-        with:
-          payload: |
-            { "link": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: failure() && github.ref == 'refs/heads/main'
 
   deploy:
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}

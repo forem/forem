@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "all routes", type: :routing do
+RSpec.describe "all routes" do
   let(:podcast)     { create(:podcast) }
   let(:user)        { create(:user) }
 
