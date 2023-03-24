@@ -150,7 +150,6 @@ class User < ApplicationRecord
 
   validate :non_banished_username, :username_changed?
   unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
-  # validates :username
 
   validate :can_send_confirmation_email
   validate :update_rate_limit
