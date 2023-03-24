@@ -1,13 +1,8 @@
-function initializeNotifications() {
-  fetchNotificationsCount();
-  markNotificationsAsRead();
-  initReactions();
-  listenForNotificationsBellClick();
-  initFilter();
-  initPagination();
-  initLoadMoreButton();
-}
-
+import { sendHapticMessage } from '../../utilities/sendHapticMessage';
+import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn'; 
+import { showModalAfterError } from '../../utilities/showUserAlertModal';  
+// eslint-disable-next-line no-redeclare
+/* global InstantClick, instantClick */
 function markNotificationsAsRead() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
@@ -197,4 +192,12 @@ function initLoadMoreButton() {
   }
 }
 
-initializeNotifications();
+export function initializeNotifications() {
+  fetchNotificationsCount();
+  markNotificationsAsRead();
+  initReactions();
+  listenForNotificationsBellClick();
+  initFilter();
+  initPagination();
+  initLoadMoreButton();
+}
