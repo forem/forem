@@ -350,10 +350,10 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
+      - run: npx nyc report --reporter=lcov
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress
-          files: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
