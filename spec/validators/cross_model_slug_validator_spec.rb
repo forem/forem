@@ -15,10 +15,14 @@ RSpec.describe CrossModelSlugValidator do
         @enforce_validation = true
       end
 
+      def name_changed?
+        true
+      end
+
       attr_accessor :enforce_validation
       alias_method :enforce_validation?, :enforce_validation
 
-      validates :name, unique_cross_model_slug: true, if: :enforce_validation?
+      validates :name, cross_model_slug: true, if: :enforce_validation?
     end
   end
 
