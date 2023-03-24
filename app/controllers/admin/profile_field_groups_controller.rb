@@ -5,11 +5,11 @@ module Admin
     ].freeze
     layout "admin"
 
-    def update
-      profile_field_group = ProfileFieldGroup.find(params[:id])
-      if profile_field_group.update(profile_field_group_params)
+    def create
+      profile_field_group = ProfileFieldGroup.new(profile_field_group_params)
+      if profile_field_group.save
         flash[:success] =
-          I18n.t("admin.profile_field_groups_controller.updated",
+          I18n.t("admin.profile_field_groups_controller.created",
                  group: profile_field_group.name)
       else
         flash[:error] = I18n.t("errors.messages.general", errors: profile_field_group.errors_as_sentence)
@@ -17,11 +17,11 @@ module Admin
       redirect_to admin_profile_fields_path
     end
 
-    def create
-      profile_field_group = ProfileFieldGroup.new(profile_field_group_params)
-      if profile_field_group.save
+    def update
+      profile_field_group = ProfileFieldGroup.find(params[:id])
+      if profile_field_group.update(profile_field_group_params)
         flash[:success] =
-          I18n.t("admin.profile_field_groups_controller.created",
+          I18n.t("admin.profile_field_groups_controller.updated",
                  group: profile_field_group.name)
       else
         flash[:error] = I18n.t("errors.messages.general", errors: profile_field_group.errors_as_sentence)

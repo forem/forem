@@ -1,5 +1,9 @@
 module Users
   class Delete
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user)
       @user = user
     end
@@ -14,10 +18,6 @@ module Users
       Users::SuspendedUsername.create_from_user(user) if user.suspended?
       user.destroy
       Rails.cache.delete("user-destroy-token-#{user.id}")
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     private

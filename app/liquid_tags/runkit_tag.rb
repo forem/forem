@@ -41,7 +41,7 @@ class RunkitTag < Liquid::Block
         }
 
         var wrapperContent = targets[i].textContent;
-        if (/^(\<iframe src)/.test(wrapperContent) === false) {
+        if (/^(<iframe src)/.test(wrapperContent) === false) {
           if (targets[i].children.length > 0) {
             var preamble = targets[i].children[0].textContent;
             var content = targets[i].children[1].textContent;
@@ -66,6 +66,10 @@ class RunkitTag < Liquid::Block
     activateRunkitTags();
   JAVASCRIPT
 
+  def self.script
+    SCRIPT
+  end
+
   def initialize(_tag_name, markup, _parse_context)
     super
     @preamble = sanitized_preamble(markup)
@@ -81,10 +85,6 @@ class RunkitTag < Liquid::Block
         parsed_content: parsed_content
       },
     )
-  end
-
-  def self.script
-    SCRIPT
   end
 
   def sanitized_preamble(markup)

@@ -11,6 +11,10 @@ class ApplicationDecorator
 
   attr_reader :object
 
+  def self.decorate_collection(objects)
+    objects.map(&:decorate)
+  end
+
   def initialize(object)
     @object = object
   end
@@ -27,9 +31,5 @@ class ApplicationDecorator
   #       the logic of determining the decorator class, and instantiating a new decorator.
   def decorate
     self
-  end
-
-  def self.decorate_collection(objects)
-    objects.map(&:decorate)
   end
 end

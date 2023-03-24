@@ -13,7 +13,7 @@ module DataUpdateScripts
         SQL
       )
 
-      github_repos_ids = rows.map { |row| row["id"] }
+      github_repos_ids = rows.pluck("id")
 
       # load them in batches and delete them from AR so that we can trigger the after_destroy callbacks
       GithubRepo.where(id: github_repos_ids).find_each(&:destroy)
