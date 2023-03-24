@@ -163,7 +163,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
   const extraProps = useNativeUpload()
     ? {
         onClick: initNativeImagePicker,
-        'aria-label': 'Upload cover image',
+        'aria-label': 'Завантажити обкладинку',
       }
     : {};
 
@@ -189,7 +189,7 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
         <div className="flex items-center">
           {uploadingImage && (
             <span class="lh-base pl-1 border-0 py-2 inline-block">
-              <Spinner /> Uploading...
+              <Spinner /> Завантаження...
             </span>
           )}
 

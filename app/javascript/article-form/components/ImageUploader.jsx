@@ -60,12 +60,12 @@ const NativeIosV1ImageUpload = ({ uploadingImage }) => (
   <Fragment>
     {!uploadingImage && (
       <Button
-        aria-label="Upload an image"
+        aria-label="Завантажити картинку"
         className="mr-2"
         icon={ImageIcon}
         onClick={initNativeImagePicker}
       >
-        Upload image
+        Завантажити картинку
       </Button>
     )}
   </Fragment>

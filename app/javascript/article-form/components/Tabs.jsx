@@ -10,7 +10,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
       <ul className="crayons-tabs__list">
         <li>
           <button
-            data-text="Edit"
+            data-text="Редагувати"
             className={`crayons-tabs__item ${
               previewShowing ? '' : 'crayons-tabs__item--current'
             }`}
@@ -20,12 +20,12 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? null : 'page'}
           >
-            Edit
+            Редагувати
           </button>
         </li>
         <li>
           <button
-            data-text="Preview"
+            data-text="Прев'ю"
             className={`crayons-tabs__item ${
               previewShowing ? 'crayons-tabs__item--current' : ''
             }`}
@@ -35,7 +35,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >
-            Preview
+            Прев'ю
           </button>
         </li>
       </ul>
