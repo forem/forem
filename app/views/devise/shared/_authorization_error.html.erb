@@ -15,10 +15,7 @@
       </strong>
       <br>
     <% end %>
-    <% if any_enabled_auth_providers? %>
-      If you haven't created an account, we recommend signing up with social authentication below.
-    <% end %>
-    If you haven't received your confirmation email yet, <a href="<%= confirm_email_path %>">click here</a> to resend it.
+    Якщо ви ще не отримали свій лист з підтвердженням пошти, то <a href="<%= confirm_email_path %>">натисніть сюди</a> щоб ми надіслали його знову.
     <br>
     <%= t("contact_prompts.if_continued_trouble_html") %>
   </div>

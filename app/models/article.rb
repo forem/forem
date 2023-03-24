@@ -49,7 +49,7 @@ class Article < ApplicationRecord
   MAX_USER_MENTION_LIVE_AT = Time.utc(2021, 4, 7).freeze
   PROHIBITED_UNICODE_CHARACTERS_REGEX = /[\u202a-\u202e]/ # BIDI embedding controls
 
-  MAX_TAG_LIST_SIZE = 8
+  MAX_TAG_LIST_SIZE = 6
 
   # Filter out anything that isn't a word, space, punctuation mark, or
   # recognized emoji.
