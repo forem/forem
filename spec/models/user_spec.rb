@@ -188,7 +188,7 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
-      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2).with_message("is invalid") }
+      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
 
       it { is_expected.to validate_presence_of(:articles_count) }
       it { is_expected.to validate_presence_of(:badge_achievements_count) }
@@ -209,7 +209,7 @@ RSpec.describe User do
       context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
 
-        it { is_expected.to validate_uniqueness_of(:username).with_message("is taken").case_insensitive }
+        it { is_expected.to validate_uniqueness_of(:username).with_message("has already been taken").case_insensitive }
       end
       # rubocop:enable RSpec/NestedGroups
 
@@ -222,7 +222,7 @@ RSpec.describe User do
       create(:user, username: "test_user_123")
       same_username = build(:user, username: "test_user_123")
       expect(same_username).not_to be_valid
-      expect(same_username.errors[:username].to_s).to include("is taken")
+      expect(same_username.errors[:username].to_s).to include("has already been taken")
     end
 
     it "validates username against reserved words" do

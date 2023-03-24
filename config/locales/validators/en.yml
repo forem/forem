@@ -12,7 +12,7 @@ en:
     profile_validator:
       bio_too_long: Bio is too long
     cross_model_slug_validator:
-      is_taken: is taken
+      is_taken: has already been taken
       is_invalid: is invalid
       is_reserved: is reserved
     valid_domain_csv_validator:
