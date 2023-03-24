@@ -1,12 +1,12 @@
 module Podcasts
   class CreateEpisode
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(podcast_id, item)
       @podcast_id = podcast_id
       @item = item.is_a?(EpisodeRssItem) ? item : EpisodeRssItem.new(item)
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call

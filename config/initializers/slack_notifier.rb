@@ -1,5 +1,5 @@
 Rails.application.config.to_prepare do
-  Dir.glob(Rails.root.join("lib/slack/notifier/util/*.rb")).each do |filename|
+  Rails.root.glob("lib/slack/notifier/util/*.rb").each do |filename|
     require_dependency filename
   end
 end
