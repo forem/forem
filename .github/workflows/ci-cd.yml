@@ -328,7 +328,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/precompiled-assets-cache.yml
+      - uses: .github/actions/precompiled-assets-cache
         with:
           failed-on-cache-miss: true
       - name: Restore node_modules

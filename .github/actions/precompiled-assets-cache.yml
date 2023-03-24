@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-  - uses: actions/cache/restore@v3
+  - uses: actions/cache@v3
     with:
       fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
     path: |
