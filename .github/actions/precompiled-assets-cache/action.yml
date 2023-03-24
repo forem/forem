@@ -8,7 +8,7 @@ inputs:
     default: false
 outputs:
   cache-hit:
-    value: ${{ steps.precompile_assets.outputs.cache-hit }}
+    value: ${{ steps.precompiled-asset.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
