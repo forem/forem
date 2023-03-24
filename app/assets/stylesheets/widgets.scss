@@ -354,11 +354,9 @@
 .crayons-layout__comments-display-ad {
   .crayons-sponsorship {
     .c-indicator.crayons-sponsorship__indicator {
-      line-height: 150%;
+      line-height: 15px;
     }
-    .crayons-sponsorship__dropdown {
-      margin-top: -15px;
-    }
+
     padding-left: var(--content-padding-x);
     padding-bottom: var(--su-6);
     .text-styles {
