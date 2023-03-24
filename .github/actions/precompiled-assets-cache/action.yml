@@ -12,7 +12,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - uses: actions/cache@v3
+  - uses: actions/cache@v3 # TODO: dynamically add /restore here
     id: precompiled-asset
     with:
       fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
