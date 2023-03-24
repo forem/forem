@@ -242,6 +242,8 @@ jobs:
     needs: [bundle_install, yarn_install, precompile_assets]
     timeout-minutes: 20
     env:
+      RAILS_ENV: production
+      NODE_ENV: production
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
@@ -283,7 +285,7 @@ jobs:
         with:
           bundler-cache: true
       - run: bundle exec rails assets:precompile
-      - run: bin/test-console-check
+      - run: RAILS_ENV=test bin/test-console-check
 
   cypress:
     runs-on: ubuntu-latest

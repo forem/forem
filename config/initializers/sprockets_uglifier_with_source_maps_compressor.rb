@@ -21,7 +21,9 @@ module Sprockets
         ::Rails.application.config.assets.prefix,
         "#{name}-#{digest(sourcemap_json)}.js.map",
       )
-      sourcemap_path = ::Rails.public_path.join(sourcemap_filename)
+      # rubocop:disable Rails/RootPathnameMethods
+      sourcemap_path = File.join(::Rails.public_path, sourcemap_filename)
+      # rubocop:enable Rails/RootPathnameMethods
       sourcemap_url  = filename_to_url(sourcemap_filename)
 
       FileUtils.mkdir_p File.dirname(sourcemap_path)
