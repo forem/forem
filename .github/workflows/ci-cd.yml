@@ -63,16 +63,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Look up if compiled assets exist
+      - uses: ./.github/actions/precompiled-assets-cache
         id: precompiled-asset
-        uses: actions/cache@v3
         with:
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          failed-on-cache-miss: false
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -154,15 +148,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+        uses: ./.github/actions/precompiled-assets-cache
         with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          failed-on-cache-miss: true
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -277,15 +265,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Cache compiled assets
-        uses: actions/cache/@v3
+      - uses: ./.github/actions/precompiled-assets-cache
         with:
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          failed-on-cache-miss: true
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
