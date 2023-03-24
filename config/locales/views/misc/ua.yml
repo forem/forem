@@ -90,37 +90,37 @@ ua:
         newest: Спочатку нові
         oldest: Спочатку  старі
       meta:
-        title: Search Results%{for}
-        for: " for %{query}"
+        title: Результати пошуку%{for}
+        for: " для %{query}"
         description: "%{site} => Search Results"
     series:
       meta:
-        description: View %{title} on %{site}
-      heading: "%{user}'s Series"
-      empty: This user doesn't have any series
+        description: Показати %{title} на %{site}
+      heading: "Серія дописів від %{user}"
+      empty: Цей користувач не має серій
       list:
         heading: "%{series} Series' Articles"
-        back: Back to %{user}'s Series
+        back: Повернутися до серій %{user}
         empty: This series doesn't have any articles
     sponsor:
       seek: Стати спонсором
     stats:
       meta:
-        title: Stats for Your Article
-      heading_html: Stats for "%{article}"
+        title: Статистика вашого допису
+      heading_html: Статистика для "%{article}"
       period:
-        aria_label: Analytics period
+        aria_label: Період аналітики
         week: Тиждень
         month: Місяць
-        infinity: Infinity
-      readers: Readers Summary
-      followers: New Followers Summary
-      reactions: "Reactions Summary ❤🦄🔖"
-      comments: "Comments Summary 💬"
+        infinity: Увесь час
+      readers: Читачів разом
+      followers: Нові фоловери
+      reactions: "Реакції ❤🦄🔖"
+      comments: "Коментарі 💬"
       traffic:
-        text: "Traffic Source Summary 🚦"
-        source: Source
-        views: Views
+        text: "Джерела трафіку 🚦"
+        source: Джерело
+        views: Перегляди
     sticky:
       joined: Доєднався
       default_cta: Дізнатися більше

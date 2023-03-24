@@ -21,7 +21,7 @@ ua:
         continue: Продовжити
         forgot: Я забув свій пароль
       provider:
-        text: "%{action} with %{provider}"
+        text: "%{action} з %{provider}"
         login: Продовжити
         signup: Зареєструватися
         email:
@@ -29,8 +29,8 @@ ua:
           text: Зареєструватися через Email
       register:
         errors:
-          one: Whoops, we found %{count} problem
-          other: Whoops, we found %{count} problems
+          one: Йой, є %{count} проблема
+          other: Йой, у нас тут %{count} проблем
         allow:
           one_html: Реєстрація заборонена за <strong>@%{domain}</strong> пошт.
           list: Реєстрація заборонена з наступних адрес

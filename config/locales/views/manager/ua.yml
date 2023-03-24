@@ -3,23 +3,23 @@ ua:
   views:
     manager:
       meta:
-        title: Manage %{title}
+        title: Управляти %{title}
       error:
-        pins: "Uh Oh! %{error} 😬"
+        pins: "Йой! %{error} 😬"
       tools:
-        heading: 'Tools:'
-        subtitle: 'Experience Level of Post:'
-        text_html: "Is your post written more for a beginner or an advanced audience? Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."
+        heading: 'Інструменти:'
+        subtitle: 'Рівень складності допису:'
+        text_html: Ваш допис написаний більше для початківців чи для просунутої аудиторії? Налаштуйте цей рівень як м'який індикатор, який допоможе показати допис людям, які отримають від нього найбільшу користь."
       nav:
-        dashboard: Dashboard
-        text: "👉 Manage Your Post"
+        dashboard: Панель управління
+        text: "👉 Управляйте своїм дописом"
       rating:
-        heading: Experience Level of Post
+        heading: Рівень складності допису
         text: Who is this post most relevant for?
-        lower: "👈 Beginner"
-        higher: "Expert 👉"
+        lower: "👈 Пересічна людина"
+        higher: "Експерт 👉"
       tips:
-        heading: 'Tips:'
-        text_1: Write your own tweet about the post, describing personally why you wrote it or why people might find it useful. We may retweet you.
-        text_2_html: 'Share to link aggregators such as <a href="https://www.reddit.com">Reddit</a>. Try to choose the most topic-specific subreddits, such as <a href="https://www.reddit.com/r/javascript">/r/javascript</a> or <a href="https://www.reddit.com/r/python">/r/python</a>, etc. <em>Warning: jerks and trolls may be lurking.</em>'
-        text_3: Share with your co-workers or local communities. Ask people to leave questions for you in the comments. It's a great way to spark additional discussion.
+        heading: 'Поради:'
+        text_1: Напишіть власний твіт про цю публікацію, пояснивши, чому ви її написали або чому вона може бути корисною для інших. Ми можемо вас ретвітнути.
+        text_2_html: 'Пошерьте допис на інших соцмережах. Цей допис буде завжди доступним, тож ви можете не хвилюватися за те, що посилання перестане працювати.'
+        text_3: Поділіться з колегами або локальними спільнотами. Попросіть людей залишати вам запитання в коментарях. Це чудовий спосіб викликати додаткову дискусію.
