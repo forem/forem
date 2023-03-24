@@ -350,7 +350,7 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
-      - run: npx nyc report --reporter=lcov
+      # - run: npx nyc report --reporter=lcov
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress
