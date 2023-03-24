@@ -2,150 +2,150 @@
 fr:
   views:
     moderations:
-      heading: Mod Center
+      heading: Centre de modération
       actions:
         meta:
-          title: Moderating %{title}
-          title2: '[Moderate] %{title}'
-        heading: Moderate Post
-        subtitle: Rate the quality of this post
+          title: Modérer %{title}
+          title2: '[Modérer] %{title}'
+        heading: Modérer l'article
+        subtitle: Évaluer la qualité de cet article
         abusive:
-          subtitle_html: Flag %{user} as Abusive
-          desc_html: This is the equivalent of flagging <b>all</b> of this user's posts and will lower their post scores.
+          subtitle_html: Signaler %{user} comme abusif
+          desc_html: Cela équivaut à marquer <b>tous</b> les messages de cet utilisateur et fera baisser son score de messages.
         adjust:
-          heading: Adjust tags
-          subtitle: Add or remove tags
-          aria_label: Open adjust tags section
-          icon: Adjust tags
-          add: Add tag
-          add_placeholder: Add a tag
-          reason: Reason for tag adjustment (optional)
-          remove: Remove tag
-          submit: Submit
+          heading: Ajuster les étiquettes
+          subtitle: Ajouter ou supprimer des étiquettes
+          aria_label: Ouvrir la section "Ajuster les étiquettes".
+          icon: Ajuster les étiquettes
+          add: Ajouter une étiquette
+          add_placeholder: Ajouter une étiquette
+          reason: Raison de l'ajustement de l'étiquette (optionnel)
+          remove: Retirer l'étiquette
+          submit: Soumettre
         approve:
-          add: Mark as approved
-          remove: Remove approval
-        checkmark: Checkmark
-        close: Close moderator actions panel
+          add: Marquer comme approuvé
+          remove: Retirer l'approbation
+        checkmark: Cocher la case
+        close: Fermer le panneau d'actions du modérateur
         delete:
-          subtitle: Delete This Comment
-          button: Delete Comment
+          subtitle: Supprimer ce commentaire
+          button: Supprimer le commentaire
         edit:
-          post: Edit Post
+          post: Editer le message
           article_admin: Admin:Article
-          comment_admin: Admin:Comment
-          user_admin: Admin:User
+          comment_admin: Admin:Commentaire
+          user_admin: Admin:Utilisateur
           resource_admin: ResourceAdmin:Article
         errors:
-          one: '1 error prohibited this block from being saved:'
-          other: '%{count} errors prohibited this block from being saved:'
+          one: '1 erreur a empêché la sauvegarde de ce bloc :'
+          other: '%{count} erreurs ont empêché la sauvegarde de ce bloc. :'
         experience:
-          heading: Set experience level
-          heading2: Experience Level of Post
-          subtitle: Curate the most appropriate audience for this post
-          aria_label: Open experience level section
-          icon: Book
-          desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
+          heading: Définir le niveau d'expérience
+          heading2: Niveau d'expérience de l'article
+          subtitle: Déterminer le public le plus approprié pour cet article
+          aria_label: Ouvrir la section des niveaux d'expérience
+          icon: Livre
+          desc_html: Qui <em>pourrait</em> trouver cet article le plus intéressant, en fonction du niveau d'expérience global ?
           from: '%{lvl} - '
           level:
-            Advanced: Advanced
-            Beginner: Beginner
+            Advanced: Avancé
+            Beginner: Débutant
             Expert: Expert
-            Mid-level: Mid-level
+            Mid-level: Niveau intermédiaire
             Novice: Novice
         admin:
-          heading: Moderating actions
-          heading2: Moderating actions for %{user}
-          subtitle: Moderating actions for %{user}
-          aria_label: Open admin actions
-          icon: Crown
-        flag: Flag %{username}
-        unflag: Unflag %{username}
-        how: How does this work?
+          heading: Actions de modération
+          heading2: Actions de modération pour %{user}
+          subtitle: Actions de modération pour %{user}
+          aria_label: Ouvrir les actions d'administration
+          icon: Couronne
+        flag: Signaler %{username}
+        unflag: Retirer le signalement de %{username}
+        how: Comment cela fonctionne-t-il ?
         hidden:
-          subtitle: Hidden Comments
-          by: Comment by %{user}
+          subtitle: Commentaires cachés
+          by: Commentaire de %{user}
         hint:
-          subtitle: All negative reactions are private.
+          subtitle: Toutes les réactions négatives sont privées.
           desc_html: |-
-            Use <b>High Quality</b> to move this content "up" for any reason (quality, usefulness, etc.).
+            Utilisez <b>Haute qualité</b> pour déplacer ce contenu "vers le haut" pour une raison quelconque (qualité, utilité, etc.)..
             <br />
-            Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
+            Utilisez <b>Faible qualité</b> pour déplacer ce contenu "vers le bas" pour une raison quelconque (qualité, utilité, etc.).
             <br />
-            Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
-        other: Other things you can do
+            Utilisez <b>Signaler aux admins</b> pour les violations du code de conduite (harcèlement, être un abruti, spam, etc.).
+        other: Autres choses que vous pouvez faire
         suspend:
-          suspend_title: Suspend %{username}
-          suspend_user: Suspend %{username}
-          suspend_modal_text: Once suspended, %{username} will not be able to comment or publish posts until their suspension is removed.
-          suspend_modal_button: Submit & Suspend
-          unsuspend_title: Unsuspend %{username}
-          unsuspend_user: Unsuspend %{username}
-          unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
-          unsuspend_modal_button: Submit & Unsuspend
-        suspicious: Suspicious
+          suspend_title: Suspendre %{username}
+          suspend_user: Suspendre %{username}
+          suspend_modal_text: Une fois suspendu, %{username} ne pourra plus commenter ni publier de messages jusqu'à ce que sa suspension soit levée.
+          suspend_modal_button: Soumettre et suspendre
+          unsuspend_title: Retirer la suspension %{username}
+          unsuspend_user: Retirer la suspension %{username}
+          unsuspend_modal_text: Une fois la suspension levée, %{username} pourra à nouveau commenter et publier des messages.
+          unsuspend_modal_button: Soumettre et lever la suspension
+        suspicious: Suspicieux
         tag:
-          subtitle: Tag Adjustments
-          add: Add
-          added_html: '<b>Currently added tag:</b> %{tag}'
-          live_html: '<b>Current live tags:</b> %{tags}'
-          reason: Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.
-          remove: Remove
-          removed_html: '<b>Currently removed tag:</b> %{tag}'
-          select: Select Tag
-          submit: Submit Tag Adjustment
-          tag_name: Tag Name
+          subtitle: Ajustements des étiquettes
+          add: Ajouter
+          added_html: '<b>Etiquette actuellement ajoutée :</b> %{tag}'
+          live_html: '<b>Etiquettes actuelles :</b> %{tags}'
+          reason: Raison de l'ajustement (soyez très aimable) - Seule la raison est nécessaire, la notification s'occupe du reste.
+          remove: Retirer
+          removed_html: '<b>Étiquette actuellement supprimée :</b> %{tag}'
+          select: Sélectionnez une étiquette
+          submit: Soumettre l'ajustement des étiquettes
+          tag_name: Nom de l'étiquette
           undo:
             button: '×'
-            confirm: Are you sure you want to undo the %{type} of the %{tag} tag?
+            confirm: Êtes-vous sûr de vouloir annuler le %{type} de l'étiquette %{tag} ?
             type:
-              addition: addition
-              removal: removal
-        thumb_down: Thumb down
-        thumb_up: Thumb up
-        toggle: Toggle section
-        feature: Feature Post
-        unfeature: Unfeature Post
-        unpublish: Unpublish Post
+              addition: ajout
+              removal: suppression
+        thumb_down: Pouce vers le bas
+        thumb_up: Le pouce en l'air
+        toggle: Basculer la section
+        feature: Article mis en avant
+        unfeature: Retirer la mise en avant de l'article
+        unpublish: Retirer la publication de l'article
         unpublish_all:
-          title: Unpublish all posts
-          button: Unpublish all posts for %{username}
-          modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
-          modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
-          modal_button: Unpublish all posts
+          title: Dépublier tous les articles
+          button: Dépublier tous les articles pour %{username}
+          modal_text1: Une fois dépubliés, tous les articles de %{username} seront cachés et ne seront accessibles qu'à eux-mêmes.
+          modal_text2: Si %{username} n'est pas suspendu, il peut toujours republier ses articles depuis son tableau de bord.
+          modal_button: Dépublier tous les articles
         unpublish_post:
-          modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
-          modal_text2: They can still re-publish the post if they are not suspended.
-        vote_down: Low Quality
-        flag_to_admins: Flag to Admins
-        vote_up: High Quality
+          modal_text1: Une fois dépublié, cet article sera invisible pour le public et accessible uniquement à %{username}.
+          modal_text2: Ils peuvent toujours republier l'article tant qu'ils ne sont pas suspendus.
+        vote_down: Faible qualité
+        flag_to_admins: Signaler aux admins
+        vote_up: Haute qualité
         featured_past_day:
-          one: '%{count} post from the past day is featured.'
-          other: '%{count} posts from the past day are featured.'
-      all: All topics
+          one: '%{count} des articles de la journée précédente sont mis en avant.'
+          other: '%{count} des articles de la journée précédente sont mis en avant.'
+      all: Tous les sujets
       aside:
-        all: All topics
-        code_of_conduct: Code of Conduct
-        external: External link
+        all: Tous les sujets
+        code_of_conduct: Code de conduite
+        external: Lien externe
         feedback:
-          subtitle: Have feedback to improve your Mod experience?
-          description: Please email %{email}!
-        hello: 'Hello! 👋'
-        thanks: Thank you for helping to keep %{community} safe! ❤️
-        inbox: Inbox
-        resources: Resources
-        tag: Tag Moderation Guide
-        terms_and_conditions: Terms & Conditions
-        trusted: Trusted User Guide
-      author: Author
+          subtitle: Vous avez des commentaires à formuler pour améliorer votre expérience du Mod ?
+          description: Veuillez envoyer un e-mail à %{email} !
+        hello: 'Bonjour ! 👋'
+        thanks: Merci de nous aider à garder la %{community} en lieu sûr ! ❤️
+        inbox: Boîte de réception
+        resources: Ressources
+        tag: Guide de modération des étiquettes
+        terms_and_conditions: Conditions générales d'utilisation
+        trusted: Guide de l'utilisateur de confiance
+      author: Auteur
       date: Date
       notice:
         subtitle: '%{community} Mods'
-        desc1_html: We periodically award some %{community} members with heightened privileges to help moderate the community.
-        desc2_html: Check out our %{code} and read through our %{trusted} and %{tag}.
-        desc3_html: If you'd like to assist us as a trusted user or tag mod, please email us at %{email} and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.
-        desc4: P.S. You are not currently signed in.
-        code_of_conduct: Code of Conduct
-        tag: Tag Moderation Guide
-        trusted: Trusted User Guide
-      post: Post
+        desc1_html: Nous accordons périodiquement à certains membres de la %{community} des privilèges accrus afin de contribuer à la modération de la communauté.
+        desc2_html: Vérifiez notre %{code} et lisez nos %{trusted} et %{tag}.
+        desc3_html: Si vous souhaitez nous aider en tant qu'utilisateur de confiance ou modérateur d'étiquettes, veuillez nous envoyer un e-mail à %{email} et nous indiquer le rôle qui vous intéresse et pourquoi. S'il s'agit de la modération d'étiquettes, veuillez nous dire quelles étiquettes vous aimeriez modérer.
+        desc4: P.S. Vous n'êtes pas actuellement connecté.
+        code_of_conduct: Code de conduite
+        tag: Guide de modération des étiquettes
+        trusted: Guide de l'utilisateur de confiance
+      post: Article

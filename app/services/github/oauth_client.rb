@@ -4,6 +4,11 @@ module Github
     APP_AUTH_CREDENTIALS = %i[client_id client_secret].freeze
     APP_AUTH_CREDENTIALS_PRESENT = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze
 
+    def self.for_user(user)
+      access_token = user.identities.github.select(:token).take!.token
+      new(access_token: access_token)
+    end
+
     # @param credentials [Hash] the OAuth credentials, {client_id:, client_secret:} or {access_token:}
     def initialize(credentials = nil)
       credentials ||= {
@@ -11,11 +16,6 @@ module Github
         client_secret: Settings::Authentication.github_secret
       }
       @credentials = check_credentials!(credentials)
-    end
-
-    def self.for_user(user)
-      access_token = user.identities.github.select(:token).take!.token
-      new(access_token: access_token)
     end
 
     # Hides private credentials when printed

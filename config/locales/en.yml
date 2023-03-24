@@ -135,6 +135,7 @@ en:
         one: Expires in 1 year
         other: Expires in %{count} years
   display_ad:
+    promoted: Promoted
     menu:
       aria_label: Toggle dropdown menu
       icon: Dropdown menu

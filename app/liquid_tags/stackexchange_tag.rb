@@ -4,7 +4,7 @@ class StackexchangeTag < LiquidTagBase
   ID_REGEXP = /\A(?<id>\d{1,20})\Z/
   SITE_REGEXP = /(?<subdomain>\b[a-zA-Z]+\b)/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP, SITE_REGEXP].freeze
-  STACKOVERFLOW_REGEXP = %r{https://stackoverflow\.com/(q|a|questions)/\d{1,20}(?:/[\w\-]+)?}
+  STACKOVERFLOW_REGEXP = %r{https://stackoverflow\.com/(q|a|questions)/\d{1,20}(?:/[\w-]+)?}
   API_URL = "https://api.stackexchange.com/2.3/".freeze
   # Filter codes come from the example tools in the docs. For example: https://api.stackexchange.com/docs/posts-by-ids
   FILTERS = {
@@ -88,7 +88,7 @@ class StackexchangeTag < LiquidTagBase
   def handle_response_error(response, input)
     raise StandardError, "Calling StackExchange API failed: #{response&.error_message}" unless response.ok?
 
-    return unless response["items"].length.zero?
+    return unless response["items"].empty?
 
     raise StandardError, I18n.t("liquid_tags.stackexchange_tag.post_not_found", tag: tag_name, input: input)
   end

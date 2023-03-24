@@ -1,12 +1,12 @@
 module Slack
   module Messengers
     class PotentialSpammer
-      def initialize(user:)
-        @user = user
-      end
-
       def self.call(...)
         new(...).call
+      end
+
+      def initialize(user:)
+        @user = user
       end
 
       def call

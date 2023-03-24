@@ -2,16 +2,16 @@
 fr:
   validators:
     bytesize_validator:
-      non_negative: ":maximum must be a non-negative Integer"
+      non_negative: ": Le maximum doit être un nombre entier non négatif."
     color_contrast_validator:
-      must_be_darker: must be darker for accessibility
+      must_be_darker: doit être plus sombre pour l'accessibilité
     emoji_only_validator:
-      invalid_emoji: contains non-emoji characters or invalid emoji
+      invalid_emoji: contient des caractères non emoji ou des emoji invalides
     existing_published_article_id_validator:
-      default: must be a valid published Article identifier
+      default: doit être un identifiant d'article publié valide
     profile_validator:
-      bio_too_long: Bio is too long
+      bio_too_long: La biographie est trop longue
     unique_cross_model_slug_validator:
-      is_taken: is taken
+      is_taken: est déjà pris
     valid_domain_csv_validator:
-      invalid_list_format: must be a comma-separated list of valid domains
+      invalid_list_format: doit être une liste de domaines valides, séparés par des virgules.

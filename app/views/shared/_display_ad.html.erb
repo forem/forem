@@ -5,17 +5,24 @@
   data-context-type="<%= data_context_type %>"
   data-type-of="<%= display_ad.type_of %>">
   <div class="crayons-sponsorship__header relative">
-    <% if Page.exists?(slug: "billboards") && display_ad.organization_id? && display_ad.type_of == "community" %>
-      <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-      <div class="crayons-sponsorship__title pl-1 fs-s"><%= display_ad.organization.name %></div>
+    <% if display_ad.organization_id? && (display_ad.type_of == "community" || display_ad.type_of == "external") %>
+      <div class="flex align-center pt-5">
+        <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
+        <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= display_ad.organization.name %></div>
+        <% if display_ad.type_of == "external" %>
+          <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-xs fw-medium ml-2 py-1 px-2"> <%= I18n.t("display_ad.promoted") %></span>
+        <% end %>
+      </div>
     <% else %>
-      <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
+      <div class="crayons-sponsorship__title pt-5"><%= Settings::Community.community_name %></div>
     <% end %>
+
     <button id="sponsorship-dropdown-trigger-<%= display_ad.id %>" aria-controls="sponsorship-dropdown-<%= display_ad.id %>" aria-expanded="false" aria-haspopup="true"
       class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
       aria-label="<%= t("display_ad.menu.aria_label") %>">
         <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", title: t("display_ad.menu.icon")) %>
     </button>
+
     <div id="sponsorship-dropdown-<%= display_ad.id %>" class="crayons-dropdown right-0">
       <ul class="list-none m-0">
         <% if Page.exists?(slug: "billboards") %>

@@ -5,6 +5,21 @@ module Authentication
       OFFICIAL_NAME = "Facebook".freeze
       SETTINGS_URL = "https://www.facebook.com/settings?tab=applications".freeze
 
+      def self.official_name
+        OFFICIAL_NAME
+      end
+
+      def self.settings_url
+        SETTINGS_URL
+      end
+
+      def self.sign_in_path(**kwargs)
+        ::Authentication::Paths.sign_in_path(
+          provider_name,
+          **kwargs,
+        )
+      end
+
       def new_user_data
         image_url = @info.image.gsub("http://", "https://")
         {
@@ -29,21 +44,6 @@ module Authentication
           info.name.sub(" ", "_"),
           Digest::SHA512.hexdigest(raw_info.id),
         ].join("_")[0...25]
-      end
-
-      def self.official_name
-        OFFICIAL_NAME
-      end
-
-      def self.settings_url
-        SETTINGS_URL
-      end
-
-      def self.sign_in_path(**kwargs)
-        ::Authentication::Paths.sign_in_path(
-          provider_name,
-          **kwargs,
-        )
       end
 
       protected

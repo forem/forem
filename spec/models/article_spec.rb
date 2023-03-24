@@ -254,17 +254,18 @@ RSpec.describe Article do
         expect(test_article.title).to eq("An Article Title")
       end
 
-      it "sanitizes the title" do
-        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+      it "sanitizes the title with deprecated BIDI marks" do
+        test_article = build(:article, title: "\u202bThis starts with BIDI embedding\u202c\u061cALM\u200e")
 
         test_article.validate
 
-        expect(test_article.title).not_to match(/\u202d/)
-        expect(test_article.title).to eq("This starts with BIDI override")
+        expect(test_article.title).not_to match(/\u202b/)
+        expect(test_article.title).to eq("This starts with BIDI embedding\u202c\u061cALM\u200e")
       end
 
       it "rejects empty titles after sanitizing" do
-        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+        test_article = build(:article,
+                             title: "\u061c\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
 
         test_article.validate
 
