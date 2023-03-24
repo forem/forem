@@ -8,7 +8,7 @@ inputs:
     default: false
 outputs:
   cache-hit:
-    value: ${{ steps.precompiled-asset.outputs.cache-hit }}
+    value: ${{ steps.random-number-generator.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
@@ -22,3 +22,6 @@ runs:
         tmp/cache/webpacker
       key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
       restore-keys: ${{ runner.os }}-precompiled-assets-
+  - id: random-number-generator
+    run: echo 'cache-hit=${{ steps.precompiled-asset.outputs.cache-hit }}' >> $GITHUB_OUTPUT
+    shell: bash
