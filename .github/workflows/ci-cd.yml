@@ -254,6 +254,8 @@ jobs:
     needs: [bundle_install, yarn_install, precompile_assets]
     timeout-minutes: 20
     env:
+      RAILS_ENV: production
+      NODE_ENV: production
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/Forem_prod_test
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
