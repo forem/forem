@@ -17,7 +17,7 @@ class Podcast < ApplicationRecord
   validates :main_color_hex, :title, :feed_url, :image, presence: true
   validates :main_color_hex, format: /\A([a-fA-F]|[0-9]){6}\Z/
   validates :feed_url, uniqueness: true, url: { schemes: %w[https http] }
-  validates :slug, cross_model_slug: true
+  unique_across_models :slug
 
   after_save :bust_cache
 

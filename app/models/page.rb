@@ -9,7 +9,7 @@ class Page < ApplicationRecord
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
-  validates :slug, cross_model_slug: true
+  unique_across_models :slug
 
   before_validation :set_default_template
   before_save :evaluate_markdown

@@ -25,7 +25,6 @@ class User < ApplicationRecord
   include StringAttributeCleaner.nullify_blanks_for(:email)
 
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
@@ -150,7 +149,9 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validates :username, cross_model_slug: true
+  unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
+  # validates :username
+
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password

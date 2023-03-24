@@ -55,7 +55,7 @@ class Organization < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
-  validates :slug, cross_model_slug: true
+  unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
