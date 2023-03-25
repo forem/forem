@@ -76,7 +76,7 @@ RSpec.describe "Registrations" do
       it "shows the sign in text for password based authentication" do
         get sign_up_path, params: { state: "new-user" }
 
-        expect(response.body).to include("Already have an account? <a href=\"/enter\">Log in</a>")
+        expect(response.body).to include("Вже маєте акаунт? <a href=\"/enter\">Увійдіть</a>")
       end
 
       it "persists uploaded image" do

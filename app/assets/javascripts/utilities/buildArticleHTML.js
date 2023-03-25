@@ -152,7 +152,7 @@ function buildArticleHTML(article, currentUserId = null) {
         article.organization.profile_image_90 +
         '" class="crayons-logo__image" loading="lazy"/></a>';
       forOrganization =
-        '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/' +
+        '<span><span class="crayons-story__tertiary fw-normal"> для </span><a href="/' +
         article.organization.slug +
         '" class="crayons-story__secondary fw-medium">' +
         article.organization.name +

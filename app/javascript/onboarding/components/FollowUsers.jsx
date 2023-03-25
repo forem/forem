@@ -98,7 +98,7 @@ export class FollowUsers extends Component {
     if (selectedUsers.length === 0) {
       followingStatus = "Ви нікого не обрали";
     } else if (selectedUsers.length === 1) {
-      followingStatus = "You're following 1 person";
+      followingStatus = "Ви підписались на одну людину";
     } else if (selectedUsers.length === users.length) {
       followingStatus = `Ви підписалися на ${selectedUsers.length} людей (everyone) -`;
     } else {
