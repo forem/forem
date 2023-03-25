@@ -15,7 +15,7 @@ ua:
           latest_html: Latest comments %{num}
           oldest_html: Oldest comments %{num}
         num: "(%{num})"
-        subscribe: Subscribe
+        subscribe: Підписатися
       conduct:
         aria_label: Conduct controls
         code: Норми поведінки
@@ -45,7 +45,7 @@ ua:
           placeholder: The reason why you're locking this discussion.
         submit: Lock discussion
       preview_discuss_html:
-        zero: New Discussion!
+        zero: Нова дискусія!
         one: '#discuss <img src="%{image}" />%{count}'
         other: '#discuss <img src="%{image}" />%{count}'
       save:
@@ -88,7 +88,7 @@ ua:
         on_html: о %{date}
       edited: Оновлено %{date}
       edited_html: Оновлено %{date}
-      for_org_html: "%{start} for %{end}%{org}"
+      for_org_html: "%{start} для %{end}%{org}"
       missing: Article No Longer Available
       published_html: Додано %{date}
       scheduled_html: Заплановано на %{date}

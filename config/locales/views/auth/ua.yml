@@ -75,5 +75,5 @@ ua:
         step_5: "For Empowering Community 🌱"
       tagline: Log in to customize your experience and get involved.
       title:
-        text_html: <a href="/" class="c-link c-link--branded">%{name}</a> is a community of %{maybe_size}amazing %{label}
+        text_html: <a href="/" class="c-link c-link--branded">%{name}</a> 
         size: "%{num} "
