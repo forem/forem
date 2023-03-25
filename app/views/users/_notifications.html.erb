@@ -7,39 +7,27 @@
     </header>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_newsletter, class: "crayons-checkbox" %>
-      <%= f.label :email_newsletter, "Send me weekly newsletter emails", class: "crayons-field__label" %>
+      <%= f.label :email_newsletter, "Надсилайте мені щотижневу розсилку на електронну пошту", class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_digest_periodic, class: "crayons-checkbox" %>
-      <%= f.label :email_digest_periodic, "Send me a periodic digest of top posts from my tags", class: "crayons-field__label" %>
+      <%= f.label :email_digest_periodic, "Періодично надсилайте мені дайджест найпопулярніших дописів за моїми тегами", class: "crayons-field__label" %>
     </div>
-    <% if current_user.tag_moderator? %>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :email_tag_mod_newsletter, class: "crayons-checkbox" %>
-        <%= f.label :email_tag_mod_newsletter, "Send me tag moderator newsletter emails", class: "crayons-field__label" %>
-      </div>
-    <% end %>
-    <% if current_user.has_trusted_role? %>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :email_community_mod_newsletter, class: "crayons-checkbox" %>
-        <%= f.label :email_community_mod_newsletter, "Send me community moderator newsletter emails", class: "crayons-field__label" %>
-      </div>
-    <% end %>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_comment_notifications, class: "crayons-checkbox" %>
-      <%= f.label :email_comment_notifications, "Send me an email when someone replies to me in a comment thread", class: "crayons-field__label" %>
+      <%= f.label :email_comment_notifications, "Надсилайте мені повідомлення, коли хтось відповідає мені в коментарях", class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_follower_notifications, class: "crayons-checkbox" %>
-      <%= f.label :email_follower_notifications, "Send me an email when someone new follows me", class: "crayons-field__label" %>
+      <%= f.label :email_follower_notifications, "Надішліть мені листа, коли хтось підпишеться на мене", class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_mention_notifications, class: "crayons-checkbox" %>
-      <%= f.label :email_mention_notifications, "Send me an email when someone mentions me", class: "crayons-field__label" %>
+      <%= f.label :email_mention_notifications, "Напишіть мені, коли хтось посилається на мене", class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_badge_notifications, class: "crayons-checkbox" %>
-      <%= f.label :email_badge_notifications, "Send me an email when I receive a badge", class: "crayons-field__label" %>
+      <%= f.label :email_badge_notifications, "Напишіть мені на електронну пошту, коли я отримаю бейдж", class: "crayons-field__label" %>
     </div>
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :email_unread_notifications, class: "crayons-checkbox" %>
@@ -82,17 +70,6 @@
     </div>
   </div>
 
-  <% if current_user.trusted? %>
-    <div class="crayons-card crayons-card--content-rows">
-      <h2 class="crayons-subtitle-1">
-        <%= t("views.settings.notifications.moderator") %>
-      </h2>
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :mod_roundrobin_notifications, class: "crayons-checkbox" %>
-        <%= f.label :mod_roundrobin_notifications, "Send me occasional community-success mod notifications", class: "crayons-field__label" %>
-      </div>
-    </div>
-  <% end %>
 
   <div class="crayons-card crayons-card--content-rows">
     <button type="submit" class="crayons-btn"><%= t("views.settings.notifications.save") %></button>

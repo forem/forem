@@ -195,9 +195,8 @@ ua:
           learn_more: Learn more
           payment_pointer: Payment Pointer
           save_settings: Save Web Monetization Settings
-      finalize_html: You have requested a change to %{email}. Check your inbox for the
-        verification link to finalize the change.
-      for_html: Settings for %{name}
+      finalize_html: Ви змінюєте пошту на %{email}. Перевірте свою скриньку (можливо навіть папку Спам).
+      for_html: Налаштування для %{name}
       group:
         user: Користувач
         Basic: Basic
@@ -322,5 +321,5 @@ ua:
         Account: Акаунт
         Billing: Сплата
         Organization: Проєкт
-        Extensions: Розширення
+        Extensions: Додатково
       save_profile: Зберегти профіль

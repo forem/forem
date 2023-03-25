@@ -66,7 +66,7 @@ export const Meta = ({ article, organization }) => {
             !document.getElementById('organization-article-index') && (
               <span>
                 <span className="crayons-story__tertiary fw-normal">
-                  {' for '}
+                  {' для '}
                 </span>
                 <a
                   href={`/${organization.slug}`}

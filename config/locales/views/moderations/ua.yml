@@ -13,11 +13,11 @@ ua:
           subtitle_html: Flag %{user} as Abusive
           desc_html: This is the equivalent of flagging <b>all</b> of this user's posts and will lower their post scores.
         adjust:
-          heading: Adjust tags
+          heading: Запропонувати теґи
           subtitle: Add or remove tags
           aria_label: Open adjust tags section
           icon: Adjust tags
-          add: Add tag
+          add: Додати теґ
           add_placeholder: Add a tag
           reason: Reason for tag adjustment
           remove: Remove tag
@@ -59,41 +59,41 @@ ua:
           subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
-        flag: Flag %{username}
-        unflag: Unflag %{username}
-        how: How does this work?
+        flag: Поскартижится %{username}
+        unflag: Зняти скаргу з %{username}
+        how: Як це працює?
         hidden:
-          subtitle: Hidden Comments
-          by: Comment by %{user}
+          subtitle: Сховані коментарі
+          by: Коментарі від %{user}
         hint:
-          subtitle: All negative reactions are private.
+          subtitle: Усі погані оцінки є анонімними.
           desc_html: |-
-            Use <b>High Quality</b> to move this content "up" for any reason (quality, usefulness, etc.).
+            Ставте оціку <b>Висока якість</b> щоб підняти допис у алгоритмах через високу якість, корисність, тощо.
             <br />
-            Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
+            Ставте оціку <b>Низка якість</b> щоб попустити допис як неякісний, некорисний.
             <br />
-            Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
-        other: Other things you can do
-        add_reaction: Add a reaction
+            Натискайте на <b>Порушує правила</b> якщо це порущує правила сайту чи норми поведінки (спам, погрози, образи, тощо).
+        other: Ще штуки, які можете робити
+        add_reaction: Додати реакцію
         suspend:
-          suspend_title: Suspend %{username}
-          suspend_user: Suspend %{username}
-          suspend_modal_text: Once suspended, %{username} will not be able to comment or publish posts until their suspension is removed.
-          suspend_modal_button: Submit & Suspend
-          unsuspend_title: Unsuspend %{username}
-          unsuspend_user: Unsuspend %{username}
-          unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
+          suspend_title: Заблокувати %{username}
+          suspend_user: Заблокувати %{username}
+          suspend_modal_text: Заблокувавши %{username}, ця людина не зможе створювати дописи чи писати коментарі, поки її не разблокують.
+          suspend_modal_button: Заблокувати
+          unsuspend_title: Разблокувати %{username}
+          unsuspend_user: Разблокувати %{username}
+          unsuspend_modal_text: Разблокувавши %{username} ця людина знов зможе створювати дописи та писати коментарі.
           unsuspend_modal_button: Submit & Unsuspend
         suspicious: Suspicious
         tag:
-          subtitle: Tag Adjustments
-          add: Add
-          added_html: '<b>Currently added tag:</b> %{tag}'
-          live_html: '<b>Current live tags:</b> %{tags}'
+          subtitle: Налаштування тегів
+          add: Додати
+          added_html: '<b>Наразі доданий теґ:</b> %{tag}'
+          live_html: '<b>Поточні теґи:</b> %{tags}'
           reason: Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.
           remove: Remove
           removed_html: '<b>Currently removed tag:</b> %{tag}'
-          select: Select Tag
+          select: Обрати теґ
           submit: Submit Tag Adjustment
           tag_name: Tag Name
           undo:
@@ -102,21 +102,21 @@ ua:
             type:
               addition: addition
               removal: removal
-        thumb_down: Thumb down
-        thumb_up: Thumb up
+        thumb_down: Лайк
+        thumb_up: Дизлайк
         toggle: Toggle section
-        feature: Feature Post
-        unfeature: Unfeature Post
-        unpublish: Unpublish Post
+        feature: Зафічерити допис
+        unfeature: Розфічерити допис
+        unpublish: Розфічерити допис
         unpublish_all:
           title: Unpublish all posts
           button: Unpublish all posts for %{username}
           modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
           modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
-          modal_button: Unpublish all posts
-        vote_down: Low Quality
-        flag_to_admins: Flag to Admins
-        vote_up: High Quality
+          modal_button: Розпублікувати усі дописи
+        vote_down: Низька якість
+        flag_to_admins: Порушує правила
+        vote_up: Висока якість
         featured_past_day:
           one: '%{count} post from the past day is featured.'
           other: '%{count} posts from the past day are featured.'

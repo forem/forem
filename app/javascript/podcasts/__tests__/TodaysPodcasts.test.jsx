@@ -32,7 +32,7 @@ describe('<TodaysPodcasts /> component', () => {
       </TodaysPodcasts>,
     );
 
-    expect(getByText("Today's Podcasts").getAttribute('href')).toBe('/pod');
+    expect(getByText("Свіжі випуски подкастів").getAttribute('href')).toBe('/pod');
     expect(getAllByTestId('podcast-episode').length).toEqual(3);
   });
 });
