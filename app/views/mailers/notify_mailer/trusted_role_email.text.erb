@@ -1,22 +1,14 @@
-Hey <%= @user.name %>!
+Гей <%= @user.name %>!
 
-We are happy to let you know that you've been granted new permissions on <%= community_name %>!
+Ми раді повідомити вам, що ви отримали нові можливості на Kutok.io!
 
-You will now see a shield icon on post pages. Click on the shield to take *private* actions to help vote on community content.
+Тепер на сторінках дописів ви побачите іконку щита. Натисніть на щит, щоб зробити окремі дії, які допоможуть вам прийняти участь у голосуванні за вміст спільноти.
 
-Here's an overview of your new abilities:
+Ось огляд ваших нових можливостей:
 
-- Use private reactions (👎, 👍) to vote on content quality
-- Quickly flag rule-breaking behavior with the 🧐 icon
-- Rate the appropriate "experience level" of a post
+- Використовуйте приватні реакції (👎, 👍) щоб голосувати за якість контенту
+- QШвидко позначайте поведінку, що порушує правила, за допомогою іконки 🧐
 
-<% if Page.find_by(slug: "trusted-member") %>
-  For full details on how to use your new permissions:
+Давайте розвивати доброзичливу та конструктивну спільноту. Дякуємо за те, що ви є таким чудовим членом спільноти!
 
-  <%= app_url("trusted-member") %>
-<% end %>
-
-
-Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
-
-<%= community_name %> Team
+<%= community_name %> Команда
