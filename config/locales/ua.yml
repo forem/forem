@@ -182,6 +182,13 @@ ua:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
+  display_ad:
+    promoted: Реклама
+    menu:
+      aria_label: Перемикання випадаючого меню
+      icon: Випадаюче меню
+      manage_preferences: Керувати вподобаннями
+      what_is_a_billboard: Що таке рекламний щит?
   errors:
     messages:
       accepted: має бути прийнятно

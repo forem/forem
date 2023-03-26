@@ -1,11 +1,11 @@
 module EdgeCache
   class Bust
-    def initialize
-      @provider_class = determine_provider_class
-    end
-
     def self.call(*paths)
       new.call(*paths)
+    end
+
+    def initialize
+      @provider_class = determine_provider_class
     end
 
     def call(paths)

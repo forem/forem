@@ -2,15 +2,15 @@
 module Notifications
   module NewBadgeAchievement
     class Send
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(badge_achievement)
         @badge_achievement = badge_achievement
       end
 
       delegate :user_data, to: Notifications
-
-      def self.call(...)
-        new(...).call
-      end
 
       def call
         Notification.create(

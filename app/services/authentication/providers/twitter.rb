@@ -4,6 +4,20 @@ module Authentication
     class Twitter < Provider
       SETTINGS_URL = "https://twitter.com/settings/applications".freeze
 
+      def self.settings_url
+        SETTINGS_URL
+      end
+
+      def self.sign_in_path(**kwargs)
+        # see https://github.com/arunagw/omniauth-twitter#authentication-options
+        mandatory_params = { secure_image_url: true }
+
+        ::Authentication::Paths.sign_in_path(
+          provider_name,
+          **kwargs.merge(mandatory_params),
+        )
+      end
+
       def new_user_data
         name = raw_info.name.presence || info.name
         remote_profile_image_url = info.image.to_s.gsub("_normal", "")
@@ -20,20 +34,6 @@ module Authentication
         {
           twitter_username: info.nickname
         }
-      end
-
-      def self.settings_url
-        SETTINGS_URL
-      end
-
-      def self.sign_in_path(**kwargs)
-        # see https://github.com/arunagw/omniauth-twitter#authentication-options
-        mandatory_params = { secure_image_url: true }
-
-        ::Authentication::Paths.sign_in_path(
-          provider_name,
-          **kwargs.merge(mandatory_params),
-        )
       end
 
       protected

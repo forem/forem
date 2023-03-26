@@ -12,6 +12,7 @@ RSpec.describe "Organization setting page(/settings/organization)", js: true do
     fill_in "organization[text_color_hex]", with: "#ffffff"
     fill_in "organization[url]", with: "http://company.com"
     fill_in "organization[summary]", with: "Summary"
+    fill_in "organization[proof]", with: "Proof"
   end
 
   let(:user) { create(:user) }

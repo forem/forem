@@ -72,7 +72,28 @@
       </p>
     </div>
   </div>
+  <div id="sponsors" class="crayons-card crayons-card--content-rows">
+    <header>
+      <h2 class="crayons-subtitle-1">
+        <%= t("views.settings.custom.sponsor") %>
+      </h2>
+      <p>
+        <%= t("views.settings.custom.sponsor_desc_html") %>
+      </p>
+    </header>
 
+    <fieldset class="grid gap-4">
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :display_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :display_sponsors, t("views.settings.custom.sponsor_field"), class: "crayons-field__label" %>
+      </div>
+
+      <div class="crayons-field crayons-field--checkbox">
+        <%= f.check_box :permit_adjacent_sponsors, class: "crayons-checkbox" %>
+        <%= f.label :permit_adjacent_sponsors, t("views.settings.custom.adjacent"), class: "crayons-field__label" %>
+      </div>
+    </fieldset>
+  </div>
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
