@@ -12,10 +12,15 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - run: echo 'restore-only="/restore"' >> $GITHUB_ENV
+  - run: |
+      if ${{ input.restore-only }}; then
+            echo 'restore-only="/restore"' >> $GITHUB_OUTPUT
+          else
+            echo 'restore-only=""' >> $GITHUB_OUTPUT
+      fi
     shell: bash
-    if: inputs.restore-only == true
-  - uses: "actions/cache${{ env.restore-only }}@v3"
+    id: restore-only
+  - uses: "actions/cache${{ steps.restore-only.outputs.restore-only }}@v3"
     id: precompiled-asset
     with:
       fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
