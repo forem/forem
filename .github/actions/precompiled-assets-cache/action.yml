@@ -15,8 +15,7 @@ runs:
   - run: echo 'restore-only="/restore"' >> $GITHUB_OUTPUT
     shell: bash
     if: inputs.restore-only == true
-    id: restore-only
-  - uses: "actions/cache${{ steps.restore-only.outputs.restore-only }}@v3"
+  - uses: "actions/cache${{ env.restore-only }}@v3"
     id: precompiled-asset
     with:
       fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
