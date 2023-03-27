@@ -13,8 +13,9 @@ runs:
   using: "composite"
   steps:
   - run: echo 'restore-only="/restore"' >> $GITHUB_OUTPUT
-    id: restore-only
+    shell: bash
     if: inputs.restore-only == true
+    id: restore-only
   - uses: "actions/cache${{ steps.restore-only.outputs.restore-only }}@v3"
     id: precompiled-asset
     with:
@@ -25,6 +26,6 @@ runs:
         tmp/cache/webpacker
       key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
       restore-keys: ${{ runner.os }}-precompiled-assets-
-  - id: cache-hit
-    run: echo 'cache-hit=${{ steps.precompiled-asset.outputs.cache-hit }}' >> $GITHUB_OUTPUT
+  - run: echo 'cache-hit=${{ steps.precompiled-asset.outputs.cache-hit }}' >> $GITHUB_OUTPUT
     shell: bash
+    id: cache-hit
