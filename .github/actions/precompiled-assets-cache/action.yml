@@ -13,7 +13,7 @@ runs:
   using: "composite"
   steps:
   - run: |
-      if ${{ input.restore-only }}; then
+      if ${{ inputs.restore-only }}; then
             echo 'restore-only="/restore"' >> $GITHUB_OUTPUT
           else
             echo 'restore-only=""' >> $GITHUB_OUTPUT
