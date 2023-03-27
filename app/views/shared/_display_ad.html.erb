@@ -6,7 +6,7 @@
   data-type-of="<%= display_ad.type_of %>">
   <div class="crayons-sponsorship__header relative">
     <% if display_ad.organization_id? && (display_ad.type_of == "community" || display_ad.type_of == "external") %>
-      <div class="flex align-center pt-5">
+      <div class="flex align-center">
         <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
         <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= display_ad.organization.name %></div>
         <% if display_ad.type_of == "external" %>
@@ -14,7 +14,7 @@
         <% end %>
       </div>
     <% else %>
-      <div class="crayons-sponsorship__title pt-5"><%= Settings::Community.community_name %></div>
+      <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
     <% end %>
 
     <button id="sponsorship-dropdown-trigger-<%= display_ad.id %>" aria-controls="sponsorship-dropdown-<%= display_ad.id %>" aria-expanded="false" aria-haspopup="true"
