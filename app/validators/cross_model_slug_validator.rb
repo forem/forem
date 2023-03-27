@@ -1,7 +1,7 @@
 ##
 # Validates if the give attribute is used across the reserved spaces.
 class CrossModelSlugValidator < ActiveModel::EachValidator
-  FORMAT_REGEX = /\A[0-9a-z\-_]{2,}\z/
+  FORMAT_REGEX = /\A[0-9a-z\-_]+\z/
 
   def validate_each(record, attribute, value)
     return if value.blank?
