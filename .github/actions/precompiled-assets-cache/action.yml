@@ -5,22 +5,22 @@ inputs:
     default: false
   restore-only:
     required: false
-    default: false
+    default: ""
 outputs:
   cache-hit:
     value: ${{ steps.cache-hit.outputs.cache-hit }}
 runs:
   using: "composite"
   steps:
-    - run: |
-        if ${{ inputs.restore-only }}; then
-              echo 'restore="/restore"' >> $GITHUB_OUTPUT
-            else
-              echo 'restore="what"' >> $GITHUB_OUTPUT
-        fi
-      shell: bash
-      id: stepone
-    - uses: "actions/cache${{ steps.stepone.outputs.restore }}@v3"
+    # - run: |
+    #     if ${{ inputs.restore-only }}; then
+    #           echo 'restore="/restore"' >> $GITHUB_OUTPUT
+    #         else
+    #           echo 'restore="what"' >> $GITHUB_OUTPUT
+    #     fi
+    #   shell: bash
+    #   id: stepone
+    - uses: "actions/cache${{ inputs.restore-only }}@v3"
       id: precompiled-asset
       with:
         fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}

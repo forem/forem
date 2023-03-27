@@ -151,7 +151,7 @@ jobs:
         uses: ./.github/actions/precompiled-assets-cache
         with:
           failed-on-cache-miss: true
-          restore-only: true
+          restore-only: "/restore"
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -316,7 +316,7 @@ jobs:
       - uses: ./.github/actions/precompiled-assets-cache
         with:
           failed-on-cache-miss: true
-          restore-only: true
+          restore-only: "/restore"
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
