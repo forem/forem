@@ -313,10 +313,16 @@ RSpec.describe User do
     end
 
     describe "#username" do
-      it "receives a temporary username if none is given" do
+      it "receives a generated username if none is given" do
         user.username = ""
         user.validate!
         expect(user.username).not_to be_blank
+      end
+
+      it "is not valid if generate_username returns nil" do
+        user.username = ""
+        allow(user).to receive(:generate_username).and_return(nil)
+        expect(user).not_to be_valid
       end
 
       it "does not allow to change to a username that is taken" do
