@@ -1,35 +1,28 @@
 name: 'Cache compiled assets'
 inputs:
-  failed-on-cache-miss:
-    required: false
-    default: false
   restore-only:
     required: false
-    default: ""
-outputs:
-  cache-hit:
-    value: ${{ steps.cache-hit.outputs.cache-hit }}
+    default: false
 runs:
   using: "composite"
   steps:
-    # - run: |
-    #     if ${{ inputs.restore-only }}; then
-    #           echo 'restore="/restore"' >> $GITHUB_OUTPUT
-    #         else
-    #           echo 'restore="what"' >> $GITHUB_OUTPUT
-    #     fi
-    #   shell: bash
-    #   id: stepone
-    - uses: "actions/cache${{ inputs.restore-only }}@v3"
+    - uses: actions/cache/restore@v3
       id: precompiled-asset
       with:
-        fail-on-cache-miss: ${{ inputs.failed-on-cache-miss }}
         path: |
           public/assets
           public/packs-test
           tmp/cache/webpacker
         key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
         restore-keys: ${{ runner.os }}-precompiled-assets-
-    - run: echo 'cache-hit=${{ steps.precompiled-asset.outputs.cache-hit }}' >> $GITHUB_OUTPUT
-      shell: bash
-      id: cache-hit
+        if: inputs.restore-only == true
+    - uses: actions/cache@v3
+      id: precompiled-asset
+      with:
+        path: |
+          public/assets
+          public/packs-test
+          tmp/cache/webpacker
+        key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+        restore-keys: ${{ runner.os }}-precompiled-assets-
+        if: inputs.restore-only == false
