@@ -7,7 +7,6 @@ runs:
   using: "composite"
   steps:
     - uses: actions/cache/restore@v3
-      id: precompiled-asset
       with:
         path: |
           public/assets
@@ -17,7 +16,6 @@ runs:
         restore-keys: ${{ runner.os }}-precompiled-assets-
         if: inputs.restore-only == true
     - uses: actions/cache@v3
-      id: precompiled-asset
       with:
         path: |
           public/assets
