@@ -12,7 +12,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-  - run: echo 'restore-only="/restore"' >> $GITHUB_OUTPUT
+  - run: echo 'restore-only="/restore"' >> $GITHUB_ENV
     shell: bash
     if: inputs.restore-only == true
   - uses: "actions/cache${{ env.restore-only }}@v3"
