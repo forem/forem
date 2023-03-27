@@ -64,7 +64,8 @@ class ApplicationRecord < ActiveRecord::Base
 
   def self.unique_across_models(attribute, **options)
     CrossModelSlug.register(self, attribute)
-    validates attribute, presence: true, cross_model_slug: true, **options, if: :"#{attribute}_changed?"
+    validates attribute, presence: true
+    validates attribute, cross_model_slug: true, **options, if: :"#{attribute}_changed?"
   end
 
   # Decorate object with appropriate decorator
