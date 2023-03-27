@@ -73,7 +73,6 @@ jobs:
             tmp/cache/webpacker
           key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-precompiled-assets-
-        id: precompiled-asset
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -155,7 +154,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache/restore@v3
-        id: precompiled-asset
         with:
           fail-on-cache-miss: false
           path: |
@@ -281,7 +279,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache/restore@v3
-        id: precompiled-asset
         with:
           fail-on-cache-miss: true
           path: |
@@ -333,7 +330,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache/restore@v3
-        id: precompiled-asset
         with:
           fail-on-cache-miss: true
           path: |
