@@ -35,10 +35,10 @@ module.exports = function (api) {
       ],
     ].filter(Boolean),
     plugins: [
+      'istanbul',
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
-      isTestEnv && 'istanbul',
       '@babel/plugin-transform-destructuring',
       [
         '@babel/plugin-proposal-class-properties',
