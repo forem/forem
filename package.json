@@ -28,6 +28,9 @@
     "e2e": "bin/e2e",
     "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
   },
+  "nyc": {
+    "report-dir": "coverage/cypress"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/forem/forem.git"
