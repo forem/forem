@@ -25,7 +25,7 @@ import { Icon } from '@crayons';
 const ORDERED_LIST_ITEM_REGEX = /^\d+\.\s+.*/;
 const MARKDOWN_LINK_REGEX =
   /^\[([\w\s\d]*)\]\((url|(https?:\/\/[\w\d./?=#]+))\)$/;
-const URL_PLACEHOLDER_TEXT = 'url';
+const URL_PLACEHOLDER_TEXT = 'посилання';
 
 const NUMBER_OF_NEW_LINES_BEFORE_BLOCK_SYNTAX = 2;
 const NUMBER_OF_NEW_LINES_BEFORE_AFTER_SYNTAX = 1;
@@ -407,7 +407,7 @@ export const getNewTextAreaValueWithEdits = ({
 export const markdownSyntaxFormatters = {
   bold: {
     icon: () => <Icon src={BoldIcon} />,
-    label: 'Bold',
+    label: 'Жирний',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -427,7 +427,7 @@ export const markdownSyntaxFormatters = {
   },
   italic: {
     icon: () => <Icon src={ItalicIcon} />,
-    label: 'Italic',
+    label: 'Курсив',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -447,7 +447,7 @@ export const markdownSyntaxFormatters = {
   },
   link: {
     icon: () => <Icon src={LinkIcon} />,
-    label: 'Link',
+    label: 'Посилання',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -506,7 +506,7 @@ export const markdownSyntaxFormatters = {
   },
   orderedList: {
     icon: () => <Icon src={OrderedListIcon} />,
-    label: 'Ordered list',
+    label: 'Пронумерований перелік',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       const { selectedText, textBeforeSelection } = getSelectionData({
         selectionStart,
@@ -602,7 +602,7 @@ export const markdownSyntaxFormatters = {
   },
   unorderedList: {
     icon: () => <Icon src={UnorderedListIcon} />,
-    label: 'Unordered list',
+    label: 'Звичайний перелік',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       return undoOrAddFormattingForMultilineSyntax({
         selectionStart,
@@ -614,7 +614,7 @@ export const markdownSyntaxFormatters = {
   },
   heading: {
     icon: () => <Icon src={HeadingIcon} />,
-    label: 'Heading',
+    label: 'Заголовок',
     getFormatting: ({ selectionStart, selectionEnd, value }) => {
       let currentLineSelectionStart = selectionStart;
 
@@ -682,7 +682,7 @@ export const markdownSyntaxFormatters = {
   },
   quote: {
     icon: () => <Icon src={QuoteIcon} />,
-    label: 'Quote',
+    label: 'Цитата',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({
         selectionStart,
@@ -693,7 +693,7 @@ export const markdownSyntaxFormatters = {
   },
   code: {
     icon: () => <Icon src={CodeIcon} />,
-    label: 'Code',
+    label: 'Код',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForInlineSyntax({
         selectionStart,
@@ -705,7 +705,7 @@ export const markdownSyntaxFormatters = {
   },
   codeBlock: {
     icon: () => <Icon src={CodeBlockIcon} />,
-    label: 'Code block',
+    label: 'Блок коду',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({
         selectionStart,
@@ -717,7 +717,7 @@ export const markdownSyntaxFormatters = {
   },
   embed: {
     icon: () => <Icon src={EmbedIcon} />,
-    label: 'Embed',
+    label: 'Вбудоване',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -736,7 +736,7 @@ export const markdownSyntaxFormatters = {
   },
   underline: {
     icon: () => <Icon src={UnderlineIcon} />,
-    label: 'Underline',
+    label: 'Підкреслення',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -755,7 +755,7 @@ export const markdownSyntaxFormatters = {
   },
   strikethrough: {
     icon: () => <Icon src={StrikethroughIcon} />,
-    label: 'Strikethrough',
+    label: 'Закреслення',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
@@ -774,7 +774,7 @@ export const markdownSyntaxFormatters = {
   },
   divider: {
     icon: () => <Icon src={DividerIcon} />,
-    label: 'Line divider',
+    label: 'Розрив строки',
     getFormatting: ({ selectionStart, selectionEnd, value }) =>
       undoOrAddFormattingForMultilineSyntax({
         selectionStart,
