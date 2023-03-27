@@ -24,7 +24,6 @@ module MarkdownProcessor
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
-      # @sanitize_options = sanitize_options
     end
 
     # @param prefix_images_options [Hash] params, that need to be passed further to HtmlParser#prefix_all_images

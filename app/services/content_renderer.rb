@@ -1,4 +1,4 @@
-# render markdown for Article's, DisplayAd's, Comment's
+# renders markdown for Articles, DisplayAds, Comments
 class ContentRenderer
   Result = Struct.new(:front_matter, :reading_time, :processed_html, keyword_init: true)
 
@@ -8,6 +8,10 @@ class ContentRenderer
   class ContentParsingError < StandardError
   end
 
+  # @param input [String] body_markdown to process
+  # @param source [Article, Comment, DisplayAd]
+  # @param user [User, NilClass] article's or comment's user, nil for DisplayAd
+  # @param fixer [Object] fixes the input markdown
   def initialize(input, source:, user: nil, fixer: MarkdownProcessor::Fixer::FixAll)
     @input = input || ""
     @source = source
@@ -15,6 +19,10 @@ class ContentRenderer
     @fixer = fixer
   end
 
+  # @param link_attributes [Hash] options passed further to RedCarpet::Render::HTMLRouge, example: { rel: "nofollow"}
+  # @param sanitize_options [Hash] options for ActionController::Base.helpers.sanitize
+  # @param prefix_images_options [Hash] options for Html::Parser#prefix_all_images
+  # @return [ContentRenderer::Result]
   def process(link_attributes: {}, sanitize_options: {},
               prefix_images_options: { width: 800, synchronous_detail_detection: false })
     fixed = fixer.call(input)
@@ -29,6 +37,9 @@ class ContentRenderer
     raise ContentParsingError, e.message
   end
 
+  # processes Article markdown, calculates reading time and finds frontmatter (if it exists)
+  #
+  # @return [ContentRenderer::Result]
   def process_article
     fixed = fixer.call(input)
     parsed = front_matter_parser.call(fixed)
