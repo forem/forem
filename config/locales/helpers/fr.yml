@@ -4,83 +4,83 @@ fr:
     label:
       listing:
         body_markdown: Body Markdown
-        expires_at: Custom Expire Date
-        location: Location
-        organization_id: Post under an organization
+        expires_at: Date d'expiration personnalisée
+        location: Emplacement
+        organization_id: Publier sous une organisation
         tag_list: Tags
-        title: Title
+        title: Titre
       organization:
-        name: Name
-        slug: Username
-        profile_image: Profile image
-        nav_image: Logo for light themes
-        dark_nav_image: Logo for dark themes
-        twitter_username: Twitter username
-        github_username: GitHub username
-        url: Website url
-        tag_line: Tag line
-        summary: Summary
-        location: Location
-        email: Support email
-        company_size: Organization size
-        story: Our story
-        tech_stack: Our stack
-        cta_body_markdown: Body text
-        cta_button_text: Link text
-        cta_button_url: Link url
-        proof: Proof
+        name: Nom
+        slug: Nom d'utilisateur
+        profile_image: Image du profil
+        nav_image: Logo pour les thèmes clairs
+        dark_nav_image: Logo pour les thèmes sombres
+        twitter_username: Nom d'utilisateur Twitter
+        github_username: nom d'utilisateur GitHub
+        url: URL du site web
+        tag_line: Ligne de présentation
+        summary: Résumé
+        location: Emplacement
+        email: Email du support
+        company_size: Taille de l'organisation
+        story: Notre histoire
+        tech_stack: Notre tech stack
+        cta_body_markdown: Corps du texte
+        cta_button_text: Texte du lien
+        cta_button_url: URL du lien
+        proof: Preuve
       podcast:
-        android_url: Android url
+        android_url: URL Android
         description: Description
-        feed_url: Feed url
+        feed_url: URL du flux
         image: Image
-        itunes_url: Itunes url
-        main_color_hex: Main color hex
+        itunes_url: URL Itunes
+        main_color_hex: Couleur principale hex
         overcast_url: Overcast url
-        pattern_image: Pattern image
+        pattern_image: Image du motif
         slug: Slug
-        soundcloud_url: Soundcloud url
-        title: Title
-        twitter_username: Twitter username
-        website_url: Website url
+        soundcloud_url: URL Soundcloud
+        title: Titre
+        twitter_username: Nom d'utilisateur Twitter
+        website_url: URL du site web
       response_template:
-        title: Title
-        content: Comment body (Markdown)
+        title: Titre
+        content: Corps du commentaire (Markdown)
       user:
-        name: Name
+        name: Nom
         email: Email
-        username: Username
-        profile_image: Profile image
+        username: Nom d'utilisateur
+        profile_image: Image de profil
       users_notification_setting:
-        email_newsletter: Send me weekly newsletter emails
-        email_digest_periodic: Send me a periodic digest of top posts from my tags
-        email_tag_mod_newsletter: Send me tag moderator newsletter emails
-        email_community_mod_newsletter: Send me community moderator newsletter emails
-        email_comment_notifications: Send me an email when someone replies to me in a comment thread
-        email_follower_notifications: Send me an email when someone new follows me
-        email_mention_notifications: Send me an email when someone mentions me
-        email_badge_notifications: Send me an email when I receive a badge
-        email_unread_notifications: Send me occasional reminders that I have unread notifications on %{community}
-        mobile_mention_notifications: Send me a push notification when someone mentions me
-        mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
-        welcome_notifications: Send me occasional tips on how to enhance my %{community} experience
-        reaction_notifications: Send notifications when someone reacts to my content, such as comments or posts
-        mod_roundrobin_notifications: Send me occasional community-success mod notifications
+        email_newsletter: Envoyez-moi une newsletter hebdomadaire
+        email_digest_periodic: Envoyez-moi un condensé périodique des meilleurs messages de mes tags
+        email_tag_mod_newsletter: Envoyez-moi des e-mails de newsletter pour les modérateurs de tags
+        email_community_mod_newsletter: Envoyez-moi les e-mails de la newsletter des modérateurs de communauté
+        email_comment_notifications: Envoyez-moi un e-mail lorsque quelqu'un me répond dans un fil de commentaires
+        email_follower_notifications: Envoyez-moi un e-mail lorsque quelqu'un me suit
+        email_mention_notifications: Envoyez-moi un e-mail lorsque quelqu'un me mentionne
+        email_badge_notifications: Envoyez-moi un e-mail lorsque je reçois un badge
+        email_unread_notifications: Envoyez-moi des rappels occasionnels lorsque j'ai des notifications non lues sur %{community}
+        mobile_mention_notifications: Envoyez-moi une notification push lorsque quelqu'un me mentionne
+        mobile_comment_notifications: Envoyez-moi une notification push lorsque quelqu'un me répond dans un fil de commentaires
+        welcome_notifications: Envoyez-moi de temps en temps des conseils pour améliorer mon expérience sur %{community}
+        reaction_notifications: Envoyer des notifications lorsque quelqu'un réagit à mon contenu, comme des commentaires ou des messages
+        mod_roundrobin_notifications: Envoyez-moi des notifications occasionnelles sur le succès de la communauté
       users_setting:
-        feed_url: RSS Feed URL
+        feed_url: URL du flux RSS
     placeholder:
       organization:
         name: Acme Inc.
         slug: acmeinc
-        url: https://yoursite.com
-        location: Halifax, Nova Scotia
+        url: https://votresite.com
+        location: France, Toulouse
         email: mail@example.com
         company_size: "..."
         story: "..."
         tech_stack: "..."
         cta_body_markdown: "..."
-        cta_button_text: Visit Acme Site
-        cta_button_url: https://example.com
+        cta_button_text: Visiter le site Acme 
+        cta_button_url: https://votresite.com
         proof: "..."
       response_template:
         title: "..."
@@ -88,145 +88,144 @@ fr:
         name: John Doe
         email: john.doe@example.com
         username: johndoe
-        feed_url: https://yoursite.com/feed
+        feed_url: https://votresite.com/feed
     application_helper:
-      app_logo: App logo
+      app_logo: Logo de l'application
       follow:
         aria_label:
-          Organization: 'Follow organization: %{name}'
-          Tag: 'Follow tag: %{name}'
-          User: 'Follow user: %{name}'
-          default: 'Follow %{type}: %{name}'
+          Organization: "Suivre l'organisation: %{name}"
+          Tag: 'Suivre le tag: %{name}'
+          User: "Suivre L'utilisateur : %{name}"
+          default: "Suivre %{type}: %{name}"
         text:
           Organization: Suivre
           Tag: Suivre
           User: Suivre
           default: Suivre
-      required: Required
+      required: Requis
       subtitle:
-        week: Top posts this week
-        month: Top posts this month
-        year: Top posts this year
-        infinity: All posts
-        latest: Latest posts
+        week: Les meilleurs articles de cette semaine
+        month: Les meilleurs articles de ce mois
+        year: Les meilleurs articles de cette année
+        infinity: Tous les messages
+        latest: Derniers messages
       title_text: "%{title} - %{timeframe}"
     articles_helper:
       logo: "%{service_name} logo"
-      most_comments: Most Comments
-      most_reactions: Most Reactions
-      most_views: Most Views
-      recently_created: Recently Created
-      recently_published: Recently Published
+      most_comments: Le plus de commentaires
+      most_reactions: Le plus de réactions
+      most_views: Le plus de vues
+      recently_created: Récemment créé
+      recently_published: Récemment publié
     authentication_helper:
-      any_of_those: any of those
-      email_password: Email & Password
-      reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
-      that: that
-      invite_only: You cannot do this until you disable Invite Only Mode
+      any_of_those: n'importe lequel de ces éléments
+      email_password: Email et mot de passe
+      reminder:  'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité'
+      that: que
+      invite_only: Vous ne pouvez pas faire cela tant que vous n'avez pas désactivé le mode "Invite Only".
     comments_helper:
       ama: ama
-      ask_me_anything: Ask Me Anything
-      author: Author
+      ask_me_anything: Demandez-moi n'importe quoi
+      author: Auteur
       nbsp_likes_html:
         one: "&nbsp;like"
         other: "&nbsp;likes"
     feedback_messages_helper:
       offender:
         body: |
-          Hello,
+          Bonjour,
 
-          It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
+          Il a été porté à notre attention que vous avez violé le %{community} Code de conduite et/ou conditions d'utilisation.
 
-          If this behavior continues, we may need to suspend your %{community} account.
+          Si ce comportement persiste, nous devrons peut-être suspendre votre compte %{community}.
 
-          If you think that there's been a mistake, please reply to this email and we will take another look.
+          Si vous pensez qu'il s'agit d'une erreur, veuillez répondre à cet e-mail et nous réexaminerons la situation.
 
-          %{community} Team
-        subject: "%{community} Code of Conduct Violation"
+          L'équipe %{community}
+        subject: "Violation du code de conduite de %{community}"
       reporter:
         body: |
-          Hi there,
-          Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
-          action.
-          We appreciate your help as we work to foster a positive and inclusive environment for all!
-          %{community} Team
-        subject: "%{community} Report"
+          Bonjour,
+          Merci de signaler un contenu qui pourrait être en violation du %{community} Code de conduite et/ou nos conditions d'utilisation. Nous examinons votre rapport et prendrons les mesures appropriées.
+          Nous apprécions votre aide car nous nous efforçons de favoriser un environnement positif et inclusif pour tous !
+          L'équipe %{community}
+        subject: "Reporter %{community}"
       affected:
         body: |
-          Hi there,
+          Bonjour,
 
-          We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
-          taking appropriate action.
+          Nous avons remarqué que certains commentaires (faits par d'autres personnes) sur votre message violent le %{community} Code de conduite et/ou nos conditions d'utilisation. Nous avons une tolérance zéro pour de tels comportements et nous
+          et nous prenons les mesures appropriées.
 
-          Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
+          Merci d'avoir été génial, et n'hésitez pas à nous envoyer un e-mail pour toute question ! Tous les commentaires et idées sont les bienvenus pour continuer à favoriser une communauté ouverte et inclusive.
 
-          %{community} Team
-        subject: Courtesy Notice from %{community}
+          L'équipe %{community}
+        subject: Avis de courtoisie de %{community}
     listing_helper:
       option:
-        one: "%{cl_name} (%{count} Credit)"
-        other: "%{cl_name} (%{count} Credits)"
+        one: "%{cl_name} (%{count} Crédit)"
+        other: "%{cl_name} (%{count} Crédits)"
     organization_helper:
       option: "%{org_name} (%{unspent})"
     rate_limit_checker_helper:
       day:
-        one: day
-        other: days
-      general: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
+        one: jour
+        other: jours
+      general: Combien de %{thing} un nouveau membre (%{timeframe} ou moins) peut-il créer sur une période de 5 minutes ?
       published:
-        title: Limit number of posts created
-        description: How many posts can someone create within any 30 second period?
+        title: Limiter le nombre de postes créés
+        description: Combien de messages peut-on créer sur une période de 30 secondes ?
       antispam:
-        title: Limit number of posts created by a new member
+        title: Limiter le nombre de postes créés par un nouveau membre
       update:
-        title: Limit number of updates to a post
-        description: How many updates can someone make within any 30 second period? Update API docs when changed.
+        title: Limiter le nombre de mises à jour d'un article
+        description: Combien de mises à jour peut-on faire sur une période de 30 secondes ? Mettre à jour la documentation de l'API en cas de modification.
       upload:
-        title: Limit number of images uploaded
-        description: How many images can someone upload within any 30 second period?
+        title: Limiter le nombre d'images téléchargées
+        description: Combien d'images peut-on télécharger sur une période de 30 secondes ?
       user:
-        title: Limit number of changes someone can make to their account
-        description: How many changes can someone make to their user account within any 30 second period?
+        title: Limiter le nombre de modifications qu'une personne peut apporter à son compte
+        description: Combien de changements une personne peut-elle apporter à son compte utilisateur sur une période de 30 secondes ?
       follow:
-        title: Limit number of followers someone can follow daily
-        description: How many people can someone follow in a day?
+        title: Limiter le nombre de followers qu'une personne peut suivre par jour
+        description: Combien de personnes peut-on suivre en une journée ?
       reaction:
-        title: Limit number of reactions to a post or comment
-        description: How many times can someone react to a post or comment within any 30 second period?
+        title: Limiter le nombre de réactions à un message ou à un commentaire
+        description: Combien de fois une personne peut-elle réagir à un message ou à un commentaire sur une période de 30 secondes ?
       feedback:
-        title: Limit number of times someone can report abuse
-        description: How many times can someone report abuse within any 5 minute period?
+        title: Limiter le nombre de fois où une personne peut signaler un abus
+        description: Combien de fois une personne peut-elle signaler un abus sur une période de 5 minutes ?
       comment:
-        title: Limit number of comments created
-        description: How many comments can someone create within any 30 second period?
+        title: Limiter le nombre de commentaires créés
+        description: Combien de commentaires une personne peut-elle créer dans une période de 30 secondes ?
       comment_antispam:
-        title: Limit number of comments created by a new member
+        title: Limiter le nombre de commentaires créés par un nouveau utilisateur
       mention:
-        title: Limit number of @-mentions in a post or comment
-        description: How many times can someone @-mention other users in a post or comment?
+        title: Limiter le nombre de @-mentions dans un message ou un commentaire
+        description: Combien de fois une personne peut-elle @-mentionner d'autres utilisateurs dans un message ou un commentaire ?
       listing:
-        title: Limit number of listings created
-        description: How many listings can someone create within any 1 minute period?
+        title: Limiter le nombre de listings créés
+        description: Combien d'annonces peuvent être créées pendant une période d'une minute ?
       organization:
-        title: Limit number of organizations created
-        description: How many organizations can someone create within any 5 minute period?
+        title: Limiter le nombre d'organisations créées
+        description: Combien d'organisations une personne peut-elle créer sur une période de 5 minutes ?
       subscription:
-        title: Limit number of times someone can subscribe to mailing list liquid tag
-        description: How many times can someone subscribe to a mailing list within any 30 second period?
+        title: Limiter le nombre de fois qu'une personne peut s'abonner à une liste de diffusion tag liquide
+        description: Combien de fois une personne peut-elle s'abonner à une liste de diffusion sur une période de 30 secondes ?
       recipient:
-        title: Limit number of general emails we send
-        description: How many emails can we send to someone within any 2 minute period?
+        title: Limiter le nombre d'e-mails généraux que nous envoyons
+        description: Combien d'emails pouvons-nous envoyer à une personne dans une période de 2 minutes ?
       confirmation:
-        title: Limit number of confirmation emails we send
-        description: How many times can we send a confirmation email to someone within a 2 minute period?
+        title: Limiter le nombre d'e-mails de confirmation que nous envoyons
+        description: Combien de fois pouvons-nous envoyer un email de confirmation à quelqu'un dans une période de 2 minutes ?
       thing:
-        posts: posts
-        comments: comments
+        posts: articles
+        comments: commentaires
     settings_helper:
-      advanced: Advanced
-      beginner: Beginner
+      advanced: Avancé
+      beginner: Débutant
       expert: Expert
-      mid_level: Mid-level
+      mid_level: Niveau intermédiaire
       novice: Novice
     social_link_helper:
       n_a: N/A

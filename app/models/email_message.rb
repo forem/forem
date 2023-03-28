@@ -1,16 +1,6 @@
 class EmailMessage < Ahoy::Message
   belongs_to :feedback_message, optional: true
 
-  def html_content
-    return "" if content.nil?
-
-    html_index = content.index("<html")
-    return content if html_index.nil?
-
-    closing_html_index = content.index("</html>") + 7
-    content[html_index..closing_html_index]
-  end
-
   def self.find_for_reports(feedback_message_ids)
     select(:to, :subject, :content, :utm_campaign, :feedback_message_id)
       .where(feedback_message_id: feedback_message_ids)
@@ -33,5 +23,15 @@ class EmailMessage < Ahoy::Message
     email_sql = EmailMessage.sanitize_sql([sql, destroy_before_timestamp])
 
     BulkSqlDelete.delete_in_batches(email_sql)
+  end
+
+  def html_content
+    return "" if content.nil?
+
+    html_index = content.index("<html")
+    return content if html_index.nil?
+
+    closing_html_index = content.index("</html>") + 7
+    content[html_index..closing_html_index]
   end
 end

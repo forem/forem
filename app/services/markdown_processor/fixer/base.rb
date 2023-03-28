@@ -10,6 +10,8 @@ module MarkdownProcessor
     class Base
       FRONT_MATTER_DETECTOR = /-{3}.*?-{3}/m
 
+      # Match @_username_ that is not preceded by backtick
+      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/
       def self.call(markdown)
         return unless markdown
 
@@ -54,9 +56,6 @@ module MarkdownProcessor
           escape_underscored_username_in_line!(line)
         end.join
       end
-
-      # Match @_username_ that is not preceded by backtick
-      USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/
 
       # Escapes underscored username that is not in code
       def self.escape_underscored_username_in_line!(line)

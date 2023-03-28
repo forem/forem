@@ -135,11 +135,13 @@ en:
         one: Expires in 1 year
         other: Expires in %{count} years
   display_ad:
+    promoted: Promoted
     menu:
       aria_label: Toggle dropdown menu
       icon: Dropdown menu
       manage_preferences: Manage preferences
       what_is_a_billboard: What's a billboard?
+      report_billboard: Report billboard
   errors:
     messages:
       accepted: must be accepted

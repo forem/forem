@@ -13,7 +13,7 @@
 # @note models with `acts_as_taggable_on` declarations (e.g., Article and Listing)
 # @see https://developers.forem.com/technical-overview/architecture/#tags for more discussion
 class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = %w[mod_chat_channel_id].freeze
+  self.ignored_columns += %w[mod_chat_channel_id].freeze
 
   attr_accessor :tag_moderator_id, :remove_moderator_id
 
@@ -81,24 +81,9 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
 
-  # @return [String]
-  #
-  # @see ApplicationRecord#class_name
-  def class_name
-    self.class.name
-  end
-
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
-  end
-
-  def submission_template_customized(param_0 = nil)
-    submission_template&.gsub("PARAM_0", param_0)
-  end
-
-  def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order(id: :asc).ids
   end
 
   def self.valid_categories
@@ -116,14 +101,6 @@ class Tag < ActsAsTaggableOn::Tag
     find_by(name: word.downcase)&.alias_for.presence || word.downcase
   end
 
-  def validate_name
-    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
-    # [:alnum:] is not used here because it supports diacritical characters.
-    # If we decide to allow diacritics in the future, we should replace the
-    # following regex with [:alnum:].
-    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
-  end
-
   # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
   # we'll preserve existing behavior.  And when true, we're testing out new behavior.  This way we
   # can push up changes and refactor towards improvements without unleashing a large pull request
@@ -139,19 +116,6 @@ class Tag < ActsAsTaggableOn::Tag
   #       remove it.
   def self.favor_accessible_name_for_tag_label?
     FeatureFlag.enabled?(:favor_accessible_name_for_tag_label)
-  end
-
-  # @note In the future we envision always favoring pretty name over the given name.
-  #
-  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
-  def accessible_name
-    return name unless self.class.favor_accessible_name_for_tag_label?
-
-    pretty_name.presence || name
-  end
-
-  def errors_as_sentence
-    errors.full_messages.to_sentence
   end
 
   # @param follower [#id, #class_name] An object who's class "acts_as_follower" (e.g. a User).
@@ -198,6 +162,42 @@ class Tag < ActsAsTaggableOn::Tag
       .joins(:followings)
       .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
       .order(hotness_score: :desc)
+  end
+
+  # @return [String]
+  #
+  # @see ApplicationRecord#class_name
+  def class_name
+    self.class.name
+  end
+
+  def submission_template_customized(param_0 = nil)
+    submission_template&.gsub("PARAM_0", param_0)
+  end
+
+  def tag_moderator_ids
+    User.with_role(:tag_moderator, self).order(id: :asc).ids
+  end
+
+  def validate_name
+    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
+    # [:alnum:] is not used here because it supports diacritical characters.
+    # If we decide to allow diacritics in the future, we should replace the
+    # following regex with [:alnum:].
+    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
+  end
+
+  # @note In the future we envision always favoring pretty name over the given name.
+  #
+  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
+  def accessible_name
+    return name unless self.class.favor_accessible_name_for_tag_label?
+
+    pretty_name.presence || name
+  end
+
+  def errors_as_sentence
+    errors.full_messages.to_sentence
   end
 
   # What's going on here?  There are times where we want our "Tag" object to have a "points"
