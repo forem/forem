@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ApplicationMailer, type: :mailer do
+RSpec.describe ApplicationMailer do
   let(:user) { create(:user) }
   let(:email) { VerificationMailer.with(user_id: user.id).account_ownership_verification_email }
 

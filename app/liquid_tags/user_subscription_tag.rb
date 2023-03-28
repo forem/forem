@@ -1,15 +1,16 @@
 class UserSubscriptionTag < LiquidTagBase
   PARTIAL = "liquids/user_subscription".freeze
   VALID_CONTEXTS = %w[Article].freeze
-  # @see LiquidTagBase.user_authorization_method_name for discussion
-  def self.user_authorization_method_name
-    :user_subscription_tag_available?
-  end
   VALID_ROLES = [
     :admin,
     [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag],
     :super_admin,
   ].freeze
+
+  # @see LiquidTagBase.user_authorization_method_name for discussion
+  def self.user_authorization_method_name
+    :user_subscription_tag_available?
+  end
 
   def initialize(_tag_name, cta_text, parse_context)
     super

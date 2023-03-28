@@ -1,42 +1,71 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
-import { Button } from '../../crayons/Button';
 import { locale } from '../../utilities/locale';
 
 export const ReactionsCount = ({ article }) => {
   const totalReactions = article.public_reactions_count || 0;
-  const reactionsSVG = () => (
-    <svg
-      className="crayons-icon"
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z" />
-    </svg>
-  );
 
   if (totalReactions === 0) {
     return;
   }
 
-  return (
-    <Button
-      variant="ghost"
-      size="s"
-      contentType="icon-left"
-      url={article.path}
-      icon={reactionsSVG}
-      tagName="a"
-    >
-      <span title="Number of reactions">
-        {totalReactions}
-        <span className="hidden s:inline">
-          &nbsp;
-          {`${totalReactions == 1 ? locale('core.reaction') : `${locale('core.reaction')}s`}`}
+  function buildIcons() {
+    const reversable = article.public_reaction_categories;
+    const reactionIcons = document.getElementById(
+      'reaction-category-resources',
+    );
+
+    if (reversable === undefined) {
+      return;
+    }
+    reversable.reverse();
+
+    const icons = reversable.map((category) => {
+      const path = reactionIcons?.querySelector(
+        `img[data-slug=${category.slug}]`,
+      )?.src;
+      const alt = category.name;
+      return (
+        <span className="crayons_icon_container" key={category.slug}>
+          <img src={path} width="18" height="18" alt={alt} />
+        </span>
+      );
+    });
+
+    return (
+      <span className="multiple_reactions_icons_container" dir="rtl">
+        {icons}
+      </span>
+    );
+  }
+
+  function buildCounter() {
+    const reactionText = `${
+      totalReactions == 1
+        ? locale('core.reaction')
+        : `${locale('core.reaction')}s`
+    }`;
+    return (
+      <span className="aggregate_reactions_counter">
+        <span className="hidden s:inline" title="Number of reactions">
+          {totalReactions}&nbsp;{reactionText}
         </span>
       </span>
-    </Button>
+    );
+  }
+
+  return (
+    <a
+      href={article.path}
+      className="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"
+      data-reaction-count
+      data-reactable-id={article.id}
+    >
+      <div className="multiple_reactions_aggregate">
+        {buildIcons()}
+        {buildCounter()}
+      </div>
+    </a>
   );
 };
 

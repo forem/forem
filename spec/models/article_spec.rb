@@ -254,17 +254,18 @@ RSpec.describe Article do
         expect(test_article.title).to eq("An Article Title")
       end
 
-      it "sanitizes the title" do
-        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+      it "sanitizes the title with deprecated BIDI marks" do
+        test_article = build(:article, title: "\u202bThis starts with BIDI embedding\u202c\u061cALM\u200e")
 
         test_article.validate
 
-        expect(test_article.title).not_to match(/\u202d/)
-        expect(test_article.title).to eq("This starts with BIDI override")
+        expect(test_article.title).not_to match(/\u202b/)
+        expect(test_article.title).to eq("This starts with BIDI embedding\u202c\u061cALM\u200e")
       end
 
       it "rejects empty titles after sanitizing" do
-        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+        test_article = build(:article,
+                             title: "\u061c\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
 
         test_article.validate
 
@@ -1342,7 +1343,7 @@ RSpec.describe Article do
     end
   end
 
-  describe "#reaction_categories reports unique associated reaction categories" do
+  describe "#public_reaction_categories reports unique associated reaction categories" do
     before do
       user2 = create(:user)
       user2.add_role(:trusted)
@@ -1354,7 +1355,8 @@ RSpec.describe Article do
     end
 
     it "reports accurately" do
-      expect(article.reaction_categories).to contain_exactly("like", "readinglist", "vomit")
+      categories = article.public_reaction_categories
+      expect(categories.map(&:slug)).to contain_exactly(*%i[like])
     end
   end
 end

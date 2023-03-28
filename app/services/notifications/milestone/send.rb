@@ -3,16 +3,16 @@ module Notifications
     ARTICLE_FINAL_PUBLICATION_TIME_FOR_MILESTONE = Time.zone.local(2019, 2, 25)
 
     class Send
+      def self.call(...)
+        new(...).call
+      end
+
       # @param type [String] - "View" or "Reaction"
       # @param article [Object] - ActiveRecord Article object
       def initialize(type, article)
         @type = type
         @article = article
         @next_milestone = next_milestone
-      end
-
-      def self.call(...)
-        new(...).call
       end
 
       def call

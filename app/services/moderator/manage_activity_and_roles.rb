@@ -2,14 +2,14 @@ module Moderator
   class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
+    def self.handle_user_roles(admin:, user:, user_params:)
+      new(user: user, admin: admin, user_params: user_params).update_roles
+    end
+
     def initialize(user:, admin:, user_params:)
       @user = user
       @admin = admin
       @user_params = user_params
-    end
-
-    def self.handle_user_roles(admin:, user:, user_params:)
-      new(user: user, admin: admin, user_params: user_params).update_roles
     end
 
     def delete_comments

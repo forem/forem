@@ -58,7 +58,7 @@ RSpec.describe "Api::V1::FeatureFlagsController" do
 
       get api_feature_flags_path(flag: flag), headers: headers
 
-      parsed_response = JSON.parse(response.body)
+      parsed_response = response.parsed_body
       expect(parsed_response[flag]).to be true
     end
   end

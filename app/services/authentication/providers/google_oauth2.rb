@@ -5,6 +5,21 @@ module Authentication
       OFFICIAL_NAME = "Google".freeze
       SETTINGS_URL = "https://console.cloud.google.com/apis/credentials".freeze
 
+      def self.official_name
+        OFFICIAL_NAME
+      end
+
+      def self.settings_url
+        SETTINGS_URL
+      end
+
+      def self.sign_in_path(**kwargs)
+        ::Authentication::Paths.sign_in_path(
+          "google_oauth2",
+          **kwargs,
+        )
+      end
+
       def new_user_data
         {
           name: info.name,
@@ -28,21 +43,6 @@ module Authentication
           info.name.sub(" ", "_"),
           Digest::SHA512.hexdigest(auth_payload.uid),
         ].join("_")[0...25]
-      end
-
-      def self.official_name
-        OFFICIAL_NAME
-      end
-
-      def self.settings_url
-        SETTINGS_URL
-      end
-
-      def self.sign_in_path(**kwargs)
-        ::Authentication::Paths.sign_in_path(
-          "google_oauth2",
-          **kwargs,
-        )
       end
 
       protected

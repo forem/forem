@@ -17,7 +17,7 @@ RSpec.describe "Api::V0::Analytics" do
 
       it "renders the proper error message in JSON" do
         error_message = "Required 'start' parameter is missing"
-        expect(JSON.parse(response.body)["error"]).to eq(error_message)
+        expect(response.parsed_body["error"]).to eq(error_message)
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe "Api::V0::Analytics" do
 
       it "renders the proper error message in JSON" do
         error_message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
-        expect(JSON.parse(response.body)["error"]).to eq(error_message)
+        expect(response.parsed_body["error"]).to eq(error_message)
       end
     end
   end

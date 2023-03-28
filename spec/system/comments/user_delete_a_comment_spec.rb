@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Comment", type: :system, js: true do
+RSpec.describe "Deleting Comment", js: true do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:article) do
