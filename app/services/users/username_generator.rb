@@ -27,10 +27,7 @@ module Users
     end
 
     def username_exists?(username)
-      User.exists?(username: username) ||
-        Organization.exists?(slug: username) ||
-        Page.exists?(slug: username) ||
-        Podcast.exists?(slug: username)
+      CrossModelSlug.exists?(username)
     end
 
     def filtered_list
