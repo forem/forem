@@ -71,6 +71,15 @@ function hideUserReaction(reactionName) {
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
   reactionButton.setAttribute('aria-pressed', 'false');
+  const reactionDrawerButton = document.getElementById(
+    'reaction-drawer-trigger',
+  );
+  const userActivatedReactions = document
+    .querySelector('.reaction-drawer')
+    .querySelectorAll('.user-activated');
+  if (userActivatedReactions.length == 0) {
+    reactionDrawerButton.classList.remove('user-activated', 'user-animated');
+  }
 }
 
 function hasUserReacted(reactionName) {
