@@ -1,0 +1,37 @@
+name: Deploy with msrk
+
+on: pull_request
+
+jobs:
+  deploy:
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up env file
+      run: cp .env_sample .env
+
+    - name: Set environment variables
+      uses: falnyr/replace-env-vars-action@v1.3.2
+      env:
+        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        FOREM_OWNER_SECRET: ${{ secrets.FOREM_OWNER_SECRET }}
+        MRSK_REGISTRY_PASSWORD: ${{ secrets.MRSK_REGISTRY_PASSWORD }}
+        REDIS_URL: ${{ secrets.REDIS_URL }}
+        REDIS_SESSIONS_URL: ${{ secrets.REDIS_SESSIONS_URL }}
+        REDIS_SIDEKIQ_URL: ${{ secrets.REDIS_SIDEKIQ_URL }}
+        REDIS_RPUSH_URL: ${{ secrets.REDIS_RPUSH_URL }}
+        SECRET_KEY_BASE: ${{ secrets.SECRET_KEY_BASE }}
+        SESSION_KEY: ${{ secrets.SESSION_KEY }}
+      with:
+        filename: .env
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+
+    - name: Install mrsk
+      run: gem install mrsk
+
+    - name: Deploy branch
+      run: msrk deploy
