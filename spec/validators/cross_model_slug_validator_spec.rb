@@ -40,6 +40,12 @@ RSpec.describe CrossModelSlugValidator do
     it { is_expected.not_to be_valid }
   end
 
+  context "when name is a ReservedWord" do
+    let(:name) { "members" }
+
+    it { is_expected.not_to be_valid }
+  end
+
   context "when name exists in User model" do
     let(:user) { create(:user) }
     let(:name) { user.username }

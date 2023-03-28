@@ -27,6 +27,11 @@ class CrossModelSlug
       # Presence check is likely redundant, but is **much** cheaper than the
       # cross-model check
       return false if value.blank?
+
+      value = value.downcase
+
+      # Reserved check may be redundant, but allows this to be used outside of Validator
+      return true if ReservedWords.all.include?(value)
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
       (@registered_models || []).detect do |klass, attribute|
