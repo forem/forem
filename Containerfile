@@ -21,12 +21,6 @@ RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     groupadd -g "${APP_GID}" "${APP_USER}" && \
     adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"
 
-ENV DOCKERIZE_VERSION=v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && rm dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && chown root:root /usr/local/bin/dockerize
-
 WORKDIR "${APP_HOME}"
 
 COPY ./.ruby-version "${APP_HOME}"/
@@ -78,53 +72,6 @@ USER "${APP_USER}"
 WORKDIR "${APP_HOME}"
 
 VOLUME "${APP_HOME}"/public/
-
-ENTRYPOINT ["./scripts/entrypoint.sh"]
-
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
-
-## Testing
-FROM builder AS testing
-
-USER root
-
-RUN dnf install --setopt install_weak_deps=false -y \
-    chromium-headless chromedriver && \
-    yum clean all && \
-    rm -rf /var/cache/yum
-
-COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
-COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
-
-RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
-
-USER "${APP_USER}"
-
-RUN bundle config --local build.sassc --disable-march-tune-native && \
-    bundle config --delete without && \
-    bundle install --deployment --jobs 4 --retry 5 && \
-    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
-    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
-
-ENTRYPOINT ["./scripts/entrypoint.sh"]
-
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
-
-## Development
-FROM builder AS development
-
-COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
-COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
-
-RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
-
-USER "${APP_USER}"
-
-RUN bundle config --local build.sassc --disable-march-tune-native && \
-    bundle config --delete without && \
-    bundle install --deployment --jobs 4 --retry 5 && \
-    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
-    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
 ENTRYPOINT ["./scripts/entrypoint.sh"]
 
