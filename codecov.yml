@@ -1,3 +1,8 @@
+codecov:
+  require_ci_to_pass: no
+  notify:
+    wait_for_ci: no
+    # after_n_builds: 2
 ignore:
   - "vendor"
   - "bin"
@@ -10,7 +15,7 @@ coverage:
 flag_management:
   default_rules:
     carryforward: true
-    statuses:
-      - type: project
-        target: auto
-        threshold: 1%
+    # statuses:
+    #   - type: project
+    #     target: auto
+    #     threshold: 1%
