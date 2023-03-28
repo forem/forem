@@ -125,11 +125,11 @@ ua:
       joined: Доєднався
       default_cta: Дізнатися більше
       email: Email
-      hot: Hot
-      location: Location
-      more_from_html: More from %{actor}
-      no_summary: Posts in this tag
-      trending_html: Trending on %{app}
+      hot: Гаряче
+      location: Місце
+      more_from_html: Більше від %{actor}
+      no_summary: Дописи за цим теґом
+      trending_html: Тренди на %{app}
     videos:
       meta:
         title: Відео

@@ -4,8 +4,8 @@ ua:
     auth:
       background: forem background
       create:
-        aria_label: Створити профіль
-        text: Створити профіль
+        aria_label: Створити акаунт
+        text: Створити акаунт
       creator:
         text1: Знайдіть для себе свій Куток!
         text2: Create your admin account first.
@@ -14,7 +14,7 @@ ua:
           aria_label: Змінити юзернейм
           icon: Змінити юзернейм
           text_html: "%{start}Your username will be\_%{end}%{button}"
-        submit: Створити  акаунт
+        submit: Створити акаунт
       login:
         aria_label: Увійти
         text: Увійти

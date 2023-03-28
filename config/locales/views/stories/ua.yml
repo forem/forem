@@ -15,7 +15,7 @@ ua:
       sort:
         aria_label: Показати дописи за
         aria_tagged: Показати дописи с теґом за
-        relevant: Релевантно
+        relevant: Релевантні
         week: Тиждень
         month: Місяць
         year: Рік

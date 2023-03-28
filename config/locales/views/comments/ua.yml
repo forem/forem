@@ -123,7 +123,7 @@ ua:
           aria_label: лайк
           title: Лайк
           icon: 'Лайки: '
-          count_html: "%{num}%"
+          count_html: "%{num}%{likes}"
           text: Лайк
         reply:
           aria_label: Відповідь на коментар...

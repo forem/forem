@@ -37,13 +37,13 @@ RSpec.describe "Views an article" do
     it "suggests articles by other users if the author has no other articles" do
       create(:article, user: create(:user))
       visit article.path
-      expect(page).to have_text("Trending on #{Settings::Community.community_name}")
+      expect(page).to have_text("Популярне у #{Settings::Community.community_name}")
     end
 
     it "suggests more articles by the author if there are any" do
       create(:article, user: user)
       visit article.path
-      expect(page).to have_text("More from #{user.name}")
+      expect(page).to have_text("Ще від #{user.name}")
     end
   end
 

@@ -4,8 +4,8 @@ en:
     auth:
       background: forem background
       create:
-        aria_label: Створити профіль
-        text: Створити профіль
+        aria_label: Створити акаунт
+        text: Створити акаунт
       creator:
         text1: Знайдіть для себе свій Куток!
         text2: Create your admin account first.
