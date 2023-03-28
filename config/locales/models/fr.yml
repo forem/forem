@@ -2,126 +2,126 @@
 fr:
   models:
     api_secret:
-      api_limit_reached: API secret limit of 10 per user has been reached
+      api_limit_reached: La limite API de 10 clés secrètes par utilisateur a été atteinte.
     application_record:
-      uninferrable: Could not infer a decorator for %{class}.
+      uninferrable: Impossible de déduire un décorateur pour %{class}.
     article:
-      a_post_by: A post by %{user_name}
-      video_unpermitted: cannot be added by member without permission
-      video_processing: cannot be set to true if video is still processing
-      cannot_search_tags_for: 'Cannot search tags for: %{tag}'
-      cannot_search_tags_for_tags: 'Cannot search tags for: %{tags}'
-      unique_coauthor: co-author IDs must be unique
-      too_many_tags: exceed the maximum of 4 tags
-      is_too_long: is too long.
-      invalid_date: must be entered in DD/MM/YYYY format with current or past date
-      series_unpermitted: must be one you have permission to post to
-      invalid_coauthor: must be valid user IDs
-      same_author: must not be the same user as the author
-      must_not_have_spaces: must not have spaces
-      published: Published
-      unique_url: has already been taken. Email %{email} for further details.
-      future_or_current_published_at: only future or current published_at allowed
-      immutable_published_at: updating published_at for articles that have already been published is not allowed
+      a_post_by: Un article de %{user_name}
+      video_unpermitted: ne peut être ajouté par un membre sans autorisation
+      video_processing: ne peut pas être mis à true si la vidéo est toujours en cours de traitement
+      cannot_search_tags_for: 'Impossible de rechercher les tags pour : %{tag}'
+      cannot_search_tags_for_tags: 'Impossible de rechercher les tags pour : %{tags}'
+      unique_coauthor: les identifiants des co-auteurs doivent être uniques
+      too_many_tags: dépassé le maximum de 4 tags
+      is_too_long: est trop long.
+      invalid_date: doit être saisie au format JJ/MM/AAAA avec la date actuelle ou passée
+      series_unpermitted: Vous devez avoir la permission de poster sur
+      invalid_coauthor: doivent être des identifiants d'utilisateur valides
+      same_author: ne doit pas être le même utilisateur que l'auteur
+      must_not_have_spaces: ne doit pas comporter d'espaces
+      published: Publié
+      unique_url: a déjà été pris. Envoyez un e-mail à %{email} pour plus de détails.
+      future_or_current_published_at: seulement le futur ou le présent published_at autorisé lors de la publication d'un article
+      immutable_published_at: la mise à jour de published_at pour les articles qui ont déjà été publiés n'est pas autorisée
       mention_too_many:
-        one: You cannot mention more than %{count} users in a post!
-        other: You cannot mention more than %{count} users in a post!
+        one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un article !
+        other: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un message !
     broadcast:
-      single_active: You can only have one active announcement broadcast
+      single_active: Vous ne pouvez avoir qu'une seule diffusion d'annonce active
     comment:
-      deleted: '[deleted]'
-      has_been_deleted: '%{type} has been deleted.'
-      hidden: '[hidden by post author]'
-      is_not_valid: is not valid.
-      locked: the discussion is locked on this Post
-      published_article: is not a published article
+      deleted: '[supprimé]'
+      has_been_deleted: '%{type} a été supprimé'
+      hidden: "[caché par l'auteur du message]"
+      is_not_valid: n'est pas valide.
+      locked: la discussion est verrouillée sur ce message
+      published_article: n'est pas un article publié
       type:
         Article: Article
-        item: item
-        PodcastEpisode: Podcast episode
-      suspended_too_many: User suspended for too many spammy interactions, triggered by autovomit.
+        item: élément
+        PodcastEpisode: Épisode de podcast
+      suspended_too_many: L'utilisateur a été suspendu pour un trop grand nombre d'interactions spammy, déclenchées par autovomit.
       mention_too_many:
-        one: You cannot mention more than %{count} users in a comment!
-        other: You cannot mention more than %{count} users in a comment!
+        one: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un commentaire !
+        other:  Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un commentaire !
     feedback_message:
-      reported: '(you) previously reported this URL.'
+      reported: "(vous) avez déjà signalé cette URL."
     github_issue:
-      issue_comment_not_found: Issue comment %{issue_id} not found
-      issue_not_found: Issue %{issue_id} not found
+      issue_comment_not_found: Issue comment %{issue_id} non trouvé
+      issue_not_found: Issue %{issue_id} non trouvée
     html_variant:
-      no_edits: cannot change once published and approved
+      no_edits: ne peut pas être modifié une fois publié et approuvé
     identity:
-      no_email_msg: No email found. Please relink your %{provider} account to avoid errors.
+      no_email_msg: Pas d'email trouvé. Veuillez relier votre compte %{provider} pour éviter les erreurs.
     listing:
-      too_many_tags: exceed the maximum of 8 tags
-      too_many_linebreaks: has too many linebreaks. No more than 12 allowed.
-      image_not_allowed: is not allowed to include images.
-      liquid_not_allowed: is not allowed to include liquid tags.
+      too_many_tags: dépasse le maximum de 8 balises.
+      too_many_linebreaks: a trop de retours à la ligne. Pas plus de 12 autorisés.
+      image_not_allowed: n'est pas autorisé à inclure des images.
+      liquid_not_allowed: n'est pas autorisé à inclure des balises liquides.
     mention:
-      is_not_valid: is not valid.
+      is_not_valid: n'est pas valide.
     organization:
-      integer_only: Integer only. No sign allowed.
-      reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
+      integer_only: Entier seulement. Aucun signe n'est autorisé.
+      reserved_word: "%<value>s est un mot réservé. Contactez l'administrateur du site pour obtenir de l'aide pour enregistrer votre organisation."
     page:
-      body_must_exist: must exist if body_html or body_json doesn't exist.
+      body_must_exist: doit exister si body_html ou body_json n'existe pas.
     podcast:
-      slug_is_reserved: slug is reserved
+      slug_is_reserved: le slug est réservé.
     podcast_episode_appearance:
-      provided_role_is_not_valid: provided role is not valid
+      provided_role_is_not_valid: le rôle fourni n'est pas valide.
     poll_skip:
-      cannot_vote_more_than_once: cannot vote more than once in one poll
+      cannot_vote_more_than_once: ne peut pas voter plus d'une fois dans un sondage
     poll_vote:
-      cannot_vote_more_than_once: cannot vote more than once in one poll
+      cannot_vote_more_than_once: Impossible de voter plus d'une fois dans un sondage.
     profile_pin:
-      only_five: cannot have more than five total pinned posts
-      pin_unpermitted: must have proper permissions for pin
+      only_five: ne peut pas avoir plus de cinq messages épinglés au total
+      pin_unpermitted: doit avoir les autorisations appropriées pour l'épinglage
     rating_vote:
-      not_permitted: is not permitted to take this action.
+      not_permitted: n'est pas autorisé à effectuer cette action.
     reaction:
-      is_not_valid: is not valid.
+      is_not_valid: n'est pas valide.
     response_template:
-      user_nil_only: cannot have a user ID associated.
-      comment_markdown: Comment templates must use Markdown as its content type.
-      email_text: Email templates must use plain text or HTML as its content type.
-      limit_reached: Response template limit of 30 per user has been reached
+      user_nil_only: ne peut pas avoir d'ID utilisateur associé.
+      comment_markdown: Les modèles de commentaires doivent utiliser Markdown comme type de contenu.
+      email_text: Les modèles d'email doivent utiliser le texte brut ou le HTML comme type de contenu.
+      limit_reached: La limite de 30 modèles de réponse par utilisateur a été atteinte.
     settings:
       campaign:
-        share_your_project: Share your project
+        share_your_project: Partagez votre projet
       community:
-        message: may not include the "<" nor ">" character
-        new_forem: New Forem
-        user: user
+        message: ne peut pas inclure le caractère "<" ou ">".
+        new_forem: Nouveau Forem
+        user: utilisateur
       general:
-        community_sponsors: Community Sponsors
-        the_community_mascot: The community mascot
+        community_sponsors: Sponsors communautaires
+        the_community_mascot: La mascotte de la communauté
       user_experience:
-        message: 'must be be a 3 or 6 character hex (starting with #)'
+        message: 'doit être un hexagone de 3 ou 6 caractères (commençant par #)'
     tag:
-      alias_for: alias_for must refer to an existing tag
+      alias_for: alias_for doit faire référence à une balise existante
     tag_adjustment:
-      too_many_tags: 4 tags max per article.
-      unpermitted: does not have privilege to adjust these tags
-      not_live: selected for removal is not a current live tag.
-      unique: can't be an already adjusted tag
+      too_many_tags: 4 balises maximum par article.
+      unpermitted: n'a pas le privilège d'ajuster ces balises
+      not_live: la balise sélectionnée pour la suppression n'est pas une balise active.
+      unique: ne peut pas être un tag déjà ajusté.
     tweet:
-      tweet_not_found: Tweet not found
-      authentication_error: Authentication error; please contact your Forem admin about possible missing Twitter keys
+      tweet_not_found: Tweet non trouvé
+      authentication_error: Erreur d'authentification ; veuillez contacter votre administrateur Forem au sujet d'éventuelles clés Twitter manquantes.
     user:
-      could_not_send: confirmation could not be sent. %{e_message}
-      password_not_matched: doesn't match password confirmation
-      has_been_banished: has been banished.
-      is_taken: '%{username} is taken.'
-      user_could_not_be_saved: User could not be saved. %{e_message}
-      username_is_reserved: username is reserved
+      could_not_send: la confirmation n'a pas pu être envoyée. %{e_message}
+      password_not_matched: ne correspond pas à la confirmation du mot de passe.
+      has_been_banished : a été banni.
+      is_taken: '%{username} est pris.'
+      user_could_not_be_saved: L'utilisateur n'a pas pu être enregistré. %{e_message}
+      username_is_reserved: Le nom d'utilisateur est réservé.
     user_block:
-      cant_be_the_same: can't be the same as the blocked_id
+      cant_be_the_same: ne peut pas être le même que le blocked_id
     user_subscription:
-      non_apple: Can't subscribe with an Apple private relay. Please update email.
-      source_not_found: Source not found. Please make sure your %{source} is active!
-      not_enabled: User subscriptions are not enabled for the source.
+      non_apple: Impossible de s'abonner avec un relais privé Apple. Veuillez mettre à jour l'email.
+      source_not_found: Source non trouvée. Veuillez vous assurer que votre %{source} est active !
+      not_enabled: Les abonnements des utilisateurs ne sont pas activés pour la source.
     users:
       deleted_user:
         name: '[Deleted User]'
       setting:
-        invalid_hex: is not a valid hex color
-        invalid_rss: is not a valid RSS/Atom feed
+        invalid_hex: n'est pas une couleur hexagonale valide
+        invalid_rss: n'est pas un flux RSS/Atom valide

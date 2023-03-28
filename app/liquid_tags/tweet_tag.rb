@@ -27,6 +27,10 @@ class TweetTag < LiquidTagBase
     });
   JAVASCRIPT
 
+  def self.script
+    SCRIPT
+  end
+
   def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id_or_url(strip_tags(id))
@@ -43,10 +47,6 @@ class TweetTag < LiquidTagBase
         twitter_logo: @twitter_logo
       },
     )
-  end
-
-  def self.script
-    SCRIPT
   end
 
   private

@@ -21,7 +21,7 @@ fr:
     success_settings: Successfully updated settings.
   date:
     abbr_month_names:
-    - 
+    -
     - janv
     - févr
     - mars
@@ -75,81 +75,82 @@ fr:
         other: il y a %{count} ans
     expired_ago:
       about_x_hours:
-        one: Expired about 1 hour ago
-        other: Expired about %{count} hours ago
+        one: Expiré il y a environ 1 heure
+        other: Expiré il y a environ %{count} heures
       about_x_months:
-        one: Expired about 1 month ago
-        other: Expired about %{count} months ago
+        one:  Expiré il y a environ 1 mois
+        other: Expiré il y a environ %{count} mois
       about_x_years:
-        one: Expired about 1 year ago
-        other: Expired about %{count} years ago
+        one:  Expiré il y a environ 1 an
+        other: Expiré il y a environ %{count} ans
       almost_x_years:
-        one: Expired almost 1 year ago
-        other: Expired almost %{count} years ago
-      half_a_minute: Expired half a minute ago
+        one: Expiré il y a presque 1 an
+        other: Expiré il y a presque %{count} an
+      half_a_minute: Expiré il y a une demi-minute
       less_than_x_seconds:
-        one: Expired less than 1 second ago
-        other: Expired less than %{count} seconds ago
+        one: Expiré il y a moins d'une seconde
+        other: Expiré il y a moins de %{count} secondes
       less_than_x_minutes:
-        one: Expired less than a minute ago
-        other: Expired less than %{count} minutes ago
+        one: Expiré il y a moins d'une minute
+        other: Expiré il y a moins de %{count} minutes
       over_x_years:
-        one: Expired over 1 year ago
-        other: Expired over %{count} years ago
+        one: Expiré il y a plus de 1 an
+        other: Expiré il y a plus de %{count} ans
       x_seconds:
-        one: Expired 1 second ago
-        other: Expired %{count} seconds ago
+        one: Expiré il y a plus de 1 seconde
+        other: Expiré il y a %{count} secondes
       x_minutes:
-        one: Expired 1 minute ago
-        other: Expired %{count} minutes ago
+        one: Expiré il y a plus de 1 minute
+        other: Expiré il y a %{count} minutes
       x_days:
-        one: Expired 1 day ago
-        other: Expired %{count} days ago
+        one: Expiré il y a 1 jour
+        other: Expiré il y a %{count} jours
       x_months:
-        one: Expired 1 month ago
-        other: Expired %{count} months ago
+        one: Expiré il y a 1 mois
+        other: Expiré %{count} mois auparavant
       x_years:
-        one: Expired 1 year ago
-        other: Expired %{count} years ago
+        one: Expiré il y a 1 an
+        other: Expiré il y a %{count} ans
     expires_in:
       about_x_hours:
-        one: Expires in about 1 hour
-        other: Expires in about %{count} hours
+        one: Expire dans environ 1 heure
+        other: Expire dans environ %{count} heures
       about_x_months:
-        one: Expires in about 1 month
-        other: Expires in about %{count} months
+        one: Expire dans environ 1 mois
+        other: Expire dans environ %{count} mois
       about_x_years:
-        one: Expires in about 1 year
-        other: Expires in about %{count} years
+        one: Expire dans environ 1 an
+        other: Expire dans environ %{count} années
       almost_x_years:
-        one: Expires in almost 1 year
-        other: Expires in almost %{count} years
-      half_a_minute: Expires in half a minute
+        one: Expire dans presque 1 an
+        other: Expire dans presque %{count} années
+      half_a_minute: Expire dans une demi-minute
       less_than_x_seconds:
-        one: Expires in less than 1 second
-        other: Expires in less than %{count} seconds
+        one: Expire dans moins d'une seconde
+        other: Expire dans moins de %{count} secondes
       less_than_x_minutes:
-        one: Expires in less than a minute
-        other: Expires in less than %{count} minutes
+        one: Expire dans moins d'une minute
+        other: Expire dans moins de %{count} minutes
       over_x_years:
-        one: Expires in over 1 year
-        other: Expires in over %{count} years
+        one: Expire dans plus d'un an
+        other: Expire dans plus de %{count} ans
       x_seconds:
-        one: Expires in 1 second
-        other: Expires in %{count} seconds
+        one: Expire dans 1 seconde
+        other: Expire dans %{count} secondes
       x_minutes:
-        one: Expires in 1 minute
-        other: Expires in %{count} minutes
+        one: Expire dans 1 minute
+        other: Expire dans %{count} minutes
       x_days:
-        one: Expires in 1 day
-        other: Expires in %{count} days
+        one: Expire dans 1 jour
+        other: Expire dans %{count} jours
       x_months:
-        one: Expires in 1 month
-        other: Expires in %{count} months
+        one: Expire dans 1 mois
+        other: Expire dans %{count} mois
       x_years:
-        one: Expires in 1 year
-        other: Expires in %{count} years
+        one: Expire dans 1 an
+        other: Expire dans %{count} ans
   display_ad:
+    promoted: Promu
     menu:
       aria_label: Basculer le menu déroulant
       icon: Menu déroulant
@@ -196,7 +197,7 @@ fr:
       too_short:
         one: est trop court (au moins 1 caractère)
         other: est trop court (le minimum est de %{count} caractères)
-      try_again_email: 'An error occurred. Please try again or send an email to: %{email}'
+      try_again_email: "Une erreur s'est produite. Veuillez réessayer ou envoyer un e-mail à: %{email}"
       wrong_length:
         one: est la mauvaise longueur (devrait être 1 caractère)
         other: est la mauvaise longueur (devrait être %{count} caractères)

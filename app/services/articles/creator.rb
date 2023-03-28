@@ -1,12 +1,12 @@
 module Articles
   class Creator
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user, article_params)
       @user = user
       @article_params = article_params
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call

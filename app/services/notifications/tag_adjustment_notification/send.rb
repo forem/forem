@@ -2,12 +2,12 @@
 module Notifications
   module TagAdjustmentNotification
     class Send
-      def initialize(tag_adjustment)
-        @tag_adjustment = tag_adjustment
-      end
-
       def self.call(...)
         new(...).call
+      end
+
+      def initialize(tag_adjustment)
+        @tag_adjustment = tag_adjustment
       end
 
       def call

@@ -2,112 +2,112 @@
 fr:
   liquid_tags:
     asciinema_tag:
-      invalid_asciinema_id: 'Invalid Asciinema ID: %{id}'
+      invalid_asciinema_id: "ID d'Asciinema non valide : %{id}"
     blogcast_tag:
-      invalid_blogcast_id: Invalid Blogcast ID
+      invalid_blogcast_id: ID de blogcast non valide
     codepen_tag:
-      invalid_codepen_url: Invalid CodePen URL
-      invalid_options: Invalid Options
+      invalid_codepen_url: URL du CodePen non valide
+      invalid_options: Options non valides
     codesandbox_tag:
-      invalid_id: 'CodeSandbox Error: Invalid ID'
+      invalid_id: 'CodeSandbox Erreur : ID invalide'
     comment_tag:
-      invalid_comment: Invalid Comment ID or URL
+      invalid_comment: ID ou URL du commentaire non valide
     dotnet_fiddle_tag:
-      invalid_dotnetfiddle_url: Invalid DotnetFiddle URL
+      invalid_dotnetfiddle_url: URL non valide de DotnetFiddle
     gist_tag:
-      invalid_filename: Invalid Filename
-      invalid_format: 'Invalid Gist link: %{link} Links must follow this format: https://gist.github.com/username/gist_id'
-      invalid_gist_link: 'Invalid Gist link: You must provide a Gist link'
+      invalid_filename: Nom de fichier non valide
+      invalid_format: 'Lien Gist non valide : %{link} Les liens doivent respecter ce format : https://gist.github.com/username/gist_id'
+      invalid_gist_link: 'Lien Gist non valide : Vous devez fournir un lien Gist'
     git_pitch_tag:
-      invalid_gitpitch_url: Invalid GitPitch URL
+      invalid_gitpitch_url: URL GitPitch non valide
     github_tag:
       github_issue_tag:
-        comment_for: Comment for
-        commented_on: commented on
-        invalid_github_issue_pull: Invalid GitHub issue, pull request or comment link
-        posted_on: posted on
+        comment_for: Commentaire pour
+        commented_on: commenté sur
+        invalid_github_issue_pull: Lien vers une issue, une pull request ou un commentaire GitHub non valide
+        posted_on: posté sur
       github_readme_tag:
-        invalid_options: 'GitHub tag: invalid options: %{invalid} | supported options: %{valid}'
-        invalid_github_repository: Invalid GitHub repository path or URL
+        invalid_options: 'Balise GitHub : options invalides : %{invalid} | Options supportées : %{valid}'
+        invalid_github_repository: Chemin ou URL du dépôt GitHub non valide
     glitch_tag:
-      invalid_glitch_id: Invalid Glitch ID
-      invalid_options: Invalid Options
+      invalid_glitch_id: ID de problème invalide
+      invalid_options: Options non valides
     instagram_tag:
-      invalid_instagram_id: Invalid Instagram ID
+      invalid_instagram_id: ID Instagram non valide
     js_fiddle_tag:
-      invalid_jsfiddle_url: Invalid JSFiddle URL
-      invalid_options: Invalid Options
+      invalid_jsfiddle_url: URL du JSFiddle non valide
+      invalid_options: Options non valides
     jsitor_tag:
-      invalid_jsitor_link: Invalid JSitor link. Please read the editor guide for more information
+      invalid_jsitor_link: Lien JSitor non valide. Veuillez lire le guide de l'éditeur pour plus d'informations
     kotlin_tag:
-      invalid_kotlin_playground: Invalid Kotlin Playground URL
+      invalid_kotlin_playground: URL invalide de Kotlin Playground
     link_tag:
-      not_exist: "The article you're looking for does not exist: %{slug}"
-      not_exist_link: "The article you're looking for does not exist: {% link %{slug} %}"
+      not_exist: "L'article que vous recherchez n'existe pas : %{slug}"
+      not_exist_link: "L'article que vous recherchez n'existe pas : {% link %{slug} %}"
     liquid_tag_base:
-      invalid_context: Invalid context. This liquid tag can only be used in %{valid}.
-      no_source_found: No source found
+      invalid_context: Contexte non valide. Cette balise liquide ne peut être utilisée que dans %{valid}.
+      no_source_found: Aucune source trouvée
     listing_tag:
-      invalid_url_or_slug: Invalid URL or slug. Listing not found.
+      invalid_url_or_slug: URL ou slug non valide. Liste non trouvée.
     loom_tag:
-      invalid_loom_url: Invalid Loom URL.
+      invalid_loom_url: URL Invalide du Loom.
     medium_tag:
-      invalid_link_url: Invalid link URL or link URL does not exist
+      invalid_link_url: Lien URL invalide ou lien URL inexistant
     next_tech_tag:
-      invalid_url: Invalid Next Tech share URL
+      invalid_url: URL du partage Next Tech non valide
     null_tag:
-      liquid_tag_is_disabled: Liquid#%{tag_name} tag is disabled
+      liquid_tag_is_disabled: Le tag Liquid#%{tag_name} est désactivé
     organization_tag:
-      invalid_slug: Invalid organization slug
-      invalid_url: Invalid Organization URL
+      invalid_slug: Le nom de l'organisation n'est pas valide
+      invalid_url: URL de l'organisation non valide
     parler_tag:
-      invalid_parler_url: Invalid Parler URL
+      invalid_parler_url: URL non valide de Parler
     podcast_tag:
-      invalid_podcast_link: Invalid podcast link
+      invalid_podcast_link: Lien podcast non valide
     reddit_tag:
-      invalid_reddit_link: 'Invalid Reddit link: %{url}'
+      invalid_reddit_link: 'Lien Reddit invalide : %{url}'
     replit_tag:
-      invalid_replit_id: Invalid Replit URL or @user/slug
+      invalid_replit_id: URL Replit non valide ou @user/slug
     runkit_tag:
-      runkit_tag_is_invalid: Runkit tag is invalid
+      runkit_tag_is_invalid: Le tag Runkit n'est pas valide
     slideshare_tag:
-      invalid_slideshare_key: Invalid Slideshare Key
+      invalid_slideshare_key: Clé Slideshare non valide
     soundcloud_tag:
-      invalid_soundcloud_url: "Invalid Soundcloud URL - try taking off any URL params: '?something=value'"
+      invalid_soundcloud_url: "URL Soundcloud non valide - essayez de retirer les paramètres de l'URL :  '?something=value'"
     speakerdeck_tag:
-      invalid_speakerdeck_id: Invalid Speakerdeck Id
+      invalid_speakerdeck_id: ID Speakerdeck non valide
     spotify_tag:
-      invalid_spotify_uri: Invalid Spotify URI or URL.
+      invalid_spotify_uri: URI ou URL Spotify non valide.
     stackblitz_tag:
-      invalid_options: Invalid Options
-      invalid_stackblitz_id: Invalid Stackblitz Id
+      invalid_options: Options non valides
+      invalid_stackblitz_id: ID Stackblitz non valide
     stackery_tag:
-      missing_argument: Stackery - Missing owner and/or repository name arguments
+      missing_argument: Stackery - Arguments manquants pour le nom du propriétaire et/ou du référentiel
     stackexchange_tag:
-      post_not_found: "Couldn't find a post with that ID: {% %{tag} %{input} %}"
-      invalid_id: 'Invalid Stack Exchange ID: {% %{tag} %{input} %}'
-      invalid_site: 'Invalid Stack Exchange site: {% %{tag} %{input} %}'
+      post_not_found: "Impossible de trouver le message avec cet identifiant : {% %{tag} %{input} %}"
+      invalid_id: 'ID de Stack Exchange non valide : {% %{tag} %{input} %}'
+      invalid_site: 'Site Stack Exchange non valide : {% %{tag} %{input} %}'
     tag_tag:
-      invalid_tag_name: invalid tag name
+      invalid_tag_name: nom d'étiquette invalide
     tweet_tag:
-      invalid_twitter_id: Invalid Twitter ID or URL
+      invalid_twitter_id: ID ou URL Twitter non valide
     twitch_tag:
-      invalid_twitch_id: Invalid Twitch ID, Slug or URL
+      invalid_twitch_id: ID Twitch, Slug ou URL invalide
     twitter_timeline_tag:
-      invalid_url: Invalid Twitter Timeline URL
+      invalid_url: URL de la timeline de Twitter non valide.
     unified_embed:
       tag:
-        invalid_url: URL provided may have a typo or error; please check and try again
-        not_found: URL provided was not found; please check and try again
-        listings_disabled: Listings are disabled on this Forem; cannot embed a listing URL
-        too_many_redirects: Embedded link redirected too many times.
+        invalid_url: L'URL fournie peut contenir une faute de frappe ou une erreur ; veuillez vérifier et réessayer
+        not_found: L'URL fournie n'a pas été trouvée. Veuillez vérifier et réessayer
+        listings_disabled: Les Listings sont désactivées sur ce Forem ; il n'est pas possible d'intégrer une URL de liste
+        too_many_redirects: Le lien incorporé a redirigé trop de fois.
     user_subscription_tag:
-      submit: Submit
-      submitting: Submitting...
-      subscribed: You are already subscribed.
+      submit: Envoyer
+      submitting: Envoyer...
+      subscribed: Vous êtes déjà inscrit.
     wikipedia_tag:
-      section_not_found: Couldn't find the section of the Wikipedia article - %{input}
-      article_not_found: "Couldn't find the Wikipedia article - %{input}: %{response_detail}"
-      invalid_wikipedia_url: Invalid Wikipedia URL
+      section_not_found: Impossible de trouver la section de l'article de Wikipedia - %{input}
+      article_not_found: "Impossible de trouver l'article de Wikipedia - %{input}: %{response_detail}"
+      invalid_wikipedia_url: URL Wikipedia non valide
     youtube_tag:
-      invalid_youtube_id: Invalid YouTube ID or URL
+      invalid_youtube_id: ID ou URL YouTube non valide

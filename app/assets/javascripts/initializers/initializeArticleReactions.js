@@ -73,6 +73,15 @@ function hideUserReaction(reactionName) {
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
   reactionButton.setAttribute('aria-pressed', 'false');
+  const reactionDrawerButton = document.getElementById(
+    'reaction-drawer-trigger',
+  );
+  const userActivatedReactions = document
+    .querySelector('.reaction-drawer')
+    .querySelectorAll('.user-activated');
+  if (userActivatedReactions.length == 0) {
+    reactionDrawerButton.classList.remove('user-activated', 'user-animated');
+  }
 }
 
 function hasUserReacted(reactionName) {
@@ -191,7 +200,7 @@ function requestReactionCounts(articleId) {
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(ajaxReq.response);
-      setSumReactionCount(json.article_reaction_counts)
+      setSumReactionCount(json.article_reaction_counts);
       showCommentCount();
       json.article_reaction_counts.forEach((reaction) => {
         setReactionCount(reaction.category, reaction.count);
@@ -217,7 +226,7 @@ function openDrawerOnHover() {
   drawerTrigger.addEventListener('click', function (event) {
     var articleId = document.getElementById('article-body').dataset.articleId;
     reactToArticle(articleId, 'like');
-    
+
     drawerTrigger.parentElement.classList.add('open');
   });
 
@@ -249,11 +258,15 @@ function openDrawerOnHover() {
 function closeDrawerOnOutsideClick() {
   document.addEventListener('click', function (event) {
     const reactionDrawerElement = document.querySelector('.reaction-drawer');
-    const reactionDrawerTriggerElement = document.querySelector('#reaction-drawer-trigger');
+    const reactionDrawerTriggerElement = document.querySelector(
+      '#reaction-drawer-trigger',
+    );
     if (reactionDrawerElement && reactionDrawerTriggerElement) {
-      const isClickInside = reactionDrawerElement.contains(event.target) || reactionDrawerTriggerElement.contains(event.target);
+      const isClickInside =
+        reactionDrawerElement.contains(event.target) ||
+        reactionDrawerTriggerElement.contains(event.target);
 
-      const openDrawerElement = document.querySelector('.hoverdown.open')
+      const openDrawerElement = document.querySelector('.hoverdown.open');
       if (!isClickInside && openDrawerElement) {
         openDrawerElement.classList.remove('open');
       }

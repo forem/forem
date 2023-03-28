@@ -5,6 +5,30 @@ module Authentication
       delegate :email, to: :info, prefix: :user
       delegate :user_username_field, to: :class
 
+      def self.provider_name
+        name.demodulize.underscore.to_sym
+      end
+
+      def self.user_username_field
+        "#{provider_name}_username".to_sym
+      end
+
+      def self.official_name
+        name.demodulize
+      end
+
+      def self.settings_url
+        raise SubclassResponsibility
+      end
+
+      def self.authentication_path(**kwargs)
+        ::Authentication::Paths.authentication_path(provider_name, **kwargs)
+      end
+
+      def self.sign_in_path(**_kwargs)
+        raise SubclassResponsibility
+      end
+
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)
         @info = auth_payload.info
@@ -31,30 +55,6 @@ module Authentication
 
       def payload
         auth_payload
-      end
-
-      def self.provider_name
-        name.demodulize.underscore.to_sym
-      end
-
-      def self.user_username_field
-        "#{provider_name}_username".to_sym
-      end
-
-      def self.official_name
-        name.demodulize
-      end
-
-      def self.settings_url
-        raise SubclassResponsibility
-      end
-
-      def self.authentication_path(**kwargs)
-        ::Authentication::Paths.authentication_path(provider_name, **kwargs)
-      end
-
-      def self.sign_in_path(**_kwargs)
-        raise SubclassResponsibility
       end
 
       protected
