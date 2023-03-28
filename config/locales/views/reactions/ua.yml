@@ -10,7 +10,7 @@ ua:
         thumbsup: Палець вгору
         thumbsdown: Палець вниз
         unicorn: Казково!
-        vomit: Погане
+        vomit: Жахливо
       summary:
         count_html:
           one: "%{count}%{start}\_reaction%{end}"

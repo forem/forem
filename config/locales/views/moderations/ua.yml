@@ -107,10 +107,10 @@ ua:
         toggle: Toggle section
         feature: Зафічерити допис
         unfeature: Розфічерити допис
-        unpublish: Розфічерити допис
+        unpublish: Приховати допис
         unpublish_all:
-          title: Unpublish all posts
-          button: Unpublish all posts for %{username}
+          title: Приховати усі дописи
+          button: Приховати усі дописи від %{username}
           modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
           modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
           modal_button: Розпублікувати усі дописи

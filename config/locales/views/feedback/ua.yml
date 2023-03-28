@@ -3,18 +3,18 @@ ua:
   views:
     feedback:
       meta:
-        title: Feedback
-      heading: Thank you for your report.
-      home: Return to home page
+        title: Фідбек
+      heading: Дякуємо за ваше звернення.
+      home: Повернутися на головну
       form:
-        rude_or_vulgar: Rude or vulgar
-        harassment: Harassment or hate speech
-        spam: Spam or copyright issue
-        listings: Inappropriate listings message/category
-        other: Other
-        url: Reported URL
+        rude_or_vulgar: Грубо або вульгарно
+        harassment: Переслідування або мова ненависті
+        spam: Спам або проблеми з авторськими правами
+        listings: Невідповідне повідомлення/категорія
+        other: Інше
+        url: Посилання URL
         message:
-          subtitle: Message
-          description: Please provide any additional information or context that will help us understand and handle the situation.
+          subtitle: Повідомлення
+          description: Будь ласка, надайте будь-яку додаткову інформацію або контекст, який допоможе нам зрозуміти і вирішити ситуацію.
           placeholder: "..."
-        submit: Send Feedback
+        submit: Надіслати відгук
