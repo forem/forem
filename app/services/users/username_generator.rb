@@ -14,9 +14,10 @@ module Users
     end
 
     # @param usernames [Array<String>] a list of usernames
-    def initialize(usernames = [], generator: nil)
-      @usernames = usernames
+    def initialize(usernames = [], detector: CrossModelSlug, generator: nil)
+      @detector = detector
       @generator = generator || method(:random_username)
+      @usernames = usernames
     end
 
     def call
@@ -48,11 +49,13 @@ module Users
     end
 
     def username_exists?(username)
-      CrossModelSlug.exists?(username)
+      @detector.exists?(username)
     end
 
     def suffixed_usernames
-      normalized_usernames.map { |s| [s, rand(100)].join("_") }
+      return [] unless filtered_usernames.any?
+
+      normalized_usernames.map { |stem| [stem, rand(100)].join("_") }
     end
   end
 end
