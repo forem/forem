@@ -14,8 +14,9 @@ module Users
     end
 
     # @param usernames [Array<String>] a list of usernames
-    def initialize(usernames = [])
+    def initialize(usernames = [], generator: nil)
       @usernames = usernames
+      @generator = generator || method(:random_username)
     end
 
     def call
@@ -32,6 +33,14 @@ module Users
       @filtered_usernames ||= usernames.select { |s| s.is_a?(String) && s.present? }
     end
 
+    def random_username
+      ("a".."z").to_a.sample(12).join
+    end
+
+    def random_usernames
+      Array.new(3) { @generator.call }
+    end
+
     private
 
     def first_available_from(list)
@@ -44,14 +53,6 @@ module Users
 
     def suffixed_usernames
       normalized_usernames.map { |s| [s, rand(100)].join("_") }
-    end
-
-    def random_letters
-      ("a".."z").to_a.sample(12).join
-    end
-
-    def random_usernames
-      Array.new(3) { random_letters }
     end
   end
 end
