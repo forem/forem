@@ -15,7 +15,7 @@ coverage:
 flag_management:
   default_rules:
     carryforward: true
-    # statuses:
-    #   - type: project
-    #     target: auto
-    #     threshold: 1%
+    statuses:
+      - type: project
+        target: auto
+        threshold: 1%

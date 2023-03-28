@@ -360,7 +360,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
           KNAPSACK_PRO_TEST_FILE_PATTERN: "cypress/e2e/seededFlows/**/*.spec.js"
-        run: bin/knapsack_pro_cypress
+        run: DEBUG=code-coverage bin/knapsack_pro_cypress
         if: ${{ matrix.ci_node_index != 'non-seed' }}
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
