@@ -667,7 +667,7 @@ class Article < ApplicationRecord
     content_renderer = processed_content
     return unless content_renderer
 
-    result = content_renderer.process_article # (calculate_reading_time: true)
+    result = content_renderer.process_article
 
     self.processed_html = result.processed_html
     self.reading_time = result.reading_time
