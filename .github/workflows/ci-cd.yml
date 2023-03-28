@@ -60,6 +60,8 @@ jobs:
 
   precompile_assets:
     runs-on: ubuntu-latest
+    env:
+      E2E: true
 
     steps:
       - uses: actions/checkout@v3
@@ -308,6 +310,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [bundle_install, yarn_install, precompile_assets]
+    env:
+      E2E: true
 
     services:
       postgres:
