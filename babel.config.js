@@ -35,7 +35,7 @@ module.exports = function (api) {
       ],
     ].filter(Boolean),
     plugins: [
-      isTestEnv && ['istanbul'],
+      'istanbul',
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
