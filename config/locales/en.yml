@@ -141,6 +141,7 @@ en:
       icon: Dropdown menu
       manage_preferences: Manage preferences
       what_is_a_billboard: What's a billboard?
+      report_billboard: Report billboard
   errors:
     messages:
       accepted: must be accepted
