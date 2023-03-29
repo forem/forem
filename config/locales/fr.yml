@@ -156,6 +156,7 @@ fr:
       icon: Menu déroulant
       manage_preferences: Gérer les préférences
       what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
+      report_billboard: Report billboard
   errors:
     messages:
       accepted: doit être accepté
