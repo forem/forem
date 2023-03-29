@@ -17,6 +17,7 @@ vendor/bundle
 .approvals
 .torus.json
 coverage
+.nyc_output
 /tags
 
 # Ignore public uploads
