@@ -23,26 +23,26 @@ ua:
         view: "Переглянути"
         form:
           pretty_name:
-            label: Pretty name
-            placeholder: This is the name at the top of the show page.
+            label: Гарне ім'я
+            placeholder: Це назва у верхній частині сторінки теґу.
           bg_color_hex:
-            label: Tag color
+            label: Кольор теґа
           short_summary:
-            label: Short summary
-            placeholder: Brief overview of what this tag is all about.
+            label: Короткий опис
+            placeholder: Короткий огляд того, що означає цей тег.
           wiki_body_markdown:
-            label: Wiki body markdown
-            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+            label: Основне
+            placeholder: Це розділ "про теґ". Не соромтеся додавати поширені запитання, додаткові ресурси тощо.
           rules_markdown:
-            label: Rules markdown
-            placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
+            label: Правила
+            placeholder: Необов'язково - може використовуватися для челенжів, тобто інструкцій щодо подання заявок
           submit: Save
       follow: Підписатися
       following_tags: Підписка на теґи
       moderator:
-        text_html: "comma separated, space is optional. Example: %{code}"
+        text_html: "через кому, пробіл не обов'язковий. Наприклад: %{code}"
         code: 123
-        placeholder: "comma separated, space is optional. Example: 1,2,3"
+        placeholder: "через кому, пробіл не обов'язковий. Наприклад: 1,2,3"
       published:
         one: 1 допис опубліковано
         other: "%{count} дописів опубліковано"
@@ -50,13 +50,13 @@ ua:
         about: 'про #%{tag}'
         admin: Адмін
         edit: Редагувати
-        guidelines: submission guidelines
+        guidelines: правила теґу
         moderate: Модерувати
         mods: модератори теґу
         new: Створити допис
         older: 'Старіші #%{tag} дописи'
         published:
-          one: 1 Post Published
+          one: 1 допис опубліковано
           other: "%{count} дописів опубліковано"
         sponsor: "%{tag} спонсорується"
       sponsor: "| Спонсор: %{org} ❤️"
