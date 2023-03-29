@@ -138,7 +138,7 @@ describe('Comment on articles', () => {
 
         cy.get('@commentTextArea').type('Some text @u');
         verifyComboboxMode();
-        cy.get('@commentTextArea').type('s');
+        cy.get('@commentTextArea').type('');
       });
 
       cy.findByText('No results found').should('exist');
