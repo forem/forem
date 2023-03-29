@@ -65,7 +65,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Look up if compiled assets exist
+        uses: actions/cache@v3
         id: precompiled-asset
         with:
           fail-on-cache-miss: false
@@ -155,9 +156,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
         with:
-          fail-on-cache-miss: false
+          fail-on-cache-miss: true
           path: |
             public/assets
             public/packs-test
@@ -280,7 +282,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
         with:
           fail-on-cache-miss: true
           path: |
@@ -333,7 +336,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/cache/restore@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
         with:
           fail-on-cache-miss: true
           path: |
@@ -364,7 +368,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CYPRESS }}
           KNAPSACK_PRO_TEST_FILE_PATTERN: "cypress/e2e/seededFlows/**/*.spec.js"
-        run: DEBUG=code-coverage bin/knapsack_pro_cypress
+        run: bin/knapsack_pro_cypress
         if: ${{ matrix.ci_node_index != 'non-seed' }}
       - name: cypress non-seed
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
