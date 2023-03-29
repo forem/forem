@@ -2,6 +2,7 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   include Purgeable
+  extend UniqueAcrossModels
 
   # see <https://www.postgresql.org/docs/11/catalog-pg-class.html> for details
   # on the `pg_class` table
@@ -60,12 +61,6 @@ class ApplicationRecord < ActiveRecord::Base
   ensure
     milliseconds = original_timeout.to_i * 1000
     connection.execute "SET statement_timeout = #{milliseconds}"
-  end
-
-  def self.unique_across_models(attribute, **options)
-    CrossModelSlug.register(self, attribute)
-    validates attribute, presence: true
-    validates attribute, cross_model_slug: true, **options, if: :"#{attribute}_changed?"
   end
 
   # Decorate object with appropriate decorator
