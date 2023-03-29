@@ -11,12 +11,12 @@ module Podcasts
 
     TIMEOUT = 20
 
-    def initialize(enclosure_url)
-      @enclosure_url = enclosure_url.to_s
-    end
-
     def self.call(...)
       new(...).call
+    end
+
+    def initialize(enclosure_url)
+      @enclosure_url = enclosure_url.to_s
     end
 
     def call

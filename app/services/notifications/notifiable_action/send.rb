@@ -2,6 +2,10 @@
 module Notifications
   module NotifiableAction
     class Send
+      def self.call(...)
+        new(...).call
+      end
+
       # @param notifiable [Article]
       # @param action [String] for now only "Published"
       def initialize(notifiable, action = nil)
@@ -10,10 +14,6 @@ module Notifications
       end
 
       delegate :user_data, :article_data, :organization_data, to: Notifications
-
-      def self.call(...)
-        new(...).call
-      end
 
       def call
         return unless notifiable.is_a?(Article)

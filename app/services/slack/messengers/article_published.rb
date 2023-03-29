@@ -1,12 +1,12 @@
 module Slack
   module Messengers
     class ArticlePublished
-      def initialize(article:)
-        @article = article
-      end
-
       def self.call(**args)
         new(**args).call
+      end
+
+      def initialize(article:)
+        @article = article
       end
 
       def call

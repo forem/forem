@@ -4,9 +4,9 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(area:, user_signed_in:, display_ads: DisplayAd, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true)
-      @filtered_display_ads = display_ads
+    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
+                   permit_adjacent_sponsors: true, display_ads: DisplayAd)
+      @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @organization_id = organization_id

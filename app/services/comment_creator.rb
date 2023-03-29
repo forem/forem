@@ -8,13 +8,11 @@ class CommentCreator < Delegator
     new(params, current_user: current_user)
   end
 
-  # rubocop:disable Lint/MissingSuper
   def initialize(params, current_user:)
     @current_user = current_user
     @params = params
     @record = comment
   end
-  # rubocop:enable Lint/MissingSuper
 
   def save
     return unless record.save

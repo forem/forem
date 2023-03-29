@@ -6,7 +6,7 @@ module Moderator
 
     attr_reader :keep_user, :admin, :delete_user_id
 
-    def initialize(admin:, keep_user:, delete_user_id:) # rubocop:disable Lint/MissingSuper
+    def initialize(admin:, keep_user:, delete_user_id:)
       @keep_user = keep_user
       @admin = admin
       @delete_user = User.find(delete_user_id.to_i)

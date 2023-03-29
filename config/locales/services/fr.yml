@@ -2,113 +2,111 @@
 fr:
   services:
     analytics_service:
-      no_stats: You can't view this article's stats
+      no_stats: Vous ne pouvez pas voir les statistiques de cet article.
     article_with_video_creation_service:
-      unpublished_video: Unpublished Video ~ %{rand}
+      unpublished_video: Vidéo non publiée ~ %{rand}
     authentication:
       authenticator:
-        not_allowed: Sorry, but the domain for your email address is not allowed. This Forem may have limited signup to only specified email domains or blocked this specific domain from joining.
+        not_allowed: Désolé, mais le domaine de votre adresse e-mail n'est pas autorisé. Ce Forem a peut-être limité l'inscription à certains domaines de messagerie ou bloqué l'accès à ce domaine spécifique.
       providers:
         apple:
           name: "%{first} %{last}"
-        not_available: Provider %{name} is not available!
-        not_enabled: Provider %{name} is not enabled!
+        not_available: Le fournisseur %{name} n'est pas disponible !
+        not_enabled: Le fournisseur %{name} n'est pas activé !
     badges:
       award_beloved_comment:
-        message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
+        message: "Vous êtes célèbre ! [C'est le commentaire](%{comment}) pour lequel vous êtes reconnu. 😄"
       award_streak:
-        longest: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
+        longest: 16 semaines ! Vous avez atteint la plus longue série d'écriture possible. Cela vous rend éligible pour des quêtes spéciales à l'avenir. Continuez à apporter votre contribution à notre communauté !
         message:
-          one: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
-          other: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
+          one: "Félicitations pour avoir atteint cet objectif ! Il est difficile d'écrire de façon constante. Le prochain badge que vous pouvez obtenir est le badge %{count} Semaine. 😉"
+          other: "Félicitations pour avoir atteint cet objectif ! Il est difficile d'écrire de façon constante. Le prochain badge que vous pouvez obtenir est le badge %{count} Semaine. 😉"
       award_yearly_club:
         message:
-          one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
-          other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
-      congrats: Congrats!!!
-      thank_you: Thank you so much for your contributions!
+          one: Joyeux %{community} anniversaire ! Peux-tu croire que ça fait déjà %{count} an ?!
+          other: Joyeux %{community} anniversaire ! Peux-tu croire que ça fait déjà %{count} ans ?!
+      congrats: Félicitations !
+      thank_you: Merci beaucoup pour vos contributions !
       community_wellness:
-        first: Thank you for participating in constructive conversation! You posted two or more comments this week. Keep it up to continue the streak!
-        longest: 32 weeks! You've achieved the longest streak possible for the Community Wellness badge. Amazing job engaging in the community and keep up your amazing contributions to our community!
-        other: Congrats on achieving a %{weeks} week streak for the Community Wellness Badge! Keep the constructive comments flowing to continue the streak!
+        first: Merci de participer à une conversation constructive ! Vous avez posté deux commentaires ou plus cette semaine. Continuez comme ça pour poursuivre la série !
+        longest: 32 semaines ! Vous avez atteint la plus longue période possible pour l'insigne du bien-être communautaire. Vous avez fait un travail remarquable en vous engageant dans la communauté et continuez à apporter votre contribution à notre communauté !
+        other: Félicitations pour avoir atteint une série de %{weeks} semaines pour l'insigne du bien-être communautaire ! Continuez à envoyer des commentaires constructifs pour que la série continue !
     broadcasts:
       welcome_notification:
         generator:
-          welcome: 'Welcome Notification: %{key}'
+          welcome: 'Notification de bienvenue : %{key}'
     error_messages:
       clean:
-        parse_error: There was a problem parsing the front-matter YAML. Perhaps you need to escape a quote or a colon or something. Email %{email} if you are having trouble.
+        parse_error: Il y a eu un problème pour analyser la matière première YAML. Vous devez peut-être échapper une citation, un deux-points ou autre chose. Envoyez un e-mail à %{email} si vous avez des problèmes.
     html:
       parser:
-        enter_fullscreen_mode: Enter fullscreen mode
-        exit_fullscreen_mode: Exit fullscreen mode
+        enter_fullscreen_mode: Passer en mode plein écran
+        exit_fullscreen_mode: Sortir du mode en plein écran
     markdown_processor:
       parser:
-        invalid_markdown_detected: Invalid markdown detected!
+        invalid_markdown_detected: Markdown invalide détecté !
     moderator:
       banish_user:
-        spam_account: spam account
+        spam_account: compte spam
       manage_activity_and_roles:
-        need_super: You need super admin status to take this action
+        need_super: Vous devez avoir le statut de super administrateur pour effectuer cette action
       merge_user:
-        duplicate: The user has duplicate authentication methods on the two accounts. Please double check and delete the identity that the user is no longer using. This is usually the already-deleted social account, or the authentication method tied to the user to be deleted.
-        multiple: The user being deleted already has two or more authentication methods. Are you sure this is the right user to be deleted? If so, a super admin will need to do this from the console to be safe.
-        same_user: You cannot merge the same two user IDs
+        duplicate: L'utilisateur a des méthodes d'authentification en double sur les deux comptes. Veuillez vérifier et supprimer l'identité que l'utilisateur n'utilise plus. Il s'agit généralement du compte social déjà supprimé, ou de la méthode d'authentification liée à l'utilisateur à supprimer.
+        multiple: L'utilisateur à supprimer possède déjà deux méthodes d'authentification ou plus. Êtes-vous sûr qu'il s'agit du bon utilisateur à supprimer ? Si oui, un super administrateur devra le faire à partir de la console pour être sûr.
+        same_user: Vous ne pouvez pas fusionner les deux mêmes identifiants d'utilisateur.
     notifications:
       new_comment:
-        new: "💬 New Comment"
+        new: "💬 Nouveau commentaire"
       new_mention:
-        new: "🗣️ New Mention"
+        new: "🗣️ Nouvelle mention"
     payments:
       customer:
         usd: usd
       errors:
-        select_payment_method: "Please choose a payment method"
+        select_payment_method: "Veuillez choisir un mode de paiement"
       process_credit_purchase:
         charge:
-          one: Purchase of %{count} credits.
-          other: Purchase of %{count} credits.
+          one: Achat de %{count} crédit.
+          other: Achat de %{count} crédits.
     rate_limit_checker:
-      invalid_key: 'Invalid Cache Key: no unique component present'
+      invalid_key: 'Clé de cache non valide : aucun composant unique présent'
       limit_reached:
-        one: Rate limit reached, try again in %{count} seconds
-        other: Rate limit reached, try again in %{count} seconds
+        one: Limite de débit atteinte, réessayer dans %{count} seconde
+        other: Limite de débit atteinte, réessayer dans %{count} secondes
     slack:
       messengers:
         article_fetched_feed:
           body: |
-            New Article Retrieved via RSS: %{title}
+            Nouvel article récupéré via RSS : %{title}
             %{url}
         article_published:
           body: |
-            New Article Published: %{title}
+            Nouvel article publié : %{title}
             %{url}
         feedback:
-          anonymous_report: "*Anonymous report:"
+          anonymous_report: "*Rapport anonyme :"
           final_message: |-
             %{user_detail}
-            Category: %{category}
-            Internal Report: %{reports_url}
-            *_ Reported URL: %{reported_url} _*
+            Categorie : %{category}
+            Rapport interne : %{reports_url}
+            *_ URL signalée : %{reported_url} _*
             -----
-            *Message:* %{message}
+            *Message :* %{message}
           body: |
-            *Logged in user:*
+            *Utilisateur connecté :*
             reporter: %{username} - %{url}
             email: <mailto:%{email}|%{email}>
         potential_spammer:
-          body: 'Potential spam user! %{url}
-
-            '
+          body: 'Utilisateur potentiel de spam ! %{url}'
     spam:
       article_handler:
-        suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.
+        suspended_too_many: Utilisateur suspendu pour trop d'articles spam, déclenché par autovomit.
     user_subscriptions:
       create_from_controller_params:
-        source_not_found: Source not found.
-        email_mismatch: Subscriber email mismatch.
+        source_not_found: Source non trouvée.
+        email_mismatch: L'email de l'abonné ne correspond pas.
     users:
       remove_role:
-        remove_self: Admins cannot remove roles from themselves.
-        remove_super: Super Admin roles cannot be removed.
-        error: There was an issue removing this role. %{e_message}
+        remove_self: Les administrateurs ne peuvent pas se retirer des rôles.
+        remove_super: Les rôles de Super Admin ne peuvent pas être supprimés.
+        error: Un problème est survenu lors de la suppression de ce rôle. %{e_message}
