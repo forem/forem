@@ -114,7 +114,7 @@ describe('Publish or save a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
         cy.findByLabelText('Post Title').clear().type('Test title');
         cy.findByLabelText('Post Content').clear().type('something');
-        cy.findByRole('button', { name: 'Save draft' }).click();
+        cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
       });
 
       // The Draft view should be shown
@@ -137,7 +137,7 @@ describe('Publish or save a post', () => {
       // We should still be on the form page
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
     });
 
     it('Shows an error message when saving draft with incorrect markdown', () => {
@@ -147,14 +147,14 @@ describe('Publish or save a post', () => {
         cy.findByLabelText('Post Content').clear().type('{% tag %}', {
           parseSpecialCharSequences: false,
         });
-        cy.findByRole('button', { name: 'Save draft' }).click();
+        cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
       });
 
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
       // We should still be on the form page
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
     });
 
     it('Shows an error message when publishing and network request fails', () => {
@@ -168,7 +168,7 @@ describe('Publish or save a post', () => {
       // We should still be on the form page
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
     });
 
     it('Shows an error message when saving draft and network request fails', () => {
@@ -176,20 +176,20 @@ describe('Publish or save a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
         cy.findByLabelText('Post Title').clear().type('Test title');
         cy.findByLabelText('Post Content').clear().type('something');
-        cy.findByRole('button', { name: 'Save draft' }).click();
+        cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
       });
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
       // We should still be on the form page
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
     });
 
     it('Maintains draft status when editing a draft fails', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
         cy.findByLabelText('Post Title').clear().type('Test title');
         cy.findByLabelText('Post Content').clear().type('something');
-        cy.findByRole('button', { name: 'Save draft' }).click();
+        cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
       });
 
       // Check we are on the draft post page, and choose to edit
@@ -198,12 +198,12 @@ describe('Publish or save a post', () => {
 
       cy.findByLabelText('Post Content').clear().type('something else');
       cy.intercept('PUT', '/articles/*', { statusCode: 500 });
-      cy.findByRole('button', { name: 'Save draft' }).click();
+      cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
 
       // We should still be on the form page and see the draft publish/save options
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
 
       // Check post is still draft in dashboard
       cy.visitAndWaitForUserSideEffects('/dashboard');
@@ -215,7 +215,7 @@ describe('Publish or save a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
         cy.findByLabelText('Post Title').clear().type('Test title');
         cy.findByLabelText('Post Content').clear().type('something');
-        cy.findByRole('button', { name: 'Save draft' }).click();
+        cy.findByRole('button', { name: 'Зберегти чернетку' }).click();
       });
 
       // Check we are on the draft post page, and choose to edit and publish
@@ -229,7 +229,7 @@ describe('Publish or save a post', () => {
       // We should still be on the form page and see the draft publish/save options
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Publish' });
-      cy.findByRole('button', { name: 'Save draft' });
+      cy.findByRole('button', { name: 'Зберегти чернетку' });
 
       // Check post is still draft in dashboard
       cy.visitAndWaitForUserSideEffects('/dashboard');
@@ -257,7 +257,7 @@ describe('Publish or save a post', () => {
       cy.findByRole('form', { name: /^Edit post$/i });
       cy.findByRole('button', { name: 'Save changes' });
       cy.findByRole('button', { name: 'Publish' }).should('not.exist');
-      cy.findByRole('button', { name: 'Save draft' }).should('not.exist');
+      cy.findByRole('button', { name: 'Зберегти чернетку' }).should('not.exist');
 
       // Check post is still published in dashboard
       cy.visitAndWaitForUserSideEffects('/dashboard');

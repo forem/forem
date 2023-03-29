@@ -20,7 +20,7 @@ function secondsToHumanUnitAgo(seconds) {
   while (scale + 1 < times.length && seconds >= times[scale + 1][1]) scale += 1;
 
   const wholeUnits = Math.floor(seconds / times[scale][1]);
-  const unitName = times[scale][0] + (wholeUnits === 1 ? '' : 's');
+  const unitName = times[scale][0] + (wholeUnits === 1 ? '' : '');
 
   return wholeUnits + ' ' + unitName + ' тому';
 }
