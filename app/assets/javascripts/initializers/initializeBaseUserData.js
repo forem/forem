@@ -27,11 +27,7 @@ function addRelevantButtonsToArticle(user) {
         clickToEditButton.style.display = 'inline-block';
       }
 
-      if (published === true && !scheduled) {
-        actions.push(
-          `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" id ="article-action-space-manage" href="${articleContainer.dataset.path}/manage" rel="nofollow">Управляти</a>`,
-        );
-      }
+
 
       actions.push(
         `<a class="crayons-btn crayons-btn--s crayons-btn--ghost px-2" href="${articleContainer.dataset.path}/stats" rel="nofollow">Статистика</a>`,
