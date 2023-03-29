@@ -6,9 +6,9 @@
   initializeSettings, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort,
   initializeArchivedPostFilter, initializeCreditsPage,
-  initializeProfileInfoToggle, initializeDrawerSliders,
-  initializeProfileBadgesToggle, initializeHeroBannerClose,
-  initializeOnboardingTaskCard, initScrolling, nextPage:writable,
+  initializeDrawerSliders, initializeHeroBannerClose,
+  initializeOnboardingTaskCard,
+  initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
   initializeBroadcast, initializeDateHelpers
 */
@@ -24,8 +24,6 @@ function callInitializers() {
   initializeDashboardSort();
   initializeArchivedPostFilter();
   initializeCreditsPage();
-  initializeProfileInfoToggle();
-  initializeProfileBadgesToggle();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();

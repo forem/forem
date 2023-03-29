@@ -7,7 +7,7 @@ describe('Badge Achievements', () => {
       cy.loginAndVisit(user, '/admin/content_manager/badge_achievements');
 
       cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Remove' }).click();
+        cy.findAllByRole('button', { name: 'Remove' }).first().click();
       });
     });
   });
@@ -30,7 +30,7 @@ describe('Badge Achievements', () => {
       });
 
       cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Remove' }).should('be.visible');
+        cy.findAllByRole('button', { name: 'Remove' }).should('be.visible');
       });
     });
 
@@ -79,7 +79,7 @@ describe('Badge Achievements', () => {
         });
 
         cy.findByRole('table').within(() => {
-          cy.findByRole('button', { name: 'Remove' }).should('be.visible');
+          cy.findAllByRole('button', { name: 'Remove' }).should('be.visible');
         });
       });
     });
