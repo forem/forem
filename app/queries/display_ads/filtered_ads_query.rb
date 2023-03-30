@@ -32,6 +32,9 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
+      # type_of filter needs to be applied as near to the end as possible
+      # as it checks if any type-matching ads exist (this will apply all/any
+      # filters applied up to this point, thus near the end is best)
       @filtered_display_ads = type_of_ads
 
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
