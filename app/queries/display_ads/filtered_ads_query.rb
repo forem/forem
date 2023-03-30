@@ -62,7 +62,7 @@ module DisplayAds
 
     def type_of_ads
       # If this is an organization article and community-type ads exist, show them
-      if @organization_id
+      if @organization_id.present?
         community = @filtered_display_ads.where("(type_of = :community AND organization_id = :organization_id)",
                                                 DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
         return community if community.any?
@@ -74,7 +74,7 @@ module DisplayAds
       # If the article is an organization's article (non-nil organization_id),
       # or if the current_user has opted-out of sponsors,
       # then do not show external ads
-      external = if @organization_id.nil? && @permit_adjacent_sponsors
+      external = if @organization_id.blank? && @permit_adjacent_sponsors
                    "(type_of = :external)"
                  end
 
