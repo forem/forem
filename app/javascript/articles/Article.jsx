@@ -128,7 +128,7 @@ export const Article = ({
               )}
 
               <div className="crayons-story__save">
-                <ReadingTime readingTime={article.reading_time} />
+               
 
                 <SaveButton
                   article={article}

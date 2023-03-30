@@ -181,11 +181,11 @@ ua:
             замовчуванням <p class='crayons-field__description'>Якщо ви
             встановите цей прапорець, допис автоматично позначатиме джерело
             стрічки як канонічну URL-адресу.</p>
-          referential_html: Replace self-referential links with %{community}-specific
-            links <p class='crayons-field__description'>If you check this box,
-            the post will automatically change any URLs included in the post to
-            refer to the version of that article on %{community} if available.
-            This is primarily meant for folks migrating their entire blog onto
+          referential_html: Замінити усі внутрішні посилання у статті на посилання на %{community}
+            <p class='crayons-field__description'>Якщо ви відмітите це,
+            сайт автоматично змінить усі URL-адреси, включені у допис, на
+            посилання на версію цієї статті на Кутку, якщо вона доступна.
+            Це насамперед призначено для людей, які остаточно переносять весь свій блог на
             %{community}.</p>
           save: Зберегти налаштування стрічки
           submit: Затвердити налаштування стрічки
@@ -199,7 +199,7 @@ ua:
       for_html: Налаштування для %{name}
       group:
         user: Користувач
-        Basic: Basic
+        Basic: Базовий
         Branding: Брендінг
         Coding: Coding
         Work: Work

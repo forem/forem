@@ -11,9 +11,9 @@ ua:
         sort_button:
           aria_label: Сортувати коментарі
         subtitle:
-          top_html: Top comments %{num}
-          latest_html: Latest comments %{num}
-          oldest_html: Oldest comments %{num}
+          top_html: Найкращі коментарі %{num}
+          latest_html: Останні коментарі %{num}
+          oldest_html: Перші коментарі %{num}
         num: "(%{num})"
         subscribe: Підписатися
       conduct:
@@ -33,17 +33,17 @@ ua:
           unpublish: Сховати
       lock:
         meta:
-          title: Confirm Discussion Lock
-        heading: Are you sure you want to lock the discussion on this post?
-        desc_html: Users will not be able to add new comments. This will <em class="fw-bold">not</em> remove existing comments. You can unlock the discussion at any time to allow users to leave comments again.
-        cancel: Cancel
+          title: Підтвердити блокування обговорень
+        heading: Ви впевнені, що хочете закрити обговорення цього допису?
+        desc_html: Користувачі не зможуть додавати нові коментарі. Це не призведе до видалення існуючих коментарів. Ви можете будь-коли розблокувати обговорення, щоб дозволити користувачам знову залишати коментарі.
+        cancel: Скасувати
         notes:
-          label: Notes (optional) - this is only visible to you and admins
-          placeholder: More details as to why you locked the discussion.
+          label: Примітки (необов'язково) - це видно тільки вам і адміністраторам
+          placeholder: Детальніше про те, чому ви заблокували обговорення.
         reason:
-          label: Reason for locking the discussion (optional) - this will be publicly displayed
-          placeholder: The reason why you're locking this discussion.
-        submit: Lock discussion
+          label: Причина блокування дискусії (необов'язково) - вона буде відображатися публічно
+          placeholder: Причина, через яку ви закриваєте цю дискусію.
+        submit: Закрити коментарі
       preview_discuss_html:
         zero: Нова дискусія!
         one: '#discuss <img src="%{image}" />%{count}'
@@ -71,7 +71,7 @@ ua:
           title: View more
       unlock:
         meta:
-          title: Confirm Discussion Unlock
+          title: Підвердити відкриття коментарів
         heading: Ви впевнені, що хочете розблокувати обговорення цього допису?
         desc: Користувачі зможуть додавати нові коментарі. Ви можете будь-коли заблокувати обговорення, щоб користувачі більше не могли залишати коментарі.
         cancel: Відмінити
@@ -84,12 +84,12 @@ ua:
         edit: Натисніть, щоб змінити
       co_authors_html: with %{names}
       crossposted:
-        text_html: Спочатку опубліковано на %{url} %{on}
+        text_html: Оригінал на %{url} %{on}
         on_html: о %{date}
       edited: Оновлено %{date}
       edited_html: Оновлено %{date}
       for_org_html: "%{start} для %{end}%{org}"
-      missing: Article No Longer Available
+      missing: Стаття більше не доступна
       published_html: Додано %{date}
       scheduled_html: Заплановано на %{date}
       read_next: Читати далі
