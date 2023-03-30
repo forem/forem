@@ -69,7 +69,7 @@ RSpec.describe "api/v1/display_ads" do
                               description: "Identifies which area of site layout the ad can appear in" },
             tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
             article_exclude_ids: { type: :string,
-                                   description: "Articles this ad should *not* appear (blank is all/any article), comma-separated list of integer Article IDs" },
+                                   description: "Articles this ad should *not* appear (blank is all/any article), comma-separated list of integer Article IDs" }, # rubocop:disable Layout/LineLength
             creator_id: { type: :integer, description: "Identifies the user who created the ad." }
           },
           required: %w[name body_markdown placement_area]
