@@ -71,18 +71,19 @@ module DisplayAds
         return community if community.any?
       end
 
+      types_matching = []
+
       # Always match in-house-type ads
-      in_house = "(type_of = :in_house)"
+      types_matching << :in_house
 
       # If the article is an organization's article (non-nil organization_id),
       # or if the current_user has opted-out of sponsors,
       # then do not show external ads
-      external = if @organization_id.blank? && @permit_adjacent_sponsors
-                   "(type_of = :external)"
-                 end
+      if @organization_id.blank? && @permit_adjacent_sponsors
+        types_matching << :external
+      end
 
-      types_matching = [in_house, external].compact.join(" OR ")
-      @filtered_display_ads.where(types_matching, DisplayAd.type_ofs)
+      @filtered_display_ads.where(type_of: DisplayAd.type_ofs.slice(*types_matching).values)
     end
   end
 end
