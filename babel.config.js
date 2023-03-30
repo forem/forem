@@ -6,6 +6,7 @@ module.exports = function (api) {
   var isDevelopmentEnv = api.env('development');
   var isProductionEnv = api.env('production');
   var isTestEnv = api.env('test');
+  var isEndToEnd = api.env('E2E');
 
   if (!validEnv.includes(currentEnv)) {
     throw new Error(
@@ -34,6 +35,7 @@ module.exports = function (api) {
       ],
     ].filter(Boolean),
     plugins: [
+      isEndToEnd && ['istanbul'],
       '@babel/plugin-syntax-dynamic-import',
       isTestEnv && 'babel-plugin-dynamic-import-node',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
