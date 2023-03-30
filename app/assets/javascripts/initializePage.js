@@ -4,12 +4,12 @@
   initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeSettings, initializeRuntimeBanner,
-  initializeTimeFixer, initializeDashboardSort,
-  initializeCreditsPage, initializeProfileInfoToggle,
-  initializeDrawerSliders, initializeProfileBadgesToggle,
-  initializeHeroBannerClose, initializeOnboardingTaskCard,
-  initScrolling, nextPage:writable, fetching:writable, done:writable,
-  initializePaymentPointers, initializeBroadcast, initializeDateHelpers
+  initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
+  initializeDrawerSliders, initializeHeroBannerClose,
+  initializeOnboardingTaskCard,
+  initScrolling, nextPage:writable,
+  fetching:writable, done:writable, initializePaymentPointers,
+  initializeBroadcast, initializeDateHelpers
 */
 
 function callInitializers() {
@@ -22,8 +22,6 @@ function callInitializers() {
   initializeTimeFixer();
   initializeDashboardSort();
   initializeCreditsPage();
-  initializeProfileInfoToggle();
-  initializeProfileBadgesToggle();
   initializeDrawerSliders();
   initializeHeroBannerClose();
   initializeOnboardingTaskCard();

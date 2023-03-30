@@ -1,6 +1,4 @@
-'use strict';
-
-function initializeProfileInfoToggle() {
+const initializeProfileInfoToggle = () => {
   const infoPanels = document.getElementsByClassName('js-user-info')[0];
   const trigger = document.getElementsByClassName('js-user-info-trigger')[0];
   const triggerWrapper = document.getElementsByClassName(
@@ -13,9 +11,9 @@ function initializeProfileInfoToggle() {
       infoPanels.classList.replace('hidden', 'grid');
     });
   }
-}
+};
 
-function initializeProfileBadgesToggle() {
+const initializeProfileBadgesToggle = () => {
   const badgesWrapper = document.getElementsByClassName('js-profile-badges')[0];
   const trigger = document.getElementsByClassName(
     'js-profile-badges-trigger',
@@ -31,4 +29,7 @@ function initializeProfileBadgesToggle() {
       trigger.classList.add('hidden');
     });
   }
-}
+};
+
+initializeProfileInfoToggle();
+initializeProfileBadgesToggle();
