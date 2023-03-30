@@ -60,18 +60,21 @@ jobs:
 
   precompile_assets:
     runs-on: ubuntu-latest
+    env:
+      E2E: true
 
     steps:
       - uses: actions/checkout@v3
       - name: Look up if compiled assets exist
-        id: precompiled-asset
         uses: actions/cache@v3
+        id: precompiled-asset
         with:
+          fail-on-cache-miss: false
           path: |
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -161,7 +164,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -229,7 +232,7 @@ jobs:
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - uses: codecov/codecov-action@v3
         with:
-          flags: javascript
+          flags: jest, javascript
 
   storybook:
     runs-on: ubuntu-latest
@@ -279,6 +282,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Restore compiled assets
+        uses: actions/cache/restore@v3
+        with:
+          fail-on-cache-miss: true
+          path: |
+            public/assets
+            public/packs-test
+            tmp/cache/webpacker
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -300,6 +313,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: [bundle_install, yarn_install, precompile_assets]
+    env:
+      E2E: true
 
     services:
       postgres:
@@ -329,7 +344,7 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-precompiled-assets-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -366,6 +381,10 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: cypress, javascript
+          fail_ci_if_error: false
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
