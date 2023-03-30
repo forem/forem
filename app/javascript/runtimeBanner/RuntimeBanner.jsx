@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { ButtonNew as Button, Icon } from '@crayons';
 import { currentOS, currentContext } from '@utilities/runtime';
 import CloseIcon from '@images/x.svg';
-import LogoForem from 'https://kupicast.com/arc/icon_b.png';
+import LogoForem from '@images/x.svg';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 const APP_LAUNCH_SCHEME = 'com.forem.app';
@@ -114,7 +114,7 @@ export const RuntimeBanner = () => {
         class="flex items-center flex-1"
         rel="noopener noreferrer"
       >
-        <Icon src={LogoForem} native />
+        <Icon src="https://kupicast.com/arc/icon_b.png" native />
         <div class="flex flex-col pl-3">
           <span>Куток у Телеграмі</span>
           <span>Підписуйся на нас у Telegram</span>
