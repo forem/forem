@@ -1,5 +1,8 @@
 require "rails_helper"
 
 RSpec.describe AudienceSegment do
-  pending "add some examples to (or delete) #{__FILE__}"
+  subject(:audience_segment) { build(:audience_segment) }
+
+  it { is_expected.to define_enum_for(:type_of) }
+  it { is_expected.to be_valid }
 end

@@ -200,6 +200,11 @@ class User < ApplicationRecord
       ),
     )
   }
+
+  scope :with_experience_level, lambda { |level = nil|
+    includes(:setting).where("users_settings.experience_level": level)
+  }
+
   before_validation :downcase_email
 
   # make sure usernames are not empty, to be able to use the database unique index
