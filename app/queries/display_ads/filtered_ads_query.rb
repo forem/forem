@@ -61,25 +61,25 @@ module DisplayAds
     end
 
     def type_of_ads
+      # If this is an organization article and community-type ads exist, show them
+      if @organization_id
+        community = @filtered_display_ads.where("(type_of = :community AND organization_id = :organization_id)",
+                                                DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
+        return community if community.any?
+      end
+
       # Always match in-house-type ads
       in_house = "(type_of = :in_house)"
 
-      # If this is an article that belongs to an organization, we might show community-type ads
-      community = if @organization_id
-                    "(type_of = :community AND organization_id = :organization_id)"
-                  end
-
-      # If the article's author permits adjacent sponsors, we might show an external-type ad
-      # *if* the organization_id doesn't match the current article's organization id
-      external = if @permit_adjacent_sponsors && @organization_id
-                   "(type_of = :external AND organization_id != :organization_id)"
-                 elsif @permit_adjacent_sponsors
+      # If the article is an organization's article (non-nil organization_id),
+      # or if the current_user has opted-out of sponsors,
+      # then do not show external ads
+      external = if @organization_id.nil? && @permit_adjacent_sponsors
                    "(type_of = :external)"
                  end
 
-      types_matching = [in_house, community, external].compact.join(" OR ")
-      @filtered_display_ads.where(types_matching,
-                                  DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
+      types_matching = [in_house, external].compact.join(" OR ")
+      @filtered_display_ads.where(types_matching, DisplayAd.type_ofs)
     end
   end
 end
