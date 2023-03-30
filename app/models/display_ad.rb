@@ -89,7 +89,7 @@ class DisplayAd < ApplicationRecord
   # rubocop:enable Style/OptionHash
 
   # exclude_article_ids is an integer array, web inputs are comma-separated strings
-  # ActiveRecord normalizes these in a bad way, so we've intervening
+  # ActiveRecord normalizes these in a bad way, so we are intervening
   def exclude_article_ids=(input)
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
