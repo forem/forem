@@ -360,6 +360,9 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: |
+          mkdir .nyc_output
+          touch .nyc_output/out.json
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
@@ -384,7 +387,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress, javascript
-          fail_ci_if_error: false
+          fail_ci_if_error: true
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
