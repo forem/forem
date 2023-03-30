@@ -182,14 +182,6 @@ class Reaction < ApplicationRecord
     Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
-  def reading_time
-    reactable.reading_time if category == "readinglist"
-  end
-
-  def viewable_by
-    user_id
-  end
-
   def assign_points
     self.points = CalculateReactionPoints.call(self)
   end
