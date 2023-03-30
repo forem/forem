@@ -3,6 +3,7 @@ class DisplayAd < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
   belongs_to :creator, class_name: "User", optional: true
+  belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third post_sidebar post_comments].freeze
@@ -43,13 +44,14 @@ class DisplayAd < ApplicationRecord
                      }
 
   def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
-                       article_tags: [], permit_adjacent_sponsors: true)
+                       article_tags: [], permit_adjacent_sponsors: true, user_id: nil)
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
       organization_id: organization_id,
       user_signed_in: user_signed_in,
       article_id: article_id,
+      user_id: user_id,
       article_tags: article_tags,
       permit_adjacent_sponsors: permit_adjacent_sponsors,
     )
