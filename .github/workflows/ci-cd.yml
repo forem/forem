@@ -74,8 +74,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -164,8 +164,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -290,8 +290,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -344,8 +344,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
