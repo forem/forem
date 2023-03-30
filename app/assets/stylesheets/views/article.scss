@@ -146,6 +146,15 @@
   flex-direction: row;
   align-items: center;
 
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    background-color: var(--button-ghost-bg-hover);
+    border-color: transparent;
+    border-radius: 1000px;
+    box-shadow: none;
+    color: var(--button-ghost-color-hover);
+  }
+
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
   }
@@ -245,20 +254,10 @@
   }
 }
 
-.js-focus-visible .crayons-reaction.focus-visible:focus,
-.js-focus-visible .crayons-reaction.focus-visible:focus-within
-{
-  background-color: var(--btn-current-bg);
-  border-radius: 20px;
-  --horizontal-padding: var(--su-2);
-  padding-left: calc(var(--horizontal-padding) - var(--border-width));
-  padding-right: calc(var(--horizontal-padding) - var(--border-width));
-  border-radius: 1000px;
-}
-
 // This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
   border: 1px solid var(--card-bg);
+  border-radius: 20px;
   flex-direction: column;
 
   &.user-activated {
@@ -270,6 +269,12 @@
       border: 0;
       box-shadow: none;
     }
+  }
+
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
   }
 }
 
