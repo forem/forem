@@ -2,13 +2,13 @@ import { h } from 'preact';
 import { ButtonNew as Button, Icon } from '@crayons';
 import { currentOS, currentContext } from '@utilities/runtime';
 import CloseIcon from '@images/x.svg';
-import LogoForem from '@images/logo-forem-app.svg';
+import LogoForem from 'https://kupicast.com/arc/icon_b.png';
 
 const BANNER_DISMISS_KEY = 'runtimeBannerDismissed';
 const APP_LAUNCH_SCHEME = 'com.forem.app';
-const FOREM_APP_STORE_URL = 'https://apps.apple.com/us/app/forem/id1536933197';
+const FOREM_APP_STORE_URL = 'https://kupicast.com/telegram';
 const FOREM_GOOGLE_PLAY_URL =
-  'https://play.google.com/store/apps/details?id=com.forem.android';
+  'https://kupicast.com/telegram';
 
 function dismissBanner() {
   localStorage.setItem(BANNER_DISMISS_KEY, true);
@@ -58,7 +58,7 @@ function handleDeepLinkFallback() {
 
     // We try to deep link directly by launching a custom scheme and populate
     // the retry button in case the user will need it
-    const targetLink = `${APP_LAUNCH_SCHEME}://${window.location.host}${targetPath}`;
+    const targetLink = `https://kupicast.com/telegram`;
     retryButton.href = targetLink;
     window.location.href = targetLink;
   } else if (currentOS() === 'Android') {
@@ -94,8 +94,8 @@ export const RuntimeBanner = () => {
     return;
   }
 
-  const targetPath = `https://${window.location.host}/r/mobile?deep_link=${window.location.pathname}`;
-  let targetURL = `https://udl.forem.com/${encodeURIComponent(targetPath)}`;
+  const targetPath = `https://kupicast.com/telegram`;
+  let targetURL = `https://kupicast.com/telegram`;
   if (currentOS() === 'Android') {
     if (navigator.userAgent.match(/Gecko\/.+Firefox\/.+$/)) {
       // This is the Firefox browser on Android and we can't display the banner
@@ -110,14 +110,14 @@ export const RuntimeBanner = () => {
   return (
     <div class="runtime-banner">
       <a
-        href={targetURL}
+        href="https://kupicast.com/telegram"
         class="flex items-center flex-1"
         rel="noopener noreferrer"
       >
         <Icon src={LogoForem} native />
         <div class="flex flex-col pl-3">
-          <span>Forem</span>
-          <span>Open with the Forem app</span>
+          <span>Куток у Телеграмі</span>
+          <span>Підписуйся на нас у Telegram</span>
         </div>
       </a>
       <Button

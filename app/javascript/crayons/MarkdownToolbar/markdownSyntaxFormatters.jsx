@@ -717,7 +717,7 @@ export const markdownSyntaxFormatters = {
   },
   embed: {
     icon: () => <Icon src={EmbedIcon} />,
-    label: 'Вбудоване',
+    label: 'Вбудований контент (напр. Yputube)',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {
