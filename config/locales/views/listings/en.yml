@@ -56,7 +56,7 @@ en:
           none: None
         publish: Publish listing
         purchase: Purchase credits
-        save: Save draft
+        save: Зберегти чернетку
         save_notice: You will not be charged credits to save a draft.
         tags:
           placeholder: Add up to 8 tags...

@@ -78,9 +78,9 @@ describe('Publish or save a post', () => {
         cy.findByLabelText('Post Content')
           .clear()
           .type(validPublishedArticleContent);
-        cy.findByRole('button', { name: 'Save changes' }).click();
+        cy.findByRole('button', { name: 'Зберегти зміни' }).click();
       });
-      cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
+      cy.findByRole('heading', { name: 'Йой, щось пішло не так:' });
       // We should still be on the form page
       cy.findByRole('form', { name: /^Edit post$/i });
     });
