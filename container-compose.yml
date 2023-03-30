@@ -10,6 +10,12 @@ services:
       - db
       - redis
       - yarn
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
@@ -72,9 +78,12 @@ services:
     image: quay.io/forem/forem:development
     container_name: forem_seed
     depends_on:
-      - rails
-      - redis
-      - db
+      rails:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     environment:
       RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://redis:6379
@@ -90,9 +99,12 @@ services:
     image: quay.io/forem/forem:development
     container_name: forem_sidekiq
     depends_on:
-      - rails
-      - redis
-      - db
+      rails:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     environment:
       RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://redis:6379
@@ -107,6 +119,11 @@ services:
   db:
     image: postgres:11-alpine
     container_name: forem_postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d forem -U forem" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: forem
       POSTGRES_PASSWORD: forem
@@ -118,6 +135,12 @@ services:
 
   redis:
     image: redis:6.0.9-alpine
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     container_name: forem_redis
     ports:
       - "6379:6379"
