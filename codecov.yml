@@ -1,3 +1,6 @@
+codecov:
+  ci:
+    - !buildkite
 ignore:
   - "vendor"
   - "bin"

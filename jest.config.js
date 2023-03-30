@@ -23,6 +23,7 @@ module.exports = {
     // Ignore Storybook configuration files
     '!app/javascript/.storybook/**/*.{js,jsx}',
   ],
+  coverageDirectory: 'coverage/jest',
   coverageThreshold: {
     global: {
       statements: 43,
