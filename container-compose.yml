@@ -92,7 +92,6 @@ services:
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
@@ -113,7 +112,6 @@ services:
       DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
     volumes:
       - .:/opt/apps/forem:z
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "http://rails:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
