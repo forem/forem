@@ -66,8 +66,7 @@ module DisplayAds
     def type_of_ads
       # If this is an organization article and community-type ads exist, show them
       if @organization_id.present?
-        community = @filtered_display_ads.where("(type_of = :community AND organization_id = :organization_id)",
-                                                DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
+        community = @filtered_display_ads.where(type_of: DisplayAd.type_ofs[:community], organization_id: @organization_id)
         return community if community.any?
       end
 
