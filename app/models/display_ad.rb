@@ -80,7 +80,11 @@ class DisplayAd < ApplicationRecord
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
-    super(options.merge(except: %i[tags tag_list])).merge("tag_list" => cached_tag_list)
+    overrides = {
+      "tag_list" => cached_tag_list,
+      "exclude_article_ids" => exclude_article_ids.join(",")
+    }
+    super(options.merge(except: %i[tags tag_list])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
