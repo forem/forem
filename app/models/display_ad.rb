@@ -37,12 +37,14 @@ class DisplayAd < ApplicationRecord
                              search: "%#{term}%"
                      }
 
-  def self.for_display(area:, user_signed_in:, organization_id: nil, article_tags: [], permit_adjacent_sponsors: true)
+  def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
+                       article_tags: [], permit_adjacent_sponsors: true)
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
       organization_id: organization_id,
       user_signed_in: user_signed_in,
+      article_id: article_id,
       article_tags: article_tags,
       permit_adjacent_sponsors: permit_adjacent_sponsors,
     )
