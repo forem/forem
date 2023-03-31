@@ -1276,11 +1276,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.boolean "email_comment_notifications", default: true, null: false
     t.boolean "email_community_mod_newsletter", default: false, null: false
     t.boolean "email_connect_messages", default: true, null: false
-    t.boolean "email_digest_periodic", default: false, null: false
+    t.boolean "email_digest_periodic", default: true, null: false
     t.boolean "email_follower_notifications", default: true, null: false
     t.boolean "email_membership_newsletter", default: false, null: false
     t.boolean "email_mention_notifications", default: true, null: false
-    t.boolean "email_newsletter", default: false, null: false
+    t.boolean "email_newsletter", default: true, null: false
     t.boolean "email_tag_mod_newsletter", default: false, null: false
     t.boolean "email_unread_notifications", default: true, null: false
     t.boolean "mobile_comment_notifications", default: true, null: false
