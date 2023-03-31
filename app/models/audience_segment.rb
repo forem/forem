@@ -43,6 +43,11 @@ class AudienceSegment < ApplicationRecord
     QUERIES[symbol.to_sym]
   end
 
+  def self.human_readable_segments
+    type_ofs.reject { |(type, _enum)| type == "testing" }
+      .map { |(type, enum)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), enum] }
+  end
+
   def run_query
     self.users = self.class.all_users_in_segment(type_of)
   end
