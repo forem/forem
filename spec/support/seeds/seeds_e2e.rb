@@ -863,16 +863,20 @@ end
 ##############################################################################
 
 seeder.create_if_none(Badge) do
-  Badge.create!(
-    title: "#{Faker::Lorem.word} #{rand(100)}",
-    description: Faker::Lorem.sentence,
-    badge_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
-  )
+  7.times do |t|
+    Badge.create!(
+      title: "#{Faker::Lorem.word} #{rand(100)} #{t}",
+      description: "#{Faker::Lorem.sentence} #{rand(100)}",
+      badge_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    )
+  end
 
-  admin_user.badge_achievements.create!(
-    badge: Badge.first,
-    rewarding_context_message_markdown: Faker::Markdown.random,
-  )
+  Badge.all.each do |badge|
+    admin_user.badge_achievements.create!(
+      badge: badge,
+      rewarding_context_message_markdown: Faker::Markdown.random,
+    )
+  end
 end
 
 ##############################################################################

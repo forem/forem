@@ -1,8 +1,9 @@
 codecov:
+  ci:
+    - !buildkite
   require_ci_to_pass: no
   notify:
     wait_for_ci: no
-    # after_n_builds: 2
 ignore:
   - "vendor"
   - "bin"

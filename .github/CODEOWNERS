@@ -2,50 +2,27 @@
 # see https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
 # for further details
 
+# Default global ownership
+* @forem/core-reviewers
 
-# File exentions based ownership
-#
-# They are: .builder, .css, .erb, .gif, .ico, .jbuilder, .js, .jsx,
-#           .map, .md, .mdx, .otf, .png, .rake, .rb, .scss, .snap,
-#           .svg, .toml, .xml
-#
-# Use the following to generate the list:
-#
-# * `tree app | rg "\.\w+$" --only-matching | sort | uniq`
-# * `tree lib | rg "\.\w+$" --only-matching | sort | uniq`
-#
-**/*.builder                                        @forem/core-reviewers
-**/*.css                                            @forem/core-reviewers
-**/*.erb                                            @forem/core-reviewers
-**/*.jbuilder                                       @forem/core-reviewers
-**/*.js                                             @forem/core-reviewers
-**/*.json                                           @forem/core-reviewers
-**/*.jsx                                            @forem/core-reviewers
-**/*.md                                             @forem/core-reviewers
-**/*.rb                                             @forem/core-reviewers
-**/*.scss                                           @forem/core-reviewers
+# Dependency ownership
+Gemfile      @forem/core-reviewers @forem/platform
+Gemfile.lock @forem/core-reviewers @forem/platform
+package.json @forem/core-reviewers @forem/platform
+yarn.lock    @forem/core-reviewers @forem/platform
 
-# Context based ownership
-/app/assets/                                        @forem/core-reviewers
-/app/controllers/async_info_controller.rb           @forem/sre
-/app/javascript/                                    @forem/core-reviewers
-/app/services/search/                               @forem/sre
-/app/workers/                                       @forem/sre
-/config/                                            @forem/sre
-/config/locales
-/db/                                                @forem/sre @forem/core-reviewers
-/lib/data_update_scripts/                           @forem/sre
-/lib/sidekiq/                                       @forem/sre
-/spec/rails_helper.rb                               @forem/sre @forem/core-reviewers
-/spec/support/                                      @forem/sre
-.buildkite/                                         @forem/systems @forem/sre
-.travis.yml                                         @forem/sre
-Containerfile                                       @forem/systems
-docker-compose.yml                                  @forem/systems
-Dockerfile                                          @forem/systems
-Gemfile                                             @forem/core-reviewers @forem/sre
-Gemfile.lock                                        @forem/core-reviewers @forem/sre 
-package.json                                        @forem/core-reviewers
-podman-compose.yml                                  @forem/systems
-scripts/                                            @forem/systems
-yarn.lock                                           @forem/core-reviewers
+# Platform specific ownership
+.buildkite/                              @forem/platform @forem/core-reviewers
+Containerfile                            @forem/platform @forem/core-reviewers
+Dockerfile                               @forem/platform @forem/core-reviewers
+app/controllers/async_info_controller.rb @forem/platform @forem/core-reviewers
+app/services/search/                     @forem/platform @forem/core-reviewers
+app/workers/                             @forem/platform @forem/core-reviewers
+config/                                  @forem/platform @forem/core-reviewers
+db/                                      @forem/platform @forem/core-reviewers
+docker-compose.yml                       @forem/platform @forem/core-reviewers
+lib/                                     @forem/platform @forem/core-reviewers
+podman-compose.yml                       @forem/platform @forem/core-reviewers
+scripts/                                 @forem/platform @forem/core-reviewers
+spec/rails_helper.rb                     @forem/platform @forem/core-reviewers
+spec/support/                            @forem/platform @forem/core-reviewers
