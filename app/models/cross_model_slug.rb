@@ -10,19 +10,14 @@
 # that we want to apply across all registered models.
 #
 class CrossModelSlug
+  MODELS = {
+    "User" => :username,
+    "Page" => :slug,
+    "Podcast" => :slug,
+    "Organization" => :slug
+  }.freeze
+
   class << self
-    attr_accessor :registered_models
-
-    def register(klass, attribute)
-      @registered_models ||= []
-      @registered_models << [klass, attribute]
-    end
-
-    # This is currently equivalent to:
-    # User.exists?(username: username) ||
-    #    Organization.exists?(slug: username) ||
-    #    Page.exists?(slug: username) ||
-    #    Podcast.exists?(slug: username)
     def exists?(value)
       # Presence check is likely redundant, but is **much** cheaper than the
       # cross-model check
@@ -34,8 +29,8 @@ class CrossModelSlug
       return true if ReservedWords.all.include?(value)
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
-      (@registered_models || []).detect do |klass, attribute|
-        klass.exists?({ attribute => value })
+      MODELS.detect do |class_name, attribute|
+        class_name.constantize.exists?({ attribute => value })
       end
     end
   end

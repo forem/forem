@@ -50,20 +50,12 @@ RSpec.describe CrossModelSlugValidator do
     let(:user) { create(:user) }
     let(:name) { user.username }
 
-    before do
-      CrossModelSlug.register(User, :username)
-    end
-
     it { is_expected.not_to be_valid }
   end
 
   context "when name exists in Organization model" do
     let(:org) { create(:organization) }
     let(:name) { org.slug }
-
-    before do
-      CrossModelSlug.register(Organization, :slug)
-    end
 
     it { is_expected.not_to be_valid }
   end
@@ -72,20 +64,12 @@ RSpec.describe CrossModelSlugValidator do
     let(:org) { create(:podcast) }
     let(:name) { org.slug }
 
-    before do
-      CrossModelSlug.register(Podcast, :slug)
-    end
-
     it { is_expected.not_to be_valid }
   end
 
   context "when name exists in Page model" do
     let(:org) { create(:page) }
     let(:name) { org.slug }
-
-    before do
-      CrossModelSlug.register(Page, :slug)
-    end
 
     it { is_expected.not_to be_valid }
   end
