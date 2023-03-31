@@ -1,5 +1,7 @@
 unless ENV["COVERAGE"] == "false"
   SimpleCov.start "rails" do
+    coverage_dir "coverage/rspec"
+
     add_filter "/spec/"
     add_filter "/app/controllers/admin/"
     add_filter "/app/lib/black_box/"
