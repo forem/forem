@@ -4,7 +4,7 @@ codecov:
   require_ci_to_pass: no
   notify:
     wait_for_ci: no
-    after_n_builds: 18
+    after_n_builds: 10
 ignore:
   - "vendor"
   - "bin"
