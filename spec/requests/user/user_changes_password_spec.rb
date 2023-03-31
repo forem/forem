@@ -14,7 +14,7 @@ RSpec.describe "User changes password" do
              password_confirmation: "testtest"
            }
 
-      expect(response.body).to include("Current password is invalid")
+      expect(response.body).to include("Поточний пароль недійсний")
     end
 
     it "does not update the password if the new password is too short" do
@@ -26,7 +26,7 @@ RSpec.describe "User changes password" do
              password_confirmation: "test"
            }
 
-      expect(response.body).to include("Password is too short (minimum is 8 characters)")
+      expect(response.body).to include("Пароль дуже короткий (мінімум 8 символів)")
     end
 
     it "does not update the password if the new passwords don't match" do
@@ -39,7 +39,7 @@ RSpec.describe "User changes password" do
            }
 
       expect(response.body).to include("error")
-      expected_message = CGI.escapeHTML("Password doesn't match password confirmation")
+      expected_message = CGI.escapeHTML("Пароль не збігається з підтвердженням пароля")
       expect(response.body).to include(expected_message)
     end
 
