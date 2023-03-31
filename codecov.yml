@@ -1,6 +1,6 @@
 codecov:
   ci:
-    - !buildkite
+    - "!buildkite"
   require_ci_to_pass: no
   notify:
     wait_for_ci: no
@@ -12,7 +12,9 @@ ignore:
   - "lib/generators"
 coverage:
   status:
-    patch: 90%
+    patch:
+      default:
+        target: 90%
 flag_management:
   default_rules:
     carryforward: true
