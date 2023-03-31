@@ -86,14 +86,23 @@ class DisplayAd < ApplicationRecord
     validate_tag_name(tag_list)
   end
 
+  def audience_segment_type=(type)
+    self.audience_segment = if type.blank?
+      nil
+    elsif segment = AudienceSegment.find_by(type_of: type)
+      segment
+    end
+  end
+
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
     overrides = {
+      "audience_segment_type" => audience_segment&.type_of,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list audience_segment_id])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
