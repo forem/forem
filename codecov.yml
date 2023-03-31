@@ -4,6 +4,7 @@ codecov:
   require_ci_to_pass: no
   notify:
     wait_for_ci: no
+    after_n_builds: 18
 ignore:
   - "vendor"
   - "bin"
@@ -15,6 +16,7 @@ coverage:
     patch:
       default:
         target: 90%
+    project: false
 flag_management:
   default_rules:
     carryforward: true
