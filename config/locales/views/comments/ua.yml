@@ -11,7 +11,7 @@ ua:
           title_root: "[Discussion] %{title} — %{site}"
           description: "%{site} Comment"
       parent:
-        subtitle_html: "%{start}Discussion on: %{end}%{title}"
+        subtitle_html: "%{start}Коментарі на: %{end}%{title}"
         metadata_html: "%{name}%{on}"
         date: " on %{date}"
         full: Уся дискусія
@@ -81,17 +81,17 @@ ua:
           one: '1 error prohibited this comment from being saved:'
           other: "%{count} errors prohibited this comment from being saved:"
         field:
-          aria_label: Add a comment to the discussion
-          placeholder: Add to the discussion
+          aria_label: Додати коментар
+          placeholder: Додати коментар
           submit: Завантажити
-          templates: Templates
+          templates: Шаблони
           upload: Завантажити зображення
           use: Use a response template
           guide:
             title: Посібник з розмітки
             icon: Ґайд редактора
         template:
-          article: This post comes with a comment template
+          article: До цього допису додається шаблон коментаря
           create:
             subtitle: Create template
             desc: Templates let you quickly answer FAQs or store snippets for re-use.

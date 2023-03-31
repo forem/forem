@@ -8,8 +8,8 @@ en:
       comments_locked_cta:
         title: Want to connect with %{user}?
         description: Create an account to connect with %{user}. You can also sign in below to proceed if you already have an account.
-        create_account: Create Account
-        already_have_an_account: Already have an account?
+        create_account: Створити акаунт
+        already_have_an_account: Вже маєте акаунт?
         sign_in: Sign in
       comments:
         all:

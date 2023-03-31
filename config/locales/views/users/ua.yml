@@ -5,6 +5,12 @@ ua:
       meta:
         og:
           title: "%{user} — %{community} профіль"
+      comments_locked_cta:
+        title: Хочете прив'язати до %{user}?
+        description: Створіть акаунт, щоб прив'язати до %{user}. Ви також можете увійти нижче, щоб продовжити, якщо у вас вже є обліковий запис.
+        create_account: Створити акаунт
+        already_have_an_account: Вже маєте акаунт?
+        sign_in: Увійти
       comments:
         all:
           one: Усі коментарі (%{count})
@@ -44,35 +50,35 @@ ua:
         currently hacking on: Currently hacking on
         available for: Available for
         skills/languages: Skills/Languages
-        work: Work
+        work: Робота
       side:
         comment:
           icon: Comment
           text:
-            one: 1 comment written
-            other: "%{count} comments written"
+            one: 1 коментар написано
+            other: "%{count} коментар"
         org: Проєкти
         post:
           icon: Допис
           text:
             one: автор 1 допису
-            other: "автор %{count} дописів"
+            other: " %{count} дописів"
         tag:
           icon: Tag
           text:
             one: слідкує за одним тегом
-            other: "слідкує за %{count} тегами"
+            other: "слідкує за %{count} теґами"
       signout:
         meta:
           title: Підвердити вихід - %{community}
         heading: Ви впевнені, що хочете вийти?
         'yes': Так, вийти
-      block: Block @%{user}
-      details: "%{user} profile details"
-      dropdown: User actions
-      email_icon: Email address
+      block: Заблокувати @%{user}
+      details: "%{user} деталі профілю"
+      dropdown: Дії
+      email_icon: Email адреса
       empty: 404 біографія не знайдена
-      flag: Flag @%{user}
+      flag: Шадоубан @%{user}
       follow: Підписатися
       joined:
         icon: Доєднався
@@ -86,5 +92,5 @@ ua:
         placeholder: Пишіть сюди...
         submit: Відправити
       social: "%{service} сайт"
-      unflag: Unflag @%{user}
+      unflag: Зняти шадоубан @%{user}
       website: Особистий сайт

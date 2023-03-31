@@ -23,4 +23,4 @@ en:
           text: Share to Twitter
           query: '"%{article}" by %{author}'
         link: Share Post via...
-        report: Report Abuse
+        report: Поскаржитись
