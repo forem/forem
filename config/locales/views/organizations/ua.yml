@@ -2,31 +2,31 @@
 ua:
   views:
     organizations:
-      empty: 404 bio not found
+      empty: 404 інфи немає
       external:
         icon: External link icon
-      follow: Follow
+      follow: Підписатися
       github:
-        icon: GitHub logo
+        icon: GitHub лого
       joined:
-        icon: Joined
-        text_html: "Joined on\_%{date}"
+        icon: З нами!
+        text_html: "З нами з\_%{date}"
       location:
-        icon: Location
-      logo: "%{org} profile picture"
-      size: Employees
+        icon: Звідки
+      logo: "%{org} картинка"
+      size: Працівники
       sponsor:
-        text: "%{level} Community Sponsor ❤️"
+        text: "%{level} спонсор спільноти ❤️"
         level:
-          gold: Gold
-          silver: Silver
-          bronze: Bronze
-          tag: Tag
-          media: Media
+          gold: Золотий
+          silver: Срібний
+          bronze: Бронзовий
+          tag: Теґ
+          media: Медіа
           devrel: Devrel
-      stack: our stack
-      story: our story
+      stack: Що ми робимо?
+      story: Проєкт
       support: Support email
-      team: meet the team
+      team: У проєкті
       twitter:
-        icon: Twitter logo
+        icon: Twitter лого

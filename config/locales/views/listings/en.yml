@@ -59,7 +59,7 @@ en:
         save: Зберегти чернетку
         save_notice: You will not be charged credits to save a draft.
         tags:
-          placeholder: Add up to 8 tags...
+          placeholder: Add up to 6 tags...
         title:
           placeholder: 128 characters max, plain text
       nav:

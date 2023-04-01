@@ -322,7 +322,7 @@ export const ImageUploader = ({
       payload: { insertionImageUrls: response.links },
     });
 
-    onImageUploadSuccess?.(`![Image description](${response.links})`);
+    onImageUploadSuccess?.(`![Опис картинки](${response.links})`);
 
     document.getElementById('upload-success-info').innerText =
       'image upload complete';
