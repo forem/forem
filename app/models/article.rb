@@ -441,7 +441,7 @@ class Article < ApplicationRecord
   end
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..800]
+    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..4000]
   end
 
   def touch_by_reaction

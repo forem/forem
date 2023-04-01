@@ -152,14 +152,14 @@ export const Options = ({
         <h3 className="mb-6">Post options</h3>
         <div className="crayons-field mb-6">
           <label htmlFor="canonicalUrl" className="crayons-field__label">
-            Canonical URL
+            Канонуічний URL
           </label>
           <p className="crayons-field__description">
-            Change meta tag
+            Змініть мета теґ
             {` `}
             <code>canonical_url</code>
             {` `}
-            if this post was first published elsewhere (like your own blog).
+            якщо цей допис спочатку було опубліковано десь інше (наприклад на вашому особистому сайті). Це дасть зрозуміти пошуковим системам де оригінал статті і перевага буде надаватися вашому сайту.
           </p>
           <input
             type="text"
@@ -175,11 +175,11 @@ export const Options = ({
         {publishedAtField}
         <div className="crayons-field mb-6">
           <label htmlFor="series" className="crayons-field__label">
-            Series
+            Серія
           </label>
           <p className="crayons-field__description">
-            Will this post be part of a series? Give the series a unique name.
-            (Series visible once it has multiple posts)
+            Цей допис є частиною дописів у великій серії? Дай цій серії ім'я.
+            (Перелік дописів буде видно у кожному дописі серії)
           </p>
           <input
             type="text"

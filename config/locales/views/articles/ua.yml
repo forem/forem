@@ -7,17 +7,27 @@ ua:
       actions:
         aria_label: Стаття
       comments:
-        aria_label: Залишити коментар - %{title}
+        aria_label: Додати коментар - %{title}
+        sort:
+          heading: "Сортувати коментарі: "
+          title:
+            top: Найкращі
+            latest: Останні
+            oldest: Перші
+          desc:
+            top: Найбільш популярні та релевантні коментарі будуть показані першими
+            latest: Останні коментарі будуть показані першими
+            oldest: Найстаріші коментарі будуть показані першими
         sort_button:
-          aria_label: Сортувати коментарі
+          aria_label: Сортування коментарів
         subtitle:
-          top_html: Найкращі коментарі %{num}
+          top_html: Топ коментарі %{num}
           latest_html: Останні коментарі %{num}
-          oldest_html: Перші коментарі %{num}
+          oldest_html: Найстаріші коментарі %{num}
         num: "(%{num})"
         subscribe: Підписатися
       conduct:
-        aria_label: Conduct controls
+        aria_label: Контроль поведінки
         code: Норми поведінки
         report: Поскаржитися
       delete:
