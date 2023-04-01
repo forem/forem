@@ -22,7 +22,7 @@ module NotificationsHelper
   end
 
   def reaction_category_name(slug)
-    ReactionCategory[slug]&.name.presence || "unknown"
+    I18n.t("views.notifications.reacted.reaction.#{ReactionCategory[slug]&.slug.presence || 'unknown'}")
   end
 
   def render_each_notification_or_error(notifications, error:, &block)

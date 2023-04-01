@@ -76,6 +76,13 @@ fr:
         your:
           article: your article
           comment: your comment
+        reaction:
+          like: Like
+          unicorn: Unicorn
+          raised_hands: Raised hands
+          exploding_head: Exploding head
+          fire: Fire
+          unknown: Unknown
       settings: Settings
       tag:
         heading: "Hey there 👋"
