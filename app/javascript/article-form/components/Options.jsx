@@ -75,7 +75,7 @@ export const Options = ({
             variant="primary"
             onClick={onSaveDraft}
           >
-            Convert to a Draft
+            До чорнеток
           </Button>
         </div>
       );
@@ -83,10 +83,10 @@ export const Options = ({
       publishedField = (
         <div data-testid="options__danger-zone" className="crayons-field mb-6">
           <div className="crayons-field__label color-accent-danger">
-            Danger Zone
+            Обережено!
           </div>
           <Button variant="primary" destructive onClick={onSaveDraft}>
-            Unpublish post
+            Сховати допис
           </Button>
         </div>
       );
@@ -98,7 +98,7 @@ export const Options = ({
     publishedAtField = (
       <div className="crayons-field mb-6">
         <label htmlFor="publishedAtDate" className="crayons-field__label">
-          Schedule Publication
+          Запланувати допис
         </label>
         <input
           aria-label="Schedule publication date"
@@ -199,7 +199,7 @@ export const Options = ({
           data-content="exit"
           variant="secondary"
         >
-          Done
+          Готово
         </Button>
       </Dropdown>
     </div>

@@ -12,8 +12,8 @@ export class EmailPreferencesForm extends Component {
     this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
-      email_newsletter: false,
-      email_digest_periodic: false,
+      email_newsletter: true,
+      email_digest_periodic: true,
     };
   }
 
@@ -88,7 +88,7 @@ export class EmailPreferencesForm extends Component {
                         type="checkbox"
                         id="email_newsletter"
                         name="email_newsletter"
-                        checked={email_digest_periodic}
+                        checked={email_newsletter}
                         onChange={this.handleChange}
                       />
                       Я хочу отримувати (не)регулярну розсилку на електронну пошту.
