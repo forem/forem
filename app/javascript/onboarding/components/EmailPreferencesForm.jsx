@@ -71,7 +71,7 @@ export class EmailPreferencesForm extends Component {
           <div className="onboarding-content terms-and-conditions-wrapper">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Almost there!
+                Майже все!
               </h1>
               <h2 id="subtitle" className="subtitle">
                 Перегляньте свої налаштування електронної пошти, перш ніж ми продовжимо.
@@ -88,10 +88,10 @@ export class EmailPreferencesForm extends Component {
                         type="checkbox"
                         id="email_newsletter"
                         name="email_newsletter"
-                        checked={boolean('checked', true)}
+                        checked={email_digest_periodic}
                         onChange={this.handleChange}
                       />
-                      Я хочу отримувати (не)регулярну розсилку на електронну пошту..
+                      Я хочу отримувати (не)регулярну розсилку на електронну пошту.
                     </label>
                   </li>
                   <li className="checkbox-item">
@@ -100,10 +100,10 @@ export class EmailPreferencesForm extends Component {
                         type="checkbox"
                         id="email_digest_periodic"
                         name="email_digest_periodic"
-                        checked={boolean('checked', true)}
+                        checked={email_digest_periodic}
                         onChange={this.handleChange}
                       />
-                      Я хочу отримувати новини згідно моїх теґів.
+                      Я хочу отримувати найкращі дописи згідно моїх теґів.
                     </label>
                   </li>
                 </ul>
