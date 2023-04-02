@@ -74,23 +74,6 @@
   </div>
  
 
-  <div class="crayons-card crayons-card--content-rows">
-    <header>
-      <h2 class="crayons-subtitle-1">
-        <%= t("views.settings.custom.announce") %>
-      </h2>
-      <p>
-        <%= t("views.settings.custom.announce_desc") %>
-      </p>
-    </header>
-
-    <fieldset class="grid gap-4">
-      <div class="crayons-field crayons-field--checkbox">
-        <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
-        <%= f.label :display_announcements, t("views.settings.custom.announce_field"), class: "crayons-field__label" %>
-      </div>
-    </fieldset>
-  </div>
 
   <div class="save-footer crayons-card crayons-card--content-rows">
     <button class="crayons-btn" type="submit"><%= t("views.settings.custom.save") %></button>

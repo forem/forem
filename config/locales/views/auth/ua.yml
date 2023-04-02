@@ -15,6 +15,8 @@ ua:
           icon: Змінити юзернейм
           text_html: "%{start}Your username will be\_%{end}%{button}"
         submit: Створити акаунт
+      already_have_an_account: Вже реєструвалися?
+      sign_in: Заходьте
       login:
         aria_label: Увійти
         text: Увійти
@@ -32,7 +34,7 @@ ua:
           one: Йой, є %{count} проблема
           other: Йой, у нас тут %{count} проблем
         allow:
-          one_html: Реєстрація заборонена за <strong>@%{domain}</strong> пошт.
+          one_html: Реєстрація заборонена на <strong>@%{domain}</strong> пошт.
           list: Реєстрація заборонена з наступних адрес
         create: Створити акаунт
         field:
@@ -73,7 +75,7 @@ ua:
         step_3: There is lots you can do as an admin, but there is a learning curve.
         step_4: Please reach out to the Forem team if you are unsure about anything!
         step_5: "For Empowering Community 🌱"
-      tagline: Log in to customize your experience and get involved.
+      tagline: Увійдіть, щоб налаштувати свій досвід і долучитися до спільноти.
       title:
         text_html: <a href="/" class="c-link c-link--branded">%{name}</a> 
         size: "%{num} "
