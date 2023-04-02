@@ -45,7 +45,11 @@ xml.rss(:version => "2.0",
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path) 
-		xml.media :content, url: article.main_image, type:"image/jpeg", height:1280, width:720
+		xml.image do
+			xml.title article.title
+			xml.url "https://www.searchenginejournal.com/wp-content/uploads/2022/06/image-search-1600-x-840-px-62c6dc4ff1eee-sej-1280x720.png"
+			xml.link  root_url(utm_source: "Feed", utm_medium: "RSS", utm_campaign: "RSS")
+		end
         xml.description sanitize(article.plain_html,
                                  tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|
