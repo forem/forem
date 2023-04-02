@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The page you were looking for doesn't exist (404)</title>
+
+  <title>Цієї сторінки не існує (404)</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  
   <style>
     .not-found-page {
       height: 100vh;
@@ -93,7 +95,68 @@
         <div class="tv__middle">
           <img class="tv__inner" src="https://i.imgur.com/AdvTDlI.jpg" alt="404 not found">
           <br>
-          <p class="tv__inner--text">This page does not exist <br><br> <a href="/">Return to Home Page</a></p>
+          <p class="tv__inner--text">
+ <b id="Ticker" >Вибачайте, але цієї сторінки не існує...</p></b>
+<script type="text/javascript">
+var CharTimeout = 60; // швидкість друкування
+	var StoryTimeout = 4500; // час очікування перед перемиканням
+
+	var Summaries = new Array();
+	var SiteLinks = new Array();
+
+		Summaries[0] = 'Вибачайте, але цієї сторінки не існує...';
+
+
+
+	function startTicker(){
+		massiveItemCount =  Number(Summaries.length); //
+		// 
+		CurrentStory     = -1;
+		CurrentLength    = 0;
+		//
+		AnchorObject     = document.getElementById("Ticker");
+		runTheTicker();     
+	}
+	// Основной цикл тиккера
+	function runTheTicker(){
+		var myTimeout;  
+		// Переход к следующему элементу
+		if(CurrentLength == 0){
+			CurrentStory++;
+			CurrentStory      = CurrentStory % massiveItemCount;
+			StorySummary      = Summaries[CurrentStory].replace(/"/g,'-');      
+			AnchorObject.href = SiteLinks[CurrentStory];
+		}
+		// Располагаем текущий текст в анкор с печатанием
+		AnchorObject.innerHTML = StorySummary.substring(0,CurrentLength) + znak();
+		// Преобразуем длину для подстроки и определяем таймер
+		if(CurrentLength != StorySummary.length){
+			CurrentLength++;
+			myTimeout = CharTimeout;
+		} else {
+			CurrentLength = 0;
+			myTimeout = StoryTimeout;
+		}
+		// Повторяем цикл с учетом задержки
+		setTimeout("runTheTicker()", myTimeout);
+	}
+	// Генератор подстановки знака
+	function znak(){
+		if(CurrentLength == StorySummary.length) return "";
+		else return "|";
+	}
+
+	startTicker();
+</script>
+
+
+
+
+<p class="tv__inner--text">
+
+
+
+		  <br><br> <a href="/">Повернутися на головну</a></p>
         </div>
       </div>
   </div>
