@@ -1,14 +1,14 @@
 <% num_followers_past_days = Follow.followable_user(@user.id).where("created_at > ?", 24.hours.ago).size %>
 
 <% if num_followers_past_days.positive? %>
-  <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= num_followers_past_days %> new <%= community_name %> followers in the past day!</h3>
+  <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">Ви маєте нових підписників за останный день: <%= num_followers_past_days %> !</h3>
 <% end %>
 
 <h2 style="font-size:32px;">
-  <a href="<%= user_url(@follower) %>"><%= @follower.name %></a> just followed you 🤗</h2>
-<h3 style="font-weight:600">You now have <%= pluralize(@user.followers_count, "total follower") %>. See all of your recent followers
-  <a href="<%= app_url("/dashboard/user_followers") %>">right here</a>.</h3>
+  <a href="<%= user_url(@follower) %>"><%= @follower.name %></a> ваш новий підписник 🤗</h2>
+<h3 style="font-weight:600">You now have <%= pluralize(@user.followers_count, "total follower") %>. Переглянути всіх ваших нещодавніх підписників
+  <a href="<%= app_url("/dashboard/user_followers") %>">можна тут</a>.</h3>
 <p>
-  When someone follows you on
-  <a href="<%= app_url %>"><%= community_name %></a>, your posts will be prioritized in their feed and notifications. The perks of popularity I suppose.
+  Коли хтось підписується на вас на сайті 
+  <a href="<%= app_url %>"><%= community_name %></a>, yнаші пости будуть пріоритетними в їхній стрічці та сповіщеннях. Переваги популярності.
 </p>

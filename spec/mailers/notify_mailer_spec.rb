@@ -14,7 +14,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expected_subject = "#{comment.user.name} replied to your #{comment.parent_type}"
+      expected_subject = "#{comment.user.name} відповів(ла) на #{comment.parent_type}"
       expect(email.subject).to eq(expected_subject)
     end
 
@@ -31,7 +31,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("#{user2.name} just followed you on #{Settings::Community.community_name}")
+      expect(email.subject).to eq("У вас новий підписник #{user2.name} на Кутку!")
     end
 
     it "renders proper receiver" do
@@ -47,7 +47,7 @@ RSpec.describe NotifyMailer do
       include_examples "#renders_proper_email_headers"
 
       it "renders proper subject and receiver", :aggregate_failures do
-        expect(email.subject).to eq("#{comment.user.name} just mentioned you in their comment")
+        expect(email.subject).to eq("#{comment.user.name} щойно згадав(ла) вас у своєму коментарі")
         expect(email.to).to eq([user2.email])
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe NotifyMailer do
       include_examples "#renders_proper_email_headers"
 
       it "renders proper subject and receiver", :aggregate_failures do
-        expect(email.subject).to eq("#{article.user.name} just mentioned you in their post")
+        expect(email.subject).to eq("#{article.user.name} щойно згадав(ла) про вас у своєму дописі")
         expect(email.to).to eq([user2.email])
       end
     end
@@ -71,7 +71,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("🔥 You have 0 unread notifications on #{Settings::Community.community_name}")
+      expect(email.subject).to eq("🔥 У вас 0 непрочитаних сповіщень на #{Settings::Community.community_name}")
     end
 
     it "renders proper receiver" do
@@ -85,7 +85,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("Your video upload is complete")
+      expect(email.subject).to eq("Завантаження вашого відео завершено")
     end
 
     it "renders proper receiver" do
@@ -107,14 +107,14 @@ RSpec.describe NotifyMailer do
         user: user,
         badge: badge,
         rewarder: rewarder,
-        rewarding_context_message_markdown: "Hello [Yoho](/hey)",
+        rewarding_context_message_markdown: "Привіт [Yoho](/hey)",
       )
     end
 
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("You just got a badge")
+      expect(email.subject).to eq("Ви отримали бейдж!")
     end
 
     it "renders proper receiver" do
@@ -179,21 +179,21 @@ RSpec.describe NotifyMailer do
       end
 
       it "includes the rewarding_context_message in the email" do
-        expect(email.html_part.body).to include("Hello <a")
+        expect(email.html_part.body).to include("Привіт <a")
         expect(email.html_part.body).to include(URL.url("/hey"))
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
-        expect(email.html_part.body).not_to include("Hello <a")
+        expect(email.html_part.body).not_to include("Привіт <a")
         expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
-        expect(email.html_part.body).not_to include("Hello <a")
+        expect(email.html_part.body).not_to include("Привіт <a")
         expect(email.html_part.body).not_to include(URL.url("/hey"))
       end
     end
@@ -216,21 +216,21 @@ RSpec.describe NotifyMailer do
       end
 
       it "includes the rewarding_context_message in the email" do
-        expect(email.text_part.body).to include("Hello Yoho")
+        expect(email.text_part.body).to include("Привіт")
         expect(email.text_part.body).not_to include(URL.url("/hey"))
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
-        expect(email.text_part.body).not_to include("Hello Yoho")
+        expect(email.text_part.body).not_to include("Привіт")
         expect(email.text_part.body).not_to include(URL.url("/hey"))
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
-        expect(email.text_part.body).not_to include("Hello Yoho")
+        expect(email.text_part.body).not_to include("Привіт")
         expect(email.text_part.body).not_to include(URL.url("/hey"))
       end
     end
@@ -286,7 +286,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("Thanks for your report on #{Settings::Community.community_name}")
+      expect(email.subject).to eq("Дякуємо за ваше повідомлення про #{Settings::Community.community_name}")
     end
 
     it "renders proper receiver" do
@@ -294,7 +294,7 @@ RSpec.describe NotifyMailer do
     end
 
     it "renders proper body" do
-      expect(email.html_part.body).to include("Thank you for flagging content")
+      expect(email.html_part.body).to include("Дякуємо, що позначили контент як неприємний.")
     end
   end
 

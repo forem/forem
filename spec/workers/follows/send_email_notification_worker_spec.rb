@@ -40,7 +40,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
       end
 
       it "doesn't create an EmailMessage if it already exists" do
-        subject = "#{user.username} just followed you on #{ApplicationConfig['COMMUNITY_NAME']}"
+        subject = "У вас новий підписник #{user.username} на платформі #{ApplicationConfig['COMMUNITY_NAME']}"
         EmailMessage.create!(user_id: user2.id, sent_at: Time.current, subject: subject)
 
         user2.notification_setting.update(email_follower_notifications: false)
