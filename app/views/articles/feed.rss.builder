@@ -44,8 +44,8 @@ xml.rss(:version => "2.0",
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
-        xml.media(:content, :url => article.cover_image.url(:medium))
-        xml.media(:thumbnail, :url => article.cover_image.url(:thumbnail))
+        xml.media(:content, :url => article.main_image.url(:medium))
+        xml.media(:thumbnail, :url => article.main_image.url(:thumbnail))
         xml.description sanitize(article.plain_html,
                                  tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|

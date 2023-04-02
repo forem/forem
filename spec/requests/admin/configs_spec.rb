@@ -619,7 +619,7 @@ RSpec.describe "/admin/customization/config" do
 
       describe "Social Media" do
         it "updates social_media_handles" do
-          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
+          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "", "telegram" => "", "youtube" => "" }
           post admin_settings_general_settings_path, params: {
             settings_general: { social_media_handles: expected_handle }
           }
