@@ -43,8 +43,7 @@ xml.rss(:version => "2.0",
         xml.tag!("dc:creator", user.instance_of?(User) ? user.name : article.user.name)
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         xml.link app_url(article.path)
-        xml.guid app_url(article.path)
-        xml.image cloud_cover_url(article.main_image)
+        xml.guid cloud_cover_url(article.main_image)
         xml.description sanitize(article.plain_html,
                                  tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|
