@@ -1,28 +1,33 @@
-'use strict';
+function initializeArchivedPostFilter() {
+  const link = document.getElementById('toggleArchivedLink');
+  if (link) {
+    link.addEventListener('click', toggleArchivedPosts);
+  }
+}
 
 function archivedPosts() {
   return document.getElementsByClassName('story-archived');
 }
 
 function showArchivedPosts() {
-  var posts = archivedPosts();
+  const posts = archivedPosts();
 
-  for (var i = 0; i < posts.length; i += 1) {
+  for (let i = 0; i < posts.length; i += 1) {
     posts[i].classList.remove('hidden');
   }
 }
 
 function hideArchivedPosts() {
-  var posts = archivedPosts();
+  const posts = archivedPosts();
 
-  for (var i = 0; i < posts.length; i += 1) {
+  for (let i = 0; i < posts.length; i += 1) {
     posts[i].classList.add('hidden');
   }
 }
 
 function toggleArchivedPosts(e) {
   e.preventDefault();
-  var link = e.target;
+  const link = e.target;
 
   if (link.innerHTML.match(/Show/)) {
     link.innerHTML = 'Hide archived';
@@ -33,9 +38,4 @@ function toggleArchivedPosts(e) {
   }
 }
 
-function initializeArchivedPostFilter() {
-  var link = document.getElementById('toggleArchivedLink');
-  if (link) {
-    link.addEventListener('click', toggleArchivedPosts);
-  }
-}
+initializeArchivedPostFilter();
