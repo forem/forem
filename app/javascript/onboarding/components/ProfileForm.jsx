@@ -199,7 +199,7 @@ export class ProfileForm extends Component {
                 data-testid="onboarding-profile-subtitle"
                 className="subtitle"
               >
-                Розкажіть про себе трохи більше нашій спільності! Ви завжди можете змінити цю інформацію пізніше у налаштуваннях.
+                Розкажіть про себе трохи більше нашій спільноті! Ви завжди можете змінити цю інформацію пізніше у налаштуваннях.
               </h2>
             </header>
             <div className="current-user-info">

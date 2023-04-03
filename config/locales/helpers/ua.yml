@@ -5,7 +5,7 @@ ua:
       listing:
         body_markdown: Розмітка допису
         expires_at: Спеціальна дата закінчення терміну публікації допису
-        location: Місце
+        location: Звідки
         organization_id: Post under an organization
         tag_list: Теґи
         title: Заголовок

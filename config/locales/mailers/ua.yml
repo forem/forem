@@ -17,10 +17,10 @@ ua:
       deletion_requested: "%{community} - Запит на видалення акаунта"
       trusted: Вітаємо! Ви тепер "довірений" користувач на %{community}!
       moderator: 'Вітаємо! Ви тепер модератор теґу #%{tag_name}'
-      new_follower: тільки що підписався(лась) на вас у спільності %{community}
+      new_follower: тільки що підписався(лась) на вас у спільноті %{community}
       new_mention: "%{name} just mentioned you in their %{type}"
       org_deleted: "%{community} - Organization Deletion Confirmation"
-      new_reply: "%{name} replied to your %{type}"
+      new_reply: "%{name} відповили вам на сайті  %{type}"
       feedback: Thanks for your report on %{community}
       export: The export of your content is ready
       unread_notifications:

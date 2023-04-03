@@ -48,7 +48,7 @@ ua:
           description: If applicable for time sensitive events, deadlines, etc.
         location:
           description: Не більше 32 символів, звичайний текст
-          label: Місце
+          label: Звідки
           placeholder: Житомир
         no_credit: You need at least one credit to create a listing.
         organization:

@@ -25,7 +25,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
         </li>
         <li>
           <button
-            data-text="Прев'ю"
+            data-text="Попередній перегляд"
             className={`crayons-tabs__item ${
               previewShowing ? 'crayons-tabs__item--current' : ''
             }`}
@@ -35,7 +35,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >
-            Прев'ю
+            Попередній перегляд
           </button>
         </li>
       </ul>

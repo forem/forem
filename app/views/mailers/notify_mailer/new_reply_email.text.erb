@@ -1,4 +1,4 @@
-<%= @comment.user.name %> replied to your <%= @comment.parent_type %>:
+<%= @comment.user.name %> відповіли вам на сайті <%= @comment.parent_type %>:
 
 <%= ActionController::Base.helpers.strip_tags(@comment.processed_html.html_safe) %>
 

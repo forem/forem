@@ -18,7 +18,7 @@ RSpec.describe "Editing with an editor", js: true do
   it "user previews their changes" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("Прев'ю")
+    click_button("Попередній перегляд")
     expect(page).to have_text("Yooo")
   end
 

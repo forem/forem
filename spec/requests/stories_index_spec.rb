@@ -307,8 +307,8 @@ RSpec.describe "StoriesIndex" do
 
       it "includes message and a link to sign in for signed-out" do
         get "/latest"
-        expect(response.body).to include("Some latest posts are only visible for members")
-        expect(response.body).to match(/Sign in.*to see all latest/)
+        expect(response.body).to include("Деякі останні дописи можуть бачити лише користувачі")
+        expect(response.body).to match(/Увійдіть.*щоб побачити їх./)
       end
 
       it "excludes low-score content for signed-out" do

@@ -11,7 +11,7 @@
   <%= follow_button(actor, style = "", classes = "w-100") %>
 </div>
 <% if actor.tag_line.present? %>
-  <div class="color-base-70">
+  <div class="color-base-70" style="overflow: hidden;">
     <%= truncate (actor.tag_line || actor.summary || t("views.sticky.no_summary")), length: 200 %>
   </div>
 <% end %>

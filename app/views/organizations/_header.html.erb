@@ -29,9 +29,11 @@
       <div class="profile-header__details">
         <h1 class="crayons-title fw-heavy mb-2"><%= sanitize @user.name %></h1>
         <% if @user.tag_line.present? %>
-          <p class="fs-l m:fs-xl color-base-70 mb-4 mx-auto max-w-100 m:max-w-75"><%= sanitize @user.tag_line %></p>
+          <p class="fs-l m:fs-xl color-base-70 mb-4 mx-auto max-w-100 m:max-w-75" style="overflow: hidden;
+    max-width: 687px;"><%= sanitize @user.tag_line %></p>
         <% end %>
-        <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= sanitize(@user.summary.presence || t("views.organizations.empty")) %></p>
+        <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75" style="overflow: hidden;
+    max-width: 687px;"><%= sanitize(@user.summary.presence || t("views.organizations.empty")) %></p>
 
         <div class="profile-header__meta">
           <% if @organization.location.present? %>

@@ -82,7 +82,7 @@ ua:
       follow: Підписатися
       joined:
         icon: Доєднався
-        text_html: "У спільності з \_%{date}"
+        text_html: "У спільноті з \_%{date}"
       location_icon: Location
       logo: "%{user} зображення профілю"
       more: More info about @%{user}
