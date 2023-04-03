@@ -6,7 +6,7 @@
 
 <h2 style="font-size:32px;">
   <a href="<%= user_url(@follower) %>"><%= @follower.name %></a> ваш новий підписник 🤗</h2>
-<h3 style="font-weight:600">You now have <%= pluralize(@user.followers_count, "total follower") %>. Переглянути всіх ваших нещодавніх підписників
+<h3 style="font-weight:600">Тепер ваша кількість підписників: <%= pluralize(@user.followers_count, "total follower") %>. Переглянути всіх ваших нещодавніх підписників
   <a href="<%= app_url("/dashboard/user_followers") %>">можна тут</a>.</h3>
 <p>
   Коли хтось підписується на вас на сайті 

@@ -229,7 +229,7 @@ export class ProfileForm extends Component {
                 field={{
                   attribute_name: 'summary',
                   label: 'Про вас',
-                  placeholder_text: 'Розкашіть щось про себе',
+                  placeholder_text: 'Розкажіть щось про себе',
                   required: false,
                   maxLength: SUMMARY_MAXLENGTH,
                 }}

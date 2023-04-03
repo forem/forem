@@ -60,7 +60,7 @@ ua:
       is_not_valid: щось не так.
     organization:
       integer_only: Тільки цілі числа. Знаки не допускаються.
-      reserved_word: '%<value> - це зарезервоване слово. Зверніться до адміністраторів сайту за допомогою в реєстрації Вашої організації.'
+      reserved_word: '%<value> це зарезервоване слово. Зверніться до адміністраторів сайту за допомогою в реєстрації Вашої організації.'
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast:
