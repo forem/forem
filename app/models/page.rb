@@ -1,4 +1,5 @@
 class Page < ApplicationRecord
+  extend UniqueAcrossModels
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json].freeze
 
   TERMS_SLUG = "terms".freeze
@@ -9,6 +10,7 @@ class Page < ApplicationRecord
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
+
   unique_across_models :slug
 
   before_validation :set_default_template

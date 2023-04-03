@@ -3,6 +3,7 @@ class Organization < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
 
+  extend UniqueAcrossModels
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
 

@@ -2,7 +2,6 @@ class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
   include Purgeable
-  extend UniqueAcrossModels
 
   # see <https://www.postgresql.org/docs/11/catalog-pg-class.html> for details
   # on the `pg_class` table

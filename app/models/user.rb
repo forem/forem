@@ -24,6 +24,7 @@ class User < ApplicationRecord
 
   include StringAttributeCleaner.nullify_blanks_for(:email)
 
+  extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
@@ -149,6 +150,7 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
+
   unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
 
   validate :can_send_confirmation_email
