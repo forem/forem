@@ -4,10 +4,10 @@
 # defined `slug` -- in other words, slug values should be unique across all
 # relevant models. Except also, models might use "username" instead of "slug".
 #
-# Models can register with this class to be included in a cross-model-uniqueness
-# check. Any/all models registered are checked for the existence of a record
-# matching a given value. Additionally, we have some special cases (eg, sitemap)
-# that we want to apply across all registered models.
+# "Slug-like" models are all included in a cross-model-uniqueness check. An
+# impacted models are checked for the existence of a record matching a given
+# value. Additionally, we have some special cases (eg, sitemap) that we want to
+# apply across all registered models.
 #
 class CrossModelSlug
   MODELS = {

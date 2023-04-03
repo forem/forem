@@ -1,5 +1,5 @@
 # extend to add :unique_across_models, which validates a slug or name across
-# all registered models via CrossModelSlug
+# all "slug-like" models via CrossModelSlug
 module UniqueAcrossModels
   def unique_across_models(attribute, **options)
     validates attribute, presence: true
