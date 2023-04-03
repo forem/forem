@@ -86,19 +86,23 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:external_ad) { create_display_ad organization_id: organization.id, type_of: :external }
     let!(:other_external) { create_display_ad organization_id: other_org.id, type_of: :external }
 
-    it "always shows :in_house, only shows community/external appropriately" do
+    it "always shows :community ad if matching, otherwise shows in_house/external" do
       filtered = filter_ads organization_id: organization.id
-      expect(filtered).to contain_exactly(community_ad, in_house_ad, other_external)
+      expect(filtered).to contain_exactly(community_ad)
+      expect(filtered).not_to include(other_community)
+
+      filtered = filter_ads organization_id: 123
+      expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
-      expect(filtered).not_to include(other_community)
+      expect(filtered).not_to include(community_ad, other_community)
     end
 
     it "suppresses external ads when permit_adjacent_sponsors is false" do
       filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
-      expect(filtered).to contain_exactly(community_ad, in_house_ad)
+      expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
