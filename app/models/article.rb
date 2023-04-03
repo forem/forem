@@ -441,7 +441,7 @@ class Article < ApplicationRecord
   end
 
   def body_text
-    ActionView::Base.full_sanitizer.sanitize("<img src='#{@main_image}></img>#{@processed_html}")[0..8000]
+    ActionView::Base.full_sanitizer.sanitize(processed_html)[0..8000]
   end
 
   def touch_by_reaction
@@ -949,7 +949,7 @@ class Article < ApplicationRecord
     'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', \
     'ф' => 'f', 'х' => 'h', 'ц' => 'c', 'ч' => 'ch', 'ш' => 'sh', \
     'щ' => 'shch', 'ы' => 'y', 'э' => 'e', 'ю' => 'u', 'я' => 'ya', \
-    'й' => 'н', 'ъ' => '', 'ь' => '', 'ґ' => 'g', 'є' => 'ye', 'і' => 'i', 'ї' => 'yi'}
+    'й' => 'i', 'ъ' => '', 'ь' => '', 'ґ' => 'g', 'є' => 'ye', 'і' => 'i', 'ї' => 'yi'}
 
     identifier = ''
 

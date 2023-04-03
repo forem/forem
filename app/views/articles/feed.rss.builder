@@ -45,7 +45,6 @@ xml.rss(:version => "2.0",
         xml.pubDate article.published_at.to_fs(:rfc822) if article.published_at
         xml.link app_url(article.path)
         xml.guid app_url(article.path)
-		xml.enclosure "https://assets-prd.ignimgs.com/2022/08/17/top25animecharacters-blogroll-1660777571580.jpg"
         xml.description sanitize(article.plain_html,
                                  tags: allowed_tags, attributes: allowed_attributes, scrubber: scrubber)
         article.tag_list.each do |tag_name|
