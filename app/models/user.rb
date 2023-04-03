@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   resourcify
-  rolify
+  rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
 
@@ -632,5 +632,11 @@ class User < ApplicationRecord
 
   def confirmation_required?
     ForemInstance.smtp_enabled?
+  end
+
+  def update_user_roles_cache(...)
+    authorizer.clear_cache
+    Rails.cache.delete("user-#{id}/has_trusted_role")
+    trusted?
   end
 end
