@@ -32,7 +32,7 @@ export const CommentsCount = ({ count, articlePath, articleTitle }) => {
           <span className="hidden s:inline">
             &nbsp;
             {`${
-              count > 1 ? `${locale('core.comment')}s` : locale('core.comment')
+              count > 1 ? `${locale('core.comment')}` : locale('core.comment')
             }`}
           </span>
         </span>
