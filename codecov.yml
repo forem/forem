@@ -1,6 +1,13 @@
+# NB: Run the following command to verify this file is valid
+# > cat codecov.yml | curl --data-binary @- https://codecov.io/validate
+
 codecov:
   ci:
-    - !buildkite
+    - "!buildkite"
+  require_ci_to_pass: no
+  notify:
+    wait_for_ci: no
+    after_n_builds: 12 # Actually we have 18 total but this ensure we get a (incomplete) result even if some failed to upload
 ignore:
   - "vendor"
   - "bin"
@@ -9,11 +16,10 @@ ignore:
   - "lib/generators"
 coverage:
   status:
-    patch: 90%
+    patch:
+      default:
+        target: 90%
+    project: false
 flag_management:
   default_rules:
     carryforward: true
-    statuses:
-      - type: project
-        target: auto
-        threshold: 1%
