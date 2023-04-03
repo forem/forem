@@ -4,8 +4,7 @@
   initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeSettings, initializeRuntimeBanner,
-  initializeTimeFixer, initializeDashboardSort,
-  initializeArchivedPostFilter, initializeCreditsPage,
+  initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
   initializeDrawerSliders, initializeHeroBannerClose,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
@@ -22,7 +21,6 @@ function callInitializers() {
   initializeSettings();
   initializeTimeFixer();
   initializeDashboardSort();
-  initializeArchivedPostFilter();
   initializeCreditsPage();
   initializeDrawerSliders();
   initializeHeroBannerClose();
