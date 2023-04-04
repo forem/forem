@@ -119,7 +119,7 @@ export function showModalAfterError({
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
+export function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
   return `Since you recently ${action_past} a ${element}, you’ll need to wait ${timeframe} before ${action_ing} another ${element}.`;
 }
 
@@ -134,7 +134,7 @@ function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
  *
  * @returns {string} HTML for the modal
  */
-const getModalHtml = (text, confirm_text) => `
+export const getModalHtml = (text, confirm_text) => `
    <div id="${modalId}" hidden>
      <div class="flex flex-col">
        <p class="color-base-70">
@@ -180,7 +180,7 @@ function buildModalDiv(text, confirm_text) {
  *
  * @returns {Element} DOM node of alert modal with formatted text
  */
-function getModal(text, confirm_text) {
+export function getModal(text, confirm_text) {
   const wrapper = document.createElement('div');
   wrapper.innerHTML = getModalHtml(text, confirm_text);
   return wrapper;
