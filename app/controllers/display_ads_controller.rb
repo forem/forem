@@ -6,8 +6,9 @@ class DisplayAdsController < ApplicationController
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS)
 
-    if params[:articleId]
-      @article = Article.find(params[:articleId])
+    # exceptions of blank or nil etc.
+    if params[:article_id]
+      @article = Article.find(params[:article_id])
 
       @display_ad = DisplayAd.for_display(
         area: "post_comments",
