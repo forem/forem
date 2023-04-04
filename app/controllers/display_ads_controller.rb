@@ -1,12 +1,11 @@
 class DisplayAdsController < ApplicationController
-  before_action :set_cache_control_headers, only: %i[display_ads], unless: -> { current_user }
+  before_action :set_cache_control_headers, only: %i[for_display], unless: -> { current_user }
   CACHE_EXPIRY_FOR_DISPLAY_ADS = 15.minutes.to_i.freeze
 
   def for_display
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS)
 
-    # exceptions of blank or nil etc.
     if params[:article_id]
       @article = Article.find(params[:article_id])
 
