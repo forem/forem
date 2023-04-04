@@ -138,9 +138,6 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :display_ads do
-      get "/display_for", to: "display_ads#display_for"
-    end
     resources :display_ad_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
@@ -192,7 +189,8 @@ Rails.application.routes.draw do
 
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", controller: "async_info#navigation_links"
-    get "/async_info/display_ads", controller: "async_info#display_ads"
+
+    get "/display_ads/for_display", controller: "display_ads#for_display"
 
     # Settings
     post "users/join_org", to: "users#join_org"

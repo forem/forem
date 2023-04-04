@@ -12,7 +12,7 @@ async function getBillboard() {
 
   if (placeholderElement.innerHTML.trim() === '') {
     const response = await window.fetch(
-      `/async_info/display_ads?articleId=${jsArticleId}`,
+      `/display_ads/for_display?articleId=${jsArticleId}`,
     );
     const htmlContent = await response.text();
 

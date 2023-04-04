@@ -57,17 +57,4 @@ class AsyncInfoController < ApplicationController
     # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false
   end
-
-  def display_ads
-    @article = Article.find(params[:articleId])
-    @display_ad = DisplayAd.for_display(
-      area: "post_comments",
-      user_signed_in: user_signed_in?,
-      organization_id: @article.organization_id,
-      permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?,
-      article_tags: @article.decorate.cached_tag_list_array,
-    )
-
-    render layout: false
-  end
 end
