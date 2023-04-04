@@ -4,7 +4,7 @@ class DisplayAdsController < ApplicationController
 
   def for_display
     skip_authorization
-    set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS)
+    set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS) unless session_current_user_id
 
     if params[:article_id]
       @article = Article.find(params[:article_id])
@@ -16,9 +16,12 @@ class DisplayAdsController < ApplicationController
         permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?,
         article_tags: @article.decorate.cached_tag_list_array,
       )
+
+      if @display_ad && !session_current_user_id
+        set_surrogate_key_header @display_ad.record_key
+      end
     end
 
-    # set_surrogate_key_header "display_ad"
     render layout: false
   end
 end
