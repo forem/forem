@@ -61,7 +61,7 @@ function addRelevantButtonsToComments(user) {
         butt.innerHTML =
           '<a href="' +
           butt.dataset.path +
-          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Налаштування</a>';
         butt.classList.remove('hidden');
         butt.classList.add('block');
       }
@@ -83,7 +83,7 @@ function addRelevantButtonsToComments(user) {
           butt.innerHTML =
             '<a href="' +
             butt.dataset.path +
-            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
+            '" rel="nofollow" class="crayons-link crayons-link--block">Модерувати</a>';
         }
         butt.className = 'mod-actions';
         butt.classList.remove('hidden');

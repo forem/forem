@@ -31,7 +31,7 @@ export const CommentsCount = ({ count, articlePath, articleTitle }) => {
           
           <span className="hidden s:inline">
 			Коментарі:
-          </span>:&nbsp;{count}
+          </span>&nbsp;{count}
         </span>
       </Button>
     );
