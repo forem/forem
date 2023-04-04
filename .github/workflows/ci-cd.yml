@@ -193,6 +193,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
+          fail_ci_if_error: false
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -233,6 +234,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: jest, javascript
+          fail_ci_if_error: false
 
   storybook:
     runs-on: ubuntu-latest
