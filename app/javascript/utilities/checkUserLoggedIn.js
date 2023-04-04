@@ -1,5 +1,5 @@
 export function checkUserLoggedIn() {
-  const body = document.body;
+  const { body } = document;
   if (!body) {
     return false;
   }

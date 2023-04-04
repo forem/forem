@@ -2,7 +2,7 @@ import { checkUserLoggedIn } from "@utilities/checkUserLoggedIn";
 
 describe('CheckUserLoggedIn Utility', () => {
   it('should return false if no body', () => {
-    document.body = null
+    document.body = undefined;
     const userLoggedIn = checkUserLoggedIn()
     expect(userLoggedIn).toEqual(false);
   });
