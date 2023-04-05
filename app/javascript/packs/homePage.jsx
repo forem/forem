@@ -132,4 +132,3 @@ InstantClick.on('change', () => {
 InstantClick.init();
 
 trackCreateAccountClicks('sidebar-wrapper-left');
-trackCreateAccountClicks('authentication-feed-actions');
