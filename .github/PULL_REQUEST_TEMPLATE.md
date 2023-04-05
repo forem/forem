@@ -55,6 +55,13 @@ _If your PR includes UI changes, please replace this line with details on how
 accessibility is impacted and tested. For more info, check out the
 [Forem Accessibility Docs](https://developers.forem.com/frontend/accessibility)._
 
+## Added/updated tests?
+
+- [ ] Yes
+- [ ] No, and this is why: _please replace this line with details on why tests
+      have not been included_
+- [ ] I need help with writing tests
+
 ## [optional] Are there any post deployment tasks we need to perform?
 
 ## [optional] What gif best describes this PR or how it makes you feel?
