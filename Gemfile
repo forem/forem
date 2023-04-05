@@ -151,6 +151,7 @@ group :development, :test do
   gem "rubocop-rails", "~> 2.15", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 2.12", require: false # Code style checking for RSpec files
   gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
+  gem "binding_of_caller"
 end
 
 group :test do
