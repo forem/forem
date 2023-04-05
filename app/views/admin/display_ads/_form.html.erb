@@ -36,6 +36,11 @@
       <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
     </div>
 
+    <div class="crayons-field hidden">
+      <%= label_tag :exclude_article_ids, "Exclude Article IDs:", class: "crayons-field__label" %>
+      <%= text_field_tag :exclude_article_ids, @display_ad.exclude_article_ids.join(", "), class: "crayons-textfield js-exclude-ids-textfield", autocomplete: "off" %>
+    </div>
+
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
         <legend class="crayons-field crayons-field__label pl-0">Display to user group</legend>

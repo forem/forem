@@ -60,6 +60,7 @@
                                         user_signed_in: user_signed_in?,
                                         organization_id: @article.organization_id,
                                         article_tags: @article.decorate.cached_tag_list_array,
+                                        article_id: @article.id,
                                         permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?) %>
   <% if sidebar_ad %>
     <div class="crayons-article-sticky grid gap-4 break-word pt-4">
