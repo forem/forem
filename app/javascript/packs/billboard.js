@@ -4,11 +4,11 @@ async function getBillboard() {
     'js-display-ad-comments-container',
   )[0];
 
-  const { articleId } = placeholderElement.dataset || {};
+  const { articleId, placementArea } = placeholderElement.dataset || {};
 
   if (placeholderElement.innerHTML.trim() === '') {
     const response = await window.fetch(
-      `/display_ads/for_display?article_id=${articleId}`,
+      `/display_ads/for_display?article_id=${articleId}&placement_area=${placementArea}`,
     );
     const htmlContent = await response.text();
 

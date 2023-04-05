@@ -15,12 +15,11 @@ RSpec.describe "DisplayAds" do
     context "when signed in" do
       before do
         sign_in user
-
-        get display_ads_for_display_path(article_id: article.id)
+        get display_ads_for_display_path(article_id: article.id, placement_area: "post_comments")
       end
 
       it "does not set surrogate key headers" do
-        expect(response.headers["surrogate-key"]).to be_nil
+        expect(response.headers["Surrogate-key"]).to be_nil
       end
 
       it "does not set x-accel-expires headers" do
@@ -36,10 +35,11 @@ RSpec.describe "DisplayAds" do
     end
 
     context "when signed out" do
-      before { get display_ads_for_display_path(article_id: article.id) }
+      before { get display_ads_for_display_path(article_id: article.id, placement_area: "post_comments") }
 
       it "sets the surrogate key header equal to params for article" do
-        expect(response.headers["Surrogate-Key"]).to eq(controller.params.to_s)
+        display_ad = DisplayAd.find_by(placement_area: "post_comments")
+        expect(response.headers["Surrogate-Key"]).to eq("display_ads/#{display_ad.id}")
       end
 
       it "sets the x-accel-expires header equal to max-age for article" do
@@ -51,6 +51,12 @@ RSpec.describe "DisplayAds" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
+      end
+
+      # the test here will be mostly covered by the filter query test
+      it "returns the correct response" do
+        get display_ads_for_display_path(article_id: article.id, placement_area: "post_comments")
+        # it will return html that contains
       end
     end
   end

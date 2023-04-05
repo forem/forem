@@ -6,11 +6,11 @@ class DisplayAdsController < ApplicationController
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS) unless session_current_user_id
 
-    if params[:article_id]
+    if params[:article_id] && params[:placement_area]
       @article = Article.find(params[:article_id])
 
       @display_ad = DisplayAd.for_display(
-        area: "post_comments",
+        area: params[:placement_area],
         user_signed_in: user_signed_in?,
         organization_id: @article.organization_id,
         permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?,
