@@ -57,7 +57,7 @@ en:
         popular_tags: Популярні теґи
       footer:
         built:
-          text_html: Створено на базі %{forem} — %{opensource} ПО.
+          text_html: Створено на базі %{forem} — %{opensource} ПЗ.
           forem: Forem
           opensource: відкритого
           dev: DEV

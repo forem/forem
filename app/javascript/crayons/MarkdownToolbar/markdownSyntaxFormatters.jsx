@@ -69,7 +69,7 @@ const handleLinkFormattingForEmptyTextSelection = ({
     editSelectionStart: selectionStart,
     editSelectionEnd: selectionEnd,
     replaceSelectionWith: `[](${URL_PLACEHOLDER_TEXT})`,
-    newCursorStart: selectionStart + 9,
+    newCursorStart: selectionStart + 3,
     newCursorEnd: selectionEnd + 12,
   };
 
