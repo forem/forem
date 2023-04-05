@@ -37,7 +37,7 @@ module Badges
         next unless REWARD_STREAK_WEEKS.include?(week_streak)
         next unless (user = User.find_by(id: hash["user_id"]))
 
-        badge_slug = "#{week_streak}-week-community-wellness-streak"
+        badge_slug = "d0-95-d0-ba-d1-81-d0-bf-d0-b5-d1-80-d1-82-d0-9e-d0-b1-d0-b3-d0-be-d0-b2-d0-be-d1-80-d0-b5-d0-bd-d1-8c-28-d0-a2-d0-b8-d0-b6-d0-bd-d1-96-3a-#{week_streak}-29"
         next unless (badge_id = Badge.id_for_slug(badge_slug))
 
         user.badge_achievements.create(

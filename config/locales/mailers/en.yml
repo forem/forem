@@ -2,32 +2,32 @@
 en:
   mailers:
     digest_mailer:
-      from: Digest
-      more_top_posts: more top %{community} posts
-      more_top_posts_based: more top %{community} posts based on your interests
-      more_top_posts_from: more top reads from the community
-      more_trending_posts: more trending %{community} posts
-      more_trending_posts_picked: more trending %{community} posts picked for you
-      other_posts: other posts you might like
-      other_community_posts: other %{community} posts you might like
-      other_top_posts: other top %{community} posts
-      other_trending_posts: other trending %{community} posts
+      from: Дайджест
+      more_top_posts: більше найкращих дописів зі спільнооти %{community} 
+      more_top_posts_based: більше найкращих %{community} дописів на основі ваших інтересів
+      more_top_posts_from: більше всього переглядів у спільноті
+      more_trending_posts: найбільш трендові дописи
+      more_trending_posts_picked: більше трендових дописів у спільноті %{community} спеціально для вас
+      other_posts: інші дописи, які можуть вам сподобатися
+      other_community_posts: інші дописи спільноти %{community}, яку можуть вам сподобатися
+      other_top_posts: інші найкращі дописи спільноти %{community} 
+      other_trending_posts: інші трендові дописи спільноти %{community} 
     notify_mailer:
-      account_deleted: "%{community} - Account Deletion Confirmation"
-      deletion_requested: "%{community} - Account Deletion Requested"
-      trusted: Congrats! You're now a "trusted" user on %{community}!
-      moderator: 'Congrats! You''re the moderator for #%{tag_name}'
-      new_follower: just followed you on %{community}
+      account_deleted: "%{community} - Підтвердження видалення акаунта"
+      deletion_requested: "%{community} - Запит на видалення акаунта"
+      trusted: Вітаємо! Ви тепер "довірений" користувач на %{community}!
+      moderator: 'Вітаємо! Ви тепер модератор теґу #%{tag_name}'
+      new_follower: тільки що підписався(лась) на вас у спільноті %{community}
       new_mention: "%{name} just mentioned you in their %{type}"
-      org_deleted: "%{community} - Organization Deletion Confirmation"
-      new_reply: "%{name} replied to your %{type}"
-      feedback: Thanks for your report on %{community}
-      export: The export of your content is ready
+      org_deleted: "%{community} - підтвердження видалення проєкту"
+      new_reply: "%{name} відповили вам на сайті  %{type}"
+      feedback: Дякуємо за ваше взернення на сайті %{community}
+      export: Експорт ваших даних завершено.
       unread_notifications:
-        one: "🔥 You have %{count} unread notifications on %{community}"
-        other: "🔥 You have %{count} unread notifications on %{community}"
-      new_badge: You just got a badge
-      video_upload: Your video upload is complete
+        one: "🔥 Ви маєте %{count} непрочитане сповіщення у спільноті %{community}"
+        other: "🔥 Ви маєте %{count} непрочитаних сповіщень у спільноті %{community}"
+      new_badge: Ви отримали бейдж!
+      video_upload: Ваше відео завантажено
     verification_mailer:
-      from: "%{community} Email Verification <%{email}>"
-      verify_ownership: Verify Your %{community} Account Ownership
+      from: "%{community} Перевірка електронної пошти <%{email}>"
+      verify_ownership: Підтвердіть свій акаунт у спільноті %{community} 

@@ -19,10 +19,10 @@ ua:
       moderator: 'Вітаємо! Ви тепер модератор теґу #%{tag_name}'
       new_follower: тільки що підписався(лась) на вас у спільноті %{community}
       new_mention: "%{name} just mentioned you in their %{type}"
-      org_deleted: "%{community} - Organization Deletion Confirmation"
+      org_deleted: "%{community} - підтвердження видалення проєкту"
       new_reply: "%{name} відповили вам на сайті  %{type}"
-      feedback: Thanks for your report on %{community}
-      export: The export of your content is ready
+      feedback: Дякуємо за ваше взернення на сайті %{community}
+      export: Експорт ваших даних завершено.
       unread_notifications:
         one: "🔥 Ви маєте %{count} непрочитане сповіщення у спільноті %{community}"
         other: "🔥 Ви маєте %{count} непрочитаних сповіщень у спільноті %{community}"

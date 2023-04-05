@@ -1,6 +1,6 @@
 module Badges
   class AwardBelovedComment
-    BADGE_SLUG = "beloved-comment".freeze
+    BADGE_SLUG = "d0-a1-d1-83-d0-bf-d0-b5-d1-80-d0-b7-d1-96-d1-80-d0-ba-d0-b0".freeze
 
     def self.call(comment_count = 25)
       new(comment_count).call

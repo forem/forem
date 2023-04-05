@@ -4,7 +4,7 @@ ua:
     main:
       aria_home: "%{community}"
       header:
-        create_account: Створити акаунт
+        create_account: Реєстрація
         login: Увійти
         nav:
           aria_label: Меню
@@ -18,7 +18,7 @@ ua:
       modal:
         create_account:
           aria_label: Створити новий акаунт
-          text: Створити акаунт
+          text: Реєстрація
         login:
           aria_label: Увійти
           text: Увійти

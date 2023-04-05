@@ -540,7 +540,7 @@ class Article < ApplicationRecord
   def cloudinary_video_url
     return if video_thumbnail_url.blank?
 
-    Images::Optimizer.call(video_thumbnail_url, width: 2200, quality: 83)
+    Images::Optimizer.call(video_thumbnail_url, width: 2200, quality: 80)
   end
 
   def video_duration_in_minutes

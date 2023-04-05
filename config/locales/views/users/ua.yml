@@ -8,7 +8,7 @@ ua:
       comments_locked_cta:
         title: Хочете прив'язати до %{user}?
         description: Створіть акаунт, щоб прив'язати до %{user}. Ви також можете увійти нижче, щоб продовжити, якщо у вас вже є акаунт.
-        create_account: Створити акаунт
+        create_account: Реєстрація
         already_have_an_account: Вже маєте акаунт?
         sign_in: Увійти
       comments:
@@ -81,7 +81,7 @@ ua:
       flag: Шадоубан @%{user}
       follow: Підписатися
       joined:
-        icon: Доєднався
+        icon: З нами з
         text_html: "У спільноті з \_%{date}"
       location_icon: Location
       logo: "%{user} зображення профілю"

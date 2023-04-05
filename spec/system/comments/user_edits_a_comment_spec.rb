@@ -21,7 +21,7 @@ RSpec.describe "Editing A Comment", js: true do
     expect(page).to have_text("Editing comment")
     fill_in "text-area", with: new_comment_text
 
-    click_button("Submit")
+    click_button("Відправити")
 
     expect(page).to have_text(new_comment_text)
 
@@ -38,7 +38,7 @@ RSpec.describe "Editing A Comment", js: true do
       wait_for_javascript
 
       click_on(class: "comment__dropdown-trigger")
-      click_link("Edit")
+      click_link("Редагувати")
       assert_updated
     end
   end
@@ -52,7 +52,7 @@ RSpec.describe "Editing A Comment", js: true do
       wait_for_javascript
 
       click_on(class: "comment__dropdown-trigger")
-      click_link("Edit")
+      click_link("Редагувати")
       assert_updated
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe "Editing A Comment", js: true do
     it "cancels to the article page" do
       user.reload
       visit "#{comment.path}/edit"
-      expect(page).to have_link("Dismiss")
+      expect(page).to have_link("Відбій")
     end
   end
 end
