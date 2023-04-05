@@ -152,4 +152,44 @@ RSpec.describe DisplayAd do
       expect(display_ad.tag_list).to eq(tags.downcase.split(", "))
     end
   end
+
+  describe "#exclude_articles_ids" do
+    it "processes array of integer ids as expected" do
+      display_ad.exclude_article_ids = ["11"]
+      expect(display_ad.exclude_article_ids).to contain_exactly(11)
+
+      display_ad.exclude_article_ids = %w[11 12 13 14]
+      expect(display_ad.exclude_article_ids).to contain_exactly(11, 12, 13, 14)
+
+      display_ad.exclude_article_ids = "11,12,13,14"
+      expect(display_ad.exclude_article_ids).to contain_exactly(11, 12, 13, 14)
+
+      display_ad.exclude_article_ids = ""
+      expect(display_ad.exclude_article_ids).to eq([])
+
+      display_ad.exclude_article_ids = []
+      expect(display_ad.exclude_article_ids).to eq([])
+
+      display_ad.exclude_article_ids = ["", "", ""]
+      expect(display_ad.exclude_article_ids).to eq([])
+
+      display_ad.exclude_article_ids = [nil]
+      expect(display_ad.exclude_article_ids).to eq([])
+
+      display_ad.exclude_article_ids = nil
+      expect(display_ad.exclude_article_ids).to eq([])
+    end
+
+    it "round-trips to the database as expected" do
+      display_ad.exclude_article_ids = [11]
+      display_ad.save!
+      expect(display_ad.exclude_article_ids).to contain_exactly(11)
+
+      display_ad.update(exclude_article_ids: "11,12,13,14")
+      expect(display_ad.exclude_article_ids).to contain_exactly(11, 12, 13, 14)
+
+      display_ad.update(exclude_article_ids: nil)
+      expect(display_ad.exclude_article_ids).to eq([])
+    end
+  end
 end
