@@ -12,6 +12,14 @@ RSpec.describe "DisplayAds" do
       create(:display_ad, placement_area: "post_comments", published: true, approved: true)
     end
 
+    it "returns the correct response" do
+      get display_ads_for_display_path(article_id: article.id, placement_area: "post_comments")
+      display_ad = DisplayAd.find_by(placement_area: "post_comments")
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include(display_ad.processed_html)
+    end
+
     context "when signed in" do
       before do
         sign_in user
@@ -51,12 +59,6 @@ RSpec.describe "DisplayAds" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
-      end
-
-      # the test here will be mostly covered by the filter query test
-      it "returns the correct response" do
-        get display_ads_for_display_path(article_id: article.id, placement_area: "post_comments")
-        # it will return html that contains
       end
     end
   end
