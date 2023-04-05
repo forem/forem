@@ -12,7 +12,7 @@ function convertUtcTime(utcTime) {
   return formatDateTime(options, time);
 }
 
-function convertUtcDate(utcDate) {
+export function convertUtcDate(utcDate) {
   const date = new Date(utcDate);
   const options = {
     month: 'short',
