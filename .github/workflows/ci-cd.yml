@@ -122,7 +122,7 @@ jobs:
         uses: reviewdog/action-rubocop@v2
         with:
           rubocop_version: gemfile
-          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile
+          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
           reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
       - run: bundle exec bundle-audit check --update
