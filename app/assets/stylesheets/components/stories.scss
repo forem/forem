@@ -95,6 +95,13 @@
     }
   }
 
+  &__indention-display-ad {
+    @media (min-width: $breakpoint-m) {
+      padding-left: calc(var(--su-7) + var(--su-2));
+      padding-right: calc(var(--su-7) + var(--su-2));
+    }
+  }
+
   &__top {
     display: flex;
     align-items: center;
