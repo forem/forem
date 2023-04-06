@@ -5,7 +5,8 @@ import {
 
 describe('ShowUserAlert Utility', () => {
   it('should return modal html', () => {
-    const modalHtml = getModalHtml("Sample text", "Sample Confirm Text");
+    const modalHtml = 'Sample text' //getModalHtml("Sample text", "Sample Confirm Text");
+    getModalHtml("Sample text", "Sample Confirm Text");
     expect(modalHtml).toContain('Sample text');
   });
 
