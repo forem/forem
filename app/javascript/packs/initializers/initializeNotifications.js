@@ -110,7 +110,7 @@ function initReactions() {
           setTimeout(() => {
             document
               .getElementById(
-                `comment-textarea-for-${  thisButt.dataset.reactableId}`,
+                `comment-textarea-for-${ thisButt.dataset.reactableId }`,
               )
               .focus();
           }, 30);
