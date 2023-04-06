@@ -133,14 +133,8 @@ module Moderator
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
-    def update_trusted_cache
-      Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted?
-    end
-
     def update_roles
       handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
-      update_trusted_cache
     end
   end
 end

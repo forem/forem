@@ -397,6 +397,36 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               email: { type: :string },
               name: { type: :string, nullable: true }
             }
+          },
+          DisplayAd: {
+            description: "A Display Ad, aka Billboard, aka Widget",
+            type: :object,
+            properties: {
+              id: { type: :integer, description: "The ID of the Display Ad" },
+              name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
+              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
+              approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs", nullable: true },
+              creator_id: { type: :integer, description: "Identifies the user who created the ad.", nullable: true },
+              placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
+                                description: "Identifies which area of site layout the ad can appear in" },
+              tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
+              article_exclude_ids: { type: :string,
+                                     nullable: true,
+                                     description: "Articles this ad should *not* appear on (blank means no articles are disallowed, and this ad can appear next to any/all articles). Comma-separated list of integer Article IDs" }, # rubocop:disable Layout/LineLength
+              display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
+                            description: "Potentially limits visitors to whom the ad is visible" },
+              type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
+                         description: <<~DESCRIBE
+                           Types of the billboards:
+                           in_house (created by admins),
+                           community (created by an entity, appears on entity's content),
+                           external ( created by an entity, or a non-entity, can appear everywhere)
+                         DESCRIBE
+                }
+            },
+            required: %w[name body_markdown placement_area]
           }
         }
       }

@@ -74,8 +74,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -122,7 +122,7 @@ jobs:
         uses: reviewdog/action-rubocop@v2
         with:
           rubocop_version: gemfile
-          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile
+          rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
           reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
       - run: bundle exec bundle-audit check --update
@@ -164,8 +164,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -193,6 +193,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
+          fail_ci_if_error: false
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -233,6 +234,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: jest, javascript
+          fail_ci_if_error: false
 
   storybook:
     runs-on: ubuntu-latest
@@ -290,8 +292,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -344,8 +346,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-precompiled-assets-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-precompiled-assets-
+          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:

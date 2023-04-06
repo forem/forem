@@ -6,7 +6,7 @@ module.exports = function (api) {
   var isDevelopmentEnv = api.env('development');
   var isProductionEnv = api.env('production');
   var isTestEnv = api.env('test');
-  var isEndToEnd = api.env('E2E');
+  var isEndToEnd = process.env.E2E === 'true';
 
   if (!validEnv.includes(currentEnv)) {
     throw new Error(

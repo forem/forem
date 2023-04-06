@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_20_152927) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -461,6 +461,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
     t.integer "display_to", default: 0, null: false
+    t.integer "exclude_article_ids", default: [], array: true
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
@@ -471,6 +472,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
+    t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
   end
 
   create_table "email_authorizations", force: :cascade do |t|
