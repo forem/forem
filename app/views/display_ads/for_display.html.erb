@@ -2,7 +2,7 @@
   <% if user_signed_in? %>
     <%= render partial: "shared/display_ad", locals: { display_ad: @display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
   <% else %>
-    <% cache("display-ad#{@display_ad.placement_area}-#{@article.id}", expires_in: 15.minutes) do %>
+    <% cache([@article, @display_ad.placement_area], expires_in: 15.minutes) do %>
       <%= render partial: "shared/display_ad", locals: { display_ad: @display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
     <% end %>
   <% end %>
