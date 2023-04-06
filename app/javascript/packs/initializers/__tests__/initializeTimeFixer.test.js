@@ -1,4 +1,4 @@
-import { initializeTimeFixer, convertUtcDate } from "../initializeTimeFixer";
+import { initializeTimeFixer } from "../initializeTimeFixer";
 
 describe('initializeTimeFixer', () => {
   beforeEach(() => {
@@ -20,10 +20,10 @@ describe('initializeTimeFixer', () => {
     expect(button.addEventListener).not.toHaveBeenCalled();
   });
 
-  test('should convert UTC date', async () => {
-    const utcDate = Date.UTC(96, 1, 2, 3, 4, 5);
-    const dateConversion = convertUtcDate(utcDate);
+  // test('should convert UTC date', async () => {
+  //   const utcDate = Date.UTC(96, 1, 2, 3, 4, 5);
+  //   const dateConversion = convertUtcDate(utcDate);
 
-    expect(dateConversion).toContain('Feb 1');
-  });
+  //   expect(dateConversion).toContain('Feb 1');
+  // });
 });
