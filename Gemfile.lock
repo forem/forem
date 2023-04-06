@@ -406,7 +406,7 @@ GEM
       ruby-vips (>= 2.0.17, < 3)
     imgproxy (2.1.0)
       anyway_config (>= 2.0.0)
-    inline_svg (1.8.0)
+    inline_svg (1.9.0)
       activesupport (>= 3.0)
       nokogiri (>= 1.6)
     io-console (0.6.0)
