@@ -16,7 +16,7 @@ class DisplayAdsController < ApplicationController
         area: params[:placement_area],
         user_signed_in: user_signed_in?,
         organization_id: @article&.organization_id,
-        permit_adjacent_sponsors: @article&.decorate&.permit_adjacent_sponsors? || true,
+        permit_adjacent_sponsors: ArticleDecorator.new(@article).permit_adjacent_sponsors?,
         article_tags: @article&.decorate&.cached_tag_list_array || [],
       )
 
