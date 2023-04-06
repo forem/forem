@@ -103,7 +103,7 @@ function initReactions() {
           event.preventDefault();
           const thisButt = this;
           document
-            .getElementById(`comment-form-for-${  thisButt.dataset.reactableId}`)
+            .getElementById(`comment-form-for-${ thisButt.dataset.reactableId }`)
             .classList.remove('hidden');
           thisButt.classList.add('hidden');
           thisButt.classList.remove('inline-flex');
