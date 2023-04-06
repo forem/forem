@@ -42,7 +42,7 @@ module CarrierWaveInitializer
       config.fog_credentials = {
         provider: "AWS",
         use_iam_profile: true,
-        region: "us-east-2"
+        region: "eu-central-1"
       }
     end
   end
