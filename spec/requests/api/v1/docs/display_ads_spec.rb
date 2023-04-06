@@ -23,6 +23,8 @@ RSpec.describe "api/v1/display_ads" do
         produces "application/json"
 
         response(200, "successful") do
+          schema type: :array,
+                 items: { "$ref": "#/components/schemas/DisplayAd" }
           let(:"api-key") { api_secret.secret }
           add_examples
 
@@ -47,31 +49,8 @@ RSpec.describe "api/v1/display_ads" do
 
         produces "application/json"
         consumes "application/json"
-        parameter name: :display_ad, in: :body, schema: {
-          type: :object,
-          properties: {
-            name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
-            body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
-            approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-            published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-            organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs" },
-            display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
-                          description: "Potentially limits visitors to whom the ad is visible" },
-            type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
-                       description: <<~DESCRIBE
-                         Types of the billboards:
-                         in_house (created by admins),
-                         community (created by an entity, appears on entity's content),
-                         external ( created by an entity, or a non-entity, can appear everywhere)
-                       DESCRIBE
-                    },
-            placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
-                              description: "Identifies which area of site layout the ad can appear in" },
-            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
-            creator_id: { type: :integer, description: "Identifies the user who created the ad." }
-          },
-          required: %w[name body_markdown placement_area]
-        }
+        parameter name: :display_ad, in: :body, schema: { type: :object,
+                                                          items: { "$ref": "#/components/schemas/DisplayAd" } }
 
         let(:display_ad) do
           {
@@ -87,6 +66,8 @@ RSpec.describe "api/v1/display_ads" do
         let(:placement_area) { "post_comments" }
 
         response(200, "successful") do
+          schema  type: :object,
+                  items: { "$ref": "#/components/schemas/DisplayAd" }
           let(:"api-key") { api_secret.secret }
           add_examples
 
@@ -123,7 +104,7 @@ RSpec.describe "api/v1/display_ads" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the user to unpublish.",
+                  description: "The ID of the display ad.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -170,7 +151,7 @@ RSpec.describe "api/v1/display_ads" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the user to unpublish.",
+                  description: "The ID of the display ad.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -178,28 +159,14 @@ RSpec.describe "api/v1/display_ads" do
                   },
                   example: 123
 
-        parameter name: :display_ad, in: :body, schema: {
-          type: :object,
-          properties: {
-            name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
-            body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
-            approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-            published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
-            organization_id: { type: :integer,
-                               description: "Identifies the organization to which the ad belongs, required for 'community' type ads" }, # rubocop:disable Layout/LineLength
-            display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
-                          description: "Potentially limits visitors to whom the ad is visible" },
-            placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
-                              description: "Identifies which area of site layout the ad can appear in" },
-            tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
-            creator_id: { type: :integer, description: "Identifies the user who created the ad." }
-          },
-          required: %w[name body_markdown placement_area]
-        }
+        parameter name: :display_ad, in: :body, schema: { type: :object,
+                                                          items: { "$ref": "#/components/schemas/DisplayAd" } }
 
         let(:placement_area) { "post_comments" }
 
         response(200, "successful") do
+          schema  type: :object,
+                  items: { "$ref": "#/components/schemas/DisplayAd" }
           let(:"api-key") { api_secret.secret }
           let(:id) { display_ad.id }
           add_examples
@@ -239,7 +206,7 @@ RSpec.describe "api/v1/display_ads" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the user to unpublish.",
+                  description: "The ID of the display ad to unpublish.",
                   schema: {
                     type: :integer,
                     format: :int32,
