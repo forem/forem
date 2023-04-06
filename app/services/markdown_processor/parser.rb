@@ -27,9 +27,7 @@ module MarkdownProcessor
     end
 
     # @param prefix_images_options [Hash] params, that need to be passed further to HtmlParser#prefix_all_images
-    # @param sanitize_options [Hash]
-    def finalize(link_attributes: {}, prefix_images_options: { width: 800, synchronous_detail_detection: false },
-                 sanitize_options: { scrubber: RenderedMarkdownScrubber.new })
+    def finalize(link_attributes: {}, prefix_images_options: { width: 800, synchronous_detail_detection: false })
       options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
@@ -37,7 +35,7 @@ module MarkdownProcessor
       code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      sanitized_content = ActionController::Base.helpers.sanitize html, sanitize_options
+      sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
 
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,

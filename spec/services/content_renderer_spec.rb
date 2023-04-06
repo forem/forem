@@ -24,23 +24,8 @@ RSpec.describe ContentRenderer do
         renderer.process(link_attributes: { rel: "nofollow" })
         finalize_attrs = {
           link_attributes: { rel: "nofollow" },
-          sanitize_options: {},
           prefix_images_options: { width: 800, synchronous_detail_detection: false }
         }
-        expect(parser).to have_received(:finalize).with(finalize_attrs)
-      end
-
-      it "calls finalize with sanitize_options" do
-        allow(MarkdownProcessor::Fixer::FixAll).to receive(:call).and_return("text")
-        sanitize_options = { tags: %w[div] }
-        # attrs = ["text", { source: nil, user: nil }]
-        # expect(MarkdownProcessor::Parser).to have_received(:new).with(*attrs)
-        finalize_attrs = {
-          link_attributes: {},
-          sanitize_options: sanitize_options,
-          prefix_images_options: { width: 800, synchronous_detail_detection: false }
-        }
-        renderer.process(sanitize_options: { tags: %w[div] })
         expect(parser).to have_received(:finalize).with(finalize_attrs)
       end
     end
@@ -72,7 +57,7 @@ RSpec.describe ContentRenderer do
   context "when markdown is valid" do
     let(:markdown) { "# Hey\n\nI'm a markdown" }
     let(:expected_result) do
-      "<h1>\n  <a name=\"hey\" href=\"#hey\" class=\"anchor\">\n  </a>\n  Hey\n</h1>\n\n<p>I'm a markdown</p>\n\n"
+      "<h1>\n  <a name=\"hey\" href=\"#hey\">\n  </a>\n  Hey\n</h1>\n\n<p>I'm a markdown</p>\n\n"
     end
 
     it "processes markdown" do

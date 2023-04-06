@@ -81,11 +81,12 @@ RSpec.describe DisplayAd do
       expect(display_ad.processed_html).to start_with("<p>Hello <em>hey</em> Hey hey")
     end
 
-    it "renders <div>" do
-      div_html = "<div>I'm a div, I'm a div, good morning, how are you?</div>"
+    it "does not render <div>" do
+      div_html = "<div>Good morning, how are you?</div>"
+      p_html = "<p>Good morning, how are you?</p>"
       display_ad.update(body_markdown: div_html)
       display_ad.reload
-      expect(display_ad.processed_html).to eq(div_html)
+      expect(display_ad.processed_html).to eq(p_html)
     end
 
     it "does not render disallowed tags" do

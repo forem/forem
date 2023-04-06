@@ -226,8 +226,7 @@ class Comment < ApplicationRecord
     return unless user
 
     renderer = ContentRenderer.new(body_markdown, source: self, user: user)
-    self.processed_html = renderer.process(link_attributes: { rel: "nofollow" },
-                                           sanitize_options: { scrubber: RenderedMarkdownScrubber.new }).processed_html
+    self.processed_html = renderer.process(link_attributes: { rel: "nofollow" }).processed_html
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
   rescue ContentRenderer::ContentParsingError => e

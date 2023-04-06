@@ -20,16 +20,14 @@ class ContentRenderer
   end
 
   # @param link_attributes [Hash] options passed further to RedCarpet::Render::HTMLRouge, example: { rel: "nofollow"}
-  # @param sanitize_options [Hash] options for ActionController::Base.helpers.sanitize
   # @param prefix_images_options [Hash] options for Html::Parser#prefix_all_images
   # @return [ContentRenderer::Result]
-  def process(link_attributes: {}, sanitize_options: {},
+  def process(link_attributes: {},
               prefix_images_options: { width: 800, synchronous_detail_detection: false })
     fixed = fixer.call(input)
     processed = processor.new(fixed, source: source, user: user)
 
     processed_html = processed.finalize(link_attributes: link_attributes,
-                                        sanitize_options: sanitize_options,
                                         prefix_images_options: prefix_images_options)
 
     Result.new(front_matter: nil, processed_html: processed_html, reading_time: 0)
