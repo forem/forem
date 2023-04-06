@@ -1,3 +1,5 @@
+import { setupDisplayAdDropdown } from '../utilities/displayAdDropdown';
+
 // the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
   const placeholderElement = document.getElementsByClassName(
@@ -16,6 +18,7 @@ async function getBillboard() {
     generatedElement.innerHTML = htmlContent;
 
     placeholderElement.appendChild(generatedElement);
+    setupDisplayAdDropdown();
   }
 }
 
