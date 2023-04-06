@@ -7,7 +7,6 @@ class DisplayAdsController < ApplicationController
     set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS) unless session_current_user_id
 
     if params[:placement_area]
-
       if params[:article_id].present?
         @article = Article.find(params[:article_id])
       end
