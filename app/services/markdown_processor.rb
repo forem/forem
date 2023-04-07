@@ -29,6 +29,7 @@ module MarkdownProcessor
 
     # In FEED but not DISPLAY_AD: [i iframe]
     # In DISPLAY_AD but not FEED: [abbr add figcaption hr kbd mark rp rt ruby source sub video]
+    # In DISPLAY_AD but not RENDERED_MARKDOWN_SCRUBBER: [div]
     DISPLAY_AD = %w[a abbr add b blockquote br center cite code col colgroup dd del div dl dt
                     em figcaption h1 h2 h3 h4 h5 h6 hr img kbd li mark ol p pre q rp rt
                     ruby small source span strong sub sup table tbody td tfoot th thead

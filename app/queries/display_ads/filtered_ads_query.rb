@@ -5,12 +5,13 @@ module DisplayAds
     end
 
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, display_ads: DisplayAd)
+                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @organization_id = organization_id
       @article_tags = article_tags
+      @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
     end
 
@@ -24,6 +25,10 @@ module DisplayAds
 
       if @article_tags.blank?
         @filtered_display_ads = untagged_post_comment_ads
+      end
+
+      if @article_id.present?
+        @filtered_display_ads = unexcluded_article_ads
       end
 
       @filtered_display_ads = if @user_signed_in
@@ -57,6 +62,10 @@ module DisplayAds
 
     def untagged_post_comment_ads
       @filtered_display_ads.where(cached_tag_list: "")
+    end
+
+    def unexcluded_article_ads
+      @filtered_display_ads.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
     end
 
     def authenticated_ads(display_auth_audience)
