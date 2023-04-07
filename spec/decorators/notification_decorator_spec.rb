@@ -112,6 +112,10 @@ RSpec.describe NotificationDecorator, type: :decorator do
             })
     end
 
+    it "returns a partial path" do
+      expect(decorated.to_partial_path).to eq("notifications/single_reaction")
+    end
+
     it "responds to reactable_class" do
       expect(decorated.reactable_class).to eq("Article")
     end
