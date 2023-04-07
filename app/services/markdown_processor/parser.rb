@@ -51,7 +51,7 @@ module MarkdownProcessor
     end
 
     def calculate_reading_time
-      word_count = @content.split(/\W+/).count
+      word_count = @content.split(/\n /).count
       (word_count / WORDS_READ_PER_MINUTE).ceil
     end
 

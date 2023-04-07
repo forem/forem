@@ -27,7 +27,7 @@ module Images
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
 
       if img_src&.include?(".gif")
-        options[:quality] = 66
+        options[:quality] = 100
       end
 
       ActionController::Base.helpers.cl_image_path(img_src, options)

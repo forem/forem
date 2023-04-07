@@ -21,7 +21,7 @@ RSpec.xdescribe "Creating Comment", js: true do
     wait_for_javascript
 
     fill_in "text-area", with: raw_comment
-    click_button("Submit")
+    click_button("Відправити")
     expect(page).to have_text(raw_comment)
   end
 
@@ -42,7 +42,7 @@ RSpec.xdescribe "Creating Comment", js: true do
       wait_for_javascript
 
       fill_in "text-area", with: raw_comment
-      click_button("Submit")
+      click_button("Відправити")
       expect(page).to have_text("Wait a moment...")
     end
 
@@ -51,7 +51,7 @@ RSpec.xdescribe "Creating Comment", js: true do
       wait_for_javascript
 
       fill_in "text-area", with: raw_comment
-      click_button("Submit")
+      click_button("Відправити")
       click_button("Got it")
       expect(page).not_to have_text("Wait a moment...")
     end
@@ -61,7 +61,7 @@ RSpec.xdescribe "Creating Comment", js: true do
       wait_for_javascript
 
       fill_in "text-area", with: raw_comment
-      click_button("Submit")
+      click_button("Відправити")
       find(".crayons-modal__box__header").click_button
       expect(page).not_to have_text("Wait a moment...")
     end
@@ -80,7 +80,7 @@ RSpec.xdescribe "Creating Comment", js: true do
       wait_for_javascript
 
       fill_in "text-area", with: unconfigured_twitter_comment
-      click_button("Submit")
+      click_button("Відправити")
       expect(page).to have_text("Error posting comment")
     end
   end
@@ -94,26 +94,26 @@ RSpec.xdescribe "Creating Comment", js: true do
 
     it "Users fills out comment box with a Runkit tag" do
       fill_in "text-area", with: runkit_comment
-      click_button("Submit")
+      click_button("Відправити")
 
       expect_runkit_tag_to_be_active
     end
 
     it "Users fills out comment box 2 Runkit tags" do
       fill_in "text-area", with: runkit_comment
-      click_button("Submit")
+      click_button("Відправити")
 
       expect_runkit_tag_to_be_active
 
       fill_in "text-area", with: runkit_comment2
-      click_button("Submit")
+      click_button("Відправити")
 
       expect_runkit_tag_to_be_active(count: 2)
     end
 
     it "User fill out comment box with a Runkit tag, then clicks preview" do
       fill_in "text-area", with: runkit_comment
-      click_button("Preview")
+      click_button("Прев`ю")
 
       expect_runkit_tag_to_be_active
     end
@@ -128,7 +128,7 @@ RSpec.xdescribe "Creating Comment", js: true do
 
     it "User fill out comment box with a TwitterTimeline tag, then clicks preview" do
       fill_in "text-area", with: twitter_comment
-      click_button("Preview")
+      click_button("Прев`ю")
 
       expect(page).to have_css(".ltag-twitter-timeline-body iframe", count: 1)
     end
@@ -139,12 +139,12 @@ RSpec.xdescribe "Creating Comment", js: true do
     wait_for_javascript
 
     fill_in "text-area", with: raw_comment
-    click_button("Preview")
+    click_button("Прев`ю")
     expect(page).to have_text(raw_comment)
     expect(page).to have_text("Continue editing")
     click_button("Continue editing")
-    expect(page).to have_text("Preview")
-    click_button("Submit")
+    expect(page).to have_text("Прев`ю")
+    click_button("Відправити")
     expect(page).to have_text(raw_comment)
   end
 
@@ -156,7 +156,7 @@ RSpec.xdescribe "Creating Comment", js: true do
 
     find(".toggle-reply-form").click
     find(:xpath, "//textarea[contains(@id, \"textarea-for\")]").set(raw_comment)
-    click_button("Submit")
+    click_button("Відправити")
     expect(page).to have_text(raw_comment)
   end
 
