@@ -7,7 +7,6 @@
  */
 const modalId = 'user-alert-modal';
 
-
 /**
  * Displays a general purpose user alert modal with a title, body text, and confirmation button.
  *
@@ -87,12 +86,16 @@ export function showModalAfterError({
     .json()
     .then((errorResponse) => {
       if (response.status === 429) {
-        showRateLimitModal({ element, action_ing, action_past, timeframe });
+        showRateLimitModal({
+          element,
+          action_ing,
+          action_past,
+          timeframe,
+        });
       } else {
         showUserAlertModal(
           `Error ${action_ing} ${element}`,
-          `Your ${element} could not be ${action_past} due to an error: ${ 
-            errorResponse.error}`,
+          `Your ${element} could not be ${action_past} due to an error: ${errorResponse.error}`,
           'OK',
         );
       }
@@ -119,7 +122,12 @@ export function showModalAfterError({
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-export function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
+export function buildRateLimitText({
+  element,
+  action_ing,
+  action_past,
+  timeframe,
+}) {
   return `Since you recently ${action_past} a ${element}, you’ll need to wait ${timeframe} before ${action_ing} another ${element}.`;
 }
 
