@@ -7,9 +7,7 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    # After FeatureFlag :multiple_reactions, this could change to:
-                    # ReactionCategory[model.category].visible_to_public?
-                    public_reaction_types.include?(model.category.to_s) ? "public_reactions_count" : "reactions_count"
+                    ReactionCategory[model.category].visible_to_public? ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
@@ -80,18 +78,7 @@ class Reaction < ApplicationRecord
     end
 
     def public_reaction_types
-      if FeatureFlag.enabled?(:multiple_reactions)
-        reaction_types = ReactionCategory.public.map(&:to_s) - ["readinglist"]
-      else
-        # used to include "readinglist" but that's not correct now, even without the feature flag
-        # we aren't going to re-process these, they will gradually correct over time
-        reaction_types = %w[like]
-        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
-          reaction_types << "unicorn"
-        end
-      end
-
-      reaction_types
+      @public_reaction_types ||= ReactionCategory.public.map(&:to_s) - ["readinglist"]
     end
 
     def for_analytics
@@ -193,14 +180,6 @@ class Reaction < ApplicationRecord
 
   def bust_reactable_cache_without_delay
     Reactions::BustReactableCacheWorker.new.perform(id)
-  end
-
-  def reading_time
-    reactable.reading_time if category == "readinglist"
-  end
-
-  def viewable_by
-    user_id
   end
 
   def assign_points

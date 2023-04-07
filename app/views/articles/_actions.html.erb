@@ -1,12 +1,8 @@
 <div class="crayons-article-actions print-hidden">
   <div class="crayons-article-actions__inner">
-    <% if @article.published? %>
-      <% if FeatureFlag.enabled?(:multiple_reactions) %>
-        <%= render partial: "articles/multiple_reactions" %>
-      <% else %>
-        <%= render partial: "articles/original_reactions" %>
-      <% end %>
-    <% end %>
+
+    <%= render partial: "articles/multiple_reactions" if @article.published? %>
+
     <div id="mod-actions-menu-btn-area" class="print-hidden hidden align-center"></div>
     <div class="align-center m:relative">
       <button id="article-show-more-button" aria-controls="article-show-more-dropdown" aria-expanded="false" aria-haspopup="true" class="dropbtn crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded" aria-label="<%= t("views.actions.more.aria_label") %>">
