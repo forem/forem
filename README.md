@@ -129,6 +129,7 @@ Please see our installation guides, such as the
 - [@jaw6](https://dev.to/jaw6)
 - [@lboogie2004](https://dev.to/lboogie2004)
 - [@klardotsh](https://dev.to/klardotsh)
+- [@filleduchaos](https://dev.to/filleduchaos)
 
 ## Vulnerability disclosure
 
