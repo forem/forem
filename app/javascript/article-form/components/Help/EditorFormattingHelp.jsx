@@ -9,7 +9,10 @@ export const EditorFormattingHelp = ({ openModal }) => (
     <h4 className="mb-2 fs-l">Основи редактора</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-        Використовуйте <a href="https://kutok.io/site/gaid_z_vykorystannya_markdown-381i" target="_blank">розмітку Markdown</a>, щоб красиво оформлювати дописи.
+        Використовуйте{' '}
+        <a href="#markdown" onClick={() => openModal('markdownShowing')}>
+          Розмітку
+        </a>{' '}
         <details className="fs-s my-1">
           <summary class="cursor-pointer">Найчастіші способи використання</summary>
           <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
@@ -123,7 +126,6 @@ export const EditorFormattingHelp = ({ openModal }) => (
         У нас є <a href="https://kutok.io/editorial/pro_shcho_i_yak_my_pyshemo-3hdk" target="_blank">допис</a>, який докладно розповідає про що краще не писати. Будь ласка, ознайомтеся з ним.
 	  </li>
 	  </ul>
-	{' '} {' '}
   </div>
 );
 
