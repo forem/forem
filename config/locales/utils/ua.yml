@@ -5,7 +5,7 @@ ua:
       short_name: "%{community} Пошук"
       description: Знайдіть дописи на спільноті %{community}.
     user:
-      image: "%{user} profile image"
+      image: "%{user} картинка профіля"
   json:
     author: Активний %{community} автор
   mailer:

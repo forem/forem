@@ -27,7 +27,7 @@ module Images
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
 
       if img_src&.include?(".gif")
-        options[:quality] = 100
+        options[:quality] = 66
       end
 
       ActionController::Base.helpers.cl_image_path(img_src, options)
@@ -36,7 +36,7 @@ module Images
     DEFAULT_IMGPROXY_OPTIONS = {
       height: nil,
       width: nil,
-      max_bytes: 500_000, # Keep everything under half of one MB.
+      max_bytes: 10000_000, # Keep everything under half of one MB.
       auto_rotate: true,
       resizing_type: nil
     }.freeze

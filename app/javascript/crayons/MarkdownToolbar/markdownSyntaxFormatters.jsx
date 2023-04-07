@@ -500,7 +500,7 @@ export const markdownSyntaxFormatters = {
         editSelectionEnd: selectionEnd,
         replaceSelectionWith: `[${selectedText}](${URL_PLACEHOLDER_TEXT})`,
         newCursorStart: selectionStart + selectedText.length + 3,
-        newCursorEnd: selectionEnd + 6,
+        newCursorEnd: selectionEnd + 9,
       };
     },
   },
@@ -717,7 +717,7 @@ export const markdownSyntaxFormatters = {
   },
   embed: {
     icon: () => <Icon src={EmbedIcon} />,
-    label: 'Вбудований контент (напр. Yputube)',
+    label: 'Вбудований контент (напр. Youtube)',
     getKeyboardShortcut: () => {
       const modifier = getOSKeyboardModifierKeyString();
       return {

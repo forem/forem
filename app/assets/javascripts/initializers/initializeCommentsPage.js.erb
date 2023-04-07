@@ -77,7 +77,7 @@ function initializeCommentsPage() {
                     var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                     if (userActionsEl && buttEl) {
                       userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
-                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Delete</a></li>`
+                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Видалити</a></li>`
                       userActionsEl.classList.remove('hidden');
                     }
                   }

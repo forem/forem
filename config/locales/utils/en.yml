@@ -2,13 +2,13 @@
 en:
   xml:
     opensearch:
-      short_name: "%{community} Search"
-      description: Find posts from %{community}.
+      short_name: "%{community} Пошук"
+      description: Знайдіть дописи на спільноті %{community}.
     user:
-      image: "%{user} profile image"
+      image: "%{user} картинка профіля"
   json:
-    author: Active %{community} author
+    author: Активний %{community} автор
   mailer:
-    adjust: Adjust your email settings
-    adjust_only_html: Don't want to get emails like this? Adjust your email settings at %{path}
-    unsubscribe: Unsubscribe
+    adjust: Налаштуйте параметри електронної пошти
+    adjust_only_html: Не хочете більше отримувати подібні листи? Налаштуйте параметри електронної пошти %{path}
+    unsubscribe: Відписатись
