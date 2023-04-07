@@ -50,17 +50,14 @@ class NotificationDecorator < ApplicationDecorator
   # reacting-to-a-comment will have a misleading "Article" or "Comment" notifiable_type
   # (respectively), so a "reaction-type notification" is somewhat more involved. We also have
   # distinct partials for aggregate reactions ("Username and several others reacted to...")
-  # and individual reactions. This has become further complicated by the multiple_reactions
-  # feature flag.
+  # and individual reactions.
   def to_partial_path
     return "notifications/#{notifiable_type.downcase}" unless reaction?
 
-    prefix = FeatureFlag.enabled?(:multiple_reactions) ? "" : "original_"
-
     if siblings.any?
-      "notifications/#{prefix}aggregated_reactions"
+      "notifications/aggregated_reactions"
     else
-      "notifications/#{prefix}single_reaction"
+      "notifications/single_reaction"
     end
   end
 

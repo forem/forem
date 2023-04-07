@@ -28,6 +28,9 @@ RSpec.describe "Reactions" do
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
+          { "category" => "exploding_head", "count" => 0 },
+          { "category" => "raised_hands", "count" => 0 },
+          { "category" => "fire", "count" => 0 },
         ]
         expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions_counts)
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
@@ -60,6 +63,9 @@ RSpec.describe "Reactions" do
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
+          { "category" => "exploding_head", "count" => 0 },
+          { "category" => "raised_hands", "count" => 0 },
+          { "category" => "fire", "count" => 0 },
         ]
         expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions)
         expect(result["reactions"]).to be_empty
