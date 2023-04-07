@@ -143,6 +143,8 @@ We welcome security research on DEV under the terms of our
 Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
 usage of their emojis.
 
+Thank you to [Uffizzi](https://www.uffizzi.com) for providing ephemeral environments to preview pull requests.
+
 ## License
 
 This program is free software: you can redistribute it and/or modify it under

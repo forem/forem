@@ -667,10 +667,12 @@ class Article < ApplicationRecord
     content_renderer = processed_content
     return unless content_renderer
 
-    self.processed_html = content_renderer.process(calculate_reading_time: true)
-    self.reading_time = content_renderer.reading_time
+    result = content_renderer.process_article
 
-    front_matter = content_renderer.front_matter
+    self.processed_html = result.processed_html
+    self.reading_time = result.reading_time
+
+    front_matter = result.front_matter
 
     if front_matter.any?
       evaluate_front_matter(front_matter)

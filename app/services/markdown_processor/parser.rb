@@ -1,7 +1,5 @@
 module MarkdownProcessor
   class Parser
-    include ApplicationHelper
-
     BAD_XSS_REGEX = [
       /src=["'](data|&)/i,
       %r{data:text/html[,;][\sa-z0-9]*}i,
@@ -20,14 +18,16 @@ module MarkdownProcessor
     #
     # @see LiquidTagBase for more information regarding the liquid tag options.
 
-    def initialize(content, source: nil, user: nil, **liquid_tag_options)
+    def initialize(content, source: nil, user: nil,
+                   liquid_tag_options: {})
       @content = content
       @source = source
       @user = user
       @liquid_tag_options = liquid_tag_options.merge({ source: @source, user: @user })
     end
 
-    def finalize(link_attributes: {})
+    # @param prefix_images_options [Hash] params, that need to be passed further to HtmlParser#prefix_all_images
+    def finalize(link_attributes: {}, prefix_images_options: { width: 800, synchronous_detail_detection: false })
       options = { hard_wrap: true, filter_html: false, link_attributes: link_attributes }
       renderer = Redcarpet::Render::HTMLRouge.new(options)
       markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
@@ -35,7 +35,8 @@ module MarkdownProcessor
       code_tag_content = convert_code_tags_to_triple_backticks(@content)
       escaped_content = escape_liquid_tags_in_codeblock(code_tag_content)
       html = markdown.render(escaped_content)
-      sanitized_content = sanitize_rendered_markdown(html)
+      sanitized_content = ActionController::Base.helpers.sanitize html, { scrubber: RenderedMarkdownScrubber.new }
+
       begin
         # NOTE: [@rhymes] liquid 5.0.0 does not support ActiveSupport::SafeBuffer,
         # a String substitute, hence we force the conversion before passing it to Liquid::Template.
@@ -47,7 +48,7 @@ module MarkdownProcessor
         html = e.message
       end
 
-      parse_html(html)
+      parse_html(html, prefix_images_options)
     end
 
     def calculate_reading_time
@@ -125,13 +126,13 @@ module MarkdownProcessor
 
     private
 
-    def parse_html(html)
+    def parse_html(html, prefix_images_options)
       return html if html.blank?
 
       Html::Parser
         .new(html)
         .remove_nested_linebreak_in_list
-        .prefix_all_images
+        .prefix_all_images(**prefix_images_options)
         .wrap_all_images_in_links
         .add_control_class_to_codeblock
         .add_control_panel_to_codeblock
