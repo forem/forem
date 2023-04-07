@@ -31,13 +31,6 @@ RSpec.describe "OrganizationsUpdate" do
     expect(Organization.last.profile_updated_at).to be > 2.minutes.ago
   end
 
-  it "updates nav_image" do
-    put "/organizations/#{org_id}", params: { organization: { id: org_id,
-                                                              nav_image: fixture_file_upload("podcast.png",
-                                                                                             "image/png") } }
-    expect(Organization.find(org_id).nav_image_url).to be_present
-  end
-
   it "returns not_found if organization is missing" do
     invalid_id = org_id + 100
     expect do
