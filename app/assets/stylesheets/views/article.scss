@@ -146,6 +146,15 @@
   flex-direction: row;
   align-items: center;
 
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    background-color: var(--button-ghost-bg-hover);
+    border-color: transparent;
+    border-radius: 1000px;
+    box-shadow: none;
+    color: var(--button-ghost-color-hover);
+  }
+
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
   }
@@ -248,6 +257,7 @@
 // This overrides some of the styles for the temporarily feature-flaged
 .reaction-drawer .crayons-reaction {
   border: 1px solid var(--card-bg);
+  border-radius: 20px;
   flex-direction: column;
 
   &.user-activated {
@@ -259,6 +269,12 @@
       border: 0;
       box-shadow: none;
     }
+  }
+
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
   }
 }
 

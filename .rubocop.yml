@@ -939,9 +939,7 @@ RSpec/DescribedClassModuleWrapping:
 
 RSpec/ExampleLength:
   Description: Checks for long examples.
-  Enabled: true
-  Max: 15
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+  Enabled: false
 
 RSpec/IdenticalEqualityAssertion:
   Description: Checks for equality assertions with identical expressions on both sides.

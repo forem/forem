@@ -5,12 +5,13 @@ module DisplayAds
     end
 
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, display_ads: DisplayAd)
+                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @organization_id = organization_id
       @article_tags = article_tags
+      @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
     end
 
@@ -26,12 +27,19 @@ module DisplayAds
         @filtered_display_ads = untagged_post_comment_ads
       end
 
+      if @article_id.present?
+        @filtered_display_ads = unexcluded_article_ads
+      end
+
       @filtered_display_ads = if @user_signed_in
                                 authenticated_ads(%w[all logged_in])
                               else
                                 authenticated_ads(%w[all logged_out])
                               end
 
+      # type_of filter needs to be applied as near to the end as possible
+      # as it checks if any type-matching ads exist (this will apply all/any
+      # filters applied up to this point, thus near the end is best)
       @filtered_display_ads = type_of_ads
 
       @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
@@ -56,30 +64,35 @@ module DisplayAds
       @filtered_display_ads.where(cached_tag_list: "")
     end
 
+    def unexcluded_article_ads
+      @filtered_display_ads.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+    end
+
     def authenticated_ads(display_auth_audience)
       @filtered_display_ads.where(display_to: display_auth_audience)
     end
 
     def type_of_ads
+      # If this is an organization article and community-type ads exist, show them
+      if @organization_id.present?
+        community = @filtered_display_ads.where(type_of: DisplayAd.type_ofs[:community],
+                                                organization_id: @organization_id)
+        return community if community.any?
+      end
+
+      types_matching = []
+
       # Always match in-house-type ads
-      in_house = "(type_of = :in_house)"
+      types_matching << :in_house
 
-      # If this is an article that belongs to an organization, we might show community-type ads
-      community = if @organization_id
-                    "(type_of = :community AND organization_id = :organization_id)"
-                  end
+      # If the article is an organization's article (non-nil organization_id),
+      # or if the current_user has opted-out of sponsors,
+      # then do not show external ads
+      if @organization_id.blank? && @permit_adjacent_sponsors
+        types_matching << :external
+      end
 
-      # If the article's author permits adjacent sponsors, we might show an external-type ad
-      # *if* the organization_id doesn't match the current article's organization id
-      external = if @permit_adjacent_sponsors && @organization_id
-                   "(type_of = :external AND organization_id != :organization_id)"
-                 elsif @permit_adjacent_sponsors
-                   "(type_of = :external)"
-                 end
-
-      types_matching = [in_house, community, external].compact.join(" OR ")
-      @filtered_display_ads.where(types_matching,
-                                  DisplayAd.type_ofs.merge({ organization_id: @organization_id }))
+      @filtered_display_ads.where(type_of: DisplayAd.type_ofs.slice(*types_matching).values)
     end
   end
 end

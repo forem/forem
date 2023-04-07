@@ -150,7 +150,7 @@
               </div>
             </div>
 
-            <%= render "articles/multiple_engagements" if FeatureFlag.enabled?(:multiple_reactions) && @article.public_reactions_count? %>
+            <%= render "articles/multiple_engagements" unless @article.public_reactions_count.zero? %>
 
             <h1 class="fs-3xl m:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-2 <%= @article.title_length_classification %>">
               <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
@@ -197,7 +197,8 @@
                                                user_signed_in: user_signed_in?,
                                                organization_id: @article.organization_id,
                                                permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?,
-                                               article_tags: @article.decorate.cached_tag_list_array) %>
+                                               article_tags: @article.decorate.cached_tag_list_array,
+                                               article_id: @article.id) %>
         <% if @display_ad %>
           <div class="pb-4 crayons-layout__comments-display-ad">
             <%= render partial: "shared/display_ad", locals: { display_ad: @display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>

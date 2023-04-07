@@ -28,6 +28,9 @@
     "e2e": "bin/e2e",
     "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
   },
+  "nyc": {
+    "report-dir": "coverage/cypress"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/forem/forem.git"
@@ -101,6 +104,7 @@
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-react-jsx": "^7.21.0",
     "@babel/preset-env": "^7.19.4",
+    "@cypress/code-coverage": "^3.10.0",
     "@etchteam/storybook-addon-css-variables-theme": "^1.4.0",
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^4.9.3",

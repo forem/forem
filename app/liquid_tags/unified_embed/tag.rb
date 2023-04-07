@@ -49,7 +49,16 @@ module UnifiedEmbed
 
       req = method.new(uri.request_uri)
       req["User-Agent"] = "#{safe_user_agent} (#{URL.url})"
+
       response = http.request(req)
+
+      # This might be a temporary hack we can remove in the future. For some
+      # reason, CodePen sometimes sends a 403 on initial request, it's likely a
+      # misconfigured CloudFlare on their end, but making the request a second
+      # time seems to fix it.
+      if uri.host == "codepen.io" && response.is_a?(Net::HTTPForbidden)
+        response = http.request(req)
+      end
 
       case response
       when Net::HTTPSuccess
