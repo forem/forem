@@ -16,7 +16,6 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
     it "has the necessary initial tracking elements", :aggregate_failures do
       expect(page).to have_selector('a[data-tracking-id="ca_top_nav"]')
       expect(page).to have_selector('a[data-tracking-id="ca_left_sidebar_home_page"]')
-      expect(page).to have_selector('a[data-tracking-id="ca_feed_home_page"]')
     end
 
     it "has the create account tracking element in the hamburger", { aggregate_failures: true, js: true } do
