@@ -108,6 +108,23 @@ class DisplayAd < ApplicationRecord
   end
 
   def process_markdown
+    return unless body_markdown_changed?
+
+    if FeatureFlag.enabled?(:consistent_rendering)
+      extracted_process_markdown
+    else
+      original_process_markdown
+    end
+  end
+
+  def extracted_process_markdown
+    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
+                                                                    synchronous_detail_detection: true }).processed_html
+    self.processed_html = processed_html.delete("\n")
+  end
+
+  def original_process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)
@@ -116,7 +133,7 @@ class DisplayAd < ApplicationRecord
                                                             attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html)
-      .prefix_all_images(prefix_width, synchronous_detail_detection: true).html
+      .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html
   end
 
   def prefix_width

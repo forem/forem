@@ -57,14 +57,12 @@ function showUserReaction(reactionName, animatedClass) {
     'reaction-drawer-trigger',
   );
 
-  // the rest only applies to multiple reactions feature flag
-  if (!reactionDrawerButton || reactionName == 'readinglist') {
+  // special-case for readinglist, it's not in the drawer
+  if (reactionName === 'readinglist') {
     return;
   }
 
-  if (reactionDrawerButton && reactionName !== 'readinglist') {
-    reactionDrawerButton.classList.add('user-activated', 'user-animated');
-  }
+  reactionDrawerButton.classList.add('user-activated', 'user-animated');
 }
 
 function hideUserReaction(reactionName) {
