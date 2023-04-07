@@ -49,7 +49,7 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id")
+                          "creator_id", "exclude_article_ids")
       end
 
       it "returns a malformed response" do
@@ -95,7 +95,7 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id")
+                          "creator_id", "exclude_article_ids")
       end
     end
 

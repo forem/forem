@@ -37,12 +37,14 @@ class DisplayAd < ApplicationRecord
                              search: "%#{term}%"
                      }
 
-  def self.for_display(area:, user_signed_in:, organization_id: nil, article_tags: [], permit_adjacent_sponsors: true)
+  def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
+                       article_tags: [], permit_adjacent_sponsors: true)
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
       organization_id: organization_id,
       user_signed_in: user_signed_in,
+      article_id: article_id,
       article_tags: article_tags,
       permit_adjacent_sponsors: permit_adjacent_sponsors,
     )
@@ -80,9 +82,21 @@ class DisplayAd < ApplicationRecord
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
-    super(options.merge(except: %i[tags tag_list])).merge("tag_list" => cached_tag_list)
+    overrides = {
+      "tag_list" => cached_tag_list,
+      "exclude_article_ids" => exclude_article_ids.join(",")
+    }
+    super(options.merge(except: %i[tags tag_list])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
+
+  # exclude_article_ids is an integer array, web inputs are comma-separated strings
+  # ActiveRecord normalizes these in a bad way, so we are intervening
+  def exclude_article_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :exclude_article_ids, (adjusted_input || [])
+  end
 
   private
 
@@ -94,6 +108,23 @@ class DisplayAd < ApplicationRecord
   end
 
   def process_markdown
+    return unless body_markdown_changed?
+
+    if FeatureFlag.enabled?(:consistent_rendering)
+      extracted_process_markdown
+    else
+      original_process_markdown
+    end
+  end
+
+  def extracted_process_markdown
+    renderer = ContentRenderer.new(body_markdown || "", source: self)
+    self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
+                                                                    synchronous_detail_detection: true }).processed_html
+    self.processed_html = processed_html.delete("\n")
+  end
+
+  def original_process_markdown
     renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
     markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)
@@ -102,7 +133,7 @@ class DisplayAd < ApplicationRecord
                                                             attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html)
-      .prefix_all_images(prefix_width, synchronous_detail_detection: true).html
+      .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html
   end
 
   def prefix_width
