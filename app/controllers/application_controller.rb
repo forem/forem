@@ -165,8 +165,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def redirect_permanently_to(location)
-    redirect_to location + internal_nav_param, status: :moved_permanently
+  def redirect_permanently_to(url = nil, **args)
+    if url
+      redirect_to(url + internal_nav_param, status: :moved_permanently)
+    else
+      redirect_to(args.merge({ i: params[:i] }), status: :moved_permanently)
+    end
   end
 
   def customize_params
