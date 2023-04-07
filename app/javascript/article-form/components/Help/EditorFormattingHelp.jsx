@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const EditorFormattingHelp (
+export const EditorFormattingHelp = ({ openModal }) => (
   <div
     data-testid="format-help"
     className="crayons-article-form__help crayons-article-form__help--body"
@@ -123,7 +123,7 @@ export const EditorFormattingHelp (
         У нас є <a href="https://kutok.io/editorial/pro_shcho_i_yak_my_pyshemo-3hdk" target="_blank">допис</a>, який докладно розповідає про що краще не писати. Будь ласка, ознайомтеся з ним.
 	  </li>
 	  </ul>
-	
+	{' '} {' '}
   </div>
 );
 

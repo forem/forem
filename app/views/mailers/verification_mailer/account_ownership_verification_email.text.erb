@@ -1,9 +1,9 @@
-Hey <%= @user.username %>!
+Гей, <%= @user.username %>!
 
-We're sending this email to verify that you've got access to this email address.
+Ми надсилаємо цей лист, щоб перевірити, чи маєте ви доступ до цієї адреси електронної пошти.
 
-If you have no idea why you're getting this email, please ignore it!
+Якщо ви не знаєте, чому ви отримали цей лист, будь ласка, проігноруйте його!
 
-Otherwise, visit the following URL to verify that you still have access to this email address:
+В іншому випадку, перейдіть за наступною адресою, щоб ми перевірили, чи маєте ви доступ до цієї адреси електронної пошти:
 
 <%= app_url(verify_email_authorizations_path(confirmation_token: @confirmation_token, username: @user.username)) %>

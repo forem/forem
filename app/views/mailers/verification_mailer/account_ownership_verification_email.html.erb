@@ -1,15 +1,15 @@
 <p>
-Hey <%= @user.username %>!
+Гей <%= @user.username %>!
 </p>
 
 <p>
-We're sending this email to verify that you've got access to this email address.
+Ми надсилаємо цей лист, щоб перевірити, чи маєте ви доступ до цієї адреси електронної пошти.
 </p>
 
 <p>
-If you have no idea why you're getting this email, please ignore it!
+Якщо ви не знаєте, чому ви отримали цей лист, будь ласка, проігноруйте його!
 </p>
 
 <p>
-  Otherwise, <strong><%= link_to "click here", app_url(verify_email_authorizations_path(confirmation_token: @confirmation_token, username: @user.username)) %></strong> to verify that you still have access to this email address.
+  В іншому випадку, <strong><%= link_to "натисніть сюди", app_url(verify_email_authorizations_path(confirmation_token: @confirmation_token, username: @user.username)) %></strong> щоб підтвердити вашу електронну адресу.
 </p>
