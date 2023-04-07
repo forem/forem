@@ -7,46 +7,55 @@
 # @todo Extract username validation in separate class
 module Users
   class UsernameGenerator
+    attr_reader :usernames
+
     def self.call(...)
       new(...).call
     end
 
-    # @param list [Array<String>] a list of usernames
-    def initialize(list = [])
-      @list = list
+    # @param usernames [Array<String>] a list of usernames
+    def initialize(usernames = [], detector: CrossModelSlug, generator: nil)
+      @detector = detector
+      @generator = generator || method(:random_username)
+      @usernames = usernames
     end
 
     def call
-      from_list(modified_list) || from_list(list_with_suffix) || from_list(Array.new(3) { random_letters })
+      first_available_from(normalized_usernames) ||
+        first_available_from(suffixed_usernames) ||
+        first_available_from(random_usernames)
+    end
+
+    def normalized_usernames
+      @normalized_usernames ||= filtered_usernames.map { |s| s.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") }
+    end
+
+    def filtered_usernames
+      @filtered_usernames ||= usernames.select { |s| s.is_a?(String) && s.present? }
+    end
+
+    def random_username
+      ("a".."z").to_a.sample(12).join
+    end
+
+    def random_usernames
+      Array.new(3) { @generator.call }
     end
 
     private
 
-    def from_list(list)
+    def first_available_from(list)
       list.detect { |username| !username_exists?(username) }
     end
 
     def username_exists?(username)
-      User.exists?(username: username) ||
-        Organization.exists?(slug: username) ||
-        Page.exists?(slug: username) ||
-        Podcast.exists?(slug: username)
+      @detector.exists?(username)
     end
 
-    def filtered_list
-      @list.select { |s| s.is_a?(String) && s.present? }
-    end
+    def suffixed_usernames
+      return [] unless filtered_usernames.any?
 
-    def modified_list
-      filtered_list.map { |s| s.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ") }
-    end
-
-    def list_with_suffix
-      modified_list.map { |s| [s, rand(100)].join("_") }
-    end
-
-    def random_letters
-      ("a".."z").to_a.sample(12).join
+      normalized_usernames.map { |stem| [stem, rand(100)].join("_") }
     end
   end
 end

@@ -3,9 +3,9 @@ class Organization < ApplicationRecord
 
   include Images::Profile.for(:profile_image_url)
 
+  extend UniqueAcrossModels
   COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
   INTEGER_REGEXP = /\A\d+\z/
-  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/
 
   acts_as_followable
 
@@ -47,9 +47,6 @@ class Organization < ApplicationRecord
   validates :proof, length: { maximum: 1500 }
   validates :secret, length: { is: 100 }, allow_nil: true
   validates :secret, uniqueness: true
-  validates :slug, exclusion: { in: ReservedWords.all, message: :reserved_word }
-  validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..30 }
-  validates :slug, presence: true, uniqueness: { case_sensitive: false }
   validates :spent_credits_count, presence: true
   validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
@@ -59,7 +56,7 @@ class Organization < ApplicationRecord
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
-  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
+  unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader

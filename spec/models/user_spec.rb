@@ -209,7 +209,7 @@ RSpec.describe User do
       context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
 
-        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+        it { is_expected.to validate_uniqueness_of(:username).with_message("has already been taken").case_insensitive }
       end
       # rubocop:enable RSpec/NestedGroups
 
@@ -222,7 +222,7 @@ RSpec.describe User do
       create(:user, username: "test_user_123")
       same_username = build(:user, username: "test_user_123")
       expect(same_username).not_to be_valid
-      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
+      expect(same_username.errors[:username].to_s).to include("has already been taken")
     end
 
     it "validates username against reserved words" do

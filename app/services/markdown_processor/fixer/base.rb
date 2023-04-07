@@ -12,6 +12,7 @@ module MarkdownProcessor
 
       # Match @_username_ that is not preceded by backtick
       USERNAME_WITH_UNDERSCORE_REGEXP = /(?<!`)@_\w+_/
+
       def self.call(markdown)
         return unless markdown
 
