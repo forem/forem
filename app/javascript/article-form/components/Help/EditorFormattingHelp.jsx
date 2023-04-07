@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const EditorFormattingHelp = ({ openModal }) => (
+export const EditorFormattingHelp (
   <div
     data-testid="format-help"
     className="crayons-article-form__help crayons-article-form__help--body"
@@ -9,7 +9,7 @@ export const EditorFormattingHelp = ({ openModal }) => (
     <h4 className="mb-2 fs-l">Основи редактора</h4>
     <ul className="list-disc pl-6 color-base-70">
       <li>
-        Використовуйте <a href="https://kutok.io/site/gaid_z_vykorystannya_markdown-381i" target="_blank">розмітку Markdown</a> щоб красиво оформлювати дописи.
+        Використовуйте <a href="https://kutok.io/site/gaid_z_vykorystannya_markdown-381i" target="_blank">розмітку Markdown</a>, щоб красиво оформлювати дописи.
         <details className="fs-s my-1">
           <summary class="cursor-pointer">Найчастіші способи використання</summary>
           <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
