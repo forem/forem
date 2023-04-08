@@ -1,15 +1,15 @@
-<div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-content-user-id="<%= story.user_id %>">
+<div class="crayons-story crayons-story--featured" data-content-user-id="<%= story.user_id %>">
   <a href="<%= story.path %>" aria-labelledby="article-link-<%= story.id %>" class="crayons-story__hidden-navigation-link" style="margin-bottom: 22px;"><%= story.title %></a>
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
-
+  <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <div class="crayons-article__cover crayons-article__cover__image__feed">
       <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
         <img src="<%= cloud_cover_url(story.main_image) %>" width="650" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Обкладинка для <%= story.title %>">
       </a>
     </div>
-
+  <% end %>
 
   <% if story.video.present? && story.video_thumbnail_url.present? %>
   <a href="<%= story.path %>" class="crayons-story__video" style="background-image:url(<%= story.cloudinary_video_url %>)">
