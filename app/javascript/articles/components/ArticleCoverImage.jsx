@@ -13,7 +13,6 @@ export const ArticleCoverImage = ({ article }) => {
           className="crayons-article__cover__image__feed"
           src={article.main_image}
           width="650"
-          height="275"
           alt={article.title}
           style={{
             backgroundColor: `${article.main_image_background_hex_color}`,

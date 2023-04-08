@@ -36,7 +36,7 @@ module Images
     DEFAULT_IMGPROXY_OPTIONS = {
       height: nil,
       width: nil,
-      max_bytes: 10000_000, # Keep everything under half of one MB.
+      max_bytes: 500_000, # Keep everything under half of one MB.
       auto_rotate: true,
       resizing_type: nil
     }.freeze

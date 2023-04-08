@@ -32,9 +32,9 @@
         padding-bottom: 0;
         height: 100%;
         width: 100%;
-        aspect-ratio: auto 650 / 365;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: var(--radius-auto) var(--radius) 0 0;
+		max-height: 540px;
       }
     }
   }

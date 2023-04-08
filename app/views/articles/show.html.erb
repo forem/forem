@@ -96,8 +96,8 @@
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
           <% elsif @article.main_image.present? %>
-            <div class="crayons-article__cover">
-              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1280" height="720" style="object-fit: cover;background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= @article.title %>">
+            <div class="crayons-article__cover" style=" padding-top: 0;">
+              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1280"  style="object-fit: contain;max-height: 1100px;position: inherit;background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= @article.title %>">
             </div>
           <% end %>
 
