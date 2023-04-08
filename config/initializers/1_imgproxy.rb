@@ -16,7 +16,7 @@ Imgproxy.configure do |config|
   config.salt = ApplicationConfig["IMGPROXY_SALT"]
 
   # Base64 encode all URLs
-  config.base64_encode_urls = true
+  config.base64_encode_urls = false
 
   # Always escape plain URLs
   # config.always_escape_plain_urls = true

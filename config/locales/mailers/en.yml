@@ -3,11 +3,11 @@ en:
   mailers:
     digest_mailer:
       from: Дайджест
-      more_top_posts: більше найкращих дописів зі спільнооти %{community} 
+      more_top_posts: більше найкращих дописів зі спільноти %{community} 
       more_top_posts_based: більше найкращих %{community} дописів на основі ваших інтересів
       more_top_posts_from: більше всього переглядів у спільноті
-      more_trending_posts: найбільш трендові дописи
-      more_trending_posts_picked: більше трендових дописів у спільноті %{community} спеціально для вас
+      more_trending_posts: найбільш гарячих дописів
+      more_trending_posts_picked: більше гарячих дописів у спільноті %{community} спеціально для вас
       other_posts: інші дописи, які можуть вам сподобатися
       other_community_posts: інші дописи спільноти %{community}, яку можуть вам сподобатися
       other_top_posts: інші найкращі дописи спільноти %{community} 
@@ -18,9 +18,9 @@ en:
       trusted: Вітаємо! Ви тепер "довірений" користувач на %{community}!
       moderator: 'Вітаємо! Ви тепер модератор теґу #%{tag_name}'
       new_follower: тільки що підписався(лась) на вас у спільноті %{community}
-      new_mention: "%{name} just mentioned you in their %{type}"
+      new_mention: "%{name} згадав(ла) вас на сайті %{community}"
       org_deleted: "%{community} - підтвердження видалення проєкту"
-      new_reply: "%{name} відповили вам на сайті  %{type}"
+      new_reply: "%{name} відповили вам на сайті %{community}"
       feedback: Дякуємо за ваше взернення на сайті %{community}
       export: Експорт ваших даних завершено.
       unread_notifications:

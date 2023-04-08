@@ -18,9 +18,9 @@ ua:
       trusted: Вітаємо! Ви тепер "довірений" користувач на %{community}!
       moderator: 'Вітаємо! Ви тепер модератор теґу #%{tag_name}'
       new_follower: тільки що підписався(лась) на вас у спільноті %{community}
-      new_mention: "%{name} just mentioned you in their %{type}"
+      new_mention: "%{name} згадав(ла) вас на сайті %{community}"
       org_deleted: "%{community} - підтвердження видалення проєкту"
-      new_reply: "%{name} відповили вам на сайті  %{type}"
+      new_reply: "%{name} відповили вам на сайті %{community}"
       feedback: Дякуємо за ваше взернення на сайті %{community}
       export: Експорт ваших даних завершено.
       unread_notifications:
