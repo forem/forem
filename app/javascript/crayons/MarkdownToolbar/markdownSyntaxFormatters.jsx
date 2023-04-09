@@ -70,7 +70,7 @@ const handleLinkFormattingForEmptyTextSelection = ({
     editSelectionEnd: selectionEnd,
     replaceSelectionWith: `[](${URL_PLACEHOLDER_TEXT})`,
     newCursorStart: selectionStart + 3,
-    newCursorEnd: selectionEnd + 15,
+    newCursorEnd: selectionEnd + 12,
   };
 
   // Directly after inserting a link with a URL highlighted, cursor is inside the link description '[]'
@@ -500,7 +500,7 @@ export const markdownSyntaxFormatters = {
         editSelectionEnd: selectionEnd,
         replaceSelectionWith: `[${selectedText}](${URL_PLACEHOLDER_TEXT})`,
         newCursorStart: selectionStart + selectedText.length + 3,
-        newCursorEnd: selectionEnd + 9,
+        newCursorEnd: selectionEnd + 12,
       };
     },
   },
