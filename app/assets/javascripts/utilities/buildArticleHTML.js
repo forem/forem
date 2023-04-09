@@ -331,18 +331,10 @@ function buildArticleHTML(article, currentUserId = null) {
     }
 	
 	
-	var imageCOVER = 'Ого це шо';
+	var imageCOVER = '1';
     if (article.main_image) {
       imageCOVER =
-	    '<div className="crayons-article__cover crayons-article__cover__image__feed"><a href="'+
-		article.path+
-		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
-		article.title+
-		'"><img className="crayons-article__cover__image__feed" src={'+
-		article.main_image+
-		'" width="650" alt="'+
-		article.title+
-		'" /></a></div>';
+	    'упс';
     }
 
     var navigationLink = `

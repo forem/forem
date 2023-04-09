@@ -1,102 +1,57 @@
-    <article
-      className={`crayons-story cursor-pointer${
-        isFeatured ? ' crayons-story--featured' : ''
-      }`}
-      id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
-      data-content-user-id={article.user_id}
-	  style="margin-bottom: 22px;"
-    >
-      <a
-        href={article.path}
-        aria-labelledby={`article-link-${article.id}`}
-        className="crayons-story__hidden-navigation-link"
-      >
-        {article.title}
-      </a>
-      <div
-        role="presentation"
-        onClick={(event) => {
-          const { classList } = event.target;
-          if (clickableClassList.includes(...classList)) {
-            if (event.which > 1 || event.metaKey || event.ctrlKey) {
-              // Indicates should open in _blank
-              window.open(article.path, '_blank');
-            } else {
-              const fullUrl = window.location.origin + article.path; // InstantClick deals with full urls
-              InstantClick.preload(fullUrl);
-              InstantClick.display(fullUrl);
-            }
-          }
-        }}
-      >
-        {article.cloudinary_video_url && <Video article={article} />}
-
-        {showCover && <ArticleCoverImage article={article} />}
-        <div className="crayons-story__body">
-          <div className="crayons-story__top">
-            <Meta article={article} organization={article.organization} />
-            {pinned && (
-              <div
-                className="pinned color-accent-brand fw-bold"
-                data-testid="pinned-article"
-              >
-                {/* images/pin.svg */}
-                <svg
-                  aria-hidden="true"
-                  className="mr-2 align-text-bottom color-accent-brand"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                >
-                  <path d="M22.314 10.172l-1.415 1.414-.707-.707-4.242 4.242-.707 3.536-1.415 1.414-4.242-4.243-4.95 4.95-1.414-1.414 4.95-4.95-4.243-4.242 1.414-1.415L8.88 8.05l4.242-4.242-.707-.707 1.414-1.415z" />
-                </svg>
-                Закріплено
-              </div>
-            )}
-          </div>
-
-          <div className="crayons-story__indention">
-            <ContentTitle article={article} />
-            <TagList tags={article.tag_list} flare_tag={article.flare_tag} />
-
-            {article.class_name === 'Article' && (
-              // eslint-disable-next-line no-underscore-dangle
-              <SearchSnippet highlightText={article.highlight} />
-            )}
-
-            <div className="crayons-story__bottom">
-              {article.class_name !== 'User' && (
-                <div className="crayons-story__details">
-                  <ReactionsCount article={article} />
-                  <CommentsCount
-                    count={article.comments_count}
-                    articlePath={article.path}
-                    articleTitle={article.title}
-                  />
-                </div>
-              )}
-
-              <div className="crayons-story__save">
-               
-
-                <SaveButton
-                  article={article}
-                  isBookmarked={isBookmarked}
-                  onClick={bookmarkClick}
-                  saveable={saveable}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {article.top_comments && article.top_comments.length > 0 && (
-          <CommentsList
-            comments={article.top_comments}
-            articlePath={article.path}
-            totalCount={article.comments_count}
-          />
-        )}
+<% if article %>
+<div class='ltag__link'>
+  <% if article.video && article.cloudinary_video_url %>
+  <a href='<%= article.path %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
+    <span class="video-timestamp">
+      <img src="<%= asset_path("video-camera.svg") %>" alt="video camera">
+      <%= article.video_duration_in_minutes %></span>
+  </a>
+  <% end %>
+  <% if article.organization %>
+  <a href='<%= article.organization.path %>' class='ltag__link__link'>
+    <div class='ltag__link__org__pic'>
+      <img src='<%= article.organization.profile_image_url_for(length: 150) %>' alt='<%= article.organization.name.to_s %>'>
+      <div class='ltag__link__user__pic'>
+        <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt=''>
       </div>
-    </article>
+    </div>
+  </a>
+  <a href='<%= article.path %>' class='ltag__link__link' style="text-decoration: none;  border: 0;">
+    <div class='ltag__link__content'>
+      <h2 style="overflow: hidden;"><%= title %></h2>
+      <h3><%= article.user.name %><%= t("views.articles.for_org_html", org: article.organization.name, start: "", end: "") %> ・ <%= article.readable_publish_date %> ・ <%= t("views.articles.reading_time", count: article.reading_time < 2 ? 1 : article.reading_time) %></h3>
+      <div class='ltag__link__taglist'>
+      <% article.tag_list.each do |t| %>
+        <span class='ltag__link__tag'>#<%= t %></span>
+      <% end %>
+      </div>
+    </div>
+  </a>
+  <% else %>
+  <a href='<%= article.user.path %>' class='ltag__link__link'>
+    <div class='ltag__link__pic'>
+      <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt='<%= article.user.username.to_s %>'>
+    </div>
+  </a>
+  <a href='<%= article.path %>' class='ltag__link__link'>
+    <div class='ltag__link__content'>
+      <h2 style="overflow: hidden;max-height: 41px;"><%= title %></h2>
+      <h3><%= article.user.name %> ・ <%= article.readable_publish_date %> ・ <%= t("views.articles.reading_time", count: article.reading_time < 2 ? 1 : article.reading_time) %></h3>
+      <div class='ltag__link__taglist'>
+      <% article.tag_list.each do |t| %>
+        <span class='ltag__link__tag'>#<%= t %></span>
+      <% end %>
+      </div>
+    </div>
+  </a>
+  <% end %>
+</div>
+<% else %>
+<div class='ltag__link'>
+  <div class='ltag__link__content'>
+    <div class='missing'>
+      <h2><%= t("views.articles.missing") %></h2>
+    </div>
+  </div>
+</div>
+<% end %>

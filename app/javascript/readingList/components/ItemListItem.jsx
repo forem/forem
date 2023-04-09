@@ -47,7 +47,7 @@ export const ItemListItem = ({ item, children }) => {
           <span className="color-base-60">
             {adaptedItem.publishedDate}
             <span class="color-base-30"> • </span>
-            {`${adaptedItem.readingTime} min read`}
+            {`${adaptedItem.readingTime} хв. читати`}
           </span>
           {adaptedItem.tags.length > 0 ? (
             <span datatestid="item-tags">

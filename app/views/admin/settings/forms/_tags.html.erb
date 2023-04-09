@@ -12,7 +12,7 @@
                            class: "crayons-textfield",
                            value: Settings::General.sidebar_tags.join(","),
                            placeholder: Constants::Settings::General.details[:sidebar_tags][:placeholder],
-                           pattern: "[а-яА-ЯїЇєЄґҐіІa-zA-Z0-9-,]+" %>
+                           pattern: "[а-яА-ЯїЇєЄґҐіІ'a-zA-Z0-9-,]+" %>
         </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
