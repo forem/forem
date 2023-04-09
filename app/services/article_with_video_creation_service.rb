@@ -1,5 +1,5 @@
 class ArticleWithVideoCreationService
-  VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net".freeze
+  VIDEO_SERVICE_URL = "https://kutok-video.s3.amazonaws.com".freeze
 
   def initialize(article_params, current_user)
     @article_params = article_params

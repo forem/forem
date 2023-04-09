@@ -40,9 +40,7 @@ export const Article = ({
     'crayons-story__tertiary',
   ];
 
-  let showCover =
-    (article.main_image)) &&
-    !article.cloudinary_video_url;
+  let showCover = (article.main_image && !article.cloudinary_video_url);
 
   // pinned article can have a cover image
  // showCover = showCover || (article.pinned && article.main_image);
