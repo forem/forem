@@ -3,6 +3,7 @@ class User < ApplicationRecord
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
+  include Localizable
 
   include Images::Profile.for(:profile_image_url)
 
@@ -256,7 +257,7 @@ class User < ApplicationRecord
     update_column(:score, calculated_score)
   end
 
-  def path
+  def unlocalized_path
     "/#{username}"
   end
 

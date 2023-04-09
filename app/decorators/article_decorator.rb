@@ -22,7 +22,11 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def current_state_path
-    current_state.published? ? "/#{username}/#{slug}" : "/#{username}/#{slug}?preview=#{password}"
+    if current_state.published?
+      "#{locale_prefix}/#{username}/#{slug}"
+    else
+      "#{locale_prefix}/#{username}/#{slug}?preview=#{password}"
+    end
   end
 
   def processed_canonical_url
@@ -103,7 +107,7 @@ class ArticleDecorator < ApplicationDecorator
 
   def co_author_name_and_path
     co_authors.map do |user|
-      %(<a href="#{user.path}" class="crayons-link">#{user.name}</a>)
+      %(<a href="#{user.loc_path}" class="crayons-link">#{user.name}</a>)
     end.to_sentence
   end
 

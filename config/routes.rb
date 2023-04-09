@@ -22,9 +22,8 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
-  scope "(/locale/:locale)", defaults: { locale: nil } do
-    get "/locale/:locale", to: "stories#index"
 
+  scope "(/::locale)", locale: /#{I18n.available_locales.join("|")}/ do
     draw :admin
 
     # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
@@ -318,41 +317,47 @@ Rails.application.routes.draw do
 
     get "/:timeframe", to: "stories#index", constraints: { timeframe: /latest/ }
 
-    get "/:username/series", to: "collections#index", as: "user_series"
-    get "/:username/series/:id", to: "collections#show"
-
-    # Legacy comment format (might still be floating around app, and external links)
-    get "/:username/:slug/comments", to: "comments#index"
-    get "/:username/:slug/comments/:id_code", to: "comments#index"
-    get "/:username/:slug/comments/:id_code/edit", to: "comments#edit"
-    get "/:username/:slug/comments/:id_code/delete_confirm", to: "comments#delete_confirm"
-
-    # Proper link format
-    get "/:username/comment/:id_code", to: "comments#index"
-    get "/:username/comment/:id_code/edit", to: "comments#edit"
-    get "/:username/comment/:id_code/delete_confirm", to: "comments#delete_confirm"
-    get "/:username/comment/:id_code/mod", to: "moderations#comment"
-    get "/:username/comment/:id_code/settings", to: "comments#settings"
-
-    get "/:username/:slug/:view", to: "stories#show",
-                                  constraints: { view: /moderate|admin/ }
-    get "/:username/:slug/mod", to: "moderations#article"
-    get "/:username/:slug/actions_panel", to: "moderations#actions_panel"
-    get "/:username/:slug/manage", to: "articles#manage", as: :article_manage
-    get "/:username/:slug/edit", to: "articles#edit"
-    get "/:username/:slug/delete_confirm", to: "articles#delete_confirm"
-    get "/:username/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
-    get "/:username/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
-    get "/:username/:slug/stats", to: "articles#stats"
-    get "/:username/:view", to: "stories#index",
-                            constraints: { view: /comments|moderate|admin/ }
-    get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:username", to: "stories#index", as: "user_profile"
+
+    scope ":username", username: /[a-zA-Z0-9_]{2,}/ do # see app/models/user.rb
+      get "/series", to: "collections#index", as: "user_series"
+      get "/series/:id", to: "collections#show"
+
+      # Legacy comment format (might still be floating around app, and external links)
+      get "/:slug/comments", to: "comments#index"
+      get "/:slug/comments/:id_code", to: "comments#index"
+      get "/:slug/comments/:id_code/edit", to: "comments#edit"
+      get "/:slug/comments/:id_code/delete_confirm", to: "comments#delete_confirm"
+
+      # Proper link format
+      get "/comment/:id_code", to: "comments#index"
+      get "/comment/:id_code/edit", to: "comments#edit"
+      get "/comment/:id_code/delete_confirm", to: "comments#delete_confirm"
+      get "/comment/:id_code/mod", to: "moderations#comment"
+      get "/comment/:id_code/settings", to: "comments#settings"
+
+      get "/:slug/:view", to: "stories#show",
+                          constraints: { view: /moderate|admin/ }
+      get "/:slug/mod", to: "moderations#article"
+      get "/:slug/actions_panel", to: "moderations#actions_panel"
+      get "/:slug/manage", to: "articles#manage", as: :article_manage
+      get "/:slug/edit", to: "articles#edit"
+      get "/:slug/delete_confirm", to: "articles#delete_confirm"
+      get "/:slug/discussion_lock_confirm", to: "articles#discussion_lock_confirm"
+      get "/:slug/discussion_unlock_confirm", to: "articles#discussion_unlock_confirm"
+      get "/:slug/stats", to: "articles#stats"
+      get "/:slug/translate", to: "articles#new"
+      get "/:view", to: "stories#index",
+                    constraints: { view: /comments|moderate|admin/ }
+      get "/:slug", to: "stories#show"
+      get "/", to: "stories#index", as: "user_profile"
+    end
 
     root "stories#index"
   end
+
+  get "/:*path_with_invalid_locale", to: redirect("/404")
 end
 
 # rubocop:enable Metrics/BlockLength

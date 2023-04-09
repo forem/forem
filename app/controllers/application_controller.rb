@@ -261,6 +261,10 @@ class ApplicationController < ActionController::Base
                   end
   end
 
+  def default_url_options(_options = nil)
+    { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }
+  end
+
   def remember_cookie_sync
     # Set remember cookie token in case not properly set.
     if user_signed_in? &&

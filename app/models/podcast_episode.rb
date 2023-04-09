@@ -1,5 +1,6 @@
 class PodcastEpisode < ApplicationRecord
   include PgSearch::Model
+  include Localizable
 
   acts_as_taggable
 
@@ -50,7 +51,7 @@ class PodcastEpisode < ApplicationRecord
     comments.pluck(:body_markdown).join(" ")
   end
 
-  def path
+  def unlocalized_path
     return unless podcast&.slug
 
     "/#{podcast.slug}/#{slug}"

@@ -5,6 +5,7 @@ class Listing < ApplicationRecord
   self.ignored_columns += %w[contact_via_connect].freeze
 
   include PgSearch::Model
+  include Localizable
 
   attr_accessor :action
 
@@ -75,7 +76,7 @@ class Listing < ApplicationRecord
     organization || user
   end
 
-  def path
+  def unlocalized_path
     "/listings/#{category}/#{slug}"
   end
 
@@ -137,6 +138,6 @@ class Listing < ApplicationRecord
   end
 
   def create_slug
-    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
+    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_fs(26)}"
   end
 end

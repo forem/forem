@@ -1,4 +1,6 @@
 class Collection < ApplicationRecord
+  include Localizable
+
   has_many :articles, dependent: :nullify
 
   belongs_to :user
@@ -14,7 +16,7 @@ class Collection < ApplicationRecord
     Collection.find_or_create_by(slug: slug, user: user)
   end
 
-  def path
+  def unlocalized_path
     "/#{user.username}/series/#{id}"
   end
 

@@ -1,5 +1,6 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
+  include Localizable
 
   include Images::Profile.for(:profile_image_url)
 
@@ -83,7 +84,7 @@ class Organization < ApplicationRecord
     Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end
 
-  def path
+  def unlocalized_path
     "/#{slug}"
   end
 

@@ -4,6 +4,7 @@ class Comment < ApplicationRecord
 
   include PgSearch::Model
   include Reactable
+  include Localizable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 
@@ -123,7 +124,7 @@ class Comment < ApplicationRecord
     "comment_#{id}"
   end
 
-  def path
+  def unlocalized_path
     "/#{user.username}/comment/#{id_code_generated}"
   rescue StandardError
     "/404.html"
@@ -146,7 +147,7 @@ class Comment < ApplicationRecord
   def id_code_generated
     # 26 is the conversion base
     # eg. 1000.to_s(26) would be "1cc"
-    id.to_s(26)
+    id.to_fs(26)
   end
 
   def custom_css
@@ -278,7 +279,7 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    update_column(:id_code, id.to_s(26))
+    update_column(:id_code, id.to_fs(26))
   end
 
   def touch_user

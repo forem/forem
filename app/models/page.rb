@@ -1,5 +1,7 @@
 class Page < ApplicationRecord
   extend UniqueAcrossModels
+  include Localizable
+
   TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json].freeze
 
   TERMS_SLUG = "terms".freeze
@@ -50,7 +52,7 @@ class Page < ApplicationRecord
     find_by(landing_page: true)
   end
 
-  def path
+  def unlocalized_path
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
   end
 
