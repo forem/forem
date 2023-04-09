@@ -57,8 +57,8 @@
     padding-right: 8px;
     box-sizing: border-box;
     img {
-      width: calc(2.2vw + 45px);
-      height: calc(2.2vw + 45px);
+		width: calc(1.8vw + 0px);
+		height: calc(1.8vw + 0px);
       margin: auto auto !important;
       border-radius: 150px;
       box-sizing: border-box;
@@ -87,8 +87,8 @@
   }
   .ltag__link__org__pic > img {
     display: inline-block;
-    width: calc(2.2vw + 45px);
-    height: calc(2.5vw + 40px);
+    width: calc(1.8vw + 0px);
+    height: calc(1.8vw + 0px);
     margin: auto auto !important;
     border-radius: var(--radius);
     box-sizing: border-box;
@@ -102,8 +102,8 @@
     border-radius: 100%;
     background-color: var(--card-color-tertiary);
     box-sizing: border-box;
-    width: calc(2vw + 25px);
-    height: calc(2vw + 25px);
+    width: calc(1.5vw);
+    height: calc(1.5vw);
     img {
       display: inline-block;
       width: 100%;

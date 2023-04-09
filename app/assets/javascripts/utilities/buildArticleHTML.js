@@ -331,10 +331,18 @@ function buildArticleHTML(article, currentUserId = null) {
     }
 	
 	
-	var imageCOVER = '1';
+	var imageCOVER = '';
     if (article.main_image) {
-      imageCOVER =
-	    'упс';
+      imageCOVER = 
+	    '<div className="crayons-article__cover crayons-article__cover__image__feed"><a href="'+
+		article.path+
+		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
+		article.title+
+		'"><img className="crayons-article__cover__image__feed" src={'+
+		article.main_image+
+		'" width="650" alt="'+
+		article.title+
+		'" /></a></div>';
     }
 
     var navigationLink = `
@@ -354,7 +362,7 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
-		  ${imageCOVER}\
+		  <ArticleCoverImage article={article} />\
           <div class="crayons-story__body">\
             <div class="crayons-story__top">\
               ${meta}
