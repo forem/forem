@@ -330,6 +330,23 @@ function buildArticleHTML(article, currentUserId = null) {
         '</div></a>';
     }
 
+	var imageCOVER = '';
+    if (article.main_image) {
+      imageCOVER =
+	    '<div className="crayons-article__cover crayons-article__cover__image__feed"><a href="'+
+		article.path+
+		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
+		article.title+
+		'"><img className="crayons-article__cover__image__feed" src={'+
+		article.main_image+
+		'" width="650" alt="'+
+		article.title"+
+		'" style= backgroundColor: `$'+
+		article.main_image_background_hex_color+
+		'`,}}/></a></div>';
+    }
+
+
     var navigationLink = `
       <a
         href="${article.path}"
@@ -347,6 +364,7 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
+		  ${imageCOVER}\
           <div class="crayons-story__body">\
             <div class="crayons-story__top">\
               ${meta}

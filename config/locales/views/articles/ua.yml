@@ -71,7 +71,7 @@ ua:
         subtitle: "%{slug} (%{size})"
         size:
           one: "%{count} частина серії"
-          other: "%{count} частина серії"
+          other: "%{count} частин серії"
         published: Published %{date}
         inbetween:
           num: "..."

@@ -20,7 +20,7 @@ export const Toolbar = ({ version, textAreaId }) => {
             <Link
               key="help-link"
               block
-              href="/p/editor_guide"
+              href="/site/gaid_z_vykorystannya_markdown-381i"
               target="_blank"
               rel="noopener noreferrer"
               icon={HelpIcon}

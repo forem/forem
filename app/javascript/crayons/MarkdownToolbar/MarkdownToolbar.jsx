@@ -12,7 +12,7 @@ import { BREAKPOINTS, useMediaQuery } from '@components/useMediaQuery';
 import { getSelectionData } from '@utilities/textAreaUtils';
 
 // Placeholder text displayed while an image is uploading
-const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+const UPLOADING_IMAGE_PLACEHOLDER = '![Завантажуємо](...)';
 
 const MAX_CORE_FORMATTERS_BY_SCREEN_SIZE = {
   small: 5,
@@ -411,7 +411,7 @@ export const MarkdownToolbar = ({
             setStoredCursorPosition({ selectionStart, selectionEnd });
           },
           tooltip: smallScreen ? null : (
-            <span aria-hidden="true">Upload image</span>
+            <span aria-hidden="true">Завантажити картинку <span class="opacity-75"> Максимум 4096х4096</span></span>
           ),
           key: 'image-btn',
           className: 'toolbar-btn formatter-btn mr-1',

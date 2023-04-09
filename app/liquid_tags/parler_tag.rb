@@ -21,7 +21,7 @@ class ParlerTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    input_no_space = input_no_space.scan(%r{\bhttps?://[а-яА-ЯїЇєЄґҐіІa-zA-Z0-9-]+\b}).first
+    input_no_space = input_no_space.scan(%r{\bhttps?://[а-яА-ЯїЇєЄґҐіІ'a-zA-Z0-9-]+\b}).first
     raise StandardError, I18n.t("liquid_tags.parler_tag.invalid_parler_url") unless valid_id?(input_no_space)
 
     input_no_space
