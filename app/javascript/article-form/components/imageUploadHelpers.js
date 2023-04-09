@@ -1,7 +1,7 @@
 import { handleImageFailure } from './dragAndDropHelpers';
 
 // Placeholder text displayed while an image is uploading
-const UPLOADING_IMAGE_PLACEHOLDER = '![Uploading image](...)';
+const UPLOADING_IMAGE_PLACEHOLDER = '![Картинка завантажується](...)';
 
 /**
  * Handles image uploading by showing UPLOADING_IMAGE_PLACEHOLDER text.

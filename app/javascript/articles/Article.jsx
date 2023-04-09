@@ -41,11 +41,11 @@ export const Article = ({
   ];
 
   let showCover =
-    (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
+    (article.main_image)) &&
     !article.cloudinary_video_url;
 
   // pinned article can have a cover image
-  showCover = showCover || (article.pinned && article.main_image);
+ // showCover = showCover || (article.pinned && article.main_image);
 
   return (
     <article
@@ -54,6 +54,7 @@ export const Article = ({
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
       data-content-user-id={article.user_id}
+	  style="margin-bottom: 22px;"
     >
       <a
         href={article.path}
@@ -155,7 +156,7 @@ export const Article = ({
 Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
-  feedStyle: 'basic',
+  feedStyle: 'rich',
   saveable: true,
 };
 
