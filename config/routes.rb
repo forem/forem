@@ -22,8 +22,7 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
-
-  scope "(/::locale)", locale: /#{I18n.available_locales.join("|")}/ do
+  scope "(/locale/:locale)", locale: /#{I18n.available_locales.join("|")}/ do
     draw :admin
 
     # The lambda (e.g. `->`) allows for dynamic checking.  In other words we check with each
