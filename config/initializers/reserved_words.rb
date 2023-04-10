@@ -120,6 +120,7 @@ class ReservedWords
     listings
     live
     live_articles
+    locale
     loop
     machinelearning
     mag

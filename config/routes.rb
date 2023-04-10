@@ -22,6 +22,11 @@ Rails.application.routes.draw do
 
   # [@forem/delightful] - all routes are nested under this optional scope to
   # begin supporting i18n.
+  # [yheuhtozr]: removed :defaults because of a dilemmic bug of Rails.
+  # If we put any default value to optional :locale, the real value will not be
+  # passed to `*_url` and `*_path` helpers; but we don't, they try to
+  # interpret the first positional parameter as :locale.
+  # This is monkey-patched in config/initializers/action_dispatch_url_helper.rb
   scope "(/locale/:locale)", locale: /#{I18n.available_locales.join("|")}/ do
     draw :admin
 
@@ -319,7 +324,8 @@ Rails.application.routes.draw do
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
 
-    scope ":username", username: /[a-zA-Z0-9_]{2,}/ do # see app/models/user.rb
+    # don't let the :username matcher steal the name "locale"
+    scope ":username", username: /[\w-]{1,5}|(?!locale)[\w-]{6}|[\w-]{7,}/ do
       get "/series", to: "collections#index", as: "user_series"
       get "/series/:id", to: "collections#show"
 
@@ -356,7 +362,7 @@ Rails.application.routes.draw do
     root "stories#index"
   end
 
-  get "/:*path_with_invalid_locale", to: redirect("/404")
+  get "/locale/*path_with_invalid_locale", to: redirect("/404")
 end
 
 # rubocop:enable Metrics/BlockLength
