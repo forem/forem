@@ -53,7 +53,7 @@
       <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt='<%= article.user.username.to_s %>'>
     </div>
   </a>
-  <a href='<%= article.path %>' class='ltag__link__link'><h2 style="padding: 4px 17px 1px 17px;;font-size: 1.4em;"><%= title %></h2>
+  <a href='<%= article.path %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
       
       <h3><%= article.user.name %> ・ <%= article.readable_publish_date %> ・ <%= t("views.articles.reading_time", count: article.reading_time < 2 ? 1 : article.reading_time) %></h3>

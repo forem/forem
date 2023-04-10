@@ -332,14 +332,14 @@ function buildArticleHTML(article, currentUserId = null) {
 	
 	
 	var imageCOVER = '';
-    if (article.main_image) {
+    if (cloud_cover_url(article.main_image)) {
       imageCOVER = 
 	    'a<div className="crayons-article__cover crayons-article__cover__image__feed"><a href="'+
 		article.path+
 		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
 		article.title+
 		'"><img className="crayons-article__cover__image__feed" src={'+
-		article.main_image+
+		cloud_cover_url(article.main_image)+
 		'" width="650" alt="'+
 		article.title+
 		'" /></a></div>';
