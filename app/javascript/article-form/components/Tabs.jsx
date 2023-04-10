@@ -35,7 +35,7 @@ export const Tabs = ({ onPreview, previewShowing }) => {
             type="button"
             aria-current={previewShowing ? 'page' : null}
           >
-            Попередній перегляд
+            Передперегляд
           </button>
         </li>
       </ul>

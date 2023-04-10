@@ -64,7 +64,7 @@ RSpec.describe "Creating an article with the editor" do
     xit "previews article with a Runkit tag and creates it" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
-      click_button "Попередній перегляд"
+      click_button "Передперегляд"
 
       expect_runkit_tag_to_be_active
 

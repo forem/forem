@@ -25,7 +25,7 @@ ua:
         message:
           one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
           other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
-      congrats: Congrats!!!
+      congrats: Вітаємо!!!
       thank_you: Thank you so much for your contributions!
       community_wellness:
         first: Thank you for participating in constructive conversation! You posted two or more comments this week. Keep it up to continue the streak!
@@ -56,9 +56,9 @@ ua:
         same_user: You cannot merge the same two user IDs
     notifications:
       new_comment:
-        new: "💬 New Comment"
+        new: "💬 Новий коментар"
       new_mention:
-        new: "🗣️ New Mention"
+        new: "🗣️ Нова згадка"
     payments:
       customer:
         usd: usd

@@ -98,7 +98,7 @@ ua:
           moderator: Довірений користувач
           personal: Особистий
         submit: Відправити
-        preview: Попередній перегляд
+        preview: Передперегляд
         cancel: Відмінити
       menu:
         aria_label: Toggle dropdown menu
