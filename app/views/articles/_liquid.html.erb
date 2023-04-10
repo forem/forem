@@ -18,13 +18,11 @@
           src='<%=cloud_cover_url(article.main_image)%>'}
           width="650"
           alt='<%= article.title%>'
-          style={{
-            backgroundColor: '<%=article.main_image_background_hex_color%>',
-          }}
+          style= "margin:0px; backgroundColor: '<%=article.main_image_background_hex_color%>'",
         />
       </a>
     </div>
-   <h2 style="padding: 4px 17px 1px 17px;;font-size: 1.4em;"><%= title %></h2>
+  <a href='<%= article.path %>' <h2 style="padding: 4px 28px 1px 28px;;font-size: 1.4em;"><%= title %></h2></a>
   
   <% if article.organization %>
   <a href='<%= article.organization.path %>' class='ltag__link__link'>
@@ -39,7 +37,7 @@
        
     <div class='ltag__link__content'>
 
-      <h3 style="padding-top: 5px;"><%= article.user.name %><%= t("views.articles.for_org_html", org: article.organization.name, start: "", end: "") %> ・ <%= article.readable_publish_date %> ・ <%= t("views.articles.reading_time", count: article.reading_time < 2 ? 1 : article.reading_time) %></h3>
+      <h3 style="padding-top: 5px;"><%= article.user.name %><%= t("views.articles.for_org_html", org: article.organization.name, start: "", end: "") %> ・ <%= article.readable_publish_date %></h3>
       <div class='ltag__link__taglist'>
       <% article.tag_list.each do |t| %>
         <span class='ltag__link__tag'>#<%= t %></span>

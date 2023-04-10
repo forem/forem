@@ -343,7 +343,10 @@ function buildArticleHTML(article, currentUserId = null) {
 		'" width="650" alt="'+
 		article.title+
 		'" /></a></div>';
+		
+		
     }
+	imageCOVER = article.path+" s "+article.title+" s "+cloud_cover_url(article.main_image)+" s "+main_image
 
     var navigationLink = `
       <a
