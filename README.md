@@ -130,6 +130,7 @@ Please see our installation guides, such as the
 - [@lboogie2004](https://dev.to/lboogie2004)
 - [@klardotsh](https://dev.to/klardotsh)
 - [@filleduchaos](https://dev.to/filleduchaos)
+- [@dukegreene](https://dev.to/dukegreene)
 
 ## Vulnerability disclosure
 
@@ -143,7 +144,8 @@ We welcome security research on DEV under the terms of our
 Thank you to the [Twemoji project](https://github.com/twitter/twemoji) for the
 usage of their emojis.
 
-Thank you to [Uffizzi](https://www.uffizzi.com) for providing ephemeral environments to preview pull requests.
+Thank you to [Uffizzi](https://www.uffizzi.com) for providing ephemeral
+environments to preview pull requests.
 
 ## License
 
