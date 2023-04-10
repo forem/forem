@@ -174,6 +174,10 @@ function buildVideoArticleHTML(videoArticle) {
   </a>`;
 }
 
+
+
+
+
 function insertVideos(videoArticles) {
   var list = document.getElementById('subvideos');
   var newVideosHTML = '';
@@ -234,7 +238,21 @@ function insertArticles(articles) {
       );
     } else if (!existingEl) {
       var newHTML = buildArticleHTML(article, currentUserId);
-      newArticlesHTML += newHTML;
+	  
+	var imageCOVER = '';
+    if (article.main_image) {
+      imageCOVER = 
+	    'a<div className="crayons-article__cover crayons-article__cover__image__feed"><a href="'+
+		article.path+
+		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
+		article.title+
+		'"><img className="crayons-article__cover__image__feed" src={'+
+		article.main_image+
+		'" width="650" alt="'+
+		article.title+
+		'" /></a></div>';
+    }
+      newArticlesHTML += imageCOVER+newHTML;
       initializeReadingListIcons();
     }
   });
