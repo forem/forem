@@ -3,7 +3,6 @@ module Admin
     layout "admin"
 
     after_action :bust_ad_caches, only: %i[create update destroy]
-    after_action :bust_async_display_ads_cache, only: %i[create update destroy]
 
     def index
       @display_ads = DisplayAd.order(id: :desc)
@@ -70,11 +69,6 @@ module Admin
 
     def bust_ad_caches
       EdgeCache::BustSidebar.call
-    end
-
-    def bust_async_display_ads_cache
-      Rails.cache.delete("for_display")
-      EdgeCache::Bust.call("/display_ads/for_display")
     end
   end
 end
