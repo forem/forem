@@ -11,8 +11,9 @@ describe('Notification initialization', () => {
 
     it('Shows the notification count', () => {
       cy.findByRole('heading', { name: 'Notifications' }).as('notification');
+      cy.get('@notification').find('span').as('span');
 
-      cy.get('@notification').find('span').should('have.value', '');
+      cy.get('@span').should('have.text', '');
     });
   });
 
@@ -28,8 +29,9 @@ describe('Notification initialization', () => {
 
     it('Shows the notification count', () => {
       cy.findByRole('heading', { name: 'Notifications' }).as('notification');
+      cy.get('@notification').find('span').as('span');
 
-      cy.get('@notification').find('span').should('have.value', '');
+      cy.get('@span').should('have.value', '');
     });
   });
 });
