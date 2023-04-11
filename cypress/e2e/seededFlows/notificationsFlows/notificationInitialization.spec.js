@@ -5,15 +5,16 @@ describe('Notification initialization', () => {
       cy.fixture('users/notificationsUser.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginUser(user);
+        cy.loginUser(user).then(() => {
+          cy.visit('/');
+        });
       });
     });
 
     it('Shows the notification count', () => {
-      cy.findByRole('heading', { name: 'Notifications' }).as('notification');
-      cy.get('@notification').find('span').as('span');
+      cy.get('#notifications-link').find('span').as('pan');
 
-      cy.get('@span').should('have.text', '');
+      cy.get('@pan').should('have.text', '2');
     });
   });
 
@@ -28,10 +29,9 @@ describe('Notification initialization', () => {
     });
 
     it('Shows the notification count', () => {
-      cy.findByRole('heading', { name: 'Notifications' }).as('notification');
-      cy.get('@notification').find('span').as('span');
+      cy.get('#notifications-link').find('span').as('pan');
 
-      cy.get('@span').should('have.value', '');
+      cy.get('@pan').should('have.value', '');
     });
   });
 });
