@@ -6,12 +6,10 @@ async function getBillboard() {
     'js-display-ad-comments-container',
   )[0];
 
-  const { articleId, placementArea } = placeholderElement.dataset || {};
+  const { asyncUrl } = placeholderElement.dataset || {};
 
   if (placeholderElement.innerHTML.trim() === '') {
-    const response = await window.fetch(
-      `/display_ads/for_display?article_id=${articleId}&placement_area=${placementArea}`,
-    );
+    const response = await window.fetch(`${asyncUrl}`);
     const htmlContent = await response.text();
 
     const generatedElement = document.createElement('div');
