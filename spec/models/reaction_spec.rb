@@ -139,8 +139,11 @@ RSpec.describe Reaction do
 
       expected_result = [
         { category: "like", count: 1 },
-        { category: "readinglist", count: 0 },
         { category: "unicorn", count: 1 },
+        { category: "exploding_head", count: 0 },
+        { category: "fire", count: 0 },
+        { category: "raised_hands", count: 0 },
+        { category: "readinglist", count: 0 },
       ]
       expect(described_class.count_for_article(article.id)).to contain_exactly(*expected_result)
     end

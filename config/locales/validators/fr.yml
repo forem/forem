@@ -11,7 +11,9 @@ fr:
       default: doit être un identifiant d'article publié valide
     profile_validator:
       bio_too_long: La biographie est trop longue
-    unique_cross_model_slug_validator:
+    cross_model_slug_validator:
       is_taken: est déjà pris
+      is_invalid: is invalid
+      is_reserved: is reserved
     valid_domain_csv_validator:
       invalid_list_format: doit être une liste de domaines valides, séparés par des virgules.
