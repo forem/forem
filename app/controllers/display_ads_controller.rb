@@ -8,7 +8,7 @@ class DisplayAdsController < ApplicationController
 
     if params[:placement_area]
       if params[:article_id].present?
-        @article = Article.find(params[:article_id])
+        @article = Article.find_by(id: params[:article_id])
       end
 
       @display_ad = DisplayAd.for_display(
