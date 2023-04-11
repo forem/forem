@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UniqueCrossModelSlugValidator do
+RSpec.describe CrossModelSlugValidator do
   subject(:record) { validatable.new.tap { |m| m.name = name } }
 
   let(:validatable) do
@@ -15,10 +15,14 @@ RSpec.describe UniqueCrossModelSlugValidator do
         @enforce_validation = true
       end
 
+      def name_changed?
+        true
+      end
+
       attr_accessor :enforce_validation
       alias_method :enforce_validation?, :enforce_validation
 
-      validates :name, unique_cross_model_slug: true, if: :enforce_validation?
+      validates :name, cross_model_slug: true, if: :enforce_validation?
     end
   end
 
@@ -32,6 +36,12 @@ RSpec.describe UniqueCrossModelSlugValidator do
 
   context "when name includes sitemap-" do
     let(:name) { "sitemap-happy" }
+
+    it { is_expected.not_to be_valid }
+  end
+
+  context "when name is a ReservedWord" do
+    let(:name) { "members" }
 
     it { is_expected.not_to be_valid }
   end
