@@ -175,6 +175,9 @@ function buildVideoArticleHTML(videoArticle) {
 }
 
 
+
+
+
 function insertVideos(videoArticles) {
   var list = document.getElementById('subvideos');
   var newVideosHTML = '';
