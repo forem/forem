@@ -18,7 +18,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
       <input value="${parentId}" type="hidden" name="comment[parent_id]" id="comment_parent_id" />
       <div class="comment-form__inner">
         <div class="comment-form__field">
-          <textarea id="textarea-for-${parentId}" class="crayons-textfield crayons-textfield--ghost comment-textarea" name="comment[body_markdown]" data-tracking-name="comment_form_textfield" placeholder="Reply..." aria-label="Reply to a comment..." required="required" onkeydown="handleKeyDown(event)" onfocus="handleFocus(event)" oninput="handleChange(event)" onkeyup="handleKeyUp(event)"></textarea>
+          <textarea id="textarea-for-${parentId}" class="crayons-textfield crayons-textfield--ghost comment-textarea" name="comment[body_markdown]" data-tracking-name="comment_form_textfield" placeholder="Відповідь..." aria-label="Reply to a comment..." required="required" onkeydown="handleKeyDown(event)" onfocus="handleFocus(event)" oninput="handleChange(event)" onkeyup="handleKeyUp(event)"></textarea>
         </div>
         <div class="response-templates-container crayons-card crayons-card--secondary p-4 mb-4 fs-base comment-form__templates hidden">
           <header>

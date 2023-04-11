@@ -346,7 +346,7 @@ function buildArticleHTML(article, currentUserId = null) {
 		
 		
     }
-	imageCOVER = article.path+" s "+article.title+" s "+cloud_cover_url(article.main_image)+" s "+main_image
+	imageCOVER = article.path+" s "+article.title+" s "+" s "+main_image
 
     var navigationLink = `
       <a
