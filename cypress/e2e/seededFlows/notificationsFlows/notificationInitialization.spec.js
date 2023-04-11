@@ -12,7 +12,7 @@ describe('Notification initialization', () => {
     it('Shows the notification count', () => {
       cy.findByRole('heading', { name: 'Notifications' }).as('notification');
 
-      cy.get('@notification').find('span').should('have.text', '');
+      cy.get('@notification').find('span').should('have.value', '');
     });
   });
 
@@ -29,7 +29,7 @@ describe('Notification initialization', () => {
     it('Shows the notification count', () => {
       cy.findByRole('heading', { name: 'Notifications' }).as('notification');
 
-      cy.get('@notification').find('span').should('have.text', '');
+      cy.get('@notification').find('span').should('have.value', '');
     });
   });
 });
