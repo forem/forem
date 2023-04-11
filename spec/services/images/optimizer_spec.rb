@@ -81,7 +81,7 @@ RSpec.describe Images::Optimizer, type: :service do
       imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
       # mb = maximum bytes, defaults to 500_000 bytes
       # ar = autorotate, defaults to "true", serialized as "1"
-      expect(imgproxy_url).to match(%r{/s:500:500/mb:1000000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/s:500:500/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 

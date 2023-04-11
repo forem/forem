@@ -226,7 +226,8 @@ function insertArticles(articles) {
       ].includes(window.location.pathname) &&
       existingEl &&
       existingEl.parentElement &&
-      existingEl.parentElement.classList.contains('crayons-story') &&
+      existingEl.parentElement.classList.contains('crayons-article__cover') &&
+	  existingEl.parentElement.classList.contains('crayons-story') &&
       !document.getElementById('video-player-' + article.id)
     ) {
       existingEl.parentElement.outerHTML = buildArticleHTML(
@@ -257,6 +258,7 @@ function insertArticles(articles) {
       classList.contains('crayons-story__indention') ||
       classList.contains('crayons-story__title') ||
       classList.contains('crayons-story__tags') ||
+	  classList.contains('crayons-article__cover') ||
       classList.contains('crayons-story__bottom')
     ) {
       let element = event.target;
