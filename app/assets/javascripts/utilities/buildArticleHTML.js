@@ -339,14 +339,14 @@ function buildArticleHTML(article, currentUserId = null) {
 		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
 		article.title+
 		'"><img className="crayons-article__cover__image__feed" src={'+
-		cloud_cover_url(article.main_image)+
+		(article.main_image)+
 		'" width="650" alt="'+
 		article.title+
 		'" /></a></div>';
 		
 		
     }
-	imageCOVER = article.path+" s "+article.title+" s "+" s "+main_image
+	imageCOVER = article.path+" s "+article.title+" s "+" s "+article.main_image
 
     var navigationLink = `
       <a

@@ -54,7 +54,7 @@
   <a href='<%= article.path %>' class='ltag__link__link'>
     <div class='ltag__link__content'>
       
-      <h3><%= article.user.name %> ・ <%= article.readable_publish_date %> ・ <%= t("views.articles.reading_time", count: article.reading_time < 2 ? 1 : article.reading_time) %></h3>
+      <h3><%= article.user.name %> ・ <%= article.readable_publish_date %></h3>
       <div class='ltag__link__taglist'>
       <% article.tag_list.each do |t| %>
         <span class='ltag__link__tag'>#<%= t %></span>
