@@ -90,7 +90,7 @@ GEM
       device_detector
       safely_block (>= 0.2.1)
     amazing_print (1.4.0)
-    ancestry (4.3.0)
+    ancestry (4.3.2)
       activerecord (>= 5.2.6)
     anyway_config (2.3.0)
       ruby-next-core (>= 0.14.0)
