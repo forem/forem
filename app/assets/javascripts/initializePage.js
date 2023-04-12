@@ -5,7 +5,6 @@
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeSettings, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
-  initializeDrawerSliders, initializeHeroBannerClose,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
@@ -22,8 +21,6 @@ function callInitializers() {
   initializeTimeFixer();
   initializeDashboardSort();
   initializeCreditsPage();
-  initializeDrawerSliders();
-  initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
 }

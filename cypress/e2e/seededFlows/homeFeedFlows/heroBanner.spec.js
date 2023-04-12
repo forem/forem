@@ -28,6 +28,12 @@ describe('Home Feed Hero Area', () => {
     });
   });
 
+  afterEach(() => {
+    // Dismissing a banner sets a flag in local storage that we want to ensure is removed after each test
+    // cy.visit('/404');
+    cy.clearLocalStorage();
+  });
+
   context('when there is an active campaign', () => {
     it('displays a banner that can be dismissed', () => {
       cy.get('[aria-label="Campaign banner"]')
@@ -36,15 +42,15 @@ describe('Home Feed Hero Area', () => {
         .should('exist');
 
       cy.get('@heroArea').within(() => {
-        cy.get('#js-hero-banner__x').click();
+        cy.get('[aria-label="Close campaign banner"]').click();
       });
 
       cy.get('@heroArea').should('not.be.visible');
     });
 
-    it('does not display the banner if the campaign has been dismissed', () => {
+    it('does not display the banner if the campaign has already been dismissed', () => {
       cy.get('[aria-label="Campaign banner"]').within(() => {
-        cy.get('#js-hero-banner__x').click();
+        cy.get('[aria-label="Close campaign banner"]').click();
       });
 
       cy.reload();

@@ -1,6 +1,6 @@
-/* global InstantClick, slideSidebar */
+/* global slideSidebar */
 
-function initializeDrawerSliders() {
+const initializeDrawerSliders = () => {
   if (document.getElementById('on-page-nav-controls')) {
     if (document.getElementById('sidebar-bg-left')) {
       document.getElementById('sidebar-bg-left').onclick = (_event) => {
@@ -40,4 +40,6 @@ function initializeDrawerSliders() {
       InstantClick.display(url);
     });
   }
-}
+};
+
+initializeDrawerSliders();
