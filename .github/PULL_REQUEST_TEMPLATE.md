@@ -67,4 +67,3 @@ accessibility is impacted and tested. For more info, check out the
 ## [optional] What gif best describes this PR or how it makes you feel?
 
 ![alt_text](gif_link)
-
