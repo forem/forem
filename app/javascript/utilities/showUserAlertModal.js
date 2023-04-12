@@ -18,7 +18,7 @@ const modalId = 'user-alert-modal';
  * @example
  * showUserAlertModal('Warning', 'You must wait', 'OK', '/faq/why-must-i-wait', 'Why must I wait?');
  */
-function showUserAlertModal(title, text, confirm_text) {
+export function showUserAlertModal(title, text, confirm_text) {
   buildModalDiv(text, confirm_text);
   window.Forem.showModal({
     title,
