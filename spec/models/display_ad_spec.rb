@@ -117,6 +117,24 @@ RSpec.describe DisplayAd do
       # Images::Optimizer.call(source, width: width)
     end
 
+    it "uses sidebar width for sidebar location" do
+      image_url = "https://dummyimage.com/100x100"
+      allow(FastImage).to receive(:size)
+      allow(Images::Optimizer).to receive(:call).and_return(image_url)
+      image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
+      create(:display_ad, body_markdown: image_md, placement_area: "post_sidebar")
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::SIDEBAR_WIDTH)
+    end
+
+    it "uses post width for feed location" do
+      image_url = "https://dummyimage.com/100x100"
+      allow(FastImage).to receive(:size)
+      allow(Images::Optimizer).to receive(:call).and_return(image_url)
+      image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
+      create(:display_ad, body_markdown: image_md, placement_area: "feed_second")
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::POST_WIDTH)
+    end
+
     it "keeps the same processed_html if markdown was not changed" do
       display_ad = create(:display_ad)
       html = display_ad.processed_html
