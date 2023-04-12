@@ -147,6 +147,8 @@ Rails.application.configure do
     # TODO: Temporarily ignoring this while working out user - profile relationship
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
 
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
+
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?
       Rails.application.load_tasks

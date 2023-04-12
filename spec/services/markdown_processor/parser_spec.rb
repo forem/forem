@@ -480,7 +480,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         "{% liquid example %}",
         source: :my_source,
         user: :my_user,
-        policy: :my_policy,
+        liquid_tag_options: { policy: :my_policy },
       ).finalize
       expect(Liquid::Template).to have_received(:parse)
         .with(
