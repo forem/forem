@@ -1,5 +1,5 @@
 class DisplayAdsController < ApplicationController
-  before_action :set_cache_control_headers, only: %i[for_display], unless: -> { current_user }
+  before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   CACHE_EXPIRY_FOR_DISPLAY_ADS = 15.minutes.to_i.freeze
 
   def show
