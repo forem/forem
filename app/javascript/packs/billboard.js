@@ -11,9 +11,9 @@ async function getBillboard() {
 }
 
 async function generateDisplayAd(element) {
-  const { asyncUrl } = element.dataset || {};
+  const { asyncUrl } = element.dataset;
 
-  if (element.innerHTML.trim() === '') {
+  if (element.innerHTML.trim() === '' && asyncUrl) {
     const response = await window.fetch(`${asyncUrl}`);
     const htmlContent = await response.text();
 
