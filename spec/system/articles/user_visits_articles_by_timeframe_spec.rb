@@ -1,6 +1,5 @@
 require "rails_helper"
 
-# rubocop:disable RSpec/ExampleLength
 RSpec.describe "User visits articles by timeframe", js: true do
   let(:author) { create(:user) }
   let(:minimum_score) { Settings::UserExperience.home_feed_minimum_score + 1 }
@@ -68,7 +67,6 @@ RSpec.describe "User visits articles by timeframe", js: true do
 
     shows_correct_articles_count(5)
     shows_main_article
-    expect(page).to have_selector("#in-feed-cta", count: 1)
 
     within("#main-content") do
       expect(page).to have_text(article.title)
@@ -81,7 +79,6 @@ RSpec.describe "User visits articles by timeframe", js: true do
     visit "/latest"
     shows_correct_articles_count(6)
     shows_main_article
-    expect(page).to have_selector("#in-feed-cta", count: 1)
 
     within("#main-content") do
       expect(page).to have_text(article.title)

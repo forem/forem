@@ -1,55 +1,31 @@
-<div class="crayons-card crayons-card--secondary crayons-sponsorship"
-  data-display-unit data-id="<%= display_ad.id %>"
-  data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
-  data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
-  data-context-type="<%= data_context_type %>"
-  data-type-of="<%= display_ad.type_of %>">
-  <div class="crayons-sponsorship__header relative">
-    <% if display_ad.organization_id? && (display_ad.type_of == "community" || display_ad.type_of == "external") %>
-      <div class="flex align-center">
-        <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= display_ad.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-        <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= display_ad.organization.name %></div>
-        <% if display_ad.type_of == "external" %>
-          <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-xs fw-medium ml-2 py-1 px-2"> <%= I18n.t("display_ad.promoted") %></span>
-        <% end %>
+<% if display_ad.placement_area.start_with?("feed_") %>
+  <div class="crayons-story crayons-story__display-ad"
+    data-display-unit data-id="<%= display_ad.id %>"
+    data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= display_ad.type_of %>">
+    <div class="crayons-story__body">
+      <div class="crayons-story__top">
+        <%= render partial: "shared/display_ad_header", locals: { display_ad: display_ad } %>
       </div>
-    <% else %>
-      <div class="crayons-sponsorship__title"><%= Settings::Community.community_name %></div>
-    <% end %>
-
-    <button id="sponsorship-dropdown-trigger-<%= display_ad.id %>" aria-controls="sponsorship-dropdown-<%= display_ad.id %>" aria-expanded="false" aria-haspopup="true"
-      class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
-      aria-label="<%= t("display_ad.menu.aria_label") %>">
-        <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", title: t("display_ad.menu.icon")) %>
-    </button>
-
-    <div id="sponsorship-dropdown-<%= display_ad.id %>" class="crayons-dropdown right-0">
-      <ul class="list-none m-0">
-        <% if Page.exists?(slug: "billboards") %>
-          <li>
-            <a class="crayons-link crayons-link--block" href='/billboards'>
-              <%= crayons_icon_tag("info", aria_hidden: true, class: "c-btn__icon") %>
-              <%= I18n.t("display_ad.menu.what_is_a_billboard") %>
-            </a>
-          </li>
-        <% end %>
-        <li>
-          <a class="crayons-link crayons-link--block" href='/settings/customization#sponsors'>
-            <%= crayons_icon_tag("setting", aria_hidden: true, class: "c-btn__icon") %>
-            <%= I18n.t("display_ad.menu.manage_preferences") %>
-          </a>
-        </li>
-        <hr />
-        <li>
-          <a class="crayons-link crayons-link--block" href="/report-abuse?billboard=<%= display_ad.id %>">
-            <%= crayons_icon_tag("flag", aria_hidden: true, class: "c-btn__icon") %>
-            <%= I18n.t("display_ad.menu.report_billboard") %>
-          </a>
-        </li>
-      </ul>
+      <div class="crayons-story__indention-display-ad">
+        <div class="text-styles text-styles--display-ad">
+          <%= display_ad.processed_html.html_safe %>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="p-1 pt-3 text-styles text-styles--display-ad">
-    <%= display_ad.processed_html.html_safe %>
+<% else %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship"
+    data-display-unit data-id="<%= display_ad.id %>"
+    data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= display_ad.type_of %>">
+    <%= render partial: "shared/display_ad_header", locals: { display_ad: display_ad } %>
+    <div class="p-1 pt-3 text-styles text-styles--display-ad">
+      <%= display_ad.processed_html.html_safe %>
+    </div>
   </div>
-</div>
+<% end %>
