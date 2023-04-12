@@ -64,7 +64,7 @@
                                         permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?) %>
   <% if sidebar_ad %>
     <div class="crayons-article-sticky grid gap-4 break-word pt-4">
-      <%= render partial: "shared/display_ad", locals: { display_ad: sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE} %>
+      <%= render partial: "shared/display_ad", locals: { display_ad: sidebar_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
     </div>
   <% end %>
 <%# end %>
