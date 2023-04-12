@@ -96,7 +96,7 @@ export const EditorActions = ({
           className="whitespace-nowrap fw-normal fs-s"
           disabled={previewLoading}
         >
-          Revert <span className="hidden s:inline">new changes</span>
+          Відкатити <span className="hidden s:inline">нові зміни</span>
         </Button>
       )}
     </div>

@@ -370,8 +370,7 @@ function buildArticleHTML(article, currentUserId = null) {
         ${navigationLink}\
         <div role="presentation">\
           ${videoHTML}\
-		  ${imageCOVER}\`
-		  {<ArticleCoverImage article={article} />}\`
+		  ${imageCOVER}\
           <div class="crayons-story__body">\
             <div class="crayons-story__top">\
               ${meta}

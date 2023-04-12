@@ -199,33 +199,33 @@ ua:
       contains_prohibited_characters: містить заборонені символи
       empty: не може бути пустим
       equal_to: має дорівнювати %{count}
-      even: must be even
-      exclusion: is reserved
+      even: повинні бути рівними
+      exclusion: зайняято
       general: 'Помилка: %{errors}'
       greater_than: має бути більше ніж %{count}
       greater_than_or_equal_to: має бути  більше або рівним %{count}
-      inclusion: is not included in the list
-      invalid: is invalid
-      less_than: must be less than %{count}
-      less_than_or_equal_to: must be less than or equal to %{count}
-      model_invalid: 'Validation failed: %{errors}'
-      not_a_number: is not a number
-      not_an_integer: must be an integer
+      inclusion: не включено до переліку
+      invalid: є неправильним
+      less_than: має бути менше, ніж %{count}
+      less_than_or_equal_to: має бути менше або дорівнювати %{count}
+      model_invalid: 'Валідація не пройшла: %{errors}'
+      not_a_number: не є числом
+      not_an_integer: має бути цілим числом
       odd: must be odd
-      other_than: must be other than %{count}
+      other_than: має бути іншим, ніж %{count}
       present: має бути пустим
-      required: must exist
-      taken: has already been taken
+      required: має існувати
+      taken: вже зайнято
       too_long:
-        one: is too long (maximum is 1 character)
-        other: is too long (maximum is %{count} characters)
+        one: занадто довгий (maximum is 1 character)
+        other: занадто довге (максимум %{count} символів)
       too_short:
         one: is too short (minimum is 1 character)
-        other: is too short (minimum is %{count} characters)
+        other: занадто коротке (мінімум %{count} символів)
       try_again_email: 'Виникла  помилка. Спробуйте ще раз, або напишіть про це сюди: %{email}'
       wrong_length:
-        one: is the wrong length (should be 1 character)
-        other: is the wrong length (should be %{count} characters)
+        one: має неправильну довжину (should be 1 character)
+        other: має неправильну довжину (має мати %{count} символів)
   time:
     formats:
       comment: "%B %d, %Y"

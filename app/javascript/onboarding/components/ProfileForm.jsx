@@ -215,7 +215,7 @@ export class ProfileForm extends Component {
             <div className="onboarding-profile-sub-section">
               <TextInput
                 field={{
-                  attribute_name: 'юзернейм',
+                  attribute_name: 'username',
                   label: 'Юзернейм',
                   default_value: username,
                   required: true,

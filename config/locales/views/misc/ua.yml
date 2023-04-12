@@ -3,7 +3,7 @@ ua:
   views:
     badges:
       meta:
-        title: Badges
+        title: Бейджи
         name: "%{title} Бейдж"
       all:
         one: Показати бейдж
@@ -13,8 +13,8 @@ ua:
       name: "🏅 %{title} Бейдж 🏅"
       gotit: Зроз
     campaign:
-      subtitle: Stories (%{count})
-      view: Усі пости
+      subtitle: Дописи (%{count})
+      view: Усі дописи
     deep_links:
       subtitle: Opening the mobile app...
       alert:
@@ -25,13 +25,13 @@ ua:
         install: Install the app
     email_subscriptions:
       unsubscribe:
-        heading: "You have been unsubscribed from %{type}. 😔"
-        description_html: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
-        link: click here
+        heading: "Ви були відписані від розсилки %{type}. 😔"
+        description_html: Ви більше не будете отримувати подібні листи. Якщо ви хочете повторно підписатися або керувати своїми налаштуваннями, будь ласка %{link}.
+        link: натисніть сюди
       invalid:
-        heading: Token expired or invalid
-        description_html: Please %{signin} to manage your email preferences.
-        signin: sign-in
+        heading: Термін дії токена закінчився або він недійсний
+        description_html: Будь ласка %{signin}, щоб керувати своїми налаштуваннями електронної пошти.
+        signin: увійдіть
     hamburger:
       icon: Меню
       icon_close: Закрити
@@ -43,10 +43,10 @@ ua:
         description: Використовується для фону, рамок, тощо...
       color_2:
         label: Колір 2
-        description_html: Використувоється для тексту (зазвичай поверх <em>Кольору 1</em>).
+        description_html: Використовується для тексту (зазвичай поверх <em>Кольору 1</em>).
       preview:
         icon: App logo
-        text: 'Попперегляд:'
+        text: 'Передперегляд:'
     onboardings:
       meta:
         title: Ласкаво просимо до %{community}

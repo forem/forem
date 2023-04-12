@@ -6,7 +6,7 @@ ua:
         body_markdown: Розмітка допису
         expires_at: Спеціальна дата закінчення терміну публікації допису
         location: Звідки
-        organization_id: Post under an organization
+        organization_id: Допис від проєкту
         tag_list: Теґи
         title: Заголовок
       organization:
@@ -18,7 +18,7 @@ ua:
         twitter_username: Twitter юзернейм
         github_username: GitHub юзернейм
         url: Сайт url
-        tag_line: Дуже коротки опис (буде видно справа від кожного допису проєкту)
+        tag_line: Дуже короткий опис (буде видно справа від кожного допису проєкту)
         summary: Про що проєкт
         location: Місцезнаходження
         email: Email проєкту (буде доступним для бажачаючих)
