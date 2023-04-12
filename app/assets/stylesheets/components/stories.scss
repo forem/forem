@@ -85,6 +85,13 @@
     }
   }
 
+  &__display-ad {
+    &:focus-within {
+      --card-border: rgba(var(--grey-900), 0.1);
+      box-shadow: 0 0 0 1px var(--card-border);
+    }
+  }
+
   &__body {
     padding: var(--story-padding);
   }
@@ -92,6 +99,13 @@
   &__indention {
     @media (min-width: $breakpoint-m) {
       padding-left: calc(var(--su-7) + var(--su-2));
+    }
+  }
+
+  &__indention-display-ad {
+    @media (min-width: $breakpoint-m) {
+      padding-left: calc(var(--su-7) + var(--su-2));
+      padding-right: calc(var(--su-7) + var(--su-2));
     }
   }
 

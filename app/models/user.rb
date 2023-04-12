@@ -290,7 +290,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
+    cache_key = "#{cache_key_with_version}/following_podcasts_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
       Follow.follower_podcast(id).pluck(:followable_id)
     end

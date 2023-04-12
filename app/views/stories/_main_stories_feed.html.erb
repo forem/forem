@@ -7,6 +7,13 @@
   </div>
 <% end %>
 
+<% if !user_signed_in? %>
+  <% @sidebar_ad_first = DisplayAd.for_display(area: "feed_first", user_signed_in: user_signed_in?) %>
+  <% if @sidebar_ad_first %>
+    <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_first, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
+  <% end %>
+<% end %>
+
 <% if @pinned_article %>
   <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
 <% end %>
@@ -20,12 +27,21 @@
 <div class="substories" id="substories">
   <% if @stories.any? %>
     <% @stories.each_with_index do |story, i| %>
+      <% if !user_signed_in? && i == 1 %>
+        <% @sidebar_ad_second = DisplayAd.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
+        <% if @sidebar_ad_second %>
+          <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_second, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
+        <% end %>
+      <% end %>
+
+      <% if !user_signed_in? && i == 7 %>
+        <% @sidebar_ad_third = DisplayAd.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
+        <% if @sidebar_ad_third %>
+          <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_third, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
+        <% end %>
+      <% end %>
       <% next if story.id == @featured_story.id %>
       <% next if story.id == @pinned_article&.id %>
-
-      <% if !user_signed_in? && i == 4 %>
-        <%= render "stories/sign_in_invitation" %>
-      <% end %>
       <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
     <% end %>
     <% if @stories.size > 1 %>
