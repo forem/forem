@@ -142,6 +142,6 @@ class DisplayAd < ApplicationRecord
   end
 
   def prefix_width
-    placement_area.to_s == "post_comments" ? POST_WIDTH : SIDEBAR_WIDTH
+    placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
   end
 end
