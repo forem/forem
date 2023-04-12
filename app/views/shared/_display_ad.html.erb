@@ -28,21 +28,21 @@
         <% if Page.exists?(slug: "billboards") %>
           <li>
             <a class="crayons-link crayons-link--block" href='/billboards'>
-              <%= crayons_icon_tag("info", aria_hidden: true, class: "c-btn__icon", width: 16, height: 16) %>
+              <%= crayons_icon_tag("info", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
               <%= I18n.t("display_ad.menu.what_is_a_billboard") %>
             </a>
           </li>
         <% end %>
         <li>
           <a class="crayons-link crayons-link--block" href='/settings/customization#sponsors'>
-            <%= crayons_icon_tag("setting", aria_hidden: true, class: "c-btn__icon", width: 16, height: 16) %>
+            <%= crayons_icon_tag("setting", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
             <%= I18n.t("display_ad.menu.manage_preferences") %>
           </a>
         </li>
         <hr />
         <li>
           <a class="crayons-link crayons-link--block" href="/report-abuse?billboard=<%= display_ad.id %>">
-            <%= crayons_icon_tag("flag", aria_hidden: true, class: "c-btn__icon", width: 16, height: 16) %>
+            <%= crayons_icon_tag("flag", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
             <%= I18n.t("display_ad.menu.report_billboard") %>
           </a>
         </li>
