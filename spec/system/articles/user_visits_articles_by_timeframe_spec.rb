@@ -1,6 +1,5 @@
 require "rails_helper"
 
-# rubocop:disable RSpec/ExampleLength
 RSpec.describe "User visits articles by timeframe", js: true do
   let(:author) { create(:user) }
   let(:minimum_score) { Settings::UserExperience.home_feed_minimum_score + 1 }

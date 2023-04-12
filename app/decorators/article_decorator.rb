@@ -113,6 +113,8 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def permit_adjacent_sponsors?
+    return true unless respond_to?(:user_id) && user_id.present?
+
     author_ids = [user_id] + co_author_ids
     Users::Setting.where(user_id: author_ids).all?(&:permit_adjacent_sponsors)
   end
