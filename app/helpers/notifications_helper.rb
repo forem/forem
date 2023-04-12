@@ -1,24 +1,8 @@
 module NotificationsHelper
-  REACTION_IMAGES = {
-    "like" => "heart-filled.svg",
-    "unicorn" => "unicorn-filled.svg",
-    "hands" => "twemoji/hands.svg",
-    "thinking" => "twemoji/thinking.svg",
-    "readinglist" => "save-filled.svg",
-    "thumbsdown" => "twemoji/thumb-down.svg",
-    "vomit" => "twemoji/suspicious.svg"
-  }.freeze
-
   def reaction_image(slug)
-    if FeatureFlag.enabled?(:multiple_reactions)
-      if (category = ReactionCategory[slug] || ReactionCategory["like"])
-        "#{category.icon}.svg"
-      end
-    else
-      # This is mostly original behavior, pre-multiple_reactions, modified to return
-      # a "like" image if the actual reaction is one of the new ones
-      REACTION_IMAGES[slug] || REACTION_IMAGES["like"]
-    end
+    return unless (category = ReactionCategory[slug] || ReactionCategory["like"])
+
+    "#{category.icon}.svg"
   end
 
   def reaction_category_name(slug)
