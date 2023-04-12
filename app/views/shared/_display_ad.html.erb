@@ -7,8 +7,8 @@
     data-type-of="<%= display_ad.type_of %>">
     <div class="crayons-story__body">
       <div class="crayons-story__top">
-        <%= render partial: "shared/display_ad_header", locals: {display_ad: display_ad} %>
-      </div>      
+        <%= render partial: "shared/display_ad_header", locals: { display_ad: display_ad } %>
+      </div>
       <div class="crayons-story__indention-display-ad">
         <div class="text-styles text-styles--display-ad">
           <%= display_ad.processed_html.html_safe %>
@@ -23,7 +23,7 @@
     data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
     data-type-of="<%= display_ad.type_of %>">
-    <%= render partial: "shared/display_ad_header", locals: {display_ad: display_ad} %>
+    <%= render partial: "shared/display_ad_header", locals: { display_ad: display_ad } %>
     <div class="p-1 pt-3 text-styles text-styles--display-ad">
       <%= display_ad.processed_html.html_safe %>
     </div>
