@@ -138,6 +138,6 @@ class Listing < ApplicationRecord
   end
 
   def create_slug
-    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_fs(26)}"
+    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
   end
 end

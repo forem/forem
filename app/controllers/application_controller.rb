@@ -263,7 +263,7 @@ class ApplicationController < ActionController::Base
 
   # [yheuhtozr] `defaults: { locale: nil }` in routes.rb doesn't seem to trigger routing helper L10N?
   # This one works.
-  def default_url_options(options = {}) # rubocop:disable Style/OptionHash
+  def default_url_options(**options)
     { locale: I18n.locale == I18n.default_locale ? nil : I18n.locale }.merge options
   end
 

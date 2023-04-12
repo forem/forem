@@ -147,7 +147,7 @@ class Comment < ApplicationRecord
   def id_code_generated
     # 26 is the conversion base
     # eg. 1000.to_s(26) would be "1cc"
-    id.to_fs(26)
+    id.to_s(26)
   end
 
   def custom_css
@@ -279,7 +279,7 @@ class Comment < ApplicationRecord
   end
 
   def create_id_code
-    update_column(:id_code, id.to_fs(26))
+    update_column(:id_code, id.to_s(26))
   end
 
   def touch_user
