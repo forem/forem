@@ -28,10 +28,15 @@ describe('Notification initialization', () => {
       });
     });
 
-    it('Shows the notification count', () => {
+    it('Shows the notifications marked as read', () => {
       cy.get('#notifications-link').find('span').as('pan');
 
       cy.get('@pan').should('have.value', '');
+    });
+
+    it('initializes reactions', () => {
+      cy.get('.reaction-button').should('exist');
+      cy.get('.reacted').should('exist');
     });
   });
 });
