@@ -30,12 +30,6 @@ describe('ShowUserAlert Utility', () => {
       showUserAlertModal,
     });
 
-    // expect(showRateLimitModal).toHaveBeenCalledWith({
-    //   element: 'post',
-    //   action_ing: 'creating',
-    //   action_past: 'created',
-    //   timeframe: '5 minutes',
-    // });
     expect(showUserAlertModal).not.toHaveBeenCalled();
   });
 
@@ -57,11 +51,6 @@ describe('ShowUserAlert Utility', () => {
     });
 
     expect(showRateLimitModal).not.toHaveBeenCalled();
-    // expect(showUserAlertModal).toHaveBeenCalledWith(
-    //   'Error creating post',
-    //   'Your post could not be created due to an error: Something went wrong',
-    //   'OK'
-    // );
   });
 
   test('shows user alert modal if response cannot be parsed as JSON', async () => {
@@ -80,10 +69,5 @@ describe('ShowUserAlert Utility', () => {
     });
 
     expect(showRateLimitModal).not.toHaveBeenCalled();
-    // expect(showUserAlertModal).toHaveBeenCalledWith(
-    //   'Error creating post',
-    //   'Your post could not be created due to a server error',
-    //   'OK'
-    // );
   });
 });
