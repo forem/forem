@@ -192,19 +192,9 @@
 
       </article>
 
-      <% cache("article-bottom-content-#{rand(5)}-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 15.minutes) do %>
-        <% @display_ad = DisplayAd.for_display(area: "post_comments",
-                                               user_signed_in: user_signed_in?,
-                                               organization_id: @article.organization_id,
-                                               permit_adjacent_sponsors: @article.decorate.permit_adjacent_sponsors?,
-                                               article_tags: @article.decorate.cached_tag_list_array,
-                                               article_id: @article.id) %>
-        <% if @display_ad %>
-          <div class="pb-4 crayons-layout__comments-display-ad">
-            <%= render partial: "shared/display_ad", locals: { display_ad: @display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_ARTICLE } %>
-          </div>
-        <% end %>
-      <% end %>
+      <div class="pb-4 crayons-layout__comments-display-ad">
+        <div class="js-display-ad-comments-container pb-4 crayons-layout__comments-display-ad" data-async-url="<%= "/#{@article.username}/#{@article.slug}/display_ads/post_comments" %>"></div>
+      </div>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
         <% suggested_articles = Articles::Suggest.call(@article, max: 4) %>
@@ -241,7 +231,7 @@
 <%= render "moderations/modals/unflag_user_modal" %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
-<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+<%= javascript_packs_with_chunks_tag "followButtons", "billboard", defer: true %>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script>
