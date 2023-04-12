@@ -131,5 +131,5 @@ InstantClick.on('change', () => {
 });
 InstantClick.init();
 
+setupDisplayAdDropdown();
 trackCreateAccountClicks('sidebar-wrapper-left');
-trackCreateAccountClicks('authentication-feed-actions');
