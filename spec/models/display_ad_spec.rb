@@ -126,7 +126,6 @@ RSpec.describe DisplayAd do
       expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::SIDEBAR_WIDTH)
     end
 
-
     it "uses post width for feed location" do
       image_url = "https://dummyimage.com/100x100"
       allow(FastImage).to receive(:size)
