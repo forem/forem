@@ -29,7 +29,7 @@ en:
         other: You cannot mention more than %{count} users in a post!
     audience_segment:
       type_ofs:
-        testing: Testing
+        manual: Managed elsewhere
         trusted: Are trusted
         posted: Have at least one post
         no_posts_yet: Have not posted yet

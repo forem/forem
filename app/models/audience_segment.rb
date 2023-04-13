@@ -1,7 +1,7 @@
 class AudienceSegment < ApplicationRecord
   # enum does not like names that start with "not_"
   enum type_of: {
-    testing: 0, # never matches anyone, used in test factory
+    manual: 0, # never matches anyone, used in test factory
     trusted: 1,
     posted: 2,
     no_posts_yet: 3,
@@ -21,7 +21,7 @@ class AudienceSegment < ApplicationRecord
   after_validation :run_query
 
   QUERIES = {
-    testing: ->(scope = User) { scope.where(id: nil) },
+    manual: ->(scope = User) { scope.where(id: nil) },
     trusted: ->(scope = User) { scope.with_role(:trusted) },
     no_posts_yet: ->(scope = User) { scope.where(articles_count: 0) },
     posted: ->(scope = User) { scope.where("articles_count > 0") },
@@ -44,7 +44,8 @@ class AudienceSegment < ApplicationRecord
   end
 
   def self.human_readable_segments
-    type_ofs.reject { |(type, _enum)| type == "testing" }
+    list = type_ofs.to_a
+    (list[1...] + list[0...1]) # move the :manual segment to end of list
       .map { |(type, enum)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), enum] }
   end
 
@@ -53,6 +54,8 @@ class AudienceSegment < ApplicationRecord
   end
 
   def refresh!
+    return if manual?
+
     run_query
     save!
   end

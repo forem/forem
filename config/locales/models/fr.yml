@@ -28,7 +28,7 @@ fr:
         other: Vous ne pouvez pas mentionner plus de %{count} utilisateurs dans un message !
     audience_segment:
       type_ofs:
-        testing: Testing
+        manual: Managed elsewhere
         trusted: Are trusted
         posted: Have at least one post
         no_posts_yet: Have not posted yet
