@@ -349,7 +349,7 @@ export const ImageUploader = ({
         });
         break;
       case 'success':
-        onImageUploadSuccess?.(`![Image description](${message.link})`);
+        onImageUploadSuccess?.(`![Опис картинки](${message.link})`);
         dispatch({
           type: 'upload_image_success',
           payload: { insertionImageUrls: [message.link] },

@@ -229,3 +229,11 @@ ua:
       novice: Novice
     social_link_helper:
       n_a: N/A
+    admin:
+      user_helper:
+        today: Сьогодні, %{date}
+        yesterday: Учора, %{date}
+        org_join: ", "
+        org_overflow:
+          one: "%{orgs} & %{count} інші"
+          other: "%{orgs} & %{count} інші"
