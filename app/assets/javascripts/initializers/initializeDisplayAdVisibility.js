@@ -117,14 +117,7 @@ function observeDisplayAds() {
 window.addEventListener(
   'load',
   (event) => {
-    // This timeout is a patch to fix a race condition now that we load these elements async
-    // A MutationObserver or similar would be a better solution, as this is still subject to race conditions.
-    // However, since we may have differing logic as far as how many units we load, some async, some not, this patch
-    // seems like a sufficient solution for mitigation, but should be revisited in the future.
-    // Better approaches welcome!
-    setTimeout(function () {
-      observeDisplayAds();
-    }, 300);
+    observeDisplayAds();
   },
   false,
 );
