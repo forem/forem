@@ -5,7 +5,9 @@ class AudienceSegmentRefreshWorker
 
   def perform(*ids)
     if ids.blank?
-      ids = DisplayAd.distinct(:audience_segment_id).pluck(:audience_segment_id).compact
+      ids = DisplayAd.approved_and_published
+        .distinct(:audience_segment_id)
+        .pluck(:audience_segment_id).compact
     end
     AudienceSegment.where(id: ids).find_each(&:refresh!)
   end
