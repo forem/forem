@@ -14,6 +14,7 @@ class DisplayAdsController < ApplicationController
       @display_ad = DisplayAd.for_display(
         area: params[:placement_area],
         user_signed_in: user_signed_in?,
+        user_id: current_user&.id,
         organization_id: @article&.organization_id,
         permit_adjacent_sponsors: ArticleDecorator.new(@article).permit_adjacent_sponsors?,
         article_tags: @article&.decorate&.cached_tag_list_array || [],
