@@ -35,6 +35,7 @@ class DisplayAd < ApplicationRecord
 
   before_save :process_markdown
   after_save :generate_display_ad_name
+  after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -88,10 +89,10 @@ class DisplayAd < ApplicationRecord
 
   def audience_segment_type=(type)
     self.audience_segment = if type.blank?
-      nil
-    elsif segment = AudienceSegment.find_by(type_of: type)
-      segment
-    end
+                              nil
+                            elsif (segment = AudienceSegment.find_by(type_of: type))
+                              segment
+                            end
   end
 
   # This needs to correspond with Rails built-in method signature
@@ -154,5 +155,15 @@ class DisplayAd < ApplicationRecord
 
   def prefix_width
     placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+  end
+
+  def refresh_audience_segment
+    AudienceSegmentRefreshWorker.perform_async(audience_segment_id)
+  end
+
+  def should_refresh_audience_segment?
+    saved_change_to_audience_segment_id? &&
+      audience_segment &&
+      audience_segment.updated_at < 1.day.ago
   end
 end
