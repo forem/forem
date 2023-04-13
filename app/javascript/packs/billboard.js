@@ -13,13 +13,14 @@ async function getBillboard() {
 async function generateDisplayAd(element) {
   const { asyncUrl } = element.dataset;
 
-  if (element.innerHTML.trim() === '' && asyncUrl) {
+  if (asyncUrl) {
     const response = await window.fetch(`${asyncUrl}`);
     const htmlContent = await response.text();
 
     const generatedElement = document.createElement('div');
     generatedElement.innerHTML = htmlContent;
 
+    element.innerHTML = '';
     element.appendChild(generatedElement);
     setupDisplayAdDropdown();
   }
