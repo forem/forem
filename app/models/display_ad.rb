@@ -4,10 +4,15 @@ class DisplayAd < ApplicationRecord
   resourcify
   belongs_to :creator, class_name: "User", optional: true
 
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right post_sidebar post_comments].freeze
+  # rubocop:disable Layout/LineLength
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third post_sidebar post_comments].freeze
+  # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home)",
+                                            "Home Feed First",
+                                            "Home Feed Second",
+                                            "Home Feed Third",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
@@ -137,6 +142,6 @@ class DisplayAd < ApplicationRecord
   end
 
   def prefix_width
-    placement_area.to_s == "post_comments" ? POST_WIDTH : SIDEBAR_WIDTH
+    placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
   end
 end

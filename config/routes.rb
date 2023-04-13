@@ -190,6 +190,11 @@ Rails.application.routes.draw do
     get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", controller: "async_info#navigation_links"
 
+    # Display ads
+    scope "/:username/:slug" do
+      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+    end
+
     # Settings
     post "users/join_org", to: "users#join_org"
     post "users/leave_org/:organization_id", to: "users#leave_org", as: :users_leave_org
