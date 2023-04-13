@@ -2,20 +2,26 @@ import { setupDisplayAdDropdown } from '../utilities/displayAdDropdown';
 
 // the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
-  const placeholderElement = document.getElementsByClassName(
-    'js-display-ad-comments-container',
-  )[0];
+  const placeholderElements = document.getElementsByClassName(
+    'js-display-ad-container',
+  );
 
-  const { asyncUrl } = placeholderElement.dataset || {};
+  const promises = [...placeholderElements].map(generateDisplayAd);
+  await Promise.all(promises);
+}
 
-  if (placeholderElement.innerHTML.trim() === '') {
+async function generateDisplayAd(element) {
+  const { asyncUrl } = element.dataset;
+
+  if (asyncUrl) {
     const response = await window.fetch(`${asyncUrl}`);
     const htmlContent = await response.text();
 
     const generatedElement = document.createElement('div');
     generatedElement.innerHTML = htmlContent;
 
-    placeholderElement.appendChild(generatedElement);
+    element.innerHTML = '';
+    element.appendChild(generatedElement);
     setupDisplayAdDropdown();
   }
 }
