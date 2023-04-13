@@ -4,7 +4,7 @@
   initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeSettings, initializeRuntimeBanner,
-  initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
+  initializeTimeFixer, initializeCreditsPage,
   initializeDrawerSliders, initializeHeroBannerClose,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
@@ -20,7 +20,6 @@ function callInitializers() {
   initNotifications();
   initializeSettings();
   initializeTimeFixer();
-  initializeDashboardSort();
   initializeCreditsPage();
   initializeDrawerSliders();
   initializeHeroBannerClose();
