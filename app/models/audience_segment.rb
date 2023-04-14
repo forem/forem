@@ -18,7 +18,7 @@ class AudienceSegment < ApplicationRecord
   has_many :segmented_users, dependent: :destroy
   has_many :users, through: :segmented_users
 
-  after_validation :run_query
+  after_validation :run_query, on: :create
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
