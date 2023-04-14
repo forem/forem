@@ -2,6 +2,7 @@ import {
   initializeTimeFixer,
   convertUtcDate,
   convertUtcTime,
+  formatDateTime,
 } from '../initializeTimeFixer';
 
 describe('initializeTimeFixer', () => {
@@ -41,13 +42,13 @@ describe('initializeTimeFixer', () => {
   test('should convert Utc Dates', async () => {
     const utcDate = Date.UTC(96, 1, 2, 3, 4, 5);
     const dateConversion = await convertUtcDate(utcDate);
+    // const formatDateTime = jest.fn();
 
     expect(dateConversion).toContain('Feb 2');
   });
 
   test('convertUtcDate function with different options', () => {
     const utcDate = '2022-03-04T10:30:00.000Z';
-    // const date = new Date(utcDate);
 
     const options1 = {
       month: 'short',
@@ -84,5 +85,23 @@ describe('initializeTimeFixer', () => {
       timeZoneName: 'short',
     };
     expect(convertUtcTime(utcTime, options2)).toBe('10:30 AM UTC');
+  });
+
+  test('formatDateTime function with different options and values', () => {
+    const options1 = {
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZoneName: 'short',
+    };
+    const value1 = new Date('2022-03-04T10:30:00.000Z');
+    expect(formatDateTime(options1, value1)).toBe('10:30 AM UTC');
+
+    const options2 = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+    const value2 = new Date('2022-03-04T10:30:00.000Z');
+    expect(formatDateTime(options2, value2)).toBe('Mar 4, 2022');
   });
 });

@@ -70,4 +70,5 @@ export {
   updateLocalDateTime,
   convertUtcDate,
   convertUtcTime,
+  formatDateTime,
 };
