@@ -12,7 +12,7 @@ function convertUtcTime(utcTime) {
   return formatDateTime(options, time);
 }
 
-export function convertUtcDate(utcDate) {
+function convertUtcDate(utcDate) {
   const date = new Date(utcDate);
   const options = {
     month: 'short',
@@ -43,7 +43,7 @@ function updateLocalDateTime(elements, convertCallback, getUtcDateTime) {
   }
 }
 
-export function initializeTimeFixer() {
+function initializeTimeFixer() {
   const utcTime = document.getElementsByClassName('utc-time');
   const utcDate = document.getElementsByClassName('utc-date');
   const utc = document.getElementsByClassName('utc');
@@ -64,3 +64,5 @@ export function initializeTimeFixer() {
   );
   updateLocalDateTime(utc, convertCalEvent, (element) => element.innerHTML);
 }
+
+export { initializeTimeFixer, updateLocalDateTime, convertUtcDate };

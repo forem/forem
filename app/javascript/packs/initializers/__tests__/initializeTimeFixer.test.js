@@ -1,4 +1,4 @@
-import { initializeTimeFixer } from "../initializeTimeFixer";
+import { initializeTimeFixer, convertUtcDate } from '../initializeTimeFixer';
 
 describe('initializeTimeFixer', () => {
   beforeEach(() => {
@@ -20,10 +20,24 @@ describe('initializeTimeFixer', () => {
     expect(button.addEventListener).not.toHaveBeenCalled();
   });
 
-  // test('should convert UTC date', async () => {
-  //   const utcDate = Date.UTC(96, 1, 2, 3, 4, 5);
-  //   const dateConversion = convertUtcDate(utcDate);
+  test('should call updateLocalDateTime', async () => {
+    const updateLocalDateTime = jest.fn();
+    initializeTimeFixer();
 
-  //   expect(dateConversion).toContain('Feb 1');
-  // });
+    expect(updateLocalDateTime).not.toHaveBeenCalled();
+  });
+
+  test('should call convertUtcDate', async () => {
+    const convertUtcDate = jest.fn();
+    initializeTimeFixer();
+
+    expect(convertUtcDate).not.toHaveBeenCalled();
+  });
+
+  test('should convert Utc Dates', async () => {
+    const utcDate = Date.UTC(96, 1, 2, 3, 4, 5);
+    const dateConversion = await convertUtcDate(utcDate);
+
+    expect(dateConversion).toContain('Feb 2');
+  });
 });
