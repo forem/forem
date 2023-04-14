@@ -71,4 +71,5 @@ export {
   convertUtcDate,
   convertUtcTime,
   formatDateTime,
+  convertCalEvent,
 };
