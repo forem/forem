@@ -179,3 +179,29 @@ describe('updateLocalDateTime', () => {
     expect(utcElements[0].innerHTML).toEqual('Wednesday, April 13 at 12:34 PM');
   });
 });
+
+// eslint-disable-next-line jest/no-identical-title
+describe('formatDateTime', () => {
+  it('should format a date and time using the specified options', () => {
+    const options = {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: true,
+    };
+    const value = new Date('2022-01-01T14:30:00Z');
+    const expected = 'Sat, Jan 1, 2022, 2:30 PM';
+    expect(formatDateTime(options, value)).toBe(expected);
+  });
+});
+
+describe('convertCalEvent', () => {
+  it('should convert UTC to a formatted date and time string', () => {
+    const utc = '2022-01-01T14:30:00Z';
+    const expected = 'Saturday, January 1 at 2:30 PM';
+    expect(convertCalEvent(utc)).toBe(expected);
+  });
+});
