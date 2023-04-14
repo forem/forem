@@ -162,7 +162,11 @@ class DisplayAd < ApplicationRecord
   end
 
   def should_refresh_audience_segment?
-    saved_change_to_audience_segment_id? &&
+    change_relevant_to_audience = saved_change_to_approved? ||
+      saved_change_to_published? ||
+      saved_change_to_audience_segment_id?
+
+    change_relevant_to_audience &&
       audience_segment &&
       audience_segment.updated_at < 1.day.ago
   end
