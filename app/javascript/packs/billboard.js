@@ -23,6 +23,11 @@ async function generateDisplayAd(element) {
     element.innerHTML = '';
     element.appendChild(generatedElement);
     setupDisplayAdDropdown();
+    // This is called here because the ad is loaded asynchronously.
+    // The original code is still in the asset pipeline, so is not importable.
+    // This could be refactored to be importable as we continue that migration.
+    // eslint-disable-next-line no-undef
+    observeDisplayAds();
   }
 }
 
