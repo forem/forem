@@ -29,17 +29,6 @@ const initializeDrawerSliders = () => {
       slideSidebar('left', 'outOfView');
     });
   }
-
-  const feedFilterSelect = document.getElementById('feed-filter-select');
-
-  if (feedFilterSelect) {
-    feedFilterSelect.addEventListener('change', (event) => {
-      const url = event.target.value;
-
-      InstantClick.preload(url);
-      InstantClick.display(url);
-    });
-  }
 };
 
 initializeDrawerSliders();
