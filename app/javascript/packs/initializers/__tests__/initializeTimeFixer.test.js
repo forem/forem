@@ -88,6 +88,24 @@ describe('initializeTimeFixer', () => {
     };
     expect(convertUtcTime(utcTime, options2)).toBe('10:30 AM UTC');
   });
+
+  test('formatDateTime function with different options and values', () => {
+    const options1 = {
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZoneName: 'short',
+    };
+    const value1 = new Date('2022-03-04T10:30:00.000Z');
+    expect(formatDateTime(options1, value1)).toBe('10:30 AM UTC');
+
+    const options2 = {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    };
+    const value2 = new Date('2022-03-04T10:30:00.000Z');
+    expect(formatDateTime(options2, value2)).toBe('Mar 4, 2022');
+  });
 });
 
 describe('formatDateTime', () => {
