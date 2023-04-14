@@ -2,7 +2,7 @@ class BaseUploader < CarrierWave::Uploader::Base
   include CarrierWave::BombShelter # limits size to 4096x4096
   include CarrierWave::MiniMagick # adds processing operations
 
-  EXTENSION_ALLOWLIST = %w[webp jpg jpeg jpe gif png ico bmp dng].freeze
+  EXTENSION_ALLOWLIST = %w[jpg jpeg jpe gif png ico bmp dng].freeze
   FRAME_MAX = 500
   FRAME_STRIP_MAX = 150
 

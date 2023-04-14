@@ -57,7 +57,7 @@ RSpec.describe Images::Optimizer, type: :service do
                                      type: "fetch",
                                      width: 50, height: 50,
                                      crop: "imagga_scale",
-                                     quality: "auto",
+                                     quality: 82,
                                      flags: "progressive",
                                      fetch_format: "auto",
                                      sign_url: true)
@@ -67,7 +67,7 @@ RSpec.describe Images::Optimizer, type: :service do
     it "generates correct url by relying on DEFAULT_CL_OPTIONS" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
-                                     quality: "auto",
+                                     quality: 82
                                      sign_url: true,
                                      flags: "progressive",
                                      fetch_format: "jpg")
