@@ -18,7 +18,7 @@ class AudienceSegment < ApplicationRecord
   has_many :segmented_users, dependent: :destroy
   has_many :users, through: :segmented_users
 
-  after_validation :run_query, on: :create
+  after_validation :run_query
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
@@ -35,12 +35,16 @@ class AudienceSegment < ApplicationRecord
     no_experience: ->(scope = User) { scope.with_experience_level(nil) }
   }.freeze
 
-  def self.all_users_in_segment(symbol, scope: User)
-    query_for_segment(symbol)&.call(scope) || []
+  def self.scoped_users_in_segment(segment_type, scope: nil)
+    query_for_segment(segment_type)&.call(scope) || []
   end
 
-  def self.query_for_segment(symbol)
-    QUERIES[symbol.to_sym]
+  def self.recently_active_users_in_segment(segment_type, scope: User.recently_active)
+    scoped_users_in_segment(segment_type, scope: scope)
+  end
+
+  def self.query_for_segment(segment_type)
+    QUERIES[segment_type.to_sym]
   end
 
   def self.human_readable_segments
@@ -50,13 +54,10 @@ class AudienceSegment < ApplicationRecord
   end
 
   def run_query
-    self.users = self.class.all_users_in_segment(type_of)
-  end
-
-  def refresh!
     return if manual?
 
-    run_query
-    save!
+    self.users = self.class.recently_active_users_in_segment(type_of)
   end
+
+  alias refresh! save!
 end
