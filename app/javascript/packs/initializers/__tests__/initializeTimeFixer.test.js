@@ -1,4 +1,8 @@
-import { initializeTimeFixer, convertUtcDate } from '../initializeTimeFixer';
+import {
+  initializeTimeFixer,
+  convertUtcDate,
+  convertUtcTime,
+} from '../initializeTimeFixer';
 
 describe('initializeTimeFixer', () => {
   beforeEach(() => {
@@ -39,5 +43,46 @@ describe('initializeTimeFixer', () => {
     const dateConversion = await convertUtcDate(utcDate);
 
     expect(dateConversion).toContain('Feb 2');
+  });
+
+  test('convertUtcDate function with different options', () => {
+    const utcDate = '2022-03-04T10:30:00.000Z';
+    // const date = new Date(utcDate);
+
+    const options1 = {
+      month: 'short',
+      day: 'numeric',
+    };
+    expect(convertUtcDate(utcDate, options1)).toBe('Mar 4');
+
+    const options2 = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      timeZoneName: 'short',
+    };
+    expect(convertUtcDate(utcDate, options2)).toBe('Mar 4');
+  });
+
+  test('convertUtcTime function with different options', () => {
+    const utcTime = '2022-03-04T10:30:00.000Z';
+
+    const options1 = {
+      hour: 'numeric',
+      minute: 'numeric',
+      timeZoneName: 'short',
+    };
+    expect(convertUtcTime(utcTime, options1)).toBe('10:30 AM UTC');
+
+    const options2 = {
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      timeZoneName: 'short',
+    };
+    expect(convertUtcTime(utcTime, options2)).toBe('10:30 AM UTC');
   });
 });

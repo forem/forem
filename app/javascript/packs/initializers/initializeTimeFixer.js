@@ -65,4 +65,9 @@ function initializeTimeFixer() {
   updateLocalDateTime(utc, convertCalEvent, (element) => element.innerHTML);
 }
 
-export { initializeTimeFixer, updateLocalDateTime, convertUtcDate };
+export {
+  initializeTimeFixer,
+  updateLocalDateTime,
+  convertUtcDate,
+  convertUtcTime,
+};
