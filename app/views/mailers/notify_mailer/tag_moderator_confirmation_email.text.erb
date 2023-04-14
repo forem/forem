@@ -1,20 +1,27 @@
 Hey <%= @user.name %>!
 
-Thanks for volunteering to be a <%= community_name %> tag moderator. We’ve added you as a moderator for <%= tag_url(@tag) %>. Note that your profile picture is now visible on this page.
+Thanks for volunteering to be a <%= community_name %> tag moderator. We’ve added you as a moderator for <%= link_to "##{@tag}", tag_url(@tag) %>. Note that your profile picture is now visible on this page.
 
-As a tag moderator, you are able to:
+With great power comes great... you know the saying. As a tag moderator, you are able to:
 
-- Remove #<%= @tag %> if it’s been added to an irrelevant post.
-- Add #<%= @tag %> to posts if applicable.
+- Remove #<%= @tag %> if it’s been added to an irrelevant post. Only remove tags when they do not fit well for the subject matter of the post. Do add more relevant tags if it will elevate the visibility of the post or make it discoverable to other audiences.
+- Add #<%= @tag %> to posts if applicable. This helps the best content become more easily discoverable!
 - Update the #<%= @tag %> tag landing page, including submission guidelines and design visible in the sidebar.
+- Use the 🧐 on any posts that you think are breaking our Code of Conduct. Using this emoji on articles or comments will send them  to our team for review. There's no penalty for being wrong there; that's why we have a review step!
+- Check to make sure that the experience level of the post is set and give it a rating if this field is not set.
+- And lastly please use, 👍 and 👎 on the posts you enjoy and think are relevant; and on those posts that are not appropriate or lacking in quality. This helps the best content become more easily discoverable!
 
-For details on all available features and how to access them, visit our tag moderation page.
+For details on all available features and how to access them, visit our tag moderation page and <%= link_to "Community Moderation", community_moderation_path  %> pages.
 
 Tag moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback.
-We regularly send out a biweekly Mod Newsletter to keep mods up to date on these changes, so look out for it!
-Of course, don't hesitate to reach out to us at any moment if you have any feedback — feel free to write to <%= ForemInstance.contact_email %> and share your thoughts.
 
-Thanks so much for volunteering your time to benefit <%= community_name %>. We sincerely appreciate your help!
+Of course, if you have any questions, please hit “reply” to this email.
+
+Thanks so much for volunteering your time to benefit <%= community_name %>. Your participation will assist us in better organizing the site via tags, and help us to foster a warm, welcoming, inclusive, spam-free-as-can-be platform.
+
+<% if ForemInstance.dev_to? || ForemInstance.local? %>
+Please join the optional DEV Mod Discord channel, if you’re so inclined, via this <a href="https://discord.gg/f5ARW5gxES">invitation link</a>. Once inside, visit the <a href="https://discord.com/channels/738011915866865775/902997503568400395">#mod-verification</a> channel and drop a link to your DEV profile so we can verify your privileges and  invite you to the correct channels. Hope to see ya there!
+<% end %>
 
 Happy Modding!
 <%= community_name %> Team
