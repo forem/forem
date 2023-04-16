@@ -7,6 +7,7 @@
       <%= article.video_duration_in_minutes %></span>
   </a>
   <% end %>
+  <% if article.main_image %>
   		  <div className="crayons-article__cover crayons-article__cover__image__feed">
       <a
         href='<%=article.path%>'}
@@ -18,14 +19,14 @@
           src='<%=cloud_cover_url(article.main_image)%>'}
           width="650"
           alt='<%= article.title%>'
-          style= "margin:0px; backgroundColor: '<%=article.main_image_background_hex_color%>'",
+          style= "margin:auto;width: 100%; backgroundColor: '<%=article.main_image_background_hex_color%>'",
         />
       </a>
-    </div>
+    </div><% end %>
    <h2 style="padding: 4px 28px 1px 28px;font-size: 1.4em;margin-bottom: 0px;/* border: 0px; */" class="crayons-story__title"><a href='<%=article.path%>' style="border: 0px;"><%= title %></a></h2>
   
   <% if article.organization %>
-  <a href='<%= article.organization.path %>' class='ltag__link__link'>
+  <a href='<%= article.organization.path %>' class='ltag__link__link' style="border-bottom: 0px;">
     <div class='ltag__link__org__pic'>
       <img src='<%= article.organization.profile_image_url_for(length: 150) %>' alt='<%= article.organization.name.to_s %>'>
       <div class='ltag__link__user__pic'>
@@ -33,7 +34,7 @@
       </div>
     </div>
   </a>
-  <a href='<%= article.path %>' class='ltag__link__link' style="text-decoration: none;  border: 0;">
+  <a href='<%= article.path %>' class='ltag__link__link' style="text-decoration: none;  border: 0;border-bottom: 0px;">
        
     <div class='ltag__link__content'>
 
@@ -46,12 +47,12 @@
     </div>
   </a>
   <% else %>
-  <a href='<%= article.user.path %>' class='ltag__link__link'>
+  <a href='<%= article.user.path %>' class='ltag__link__link' style="border-bottom: 0px;">
     <div class='ltag__link__pic'>
       <img src='<%= article.user.profile_image_url_for(length: 150) %>' alt='<%= article.user.username.to_s %>'>
     </div>
   </a>
-  <a href='<%= article.path %>' class='ltag__link__link'>
+  <a href='<%= article.path %>' class='ltag__link__link' style="border-bottom: 0px;">
     <div class='ltag__link__content'>
       
       <h3><%= article.user.name %> ・ <%= article.readable_publish_date %></h3>
