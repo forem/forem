@@ -28,10 +28,11 @@ class AudienceSegment < ApplicationRecord
     dark_theme: ->(scope = User) { scope.where(id: Users::Setting.dark_theme.select(:user_id)) },
     light_theme: ->(scope = User) { scope.where(id: Users::Setting.light_theme.select(:user_id)) },
     experience1: ->(scope = User) { scope.with_experience_level(1) },
-    experience2: ->(scope = User) { scope.with_experience_level(2) },
-    experience3: ->(scope = User) { scope.with_experience_level(3) },
-    experience4: ->(scope = User) { scope.with_experience_level(4) },
-    experience5: ->(scope = User) { scope.with_experience_level(5) },
+    # see SettingsHelper#user_experience_levels
+    experience2: ->(scope = User) { scope.with_experience_level(3) },
+    experience3: ->(scope = User) { scope.with_experience_level(5) },
+    experience4: ->(scope = User) { scope.with_experience_level(8) },
+    experience5: ->(scope = User) { scope.with_experience_level(10) },
     no_experience: ->(scope = User) { scope.with_experience_level(nil) }
   }.freeze
 
