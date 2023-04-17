@@ -103,7 +103,7 @@ function buildArticleHTML(article, currentUserId = null) {
           '<span class="hidden s:inline">Коментарів:&nbsp;'+commentsCount+'</span></a>';
       } else {
         commentsDisplay +=
-          '<span class="hidden s:inline">Додати:&nbsp;коментар</span></a>';
+          '<span class="hidden s:inline">Додати&nbsp;коментар</span></a>';
       }
     }
 
@@ -339,12 +339,12 @@ function buildArticleHTML(article, currentUserId = null) {
 		article.path+
 		'"className="crayons-article__cover__image__feed crayons-story__cover__image" title="'+
 		article.title+
-		'"><img className="crayons-article__cover__image__feed" src={'+
-		(article.main_image)+
+		'"><img className="crayons-article__cover__image__feed" src='+
+		(cloud_cover_url(article.main_image))+
 		'" width="650" alt="'+
 		article.title+
 		'" /></a></div>';
-		
+
 		
     }
 
