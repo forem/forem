@@ -429,4 +429,9 @@ jobs:
           heroku_email: ${{ secrets.HEROKU_EMAIL }}
       - uses: honeybadger-io/github-notify-deploy-action@v1
         with:
-          api_key: ${{ secrets.HONEYBADGER_API_KEY }}
+          api_key: ${{ secrets.HONEYBADGER_API_KEY_RUBY }}
+        if: matrix.environment == production
+      - uses: honeybadger-io/github-notify-deploy-action@v1
+        with:
+          api_key: ${{ secrets.HONEYBADGER_API_KEY_JAVASCRIPT }}
+        if: matrix.environment == production
