@@ -2,10 +2,9 @@
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
-  initializeArticleDate, initializeArticleReactions, initNotifications,
+  initializeArticleDate, initializeArticleReactions,
   initializeSettings, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
-  initializeDrawerSliders, initializeHeroBannerClose,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
@@ -17,13 +16,10 @@ function callInitializers() {
   initializeCommentsPage();
   initializeArticleDate();
   initializeArticleReactions();
-  initNotifications();
   initializeSettings();
   initializeTimeFixer();
   initializeDashboardSort();
   initializeCreditsPage();
-  initializeDrawerSliders();
-  initializeHeroBannerClose();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
 }

@@ -1,6 +1,6 @@
-/* global InstantClick, slideSidebar */
+/* global slideSidebar */
 
-function initializeDrawerSliders() {
+const initializeDrawerSliders = () => {
   if (document.getElementById('on-page-nav-controls')) {
     if (document.getElementById('sidebar-bg-left')) {
       document.getElementById('sidebar-bg-left').onclick = (_event) => {
@@ -29,15 +29,6 @@ function initializeDrawerSliders() {
       slideSidebar('left', 'outOfView');
     });
   }
+};
 
-  const feedFilterSelect = document.getElementById('feed-filter-select');
-
-  if (feedFilterSelect) {
-    feedFilterSelect.addEventListener('change', (event) => {
-      const url = event.target.value;
-
-      InstantClick.preload(url);
-      InstantClick.display(url);
-    });
-  }
-}
+initializeDrawerSliders();

@@ -1,17 +1,10 @@
-/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage, showModalAfterError */
-
-function initNotifications() {
-  fetchNotificationsCount();
-  markNotificationsAsRead();
-  initReactions();
-  listenForNotificationsBellClick();
-  initFilter();
-  initPagination();
-  initLoadMoreButton();
-}
-
+import { sendHapticMessage } from '../../utilities/sendHapticMessage';
+import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn'; 
+import { showModalAfterError } from '../../utilities/showUserAlertModal';  
+// eslint-disable-next-line no-redeclare
+/* global InstantClick, instantClick */
 function markNotificationsAsRead() {
-  setTimeout(function () {
+  setTimeout(() => {
     if (document.getElementById('notifications-container')) {
       getCsrfToken().then((csrfToken) => {
         const locationAsArray = window.location.pathname.split('/');
@@ -44,7 +37,7 @@ function fetchNotificationsCount() {
     // Prefetch notifications page
     if (instantClick) {
       InstantClick.removeExpiredKeys('force');
-      setTimeout(function () {
+      setTimeout(() => {
         InstantClick.preload(
           document.getElementById('notifications-link').href,
           'force',
@@ -55,18 +48,18 @@ function fetchNotificationsCount() {
 }
 
 function initReactions() {
-  setTimeout(function () {
+  setTimeout(() => {
     if (document.getElementById('notifications-container')) {
-      var butts = document.getElementsByClassName('reaction-button');
+      let butts = document.getElementsByClassName('reaction-button');
 
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
+      for (let i = 0; i < butts.length; i++) {
+        const butt = butts[i];
         butt.setAttribute('aria-pressed', butt.classList.contains('reacted'));
 
         butt.onclick = function (event) {
           event.preventDefault();
           sendHapticMessage('medium');
-          var thisButt = this;
+          const thisButt = this;
           thisButt.classList.add('reacted');
 
           function successCb(response) {
@@ -79,14 +72,14 @@ function initReactions() {
             }
           }
 
-          var formData = new FormData();
+          const formData = new FormData();
           formData.append('reactable_type', thisButt.dataset.reactableType);
           formData.append('category', thisButt.dataset.category);
           formData.append('reactable_id', thisButt.dataset.reactableId);
 
           getCsrfToken()
             .then(sendFetch('reaction-creation', formData))
-            .then(function (response) {
+            .then((response) => {
               if (response.status === 200) {
                 response.json().then(successCb);
               } else {
@@ -108,16 +101,16 @@ function initReactions() {
 
         butt.onclick = function (event) {
           event.preventDefault();
-          var thisButt = this;
+          const thisButt = this;
           document
-            .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
+            .getElementById(`comment-form-for-${ thisButt.dataset.reactableId }`)
             .classList.remove('hidden');
           thisButt.classList.add('hidden');
           thisButt.classList.remove('inline-flex');
-          setTimeout(function () {
+          setTimeout(() => {
             document
               .getElementById(
-                'comment-textarea-for-' + thisButt.dataset.reactableId,
+                `comment-textarea-for-${ thisButt.dataset.reactableId }`,
               )
               .focus();
           }, 30);
@@ -128,9 +121,9 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  var notificationsLink = document.getElementById('notifications-link');
+  const notificationsLink = document.getElementById('notifications-link');
   if (notificationsLink) {
-    setTimeout(function () {
+    setTimeout(() => {
       notificationsLink.onclick = function () {
         document.getElementById('notifications-number').classList.add('hidden');
       };
@@ -162,9 +155,9 @@ function initPagination() {
           method: 'GET',
           credentials: 'same-origin',
         })
-        .then(function (response) {
+        .then((response) => {
           if (response.status === 200) {
-            response.text().then(function (html) {
+            response.text().then((html) => {
               const markup = html.trim();
 
               if (markup) {
@@ -197,4 +190,14 @@ function initLoadMoreButton() {
   if (button) {
     button.addEventListener('click', initPagination);
   }
+}
+
+export function initializeNotifications() {
+  fetchNotificationsCount();
+  markNotificationsAsRead();
+  initReactions();
+  listenForNotificationsBellClick();
+  initFilter();
+  initPagination();
+  initLoadMoreButton();
 }
