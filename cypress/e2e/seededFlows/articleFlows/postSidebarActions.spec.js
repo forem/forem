@@ -74,4 +74,27 @@ describe('Post sidebar actions', () => {
     cy.get('@dropdownButton').click();
     cy.findByText('Copied to Clipboard').should('not.be.visible');
   });
+
+  it('should jump to comments when the button is pressed', () => {
+    // Article with comments
+    cy.visit('/admin_mcadmin/test-article-slug');
+
+    cy.findByRole('heading', { name: 'Test article' })
+      .as('articleSection')
+      .should('be.visible');
+    cy.get('#comments', { hidden: true }).as('commentsSection');
+
+    cy.findByRole('button', { name: 'Jump to Comments' }).click();
+
+    // TODO: Why is the scrolling not working as it should?
+    cy.findByText(/Top Comments/i).should('be.visible');
+    cy.get('@articleSection').should((element) => {
+      // Element is above viewport, out of view
+      expect(element[0].getBoundingClientRect().bottom).lessThan(0);
+    });
+    cy.get('@commentsSection').should((element) => {
+      // Element is at top of viewport (with some leeway)
+      expect(element[0].getBoundingClientRect().top).lessThan(50);
+    });
+  });
 });
