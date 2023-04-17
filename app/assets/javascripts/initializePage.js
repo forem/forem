@@ -2,7 +2,7 @@
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
-  initializeArticleDate, initializeArticleReactions, initNotifications,
+  initializeArticleDate, initializeArticleReactions,
   initializeSettings, initializeRuntimeBanner,
   initializeTimeFixer, initializeDashboardSort, initializeCreditsPage,
   initializeOnboardingTaskCard,
@@ -16,7 +16,6 @@ function callInitializers() {
   initializeCommentsPage();
   initializeArticleDate();
   initializeArticleReactions();
-  initNotifications();
   initializeSettings();
   initializeTimeFixer();
   initializeDashboardSort();
