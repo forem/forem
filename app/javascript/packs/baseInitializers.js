@@ -8,6 +8,7 @@ import {
 
 initializeCommentDate();
 initializeCommentPreview();
+initializeNotifications();
 
 InstantClick.on('change', () => {
   initializeNotifications();
