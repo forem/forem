@@ -40,11 +40,39 @@
       </a>
     <% end %>
 
-    <h2 class="crayons-subtitle-1">
-      <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded">
-        <%= article.title %>
-      </a>
-    </h2>
+    <div class="flex justify-between gap-4 items-center">
+      <h2 class="crayons-subtitle-1">
+        <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded">
+          <%= article.title %>
+        </a>
+      </h2>
+      <div class="flex items-center gap-1">
+        <% counts = Hash.new(0) %>
+        <% article.reactions.privileged_category.each do |reaction_type| %>
+          <% counts[reaction_type.category] += 1 %>
+        <% end %>
+
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/thumb-up", native: true, title: t("views.moderations.actions.thumb_up"), width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= "#{counts['thumbsup']}" %></span>
+        </span>
+
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/thumb-down", native: true, title: t("views.moderations.actions.thumb_down"), width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= "#{counts['thumbsdown']}" %></span>
+        </span>
+
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Vomit", width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= "#{counts['vomit']}" %></span>
+        </span>
+        
+        <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
+          <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= article.score %></span>
+        </span>
+      </div>
+    </div>
 
     <div class="-ml-1 fs-s flex items-center gap-4">
       <div class="flex gap-px">
@@ -55,36 +83,6 @@
 
       <span>❤️&nbsp;<%= article.public_reactions_count %> likes</span>
       <span>💬&nbsp;<%= article.comments_count %> comments</span>
-
-      <span>
-        <% counts = Hash.new(0) %>
-        <% article.reactions.privileged_category.each do |reaction_type| %>
-          <% counts[reaction_type.category] += 1 %>
-        <% end %>
-        <% counts.each do |category, count| %>
-          <% if category == 'thumbsup' %>
-            <span>
-              <%= crayons_icon_tag("twemoji/thumb-up", native: true, title: t("views.moderations.actions.thumb_up")) %>
-              <%= "#{count}" %>
-            </span>
-          <% end %>
-          <% if category == 'thumbsdown' %>
-            <span>
-              <%= crayons_icon_tag("twemoji/thumb-down", native: true, title: t("views.moderations.actions.thumb_down")) %>
-              <%= "#{count}" %>
-            </span>
-          <% end %>
-          <% if category == 'vomit' %>
-            <span>
-              <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Suspicious...") %>
-              <%= "#{count}" %>
-            </span>
-          <% end %>
-        <% end %>
-      </span>
-      <% if article.respond_to?(:score) && article.score.present? %>
-        <span><%= article.score %> score</span>
-      <% end %>
     </div>
 
     <div class="flex justify-between gap-4 items-center">
