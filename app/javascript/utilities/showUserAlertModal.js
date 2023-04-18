@@ -18,7 +18,7 @@ const modalId = 'user-alert-modal';
  * @example
  * showUserAlertModal('Warning', 'You must wait', 'OK', '/faq/why-must-i-wait', 'Why must I wait?');
  */
-function showUserAlertModal(title, text, confirm_text) {
+export function showUserAlertModal(title, text, confirm_text) {
   buildModalDiv(text, confirm_text);
   window.Forem.showModal({
     title,
@@ -26,6 +26,7 @@ function showUserAlertModal(title, text, confirm_text) {
     overlay: true,
   });
 }
+
 /**
  * Displays a user rate limit alert modal letting the user know what they did that exceeded a rate limit,
  * and gives them links to explain why they must wait
@@ -45,13 +46,13 @@ function showRateLimitModal({
   action_past,
   timeframe = 'a moment',
 }) {
-  let rateLimitText = buildRateLimitText({
+  const rateLimitText = buildRateLimitText({
     element,
     action_ing,
     action_past,
     timeframe,
   });
-  let rateLimitLink = '/faq';
+  const rateLimitLink = '/faq';
   showUserAlertModal(
     `Wait ${timeframe}...`,
     rateLimitText,
@@ -60,6 +61,7 @@ function showRateLimitModal({
     'Why do I have to wait?',
   );
 }
+
 /**
  * Displays the corresponding modal after an error.
  *
@@ -73,7 +75,7 @@ function showRateLimitModal({
  * @example
  * showModalAfterError(response, 'made a comment', 'making another comment', 'a moment');
  */
-function showModalAfterError({
+export function showModalAfterError({
   response,
   element,
   action_ing,
@@ -82,19 +84,23 @@ function showModalAfterError({
 }) {
   response
     .json()
-    .then(function parseError(errorResponse) {
+    .then((errorResponse) => {
       if (response.status === 429) {
-        showRateLimitModal({ element, action_ing, action_past, timeframe });
+        showRateLimitModal({
+          element,
+          action_ing,
+          action_past,
+          timeframe,
+        });
       } else {
         showUserAlertModal(
           `Error ${action_ing} ${element}`,
-          `Your ${element} could not be ${action_past} due to an error: ` +
-            errorResponse.error,
+          `Your ${element} could not be ${action_past} due to an error: ${errorResponse.error}`,
           'OK',
         );
       }
     })
-    .catch(function parseError(error) {
+    .catch(() => {
       showUserAlertModal(
         `Error ${action_ing} ${element}`,
         `Your ${element} could not be ${action_past} due to a server error`,
@@ -102,30 +108,6 @@ function showModalAfterError({
       );
     });
 }
-
-/**
- * HTML template for modal
- *
- * @private
- * @function getModalHtml
- *
- * @param {string} text The body text to be displayed
- * @param {string} confirm_text Text of the confirmation button
- *
- * @returns {string} HTML for the modal
- */
-const getModalHtml = (text, confirm_text) => `
-   <div id="${modalId}" hidden>
-     <div class="flex flex-col">
-       <p class="color-base-70">
-         ${text}
-       </p>
-       <button class="crayons-btn mt-4 ml-auto" type="button" onClick="window.Forem.closeModal()">
-         ${confirm_text}
-       </button>
-     </div>
-   </div>
- `;
 
 /**
  * Constructs wording for rate limit modals
@@ -140,9 +122,38 @@ const getModalHtml = (text, confirm_text) => `
  *
  * @returns {string} Formatted body text for a rate limit modal
  */
-function buildRateLimitText({ element, action_ing, action_past, timeframe }) {
+export function buildRateLimitText({
+  element,
+  action_ing,
+  action_past,
+  timeframe,
+}) {
   return `Since you recently ${action_past} a ${element}, you’ll need to wait ${timeframe} before ${action_ing} another ${element}.`;
 }
+
+/**
+ * HTML template for modal
+ *
+ * @private
+ * @function getModalHtml
+ *
+ * @param {string} text The body text to be displayed
+ * @param {string} confirm_text Text of the confirmation button
+ *
+ * @returns {string} HTML for the modal
+ */
+export const getModalHtml = (text, confirm_text) => `
+   <div id="${modalId}" hidden>
+     <div class="flex flex-col">
+       <p class="color-base-70">
+         ${text}
+       </p>
+       <button class="crayons-btn mt-4 ml-auto" type="button" onClick="window.Forem.closeModal()">
+         ${confirm_text}
+       </button>
+     </div>
+   </div>
+ `;
 
 /**
  * Checks for the alert modal, and if it's not present builds and inserts it in the DOM
@@ -177,8 +188,8 @@ function buildModalDiv(text, confirm_text) {
  *
  * @returns {Element} DOM node of alert modal with formatted text
  */
-function getModal(text, confirm_text) {
-  let wrapper = document.createElement('div');
+export function getModal(text, confirm_text) {
+  const wrapper = document.createElement('div');
   wrapper.innerHTML = getModalHtml(text, confirm_text);
   return wrapper;
 }

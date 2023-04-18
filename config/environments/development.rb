@@ -138,6 +138,7 @@ Rails.application.configure do
     # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :distinct_reaction_categories)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
     # There were some warnings about eager loading the organization for a display ad, however since the code goes down
     # different paths (in_house where we don’t need the organization info vs external/community where we need the
