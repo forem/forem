@@ -2,7 +2,7 @@ describe('Series article list on article page', () => {
   const createSeriesArticle = (title) => {
     return cy.createArticle({
       title,
-      content: `{title} in New Series`,
+      content: `${title} in New Series`,
       series: 'New Series',
       published: true,
     });
