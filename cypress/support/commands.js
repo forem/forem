@@ -394,3 +394,54 @@ Cypress.Commands.add('assertValueCopiedToClipboard', (value) => {
     });
   });
 });
+
+Cypress.Commands.add(
+  'createHtmlVariant',
+  ({
+    name = '',
+    group = 'campaign',
+    target_tag = 'tag1',
+    html = '',
+    published = true,
+    approved = false,
+  }) => {
+    return cy.request('POST', '/admin/customization/html_variants', {
+      name,
+      group,
+      target_tag,
+      html,
+      published,
+      approved,
+      commit: 'Create HTML Variant',
+    });
+  },
+);
+
+Cypress.Commands.add(
+  'setCampaign',
+  ({
+    display_name = '',
+    hero_html_variant_name = '',
+    articles_require_approval = false,
+    sidebar_enabled = false,
+    sidebar_image = 'https://example.com/image.png',
+    url = '',
+    featured_tags = '',
+    call_to_action = '',
+    articles_expiry_time = '4',
+  }) => {
+    return cy.request('POST', '/admin/settings/campaigns', {
+      settings_campaign: {
+        display_name,
+        hero_html_variant_name,
+        articles_require_approval,
+        sidebar_enabled,
+        sidebar_image,
+        url,
+        featured_tags,
+        call_to_action,
+        articles_expiry_time,
+      },
+    });
+  },
+);
