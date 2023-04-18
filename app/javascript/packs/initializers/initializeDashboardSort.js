@@ -13,8 +13,10 @@ function selectNavigation(select, urlPrefix) {
   }
 }
 
-export function initializeDashboardSort() {
+function initializeDashboardSort() {
   selectNavigation('dashboard_sort', '/dashboard?sort=');
   selectNavigation('dashboard_author');
   selectNavigation('mobile_nav_dashboard');
 }
+
+export { selectNavigation, initializeDashboardSort };
