@@ -33,17 +33,17 @@ describe('Create Display Ads', () => {
       cy.findByLabelText('Targeted Tag(s)').should('exist');
     });
 
-    it('should not show the audience segment field if the placement is not one of the post page areas', () => {
+    it('should not show the audience segment field if the display to is logged-out users', () => {
       cy.findByRole('radio', { name: 'Only logged out users' }).click();
       cy.findByLabelText('Users who:').should('not.be.visible');
     });
 
-    it('should show the audience segment field if the placement is "Below the comment section"', () => {
+    it('should not show the audience segment field if the display to is all users', () => {
       cy.findByRole('radio', { name: 'All users' }).click();
       cy.findByLabelText('Users who:').should('not.be.visible');
     });
 
-    it('should show the audience segment field if the placement is "Sidebar Right (Individual Post)"', () => {
+    it('should show the audience segment field if the display to is logged-in users', () => {
       cy.findByRole('radio', { name: 'Only logged in users' }).click();
       cy.findByLabelText('Users who:').should('be.visible');
     });
