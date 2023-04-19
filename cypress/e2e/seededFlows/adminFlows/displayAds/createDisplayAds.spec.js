@@ -34,24 +34,18 @@ describe('Create Display Ads', () => {
     });
 
     it('should not show the audience segment field if the placement is not one of the post page areas', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
-        'Sidebar Right (Home)',
-      );
-      cy.findByRole('input', { name: 'Users who:' }).should('not.exist');
+      cy.findByRole('radio', { name: 'Only logged out users' }).click();
+      cy.findByLabelText('Users who:').should('not.be.visible');
     });
 
     it('should show the audience segment field if the placement is "Below the comment section"', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
-        'Below the comment section',
-      );
-      cy.findByLabelText('Users who:').should('exist');
+      cy.findByRole('radio', { name: 'All users' }).click();
+      cy.findByLabelText('Users who:').should('not.be.visible');
     });
 
     it('should show the audience segment field if the placement is "Sidebar Right (Individual Post)"', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
-        'Sidebar Right (Individual Post)',
-      );
-      cy.findByLabelText('Users who:').should('exist');
+      cy.findByRole('radio', { name: 'Only logged in users' }).click();
+      cy.findByLabelText('Users who:').should('be.visible');
     });
   });
 });
