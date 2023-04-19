@@ -381,7 +381,7 @@ RSpec.describe NotifyMailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("Congrats! You're the moderator for ##{tag.name}")
+      expect(email.subject).to eq("Congrats! You're now a moderator for ##{tag.name}")
     end
 
     it "renders proper receiver" do
