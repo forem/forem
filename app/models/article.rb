@@ -999,4 +999,8 @@ class Article < ApplicationRecord
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_PUBLISHES_POST_GOAL)
   end
+
+  public def privileged_reaction_counts
+    @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
+  end
 end
