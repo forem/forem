@@ -18,7 +18,6 @@ RSpec.describe "ArticlesShow" do
       expect(response).to have_http_status(:ok)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(
         "@context" => "http://schema.org",
@@ -111,7 +110,6 @@ RSpec.describe "ArticlesShow" do
       },
     )
   end
-  # rubocop:enable RSpec/ExampleLength
 
   context "when keywords are set" do
     it "shows keywords" do
