@@ -1,10 +1,5 @@
-/* global InstantClick */
-
-'use strict';
-
 function selectNavigation(select, urlPrefix) {
   const trigger = document.getElementById(select);
-
   if (trigger) {
     trigger.addEventListener('change', (event) => {
       let url = event.target.value;
@@ -23,3 +18,5 @@ function initializeDashboardSort() {
   selectNavigation('dashboard_author');
   selectNavigation('mobile_nav_dashboard');
 }
+
+export { selectNavigation, initializeDashboardSort };
