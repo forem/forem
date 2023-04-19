@@ -33,5 +33,25 @@ describe('Create Display Ads', () => {
       cy.findByLabelText('Targeted Tag(s)').should('exist');
     });
 
+    it('should not show the audience segment field if the placement is not one of the post page areas', () => {
+      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+        'Sidebar Right (Home)',
+      );
+      cy.findByRole('input', { name: 'Users who:' }).should('not.exist');
+    });
+
+    it('should show the audience segment field if the placement is "Below the comment section"', () => {
+      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+        'Below the comment section',
+      );
+      cy.findByLabelText('Users who:').should('exist');
+    });
+
+    it('should show the audience segment field if the placement is "Sidebar Right (Individual Post)"', () => {
+      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+        'Sidebar Right (Individual Post)',
+      );
+      cy.findByLabelText('Users who:').should('exist');
+    });
   });
 });
