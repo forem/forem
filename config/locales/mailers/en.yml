@@ -16,7 +16,7 @@ en:
       account_deleted: "%{community} - Account Deletion Confirmation"
       deletion_requested: "%{community} - Account Deletion Requested"
       trusted: Congrats! You're now a "trusted" user on %{community}!
-      moderator: 'Congrats! You''re the moderator for #%{tag_name}'
+      moderator: 'Congrats! You''re now a moderator for #%{tag_name}'
       new_follower: just followed you on %{community}
       new_mention: "%{name} just mentioned you in their %{type}"
       org_deleted: "%{community} - Organization Deletion Confirmation"
