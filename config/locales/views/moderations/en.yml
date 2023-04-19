@@ -137,7 +137,7 @@ en:
         resources: Resources
         tag: Tag Moderation Guide
         terms_and_conditions: Terms & Conditions
-        trusted: Trusted User Guide
+        trusted: Trusted Member Guide
       author: Author
       date: Date
       notice:
@@ -148,5 +148,5 @@ en:
         desc4: P.S. You are not currently signed in.
         code_of_conduct: Code of Conduct
         tag: Tag Moderation Guide
-        trusted: Trusted User Guide
+        trusted: Trusted Member Guide
       post: Post

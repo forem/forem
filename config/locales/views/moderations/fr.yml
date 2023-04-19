@@ -136,7 +136,7 @@ fr:
         resources: Ressources
         tag: Guide de modération des étiquettes
         terms_and_conditions: Conditions générales d'utilisation
-        trusted: Guide de l'utilisateur de confiance
+        trusted: Guide du membre de confiance
       author: Auteur
       date: Date
       notice:
@@ -147,5 +147,5 @@ fr:
         desc4: P.S. Vous n'êtes pas actuellement connecté.
         code_of_conduct: Code de conduite
         tag: Guide de modération des étiquettes
-        trusted: Guide de l'utilisateur de confiance
+        trusted: Guide du membre de confiance
       post: Article
