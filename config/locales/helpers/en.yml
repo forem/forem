@@ -3,165 +3,164 @@ en:
   helpers:
     label:
       listing:
-        body_markdown: Body Markdown
-        expires_at: Custom Expire Date
-        location: Location
-        organization_id: Post under an organization
-        tag_list: Tags
-        title: Title
+        body_markdown: Розмітка допису
+        expires_at: Спеціальна дата закінчення терміну публікації допису
+        location: Звідки
+        organization_id: Допис від проєкту
+        tag_list: Теґи
+        title: Заголовок
       organization:
-        name: Name
-        slug: Username
-        profile_image: Profile image
-        nav_image: Logo for light themes
-        dark_nav_image: Logo for dark themes
-        twitter_username: Twitter username
-        github_username: GitHub username
-        url: Website url
-        tag_line: Tag line
-        summary: Summary
-        location: Location
-        email: Support email
-        company_size: Organization size
-        story: Our story
-        tech_stack: Our stack
-        cta_body_markdown: Body text
-        cta_button_text: Link text
-        cta_button_url: Link url
+        name: Ім'я
+        slug: Юзернейм
+        profile_image: Картинка профілю
+        nav_image: Лого для світлої теми
+        dark_nav_image: Лого для темної теми
+        twitter_username: Twitter юзернейм
+        github_username: GitHub юзернейм
+        url: Сайт url
+        tag_line: Дуже короткий опис (буде видно справа від кожного допису проєкту)
+        summary: Про що проєкт
+        location: Місцезнаходження
+        email: Email проєкту (буде доступним для бажачаючих)
+        company_size: Розмір організації
+        story: Наша історія
+        tech_stack: Що ми робимо
+        cta_body_markdown: Текст допису
+        cta_button_text: Текст посилання
+        cta_button_url: Посилання url
         proof: Proof
       podcast:
-        android_url: Android url
-        description: Description
-        feed_url: Feed url
-        image: Image
-        itunes_url: Itunes url
-        main_color_hex: Main color hex
+        android_url: Google Podcast url
+        description: Опис
+        feed_url: RSS-посилання
+        image: Обкладинка
+        itunes_url: Apple Podcast url
+        main_color_hex: Основний колір hex
         overcast_url: Overcast url
-        pattern_image: Pattern image
-        slug: Slug
+        pattern_image: Візерунок
+        slug: Адреса
         soundcloud_url: Soundcloud url
-        title: Title
-        twitter_username: Twitter username
-        website_url: Website url
+        title: Назва
+        twitter_username: Twitter юзернейм
+        website_url: Сайт url
       response_template:
-        title: Title
-        content: Comment body (Markdown)
+        title: Назва
+        content: Розмітка коментаря
       user:
-        name: Name
+        name: Ім'я
         email: Email
-        username: Username
-        profile_image: Profile image
+        username: Юзернейм
+        profile_image: Картинка профілю
       users_notification_setting:
-        email_newsletter: Send me weekly newsletter emails
-        email_digest_periodic: Send me a periodic digest of top posts from my tags
-        email_tag_mod_newsletter: Send me tag moderator newsletter emails
-        email_community_mod_newsletter: Send me community moderator newsletter emails
-        email_comment_notifications: Send me an email when someone replies to me in a comment thread
-        email_follower_notifications: Send me an email when someone new follows me
-        email_mention_notifications: Send me an email when someone mentions me
-        email_badge_notifications: Send me an email when I receive a badge
-        email_unread_notifications: Send me occasional reminders that I have unread notifications on %{community}
-        mobile_mention_notifications: Send me a push notification when someone mentions me
-        mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
-        welcome_notifications: Send me occasional tips on how to enhance my %{community} experience
-        reaction_notifications: Send notifications when someone reacts to my content, such as comments or posts
-        mod_roundrobin_notifications: Send me occasional community-success mod notifications
+        email_newsletter: Надсилайте мені (не)регулярну розсилку на електронну пошту
+        email_digest_periodic: Періодично надсилайте мені дайджест найпопулярніших дописів за моїми теґами
+        email_tag_mod_newsletter: Надсилайте мені розсилку теґів, які я модерую, на електронну пошту 
+        email_community_mod_newsletter: Надсилайте мені розсилку модераторів спільноти на електронну пошту
+        email_comment_notifications: Надсилайте мені електронного листа, коли хтось відповідає мені в коментарях
+        email_follower_notifications: Надішліть мені листа, коли хтось підпишеться на мене
+        email_mention_notifications: Напишіть мені, коли хтось відмітить мене
+        email_badge_notifications: Напишіть мені на електронну пошту, коли я отримаю значок
+        email_unread_notifications: Надсилайте мені періодичні нагадування про те, що я маю непрочитані сповіщення на %{community}
+        mobile_mention_notifications: Надсилайте мені пуш-сповіщення, коли хтось відмічає мене
+        mobile_comment_notifications: Надсилайте мені пуш-сповіщення, коли хтось відповість мені в коментарях
+        welcome_notifications: Надсилайте мені час від часу поради, як покращити мій досвід роботи у %{community}
+        reaction_notifications: Надсилати сповіщення, коли хтось реагує на мій контент, наприклад, коментарі або дописи
+        mod_roundrobin_notifications: Надсилайте мені періодичні сповіщення про успішні моди спільноти
       users_setting:
-        feed_url: RSS Feed URL
+        feed_url: URL-адреса RSS-стрічки
     placeholder:
       organization:
-        name: Acme Inc.
-        slug: acmeinc
+        name: Найкращий проєкт на світі
+        slug: bestproject
         url: https://yoursite.com
-        location: Halifax, Nova Scotia
-        email: mail@example.com
+        location: м. Запоріжжя
+        email: neko99@example.com
         company_size: "..."
         story: "..."
         tech_stack: "..."
         cta_body_markdown: "..."
-        cta_button_text: Visit Acme Site
-        cta_button_url: https://example.com
+        cta_button_text: Зацінити сайт найкращого проєкту
+        cta_button_url: https://example.zp.ua
         proof: "..."
       response_template:
         title: "..."
       user:
-        name: John Doe
-        email: john.doe@example.com
-        username: johndoe
-        feed_url: https://yoursite.com/feed
+        name: Тарас Нечупара
+        email: taras.nechupara@example.com
+        username: tarasn
+        feed_url: https://yoursite.zp.ua/feed
     application_helper:
-      app_logo: App logo
+      app_logo: Логотип
       follow:
         aria_label:
-          Organization: 'Follow organization: %{name}'
-          Tag: 'Follow tag: %{name}'
-          User: 'Follow user: %{name}'
-          default: 'Follow %{type}: %{name}'
+          Organization: 'Підпишіться на проєкт: %{name}'
+          Tag: 'Підпишіться на теґ: %{name}'
+          User: 'Підпишіться на користувача: %{name}'
+          default: 'Підпишіться %{type}: %{name}'
         text:
-          Organization: Follow
-          Tag: Follow
-          User: Follow
-          default: Follow
-      required: Required
+          Organization: Підписатись
+          Tag: Підписатись
+          User: Підписатись
+          default: Підписатись
+      required: 
       subtitle:
-        week: Top posts this week
-        month: Top posts this month
-        year: Top posts this year
-        infinity: All posts
-        latest: Latest posts
+        week: Найпопулярніші дописи цього тижня
+        month: Найпопулярніші дописи цього місяця
+        year: Найкращі дописи цього року
+        infinity: Усі дописи
+        latest: Останні дописи
       title_text: "%{title} - %{timeframe}"
     articles_helper:
       logo: "%{service_name} logo"
-      most_comments: Most Comments
-      most_reactions: Most Reactions
-      most_views: Most Views
-      recently_created: Recently Created
-      recently_published: Recently Published
+      most_comments: Найбільше коментарів
+      most_reactions: Найбільше реакцій
+      most_views: Найбільше переглядів
+      recently_created: Нещодавно створено
+      recently_published: Нещодавно опубліковано
     authentication_helper:
-      any_of_those: any of those
-      email_password: Email & Password
-      reminder: 'Reminder: you used %{method} to authenticate your account, so please use %{dem} to sign in if prompted.'
-      that: that
-      invite_only: You cannot do this until you disable Invite Only Mode
+      any_of_those: будь-що з цього
+      email_password: Email & пароль
+      reminder: 'Нагадуємо: ви використовуєте %{method} для авторизації, так що використовуйте %{dem} щоб увійти, якщо знадобиться.'
+      that: це
+      invite_only: Ви не зможете це зробити, доки не вимкнете режим Invite Only Mode
     comments_helper:
       ama: ama
-      ask_me_anything: Ask Me Anything
-      author: Author
+      ask_me_anything: Запитай мене про що завгодно
+      author: Автор
       nbsp_likes_html:
-        one: "&nbsp;like"
-        other: "&nbsp;likes"
+        one: "&nbsp;лайк"
+        other: "&nbsp;лайки"
     feedback_messages_helper:
       offender:
         body: |
           Hello,
+          
+          Нам стало відомо, що ви порушили Норми поведінки та/або Умови використання спільноти %{community}.
+          
+          Якщо така поведінка продовжуватиметься, ми можемо призупинити дію вашого акаунту.
+          
+          Якщо ви вважаєте, що сталася помилка, будь ласка, надішліть відповідь на цей лист, і ми ще раз перевіримо.
 
-          It has been brought to our attention that you have violated the %{community} Code of Conduct and/or Terms of Use.
-
-          If this behavior continues, we may need to suspend your %{community} account.
-
-          If you think that there's been a mistake, please reply to this email and we will take another look.
-
-          %{community} Team
-        subject: "%{community} Code of Conduct Violation"
+          Команда %{community}
+        subject: "%{community}: Порушення Норм поведінки"
       reporter:
         body: |
-          Hi there,
-          Thank you for flagging content that may be in violation of the %{community} Code of Conduct and/or our Terms of Use. We are looking into your report and will take appropriate
-          action.
-          We appreciate your help as we work to foster a positive and inclusive environment for all!
-          %{community} Team
+          Вітаю,
+          Дякуємо, що позначили контент, який може порушувати норми поведінки спільноти та/або наші Умови використання. Ми розглянемо ваше повідомлення і вживемо відповідних заходів.
+          
+          Ми вдячні за вашу допомогу, оскільки ми працюємо над створенням конструктивного та дружнього середовища для всіх!
+          Команда %{community}
         subject: "%{community} Report"
       affected:
         body: |
           Hi there,
-
-          We noticed some comments (made by others) on your post that violate the %{community} Code of Conduct and/or our Terms of Use. We have zero tolerance for such behavior and are
-          taking appropriate action.
-
-          Thanks for being awesome, and please don't hesitate to email us with any questions! We welcome all feedback and ideas as we continue working to foster an open and inclusive community.
-
-          %{community} Team
-        subject: Courtesy Notice from %{community}
+          
+          Ми помітили деякі коментарі (зроблені іншими) до вашого допису, які порушують наші норми поведінки та/або наші Умови використання. Нам це не сподобалося, тож ми вживаємо відповідних заходів.
+          
+          Дякуємо за те, що ви такі чудові, і, будь ласка, не соромтеся писати нам з будь-якими питаннями! Ми вітаємо всі відгуки та ідеї, оскільки ми продовжуємо працювати над створенням відкритої та інклюзивної спільноти.
+          
+          Команда %{community}
+        subject: Ввічливе повідомлення від %{community}
     listing_helper:
       option:
         one: "%{cl_name} (%{count} Credit)"
@@ -170,8 +169,8 @@ en:
       option: "%{org_name} (%{unspent})"
     rate_limit_checker_helper:
       day:
-        one: day
-        other: days
+        one: день
+        other: днів
       general: How many %{thing} can a new member (%{timeframe} or less) create within any 5 minute period?
       published:
         title: Limit number of posts created
@@ -220,8 +219,8 @@ en:
         title: Limit number of confirmation emails we send
         description: How many times can we send a confirmation email to someone within a 2 minute period?
       thing:
-        posts: posts
-        comments: comments
+        posts: дописи
+        comments: коментарі
     settings_helper:
       advanced: Advanced
       beginner: Beginner
@@ -232,9 +231,9 @@ en:
       n_a: N/A
     admin:
       user_helper:
-        today: Today, %{date}
-        yesterday: Yesterday, %{date}
+        today: Сьогодні, %{date}
+        yesterday: Учора, %{date}
         org_join: ", "
         org_overflow:
-          one: "%{orgs} & %{count} other"
-          other: "%{orgs} & %{count} others"
+          one: "%{orgs} & %{count} інші"
+          other: "%{orgs} & %{count} інші"

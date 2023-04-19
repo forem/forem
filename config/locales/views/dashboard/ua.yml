@@ -28,18 +28,18 @@ ua:
         meta:
           title: Аналітика
         heading: Аналітика для %{name}
-        desc_1: Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the %{members} ecosystem.
-        desc_2: This dashboard highlights deep insights especially relevant to %{members} relations, authors, and serious bloggers.
-        back: "👈 Back to Main Dashboard"
-        your: Your Dashboard
-        org: "%{org} Analytics Dashboard"
+        desc_1: Ласкаво просимо до Аналітичної панелі, де зібрано детальну метрику користувачів, щоб автори могли приймати рішення щодо стану спільноти %{members} на основі даних..
+        desc_2: Ця інформаційна панель висвітлює глибокі відомості, особливо актуальні для відносин %{members}, авторів і серйозних блогерів.
+        back: "👈 Повернутися до головної панелі управління"
+        your: Ваша панель управління
+        org: "%{org} Аналітична панель"
       article:
         heading:
           text_html: "%{archived}%{title}"
           archived: "[Archived] "
-        archived: Archived
-        published: 'Published:'
-        published_html: 'Published: %{date}'
+        archived: Архівовано
+        published: 'Опубліковано:'
+        published_html: 'Опубліковано: %{date}'
         edited: 'Відргедаговано:'
         edited_html: 'Відргедаговано: %{date}'
         series: 'Серія:'
@@ -110,7 +110,7 @@ ua:
         anti:
           title: Цей тег має від'ємну вагу підписки
           text: Anti-follow
-        default: Default 1.0
+        default: За замовчуванням 1.0
         empty: Ви не стежите за жодними теґами...
         number:
           aria_label: "%{name} вага теґу"
@@ -148,5 +148,5 @@ ua:
         reactions: Всього реакцій на пост
         views: Загальна кількість переглядів допису
         listings: Створено списки
-        credits: Credits available
+        credits: Бали
         lt_500: "< 500"
