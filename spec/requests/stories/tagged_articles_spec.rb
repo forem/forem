@@ -86,6 +86,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           get "/t/#{tag.name}"
           expect(response.body).to include(tag.name)
           expect(Rails.cache).to have_received(:fetch).with("#{tag.cache_key}/article-cached-tagged-count")
+          Rails.cache.clear
         end
 
         it "renders normal page if no articles but tag is supported" do
