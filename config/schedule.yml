@@ -153,4 +153,4 @@ display_ad_event_rollup:
 audience_segment_refresh:
   description: "Refresh audience segmentation for all segments"
   cron: "10 3 * * *"
-  class: "AudienceSegmentRefreshWorker"
+  class: "AudienceSegmentRefreshAllWorker"
