@@ -141,7 +141,7 @@ RSpec.describe "Moderations" do
     let(:dev_name_copy) { "We periodically award some DEV members with heightened privileges" }
     # rubocop:disable Layout/LineLength
     let(:coc_guides_copy) do
-      'Check out our <a href="/code-of-conduct">Code of Conduct</a> and read through our <a href="/community-moderation">Trusted User Guide</a> and <a href="/tag-moderation">Tag Moderation Guide</a>.'
+      'Check out our <a href="/code-of-conduct">Code of Conduct</a> and read through our <a href="/community-moderation">Trusted Member Guide</a> and <a href="/tag-moderation">Tag Moderation Guide</a>.'
     end
     # rubocop:enable Layout/LineLength
     let(:become_mod_copy) { "If you'd like to assist us as a trusted user or tag mod" }
