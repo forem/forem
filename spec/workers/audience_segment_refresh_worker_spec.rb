@@ -13,7 +13,7 @@ RSpec.describe AudienceSegmentRefreshWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority"
 
   it "refreshes a segment by id" do
-    worker.perform(123)
+    worker.perform([123])
     expect(AudienceSegment).to have_received(:where).with(id: [123])
     expect(fake_segment).to have_received(:refresh!)
   end
@@ -22,41 +22,5 @@ RSpec.describe AudienceSegmentRefreshWorker, type: :worker do
     worker.perform(123, 345)
     expect(AudienceSegment).to have_received(:where).with(id: [123, 345])
     expect(fake_segment).to have_received(:refresh!)
-  end
-
-  context "when no ids are supplied" do
-    let(:approved_and_published_ad) do
-      create(:display_ad,
-             approved: true,
-             published: true,
-             audience_segment: create(:audience_segment))
-    end
-
-    before do
-      create(:display_ad,
-             approved: false,
-             published: true,
-             audience_segment: create(:audience_segment))
-      create(:display_ad,
-             approved: true,
-             published: false,
-             audience_segment: create(:audience_segment))
-      create(:display_ad,
-             approved: false,
-             published: false,
-             audience_segment: create(:audience_segment))
-
-      create(:display_ad,
-             approved: true,
-             published: true,
-             audience_segment: approved_and_published_ad.audience_segment)
-    end
-
-    it "refreshes all active ads' segments" do
-      worker.perform
-      expect(AudienceSegment).to have_received(:where)
-        .with(id: [approved_and_published_ad.audience_segment_id])
-      expect(fake_segment).to have_received(:refresh!)
-    end
   end
 end

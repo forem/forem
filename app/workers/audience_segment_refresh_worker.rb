@@ -4,11 +4,7 @@ class AudienceSegmentRefreshWorker
   sidekiq_options queue: :low_priority
 
   def perform(*ids)
-    if ids.blank?
-      ids = DisplayAd.approved_and_published
-        .distinct(:audience_segment_id)
-        .pluck(:audience_segment_id).compact
-    end
+    ids = ids.flatten
     AudienceSegment.where(id: ids).find_each(&:refresh!)
   end
 end
