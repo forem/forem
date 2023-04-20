@@ -87,6 +87,15 @@ function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
+function focusOnComments() {
+  if (location.hash === '#comments') {
+    //handle focus event on text area
+    const element = document.getElementById('text-area');
+    const event = new FocusEvent('focus');
+    element.dispatchEvent(event);
+  }
+}
+
 function copyArticleLink() {
   const postUrlValue = document
     .getElementById('copy-post-url-button')
@@ -152,5 +161,6 @@ targetNode && embedGists(targetNode);
 
 setupDisplayAdDropdown();
 initializeUserSubscriptionLiquidTagContent();
+focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
 trackCommentClicks('comments');
