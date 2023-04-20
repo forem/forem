@@ -79,6 +79,16 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
+        it "handles non-basic feed strategy" do
+          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("rich")
+          allow(Rails.cache).to receive(:fetch).and_call_original
+
+          get "/t/#{tag.name}"
+          expect(response.body).to include(tag.name)
+          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 2.hours }]
+          expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
+        end
+
         it "renders normal page if no articles but tag is supported" do
           Article.destroy_all
           expect { get "/t/#{tag.name}" }.not_to raise_error
