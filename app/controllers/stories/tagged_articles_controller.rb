@@ -36,7 +36,8 @@ module Stories
                                 elsif Settings::UserExperience.feed_strategy == "basic"
                                   tagged_count(tag: tag)
                                 else
-                                  Rails.cache.fetch("article-cached-tagged-count-#{tag.name}", expires_in: 2.hours) do
+                                  Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
+                                                    expires_in: 2.hours) do
                                     tagged_count(tag: tag)
                                   end
                                 end
