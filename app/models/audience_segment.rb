@@ -49,9 +49,9 @@ class AudienceSegment < ApplicationRecord
   end
 
   def self.human_readable_segments
-    list = type_ofs.to_a
-    (list[1...] + list[0...1]) # move the :manual segment to end of list
-      .map { |(type, enum)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), enum] }
+    AudienceSegment.pluck(:id, :type_of)
+      .sort_by { |(id, str)| [(str == "manual" ? 1 : 0), id] } # move manual to end of list
+      .map { |(id, type)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), id] }
   end
 
   def run_query
