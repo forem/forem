@@ -1,4 +1,4 @@
-describe('Publish date on article pages', () => {
+describe('Hovering on article publish date', () => {
   const visitWithLocale = (url, locale) => {
     cy.visit(url, {
       onBeforeLoad: (window) => {
@@ -11,11 +11,11 @@ describe('Publish date on article pages', () => {
     });
   };
 
-  const haveFullDateOnHover = ({ localizedIn = '' }) => {
-    return (elements) => {
+  const checkFullDateOnHover = (selector, { locale = '' }) => {
+    cy.get(selector).should((elements) => {
       elements.each((_, element) => {
         const date = new Date(element.getAttribute('datetime'));
-        const formattedDate = new Intl.DateTimeFormat(localizedIn, {
+        const formattedDate = new Intl.DateTimeFormat(locale, {
           weekday: 'long',
           month: 'long',
           day: 'numeric',
@@ -23,45 +23,72 @@ describe('Publish date on article pages', () => {
 
         expect(element.getAttribute('title')).contains(formattedDate);
       });
-    };
+    });
   };
 
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/articleEditorV2User.json').as('user');
-
-    cy.get('@user')
-      .then((user) => cy.loginUser(user))
-      .then(() =>
-        cy.createArticle({
-          title: 'First Post',
-          content: 'First kittens post',
-          series: 'Kittens',
-          published: true,
-        }),
-      )
-      .then(() =>
-        cy.createArticle({
-          title: 'Second Post',
-          content: 'Second kittens post',
-          series: 'Kittens',
-          published: true,
-        }),
-      )
-      .then((response) => {
-        cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
-      });
   });
 
-  it('shows in full on hover', () => {
-    cy.url().then((url) => {
-      for (const locale in ['en-US', 'fr-FR', 'es-ES']) {
-        visitWithLocale(url, locale);
+  it('shows full date on the logged-out home page', () => {
+    for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
+      visitWithLocale('/', locale);
+      checkFullDateOnHover('.crayons-story__meta time', { locale });
+    }
+  });
 
-        cy.get('.crayons-article__header__meta').within(() => {
-          cy.get('time').should(haveFullDateOnHover({ localizedIn: locale }));
+  it('shows full date on the tagged articles page', () => {
+    for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
+      visitWithLocale('/t/tag1', locale);
+      checkFullDateOnHover('.crayons-story__meta time', { locale });
+    }
+  });
+
+  it('shows full date on an article page', () => {
+    for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
+      visitWithLocale('/admin_mcadmin/test-article-slug', locale);
+      checkFullDateOnHover('.crayons-story__meta time', { locale });
+    }
+  });
+
+  it('shows full date on user and organisation profile pages', () => {
+    for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
+      visitWithLocale('/admin_mcadmin', locale);
+      checkFullDateOnHover('.crayons-story__meta time', { locale });
+
+      cy.findByRole('link', { name: 'Bachmanity' }).click();
+      checkFullDateOnHover('.crayons-story__meta time', { locale });
+    }
+  });
+
+  context('on a series list page', () => {
+    beforeEach(() => {
+      cy.fixture('users/seriesUser.json').as('user');
+      cy.get('@user')
+        .then((user) => cy.loginUser(user))
+        .then(() =>
+          cy.createArticle({
+            title: 'Second Test Post',
+            content: 'Some more content so the series switcher shows up',
+            series: 'seriestest',
+            published: true,
+          }),
+        )
+        .then((response) => {
+          cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
         });
-      }
+    });
+
+    it('shows full date', () => {
+      cy.findByRole('link', { name: /^seriestest/ }).click();
+      cy.findByRole('heading', { name: "seriestest Series' Articles" });
+
+      cy.url().then((url) => {
+        for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
+          visitWithLocale(url, locale);
+          checkFullDateOnHover('.crayons-story__meta time', { locale });
+        }
+      });
     });
   });
 });
