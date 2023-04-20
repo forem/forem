@@ -4,8 +4,7 @@
   initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions,
   initializeSettings, initializeRuntimeBanner,
-  initializeDashboardSort, initializeCreditsPage,
-  initializeTimeFixer,
+  initializeCreditsPage,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
@@ -18,8 +17,6 @@ function callInitializers() {
   initializeArticleDate();
   initializeArticleReactions();
   initializeSettings();
-  initializeDashboardSort();
-  initializeTimeFixer();
   initializeCreditsPage();
   initializeOnboardingTaskCard();
   initializeDateHelpers();
