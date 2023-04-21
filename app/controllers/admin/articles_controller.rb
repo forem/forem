@@ -33,7 +33,7 @@ module Admin
     end
 
     def show
-      @article = Article.find(params[:id])
+      @article = Article.includes(reactions: :user).find(params[:id])
     end
 
     def update
