@@ -1,16 +1,4 @@
 describe('Hovering on article publish date', () => {
-  const visitWithLocale = (url, locale) => {
-    cy.visit(url, {
-      onBeforeLoad: (window) => {
-        // Override locales
-        Object.defineProperty(window.navigator, 'language', { value: locale });
-        Object.defineProperty(window.navigator, 'languages', {
-          value: [locale],
-        });
-      },
-    });
-  };
-
   const checkFullDateOnHover = (selector, { locale = '' }) => {
     cy.get(selector).should((elements) => {
       elements.each((_, element) => {
@@ -32,28 +20,28 @@ describe('Hovering on article publish date', () => {
 
   it('shows full date on the logged-out home page', () => {
     for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
-      visitWithLocale('/', locale);
+      cy.visitWithLocale('/', locale);
       checkFullDateOnHover('.crayons-story__meta time', { locale });
     }
   });
 
   it('shows full date on the tagged articles page', () => {
     for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
-      visitWithLocale('/t/tag1', locale);
+      cy.visitWithLocale('/t/tag1', locale);
       checkFullDateOnHover('.crayons-story__meta time', { locale });
     }
   });
 
   it('shows full date on an article page', () => {
     for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
-      visitWithLocale('/admin_mcadmin/test-article-slug', locale);
+      cy.visitWithLocale('/admin_mcadmin/test-article-slug', locale);
       checkFullDateOnHover('.crayons-story__meta time', { locale });
     }
   });
 
   it('shows full date on user and organisation profile pages', () => {
     for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
-      visitWithLocale('/admin_mcadmin', locale);
+      cy.visitWithLocale('/admin_mcadmin', locale);
       checkFullDateOnHover('.crayons-story__meta time', { locale });
 
       cy.findByRole('link', { name: 'Bachmanity' }).click();
@@ -85,7 +73,7 @@ describe('Hovering on article publish date', () => {
 
       cy.url().then((url) => {
         for (const locale of ['en-US', 'fr-FR', 'es-ES']) {
-          visitWithLocale(url, locale);
+          cy.visitWithLocale(url, locale);
           checkFullDateOnHover('.crayons-story__meta time', { locale });
         }
       });

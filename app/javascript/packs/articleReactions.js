@@ -1,4 +1,5 @@
-/* global sendHapticMessage, showLoginModal, showModalAfterError, isTouchDevice, watchForLongTouch */
+/* global sendHapticMessage, showLoginModal, isTouchDevice, watchForLongTouch */
+import { showModalAfterError } from '../utilities/showUserAlertModal';
 
 // Set reaction count to correct number
 const setReactionCount = (reactionName, newCount) => {

@@ -100,6 +100,42 @@ Cypress.Commands.add('loginUser', ({ email, password }) => {
 });
 
 /**
+ * Visits a URL with the specified locale. Useful for localisation testing.
+ *
+ * @param url {string} The url to visit
+ * @param locale {string} A valid locale to mock
+ */
+Cypress.Commands.add('visitWithLocale', (url, locale) => {
+  cy.visit(url, {
+    onBeforeLoad: (window) => {
+      Object.defineProperty(window.navigator, 'language', { value: locale });
+      Object.defineProperty(window.navigator, 'languages', {
+        value: [locale],
+      });
+    },
+  });
+});
+
+/**
+ * Visits a URL as a "proper" mobile device, mocking the user agent and not just
+ * the viewport.
+ *
+ * @param url {string} The url to visit
+ */
+Cypress.Commands.add('visitOnMobile', (url) => {
+  cy.viewport('iphone-x');
+  cy.visit(url, {
+    onBeforeLoad: (window) => {
+      Object.defineProperty(window.navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
+      });
+      Object.defineProperty(window.navigator, 'platform', { value: 'iPhone' });
+    },
+  });
+});
+
+/**
  * Logs in a creator with the given name, username, email, and password.
  *
  * @param credentials
