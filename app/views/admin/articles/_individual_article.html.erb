@@ -194,13 +194,46 @@
     <h2 class="crayons-subtitle-2">Priviliged actions</h2>
     <p class="crayons-subtitle-3 fw-normal color-secondary mt-1">All the privileged actions affects the score. Overall score is combination of privileged actions and public reactions.</p>
 
-    <% article.reactions.privileged_category.each do |reaction| %>
-      <p class="crayons-subtitle-3">ReactableType: <%= reaction.reactable_type %></p>
-      <p class="crayons-subtitle-3">Points: <%= reaction.points %></p>
-      <p class="crayons-subtitle-3">Updated at: <%= reaction.updated_at %></p>
-      <p class="crayons-subtitle-3">Status: <%= reaction.status %></p>
-      <p class="crayons-subtitle-3">User Id: <%= reaction.user_id %></p>
-      <p>===============</p>
-    <% end %>
+    <div class="flex flex-col gap-3 p-0">
+      <% article.reactions.privileged_category.each do |reaction| %>
+        <% if reaction.category == "vomit" %>
+          <% if reaction.reactable_type == "Article" %>
+            <div class="flex items-center gap-10">
+              <div class="flex items-center w-100 gap-10">
+                <div class="flex items-center p-0 w-100">
+                  <div class="crayons-card crayons-card--secondary p-3 mr-7">
+                    <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Vomit", width: 24, height: 24) %>
+                  </div>
+                  <div class="p-0">
+                    <%# <p class="crayons-subtitle-3"><%= reaction.user.username %>
+                    <p class="crayons-subtitle-3">Rajat Talesra</p>
+                    <time datetime="<%= reaction.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(reaction.created_at, format: :admin_user) if reaction.created_at %>">
+                      <%= l(reaction.created_at, format: :short_with_yy) %>
+                    </time>
+                  </div>
+                </div>
+                <div class="flex justify-between w-100">
+                  <% if reaction.status == 'valid' %>
+                    <span class="c-indicator c-indicator--danger c-indicator--relaxed">Valid</span>
+                  <% elsif reaction.status == 'invalid' %>
+                    <span class="c-indicator c-indicator--relaxed">Invalid</span>
+                  <% elsif reaction.status == 'open' %>
+                    <span class="c-indicator c-indicator--success c-indicator--relaxed">Open</span>
+                  <% else %>
+                    <span class="c-indicator c-indicator--info c-indicator--relaxed">Confirmed</span>
+                  <% end %>
+
+                  <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
+                    <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+                    <span class="fs-s fw-medium lh-base"><%= reaction.points %></span>
+                  </span>
+                </div>
+              </div>
+              <%= render "admin/articles/priviledged_reaction_actions_dropdown", id: "#{reaction.id}" %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <div>
   </article>
 </div>
