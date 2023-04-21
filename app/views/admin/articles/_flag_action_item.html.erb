@@ -1,0 +1,33 @@
+<div class="flex items-center gap-10">
+  <div class="flex items-center w-100 gap-10">
+    <div class="flex items-center p-0 w-100">
+      <div class="crayons-card crayons-card--secondary p-3 mr-7">
+        <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Vomit", width: 24, height: 24) %>
+      </div>
+      <div class="p-0">
+        <%# <p class="crayons-subtitle-3"><%= vomit_reaction.user.username %>
+        <p class="crayons-subtitle-3">Rajat Talesra</p>
+        <time datetime="<%= vomit_reaction.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(vomit_reaction.created_at, format: :admin_user) if vomit_reaction.created_at %>">
+          <%= l(vomit_reaction.created_at, format: :long) %>
+        </time>
+      </div>
+    </div>
+    <div class="flex justify-between w-100">
+      <% if vomit_reaction.status == 'valid' %>
+        <span class="c-indicator c-indicator--danger c-indicator--relaxed">Valid</span>
+      <% elsif vomit_reaction.status == 'invalid' %>
+        <span class="c-indicator c-indicator--relaxed">Invalid</span>
+      <% elsif vomit_reaction.status == 'open' %>
+        <span class="c-indicator c-indicator--success c-indicator--relaxed">Open</span>
+      <% else %>
+        <span class="c-indicator c-indicator--info c-indicator--relaxed">Confirmed</span>
+      <% end %>
+
+      <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
+        <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+        <span class="fs-s fw-medium lh-base"><%= vomit_reaction.points %></span>
+      </span>
+    </div>
+  </div>
+  <%= render "admin/articles/priviledged_reaction_actions_dropdown", id: "#{vomit_reaction.id}" %>
+</div>
