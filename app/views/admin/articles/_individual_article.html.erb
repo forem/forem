@@ -1,4 +1,5 @@
 <% decorated_article = article.decorate %>
+<%= javascript_packs_with_chunks_tag "admin/articles/vomitReactionItem", defer: true %>
 <div
   data-controller="article"
   data-article-id-value="<%= article.id %>"
@@ -190,11 +191,11 @@
     <% end %>
   </article>
 
-  <article class="js-individual-article crayons-card p-6 flex flex-col mt-4">
-    <h2 class="crayons-subtitle-2">Priviliged actions</h2>
-    <p class="crayons-subtitle-3 fw-normal color-secondary mt-1">All the privileged actions affects the score. Overall score is combination of privileged actions and public reactions.</p>
+  <article class="js-individual-article crayons-card py-6 flex flex-col mt-4">
+    <h2 class="crayons-subtitle-2 mx-6">Priviliged actions</h2>
+    <p class="crayons-subtitle-3 fw-normal color-secondary mt-1 mx-6">All the privileged actions affects the score. Overall score is combination of privileged actions and public reactions.</p>
 
-    <nav class="mb-2" aria-label="Member details">
+    <nav class="mx-6 mb-2" aria-label="Member details">
       <ul class="crayons-navigation crayons-navigation--horizontal">
         <li><%= link_to "Flags", admin_article_path(tab: :flag), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == "flag" || params[:tab].blank?}", aria: @current_tab == "flag" ? { current: "" } : {} %></li></li>
         <li><%= link_to "Quality reaction", admin_article_path(tab: :quality_reaction), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == "quality_reaction"}", aria: @current_tab == "quality_reaction" ? { current: "" } : {} %></li></li>
@@ -205,7 +206,7 @@
     <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" } %>
     <% quality_article_reactions = privileged_article_reactions - vomit_article_reactions %>
     
-    <div class="flex flex-col gap-3 p-0" style="overflow: scroll; height: 406px;">
+    <div id="reaction-content" class="flex flex-col gap-3 px-6" style="overflow: scroll; height: 406px;">
       <% if params[:tab].blank? || params[:tab] == "flag" %>
         <% if vomit_article_reactions.present? %>
           <% vomit_article_reactions.each do |vomit_reaction| %>
