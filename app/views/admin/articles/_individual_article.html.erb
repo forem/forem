@@ -232,6 +232,30 @@
               <%= render "admin/articles/priviledged_reaction_actions_dropdown", id: "#{reaction.id}" %>
             </div>
           <% end %>
+        <% else %>
+          <div class="flex justify-between items-center">
+            <div class="flex items-center p-0">
+              <div class="crayons-card crayons-card--secondary p-3 mr-7">
+                <% if reaction.category == "thumbsup" %>
+                  <%= crayons_icon_tag("twemoji/thumb-up", native: true, title: t("views.moderations.actions.thumb_up"), width: 24, height: 24) %>
+                <% else %>
+                  <%= crayons_icon_tag("twemoji/thumb-down", native: true, title: t("views.moderations.actions.thumb_down"), width: 24, height: 24) %>
+                <% end %>
+              </div>
+              <div class="p-0">
+                <%# <p class="crayons-subtitle-3"><%= reaction.user.username %>
+                <p class="crayons-subtitle-3">Rajat Talesra</p>
+                <time datetime="<%= reaction.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(reaction.created_at, format: :admin_user) if reaction.created_at %>">
+                  <%= l(reaction.created_at, format: :short_with_yy) %>
+                </time>
+              </div>
+            </div>
+            
+            <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
+              <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+              <span class="fs-s fw-medium lh-base"><%= reaction.points %></span>
+            </span>
+          </div>
         <% end %>
       <% end %>
     <div>
