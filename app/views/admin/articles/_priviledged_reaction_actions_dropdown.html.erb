@@ -6,15 +6,27 @@
   <div id="<%= id %>-action-dropdown" class="crayons-dropdown right-0">
     <ul class="list-none">
       <li>
-        <button class="c-btn align-left w-100 c-btn--icon-left">
-          <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
-          Mark as Valid
+        <button 
+          type="button"
+          data-reactable="user"
+          data-status="confirmed"
+          data-reaction-target="confirmed"
+          data-action="reaction#reactableUserCheck"
+          data-mark-valid="<%= id %>" 
+          class="c-btn align-left w-100 c-btn--icon-left">
+            <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
+            Mark as Valid
         </button>
       </li>
       <li>
-        <button class="c-btn align-left w-100 c-btn--icon-left">
-          <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
-          Mark as Invalid
+        <button 
+          type="button"
+          data-altstatus="invalid"
+          data-reaction-target="invalid"
+          data-action="reaction#updateReactionInvalid"
+          class="c-btn align-left w-100 c-btn--icon-left">
+            <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
+            Mark as Invalid
         </button>
       </li>
     </ul>

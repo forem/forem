@@ -5,11 +5,21 @@ import { openDropdown, closeDropdown } from '@utilities/dropdownUtils';
 document
   .getElementById('reaction-content')
   ?.addEventListener('click', ({ target }) => {
-    console.log('Rajat: Dropdown: click')
     const {
-      dataset: { toggleDropdown },
+      dataset: { markValid, markInvalid, toggleDropdown },
     } = target;
 
+    if (markValid) {
+      console.log("Rajat: markValid: " + markValid)
+      closeCurrentlyOpenDropdown();
+      return;
+    }
+
+    if (markInvalid) {
+      console.log("Rajat: markInvalid: " + markInvalid)
+      closeCurrentlyOpenDropdown();
+      return;
+    }
 
     if (toggleDropdown) {
       handleDropdownToggle({
