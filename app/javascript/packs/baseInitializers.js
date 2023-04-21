@@ -10,5 +10,9 @@ initializeCommentDate();
 initializeCommentPreview();
 initializeNotifications();
 
+InstantClick.on('change', () => {
+  initializeNotifications();
+});
+
 window.showUserAlertModal = showUserAlertModal;
 window.showModalAfterError = showModalAfterError;
