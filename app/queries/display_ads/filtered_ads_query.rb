@@ -4,15 +4,18 @@ module DisplayAds
       new(...).call
     end
 
-    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd)
+    # @param area [String] the site area where the ad is visible
+    # @param user_signed_in [Boolean] whether or not the visitor is signed-in
+    # @param article [ArticleDecorator] decorated article is optional
+    # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
+    def initialize(area:, user_signed_in:, article: nil, display_ads: DisplayAd)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
-      @organization_id = organization_id
-      @article_tags = article_tags
-      @article_id = article_id
-      @permit_adjacent_sponsors = permit_adjacent_sponsors
+      @organization_id = article&.organization_id
+      @article_tags = article&.cached_tag_list_array || []
+      @article_id = article&.id
+      @permit_adjacent_sponsors = article&.permit_adjacent_sponsors?
     end
 
     def call

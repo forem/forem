@@ -14,10 +14,7 @@ class DisplayAdsController < ApplicationController
       @display_ad = DisplayAd.for_display(
         area: params[:placement_area],
         user_signed_in: user_signed_in?,
-        organization_id: @article&.organization_id,
-        permit_adjacent_sponsors: ArticleDecorator.new(@article).permit_adjacent_sponsors?,
-        article_tags: @article&.decorate&.cached_tag_list_array || [],
-        article_id: @article&.id,
+        article: ArticleDecorator.new(@article),
       )
 
       if @display_ad && !session_current_user_id

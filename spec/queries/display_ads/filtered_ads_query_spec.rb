@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
   let(:placement_area) { "post_sidebar" }
+  let(:article) { build(:article).decorate }
 
   def create_display_ad(**options)
     defaults = {
@@ -38,13 +39,15 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:mismatched) { create_display_ad cached_tag_list: "career" }
 
     it "will show no-tag display ads if the article tags do not contain matching tags" do
-      filtered = filter_ads(article_tags: %w[javascript])
+      allow(article).to receive(:cached_tag_list_array).and_return(%w[javascript])
+      filtered = filter_ads(article: article)
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
     it "will show display ads with no tags set if there are no article tags" do
-      filtered = filter_ads(article_tags: [])
+      allow(article).to receive(:cached_tag_list_array).and_return([])
+      filtered = filter_ads(article: article)
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
@@ -53,7 +56,8 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       let!(:matching) { create_display_ad cached_tag_list: "linux, git, go" }
 
       it "will show the display ads that contain tags that match any of the article tags" do
-        filtered = filter_ads article_tags: %w[linux productivity]
+        allow(article).to receive(:cached_tag_list_array).and_return(%w[linux productivity])
+        filtered = filter_ads(article: article)
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
         expect(filtered).to include(no_tags)
@@ -81,16 +85,20 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:no_excludes) { create_display_ad }
 
     it "will show display ads that exclude articles appropriately" do
-      filtered = filter_ads article_id: 11
+      allow(article).to receive(:id).and_return(11)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(exclude_article2, no_excludes)
 
-      filtered = filter_ads article_id: 12
+      allow(article).to receive(:id).and_return(12)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(no_excludes)
 
-      filtered = filter_ads article_id: 13
+      allow(article).to receive(:id).and_return(13)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(exclude_article1, no_excludes)
 
-      filtered = filter_ads article_id: 14
+      allow(article).to receive(:id).and_return(14)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(exclude_article1, exclude_article2, no_excludes)
     end
   end
@@ -107,25 +115,32 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:other_external) { create_display_ad organization_id: other_org.id, type_of: :external }
 
     it "always shows :community ad if matching, otherwise shows in_house/external" do
-      filtered = filter_ads organization_id: organization.id
+      allow(article).to receive(:organization_id).and_return(organization.id)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
-      filtered = filter_ads organization_id: 123
+      allow(article).to receive(:organization_id).and_return(123)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
 
-      filtered = filter_ads organization_id: nil
+      allow(article).to receive(:organization_id).and_return(nil)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(filtered).not_to include(community_ad, other_community)
     end
 
     it "suppresses external ads when permit_adjacent_sponsors is false" do
-      filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
+      allow(article).to receive(:organization_id).and_return(organization.id)
+      allow(article).to receive(:permit_adjacent_sponsors?).and_return(false)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
-      filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
+      allow(article).to receive(:organization_id).and_return(nil)
+      allow(article).to receive(:permit_adjacent_sponsors?).and_return(false)
+      filtered = filter_ads article: article
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
     end
