@@ -207,7 +207,7 @@
     
     <div class="flex flex-col gap-3 p-0" style="overflow: scroll; height: 406px;">
       <% if params[:tab].blank? || params[:tab] == "flag" %>
-        <% if quality_article_reactions.present? %>
+        <% if vomit_article_reactions.present? %>
           <% vomit_article_reactions.each do |vomit_reaction| %>
             <%= render "admin/articles/flag_action_item", vomit_reaction: vomit_reaction %>
           <% end %>
