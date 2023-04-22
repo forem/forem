@@ -213,7 +213,7 @@
             <%= render "admin/articles/flag_action_item", vomit_reaction: vomit_reaction %>
           <% end %>
         <% else %>
-          <div class="flex flex-col items-center gap-4">
+          <div class="flex flex-col justify-center items-center gap-4 h-100">
             <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
               <%= crayons_icon_tag("flags", native: true, width: 56, height: 56) %>
             </div>
@@ -228,7 +228,7 @@
             <%= render "admin/articles/quality_action_item", quality_reaction: quality_reaction %>
           <%end%>
         <% else %>
-          <div class="flex flex-col items-center gap-4">
+          <div class="flex flex-col justify-center items-center gap-4 h-100">
             <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
               <%= crayons_icon_tag("quality-reactions", native: true, width: 56, height: 56) %>
             </div>
