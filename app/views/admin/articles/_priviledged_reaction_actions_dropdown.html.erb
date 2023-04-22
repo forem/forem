@@ -1,34 +1,38 @@
 <div class="relative">
-  <button type="button" id="<%= id %>-action-dropdown-btn" data-toggle-dropdown="<%= id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto"
-    aria-expanded="false" aria-controls="<%= id %>-action-dropdown" aria-haspopup="true" aria-label="Actions: <%= id %>">
+  <button type="button" id="<%= vomit_reaction.id %>-action-dropdown-btn" data-toggle-dropdown="<%= vomit_reaction.id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto"
+    aria-expanded="false" aria-controls="<%= vomit_reaction.id %>-action-dropdown" aria-haspopup="true" aria-label="Actions: <%= vomit_reaction.id %>">
     <%= crayons_icon_tag("overflow-horizontal", aria_hidden: true) %>
   </button>
-  <div id="<%= id %>-action-dropdown" class="crayons-dropdown right-0">
+  <div id="<%= vomit_reaction.id %>-action-dropdown" class="crayons-dropdown right-0">
     <ul class="list-none">
-      <li>
-        <button 
-          type="button"
-          data-reactable="user"
-          data-status="confirmed"
-          data-reaction-target="confirmed"
-          data-action="reaction#reactableUserCheck"
-          data-mark-valid="<%= id %>" 
-          class="c-btn align-left w-100 c-btn--icon-left">
-            <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
-            Mark as Valid
-        </button>
-      </li>
-      <li>
-        <button 
-          type="button"
-          data-altstatus="invalid"
-          data-reaction-target="invalid"
-          data-action="reaction#updateReactionInvalid"
-          class="c-btn align-left w-100 c-btn--icon-left">
-            <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
-            Mark as Invalid
-        </button>
-      </li>
+      <% if vomit_reaction.status != 'valid' %>
+        <li>
+          <button 
+            type="button"
+            data-reactable="user"
+            data-status="confirmed"
+            data-reaction-target="confirmed"
+            data-action="reaction#reactableUserCheck"
+            data-mark-valid="<%= vomit_reaction.id %>" 
+            class="c-btn align-left w-100 c-btn--icon-left">
+              <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
+              Mark as Valid
+          </button>
+        </li>
+      <% end %>
+      <% if vomit_reaction.status != 'invalid' %>
+        <li>
+          <button 
+            type="button"
+            data-altstatus="invalid"
+            data-reaction-target="invalid"
+            data-action="reaction#updateReactionInvalid"
+            class="c-btn align-left w-100 c-btn--icon-left">
+              <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
+              Mark as Invalid
+          </button>
+        </li>
+      <% end %>
     </ul>
   </div>
 </div>
