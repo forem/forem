@@ -10,13 +10,11 @@ document
     } = target;
 
     if (markValid) {
-      console.log("Rajat: markValid: " + markValid)
       closeCurrentlyOpenDropdown();
       return;
     }
 
     if (markInvalid) {
-      console.log("Rajat: markInvalid: " + markInvalid)
       closeCurrentlyOpenDropdown();
       return;
     }
