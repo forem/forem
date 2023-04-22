@@ -152,6 +152,7 @@ class CommentsController < ApplicationController
       render :index
     else
       @commentable = @comment.commentable
+      flash.now[:error] = I18n.t("comments_controller.markdown", error: @commentable.errors_as_sentence)
       render :edit
     end
   rescue StandardError => e
