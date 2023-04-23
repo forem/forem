@@ -3,8 +3,8 @@ ua:
   views:
     dashboard:
       meta:
-        title: Дашборд - %{site}
-      heading: Дашборд
+        title: Панель управління - %{site}
+      heading: Панель управління
       actions:
         mobile:
           posts: Дописи (%{num})
@@ -145,8 +145,8 @@ ua:
           for: для
         empty: У вас немає підписників для цього %{kind}...
       summary:
-        reactions: Всього реакцій на пост
-        views: Загальна кількість переглядів допису
+        reactions: Всього реакцій на дописи
+        views: Загальна кількість переглядів дописів
         listings: Створено списки
         credits: Бали
         lt_500: "< 500"
