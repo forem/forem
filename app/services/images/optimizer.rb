@@ -17,7 +17,7 @@ module Images
       height: nil,
       width: nil,
       crop: "limit",
-      quality: 82,
+      quality: "auto",
       flags: "progressive",
       fetch_format: "auto",
       sign_url: true
