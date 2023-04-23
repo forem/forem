@@ -19,7 +19,7 @@ class CloudCoverUrl
 
   def url_without_prefix_nesting(url, width)
     return url if url.blank?
-    return url unless url.start_with?("https://kutok.s3.amazonaws.com") && url.include?("w_#{width}/https://")
+    return url unless url.start_with?("https://res.cloudinary.com/") && url.include?("w_#{width}/https://")
 
     url.split("w_#{width}/").last
   end
