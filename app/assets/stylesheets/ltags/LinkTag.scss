@@ -59,9 +59,11 @@
     img {
 		width: calc(1.8vw + 0px);
 		height: calc(1.8vw + 0px);
-      margin: auto auto !important;
-      border-radius: 150px;
-      box-sizing: border-box;
+		margin: auto auto !important;
+		border-radius: 150px;
+		box-sizing: border-box;
+		min-width: 25px;
+		min-height: 25px;
     }
   }
   .ltag__link__org__pic {
