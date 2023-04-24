@@ -292,9 +292,9 @@ const initializeArticleReactions = () => {
         if (reactionButts[i].classList.contains('pseudo-reaction')) {
           continue;
         }
-        reactionButts[i].addEventListener('click', (_event) => {
-          reactToArticle(articleId, reactionButts[i].dataset.category);
-        });
+        reactionButts[i].onclick = function addReactionOnClick(_event) {
+          reactToArticle(articleId, this.dataset.category);
+        };
       }
     }
 
@@ -305,9 +305,9 @@ const initializeArticleReactions = () => {
       commentsSection &&
       jumpToCommentsButt
     ) {
-      jumpToCommentsButt.addEventListener('click', (_event) => {
+      jumpToCommentsButt.onclick = function jumpToComments(_event) {
         commentsSection.scrollIntoView({ behavior: 'smooth' });
-      });
+      };
     }
   }, 3);
 };
