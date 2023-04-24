@@ -12,7 +12,7 @@ class CloudCoverUrl
     width = 1920
     img_src = url_without_prefix_nesting(url, width)
 
-    Images::Optimizer.call(img_src, width: width, height: 1080, crop: "imagga_scale")
+    Images::Optimizer.call(img_src, width: width, height: 1080, crop: "c_limit")
   end
 
   private
