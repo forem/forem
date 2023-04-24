@@ -56,12 +56,12 @@ RSpec.describe Images::Optimizer, type: :service do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      width: 50, height: 50,
-                                     crop: "imagga_scale",
+                                     crop: "limit",
                                      quality: 82,
                                      flags: "progressive",
                                      fetch_format: "auto",
                                      sign_url: true)
-      expect(described_class.call(image_url, width: 50, height: 50, crop: "imagga_scale")).to eq(cloudinary_url)
+      expect(described_class.call(image_url, width: 50, height: 50, crop: "limit")).to eq(cloudinary_url)
     end
 
     it "generates correct url by relying on DEFAULT_CL_OPTIONS" do
