@@ -27,6 +27,20 @@ en:
       mention_too_many:
         one: You cannot mention more than %{count} users in a post!
         other: You cannot mention more than %{count} users in a post!
+    audience_segment:
+      type_ofs:
+        manual: Managed elsewhere
+        trusted: Are trusted
+        posted: Have at least one post
+        no_posts_yet: Have not posted yet
+        dark_theme: Have enabled dark theme
+        light_theme: Have enabled light theme
+        no_experience: Have not set an experience level
+        experience1: Have experience level one
+        experience2: Have experience level two
+        experience3: Have experience level three
+        experience4: Have experience level four
+        experience5: Have experience level five
     broadcast:
       single_active: You can only have one active announcement broadcast
     comment:
