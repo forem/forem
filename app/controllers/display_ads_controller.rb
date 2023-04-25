@@ -14,6 +14,7 @@ class DisplayAdsController < ApplicationController
       @display_ad = DisplayAd.for_display(
         area: params[:placement_area],
         user_signed_in: user_signed_in?,
+        user_id: current_user&.id,
         article: ArticleDecorator.new(@article),
       )
 

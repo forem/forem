@@ -258,4 +258,34 @@ RSpec.describe DisplayAd do
       expect(display_ad.exclude_article_ids).to eq([])
     end
   end
+
+  describe "when a stale audience segment is associated" do
+    let(:audience_segment) do
+      Timecop.travel(5.days.ago) do
+        create(:audience_segment)
+      end
+    end
+
+    before { allow(AudienceSegmentRefreshWorker).to receive(:perform_async) }
+
+    it "refreshes audience segment as an asynchronous callback" do
+      display_ad.save!
+      expect(AudienceSegmentRefreshWorker).not_to have_received(:perform_async)
+
+      display_ad.update audience_segment: audience_segment
+      expect(AudienceSegmentRefreshWorker).to have_received(:perform_async)
+        .with(audience_segment.id)
+    end
+  end
+
+  describe "when a fresh audience segment is associated" do
+    let(:audience_segment) { create(:audience_segment) }
+
+    before { allow(AudienceSegmentRefreshWorker).to receive(:perform_async) }
+
+    it "does not need to refresh audience segment" do
+      display_ad.update audience_segment: audience_segment
+      expect(AudienceSegmentRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
 end

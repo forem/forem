@@ -37,6 +37,8 @@ module Notifications
         # they post under an organization.
         article_followers -= [notifiable.user]
 
+        # TODO: If article.followers were refactored to be scope-based, this could
+        # update to use User.recently_active (which was originally based on this)
         article_followers.sort_by(&:updated_at).last(10_000).reverse_each do |follower|
           now = Time.current
           notifications_attributes.push(
