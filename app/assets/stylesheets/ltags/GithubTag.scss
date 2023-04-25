@@ -3,7 +3,6 @@
 
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
-  max-width: 580px;
   position: relative;
 
   h1 {
@@ -47,21 +46,20 @@
 .github-thread {
   font-family: var(--ff-sans-serif);
   background-color: var(--card-bg);
-  border: 1px solid var(--base-60);
-  box-shadow: $shadow;
-  border-radius: 3px;
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
   font-size: 0.77em;
   line-height: 1.15em;
   margin: 0;
-  width: 98%;
   overflow: hidden;
 
   .timeline-comment-header {
     display: flex;
     align-items: center;
     background: var(--card-bg);
-    border-bottom: 1px solid var(--base-60);
-    padding: 0 10px;
+    border-bottom: 1px solid var(--form-border);
+    padding: 0.5em 1.5em;
 
     @media screen and (min-width: 500px) {
       align-items: center;
@@ -90,7 +88,7 @@
 }
 
 .ltag-github-body {
-  padding: 1em 0.5em;
+  padding: 1em 1.5em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   max-height: calc(21vw + 165px);
