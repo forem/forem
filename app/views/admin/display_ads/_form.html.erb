@@ -63,6 +63,14 @@
       </fieldset>
     </div>
 
+    <div class="crayons-field <%= "hidden" if @display_ad.audience_segment_id.blank? %>">
+      <%= label_tag :audience_segment_id, "Users who:", class: "crayons-field__label" %>
+      <%= select_tag :audience_segment_id,
+                     options_for_select(audience_segments_for_display_ads, selected: @display_ad.audience_segment_id),
+                     include_blank: "All users",
+                     class: "crayons-select js-audience-segment" %>
+    </div>
+
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="type-of-description">
         <legend class="crayons-field crayons-field__label pl-0">Type</legend>
