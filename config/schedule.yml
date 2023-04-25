@@ -150,3 +150,7 @@ display_ad_event_rollup:
   description: "Compact rows in the display_ad_events table"
   cron: "5 3 * * *"
   class: "DisplayAdEventRollupWorker"
+audience_segment_refresh:
+  description: "Refresh audience segmentation for all segments"
+  cron: "10 3 * * *"
+  class: "AudienceSegmentRefreshAllWorker"

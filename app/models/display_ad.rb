@@ -3,6 +3,7 @@ class DisplayAd < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
   belongs_to :creator, class_name: "User", optional: true
+  belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third post_sidebar post_comments].freeze
@@ -34,6 +35,7 @@ class DisplayAd < ApplicationRecord
 
   before_save :process_markdown
   after_save :generate_display_ad_name
+  after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -43,13 +45,14 @@ class DisplayAd < ApplicationRecord
                      }
 
   def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
-                       article_tags: [], permit_adjacent_sponsors: true)
+                       article_tags: [], permit_adjacent_sponsors: true, user_id: nil)
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
       organization_id: organization_id,
       user_signed_in: user_signed_in,
       article_id: article_id,
+      user_id: user_id,
       article_tags: article_tags,
       permit_adjacent_sponsors: permit_adjacent_sponsors,
     )
@@ -84,14 +87,23 @@ class DisplayAd < ApplicationRecord
     validate_tag_name(tag_list)
   end
 
+  def audience_segment_type=(type)
+    self.audience_segment = if type.blank?
+                              nil
+                            elsif (segment = AudienceSegment.find_by(type_of: type))
+                              segment
+                            end
+  end
+
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
     overrides = {
+      "audience_segment_type" => audience_segment&.type_of,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list audience_segment_id])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
@@ -143,5 +155,19 @@ class DisplayAd < ApplicationRecord
 
   def prefix_width
     placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+  end
+
+  def refresh_audience_segment
+    AudienceSegmentRefreshWorker.perform_async(audience_segment_id)
+  end
+
+  def should_refresh_audience_segment?
+    change_relevant_to_audience = saved_change_to_approved? ||
+      saved_change_to_published? ||
+      saved_change_to_audience_segment_id?
+
+    change_relevant_to_audience &&
+      audience_segment &&
+      audience_segment.updated_at < 1.day.ago
   end
 end
