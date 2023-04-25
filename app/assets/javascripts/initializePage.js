@@ -8,7 +8,7 @@
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
-  initializeBroadcast, initializeDateHelpers
+  initializeBroadcast
 */
 
 function callInitializers() {
@@ -20,7 +20,6 @@ function callInitializers() {
   initializeTimeFixer();
   initializeCreditsPage();
   initializeOnboardingTaskCard();
-  initializeDateHelpers();
 }
 
 function initializePage() {
