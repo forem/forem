@@ -43,11 +43,15 @@ class DisplayAd < ApplicationRecord
                      }
 
   def self.for_display(area:, user_signed_in:, article: nil)
+    permit_adjacent = article ? article.permit_adjacent_sponsors : true
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
       user_signed_in: user_signed_in,
-      article: article,
+      organization_id: article&.organization_id,
+      article_id: article&.id,
+      article_tags: article&.cached_tag_list_array || [],
+      permit_adjacent_sponsors: permit_adjacent,
     )
 
     # Business Logic Context:
