@@ -231,7 +231,7 @@
 <%= render "moderations/modals/unflag_user_modal" %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
-<%= javascript_packs_with_chunks_tag "followButtons", "billboard", defer: true %>
+<%= javascript_packs_with_chunks_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script>
