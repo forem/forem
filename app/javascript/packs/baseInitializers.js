@@ -11,6 +11,8 @@ initializeCommentPreview();
 initializeNotifications();
 
 InstantClick.on('change', () => {
+  initializeCommentDate();
+  initializeCommentPreview();
   initializeNotifications();
 });
 
