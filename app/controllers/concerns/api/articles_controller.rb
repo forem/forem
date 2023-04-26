@@ -124,21 +124,18 @@ module Api
     end
 
     def search
-      # I temporarily added some technical debt with a new search endpoint in the interest of getting
-      # the chatGPT plugin live without changing the existing index endpoint. There are some experiments which
-      #  we want to conduct which I think makes sense on a new endpoint rather than an existing one.
-
+      # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
+      # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
+      # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
       @articles = Articles::ApiSearchQuery.call(params)
-      # this adds some inconsistency where we omit the body markdown for article length greater than 1 because ChatGPT
-      # cannot process the long body request when there body markdown lives in a collection of article resources.
 
-      @articles = if @articles.count > 1
+      # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
+      # ChatGPT cannot process the long body request.
+      @articles = if @articles.count == 1
                     @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
                   else
                     @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
                   end
-
-      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
     end
 
     private

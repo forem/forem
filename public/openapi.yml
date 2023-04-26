@@ -43,13 +43,6 @@ paths:
           description: "Returns the most popular articles in the last N days. 'top' indicates the number of days since publication of the articles returned. This param can be used in conjuction with q or tag."
           schema:
             type: "string"
-        - in: "query"
-          name: "sortBy"
-          required: false
-          description: "sorts by keywords provided"
-          schema:
-            type: "string"
-            enum: ["popular", "recent", "newest", "rising"]
       responses:
         "200":
           description: OK

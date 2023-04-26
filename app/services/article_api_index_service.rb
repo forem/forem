@@ -2,7 +2,6 @@ class ArticleApiIndexService
   DEFAULT_PER_PAGE = 30
 
   def initialize(params)
-    @q = params[:q]
     @page = params[:page].to_i
     @tag = params[:tag]
     @tags = params[:tags]
@@ -16,9 +15,7 @@ class ArticleApiIndexService
   end
 
   def get
-    if q.present?
-      query_articles
-    elsif tag.present?
+    if tag.present?
       tag_articles
     elsif tags.present? || tags_exclude.present?
       tagged_articles
@@ -39,19 +36,10 @@ class ArticleApiIndexService
 
   private
 
-  attr_reader :q, :tag, :tags, :tags_exclude, :username, :page, :state, :sort, :top, :collection_id, :per_page
+  attr_reader :tag, :tags, :tags_exclude, :username, :page, :state, :sort, :top, :collection_id, :per_page
 
   def per_page_max
     (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
-  end
-
-  def query_articles
-    published_articles_with_users_and_organizations
-      .search_articles(q)
-      .featured
-      .order(hotness_score: :desc)
-      .page(page)
-      .per(per_page || DEFAULT_PER_PAGE)
   end
 
   def username_articles
