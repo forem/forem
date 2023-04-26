@@ -10,6 +10,11 @@ module Api
       updated_at video_thumbnail_url reading_time
     ].freeze
 
+    ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
+      *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown
+    ].freeze
+    private_constant :SEARCH_ATTRIBUTES_FOR_SERIALIZATION
+
     SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
       *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
     ].freeze
@@ -116,6 +121,24 @@ module Api
       else
         render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
       end
+    end
+
+    def search
+      # I temporarily added some technical debt with a new search endpoint in the interest of getting
+      # the chatGPT plugin live without changing the existing index endpoint. There are some experiments which
+      #  we want to conduct which I think makes sense on a new endpoint rather than an existing one.
+
+      @articles = ArticleApiIndexService.new(params).get
+      # this adds some inconsistency where we omit the body markdown for article length greater than 1 because ChatGPT
+      # cannot process the long body request when there body markdown lives in a collection of article resources.
+
+      @articles = if @articles.count > 1
+                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  else
+                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  end
+
+      set_surrogate_key_header Article.table_key, @articles.map(&:record_key)
     end
 
     private
