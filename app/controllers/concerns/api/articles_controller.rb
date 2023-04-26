@@ -128,7 +128,7 @@ module Api
       # the chatGPT plugin live without changing the existing index endpoint. There are some experiments which
       #  we want to conduct which I think makes sense on a new endpoint rather than an existing one.
 
-      @articles = ArticleApiIndexService.new(params).get
+      @articles = Articles::ApiSearchQuery.call(params)
       # this adds some inconsistency where we omit the body markdown for article length greater than 1 because ChatGPT
       # cannot process the long body request when there body markdown lives in a collection of article resources.
 

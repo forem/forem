@@ -44,19 +44,12 @@ paths:
           schema:
             type: "string"
         - in: "query"
-          name: "tag"
+          name: "sortBy"
           required: false
-          description: "Using this parameter will retrieve articles that contain the requested tag. Articles will be ordered by descending popularity.This parameter can be used in conjuction with 'top'."
+          description: "sorts by keywords provided"
           schema:
             type: "string"
-          example: "javascript"
-        - in: "query"
-          name: "username"
-          required: false
-          description: "Using this parameter will retrieve articles belonging to a User or Organization ordered by descending publication date. This parameter can be used in conjunction with 'top to determine the most popular articles written by the user over the last N days' "
-          schema:
-            type: "string"
-          example: "ben"
+            enum: ["popular", "recent", "newest", "rising"]
       responses:
         "200":
           description: OK
