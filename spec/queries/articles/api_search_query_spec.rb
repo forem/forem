@@ -12,7 +12,8 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
   context "when there is no query parameter" do
     it "shows all published and approved articles" do
       articles = described_class.call({})
-      expect(articles.count).to eq(4)
+      # The two not included has publiched set at false and in the future.
+      expect(articles.count).to eq(3)
     end
   end
 
