@@ -1,8 +1,6 @@
-/* global localizeTimeElements */
+import { localizeTimeElements } from '../../utilities/localDateTime';
 
-'use strict';
-
-function initializeDateHelpers() {
+export function initializeDateHelpers() {
   // Date without year: Jul 12
   localizeTimeElements(document.querySelectorAll('time.date-no-year'), {
     month: 'short',
