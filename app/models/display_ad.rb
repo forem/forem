@@ -49,17 +49,17 @@ class DisplayAd < ApplicationRecord
 
   scope :seldom_seen, -> { where("impressions_count < ?", LOW_IMPRESSION_COUNT) }
 
-  def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
-                       article_tags: [], permit_adjacent_sponsors: true, user_id: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
+    permit_adjacent = article ? article.permit_adjacent_sponsors? : true
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
-      organization_id: organization_id,
       user_signed_in: user_signed_in,
-      article_id: article_id,
+      article_id: article&.id,
+      article_tags: article&.cached_tag_list_array || [],
+      organization_id: article&.organization_id,
+      permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
-      article_tags: article_tags,
-      permit_adjacent_sponsors: permit_adjacent_sponsors,
     )
 
     case rand(99) # output integer from 0-99
