@@ -8,6 +8,8 @@ RSpec.describe "Comments" do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let!(:comment) { create(:comment, commentable: article, user: user) }
 
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
   describe "GET comment index" do
     it "returns 200" do
       get comment.path

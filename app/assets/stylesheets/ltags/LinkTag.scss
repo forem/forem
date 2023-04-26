@@ -1,7 +1,6 @@
 @import '../variables';
 
 .ltag__link__link {
-  color: $black !important;
   color: var(--body-color) !important;
   &:active {
     opacity: 0.7;
@@ -9,16 +8,12 @@
 }
 .ltag__link {
   font-family: var(--ff-sans-serif);
-  border: 1px solid $light-medium-gray;
-  box-shadow: $shadow;
-  border-radius: 3px;
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
   display: block;
   margin: 0.95em 0 1.2em;
   max-width: 100%;
-  @media screen and (min-width: 760px) {
-    margin: 0.95em auto;
-    width: 620px;
-  }
   .video-image {
     position: relative;
     padding-top: 56%;
@@ -53,24 +48,25 @@
   }
   .ltag__link__pic {
     display: inline-block;
-    padding: calc(0.4vw + 8px) calc(0.8vw + 8px);
+    padding: calc(0.6vw + 8px) calc(0.8vw + 8px);
     padding-right: 8px;
     box-sizing: border-box;
     img {
-      width: calc(2.2vw + 45px);
-      height: calc(2.2vw + 45px);
+      width: calc(1.2vw + 40px);
+      height: calc(1.2vw + 40px);
       margin: auto auto !important;
       border-radius: 150px;
       box-sizing: border-box;
+      max-width: 60px;
+      max-height: 60px;
     }
   }
   .ltag__link__org__pic {
     border-radius: var(--radius);
     position: relative;
-    background-color: var(--body-color-inverted);
     display: inline-block;
     padding: calc(0.4vw + 8px) calc(0.8vw + 8px);
-    padding-right: 8px;
+    padding-right: 10px;
     box-sizing: border-box;
     &::after {
       content: '';
@@ -92,18 +88,22 @@
     margin: auto auto !important;
     border-radius: var(--radius);
     box-sizing: border-box;
-  }
+    max-width: 55px;
+    max-height: 55px;
+}
   .ltag__link__user__pic {
     display: inline-block;
     position: absolute;
-    right: 0;
+    right: 3px;
     bottom: calc(1vw);
     border: 2px solid var(--base-inverted);
     border-radius: 100%;
     background-color: var(--card-color-tertiary);
     box-sizing: border-box;
-    width: calc(2vw + 25px);
-    height: calc(2vw + 25px);
+    width: calc(2vw + 28px);
+    height: calc(2vw + 28px);
+    max-width: 38px;
+    max-height: 38px;
     img {
       display: inline-block;
       width: 100%;
@@ -115,22 +115,22 @@
   .ltag__link__content {
     display: inline-block;
     vertical-align: top;
-    padding: calc(0.5vw + 6px);
+    padding: calc(0.7vw + 6px);
     padding-left: 0;
-    width: calc(100% - 5vw - 70px);
+    width: calc(100% - 2.5vw - 70px);
     h2 {
       margin: 0;
       padding: 0;
-      font-weight: 500;
-      font-size: 1.5em;
+      font-weight: var(--fw-bold);
+      font-size: calc(1.45em + 0.2vw);
+      line-height: var(--lh-tight)
     }
     h3 {
-      margin: 0.1vw 0;
+      margin: calc(0.3vw + 1px) 0;
       padding: 0;
-      font-size: 0.7em;
-      margin-bottom: 0;
-      font-weight: bold;
-      color: $medium-gray;
+      font-size: var(--fs-s);
+      font-weight: var(--fw-medium);
+      color: var(--color);
       color: var(--card-color-tertiary);
       a {
         color: var(--card-color-tertiary);
@@ -145,6 +145,7 @@
       line-height: 1;
       font-size: 0.88em;
       margin-bottom: 5px;
+      color: var(--tag-color);
     }
     .ltag__link__tag {
       margin-right: calc(0.4vw + 4px);
@@ -165,28 +166,43 @@
   }
 }
 
-.single-comment-node {
+.crayons-article-sticky {
   .ltag__link {
-    width: 100%;
-    margin: 0.95em 0 1.2em;
-    .ltag__link__pic {
-      padding-top: calc(0.5vw + 12px);
+    .ltag__link__org__pic {
+      width: 60px;
+      height: 60px;
       img {
-        width: calc(2.5vw + 40px);
+        width: 33px;
+        height: 33px;
+      }
+    }
+    .ltag__link__user__pic {
+      width: 19px;
+      height: 19px;
+      padding: 0 !important;
+      img {
+        width: 15px;
+        height: 15px;
+        top: 0;
+        position: absolute;
+      }
+    }
+    .ltag__link__pic {
+      width: 60px;
+      height: 60px;
+      img {
+        width: 33px;
+        height: 33px;
       }
     }
     .ltag__link__content {
+      width: calc(100% - 65px);
       h2 {
-        font-size: calc(1.05em + 0.7vw) !important;
-        margin-top: 0em !important;
-        margin-bottom: 0.4em !important;
-        font-weight: 400 !important;
-        line-height: 1.22em !important;
+        font-size: 1.25em;
+        line-height: 1.28em;
       }
       h3 {
-        margin-bottom: 0.4em !important;
-        font-size: calc(0.8em + 0.5vw) !important;
-        font-weight: 400 !important;
+        margin-top: 4px !important;
       }
     }
   }
