@@ -1,9 +1,9 @@
 {
   "schema_version": "v1",
-  "name_for_human": "Recommended Articles",
-  "name_for_model": "recommendedarticles",
-  "description_for_human": "Plugin for recommending articles.",
-  "description_for_model": "Plugin for recommending articles.",
+  "name_for_human": "DEV Community",
+  "name_for_model": "dev",
+  "description_for_human": "Plugin for recommending articles or users from DEV Community.",
+  "description_for_model": "Plugin for recommending articles or users from DEV Community. Always link to a url for the resource returned.",
   "auth": {
     "type": "none"
   },
@@ -13,6 +13,6 @@
     "is_user_authenticated": false
   },
   "logo_url": "http://localhost:3000/logo.png",
-  "contact_email": "support@example.com",
-  "legal_info_url": "http://www.example.com/legal"
+  "contact_email": "yo@dev.to",
+  "legal_info_url": "https://dev.to/terms"
 }
