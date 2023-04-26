@@ -1,0 +1,120 @@
+openapi: 3.0.1
+# We start by defining the specification version, the title, description, and version number. When a query is run in ChatGPT, it will look at the description that is defined in the info section to determine if the plugin is relevant for the user query.
+info:
+  title: Recommendations Plugin
+  description: A plugin that recommends resources like articles, users, tags, podcasts or comments to a user using ChatGP.
+  version: 'v1'
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/search/feed_content:
+    get:
+      operationId: getArticles
+      summary: Get a list of filtered articles
+      parameters:
+        - in: "query"
+          name: "page"
+          required: false
+          description: "Pagination page"
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 0
+            default: 0
+        - in: "query"
+          name: "per_page"
+          required: false
+          description: "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable."
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 1
+            maximum: 100
+            default: 60
+        - in: "query"
+          name: "class_name"
+          required: false
+          description: "The type of resource that you are querying. It can be Article, Tag, User, Podcast, Comments."
+          schema:
+            type: "string"
+            default: Article
+        - in: "query"
+          name: "search_fields"
+          required: false
+          description: "The keywords that are provided in order to search."
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.forem.api-v1+json:
+              schema:
+                $ref: '#/components/schemas/getArticlesResponse'
+components:
+  schemas:
+    getArticlesResponse:
+      description: "Representation of an article or post returned in a list"
+      type: "object"
+      properties:
+        type_of: { type: "string" }
+        id: { type: "integer", format: "int32" }
+        title: { type: "string" }
+        description: { type: "string" }
+        cover_image: { type: "string", format: "url", nullable: true }
+        readable_publish_date: { type: "string" }
+        social_image: { type: "string", format: "url" }
+        tag_list:
+          type: "array"
+          items:
+            type: "string"
+        tags: { type: "string" }
+        slug: { type: "string" }
+        path: { description: "A relative path of the article. In order to view the article it will need to be appended to the host url.", type: "string", format: "path" }
+        url: { type: "string", format: "url" }
+        canonical_url: { type: "string", format: "url" }
+        positive_reactions_count: { type: "integer", format: "int32" }
+        public_reactions_count: { type: "integer", format: "int32" }
+        created_at: { type: "string", format: "date-time" }
+        edited_at: { type: "string", format: "date-time", nullable: true }
+        crossposted_at: { type: "string", format: "date-time", nullable: true }
+        published_at: { type: "string", format: "date-time" }
+        last_comment_at: { type: "string", format: "date-time" }
+        published_timestamp: { description: "Crossposting or published date time", type: "string",
+                                format: "date-time" }
+        reading_time_minutes: { description: "Reading time, in minutes", type: "integer", format: "int32" }
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        flare_tag:
+          $ref: "#/components/schemas/ArticleFlareTag"
+        organization:
+          $ref: "#/components/schemas/SharedOrganization"
+      required: ["type_of", "id", "title", "description", "cover_image", "readable_publish_date", "social_image", "tag_list", "tags", "slug", "path", "url", "canonical_url", "comments_count", "positive_reactions_count", "public_reactions_count", "created_at", "edited_at", "crossposted_at", "published_at", "last_comment_at", "published_timestamp", "user", "reading_time_minutes"]
+    SharedUser:
+      description: "The author"
+      type: "object"
+      properties:
+        name: { type: "string" }
+        username: { type: "string" }
+        twitter_username: { type: "string", nullable: true }
+        github_username: { type: "string", nullable: true }
+        website_url: { type: "string", format: :url, nullable: true }
+        profile_image: { description: "Profile image (640x640)", type: "string" }
+        profile_image_90: { description: "Profile image (90x90)", type: "string" }
+    ArticleFlareTag:
+      description: "Flare tag of the article"
+      type: "object"
+      properties:
+        name: { type: "string" }
+        bg_color_hex: { description: "Background color (hexadecimal)", type: "string", nullable: true }
+        text_color_hex: { description: "Text color (hexadecimal)", type: "string", nullable: true }
+    SharedOrganization:
+      description: "The organization the resource belongs to"
+      type: "object"
+      properties:
+        name: { type: "string" }
+        username: { type: "string" }
+        slug: { type: "string" }
+        profile_image: { description: "Profile image (640x640)", type: "string", format: :url }
+        profile_image_90: { description: "Profile image (90x90)", type: "string", format: :url }
+
