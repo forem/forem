@@ -9,7 +9,7 @@
 Rails.application.config.middleware.insert_before(
   0,
   Rack::Cors,
-  debug: true,
+  debug: ENV["DEBUG_CORS"].present?,
   logger: (-> { Rails.logger }),
 ) do
   allow do
