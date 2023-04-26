@@ -74,6 +74,33 @@ function defaultTagValues() {
   return defaultValue;
 }
 
+function displayUserTargets() {
+  const userTargetField = document.getElementsByClassName(
+    'js-audience-segment',
+  )[0].parentElement;
+  if (userTargetField) {
+    userTargetField.classList.remove('hidden');
+  }
+}
+
+function hideUserTargets() {
+  const userTargetField = document.getElementsByClassName(
+    'js-audience-segment',
+  )[0].parentElement;
+  if (userTargetField) {
+    userTargetField.classList.add('hidden');
+  }
+}
+
+function clearUserTargetSelection() {
+  const userTargetSelect = document.getElementsByClassName(
+    'js-audience-segment',
+  )[0];
+  if (userTargetSelect) {
+    userTargetSelect.value = '';
+  }
+}
+
 /**
  * Shows and Renders Exclude Article IDs group
  */
@@ -130,5 +157,17 @@ document.ready.then(() => {
       hideExcludeIds();
       clearExcludeIds();
     }
+  });
+
+  const userRadios = document.querySelectorAll('input[name=display_to]');
+  userRadios.forEach((radio) => {
+    radio.addEventListener('change', (event) => {
+      if (event.target.value == 'logged_in') {
+        displayUserTargets();
+      } else {
+        hideUserTargets();
+        clearUserTargetSelection();
+      }
+    });
   });
 });

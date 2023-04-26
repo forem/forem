@@ -8,7 +8,8 @@ describe('Post sidebar actions', () => {
         cy.createArticle({
           title: 'Test Article',
           tags: ['beginner', 'ruby', 'go'],
-          content: `This is a test article's contents.`,
+          // Generating a really long article so that the 'Jump to Comments' effect is more visible
+          content: `This is a test article's contents.\n\n`.repeat(100),
           published: true,
         }).then((response) => {
           cy.visitAndWaitForUserSideEffects(response.body.current_state_path);
@@ -73,5 +74,30 @@ describe('Post sidebar actions', () => {
     cy.get('@dropdownButton').click();
     cy.get('@dropdownButton').click();
     cy.findByText('Copied to Clipboard').should('not.be.visible');
+  });
+
+  it('should jump to comments when the button is pressed', () => {
+    cy.findByRole('heading', { name: 'Test Article' })
+      .as('articleHeader')
+      .should('be.within_viewport');
+
+    cy.findByRole('button', { name: 'Sort comments' })
+      .as('commentsSortDropdown')
+      .should('not.be.within_viewport');
+
+    // This stub is necessary because somehow, Cypress does not support smooth
+    // scrolling. See https://github.com/cypress-io/cypress/issues/3200
+    cy.get('#comments').then(($comments) => {
+      const comments = $comments[0];
+      const originalScroll = comments.scrollIntoView.bind(comments);
+      cy.stub(comments, 'scrollIntoView').callsFake(() => originalScroll());
+
+      cy.findByRole('button', { name: 'Jump to Comments' })
+        .click()
+        .then(() => {
+          cy.get('@commentsSortDropdown').should('be.within_viewport');
+          cy.get('@articleHeader').should('not.be.within_viewport');
+        });
+    });
   });
 });
