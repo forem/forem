@@ -9,13 +9,19 @@
 Rails.application.config.middleware.insert_before(
   0,
   Rack::Cors,
-  debug: ENV["DEBUG_CORS"].present?,
+  debug: true,
   logger: (-> { Rails.logger }),
 ) do
   allow do
     origins do |source, _env|
       source # echo back the client's `Origin` header instead of using `*`
     end
+
+    resource "/.well-known/ai-plugin.json"
+    resource "/openapi.yml"
+    resource "/api/articles/search/*", methods: %i[head get options], headers: %w[content-type openai-conversation-id
+                                                                                  openai-ephemeral-user-id],
+                                       max_age: 2.hours.to_i
 
     # allowed public APIs
     %w[articles comments listings podcast_episodes tags users videos].each do |resource_name|
