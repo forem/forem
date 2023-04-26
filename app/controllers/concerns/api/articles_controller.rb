@@ -131,7 +131,7 @@ module Api
 
       # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
       # ChatGPT cannot process the long body request.
-      @articles = if @articles.count == 1
+      @articles = if @articles.count > 1
                     @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
                   else
                     @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
