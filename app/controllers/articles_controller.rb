@@ -112,10 +112,10 @@ class ArticlesController < ApplicationController
 
     begin
       if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[current_user])
-        renderer = ContentRenderer.new(params[:article_body], source: self, user: current_user)
+        renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
         result = renderer.process_article
         processed_html = result.processed_html
-        front_matter = result.front_matter
+        front_matter = result.front_matter.to_h
       else
         fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
         parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
