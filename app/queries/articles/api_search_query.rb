@@ -21,10 +21,10 @@ module Articles
       end
 
       if top.present?
-        @articles = top_articles
+        @articles = top_articles.order(public_reactions_count: :desc)
       end
 
-      @articles
+      @articles.page(page).per(per_page || DEFAULT_PER_PAGE)
     end
 
     private
@@ -36,30 +36,15 @@ module Articles
     end
 
     def query_articles
-      @articles
-        .search_articles(q)
-        .order(hotness_score: :desc)
-        .page(page)
-        .per(per_page || DEFAULT_PER_PAGE)
+      @articles.search_articles(q)
     end
 
     def top_articles
-      @articles
-        .where("published_at > ?", top.to_i.days.ago)
-        .order(public_reactions_count: :desc)
-        .page(page).per(per_page || DEFAULT_PER_PAGE)
-    end
-
-    def base_articles
-      @articles
-        .featured
-        .order(hotness_score: :desc)
-        .page(page)
-        .per(per_page || DEFAULT_PER_PAGE)
+      @articles.where("published_at > ?", top.to_i.days.ago)
     end
 
     def published_articles_with_users_and_organizations
-      Article.published.includes([{ user: :profile }, :organization])
+      Article.published.includes([{ user: :profile }, :organization]).order(hotness_score: :desc)
     end
   end
 end
