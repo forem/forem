@@ -1,8 +1,8 @@
 openapi: 3.0.1
 # We start by defining the specification version, the title, description, and version number. When a query is run in ChatGPT, it will look at the description that is defined in the info section to determine if the plugin is relevant for the user query.
 info:
-  title: DEV Community Recommendations Plugin
-  description: A plugin that recommends resources like articles, users or tags to a user using ChatGP.
+  title: DEV Community
+  description: A plugin that recommends resources like articles or users to a user using ChatGP.
   version: 'v1'
 servers:
   - url: http://localhost:3000
@@ -15,13 +15,13 @@ paths:
         - in: "query"
           name: "q"
           required: false
-          description: "The keywords that are provided in order to search."
+          description: "Accepts keywords to use as a search query."
           schema:
             type: "string"
         - in: "query"
           name: "page"
           required: false
-          description: "Pagination page"
+          description: "Pagination Page"
           schema:
             type: "integer"
             format: "int32"
@@ -30,7 +30,7 @@ paths:
         - in: "query"
           name: "per_page"
           required: false
-          description: "Page size (the number of items to return per page). The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment variable."
+          description: "Page size (the number of items to return per page)."
           schema:
             type: "integer"
             format: "int32"
@@ -38,73 +38,25 @@ paths:
             maximum: 100
             default: 60
         - in: "query"
-          name: "tag"
-          required: false
-          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
-          schema:
-            type: "string"
-        - in: "query"
           name: "top"
           required: false
-          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
-          schema:
-            type: "string"
-        - in: "query"
-          name: "top"
-          required: false
-          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
-          schema:
-            type: "string"
-        - in: "query"
-          name: "top"
-          required: false
-          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
+          description: "Returns the most popular articles in the last N days. 'top' indicates the number of days since publication of the articles returned. This param can be used in conjuction with q or tag."
           schema:
             type: "string"
         - in: "query"
           name: "tag"
           required: false
-          description: "Using this parameter will retrieve articles that contain the requested tag. Articles\nwill be ordered by descending popularity.This parameter can be used in conjuction with `top`."
+          description: "Using this parameter will retrieve articles that contain the requested tag. Articles will be ordered by descending popularity.This parameter can be used in conjuction with 'top'."
           schema:
             type: "string"
-          example: "discuss"
-        - in: "query"
-          name: "tags"
-          required: false
-          description: "Using this parameter will retrieve articles with any of the comma-separated tags.\nArticles will be ordered by descending popularity."
-          schema:
-            type: "string"
-          example: "javascript css"
-        - in: query
-          name: "tags_exclude"
-          required: false
-          description: "Using this parameter will retrieve articles that do _not_ contain _any_\nof comma-separated tags. Articles will be ordered by descending popularity."
-          schema:
-            type: "string"
-          example: "node java"
+          example: "javascript"
         - in: "query"
           name: "username"
           required: false
-          description: "Using this parameter will retrieve articles belonging\n            to a User or Organization ordered by descending publication date.\n            If `state=all` the number of items returned will be `1000` instead of the default `30`.\n            This parameter can be used in conjuction with `state`."
+          description: "Using this parameter will retrieve articles belonging to a User or Organization ordered by descending publication date. This parameter can be used in conjunction with 'top to determine the most popular articles written by the user over the last N days' "
           schema:
             type: "string"
           example: "ben"
-        - in: "query"
-          name: "state"
-          required: false
-          description: "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username` only if set to `all`."
-          schema:
-            type: "string"
-            enum: ["fresh", "rising", "all"]
-          example: "fresh"
-        - in: "query"
-          name: "collection_id"
-          required: false
-          description: "Adding this will allow the client to return the list of articles\nbelonging to the requested collection ordered by ascending publication date."
-          schema:
-            type: "integer"
-            format: "int32"
-          example: 99
       responses:
         "200":
           description: OK
@@ -115,24 +67,25 @@ paths:
 components:
   schemas:
     getArticlesResponse:
-      description: "Representation of an article or post returned in a list"
+      description: "Representation of an article returned in a list"
       type: "object"
       properties:
         type_of: { type: "string" }
         id: { type: "integer", format: "int32" }
-        title: { type: "string" }
-        description: { type: "string" }
+        title: { type: "string", description: "The article title" }
+        description: { type: "string", description: "A description of the article" }
         cover_image: { type: "string", format: "url", nullable: true }
         readable_publish_date: { type: "string" }
         social_image: { type: "string", format: "url" }
         tag_list:
           type: "array"
+          description: "An array representation of the tags that are associated with an article"
           items:
             type: "string"
-        tags: { type: "string" }
+        tags: { type: "string", description: "An array representation of the tags that are associated with an article" }
         slug: { type: "string" }
         path: { description: "A relative path of the article.", type: "string", format: "path" }
-        url: { type: "string", format: "url", description: "The url of the article used for links" }
+        url: { type: "string", format: "url", description: "The url of the article. Can be used to link to the article." }
         body_markdown: {type: "string", description: "The body of the article" }
         canonical_url: { type: "string", format: "url" }
         positive_reactions_count: { type: "integer", format: "int32" }
@@ -147,8 +100,6 @@ components:
         reading_time_minutes: { description: "Reading time, in minutes", type: "integer", format: "int32" }
         user:
           $ref: "#/components/schemas/SharedUser"
-        flare_tag:
-          $ref: "#/components/schemas/ArticleFlareTag"
         organization:
           $ref: "#/components/schemas/SharedOrganization"
       required: ["type_of", "id", "title", "description", "cover_image", "readable_publish_date", "social_image", "tag_list", "tags", "slug", "path", "url", "canonical_url", "comments_count", "positive_reactions_count", "public_reactions_count", "created_at", "edited_at", "crossposted_at", "published_at", "last_comment_at", "published_timestamp", "user", "reading_time_minutes"]
@@ -163,13 +114,6 @@ components:
         website_url: { type: "string", format: :url, nullable: true }
         profile_image: { description: "Profile image (640x640)", type: "string" }
         profile_image_90: { description: "Profile image (90x90)", type: "string" }
-    ArticleFlareTag:
-      description: "Flare tag of the article"
-      type: "object"
-      properties:
-        name: { type: "string" }
-        bg_color_hex: { description: "Background color (hexadecimal)", type: "string", nullable: true }
-        text_color_hex: { description: "Text color (hexadecimal)", type: "string", nullable: true }
     SharedOrganization:
       description: "The organization the resource belongs to"
       type: "object"
