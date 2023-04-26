@@ -19,6 +19,9 @@ import '@testing-library/cypress/add-commands';
 import 'cypress-file-upload';
 import 'cypress-failed-log';
 
+// Custom assertions
+import './assertions';
+
 // Import commands.js using ES2015 syntax:
 import './commands';
 

@@ -1,15 +1,16 @@
-/* global sendHapticMessage, showLoginModal, showModalAfterError, isTouchDevice, watchForLongTouch */
+/* global sendHapticMessage, showLoginModal, isTouchDevice, watchForLongTouch */
+import { showModalAfterError } from '../utilities/showUserAlertModal';
 
 // Set reaction count to correct number
-function setReactionCount(reactionName, newCount) {
-  var reactionButtons = document.getElementById(
-    'reaction-butt-' + reactionName,
+const setReactionCount = (reactionName, newCount) => {
+  const reactionButtons = document.getElementById(
+    `reaction-butt-${reactionName}`,
   ).classList;
-  var reactionButtonCounter = document.getElementById(
-    'reaction-number-' + reactionName,
+  const reactionButtonCounter = document.getElementById(
+    `reaction-number-${reactionName}`,
   );
-  var reactionEngagementCounter = document.getElementById(
-    'reaction_engagement_' + reactionName + '_count',
+  const reactionEngagementCounter = document.getElementById(
+    `reaction_engagement_${reactionName}_count`,
   );
   if (newCount > 0) {
     reactionButtons.add('activated');
@@ -25,30 +26,31 @@ function setReactionCount(reactionName, newCount) {
       reactionEngagementCounter.parentElement.classList.add('hidden');
     }
   }
-}
+};
 
-function setSumReactionCount(counts) {
-  let totalCountObj = document.getElementById('reaction_total_count');
+const setSumReactionCount = (counts) => {
+  const totalCountObj = document.getElementById('reaction_total_count');
   if (totalCountObj && counts.length > 2) {
     let sum = 0;
-    for (let i in counts) {
-      if (counts[i]['category'] != 'readinglist') {
-        sum += counts[i]['count'];
+    for (const count of counts) {
+      if (count['category'] != 'readinglist') {
+        sum += count['count'];
       }
     }
     totalCountObj.textContent = sum;
   }
-}
-function showCommentCount() {
-  let commentCountObj = document.getElementById('reaction-number-comment');
+};
+
+const showCommentCount = () => {
+  const commentCountObj = document.getElementById('reaction-number-comment');
   if (commentCountObj && commentCountObj.dataset.count) {
     commentCountObj.textContent = commentCountObj.dataset.count;
   }
-}
+};
 
-function showUserReaction(reactionName, animatedClass) {
+const showUserReaction = (reactionName, animatedClass) => {
   const reactionButton = document.getElementById(
-    'reaction-butt-' + reactionName,
+    `reaction-butt-${reactionName}`,
   );
   reactionButton.classList.add('user-activated', animatedClass);
   reactionButton.setAttribute('aria-pressed', 'true');
@@ -63,11 +65,11 @@ function showUserReaction(reactionName, animatedClass) {
   }
 
   reactionDrawerButton.classList.add('user-activated', 'user-animated');
-}
+};
 
-function hideUserReaction(reactionName) {
+const hideUserReaction = (reactionName) => {
   const reactionButton = document.getElementById(
-    'reaction-butt-' + reactionName,
+    `reaction-butt-${reactionName}`,
   );
   reactionButton.classList.remove('user-activated', 'user-animated');
   reactionButton.setAttribute('aria-pressed', 'false');
@@ -80,31 +82,31 @@ function hideUserReaction(reactionName) {
   if (userActivatedReactions.length == 0) {
     reactionDrawerButton.classList.remove('user-activated', 'user-animated');
   }
-}
+};
 
-function hasUserReacted(reactionName) {
+const hasUserReacted = (reactionName) => {
   return document
-    .getElementById('reaction-butt-' + reactionName)
+    .getElementById(`reaction-butt-${reactionName}`)
     .classList.contains('user-activated');
-}
+};
 
-function getNumReactions(reactionName) {
-  const reactionEl = document.getElementById('reaction-number-' + reactionName);
+const getNumReactions = (reactionName) => {
+  const reactionEl = document.getElementById(`reaction-number-${reactionName}`);
   if (!reactionEl || reactionEl.textContent === '') {
     return 0;
   }
 
   return parseInt(reactionEl.textContent, 10);
-}
+};
 
-function reactToArticle(articleId, reaction) {
-  var reactionTotalCount = document.getElementById('reaction_total_count');
+const reactToArticle = (articleId, reaction) => {
+  const reactionTotalCount = document.getElementById('reaction_total_count');
 
-  var isReadingList = reaction === 'readinglist';
+  const isReadingList = reaction === 'readinglist';
 
   // Visually toggle the reaction
   function toggleReaction() {
-    var currentNum = getNumReactions(reaction);
+    const currentNum = getNumReactions(reaction);
     if (hasUserReacted(reaction)) {
       hideUserReaction(reaction);
       setReactionCount(reaction, currentNum - 1);
@@ -119,7 +121,7 @@ function reactToArticle(articleId, reaction) {
       }
     }
   }
-  var userStatus = document.body.getAttribute('data-user-status');
+  const userStatus = document.body.getAttribute('data-user-status');
   sendHapticMessage('medium');
   if (userStatus === 'logged-out') {
     showLoginModal({
@@ -129,14 +131,14 @@ function reactToArticle(articleId, reaction) {
     return;
   }
   toggleReaction();
-  document.getElementById('reaction-butt-' + reaction).disabled = true;
+  document.getElementById(`reaction-butt-${reaction}`).disabled = true;
 
   function createFormdata() {
     /*
      * What's not shown here is that "authenticity_token" is included in this formData.
      * The logic can be seen in sendFetch.js.
      */
-    var formData = new FormData();
+    const formData = new FormData();
     formData.append('reactable_type', 'Article');
     formData.append('reactable_id', articleId);
     formData.append('category', reaction);
@@ -148,81 +150,79 @@ function reactToArticle(articleId, reaction) {
     .then((response) => {
       if (response.status === 200) {
         return response.json().then(() => {
-          document.getElementById('reaction-butt-' + reaction).disabled = false;
+          document.getElementById(`reaction-butt-${reaction}`).disabled = false;
         });
-      } else {
-        toggleReaction();
-        document.getElementById('reaction-butt-' + reaction).disabled = false;
-        showModalAfterError({
-          response,
-          element: 'reaction',
-          action_ing: 'updating',
-          action_past: 'updated',
-        });
-        return undefined;
       }
-    })
-    .catch((error) => {
       toggleReaction();
-      document.getElementById('reaction-butt-' + reaction).disabled = false;
+      document.getElementById(`reaction-butt-${reaction}`).disabled = false;
+      showModalAfterError({
+        response,
+        element: 'reaction',
+        action_ing: 'updating',
+        action_past: 'updated',
+      });
+      return undefined;
+    })
+    .catch((_error) => {
+      toggleReaction();
+      document.getElementById(`reaction-butt-${reaction}`).disabled = false;
     });
-}
+};
 
-function setCollectionFunctionality() {
+const setCollectionFunctionality = () => {
   if (document.getElementById('collection-link-inbetween')) {
-    var inbetweenLinks = document.getElementsByClassName(
+    const inbetweenLinks = document.getElementsByClassName(
       'series-switcher__link--inbetween',
     );
-    var inbetweenLinksLength = inbetweenLinks.length;
-    for (var i = 0; i < inbetweenLinks.length; i += 1) {
+    const inbetweenLinksLength = inbetweenLinks.length;
+    for (let i = 0; i < inbetweenLinks.length; i += 1) {
       inbetweenLinks[i].onclick = (e) => {
         e.preventDefault();
-        var els = document.getElementsByClassName(
+        const els = document.getElementsByClassName(
           'series-switcher__link--hidden',
         );
-        var elsLength = els.length;
-        for (var j = 0; j < elsLength; j += 1) {
+        const elsLength = els.length;
+        for (let j = 0; j < elsLength; j += 1) {
           els[0].classList.remove('series-switcher__link--hidden');
         }
-        for (var k = 0; k < inbetweenLinksLength; k += 1) {
+        for (let k = 0; k < inbetweenLinksLength; k += 1) {
           inbetweenLinks[0].className = 'series-switcher__link--hidden';
         }
       };
     }
   }
-}
+};
 
-function requestReactionCounts(articleId) {
-  var ajaxReq;
-  ajaxReq = new XMLHttpRequest();
+const requestReactionCounts = (articleId) => {
+  const ajaxReq = new XMLHttpRequest();
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-      var json = JSON.parse(ajaxReq.response);
+      const json = JSON.parse(ajaxReq.response);
       setSumReactionCount(json.article_reaction_counts);
       showCommentCount();
       json.article_reaction_counts.forEach((reaction) => {
         setReactionCount(reaction.category, reaction.count);
       });
       json.reactions.forEach((reaction) => {
-        if (document.getElementById('reaction-butt-' + reaction.category)) {
+        if (document.getElementById(`reaction-butt-${reaction.category}`)) {
           showUserReaction(reaction.category, 'not-user-animated');
         }
       });
     }
   };
-  ajaxReq.open('GET', '/reactions?article_id=' + articleId, true);
+  ajaxReq.open('GET', `/reactions?article_id=${articleId}`, true);
   ajaxReq.send();
-}
+};
 
-function openDrawerOnHover() {
-  var timer;
+const openDrawerOnHover = () => {
+  let timer;
   const drawerTrigger = document.getElementById('reaction-drawer-trigger');
   if (!drawerTrigger) {
     return;
   }
 
-  drawerTrigger.addEventListener('click', function (event) {
-    var articleId = document.getElementById('article-body').dataset.articleId;
+  drawerTrigger.addEventListener('click', (_event) => {
+    const { articleId } = document.getElementById('article-body').dataset;
     reactToArticle(articleId, 'like');
 
     drawerTrigger.parentElement.classList.add('open');
@@ -230,31 +230,31 @@ function openDrawerOnHover() {
 
   if (isTouchDevice()) {
     watchForLongTouch(drawerTrigger);
-    drawerTrigger.addEventListener('longTouch', function () {
+    drawerTrigger.addEventListener('longTouch', () => {
       drawerTrigger.parentElement.classList.add('open');
     });
-    document.addEventListener('touchstart', function (event) {
+    document.addEventListener('touchstart', (event) => {
       if (!drawerTrigger.parentElement.contains(event.target)) {
         drawerTrigger.parentElement.classList.remove('open');
       }
     });
   } else {
-    document.querySelectorAll('.hoverdown').forEach(function (el) {
-      el.addEventListener('mouseover', function (event) {
+    document.querySelectorAll('.hoverdown').forEach((el) => {
+      el.addEventListener('mouseover', function (_event) {
         this.classList.add('open');
         clearTimeout(timer);
       });
-      el.addEventListener('mouseout', function (event) {
-        timer = setTimeout(function (event) {
+      el.addEventListener('mouseout', (_event) => {
+        timer = setTimeout((_event) => {
           document.querySelector('.hoverdown.open').classList.remove('open');
         }, 500);
       });
     });
   }
-}
+};
 
-function closeDrawerOnOutsideClick() {
-  document.addEventListener('click', function (event) {
+const closeDrawerOnOutsideClick = () => {
+  document.addEventListener('click', (event) => {
     const reactionDrawerElement = document.querySelector('.reaction-drawer');
     const reactionDrawerTriggerElement = document.querySelector(
       '#reaction-drawer-trigger',
@@ -270,44 +270,46 @@ function closeDrawerOnOutsideClick() {
       }
     }
   });
-}
+};
 
-function initializeArticleReactions() {
+const initializeArticleReactions = () => {
   setCollectionFunctionality();
 
   openDrawerOnHover();
   closeDrawerOnOutsideClick();
 
   setTimeout(() => {
-    var reactionButts = document.getElementsByClassName('crayons-reaction');
+    const reactionButts = document.getElementsByClassName('crayons-reaction');
 
     // we wait for the article to appear,
     // we also check that reaction buttons are there as draft articles don't have them
     if (document.getElementById('article-body') && reactionButts.length > 0) {
-      var articleId = document.getElementById('article-body').dataset.articleId;
+      const { articleId } = document.getElementById('article-body').dataset;
 
       requestReactionCounts(articleId);
 
-      for (var i = 0; i < reactionButts.length; i += 1) {
+      for (let i = 0; i < reactionButts.length; i += 1) {
         if (reactionButts[i].classList.contains('pseudo-reaction')) {
           continue;
         }
-        reactionButts[i].onclick = function addReactionOnClick(e) {
+        reactionButts[i].onclick = function addReactionOnClick(_event) {
           reactToArticle(articleId, this.dataset.category);
         };
       }
     }
 
-    var jumpToCommentsButt = document.getElementById('reaction-butt-comment');
-    var commentsSection = document.getElementById('comments');
+    const jumpToCommentsButt = document.getElementById('reaction-butt-comment');
+    const commentsSection = document.getElementById('comments');
     if (
       document.getElementById('article-body') &&
       commentsSection &&
       jumpToCommentsButt
     ) {
-      jumpToCommentsButt.onclick = function jumpToComments(e) {
+      jumpToCommentsButt.onclick = function jumpToComments(_event) {
         commentsSection.scrollIntoView({ behavior: 'smooth' });
       };
     }
   }, 3);
-}
+};
+
+initializeArticleReactions();

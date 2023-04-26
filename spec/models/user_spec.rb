@@ -819,4 +819,22 @@ RSpec.describe User do
       end
     end
   end
+
+  describe ".recently_active" do
+    let(:early) { build(:user) }
+    let(:later) { build(:user) }
+
+    before do
+      later.save!
+
+      Timecop.travel(5.days.ago) do
+        early.save!
+      end
+    end
+
+    it "returns the most recently updated" do
+      results = described_class.recently_active(1)
+      expect(results).to contain_exactly(later)
+    end
+  end
 end
