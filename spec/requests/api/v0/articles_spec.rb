@@ -1191,6 +1191,7 @@ RSpec.describe "Api::V0::Articles" do
 
     context "when there is one article returned" do
       it "has correct keys in the response" do
+        article.update_columns(organization_id: organization.id)
         get "/api/articles/search"
 
         index_keys = %w[
