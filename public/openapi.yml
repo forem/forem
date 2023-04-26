@@ -1,17 +1,23 @@
 openapi: 3.0.1
 # We start by defining the specification version, the title, description, and version number. When a query is run in ChatGPT, it will look at the description that is defined in the info section to determine if the plugin is relevant for the user query.
 info:
-  title: Recommendations Plugin
-  description: A plugin that recommends resources like articles, users, tags, podcasts or comments to a user using ChatGP.
+  title: DEV Community Recommendations Plugin
+  description: A plugin that recommends resources like articles, users or tags to a user using ChatGP.
   version: 'v1'
 servers:
   - url: http://localhost:3000
 paths:
-  /api/search/feed_content:
+  /api/articles/search:
     get:
       operationId: getArticles
       summary: Get a list of filtered articles
       parameters:
+        - in: "query"
+          name: "q"
+          required: false
+          description: "The keywords that are provided in order to search."
+          schema:
+            type: "string"
         - in: "query"
           name: "page"
           required: false
@@ -32,18 +38,73 @@ paths:
             maximum: 100
             default: 60
         - in: "query"
-          name: "class_name"
+          name: "tag"
           required: false
-          description: "The type of resource that you are querying. It can be Article, Tag, User, Podcast, Comments."
+          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
           schema:
             type: "string"
-            default: Article
         - in: "query"
-          name: "search_fields"
+          name: "top"
           required: false
-          description: "The keywords that are provided in order to search."
+          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
           schema:
             type: "string"
+        - in: "query"
+          name: "top"
+          required: false
+          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
+          schema:
+            type: "string"
+        - in: "query"
+          name: "top"
+          required: false
+          description: "Return the most popular articles in the last N days. top indicates the number of days since publication of the articles returned. This param can be used in conjuction with tag."
+          schema:
+            type: "string"
+        - in: "query"
+          name: "tag"
+          required: false
+          description: "Using this parameter will retrieve articles that contain the requested tag. Articles\nwill be ordered by descending popularity.This parameter can be used in conjuction with `top`."
+          schema:
+            type: "string"
+          example: "discuss"
+        - in: "query"
+          name: "tags"
+          required: false
+          description: "Using this parameter will retrieve articles with any of the comma-separated tags.\nArticles will be ordered by descending popularity."
+          schema:
+            type: "string"
+          example: "javascript css"
+        - in: query
+          name: "tags_exclude"
+          required: false
+          description: "Using this parameter will retrieve articles that do _not_ contain _any_\nof comma-separated tags. Articles will be ordered by descending popularity."
+          schema:
+            type: "string"
+          example: "node java"
+        - in: "query"
+          name: "username"
+          required: false
+          description: "Using this parameter will retrieve articles belonging\n            to a User or Organization ordered by descending publication date.\n            If `state=all` the number of items returned will be `1000` instead of the default `30`.\n            This parameter can be used in conjuction with `state`."
+          schema:
+            type: "string"
+          example: "ben"
+        - in: "query"
+          name: "state"
+          required: false
+          description: "Using this parameter will allow the client to check which articles are fresh or rising.\n            If `state=fresh` the server will return fresh articles.\n            If `state=rising` the server will return rising articles.\n            This param can be used in conjuction with `username` only if set to `all`."
+          schema:
+            type: "string"
+            enum: ["fresh", "rising", "all"]
+          example: "fresh"
+        - in: "query"
+          name: "collection_id"
+          required: false
+          description: "Adding this will allow the client to return the list of articles\nbelonging to the requested collection ordered by ascending publication date."
+          schema:
+            type: "integer"
+            format: "int32"
+          example: 99
       responses:
         "200":
           description: OK
@@ -70,8 +131,9 @@ components:
             type: "string"
         tags: { type: "string" }
         slug: { type: "string" }
-        path: { description: "A relative path of the article. In order to view the article it will need to be appended to the host url.", type: "string", format: "path" }
-        url: { type: "string", format: "url" }
+        path: { description: "A relative path of the article.", type: "string", format: "path" }
+        url: { type: "string", format: "url", description: "The url of the article used for links" }
+        body_markdown: {type: "string", description: "The body of the article" }
         canonical_url: { type: "string", format: "url" }
         positive_reactions_count: { type: "integer", format: "int32" }
         public_reactions_count: { type: "integer", format: "int32" }
