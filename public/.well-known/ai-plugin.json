@@ -1,0 +1,18 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Recommended Articles",
+  "name_for_model": "recommendedarticles",
+  "description_for_human": "Plugin for recommending articles.",
+  "description_for_model": "Plugin for recommending articles.",
+  "auth": {
+    "type": "none"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "http://localhost:3000/openapi.yml",
+    "is_user_authenticated": false
+  },
+  "logo_url": "http://localhost:3000/logo.png",
+  "contact_email": "support@example.com",
+  "legal_info_url": "http://www.example.com/legal"
+}
