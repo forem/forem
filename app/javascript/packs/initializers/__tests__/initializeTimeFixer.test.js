@@ -16,6 +16,8 @@ describe('initializeTimeFixer', () => {
     utcTimeClassDiv.classList.add('utc-time');
     utcDateClassDiv.classList.add('utc-date');
     utcDiv.classList.add('utc');
+
+    utcTimeClassDiv.dataset.datetime = 823230245000;
   });
 
   test('should call event listener when preview button exist', async () => {
@@ -50,13 +52,13 @@ describe('initializeTimeFixer', () => {
   });
 
   test('convertUtcDate function with different options', () => {
-    const utcDate = '2022-03-04T10:30:00.000Z';
+    const utcDate = 917924645000;
 
     const options1 = {
       month: 'short',
       day: 'numeric',
     };
-    expect(convertUtcDate(utcDate, options1)).toBe('Mar 4');
+    expect(convertUtcDate(utcDate, options1)).toBe('Feb 2');
 
     const options2 = {
       year: 'numeric',
@@ -67,18 +69,18 @@ describe('initializeTimeFixer', () => {
       second: 'numeric',
       timeZoneName: 'short',
     };
-    expect(convertUtcDate(utcDate, options2)).toBe('Mar 4');
+    expect(convertUtcDate(utcDate, options2)).toBe('Feb 2');
   });
 
   test('convertUtcTime function with different options', () => {
-    const utcTime = '2022-03-04T10:30:00.000Z';
+    const utcTime = 917924645000;
 
     const options1 = {
       hour: 'numeric',
       minute: 'numeric',
       timeZoneName: 'short',
     };
-    expect(convertUtcTime(utcTime, options1)).toBe('10:30 AM UTC');
+    expect(convertUtcTime(utcTime, options1)).toBe('3:04 AM UTC');
 
     const options2 = {
       hour: 'numeric',
@@ -86,7 +88,7 @@ describe('initializeTimeFixer', () => {
       second: 'numeric',
       timeZoneName: 'short',
     };
-    expect(convertUtcTime(utcTime, options2)).toBe('10:30 AM UTC');
+    expect(convertUtcTime(utcTime, options2)).toBe('3:04 AM UTC');
   });
 
   test('formatDateTime function with different options and values', () => {
@@ -95,16 +97,16 @@ describe('initializeTimeFixer', () => {
       minute: 'numeric',
       timeZoneName: 'short',
     };
-    const value1 = new Date('2022-03-04T10:30:00.000Z');
-    expect(formatDateTime(options1, value1)).toBe('10:30 AM UTC');
+    const value1 = new Date(917924645000);
+    expect(formatDateTime(options1, value1)).toBe('3:04 AM UTC');
 
     const options2 = {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
     };
-    const value2 = new Date('2022-03-04T10:30:00.000Z');
-    expect(formatDateTime(options2, value2)).toBe('Mar 4, 2022');
+    const value2 = new Date(917924645000);
+    expect(formatDateTime(options2, value2)).toBe('Feb 2, 1999');
   });
 });
 
@@ -126,8 +128,8 @@ describe('formatDateTime', () => {
 
 describe('convertUtcTime', () => {
   it('converts the UTC time to local time with proper format', () => {
-    const utcTime = '2022-04-13T12:34:56Z';
-    const expected = '12:34 PM UTC';
+    const utcTime = 917924645000;
+    const expected = '3:04 AM UTC';
 
     expect(convertUtcTime(utcTime)).toEqual(expected);
   });
@@ -135,7 +137,7 @@ describe('convertUtcTime', () => {
 
 describe('convertUtcDate', () => {
   it('converts the UTC date to local date with proper format', () => {
-    const utcDate = '2022-04-13T12:34:56Z';
+    const utcDate = 917924645000;
     const expected = expect.stringMatching(/^\w{3} \d{1,2}$/);
 
     expect(convertUtcDate(utcDate)).toEqual(expected);
@@ -146,9 +148,9 @@ describe('updateLocalDateTime', () => {
   it('updates the innerHTML of given elements with local time', () => {
     document.body.innerHTML = `
       <div>
-        <span class="utc-time" data-datetime="2022-04-13T12:34:56Z">12:34 PM</span>
-        <span class="utc-date" data-datetime="2022-04-13T12:34:56Z">Apr 13</span>
-        <span class="utc">Wednesday, April 13, 2022, 12:34 PM</span>
+        <span class="utc-time" data-datetime=917924645000></span>
+        <span class="utc-date" data-datetime=917924645000></span>
+        <span class="utc">917924645000</span>
       </div>
     `;
 
@@ -172,11 +174,11 @@ describe('updateLocalDateTime', () => {
       (element) => element.innerHTML,
     );
 
-    expect(utcTimeElements[0].innerHTML).toEqual('12:34 PM UTC');
+    expect(utcTimeElements[0].innerHTML).toEqual('3:04 AM UTC');
     expect(utcDateElements[0].innerHTML).toEqual(
       expect.stringMatching(/^\w{3} \d{1,2}$/),
     );
-    expect(utcElements[0].innerHTML).toEqual('Wednesday, April 13 at 12:34 PM');
+    expect(utcElements[0].innerHTML).toEqual('Tuesday, February 2 at 3:04 AM');
   });
 });
 
@@ -192,16 +194,16 @@ describe('formatDateTime', () => {
       minute: 'numeric',
       hour12: true,
     };
-    const value = new Date('2022-01-01T14:30:00Z');
-    const expected = 'Sat, Jan 1, 2022, 2:30 PM';
+    const value = new Date(1682636630);
+    const expected = 'Tue, Jan 20, 1970, 11:23 AM';
     expect(formatDateTime(options, value)).toBe(expected);
   });
 });
 
 describe('convertCalEvent', () => {
   it('should convert UTC to a formatted date and time string', () => {
-    const utc = '2022-01-01T14:30:00Z';
-    const expected = 'Saturday, January 1 at 2:30 PM';
+    const utc = 1682636630;
+    const expected = 'Tuesday, January 20 at 11:23 AM';
     expect(convertCalEvent(utc)).toBe(expected);
   });
 });

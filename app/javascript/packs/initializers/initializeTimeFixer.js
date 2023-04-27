@@ -3,7 +3,7 @@ function formatDateTime(options, value) {
 }
 
 function convertUtcTime(utcTime) {
-  const time = new Date(utcTime);
+  const time = new Date(Number(utcTime));
   const options = {
     hour: 'numeric',
     minute: 'numeric',
@@ -13,7 +13,7 @@ function convertUtcTime(utcTime) {
 }
 
 function convertUtcDate(utcDate) {
-  const date = new Date(utcDate);
+  const date = new Date(Number(utcDate));
   const options = {
     month: 'short',
     day: 'numeric',
@@ -22,7 +22,7 @@ function convertUtcDate(utcDate) {
 }
 
 function convertCalEvent(utc) {
-  const date = new Date(utc);
+  const date = new Date(Number(utc));
   const options = {
     weekday: 'long',
     month: 'long',
