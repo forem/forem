@@ -5,7 +5,7 @@ info:
   description: A plugin that recommends resources like articles or users to a user using ChatGP.
   version: 'v1'
 servers:
-  - url: "https://dev.to"
+  - url: https://dev.to
 paths:
   /api/articles/search:
     get:
@@ -97,7 +97,7 @@ components:
         username: { type: "string" }
         twitter_username: { type: "string", nullable: true }
         github_username: { type: "string", nullable: true }
-        website_url: { type: "string", format: :url, nullable: true }
+        website_url: { type: "string", format: "url", nullable: true }
         profile_image: { description: "Profile image (640x640)", type: "string" }
         profile_image_90: { description: "Profile image (90x90)", type: "string" }
     SharedOrganization:
@@ -107,6 +107,6 @@ components:
         name: { type: "string" }
         username: { type: "string" }
         slug: { type: "string" }
-        profile_image: { description: "Profile image (640x640)", type: "string", format: :url }
-        profile_image_90: { description: "Profile image (90x90)", type: "string", format: :url }
+        profile_image: { description: "Profile image (640x640)", type: "string", format: "url" }
+        profile_image_90: { description: "Profile image (90x90)", type: "string", format: "url" }
 
