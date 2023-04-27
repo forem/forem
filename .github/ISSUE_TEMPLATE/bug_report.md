@@ -4,7 +4,6 @@ about: Create a report to help us improve
 title: ''
 labels: ''
 assignees: ''
-
 ---
 
 <!-- Before creating a bug report, try disabling browser extensions to see if the bug is still present. -->

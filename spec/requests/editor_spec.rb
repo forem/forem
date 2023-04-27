@@ -55,16 +55,45 @@ RSpec.describe "Editor" do
     end
 
     context "when logged-in" do
-      it "returns json" do
+      before do
         sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(false)
+      end
+
+      it "returns json" do
         post "/articles/preview", headers: headers
         expect(response.media_type).to eq("application/json")
       end
+
+      it "returns successfully with frontmatter" do
+        article_body = <<~MARKDOWN
+          ---
+          ---
+
+          Hello
+        MARKDOWN
+
+        post "/articles/preview",
+             headers: headers,
+             params: { article_body: article_body },
+             as: :json
+
+        expect(response).to be_successful
+      end
     end
 
-    context "with front matter" do
-      it "returns successfully" do
+    context "when logged-in + consistent rendering" do
+      before do
         sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
+      end
+
+      it "returns json" do
+        post "/articles/preview", headers: headers
+        expect(response.media_type).to eq("application/json")
+      end
+
+      it "returns successfully" do
         article_body = <<~MARKDOWN
           ---
           ---
