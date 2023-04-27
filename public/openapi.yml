@@ -5,7 +5,7 @@ info:
   description: A plugin that recommends resources like articles or users to a user using ChatGP.
   version: 'v1'
 servers:
-  - url: http://localhost:3000
+  - url: https://dev.to
 paths:
   /api/articles/search:
     get:
