@@ -30,7 +30,14 @@ describe('Show log in modal', () => {
   it('should show login modal for article reaction clicks', () => {
     cy.findAllByText('Test article').last().click();
 
-    cy.findByLabelText('reaction-drawer-trigger').last().trigger('mouseover');
+    // Wait for reactions' async setup to complete/show the reaction counts
+    cy.findByLabelText('reaction-drawer-trigger')
+      .as('reactionDrawerButton')
+      .within(() => {
+        cy.get('.crayons-reaction__count').should('have.text', '0');
+      });
+
+    cy.get('@reactionDrawerButton').trigger('mouseover');
     cy.findByRole('button', { name: 'Like' }).as('heartReaction');
     cy.findByRole('button', { name: 'Unicorn' }).as('unicornReaction');
     cy.findByRole('button', { name: 'Add to reading list' }).as(

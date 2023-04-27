@@ -3,6 +3,7 @@ class DisplayAd < ApplicationRecord
   acts_as_taggable_on :tags
   resourcify
   belongs_to :creator, class_name: "User", optional: true
+  belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third post_sidebar post_comments].freeze
@@ -19,6 +20,9 @@ class DisplayAd < ApplicationRecord
   MAX_TAG_LIST_SIZE = 10
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
+  LOW_IMPRESSION_COUNT = 1_000
+  RARELY = (0...5) # 5 percent chance
+  SELDOM = (5...35) # 30 percent chance
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
@@ -34,6 +38,7 @@ class DisplayAd < ApplicationRecord
 
   before_save :process_markdown
   after_save :generate_display_ad_name
+  after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
 
@@ -42,33 +47,40 @@ class DisplayAd < ApplicationRecord
                              search: "%#{term}%"
                      }
 
-  def self.for_display(area:, user_signed_in:, organization_id: nil, article_id: nil,
-                       article_tags: [], permit_adjacent_sponsors: true)
+  scope :seldom_seen, -> { where("impressions_count < ?", LOW_IMPRESSION_COUNT) }
+
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
+    permit_adjacent = article ? article.permit_adjacent_sponsors? : true
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
-      organization_id: organization_id,
       user_signed_in: user_signed_in,
-      article_id: article_id,
-      article_tags: article_tags,
-      permit_adjacent_sponsors: permit_adjacent_sponsors,
+      article_id: article&.id,
+      article_tags: article&.cached_tag_list_array || [],
+      organization_id: article&.organization_id,
+      permit_adjacent_sponsors: permit_adjacent,
+      user_id: user_id,
     )
 
-    # Business Logic Context:
-    # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
-    # rise to the top. 1 out of every 8 times we show an ad (12.5%), it is totally random. This gives "not yet
-    # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
-    # stays in this area.
-
-    # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
-    # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
-    # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
-    # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
-    # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
-    # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
-    if rand(8) == 1
+    case rand(99) # output integer from 0-99
+    when RARELY # smallest range, 5%
+      # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
+      # rise to the top. 5 out of every 100 times we show an ad (5%), it is totally random. This gives "not yet
+      # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
+      # stays in this area.
       ads_for_display.sample
-    else
+    when SELDOM # medium range, 30%
+      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+      # if there are none of those, causing an extra query, but that shouldn't happen very often).
+      ads_for_display.seldom_seen.sample || ads_for_display.sample
+    else # large range, 65%
+
+      # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
+      # meet that criteria. Within those 15 top "success rates" likely to be clicked, there is a weighting towards the
+      # top ranked outcome as well, and a steady decline over the next 15 — that's because it's not "Here are the top 15
+      # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
+      # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
+      # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       ads_for_display.limit(rand(1..15)).sample
     end
   end
@@ -84,14 +96,23 @@ class DisplayAd < ApplicationRecord
     validate_tag_name(tag_list)
   end
 
+  def audience_segment_type=(type)
+    self.audience_segment = if type.blank?
+                              nil
+                            elsif (segment = AudienceSegment.find_by(type_of: type))
+                              segment
+                            end
+  end
+
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
     overrides = {
+      "audience_segment_type" => audience_segment&.type_of,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list audience_segment_id])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
@@ -143,5 +164,19 @@ class DisplayAd < ApplicationRecord
 
   def prefix_width
     placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+  end
+
+  def refresh_audience_segment
+    AudienceSegmentRefreshWorker.perform_async(audience_segment_id)
+  end
+
+  def should_refresh_audience_segment?
+    change_relevant_to_audience = saved_change_to_approved? ||
+      saved_change_to_published? ||
+      saved_change_to_audience_segment_id?
+
+    change_relevant_to_audience &&
+      audience_segment &&
+      audience_segment.updated_at < 1.day.ago
   end
 end
