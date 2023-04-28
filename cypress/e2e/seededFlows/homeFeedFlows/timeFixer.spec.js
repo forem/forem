@@ -3,8 +3,8 @@ const timeHtml = `
 <h1>This is a test campaign</h1>
   <button id="js-hero-banner__x">Dismiss</button>
   <div class="utc-time" data-datetime=823230245000></div>
-  <div class="utc-date">Apr 13</div>
-  <div class="utc">Wednesday, April 13, 2022, 12:34 PM</div>
+  <div class="utc-date" data-datetime=823230245000></div>
+  <div class="utc">823230245000</div>
 </div>
 `;
 
