@@ -23,12 +23,11 @@
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
 
     <% elsif notification.action == "Moderation" %>
-      <%# TODO: Include target user's name in the notification with fallback %>
-      <% new_user = json_data["comment"]["path"].split("/")[1] %>
+      <% new_user = mod_comment_user(json_data) %>
       <header class="mb-4">
         <h2 class="fs-xl"><%= t("views.notifications.comment.mod_greeting", user: @user.name) %></h2>
-        <p class="mb-4"><%= t("views.notifications.comment.welcome_html", user: new_user) %></p>
-        <p><%= t("views.notifications.comment.commented_html", user: link_to(new_user, "/#{new_user}", class: "crayons-link fw-bold"), title: params[:title]) %></p>
+        <p class="mb-4"><%= t("views.notifications.comment.welcome_html", user: new_user["name"]) %></p>
+        <p><%= t("views.notifications.comment.commented_html", user: link_to(new_user["name"], new_user["path"], class: "crayons-link fw-bold"), title: params[:title]) %></p>
       </header>
 
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
