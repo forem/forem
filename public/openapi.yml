@@ -1,0 +1,112 @@
+openapi: 3.0.1
+# We start by defining the specification version, the title, description, and version number. When a query is run in ChatGPT, it will look at the description that is defined in the info section to determine if the plugin is relevant for the user query.
+info:
+  title: DEV Community
+  description: A plugin that recommends resources like articles or users to a user using ChatGP.
+  version: 'v1'
+servers:
+  - url: https://dev.to
+paths:
+  /api/articles/search:
+    get:
+      operationId: getArticles
+      summary: Get a list of filtered articles
+      parameters:
+        - in: "query"
+          name: "q"
+          required: false
+          description: "Accepts keywords to use as a search query."
+          schema:
+            type: "string"
+        - in: "query"
+          name: "page"
+          required: false
+          description: "Pagination Page"
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 0
+            default: 0
+        - in: "query"
+          name: "per_page"
+          required: false
+          description: "Page size (the number of items to return per page)."
+          schema:
+            type: "integer"
+            format: "int32"
+            minimum: 1
+            maximum: 100
+            default: 60
+        - in: "query"
+          name: "top"
+          required: false
+          description: "Returns the most popular articles in the last N days. 'top' indicates the number of days since publication of the articles returned. This param can be used in conjuction with q or tag."
+          schema:
+            type: "string"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/vnd.forem.api-v1+json:
+              schema:
+                $ref: '#/components/schemas/getArticlesResponse'
+components:
+  schemas:
+    getArticlesResponse:
+      description: "Representation of an article returned in a list"
+      type: "object"
+      properties:
+        type_of: { type: "string" }
+        id: { type: "integer", format: "int32" }
+        title: { type: "string", description: "The article title" }
+        description: { type: "string", description: "A description of the article" }
+        cover_image: { type: "string", format: "url", nullable: true }
+        readable_publish_date: { type: "string" }
+        social_image: { type: "string", format: "url" }
+        tag_list:
+          type: "array"
+          description: "An array representation of the tags that are associated with an article"
+          items:
+            type: "string"
+        tags: { type: "string", description: "An array representation of the tags that are associated with an article" }
+        slug: { type: "string" }
+        path: { description: "A relative path of the article.", type: "string", format: "path" }
+        url: { type: "string", format: "url", description: "The url of the article. Can be used to link to the article." }
+        body_markdown: {type: "string", description: "The body of the article" }
+        canonical_url: { type: "string", format: "url" }
+        positive_reactions_count: { type: "integer", format: "int32" }
+        public_reactions_count: { type: "integer", format: "int32" }
+        created_at: { type: "string", format: "date-time" }
+        edited_at: { type: "string", format: "date-time", nullable: true }
+        crossposted_at: { type: "string", format: "date-time", nullable: true }
+        published_at: { type: "string", format: "date-time" }
+        last_comment_at: { type: "string", format: "date-time" }
+        published_timestamp: { description: "Crossposting or published date time", type: "string",
+                                format: "date-time" }
+        reading_time_minutes: { description: "Reading time, in minutes", type: "integer", format: "int32" }
+        user:
+          $ref: "#/components/schemas/SharedUser"
+        organization:
+          $ref: "#/components/schemas/SharedOrganization"
+      required: ["type_of", "id", "title", "description", "cover_image", "readable_publish_date", "social_image", "tag_list", "tags", "slug", "path", "url", "canonical_url", "comments_count", "positive_reactions_count", "public_reactions_count", "created_at", "edited_at", "crossposted_at", "published_at", "last_comment_at", "published_timestamp", "user", "reading_time_minutes"]
+    SharedUser:
+      description: "The author"
+      type: "object"
+      properties:
+        name: { type: "string" }
+        username: { type: "string" }
+        twitter_username: { type: "string", nullable: true }
+        github_username: { type: "string", nullable: true }
+        website_url: { type: "string", format: "url", nullable: true }
+        profile_image: { description: "Profile image (640x640)", type: "string" }
+        profile_image_90: { description: "Profile image (90x90)", type: "string" }
+    SharedOrganization:
+      description: "The organization the resource belongs to"
+      type: "object"
+      properties:
+        name: { type: "string" }
+        username: { type: "string" }
+        slug: { type: "string" }
+        profile_image: { description: "Profile image (640x640)", type: "string", format: "url" }
+        profile_image_90: { description: "Profile image (90x90)", type: "string", format: "url" }
+

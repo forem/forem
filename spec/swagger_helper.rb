@@ -415,6 +415,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               article_exclude_ids: { type: :string,
                                      nullable: true,
                                      description: "Articles this ad should *not* appear on (blank means no articles are disallowed, and this ad can appear next to any/all articles). Comma-separated list of integer Article IDs" }, # rubocop:disable Layout/LineLength
+              audience_segment_type: { type: :string,
+                                       enum: AudienceSegment.type_ofs.keys,
+                                       description: "Specifies an group of users to show this ad to (only works with logged-in users)" },
               display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                             description: "Potentially limits visitors to whom the ad is visible" },
               type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",

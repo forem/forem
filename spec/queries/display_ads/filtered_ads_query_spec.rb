@@ -95,6 +95,29 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when considering audience segmentation" do
+    let!(:in_segment) { create(:user) }
+    let!(:audience_segment) { create(:audience_segment, type_of: :no_posts_yet) }
+    let!(:targets_segment) { create_display_ad audience_segment: audience_segment }
+    let!(:no_targets) { create_display_ad display_to: :all }
+    let!(:not_in_segment) { create(:user) } # won't be in any segment
+
+    before do
+      _targets_other = create_display_ad audience_segment: create(:audience_segment)
+    end
+
+    it "targets users in/out of segment appropriately" do
+      filtered = filter_ads user_signed_in: true, user_id: in_segment
+      expect(filtered).to contain_exactly(targets_segment, no_targets)
+
+      filtered = filter_ads user_signed_in: true, user_id: not_in_segment
+      expect(filtered).to contain_exactly(no_targets)
+
+      filtered = filter_ads user_signed_in: false
+      expect(filtered).to contain_exactly(no_targets)
+    end
+  end
+
   context "when considering ads with organization_id" do
     let!(:in_house_ad) { create_display_ad type_of: :in_house }
 

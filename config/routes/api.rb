@@ -4,11 +4,13 @@ end
 
 resources :articles, only: %i[index show create update] do
   collection do
+    get "/search", to: "articles#search"
     get "me(/:status)", to: "articles#me", constraints: { status: /published|unpublished|all/ }
     get "/:username/:slug", to: "articles#show_by_slug"
     get "/latest", to: "articles#index", defaults: { sort: "desc" }
   end
 end
+
 resources :comments, only: %i[index show]
 resources :videos, only: [:index]
 resources :podcast_episodes, only: [:index]
