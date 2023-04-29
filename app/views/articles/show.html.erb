@@ -60,7 +60,7 @@
 
 <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
   <aside class="crayons-layout__sidebar-left" aria-label="<%= t("views.articles.actions.aria_label") %>">
-    <%= render "articles/actions" %>
+    <%= render "articles/actions" if @article.published? %>
   </aside>
 
   <main id="main-content" class="crayons-layout__content grid gap-4">
