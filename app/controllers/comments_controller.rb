@@ -152,6 +152,7 @@ class CommentsController < ApplicationController
       render :index
     else
       @commentable = @comment.commentable
+      flash.now[:error] = I18n.t("comments_controller.markdown", error: @commentable.errors_as_sentence)
       render :edit
     end
   rescue StandardError => e
@@ -185,9 +186,14 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
-      parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
-      processed_html = parsed_markdown.finalize
+      if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[current_user])
+        renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
+        processed_html = renderer.process.processed_html
+      else
+        fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
+        parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
+        processed_html = parsed_markdown.finalize
+      end
     rescue StandardError => e
       processed_html = I18n.t("comments_controller.markdown_html", error: e)
     end

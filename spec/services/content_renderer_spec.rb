@@ -66,6 +66,22 @@ RSpec.describe ContentRenderer do
     end
   end
 
+  context "when markdown contains an invalid liquid tag" do
+    let(:markdown) { "hello hey hey hey {% gist 123 %}" }
+    let(:user) { instance_double(User) }
+
+    before do
+      allow(user).to receive(:any_admin?).and_return(true)
+    end
+
+    it "raises ContentParsingError for comment" do
+      source = build(:comment)
+      expect do
+        described_class.new(markdown, source: source, user: user).process
+      end.to raise_error(ContentRenderer::ContentParsingError, /Invalid Gist link: 123 Links must follow this format/)
+    end
+  end
+
   context "when markdown has liquid tags that aren't allowed for source" do
     let(:markdown) { "hello hey hey hey {% poll 123 %}" }
     let(:user) { instance_double(User) }

@@ -52,7 +52,7 @@ module Api
       def permitted_params
         params.permit :approved, :body_markdown, :creator_id, :display_to,
                       :name, :organization_id, :placement_area, :published,
-                      :tag_list, :type_of, :exclude_article_ids
+                      :tag_list, :type_of, :exclude_article_ids, :audience_segment_type
       end
     end
   end
