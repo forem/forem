@@ -1,6 +1,6 @@
 {
   "max_days_since_published": 15,
-  "description": "Built off 20230424-variant-b but with steeper experience level cliff.",
+  "description": "Built off 20230110-variant-c but more weight on tags.",
   "order_by": "final_order_by_random_weighted_to_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
