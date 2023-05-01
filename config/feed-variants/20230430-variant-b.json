@@ -1,8 +1,8 @@
 {
   "max_days_since_published": 15,
-  "description": "Built off 20230424-variant-b but with steeper experience level cliff.",
+  "description": "Built off 20230424-variant-b but with randomization on refresh.",
   "order_by": "final_order_by_random_weighted_to_score",
-  "reseed_randomizer_on_each_request": false,
+  "reseed_randomizer_on_each_request": true,
   "levers": {
     "daily_decay": {
       "cases": [
@@ -69,15 +69,15 @@
       "cases": [
         [0, 1],
         [1, 0.97],
-        [2, 0.5],
-        [3, 0.4],
-        [4, 0.3],
-        [5, 0.2],
-        [6, 0.15],
-        [7, 0.13]
+        [2, 0.95],
+        [3, 0.88],
+        [4, 0.77],
+        [5, 0.55],
+        [6, 0.35],
+        [7, 0.3]
       ],
       "default_user_experience_level": 5,
-      "fallback": 0.001
+      "fallback": 0.2
     },
     "matching_positive_tags_intersection_count": {
       "cases": [

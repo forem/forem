@@ -1,6 +1,6 @@
 {
   "max_days_since_published": 15,
-  "description": "Built off 20230424-variant-b but with steeper experience level cliff.",
+  "description": "Built off 20230424-variant-b but more weight on tags.",
   "order_by": "final_order_by_random_weighted_to_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
@@ -69,35 +69,38 @@
       "cases": [
         [0, 1],
         [1, 0.97],
-        [2, 0.5],
-        [3, 0.4],
-        [4, 0.3],
-        [5, 0.2],
-        [6, 0.15],
-        [7, 0.13]
+        [2, 0.95],
+        [3, 0.88],
+        [4, 0.77],
+        [5, 0.55],
+        [6, 0.35],
+        [7, 0.3]
       ],
       "default_user_experience_level": 5,
-      "fallback": 0.001
+      "fallback": 0.2
     },
     "matching_positive_tags_intersection_count": {
       "cases": [
-        [0, 0.001],
-        [1, 0.97]
+        [0, 0.0001],
+        [1, 0.98]
       ],
       "fallback": 1
     },
     "matching_positive_tags_intersection_points": {
       "cases": [
         [0, 0.001],
-        [1, 0.45],
-        [2, 0.5],
-        [3, 0.7],
-        [4, 0.75],
-        [5, 0.8],
-        [6, 0.85],
-        [7, 0.9],
-        [8, 0.93],
-        [9, 0.95]
+        [1, 0.35],
+        [2, 0.4],
+        [3, 0.5],
+        [4, 0.6],
+        [5, 0.7],
+        [6, 0.8],
+        [7, 0.85],
+        [8, 0.9],
+        [9, 0.95],
+        [10, 0.97],
+        [11, 0.98],
+        [12, 0.99]
       ],
       "fallback": 1
     },
