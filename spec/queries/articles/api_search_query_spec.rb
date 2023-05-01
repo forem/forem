@@ -22,6 +22,13 @@ RSpec.describe Articles::ApiSearchQuery, type: :query do
       articles = described_class.call({ q: "ruby" })
       expect(articles.count).to eq(1)
     end
+
+    it "does not show article if below minimum index" do
+      Settings::UserExperience.index_minimum_score = 10_000
+      articles = described_class.call({ q: "ruby" })
+      expect(articles.count).to eq(0)
+      Settings::UserExperience.index_minimum_score = 0
+    end
   end
 
   context "when there is a top parameter" do
