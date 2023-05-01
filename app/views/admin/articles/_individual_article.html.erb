@@ -40,18 +40,41 @@
       </a>
     <% end %>
 
-    <h2 class="crayons-subtitle-1">
-      <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded">
-        <%= article.title %>
-      </a>
-    </h2>
+    <div class="flex justify-between gap-4 items-center">
+      <h2 class="crayons-subtitle-1">
+        <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded">
+          <%= article.title %>
+        </a>
+      </h2>
+      <div class="flex items-center gap-1">        
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/thumb-up", native: true, title: t("views.moderations.actions.thumb_up"), width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts['thumbsup'] || '0' %></span>
+        </span>
+
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/thumb-down", native: true, title: t("views.moderations.actions.thumb_down"), width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts['thumbsdown'] || '0' %></span>
+        </span>
+
+        <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
+          <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Vomit", width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts['vomit'] || '0' %></span>
+        </span>
+        
+        <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
+          <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+          <span class="fs-s fw-medium lh-base"><%= article.score %></span>
+        </span>
+      </div>
+    </div>
 
     <div class="-ml-1 fs-s flex items-center gap-4">
       <div class="flex gap-px">
         <% decorated_article.cached_tag_list_array.each do |tag| %>
           <a class="crayons-tag crayons-tag--monochrome" href='<%= tag_path(tag) %>'><span class="crayons-tag__prefix">#</span><%= tag %></a>
         <% end %>
-      </div>
+      </div>  
 
       <span>❤️&nbsp;<%= article.public_reactions_count %> likes</span>
       <span>💬&nbsp;<%= article.comments_count %> comments</span>
