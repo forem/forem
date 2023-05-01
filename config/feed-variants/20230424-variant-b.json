@@ -77,7 +77,7 @@
         [7, 0.3]
       ],
       "default_user_experience_level": 5,
-      "fallback": 0.001
+      "fallback": 0.2
     },
     "matching_positive_tags_intersection_count": {
       "cases": [
