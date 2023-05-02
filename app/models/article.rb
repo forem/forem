@@ -332,7 +332,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :created_at,
-           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids)
+           :body_markdown, :email_digest_eligible, :processed_html, :co_author_ids, :score)
   }
 
   scope :sorting, lambda { |value|
@@ -596,6 +596,10 @@ class Article < ApplicationRecord
        !featured) ||
       published_at.to_i < 1_500_000_000 ||
       score < -1
+  end
+
+  def privileged_reaction_counts
+    @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end
 
   private

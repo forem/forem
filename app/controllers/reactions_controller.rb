@@ -57,7 +57,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_comment_reactions(user, comment_ids)
-    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}",
+    cache = Rails.cache.fetch("#{user.cache_key}/public-comment-reactions-#{user.public_reactions_count}",
                               expires_in: 24.hours) do
       user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
         h[r.reactable_id] = r.attributes
