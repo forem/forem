@@ -5,7 +5,7 @@ class CtaTag < Liquid::Block
 
   def initialize(_tag_name, link, _parse_context)
     super
-    @link = sanitize(link.strip)
+    @link = strip_tags(link.strip)
   end
 
   def render(_context)
