@@ -198,7 +198,8 @@ export const articleWithComments = {
       user_id: 6,
       published_timestamp: '2020-04-21T19:41:40Z',
       published_at_int: new Date(),
-      safe_processed_html: '<p>Kitsch hoodie artisan.</p>\n\n',
+      safe_processed_html:
+        '<p>Kitsch hoodie artisan.</p><p>Second paragraph.</p><p>Third paragraph.</p>\n\n',
       path: '/naoma_dr_rice/comment/n',
       username: 'naoma_dr_rice',
       name: 'Dr. Naoma Rice',

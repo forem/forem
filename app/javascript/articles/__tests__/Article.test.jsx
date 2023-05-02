@@ -200,6 +200,21 @@ describe('<Article /> component', () => {
     expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
   });
 
+  it('should render second paragraph, but not third', () => {
+    const { queryByTestId } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithComments}
+      />,
+    );
+
+    const comments = queryByTestId('comment-content');
+
+    expect(comments.textContent).toContain('Kitsch hoodie artisan');
+    expect(comments.classList).not.toContain('Third paragraph');
+  });
+
   it('should render with an add comment button when there are no comments', () => {
     const { queryByTestId } = render(
       <Article {...commonProps} isBookmarked={false} article={article} />,
