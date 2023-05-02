@@ -243,7 +243,8 @@ export const articleWithCommentWithLongParagraph = {
       published_timestamp: '2020-04-21T19:41:40Z',
       published_at_int: new Date(),
       safe_processed_html:
-        '<p>Start of paragraph. This is a long test paragraph. Yes it is really really really really really long. For real, like really real. Okay, this is long enough. End of paragraph</p>\n\n',
+        `<p>Start of paragraph. This is a long test paragraph. This is a long test paragraph. This is a long test paragraph. This is a long test paragraph. This is a long test paragraph.
+        This is a long test paragraph. This is a long test paragraph. Yes it is really really really really really long. For real, like really real. Okay, this is long enough. End of paragraph</p>\n\n`,
       path: '/naoma_dr_rice/comment/n',
       username: 'naoma_dr_rice',
       name: 'Dr. Naoma Rice',
