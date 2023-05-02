@@ -1,12 +1,10 @@
-'use strict';
-
 function formatDateTime(options, value) {
   return new Intl.DateTimeFormat('en-US', options).format(value);
 }
 
 function convertUtcTime(utcTime) {
-  var time = new Date(utcTime);
-  var options = {
+  const time = new Date(Number(utcTime));
+  const options = {
     hour: 'numeric',
     minute: 'numeric',
     timeZoneName: 'short',
@@ -15,8 +13,8 @@ function convertUtcTime(utcTime) {
 }
 
 function convertUtcDate(utcDate) {
-  var date = new Date(utcDate);
-  var options = {
+  const date = new Date(Number(utcDate));
+  const options = {
     month: 'short',
     day: 'numeric',
   };
@@ -24,8 +22,8 @@ function convertUtcDate(utcDate) {
 }
 
 function convertCalEvent(utc) {
-  var date = new Date(utc);
-  var options = {
+  const date = new Date(Number(utc));
+  const options = {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
@@ -37,8 +35,8 @@ function convertCalEvent(utc) {
 }
 
 function updateLocalDateTime(elements, convertCallback, getUtcDateTime) {
-  var local;
-  for (var i = 0; i < elements.length; i += 1) {
+  let local;
+  for (let i = 0; i < elements.length; i += 1) {
     local = convertCallback(getUtcDateTime(elements[i]));
     // eslint-disable-next-line no-param-reassign
     elements[i].innerHTML = local;
@@ -46,9 +44,9 @@ function updateLocalDateTime(elements, convertCallback, getUtcDateTime) {
 }
 
 function initializeTimeFixer() {
-  var utcTime = document.getElementsByClassName('utc-time');
-  var utcDate = document.getElementsByClassName('utc-date');
-  var utc = document.getElementsByClassName('utc');
+  const utcTime = document.getElementsByClassName('utc-time');
+  const utcDate = document.getElementsByClassName('utc-date');
+  const utc = document.getElementsByClassName('utc');
 
   if (!utc) {
     return;
@@ -66,3 +64,12 @@ function initializeTimeFixer() {
   );
   updateLocalDateTime(utc, convertCalEvent, (element) => element.innerHTML);
 }
+
+export {
+  initializeTimeFixer,
+  updateLocalDateTime,
+  convertUtcDate,
+  convertUtcTime,
+  formatDateTime,
+  convertCalEvent,
+};

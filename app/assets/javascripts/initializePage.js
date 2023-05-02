@@ -3,7 +3,7 @@
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
   initializeSettings, initializeRuntimeBanner,
-  initializeTimeFixer, initializeCreditsPage,
+  initializeCreditsPage,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
   fetching:writable, done:writable, initializePaymentPointers,
@@ -14,7 +14,6 @@ function callInitializers() {
   initializePaymentPointers();
   initializeCommentsPage();
   initializeSettings();
-  initializeTimeFixer();
   initializeCreditsPage();
   initializeOnboardingTaskCard();
 }
