@@ -4,11 +4,16 @@ module DisplayAds
       new(...).call
     end
 
+    # @param area [String] the site area where the ad is visible
+    # @param user_signed_in [Boolean] whether or not the visitor is signed-in
+    # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd)
+                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd,
+                   user_id: nil)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
+      @user_id = user_signed_in ? user_id : nil
       @organization_id = organization_id
       @article_tags = article_tags
       @article_id = article_id
@@ -30,6 +35,8 @@ module DisplayAds
       if @article_id.present?
         @filtered_display_ads = unexcluded_article_ads
       end
+
+      @filtered_display_ads = user_targeting_ads
 
       @filtered_display_ads = if @user_signed_in
                                 authenticated_ads(%w[all logged_in])
@@ -70,6 +77,15 @@ module DisplayAds
 
     def authenticated_ads(display_auth_audience)
       @filtered_display_ads.where(display_to: display_auth_audience)
+    end
+
+    def user_targeting_ads
+      if @user_id
+        segment_ids = SegmentedUser.where(user_id: @user_id).pluck(:audience_segment_id)
+        @filtered_display_ads.where("audience_segment_id IS NULL OR audience_segment_id IN (?)", segment_ids)
+      else
+        @filtered_display_ads.where(audience_segment_id: nil)
+      end
     end
 
     def type_of_ads

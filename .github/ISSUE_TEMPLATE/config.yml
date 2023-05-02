@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Feature Request
-    url: https://github.com/forem/forem/discussions
-    about: Visit our GitHub Discussions page to suggest an idea to make Forem better. 
-  - name: Forem Questions and Discussions
-    url: https://forem.dev/
-    about: Please ask and answer questions, discuss features, or reach out for help on forem.dev
+    url: https://github.com/forem/forem/discussions/categories/feature-requests
+    about: Have a feature request?  Please let us know via GitHub Discussions. 
+  - name: Forem Q&A
+    url: https://github.com/forem/forem/discussions/categories/q-a
+    about: Have a general questions?  Please let us know via GitHub Discussions.
   - name: Self-Host Bug Report
     url: https://github.com/forem/selfhost/issues/new
     about: Create a report to help us improve the Self-Host repository.

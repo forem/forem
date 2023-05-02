@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { addSnackbarItem } from '../../Snackbar';
 
 export default class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];
@@ -29,6 +30,10 @@ export default class ReactionController extends Controller {
         .then((json) => {
           if (json.outcome === 'Success') {
             this.element.remove();
+            addSnackbarItem({
+              message: 'Flag status has been changed successfully',
+              addCloseButton: false,
+            });
             document.getElementById(`js__reaction__div__hr__${id}`).remove();
           } else {
             window.alert(json.error);

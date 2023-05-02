@@ -4,14 +4,17 @@ module Admin
 
     def index
       relation = if params[:state] == "mine"
-                   current_user.html_variants.order(created_at: :desc)
-                 elsif params[:state].present? && params[:state] != "admin"
-                   HtmlVariant.where(published: true, approved: true, group: params[:state]).order(created_at: :desc)
+                   current_user.html_variants
+                 elsif params[:state] == "admin"
+                   HtmlVariant.where(published: true, approved: false)
+                 elsif params[:state].present?
+                   HtmlVariant.where(published: true, approved: true, group: params[:state])
                  else
-                   HtmlVariant.where(published: true, approved: true).order(created_at: :desc)
+                   HtmlVariant.where(published: true, approved: true)
                  end
 
-      @html_variants = relation.includes(:user).page(params[:page]).per(30)
+      relation = relation.includes(:user) unless params[:state] == "mine"
+      @html_variants = relation.order(created_at: :desc).page(params[:page]).per(30)
     end
 
     def show

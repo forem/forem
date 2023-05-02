@@ -19,7 +19,7 @@
         <% @articles.each do |article| %>
           <%= render "articles/single_story", story: article.decorate, featured: article.main_image.present? %>
         <% end %>
-        <%= javascript_packs_with_chunks_tag "followButtons", "feedPreviewCards", "hideBookmarkButtons", defer: true %>
+        <%= javascript_packs_with_chunks_tag "followButtons", "feedPreviewCards", "hideBookmarkButtons", "localizeArticleDates", defer: true %>
       <% else %>
         <p><%= t("views.series.list.empty") %></p>
       <% end %>
