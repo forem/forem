@@ -15,7 +15,8 @@ class CtaTag < Liquid::Block
       partial: PARTIAL,
       locals: {
         link: @link,
-        description: description
+        description: description,
+        type: "branded"
       },
     )
   end
