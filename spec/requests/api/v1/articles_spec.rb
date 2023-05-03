@@ -1226,4 +1226,89 @@ RSpec.describe "Api::V1::Articles" do
       end
     end
   end
+
+  describe "GET /api/articles/search" do
+    before { article }
+
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get "/api/articles/search", headers: { origin: origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
+    context "when there is one article returned" do
+      it "has correct keys in the response" do
+        article.update_columns(organization_id: organization.id)
+        get "/api/articles/search"
+
+        index_keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes body_markdown
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array index_keys
+      end
+    end
+
+    context "when there is more than one article returned" do
+      it "has correct keys in the response" do
+        new_article = create(:article)
+        article.update_columns(organization_id: organization.id)
+        new_article.update_columns(organization_id: organization.id)
+
+        get "/api/articles/search"
+
+        keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array keys
+      end
+    end
+
+    it "supports pagination" do
+      create_list(:article, 2)
+      get "/api/articles/search", params: { page: 1, per_page: 2 }
+      expect(response.parsed_body.length).to eq(2)
+      get "/api/articles/search", params: { page: 2, per_page: 2 }
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "returns flare tag in the response" do
+      get "/api/articles/search"
+      response_article = response.parsed_body.first
+      expect(response_article["flare_tag"]).to be_present
+      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+      expect(response_article["flare_tag"]["name"]).to eq("discuss")
+    end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get "/api/articles/search"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+        allow(ApplicationConfig).to receive(:[]).and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+        allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+        create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
+        get "/api/articles/search", params: { per_page: 10 }
+        expect(response.parsed_body.count).to eq(2)
+      end
+    end
+  end
 end
