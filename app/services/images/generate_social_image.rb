@@ -1,8 +1,8 @@
 module Images
   class GenerateSocialImage
     OPTIMIZER_OPTIONS = {
-      height: 400,
-      width: 800,
+      height: 720,
+      width: 1280,
       gravity: "north",
       crop: "fill",
       type: "url2png",
