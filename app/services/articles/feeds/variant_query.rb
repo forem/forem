@@ -292,11 +292,11 @@ module Articles
       end
 
       def default_offset
-        return 0 if @page == 1
-
-        @page.to_i - (1 * default_limit)
+        return 0 if @page == 0
+      
+        (@page.to_i - 1) * default_limit
       end
-
+      
       # We want to ensure that we're not randomizing someone's feed all the time; and instead aiming
       # for somewhat repeatable experiences (e.g. I refresh the page it is likely I will have the
       # same order of pages even though we've randomized things a bit).
