@@ -294,21 +294,6 @@ seeder.create_if_none(Podcast) do
 
   podcast_objects = [
     {
-      title: "CodeNewbie",
-      description: "",
-      feed_url: "http://feeds.codenewbie.org/cnpodcast.xml",
-      itunes_url: "https://itunes.apple.com/us/podcast/codenewbie/id919219256",
-      slug: "codenewbie",
-      twitter_username: "CodeNewbies",
-      website_url: "https://www.codenewbie.org/podcast",
-      main_color_hex: "2faa4a",
-      overcast_url: "https://overcast.fm/itunes919219256/codenewbie",
-      android_url: "https://subscribeonandroid.com/feeds.podtrac.com/q8s8ba9YtM6r",
-      image: Pathname.new(image_file).open,
-      published: true,
-      featured: true
-    },
-    {
       title: "CodingBlocks",
       description: "",
       feed_url: "https://www.codingblocks.net/podcast-feed.xml",
