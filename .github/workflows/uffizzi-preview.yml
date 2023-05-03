@@ -84,7 +84,8 @@ jobs:
       server: https://app.uffizzi.com
       pr-number: ${{ needs.cache-compose-file.outputs.pr-number }}
     secrets:
-      TEST: "test"
+      STAGING_GITHUB_KEY: ${{ secrets.STAGING_GITHUB_KEY }}
+      STAGING_GITHUB_SECRET: ${{ secrets.STAGING_GITHUB_SECRET }}
     permissions:
       contents: read
       pull-requests: write
