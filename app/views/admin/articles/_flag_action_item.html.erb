@@ -4,8 +4,8 @@
   data-reaction-url-value="<%= admin_reaction_path(vomit_reaction.id) %>">
   <div class="flex items-center w-100 gap-10">
     <div class="flex items-center p-0 w-100">
-      <div class="crayons-card crayons-card--secondary p-3 mr-7">
-        <%= crayons_icon_tag("twemoji/suspicious", native: true, title: "Vomit", width: 24, height: 24) %>
+      <div class="crayons-card crayons-card--secondary p-3 mr-7" title="Vomit">
+        <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 24, height: 24) %>
       </div>
       <div class="p-0">
         <p class="crayons-subtitle-3"><%= vomit_reaction.user.name %></p>
@@ -16,17 +16,17 @@
     </div>
     <div class="flex justify-between w-100">
       <% if vomit_reaction.status == 'valid' %>
-        <span class="c-indicator c-indicator--danger c-indicator--relaxed">Valid</span>
+        <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="Flagged marked as valid by admin">Valid</span>
       <% elsif vomit_reaction.status == 'invalid' %>
-        <span class="c-indicator c-indicator--relaxed">Invalid</span>
+        <span class="c-indicator c-indicator--relaxed" title="Flagged marked as invalid by admin">Invalid</span>
       <% elsif vomit_reaction.status == 'open' %>
-        <span class="c-indicator c-indicator--success c-indicator--relaxed">Open</span>
+        <span class="c-indicator c-indicator--success c-indicator--relaxed" title="Open flag">Open</span>
       <% else %>
         <span class="c-indicator c-indicator--info c-indicator--relaxed">Confirmed</span>
       <% end %>
 
-      <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
-        <%= crayons_icon_tag("analytics", native: true, title: "Score", width: 16, height: 16) %>
+      <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by particular flag">
+        <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
         <span class="fs-s fw-medium lh-base"><%= vomit_reaction.points %></span>
       </span>
     </div>
