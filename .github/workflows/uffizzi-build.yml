@@ -19,6 +19,7 @@ jobs:
           fail-on-cache-miss: false
           path: |
             public/assets
+            public/packs
             public/packs-test
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}

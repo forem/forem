@@ -83,6 +83,9 @@ jobs:
       compose-file-cache-path: docker-compose.rendered.yml
       server: https://app.uffizzi.com
       pr-number: ${{ needs.cache-compose-file.outputs.pr-number }}
+    secrets:
+      GITHUB_KEY: ${{ secrets.STAGING_GITHUB_KEY }}
+      GITHUB_SECRET: ${{ secrets.STAGING_GITHUB_SECRET }}
     permissions:
       contents: read
       pull-requests: write

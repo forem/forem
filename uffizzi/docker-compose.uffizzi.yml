@@ -25,12 +25,14 @@ services:
       STATEMENT_TIMEOUT: 10000
       APP_DOMAIN: localhost:3000
       APP_PROTOCOL: https://
+      GITHUB_KEY: "${GITHUB_KEY}"
+      GITHUB_SECRET: "${GITHUB_SECRET}"
     entrypoint: ["dockerize", "-wait", "tcp://localhost:5432", "-wait", "tcp://localhost:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "5400s"]
     command: [ "bash", "-c", "./uffizzi/entrypoint.sh bootstrap"]
     deploy:
       resources:
         limits:
-          memory: 4000M     
+          memory: 4000M
 
   seed:
     image: "${APP_IMAGE}"
