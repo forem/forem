@@ -146,6 +146,8 @@ class ReactionHandler
   end
 
   def send_notifications(reaction)
+    return unless ReactionCategory.notifiable.include?(reaction.category.to_sym)
+
     Notification.send_reaction_notification(reaction, reaction.target_user)
     return unless reaction.reaction_on_organization_article?
 
@@ -153,6 +155,8 @@ class ReactionHandler
   end
 
   def send_notifications_without_delay(reaction)
+    return unless ReactionCategory.notifiable.include?(reaction.category.to_sym)
+
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
     return unless reaction.reaction_on_organization_article?
 
