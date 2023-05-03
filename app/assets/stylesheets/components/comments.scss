@@ -6,6 +6,7 @@
   display: flex;
   align-items: flex-start;
   padding-left: var(--su-3);
+  margin-right: var(--su-3);
 
   &__meta {
     display: flex;
@@ -32,6 +33,7 @@
 
     border-radius: var(--radius);
     padding: var(--su-4);
+    padding-bottom: var(--su-1);
     .crayons-comment__inner {
       .c-embed {
         padding-top: var(--su-3);
@@ -58,6 +60,7 @@
       font-weight: var(--fw-medium);
       margin-bottom: var(--su-1);
       margin-top: -3px;
+      padding-bottom: var(--su-1);
     }
     img {
       max-height: 130px;
