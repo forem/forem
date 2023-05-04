@@ -292,7 +292,7 @@ module Articles
       end
 
       def default_offset
-        return 0 if @page == 0
+        return 0 if @page.zero?
 
         (@page.to_i - 1) * default_limit
       end
