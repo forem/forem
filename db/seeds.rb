@@ -9,7 +9,7 @@ require Rails.root.join("app/lib/seeder")
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
 seeder = Seeder.new
-SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
+SEEDS_MULTIPLIER = [2, ENV["SEEDS_MULTIPLIER"].to_i].max
 puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 
 ##############################################################################
