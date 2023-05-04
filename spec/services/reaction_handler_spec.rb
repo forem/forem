@@ -25,6 +25,14 @@ RSpec.describe ReactionHandler, type: :service do
     }
   end
 
+  let(:reactable_data) do
+    {
+      reactable_id: article.id,
+      reactable_type: "Article",
+      reactable_user_id: article.user.id
+    }
+  end
+
   describe "#create" do
     subject(:result) { described_class.new(params, current_user: user).create }
 
@@ -35,7 +43,15 @@ RSpec.describe ReactionHandler, type: :service do
       end
 
       it "ignores other existing reactions" do
+        expect(result).to be_success
         expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
+      end
+
+      it "sends a notification to the author" do
+        receiver = { klass: "User", id: article.user.id }
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, receiver]) do
+          expect(result).to be_success
+        end
       end
     end
 
@@ -48,7 +64,25 @@ RSpec.describe ReactionHandler, type: :service do
       end
 
       it "ignores other existing reactions" do
+        expect(result).to be_success
         expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id, existing.id)
+      end
+
+      it "does not send a notification to the author" do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::NewReactionWorker) do
+          expect(result).to be_success
+        end
+      end
+    end
+
+    context "when the reaction is not in a notifiable category" do
+      let(:category) { "readinglist" }
+
+      it "does not send a notification to the author" do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::NewReactionWorker) do
+          expect(result).to be_success
+          expect(result.action).to eq("create")
+        end
       end
     end
 
@@ -85,7 +119,26 @@ RSpec.describe ReactionHandler, type: :service do
       end
 
       it "ignores other existing reactions" do
+        expect(result).to be_success
         expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
+      end
+
+      it "sends a notification to the author" do
+        receiver = { klass: "User", id: article.user.id }
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, receiver]) do
+          expect(result).to be_success
+        end
+      end
+    end
+
+    context "when the reaction is not in a notifiable category" do
+      let(:category) { "readinglist" }
+
+      it "does not send a notification to the author" do
+        sidekiq_assert_no_enqueued_jobs(only: Notifications::NewReactionWorker) do
+          expect(result).to be_success
+          expect(result.action).to eq("create")
+        end
       end
     end
 
@@ -95,10 +148,20 @@ RSpec.describe ReactionHandler, type: :service do
       it "un-likes" do
         expect(result).to be_success
         expect(result.action).to eq("destroy")
+        expect(Reaction.ids).not_to include(existing.id)
       end
 
       it "ignores other existing reactions" do
-        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id, existing.id)
+        expect(result).to be_success
+        expect(Reaction.ids).to include(other_category.id, other_existing.id, contradictory_mod.id)
+      end
+
+      it "immediately sends a notification to the author" do
+        allow(Notifications::Reactions::Send).to receive(:call)
+
+        expect(result).to be_success
+
+        expect(Notifications::Reactions::Send).to have_received(:call).with(reactable_data, article.user)
       end
     end
 
