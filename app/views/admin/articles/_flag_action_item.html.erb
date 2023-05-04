@@ -16,11 +16,11 @@
     </div>
     <div class="flex justify-between w-100">
       <% if vomit_reaction.status == 'valid' %>
-        <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="Flagged marked as valid by admin">Valid</span>
+        <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="Flagged marked as valid by admin">Open</span>
       <% elsif vomit_reaction.status == 'invalid' %>
         <span class="c-indicator c-indicator--relaxed" title="Flagged marked as invalid by admin">Invalid</span>
-      <% elsif vomit_reaction.status == 'open' %>
-        <span class="c-indicator c-indicator--success c-indicator--relaxed" title="Open flag">Open</span>
+      <% elsif vomit_reaction.status == 'confirmed' %>
+        <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="Open flag">Valid</span>
       <% else %>
         <span class="c-indicator c-indicator--info c-indicator--relaxed">Confirmed</span>
       <% end %>

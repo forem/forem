@@ -203,7 +203,7 @@
     </nav>
 
     <% privileged_article_reactions = article.reactions.privileged_category.select { |reaction| reaction.reactable_type == "Article" } %>
-    <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" && reaction.status != "confirmed" } %>
+    <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" } %>
     <% quality_article_reactions = privileged_article_reactions - vomit_article_reactions %>
     
     <div id="reaction-content" class="flex flex-col gap-3 px-6 mt-6" style="overflow: scroll; height: 406px;">
