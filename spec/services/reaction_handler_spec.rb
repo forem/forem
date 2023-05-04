@@ -55,6 +55,21 @@ RSpec.describe ReactionHandler, type: :service do
       end
     end
 
+    context "when the article is written for an organization" do
+      let(:org_author) { create(:user, :org_member) }
+      let(:organization) { org_author.organizations.first }
+      let(:article) { create(:article, organization: organization, user: org_author) }
+
+      it "sends a notification to both the author and the organization" do
+        author = { klass: "User", id: article.user.id }
+        org = { klass: "Organization", id: organization.id }
+
+        expect(result).to be_success
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, author])
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, org])
+      end
+    end
+
     context "when there's an existing/matching reaction by user" do
       let!(:existing) { article.reactions.create! user: user, category: "like" }
 
@@ -162,6 +177,31 @@ RSpec.describe ReactionHandler, type: :service do
         expect(result).to be_success
 
         expect(Notifications::Reactions::Send).to have_received(:call).with(reactable_data, article.user)
+      end
+    end
+
+    context "when the article is written for an organization" do
+      let(:org_author) { create(:user, :org_member) }
+      let(:organization) { org_author.organizations.first }
+      let(:article) { create(:article, organization: organization, user: org_author) }
+
+      it "sends a notification to both the author and the organization" do
+        author = { klass: "User", id: article.user.id }
+        org = { klass: "Organization", id: organization.id }
+
+        expect(result).to be_success
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, author])
+        sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, org])
+      end
+
+      it "sends the notifications immediately if there was an existing reaction" do
+        allow(Notifications::Reactions::Send).to receive(:call)
+
+        article.reactions.create! user: user, category: "like"
+        expect(result).to be_success
+
+        expect(Notifications::Reactions::Send).to have_received(:call).with(reactable_data, org_author)
+        expect(Notifications::Reactions::Send).to have_received(:call).with(reactable_data, organization)
       end
     end
 
