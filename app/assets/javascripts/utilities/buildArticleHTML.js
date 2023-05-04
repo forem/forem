@@ -57,17 +57,25 @@ function buildArticleHTML(article, currentUserId = null) {
     }" loading="lazy" />
           </a>
           <div>
-            <h3 class="crayons-subtitle-2 lh-tight py-2">
+            <h3 class="crayons-subtitle-2 lh-tight py-1">
               <a href="${article.slug}" class="c-link">
                 ${article.name}
               </a>
             </h3>
-            <h4>@${article.twitter_username}</h4>
+            <p>@${article.twitter_username}</p>
+            <br/>
             ${
               article.summary
                 ? `<div class="truncate-at-3">${article.summary}</div>`
                 : ''
             }
+          </div>
+          <div class="print-hidden" style="margin-left: auto">
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": "${
+              article.id
+            }", "className": "Organization", "style": "full", "name": "${
+      article.name
+    }"}'>Follow</button>
           </div>
         </div>
       </article>`;
