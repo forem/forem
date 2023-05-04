@@ -16,7 +16,7 @@ class CtaTag < Liquid::Block
       locals: {
         link: @link,
         description: description,
-        type: "branded"
+        style: "branded" # in the future we can use this property to expose different cta styles
       },
     )
   end
