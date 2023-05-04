@@ -14,6 +14,11 @@
         </time>
       </div>
     </div>
+
+    <%# Note: There are discrepancies in status naming between the frontend (FE) and backend (BE). %>
+    <%# In the FE, 'Open/Unresolved' corresponds to 'valid' in the BE. This status appears when a trusted user flags an article, with a score of -50. %>
+    <%# In the FE, 'Valid' corresponds to 'confirmed' in the BE. This status appears when an admin user flags an article or marks a trusted user-flagged article as valid, with a score of -100. %>
+    <%# In both the FE and BE, 'Invalid' remains the same. This status appears when an admin user marks a flag or vomit reaction as invalid, with a score of 0. %>
     <div class="flex justify-between w-100">
       <% if vomit_reaction.status == 'valid' %>
         <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="Flagged marked as valid by admin">Open</span>
@@ -22,7 +27,8 @@
       <% elsif vomit_reaction.status == 'confirmed' %>
         <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="Open flag">Valid</span>
       <% else %>
-        <span class="c-indicator c-indicator--info c-indicator--relaxed">Confirmed</span>
+        <%# This case should never arise. %>
+        <span class="c-indicator c-indicator--info c-indicator--relaxed">Unidentified</span>
       <% end %>
 
       <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by particular flag">
