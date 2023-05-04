@@ -117,6 +117,13 @@ body {
     }
   }
 
+  a[class*='ltag'] {
+    text-decoration: none;
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+
   h1,
   h2,
   h3,
