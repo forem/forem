@@ -65,7 +65,7 @@ jobs:
           key: ${{ steps.hash.outputs.hash }}
 
   deploy-uffizzi-preview:
-    name: Use Remote Workflow to Preview on Uffizzi
+    name: Deploy preview
     needs: render-compose-file
     uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2
     if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
@@ -79,7 +79,7 @@ jobs:
       id-token: write
 
   delete-uffizzi-preview:
-    name: Use Remote Workflow to Delete an Existing Preview
+    name: Delete preview
     uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2
     if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' }}
     with:
