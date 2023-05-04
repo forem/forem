@@ -88,3 +88,5 @@ jobs:
       server: https://app.uffizzi.com/
     permissions:
       contents: read
+      pull-requests: write
+      id-token: write
