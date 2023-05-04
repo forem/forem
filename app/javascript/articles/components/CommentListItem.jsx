@@ -23,6 +23,7 @@ function contentAwareComments(comment) {
       node.tagName === 'P' &&
       nodesSelected < 2 &&
       node.outerHTML.length > 250
+      && !node.outerHTML.includes('article-body-image-wrapper')
     ) {
       text = `${text} ${node.outerHTML.substring(0, 230)} ...`;
       nodesSelected = 2;
