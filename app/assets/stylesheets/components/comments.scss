@@ -2,7 +2,11 @@
 
 .crayons-comment {
   font-size: var(--fs-s);
-  padding: var(--su-2) var(--su-3);
+  padding-bottom: var(--su-3);
+  display: flex;
+  align-items: flex-start;
+  padding-left: var(--su-3);
+  margin-right: var(--su-3);
 
   &__meta {
     display: flex;
@@ -14,11 +18,60 @@
     }
   }
 
+  &__metainner {
+    color: var(--base-80);
+    margin-bottom: var(--su-1);
+  }
+
   &__body {
     padding-left: var(--su-7);
-    max-height: 310px;
-    overflow: hidden;
-    position: relative;
+    width: 100%;
+    background: var(--card-tertiary-bg);
+    &:hover {
+      background: var(--card-tertiary-bg-hover);
+    }
+
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    padding-bottom: var(--su-1);
+    .crayons-comment__inner {
+      .c-embed {
+        padding-top: var(--su-3);
+        padding-bottom: var(--su-1);
+      }
+      .c-embed__cover {
+        display: none;
+      }
+      .c-embed__body {
+        font-size: var(--fs-s);
+      }
+      div:not(.crayons-comment__readmore) {
+        margin-bottom: var(--su-3);
+        background: var(--card-secondary-bg);
+      }
+      .liquid-comment .body {
+        :not(:first-child) {
+          display: none;
+        }
+      }
+    }
+    .crayons-comment__readmore {
+      color: var(--base-80);
+      font-weight: var(--fw-medium);
+      margin-bottom: var(--su-1);
+      margin-top: -3px;
+      padding-bottom: var(--su-1);
+    }
+    img {
+      max-height: 130px;
+      border-radius: var(--radius);
+      max-width: 220px;
+    }
+    iframe {
+      max-height: 240px;
+      border-radius: var(--radius);
+      border: 0;
+    }
 
     a:hover {
       text-decoration: underline; //todo: default for all in-content links
@@ -41,19 +94,6 @@
     div.highlight {
       margin: var(--su-1) auto;
       font-size: 90%; // little adjustment for feed comments since default monospace font looks really tiny there.
-    }
-
-    &::after {
-      content: '';
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      background: linear-gradient(
-        var(--story-comments-bg-top) 250px,
-        var(--story-comments-bg-bottom)
-      );
     }
   }
 
