@@ -18,5 +18,13 @@ namespace :db do
       filename = SEED_DIR.join("creator_onboarding_seed_e2e.rb")
       load(filename) if File.exist?(filename)
     end
+
+    desc "Preview environment seed data for Uffizzi"
+    task staging: :environment do
+      raise "Attempting to seed production environment, aborting!" if Rails.env.production?
+
+      filename = Rails.root.join("db/seeds_uffizzi.rb")
+      load(filename) if File.exist?(filename)
+    end
   end
 end
