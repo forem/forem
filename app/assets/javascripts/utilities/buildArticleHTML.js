@@ -62,7 +62,7 @@ function buildArticleHTML(article, currentUserId = null) {
                 ${article.name}
               </a>
             </h3>
-            <p>@${article.twitter_username}</p>
+            <p>@${article.slug}</p>
             <br/>
             ${
               article.summary
