@@ -54,6 +54,14 @@
           display: none;
         }
       }
+      li > img {
+        display: block;
+        max-height: 90px;
+      }
+      blockquote {
+        border-left: 4px solid var(--base-20);
+        padding-left: var(--su-2);
+      }
     }
     .crayons-comment__readmore {
       color: var(--base-80);
