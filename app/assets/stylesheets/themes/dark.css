@@ -65,6 +65,8 @@
   --card-color-tertiary: rgb(var(--grey-400));
   --card-secondary-bg: rgb(var(--grey-900));
   --card-secondary-color: rgb(var(--grey-200));
+  --card-tertiary-bg: rgb(var(--grey-800));
+  --card-tertiary-bg-hover: rgba(var(--grey-800), 0.9);
   --card-border: rgba(var(--white), 0.15);
   --card-secondary-border: rgba(var(--white), 0.1);
 

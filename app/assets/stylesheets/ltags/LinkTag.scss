@@ -51,6 +51,7 @@
     padding: calc(0.6vw + 8px) calc(0.8vw + 8px);
     padding-right: 8px;
     box-sizing: border-box;
+    border-radius: var(--radius);
     img {
       width: calc(1.2vw + 40px);
       height: calc(1.2vw + 40px);
@@ -90,7 +91,7 @@
     box-sizing: border-box;
     max-width: 55px;
     max-height: 55px;
-}
+  }
   .ltag__link__user__pic {
     display: inline-block;
     position: absolute;
@@ -123,7 +124,7 @@
       padding: 0;
       font-weight: var(--fw-bold);
       font-size: calc(1.45em + 0.2vw);
-      line-height: var(--lh-tight)
+      line-height: var(--lh-tight);
     }
     h3 {
       margin: calc(0.3vw + 1px) 0;

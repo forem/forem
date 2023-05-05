@@ -24,7 +24,9 @@ module Notifications
         return if moderator == notifiable.user
 
         json_data = { user: user_data(User.staff_account) }
-        json_data[notifiable.class.name.downcase] = public_send "#{notifiable.class.name.downcase}_data", notifiable
+        notifiable_name = notifiable.class.name.downcase
+        json_data[notifiable_name] = public_send "#{notifiable_name}_data", notifiable
+        json_data["#{notifiable_name}_user"] = user_data(notifiable.user)
         new_notification = Notification.create!(
           user_id: moderator.id,
           notifiable_id: notifiable.id,
