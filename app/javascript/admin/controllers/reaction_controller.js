@@ -8,7 +8,7 @@ export default class ReactionController extends Controller {
     url: String,
   };
 
-  updateReaction(status) {
+  updateReaction(status, removeElement) {
     const id = this.idValue;
 
     fetch(this.urlValue, {
@@ -29,12 +29,15 @@ export default class ReactionController extends Controller {
         .json()
         .then((json) => {
           if (json.outcome === 'Success') {
-            this.element.remove();
             addSnackbarItem({
               message: 'Flag status has been changed successfully',
               addCloseButton: false,
             });
-            document.getElementById(`js__reaction__div__hr__${id}`).remove();
+
+            if(removeElement === true){
+              this.element.remove();
+              document.getElementById(`js__reaction__div__hr__${id}`).remove();
+            }
           } else {
             window.alert(json.error);
           }
@@ -45,12 +48,14 @@ export default class ReactionController extends Controller {
     );
   }
 
-  updateReactionInvalid() {
-    this.updateReaction(this.invalidStatus);
+  updateReactionInvalid(event) {
+    const {removeElement} = event.target.dataset;
+    this.updateReaction(this.invalidStatus, removeElement);
   }
 
-  updateReactionConfirmed() {
-    this.updateReaction(this.confirmedStatus);
+  updateReactionConfirmed(event) {
+    const {removeElement} = event.target.dataset;
+    this.updateReaction(this.confirmedStatus, removeElement);
   }
 
   reactableUserCheck() {
@@ -58,10 +63,10 @@ export default class ReactionController extends Controller {
       if (
         window.confirm('You are confirming a User flag reaction; are you sure?')
       ) {
-        this.updateReaction(this.confirmedStatus);
+        this.updateReaction(this.confirmedStatus, true);
       }
     } else {
-      this.updateReaction(this.confirmedStatus);
+      this.updateReaction(this.confirmedStatus, true);
     }
   }
 
