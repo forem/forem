@@ -62,11 +62,10 @@ function buildArticleHTML(article, currentUserId = null) {
                 ${article.name}
               </a>
             </h3>
-            <p>@${article.slug}</p>
-            <br/>
+            <p class="crayons-story__slug-segment">@${article.slug}</p>
             ${
               article.summary
-                ? `<div class="truncate-at-3">${article.summary}</div>`
+                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
                 : ''
             }
           </div>

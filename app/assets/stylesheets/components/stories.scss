@@ -286,6 +286,10 @@
     align-items: center;
   }
 
+  &__slug-segment {
+    opacity: 0.5;
+  }
+
   &__video {
     position: relative;
     padding-top: 56%;
