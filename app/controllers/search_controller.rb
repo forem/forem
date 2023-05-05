@@ -79,9 +79,6 @@ class SearchController < ApplicationController
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
-    Rails.logger.info "*********************************************"
-    Rails.logger.info class_name
-    Rails.logger.info "*********************************************"
     is_homepage_search = (
       class_name.Article? &&
       feed_params[:search_fields].blank? &&
