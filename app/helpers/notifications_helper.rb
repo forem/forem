@@ -36,4 +36,11 @@ module NotificationsHelper
       I18n.t(action, user: key_to_link.call("user"))
     end.html_safe # rubocop:disable Rails/OutputSafety
   end
+
+  def mod_comment_user(data)
+    return data["comment_user"] if data["comment_user"].present?
+
+    comment_username = data["comment"]["path"].split("/")[1]
+    { "name" => comment_username, "path" => "/#{comment_username}" }
+  end
 end
