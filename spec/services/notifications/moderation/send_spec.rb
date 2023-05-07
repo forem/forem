@@ -55,4 +55,11 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       described_class.call(moderator, comment)
     end.not_to change(Notification, :count)
   end
+
+  it "includes all needed user data in the notification" do
+    notification = described_class.call(moderator, comment)
+
+    expect(notification.json_data["user"]["id"]).to eq(staff_account.id)
+    expect(notification.json_data["comment_user"]["id"]).to eq(comment.user.id)
+  end
 end
