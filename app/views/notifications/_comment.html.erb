@@ -23,16 +23,19 @@
       <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
 
     <% elsif notification.action == "Moderation" %>
+      <% new_user = mod_comment_user(json_data) %>
       <header class="mb-4">
-        <h2 class="fs-base fw-normal">
-          <%= t("views.notifications.comment.left_html", user: link_to(json_data["comment"]["path"].split("/")[1], "/#{json_data['comment']['path'].split('/')[1]}", class: "crayons-link fw-bold"), title: params[:title]) %>
-        </h2>
-        <p><%= t("views.notifications.comment.welcome_html") %></p>
+        <h2 class="fs-xl"><%= t("views.notifications.comment.mod_greeting", user: @user.name) %></h2>
+        <p class="mb-4"><%= t("views.notifications.comment.welcome_html", user: new_user["name"]) %></p>
+        <p><%= t("views.notifications.comment.commented_html", user: link_to(new_user["name"], new_user["path"], class: "crayons-link fw-bold"), title: params[:title]) %></p>
       </header>
 
-      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "moderation" %>
+      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
 
-      <p class="fs-s color-base-60 pt-4"><%= t("views.notifications.comment.report") %></p>
+      <div class="flex justify-between fs-s color-base-60 pt-4">
+        <p><%= t("views.notifications.comment.mod_opt_out") %></p>
+        <%= link_to t("views.notifications.comment.change_settings"), user_settings_path(:notifications) %>
+      </div>
 
     <% elsif notification.action == "First" %>
       <header class="mb-4">
