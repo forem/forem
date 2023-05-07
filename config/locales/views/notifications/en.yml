@@ -25,8 +25,10 @@ en:
         first_reply: "Give them their first reply! 🎉"
         left_html: "%{user} just left a comment on %{title}."
         replied_html: "%{user} replied to a thread in %{title}"
-        report: All negative reactions are 100% private. If this comment violates the code of conduct, please downvote/report as inappropriate.
-        welcome_html: Since they are new to the community, could you leave a nice reply to help them feel welcome? <strong>Thank you!</strong>
+        mod_greeting: "Hey %{user} 👋"
+        welcome_html: "%{user} is new to the community. Please drop a nice reply to make them feel welcome."
+        mod_opt_out: Don't want to receive these notifications?
+        change_settings: Change settings
       error:
         subtitle: An error occurred!
         desc: This has been logged and we're tracking it.

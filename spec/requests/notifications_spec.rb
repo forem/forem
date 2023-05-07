@@ -490,23 +490,31 @@ RSpec.describe "NotificationsIndex" do
     end
 
     context "when a user has a new moderation notification" do
-      let(:user2)    { create(:user) }
+      let(:moderator)  { create(:user, name: "Alice", last_reacted_at: 2.days.ago) }
+      let(:user2)      { create(:user, name: "Bob") }
       let(:article)  { create(:article, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.add_role(:trusted)
-        sign_in user
+        moderator.add_role(:trusted)
+        sign_in moderator
         sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
       end
 
-      it "renders the proper message data", :aggregate_failures do
-        expect(response.body).to include "Since they are new to the community, could you leave a nice reply"
+      it "renders a round robin notification with the option to opt out", :aggregate_failures do
+        expect(response.body).to include "Hey Alice 👋"
+        expect(response.body).to include(
+          "Bob is new to the community. Please drop a nice reply to make them feel welcome",
+        )
         renders_article_path(article)
         renders_comments_html(comment)
+        expect(response.body).to include CGI.escapeHTML("Don't want to receive these notifications?")
+        expect(response.body).to include <<~HTML
+          <a href="/settings/notifications">Change settings</a>
+        HTML
       end
     end
 
@@ -524,7 +532,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "does not render the notification message", :aggregate_failures do
-        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+        expect(response.body).not_to include "Please drop a nice reply to make them feel welcome"
         expect(response.body).not_to include article.path
         expect(response.body).not_to include comment.processed_html
       end
@@ -546,7 +554,7 @@ RSpec.describe "NotificationsIndex" do
       end
 
       it "does not render the proper message", :aggregate_failures do
-        expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
+        expect(response.body).not_to include "Please drop a nice reply to make them feel welcome"
         expect(response.body).not_to include article.path
         expect(response.body).not_to include comment.processed_html
       end

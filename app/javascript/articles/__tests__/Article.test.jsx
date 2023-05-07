@@ -12,6 +12,7 @@ import {
   articleWithReactions,
   videoArticle,
   articleWithComments,
+  articleWithCommentWithLongParagraph,
   podcastArticle,
   podcastEpisodeArticle,
   userArticle,
@@ -198,6 +199,36 @@ describe('<Article /> component', () => {
     const comments = getByTitle('Number of comments');
 
     expect(comments.textContent).toEqual(`213 ${locale('core.comment')}s`);
+  });
+
+  it('should render second paragraph, but not third', () => {
+    const { queryByTestId } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithComments}
+      />,
+    );
+
+    const comments = queryByTestId('comment-content');
+
+    expect(comments.textContent).toContain('Kitsch hoodie artisan');
+    expect(comments.classList).not.toContain('Third paragraph');
+  });
+
+  it('should render the first part of a long paragraph', () => {
+    const { queryByTestId } = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        article={articleWithCommentWithLongParagraph}
+      />,
+    );
+
+    const comments = queryByTestId('comment-content');
+
+    expect(comments.textContent).toContain('Start of paragraph');
+    expect(comments.classList).not.toContain('End of paragraph');
   });
 
   it('should render with an add comment button when there are no comments', () => {
