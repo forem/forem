@@ -12,6 +12,7 @@ RSpec.describe CtaTag, type: :liquid_tag do
     let(:link_style_width_options) { "#{link} #{style} #{width}" }
 
     let(:link_width_options) { "#{link} #{width}" }
+    let(:unordered_options) { "#{link} #{width} #{style}" }
 
     let(:description) { "DEV Community" }
 
@@ -75,6 +76,12 @@ RSpec.describe CtaTag, type: :liquid_tag do
         rendered = generate_details_liquid(only_link_option, description).render
         expect(rendered).to include("inline")
       end
+    end
+
+    it "does not matter what order the CTA receives its options" do
+      rendered = generate_details_liquid(unordered_options, description).render
+      expect(rendered).to include("class=\"ltag_cta ltag_cta--branded")
+      expect(rendered).to include("block")
     end
   end
 end
