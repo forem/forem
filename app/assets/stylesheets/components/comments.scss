@@ -31,10 +31,6 @@
       background: var(--card-tertiary-bg-hover);
     }
 
-    @media (min-width: 480px) {
-      width: 120px;
-    }
-
     @media (min-width: $breakpoint-m) {
       width: calc(100% - var(--su-7));
     }
