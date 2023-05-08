@@ -53,10 +53,6 @@
       .c-embed__body {
         font-size: var(--fs-s);
       }
-      // div:not(.crayons-comment__readmore) {
-      //   margin-bottom: var(--su-3);
-      //   background: var(--card-secondary-bg);
-      // }
       .liquid-comment .body {
         :not(:first-child) {
           display: none;
