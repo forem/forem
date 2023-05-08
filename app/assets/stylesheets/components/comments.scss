@@ -53,9 +53,11 @@
       .c-embed__body {
         font-size: var(--fs-s);
       }
-      div:not(.crayons-comment__readmore):not(.highlight__panel-action):not(
-          .highlight__panel
-        ):not(.highlight) {
+      div
+        :not(.crayons-comment__readmore)
+        :not(.highlight__panel-action)
+        :not(.highlight__panel)
+        :not(.highlight) {
         background: var(--card-secondary-bg);
       }
       div:not(.crayons-comment__readmore) {
