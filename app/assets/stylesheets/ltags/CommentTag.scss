@@ -54,6 +54,9 @@
       text-align: right;
       display: block;
       width: 100px;
+      :not(:first-child) {
+        display: none;
+      }
       a {
         color: var(--card-color-tertiary);
       }
