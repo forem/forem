@@ -39,6 +39,16 @@ RSpec.describe CtaTag, type: :liquid_tag do
       expect(rendered).to include(description)
     end
 
+    xit "limits the description to 128 characters" do
+      expect do
+        generate_details_liquid(link_style_options, "We do not allow for more than hundred and twenty eight characters
+          in the description of the CTA. This is the same as what we allow for article titles.").render
+      end.to raise_error(StandardError)
+    end
+
+    xit "allows only plain text to be rendered" do
+    end
+
     context "when given a style attribute" do
       it "contains the style attribute provided" do
         rendered = generate_details_liquid(link_style_options, description).render
