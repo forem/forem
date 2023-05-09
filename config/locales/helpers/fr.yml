@@ -13,8 +13,6 @@ fr:
         name: Nom
         slug: Nom d'utilisateur
         profile_image: Image du profil
-        nav_image: Logo pour les thèmes clairs
-        dark_nav_image: Logo pour les thèmes sombres
         twitter_username: Nom d'utilisateur Twitter
         github_username: nom d'utilisateur GitHub
         url: URL du site web

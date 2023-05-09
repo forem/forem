@@ -43,7 +43,7 @@ class UserDecorator < ApplicationDecorator
   # @return [Array<UserDecorator::CachedTagByUser>]
   def cached_followed_tags
     cached_tag_attributes = Rails.cache.fetch(
-      "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/user_followed_tags",
+      "#{cache_key}-#{last_followed_at&.rfc3339}/followed_tags",
       expires_in: 20.hours,
     ) do
       Tag.followed_tags_for(follower: object).map { |tag| tag.slice(*CACHED_TAGGED_BY_USER_ATTRIBUTES) }
