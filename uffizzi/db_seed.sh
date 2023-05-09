@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-bundle exec rake db:seed:staging
+SEEDS_MULTIPLIER=3 bundle exec rake db:seed:staging
 
 tail -f /dev/null
