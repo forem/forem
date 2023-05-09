@@ -30,7 +30,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4000M     
+          memory: 4000M
 
   seed:
     image: "${APP_IMAGE}"
