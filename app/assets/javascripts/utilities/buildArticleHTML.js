@@ -52,7 +52,7 @@ function buildArticleHTML(article, currentUserId = null) {
     return `<article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
           <a href="${article.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.nav_image.url}" alt="${
+            <img src="${article.profile_image.url}" alt="${
       article.name
     }" loading="lazy" />
           </a>
