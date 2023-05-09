@@ -83,6 +83,7 @@ fr:
         people: People
         comments: Comments
         my_posts: My posts only
+        organizations: Organizations
         tags: Tags
       sort:
         aria_label: Search result sort options
