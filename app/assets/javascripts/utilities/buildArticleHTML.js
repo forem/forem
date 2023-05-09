@@ -48,6 +48,38 @@ function buildArticleHTML(article, currentUserId = null) {
       </article>`;
   }
 
+  if (article && article.class_name === 'Organization') {
+    return `<article class="crayons-story">
+        <div class="crayons-story__body flex items-start gap-2">
+          <a href="${article.slug}" class="crayons-podcast-episode__cover">
+            <img src="${article.nav_image.url}" alt="${
+      article.name
+    }" loading="lazy" />
+          </a>
+          <div>
+            <h3 class="crayons-subtitle-2 lh-tight py-1">
+              <a href="${article.slug}" class="c-link">
+                ${article.name}
+              </a>
+            </h3>
+            <p class="crayons-story__slug-segment">@${article.slug}</p>
+            ${
+              article.summary
+                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                : ''
+            }
+          </div>
+          <div class="print-hidden" style="margin-left: auto">
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": "${
+              article.id
+            }", "className": "Organization", "style": "full", "name": "${
+      article.name
+    }"}'>Follow</button>
+          </div>
+        </div>
+      </article>`;
+  }
+
   if (article) {
     var container = document.getElementById('index-container');
 

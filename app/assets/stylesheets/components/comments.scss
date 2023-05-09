@@ -25,10 +25,14 @@
 
   &__body {
     padding-left: var(--su-7);
-    width: 100%;
+    width: calc(100% - var(--su-7));
     background: var(--card-tertiary-bg);
     &:hover {
       background: var(--card-tertiary-bg-hover);
+    }
+
+    @media (min-width: $breakpoint-m) {
+      width: calc(100% - var(--su-7));
     }
 
     border-radius: var(--radius);
@@ -45,9 +49,15 @@
       .c-embed__body {
         font-size: var(--fs-s);
       }
+      div
+        :not(.crayons-comment__readmore)
+        :not(.highlight__panel-action)
+        :not(.highlight__panel)
+        :not(.highlight) {
+        background: var(--card-secondary-bg);
+      }
       div:not(.crayons-comment__readmore) {
         margin-bottom: var(--su-3);
-        background: var(--card-secondary-bg);
       }
       .liquid-comment .body {
         :not(:first-child) {
@@ -61,6 +71,12 @@
       blockquote {
         border-left: 4px solid var(--base-20);
         padding-left: var(--su-2);
+      }
+      pre:not(.highlight),
+      div.highlight,
+      li pre.highlight,
+      blockquote pre.highlight {
+        padding: var(--su-2);
       }
     }
     .crayons-comment__readmore {
