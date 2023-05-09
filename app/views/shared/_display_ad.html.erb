@@ -1,5 +1,5 @@
 <% if display_ad.placement_area.start_with?("feed_") %>
-  <div class="crayons-story crayons-story__display-ad"
+  <div class="crayons-story crayons-story__display-ad billboard"
     data-display-unit data-id="<%= display_ad.id %>"
     data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
@@ -17,7 +17,7 @@
     </div>
   </div>
 <% else %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship"
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard"
     data-display-unit data-id="<%= display_ad.id %>"
     data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"

@@ -13,6 +13,8 @@
   text-align: center;
   position: relative;
   overflow-wrap: normal;
+  padding-top: var(--su-2);
+  padding-bottom: var(--su-2);
 
   &:hover,
   .js-focus-visible &.focus-visible:focus {

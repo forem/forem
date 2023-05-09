@@ -1,0 +1,18 @@
+@import 'config/import';
+@import 'variables';
+@import '_mixins';
+
+// TODO: to move some of the css from widgets.scss that belong in billlboards
+
+.billboard {
+  @media (max-width: $breakpoint-s) {
+    .ltag_cta {
+      display: block;
+    }
+  }
+
+  .ltag_cta.inline {
+    padding-right: var(--su-7);
+    padding-left: var(--su-7);
+  }
+}
