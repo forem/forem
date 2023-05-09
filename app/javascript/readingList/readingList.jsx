@@ -194,7 +194,7 @@ export class ReadingList extends Component {
         <header className="crayons-page-header block s:flex">
           <div className="flex justify-between items-center flex-1 mb-2 s:mb-0">
             <h1 class="crayons-title flex-1">
-              {isStatusViewValid ? 'Збережене' : 'До архіву'}
+              {isStatusViewValid ? 'Збережене' : 'Архів'}
               {` (${itemsTotal})`}
             </h1>
             <Link

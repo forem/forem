@@ -10,7 +10,7 @@ ua:
         icon: GitHub лого
       joined:
         icon: З нами!
-        text_html: "З нами з\_%{date}"
+        text_html: "Започатковано \_%{date}"
       location:
         icon: Звідки
       logo: "%{org} картинка"
@@ -26,7 +26,18 @@ ua:
           devrel: Devrel
       stack: Що ми робимо?
       story: Проєкт
-      support: Support email
+      side:
+        post:
+            icon: Допис
+            text:
+              one: 1 допис
+              other: "%{count} дописів"
+        member:
+          icon: Учасник
+          text:
+            one: 1 учасник
+            other: "%{count} учасників"
+      support: Пошта підтримки
       team: У проєкті
       twitter:
         icon: Twitter лого

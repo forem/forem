@@ -144,6 +144,6 @@ ua:
       add: "Додати\_коментар"
       summary:
         count_html:
-          one: "%{count}%{start}\_comment%{end}"
-          other: "%{count}%{start}\_comments%{end}"
+          one: "%{count}%{start}\_коментар%{end}"
+          other: "%{count}%{start}\_коментарів%{end}"
         title: Коментарі

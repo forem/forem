@@ -11,10 +11,16 @@ ua:
         thumbsdown: Палець вниз
         unicorn: Казково!
         vomit: Жахливо
+        lightbulb: Lightbulb
+        raised_hands: Чудово
+        rocket: Ульот
+        exploding_head: Неймовірно
+        fire: Вогонь
+      drawer_button: Додати реакцію
       summary:
         count_html:
-          one: "%{count}%{start}\_reaction%{end}"
-          other: "%{count}%{start}\_reactions%{end}"
+          one: "%{count}%{start}\_реакція%{end}"
+          other: "%{count}%{start}\_реакцій%{end}"
         title: Реакції
       like:
         title: Лайк
