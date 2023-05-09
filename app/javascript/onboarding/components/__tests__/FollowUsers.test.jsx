@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -80,83 +80,92 @@ describe('FollowUsers', () => {
     expect(user3).toBeInTheDocument();
   });
 
-  it('should render the correct navigation button on first load', () => {
+  it('should follow all suggested users by default', async () => {
     fetch.mockResponseOnce(fakeUsersResponse);
 
-    const { queryByText } = renderFollowUsers();
+    const { queryByText, findAllByLabelText } = renderFollowUsers();
 
-    expect(queryByText(/skip for now/i)).toBeDefined();
+    const selectedUsers = await findAllByLabelText('Following');
+    expect(selectedUsers).toHaveLength(3);
+    expect(queryByText(/Continue/i)).toExist();
   });
 
-  it('should update the navigation button text and follow status when you follow users', async () => {
+  it('should update the navigation button text and follow status when you follow/unfollow users', async () => {
     fetch.mockResponse(fakeUsersResponse);
 
-    const { queryByText, findByText, findAllByTestId } = renderFollowUsers();
+    const { queryByText, queryAllByLabelText, findAllByTestId } =
+      renderFollowUsers();
 
     const userButtons = await findAllByTestId(
       'onboarding-user-following-status',
     );
 
-    expect(queryByText(/skip for now/i)).toBeDefined();
-    expect(queryByText(/You're not following anyone/i)).toBeDefined();
+    expect(queryAllByLabelText('Following')).toHaveLength(3);
+    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
+    expect(queryByText(/Continue/i)).toExist();
 
-    // follow the first user
-    const firstUser = userButtons[0];
-    firstUser.click();
+    // Unfollow the first user
+    fireEvent.click(userButtons[0]);
 
-    await findByText('Following');
+    expect(queryAllByLabelText('Following')).toHaveLength(2);
+    expect(queryByText(/You're following 2 people/i)).toExist();
+    expect(queryByText(/continue/i)).toExist();
 
-    expect(queryByText(/You're following 1 person/i)).toBeDefined();
-    expect(queryByText(/continue/i)).toBeDefined();
+    // Unfollow the second user
+    fireEvent.click(userButtons[1]);
 
-    // follow the second user
-    const secondUser = userButtons[1];
-    secondUser.click();
+    expect(queryAllByLabelText('Following')).toHaveLength(1);
+    expect(queryByText(/You're following 1 person/i)).toExist();
+    expect(queryByText(/continue/i)).toExist();
 
-    await findByText('Following');
+    // Unfollow the third user
+    fireEvent.click(userButtons[2]);
 
-    expect(queryByText(/You're following 2 people/i)).toBeDefined();
-    expect(queryByText(/continue/i)).toBeDefined();
+    expect(queryByText('Following')).not.toExist();
+    expect(queryByText(/You're not following anyone/i)).toExist();
+    expect(queryByText(/skip for now/i)).toExist();
+
+    // Follow the third user again
+    fireEvent.click(userButtons[2]);
+
+    expect(queryAllByLabelText('Following')).toHaveLength(1);
+    expect(queryByText(/You're following 1 person/i)).toExist();
+    expect(queryByText(/continue/i)).toExist();
   });
 
   it('should have a functioning de/select all toggle', async () => {
     fetch.mockResponse(fakeUsersResponse);
-    const {
-      getByText,
-      queryByText,
-      findByText,
-      findAllByText,
-    } = renderFollowUsers();
+    const { queryByText, findByText, queryAllByLabelText } =
+      renderFollowUsers();
+
+    // deselect all then test following count
+    const deselectAllSelector = await findByText(/Deselect all/i);
+
+    fireEvent.click(deselectAllSelector);
+
+    expect(queryAllByLabelText('Follow')).toHaveLength(3);
+    expect(queryByText('Following')).not.toExist();
+    expect(queryByText(/You're not following anyone/i)).toExist();
 
     // select all then test following count
     const followAllSelector = await findByText(/Select all 3 people/i);
 
-    followAllSelector.click();
+    fireEvent.click(followAllSelector);
 
-    await findAllByText('Following');
-
-    expect(queryByText('Follow')).toBeNull();
-    queryByText(/You're following 3 people (everyone)/i);
-
-    // deselect all then test following count
-    const deselecAllSelector = await findByText(/Deselect all/i);
-
-    deselecAllSelector.click();
-    await findAllByText('Follow');
-
-    expect(queryByText('Following')).toBeNull();
-    getByText(/You're not following anyone/i);
+    expect(queryByText('Follow')).not.toExist();
+    expect(queryAllByLabelText('Following')).toHaveLength(3);
+    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
   });
 
   it('should render a stepper', () => {
     const { queryByTestId } = renderFollowUsers();
 
-    expect(queryByTestId('stepper')).toBeDefined();
+    expect(queryByTestId('stepper')).toExist();
   });
 
   it('should render a back button', () => {
     const { queryByTestId } = renderFollowUsers();
 
-    expect(queryByTestId('back-button')).toBeDefined();
+    expect(queryByTestId('back-button')).toExist();
   });
 });
