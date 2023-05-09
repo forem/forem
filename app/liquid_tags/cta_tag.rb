@@ -2,17 +2,13 @@ class CtaTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/cta".freeze
-  STYLE_OPTIONS = %w[branded].freeze
-  WIDTH_OPTIONS = %w[inline block].freeze
+  # at some point we may want to pass in options to dictate which type of CTA the user wants to use,
+  # i.e. secondary, primary, branded. This sets the scene for it without actually providing that option now.
+  TYPE_OPTIONS = %w[branded].freeze
 
   def initialize(_tag_name, options, _parse_context)
     super
-
-    options = strip_tags(options.strip).split
-
-    @link = link(options)
-    @style = style(options)
-    @width = width(options)
+    @link = strip_tags(options.strip)
   end
 
   def render(_context)
@@ -22,26 +18,9 @@ class CtaTag < Liquid::Block
       locals: {
         link: @link,
         description: description,
-        style: @style,
-        width: @width
+        type: TYPE_OPTIONS.first
       },
     )
-  end
-
-  private
-
-  def link(options)
-    options[0]
-  end
-
-  def style(options)
-    styles = options & STYLE_OPTIONS
-    styles.length.positive? ? styles.first : STYLE_OPTIONS.first
-  end
-
-  def width(options)
-    widths = options & WIDTH_OPTIONS
-    widths.length.positive? ? widths.first : WIDTH_OPTIONS.first
   end
 end
 
