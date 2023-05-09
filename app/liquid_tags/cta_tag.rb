@@ -5,6 +5,7 @@ class CtaTag < Liquid::Block
   # at some point we may want to pass in options to dictate which type of CTA the user wants to use,
   # i.e. secondary, primary, branded. This sets the scene for it without actually providing that option now.
   TYPE_OPTIONS = %w[branded].freeze
+  DESCRIPTION_LENGTH = 128
 
   def initialize(_tag_name, options, _parse_context)
     super
@@ -12,15 +13,23 @@ class CtaTag < Liquid::Block
   end
 
   def render(_context)
-    description = Nokogiri::HTML.parse(super).at("body").text.strip
+    content = Nokogiri::HTML.parse(super)
+
     ApplicationController.render(
       partial: PARTIAL,
       locals: {
         link: @link,
-        description: description,
+        description: sanitized_description(content),
         type: TYPE_OPTIONS.first
       },
     )
+  end
+
+  private
+
+  def sanitized_description(content)
+    stripped_description = strip_tags(content.xpath("//html/body").inner_html).delete("\n").strip
+    stripped_description.truncate(DESCRIPTION_LENGTH)
   end
 end
 

@@ -5,9 +5,6 @@ RSpec.describe CtaTag, type: :liquid_tag do
     let(:link) { "https://dev.to/" }
     let(:description) { "DEV Community" }
 
-    # test case where no link provided
-    # do we want to account for alignment
-
     def generate_details_liquid(options, description)
       Liquid::Template.register_tag("cta", described_class)
       Liquid::Template.parse("{% cta #{options} %} #{description} {% endcta %}")
@@ -30,15 +27,21 @@ RSpec.describe CtaTag, type: :liquid_tag do
       expect(rendered).to include(description)
     end
 
-    xit "limits the description to 128 characters" do
-      expect do
-        generate_details_liquid(link, "We do not allow for more than hundred and twenty eight characters
-          in the description of the CTA. This is the same as what we allow for article titles.").render
-      end.to raise_error(StandardError)
+    it "limits the description to 128 characters" do
+      long_description = "We do not allow for more than hundred and twenty eight characters in the description of " \
+                         "the CTA. This is the same as what we allow for article titles."
+      rendered = generate_details_liquid(link, long_description).render
+      expect(rendered).to include("We do not allow for more than hundred and twenty eight characters in the " \
+                                  "description of the CTA. This is the same as what we ...")
+      expect(rendered).not_to include("article titles.")
     end
 
-    xit "allows only plain text to be rendered" do
+    it "strips all tags from the description" do
+      rendered = generate_details_liquid(link, "<div class='crayons'>DEV Community</div>").render
+      expect(rendered).to include("DEV Community")
+      expect(rendered).not_to include("class='crayons'")
+      expect(rendered).not_to include("<div")
+      expect(rendered).not_to include("</div>")
     end
-
   end
 end
