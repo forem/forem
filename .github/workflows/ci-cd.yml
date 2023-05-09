@@ -285,11 +285,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+        uses: actions/cache@v3
         with:
-          fail-on-cache-miss: true
+          fail-on-cache-miss: false
           path: |
             public/assets
+            public/packs
             public/packs-test
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
