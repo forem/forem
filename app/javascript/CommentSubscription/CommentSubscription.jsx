@@ -137,9 +137,9 @@ export class CommentSubscription extends Component {
                   onClick={this.commentSubscriptionClick}
                 />
                 <label htmlFor="subscribe-all" className="crayons-field__label">
-                  All comments
+                  Всі коментарі
                   <p className="crayons-field__description">
-                    You’ll receive notifications for all new comments.
+                    Ви будете отримувати сповіщення про всі нові коментарі.
                   </p>
                 </label>
               </FormField>
@@ -156,10 +156,9 @@ export class CommentSubscription extends Component {
                   htmlFor="subscribe-toplevel"
                   className="crayons-field__label"
                 >
-                  Top-level comments
+                  Найкращі коментарі
                   <p className="crayons-field__description">
-                    You’ll receive notifications only for all new top-level
-                    comments.
+                    Ви отримуватимете сповіщення лише про нові коментарі вищого рівня.
                   </p>
                 </label>
               </FormField>
@@ -178,10 +177,9 @@ export class CommentSubscription extends Component {
                   htmlFor="subscribe-author"
                   className="crayons-field__label"
                 >
-                  Post author comments
+                  Коментарі автора публікації
                   <p className="crayons-field__description">
-                    You’ll receive notifications only if post author sends a new
-                    comment.
+                    Ви будете отримувати сповіщення, тільки якщо автор допису надішле новий коментар.
                   </p>
                 </label>
               </FormField>

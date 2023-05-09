@@ -76,7 +76,7 @@ export const EditorActions = ({
           onClick={onSaveDraft}
           disabled={previewLoading}
         >
-          Зберегти <span className="hidden s:inline">чорнетку</span>
+          Зберегти <span className="hidden s:inline">чернетку</span>
         </Button>
       )}
 

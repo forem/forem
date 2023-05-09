@@ -109,7 +109,7 @@ function buildArticleHTML(article, currentUserId = null) {
 
     var reactionsCount = article.public_reactions_count;
     var reactionsDisplay = '';
-    var reactionsText = reactionsCount === 1 ? 'reaction' : 'reactions';
+    var reactionsText = reactionsCount === 1 ? 'реакція' : 'реакцій';
     var reactionIcons = document.getElementById('reaction-category-resources');
 
     if (article.class_name !== 'User' && reactionsCount > 0) {

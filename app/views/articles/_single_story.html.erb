@@ -152,9 +152,6 @@
           <% end %>
         </div>
         <div class="crayons-story__save">
-          <small class="crayons-story__tertiary fs-xs mr-2">
-            <%= t("views.articles.reading_time", count: [story.reading_time, 1].max) %>
-          </small>
           <% if (@user == nil) || (@user.id != story.user_id) %>
             <button
               type="button"

@@ -19,6 +19,8 @@ ua:
           text: Поширити на Reddit
         twitter:
           text: Поширити на Twitter
+        mastodon:
+          text: Поширити на Mastodon
           query: '"%{article}" від %{author}'
         link: Поширити допис через...
         report: Поскаржитись

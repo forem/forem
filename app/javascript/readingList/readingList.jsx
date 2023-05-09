@@ -167,7 +167,7 @@ export class ReadingList extends Component {
     return (
       <h2 className="align-center p-9 py-10 color-base-80 fw-bold fs-l">
         {showMessage
-          ? 'Your Archive is empty...'
+          ? 'Ваш архів пустий...'
           : NO_RESULTS_WITH_FILTER_MESSAGE}
       </h2>
     );
@@ -184,7 +184,7 @@ export class ReadingList extends Component {
     } = this.state;
 
     const isStatusViewValid = this.statusViewValid();
-    const archiveButtonLabel = isStatusViewValid ? 'Archive' : 'Unarchive';
+    const archiveButtonLabel = isStatusViewValid ? 'До архіву' : 'До збереженого';
 
     return (
       <main
@@ -194,7 +194,7 @@ export class ReadingList extends Component {
         <header className="crayons-page-header block s:flex">
           <div className="flex justify-between items-center flex-1 mb-2 s:mb-0">
             <h1 class="crayons-title flex-1">
-              {isStatusViewValid ? 'Reading list' : 'Archive'}
+              {isStatusViewValid ? 'Збережене' : 'До архіву'}
               {` (${itemsTotal})`}
             </h1>
             <Link
@@ -208,7 +208,7 @@ export class ReadingList extends Component {
               block
               data-no-instant
             >
-              {isStatusViewValid ? 'View archive' : 'View reading list'}
+              {isStatusViewValid ? 'Показати архів' : 'Показати збережене'}
             </Link>
           </div>
           <fieldset className="m:flex justify-end s:pl-2 w-100 s:w-auto">

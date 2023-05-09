@@ -1,5 +1,5 @@
 <div class="<%= "ltag__user ltag__user__id__#{organization.id}" %>" style="<%= "border-color:#{organization.darker_color};box-shadow: 3px 3px 0px #{organization.darker_color};" %>">
-  <a href="<%= organization.path %>" class="ltag__user__link profile-image-link">
+  <a href="<%= organization.path %>" class="ltag__user__link profile-image-link" style="border: 0;">
     <div class="ltag__user__pic">
       <img src="<%= organization.profile_image_url_for(length: 150) %>" alt="<%= "#{organization.slug} image" %>" />
     </div>

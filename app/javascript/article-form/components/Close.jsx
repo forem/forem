@@ -8,8 +8,8 @@ export const Close = ({ displayModal = () => {} }) => {
       <Button
         icon={CloseIcon}
         onClick={() => displayModal()}
-        title="Close the editor"
-        aria-label="Close the editor"
+        title="Завершити редагування"
+        aria-label="Завершити редагування"
       />
     </div>
   );

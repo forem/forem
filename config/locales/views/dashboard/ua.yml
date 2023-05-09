@@ -40,8 +40,8 @@ ua:
         archived: Архівовано
         published: 'Опубліковано:'
         published_html: 'Опубліковано: %{date}'
-        edited: 'Відргедаговано:'
-        edited_html: 'Відргедаговано: %{date}'
+        edited: 'Відредаговано:'
+        edited_html: 'Відредаговано: %{date}'
         series: 'Серія:'
         series_html: "<strong>Серія:</strong> %{series}"
         draft: Чернетка

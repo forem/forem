@@ -18,7 +18,7 @@ ua:
         profile: Відвідайте свій профіль
       broadcast:
         visit_html: Перевірте %{settings} для налаштування сповіщень.
-        settings: Settings
+        settings: Налаштування
       comment:
         commented_html: "%{user} прокоментував(ла) %{title}"
         first_html: "%{user} написав(ла) перший коментар на %{title}"
@@ -39,7 +39,7 @@ ua:
           one: "%{count} інший"
           other: "%{count} інші"
         single_html: "%{name} підписався на вас!"
-      load: Load More
+      load: Показати ще
       mention:
         article_html: "%{user} згадував вас у дописі%{if_org}"
         comment_html: "%{user} згадав вас у коментарі"

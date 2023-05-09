@@ -138,8 +138,8 @@ export const Options = ({
       <Button
         id="post-options-btn"
         icon={CogIcon}
-        title="Post options"
-        aria-label="Post options"
+        title="Додаткові налаштування"
+        aria-label="Додаткові налаштування"
         disabled={previewLoading}
       />
 

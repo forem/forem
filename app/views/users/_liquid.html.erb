@@ -1,6 +1,6 @@
 <div class="<%= "ltag__user ltag__user__id__#{user.id}" %>" style="<%= "border-color:#{user.darker_color};box-shadow: 3px 3px 0px #{user.darker_color};" %>">
   <% if user_path.present? %>
-    <a href="<%= user_path %>" class="ltag__user__link profile-image-link">
+    <a href="<%= user_path %>" class="ltag__user__link profile-image-link" style="border: 0;">
       <div class="ltag__user__pic">
         <img src="<%= user.profile_image_url_for(length: 150) %>" alt="<%= "#{user.username} image" %>" />
       </div>

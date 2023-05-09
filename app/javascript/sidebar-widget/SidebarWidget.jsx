@@ -55,7 +55,7 @@ export const SidebarWidget = () => {
     <div className="widget" id="widget-00001">
       <div className="widget-suggested-follows-container">
         <header>
-          <h4>who to follow</h4>
+          <h4>активні за теґом</h4>
         </header>
         <div className="widget-body">
           {suggestedUsers.map((user) => (

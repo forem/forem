@@ -322,8 +322,8 @@ describe('Comment on articles', () => {
       cy.findByTestId('comments-container').within(() => {
         cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
         // Wait for the menu to be visible
-        cy.findByText('Edit').should('be.visible');
-        cy.findByText('Edit').click();
+        cy.findByText('Редагувати').should('be.visible');
+        cy.findByText('Редагувати').click();
       });
 
       cy.findByDisplayValue('first comment').should('exist');

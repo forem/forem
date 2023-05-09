@@ -335,7 +335,7 @@ export class ArticleForm extends Component {
     e.preventDefault();
     // eslint-disable-next-line no-alert
     const revert = window.confirm(
-      'Are you sure you want to revert to the previous save?',
+      'Ви впевнені, що хочете повернутися до попереднього збереження?',
     );
     if (!revert && navigator.userAgent !== 'DEV-Native-ios') return;
 
@@ -495,19 +495,18 @@ export class ArticleForm extends Component {
         {this.state.isModalOpen && (
           <Modal
             size="s"
-            title="You have unsaved changes"
+            title="У вас є незбережені зміни"
             onClose={() => this.showModal(false)}
           >
             <p>
-              You've made changes to your post. Do you want to navigate to leave
-              this page?
+              Ви внесли зміни до свого допису. Ви хочете вийти з цієї сторінки?
             </p>
             <div className="pt-4">
               <Button className="mr-2" variant="danger" url="/" tagName="a">
-                Yes, leave the page
+                Так, залишити сторінку
               </Button>
               <Button variant="secondary" onClick={() => this.showModal(false)}>
-                No, keep editing
+                Ні, продовжу редагувати
               </Button>
             </div>
           </Modal>
