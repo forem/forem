@@ -28,7 +28,7 @@ export default class ReactionController extends Controller {
         .json()
         .then((json) => {
           if (json.outcome === 'Success') {
-            if (removeElement) {
+            if (removeElement === true) {
               this.element.remove();
               document.getElementById(`js__reaction__div__hr__${id}`).remove();
             } else {
