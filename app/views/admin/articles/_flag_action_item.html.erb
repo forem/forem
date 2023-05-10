@@ -1,17 +1,14 @@
-<div class="flex items-center gap-10"
+<div class="flex items-center gap-0 m:gap-4"
   data-controller="reaction"
   data-reaction-id-value="<%= vomit_reaction.id %>"
   data-reaction-url-value="<%= admin_reaction_path(vomit_reaction.id) %>">
-  <div class="flex items-center w-100 gap-10">
-    <div class="flex items-center p-0 w-100">
-      <div class="crayons-card crayons-card--secondary p-3 mr-7" title="Vomit">
+  <div class="flex items-center w-100">
+    <div class="flex items-center p-0 w-100 m:w-40">
+      <div class="crayons-card crayons-card--secondary p-3 mr-3 m:mr-7" title="Vomit">
         <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 24, height: 24) %>
       </div>
       <div class="p-0">
         <p class="crayons-subtitle-3"><%= vomit_reaction.user.name %></p>
-        <time datetime="<%= vomit_reaction.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(vomit_reaction.created_at, format: :admin_user) if vomit_reaction.created_at %>">
-          <%= l(vomit_reaction.created_at, format: :long) %>
-        </time>
       </div>
     </div>
 
@@ -19,7 +16,7 @@
     <%# In the FE, 'Open/Unresolved' corresponds to 'valid' in the BE. This status appears when a trusted user flags an article, with a score of -50. %>
     <%# In the FE, 'Valid' corresponds to 'confirmed' in the BE. This status appears when an admin user flags an article or marks a trusted user-flagged article as valid, with a score of -100. %>
     <%# In both the FE and BE, 'Invalid' remains the same. This status appears when an admin user marks a flag or vomit reaction as invalid, with a score of 0. %>
-    <div class="flex justify-between w-100">
+    <div class="flex w-100 m:w-60 gap-0 m:gap-6 ml-2">
       <% if vomit_reaction.status == 'valid' %>
         <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="<%= t("views.moderations.flags.open.title") %>">
           <%= t("views.moderations.flags.open.invalid") %>
