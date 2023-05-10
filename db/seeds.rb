@@ -557,6 +557,28 @@ end
 
 ##############################################################################
 
+num_of_display_ads = 2 * SEEDS_MULTIPLIER
+
+seeder.create_if_none(DisplayAd) do
+  orgs_in_random_order = Organization.order(Arel.sql("RANDOM()"))
+  orgs = orgs_in_random_order.to_a
+
+  num_of_display_ads.times do
+    DisplayAd.create!(
+      organization: orgs.sample,
+      name: Faker::Lorem.sentence,
+      body_markdown: "This is an external ad",
+      published: true,
+      approved: true,
+      placement_area: "post_comments"
+      # tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
+      # type_of: "external", need to random this
+    )
+  end
+end
+
+##############################################################################
+
 # change locale to en to work around non-ascii slug problem
 loc = I18n.locale
 Faker::Config.locale = "en"
