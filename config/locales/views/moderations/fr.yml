@@ -74,6 +74,7 @@ fr:
             <br />
             Utilisez <b>Signaler aux admins</b> pour les violations du code de conduite (harcèlement, être un abruti, spam, etc.).
         other: Autres choses que vous pouvez faire
+        score: Score
         suspend:
           suspend_title: Suspendre %{username}
           suspend_user: Suspendre %{username}
@@ -102,7 +103,7 @@ fr:
               addition: ajout
               removal: suppression
         thumb_down: Pouce vers le bas
-        thumb_up: Le pouce en l'air
+        thumb_up: Le pouce en l'air        
         toggle: Basculer la section
         feature: Article mis en avant
         unfeature: Retirer la mise en avant de l'article
@@ -116,6 +117,7 @@ fr:
         unpublish_post:
           modal_text1: Une fois dépublié, cet article sera invisible pour le public et accessible uniquement à %{username}.
           modal_text2: Ils peuvent toujours republier l'article tant qu'ils ne sont pas suspendus.
+        vomit: Vomir
         vote_down: Faible qualité
         flag_to_admins: Signaler aux admins
         vote_up: Haute qualité
@@ -123,6 +125,26 @@ fr:
           one: '%{count} des articles de la journée précédente sont mis en avant.'
           other: '%{count} des articles de la journée précédente sont mis en avant.'
       all: Tous les sujets
+      article:
+        approved: Approuvée
+        author_id: Identifiant de l'auteur
+        comments: commentaires
+        contains_video: Contient une vidéo
+        co_author_ids: ID de co-auteur
+        edit: Modifier
+        featured: Mis en exergue
+        likes: aime
+        notes:
+          user_notes: notes d'utilisateur
+          view_all: Voir tout
+        pinned: Épinglé
+        pin_post: Épingler la publication
+        published_at: Publié à
+        save: Sauvegarder
+        unpin_post: Détacher la publication
+        unplublished: Inédit
+        user: Utilisateur
+        user_warned: Utilisateur averti
       aside:
         all: Tous les sujets
         code_of_conduct: Code de conduite

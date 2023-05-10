@@ -75,6 +75,7 @@ en:
             Use <b>Flag to Admins</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
         other: Other things you can do
         add_reaction: Add a reaction
+        score: Score
         suspend:
           suspend_title: Suspend %{username}
           suspend_user: Suspend %{username}
@@ -117,6 +118,7 @@ en:
         unpublish_post:
           modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
           modal_text2: They can still re-publish the post if they are not suspended.
+        vomit: Vomit
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality
@@ -124,6 +126,26 @@ en:
           one: '%{count} post from the past day is featured.'
           other: '%{count} posts from the past day are featured.'
       all: All topics
+      article:
+        approved: Approved
+        author_id: Author ID
+        comments: comments
+        contains_video: Contains video
+        co_author_ids: Co-Author IDs
+        edit: Edit
+        featured: Featured
+        likes: likes
+        notes:
+          user_notes: user notes
+          view_all: View all
+        pinned: Pinned
+        pin_post: Pin post
+        published_at: Published at
+        save: Save
+        unpin_post: Unpin post
+        unplublished: Unplublished
+        user: User
+        user_warned: User warned
       aside:
         all: All topics
         code_of_conduct: Code of Conduct
@@ -138,7 +160,7 @@ en:
         tag: Tag Moderation Guide
         terms_and_conditions: Terms & Conditions
         trusted: Trusted User Guide
-      author: Author
+      author: Author  
       date: Date
       notice:
         subtitle: '%{community} Mods'
