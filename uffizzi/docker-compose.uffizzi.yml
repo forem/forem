@@ -15,8 +15,8 @@ services:
       - db
       - redis
     environment:
-      RAILS_ENV: production
-      DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_production
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_development
       REDIS_SESSIONS_URL: redis://localhost:6379
       REDIS_SIDEKIQ_URL: redis://localhost:6379
       REDIS_URL: redis://localhost:6379
@@ -40,11 +40,11 @@ services:
       - redis
       - db
     environment:
-      RAILS_ENV: production
+      RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://localhost:6379
       REDIS_SIDEKIQ_URL: redis://localhost:6379
       REDIS_URL: redis://localhost:6379
-      DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_production
+      DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_development
     entrypoint: ["dockerize", "-wait", "tcp://localhost:5432", "-wait", "tcp://localhost:6379", "-wait", "http://localhost:3000", "-timeout", "5400s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
     deploy:
@@ -58,7 +58,7 @@ services:
     environment:
       POSTGRES_USER: forem
       POSTGRES_PASSWORD: forem
-      POSTGRES_DB: PracticalDeveloper_production
+      POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
 
