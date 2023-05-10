@@ -1,7 +1,6 @@
 .ltag_cta {
   --border-width: 1px;
-  padding: calc(var(--su-2) - var(--border-width))
-    calc(var(--su-4) - var(--border-width));
+  padding: var(--su-2) var(--su-4);
   border: var(--border-width) solid;
   border-color: var(--border);
   text-decoration: none;
@@ -11,10 +10,9 @@
   color: var(--color);
   outline: 0;
   text-align: center;
+  display: inline-flex;
   position: relative;
   overflow-wrap: normal;
-  padding-top: var(--su-2);
-  padding-bottom: var(--su-2);
 
   &:hover,
   .js-focus-visible &.focus-visible:focus {

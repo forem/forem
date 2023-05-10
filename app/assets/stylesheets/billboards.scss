@@ -26,7 +26,6 @@
   }
 }
 
-
 .billboard .ltag_cta {
   padding-top: var(--su-2);
   padding-bottom: var(--su-2);
@@ -41,12 +40,11 @@
   display: block;
 }
 
-// refers to the below the comments billboard on the article page
+// these are inline CTA's
+//refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story
-// (this may be unnecessary as its by default inline but we want to make doubly sure)
 .crayons-layout__comments-display-ad .crayons-card.billboard .ltag_cta,
 .crayons-story.billboard .ltag_cta {
-  display: inline;
   padding-right: var(--su-7);
   padding-left: var(--su-7);
 }
