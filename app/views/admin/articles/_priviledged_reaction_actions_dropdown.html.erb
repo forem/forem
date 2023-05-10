@@ -7,9 +7,9 @@
     <ul class="list-none">
       <% if vomit_reaction.status != 'confirmed' %>
         <li>
-          <button 
+          <button
             type="button"
-            data-mark-valid="<%= vomit_reaction.id %>" 
+            data-mark-valid="<%= vomit_reaction.id %>"
             data-reactable="user"
             data-status="confirmed"
             data-reaction-target="confirmed"
@@ -17,22 +17,22 @@
             data-remove-element="false"
             class="c-btn align-left w-100 c-btn--icon-left">
               <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
-              Mark as Valid
+              <%= t("views.moderations.flags.actions.mark_as_valid") %>
           </button>
         </li>
       <% end %>
       <% if vomit_reaction.status != 'invalid' %>
         <li>
-          <button 
+          <button
             type="button"
-            data-mark-invalid="<%= vomit_reaction.id %>" 
+            data-mark-invalid="<%= vomit_reaction.id %>"
             data-altstatus="invalid"
             data-reaction-target="invalid"
             data-action="reaction#updateReactionInvalid"
             data-remove-element="true"
             class="c-btn align-left w-100 c-btn--icon-left">
               <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
-              Mark as Invalid
+              <%= t("views.moderations.flags.actions.mark_as_invalid") %>
           </button>
         </li>
       <% end %>

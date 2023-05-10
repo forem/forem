@@ -21,17 +21,25 @@
     <%# In both the FE and BE, 'Invalid' remains the same. This status appears when an admin user marks a flag or vomit reaction as invalid, with a score of 0. %>
     <div class="flex justify-between w-100">
       <% if vomit_reaction.status == 'valid' %>
-        <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="Flagged marked as valid by admin">Open</span>
+        <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="<%= t("views.moderations.flags.open.title") %>">
+          <%= t("views.moderations.flags.open.invalid") %>
+        </span>
       <% elsif vomit_reaction.status == 'invalid' %>
-        <span class="c-indicator c-indicator--relaxed" title="Flagged marked as invalid by admin">Invalid</span>
+        <span class="c-indicator c-indicator--relaxed" title="<%= t("views.moderations.flags.invalid.title") %>">
+          <%= t("views.moderations.flags.invalid.value") %>
+        </span>
       <% elsif vomit_reaction.status == 'confirmed' %>
-        <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="Open flag">Valid</span>
+        <span class="c-indicator c-indicator--danger c-indicator--relaxed" title="<%= t("views.moderations.flags.valid.title") %>">
+          <%= t("views.moderations.flags.valid.value") %>
+        </span>
       <% else %>
         <%# This case should never arise. %>
-        <span class="c-indicator c-indicator--info c-indicator--relaxed">Unidentified</span>
+        <span class="c-indicator c-indicator--info c-indicator--relaxed" title="<%= t("views.moderations.flags.unidentified.title") %>">
+          <%= t("views.moderations.flags.unidentified.value") %>
+        </span>
       <% end %>
 
-      <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by particular flag">
+      <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by a particular flag">
         <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
         <span class="fs-s fw-medium lh-base"><%= vomit_reaction.points %></span>
       </span>
