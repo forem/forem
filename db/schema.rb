@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_30_145039) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_11_194704) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -998,6 +998,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_30_145039) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
     t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
     t.index ["user_id"], name: "index_segmented_users_on_user_id"
   end
