@@ -557,22 +557,17 @@ end
 
 ##############################################################################
 
-num_of_display_ads = 2 * SEEDS_MULTIPLIER
-
 seeder.create_if_none(DisplayAd) do
   orgs_in_random_order = Organization.order(Arel.sql("RANDOM()"))
   orgs = orgs_in_random_order.to_a
 
-  num_of_display_ads.times do
+  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
     DisplayAd.create!(
-      organization: orgs.sample,
-      name: Faker::Lorem.sentence,
-      body_markdown: "This is an external ad",
+      name: "#{Faker::Lorem.word} #{placement_area}",
+      body_markdown: Faker::Lorem.sentence,
       published: true,
       approved: true,
-      placement_area: "post_comments"
-      # tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
-      # type_of: "external", need to random this
+      placement_area: placement_area
     )
   end
 end
