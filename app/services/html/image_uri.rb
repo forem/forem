@@ -1,17 +1,18 @@
 module Html
   class ImageUri
     GITHUB_CAMO = {
-        scheme: "https",
-        host: "camo.githubusercontent.com"
-      }.freeze
+      scheme: "https",
+      host: "camo.githubusercontent.com"
+    }.freeze
 
     GITHUB_BADGE = {
       scheme: "https",
       host: "github.com",
       filename: "badge.svg"
-    }
+    }.freeze
 
     attr_reader :uri, :original_source
+
     delegate :scheme, :host, :path, to: :uri
 
     def initialize(src)
@@ -25,8 +26,8 @@ module Html
 
     def github_badge?
       scheme == GITHUB_BADGE[:scheme] &&
-      host == GITHUB_BADGE[:host] &&
-      filename == GITHUB_BADGE[:filename]
+        host == GITHUB_BADGE[:host] &&
+        filename == GITHUB_BADGE[:filename]
     end
 
     def github_camo_user_content?
@@ -34,6 +35,7 @@ module Html
     end
 
     private
+
     def filename
       File.basename path
     end

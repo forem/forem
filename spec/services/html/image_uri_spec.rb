@@ -33,5 +33,4 @@ RSpec.describe Html::ImageUri, type: :service do
     image = described_class.new(other)
     expect(image).not_to be_github_badge
   end
-
 end
