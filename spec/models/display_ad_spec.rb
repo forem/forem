@@ -30,6 +30,11 @@ RSpec.describe DisplayAd do
       expect(display_ad).to be_valid
     end
 
+    it "allows home_hero" do
+      display_ad.placement_area = "home_hero"
+      expect(display_ad).to be_valid
+    end
+
     it "disallows unacceptable placement_area" do
       display_ad.placement_area = "tsdsdsdds"
       expect(display_ad).not_to be_valid
