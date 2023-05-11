@@ -192,5 +192,5 @@ en:
       priviliged_actions:
         description: All the privileged actions affects the score. Overall score is combination of privileged actions and public reactions.
         no_flags: Article has no flags.
-        no_quality_reactions: Article has no quality reactions by trusted users
+        no_quality_reactions: Article has no quality reactions by trusted users.
         title: Priviliged actions
