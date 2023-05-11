@@ -558,9 +558,6 @@ end
 ##############################################################################
 
 seeder.create_if_none(DisplayAd) do
-  orgs_in_random_order = Organization.order(Arel.sql("RANDOM()"))
-  orgs = orgs_in_random_order.to_a
-
   DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
     DisplayAd.create!(
       name: "#{Faker::Lorem.word} #{placement_area}",
