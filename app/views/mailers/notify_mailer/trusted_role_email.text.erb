@@ -1,22 +1,21 @@
 Hey <%= @user.name %>!
 
-We are happy to let you know that you've been granted new permissions on <%= community_name %>!
+Good news! You’ve been granted Trusted Member permissions on <%= community_name %>!
 
-You will now see a shield icon on post pages. Click on the shield to take *private* actions to help vote on community content.
+From now on, a shield icon will be visible on post pages. Simply click on it to take *private* actions on community content.
 
 Here's an overview of your new abilities:
 
-- Use private reactions (👎, 👍) to vote on content quality
-- Quickly flag rule-breaking behavior with the 🧐 icon
-- Rate the appropriate "experience level" of a post
+- Rank content (👎👍) with emoji reactions
+- Rate the experience level of posts
+- Use the Flag to Admins icon 🧐 to report problematic content
 
 <% if Page.find_by(slug: "trusted-member") %>
-  For full details on how to use your new permissions:
+  For full details on your new role and instructions on how to get started:
 
   <%= app_url("trusted-member") %>
 <% end %>
 
-
-Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
+Thank you for being an awesome member of our community. Let’s work together to create a welcoming and constructive space!
 
 <%= community_name %> Team
