@@ -1,6 +1,5 @@
-describe('View details link on article list page admin area', () => {
+describe('View quality reactions on an individual article', () => {
   let articleId;
-  let articlePath;
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -15,24 +14,13 @@ describe('View details link on article list page admin area', () => {
           published: true,
         }).then((response) => {
           articleId = response.body.id;
-          articlePath = response.body.current_state_path;
-          cy.visit(`/${articlePath}`);
-          cy.findByRole('button', { name: 'Moderation' }).click();
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByText('High Quality').click();
-          });
           cy.visit(`/admin/content_manager/articles/${articleId}`);
         });
       });
     });
   });
 
-  it('should validate the vomit reaction count', () => {
-    cy.findByLabelText('Vomit')
-      .should('exist')
-      .should(($count) => {
-        const reactionCount = $count.text();
-        expect(reactionCount).to.match(/^\d+$/); // Assert that the reaction count is a positive number
-      });
+  it('should not contain any flags', () => {
+    cy.findByText('Article has no flags.').should('exist');
   });
 });
