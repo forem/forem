@@ -14,6 +14,12 @@ services:
     depends_on:
       - db
       - redis
+    healthcheck:
+      test: ["CMD", "curl" , "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_development
@@ -36,16 +42,18 @@ services:
     image: "${APP_IMAGE}"
     container_name: forem_sidekiq
     depends_on:
-      - rails
-      - redis
-      - db
+      rails:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
     environment:
       RAILS_ENV: development
       REDIS_SESSIONS_URL: redis://localhost:6379
       REDIS_SIDEKIQ_URL: redis://localhost:6379
       REDIS_URL: redis://localhost:6379
       DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_development
-    entrypoint: ["dockerize", "-wait", "tcp://localhost:5432", "-wait", "tcp://localhost:6379", "-wait", "http://localhost:3000", "-timeout", "5400s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
     deploy:
       resources:
@@ -55,6 +63,11 @@ services:
   db:
     image: postgres:11-alpine
     container_name: forem_postgresql
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d" ,"forem", "-U", "forem" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_USER: forem
       POSTGRES_PASSWORD: forem
@@ -65,5 +78,11 @@ services:
   redis:
     image: redis:6.0.9-alpine
     container_name: forem_redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     ports:
       - "6379:6379"
