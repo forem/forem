@@ -270,8 +270,7 @@ module Html
     end
 
     def allowed_image_host?(src)
-      image = ImageUri.new(src)
-      image.github_camo_user_content?
+      ImageUri.new(src).allowed?
     end
 
     def user_link_if_exists(mention)
