@@ -77,9 +77,11 @@ document
   });
 
 const form = document.getElementsByClassName('button_to')[0];
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-  if (confirm('Are you SURE you want to delete this comment?')) {
-    form.submit();
-  }
-});
+if (form) {
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (confirm('Are you SURE you want to delete this comment?')) {
+      form.submit();
+    }
+  });
+}
