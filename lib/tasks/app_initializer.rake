@@ -2,6 +2,7 @@ namespace :app_initializer do
   desc "Prepare Application on Boot Up"
   task setup: :environment do
     puts "\n== Preparing database =="
+    puts "Rails.env: #{Rails.env} ******"
     system("bin/rails db:prepare") || exit!(1)
     Rake::Task["db:migrate"].execute # it'll re-alphabetize the columns in `schema.rb`
 
