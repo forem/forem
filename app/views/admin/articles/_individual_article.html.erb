@@ -48,23 +48,23 @@
           </a>
         </h2>
         <div class="flex items-center gap-1">
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
-            <%= crayons_icon_tag("twemoji/thumb-up", native: true, title: t("views.moderations.actions.thumb_up"), width: 16, height: 16) %>
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
+            <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["thumbsup"] || "0" %></span>
           </span>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
-            <%= crayons_icon_tag("twemoji/thumb-down", native: true, title: t("views.moderations.actions.thumb_down"), width: 16, height: 16) %>
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_down") %>">
+            <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["thumbsdown"] || "0" %></span>
           </span>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
-            <%= crayons_icon_tag("twemoji/suspicious", native: true, title: t("views.moderations.actions.vomit"), width: 16, height: 16) %>
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+            <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["vomit"] || "0" %></span>
           </span>
 
-          <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">
-            <%= crayons_icon_tag("analytics", native: true, title: t("views.moderations.actions.score"), width: 16, height: 16) %>
+          <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
+            <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.score %></span>
           </span>
         </div>
