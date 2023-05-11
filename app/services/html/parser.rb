@@ -270,8 +270,8 @@ module Html
     end
 
     def allowed_image_host?(src)
-      # GitHub camo image won't parse but should be safe to host direct
-      src.start_with?("https://camo.githubusercontent.com")
+      image = ImageUri.new(src)
+      image.github_camo_user_content?
     end
 
     def user_link_if_exists(mention)
