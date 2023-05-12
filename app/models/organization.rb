@@ -62,8 +62,6 @@ class Organization < ApplicationRecord
   unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
-  mount_uploader :nav_image, ProfileImageUploader
-  mount_uploader :dark_nav_image, ProfileImageUploader
 
   alias_attribute :username, :slug
   alias_attribute :old_username, :old_slug

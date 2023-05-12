@@ -45,11 +45,15 @@
 
     <h3>Supported Non-URL Embeds</h3>
 
+    <h4>Call To Action (CTA)</h4>
+    <p><pre>{% cta link %} description {% endcta %}</pre></p>
+    <p>Provide a <em>link</em> that a user will be redirected to. The <em>description</em> will contain the label/description for the call to action.</p>
+
     <h4>Details</h4>
     <p>You can embed a <code>details</code> HTML element by using details, spoiler, or collapsible. The <em>summary</em> will be what the dropdown title displays. The <em>content</em> will be the text hidden behind the dropdown. This is great for when you want to hide text (i.e. answers to questions) behind a user action/intent (i.e. a click).</p>
-    <p><code>{% details summary %} content {% enddetails %}</code></p>
-    <p><code>{% spoiler summary %} content {% endspoiler %}</code></p>
-    <p><code>{% collapsible summary %} content {% endcollapsible %}</code></p>
+    <p><pre>{% details summary %} content {% enddetails %}</pre></p>
+    <p><pre>{% spoiler summary %} content {% endspoiler %}</pre></p>
+    <p><pre>{% collapsible summary %} content {% endcollapsible %}</pre></p>
 
     <h4>KaTex</h4>
     <p>Place your mathematical expression within a KaTeX liquid block, as follows:</p>
@@ -65,7 +69,7 @@
       <h4><%= community_name %> User Subscriptions</h4>
       <p class="fs-s fw-bold">This embed can only be created within posts by Admins.</p>
       <p>You can add call-to-action text that will show above the subscribe button:</p>
-      <code>{% user_subscription If you'd like to receive future updates, subscribe below! %}</code>
+      <pre>{% user_subscription If you'd like to receive future updates, subscribe below! %}</pre>
       <p class="fs-s">
         If a reader is signed out, the button will prompt them to sign in first
         to subscribe. If the reader is signed in, the button will prompt them

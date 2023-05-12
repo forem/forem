@@ -39,7 +39,6 @@ seeder.create_if_none(Organization) do
       name: Faker::Company.name,
       summary: Faker::Company.bs,
       profile_image: logo = Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
-      nav_image: logo,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
       github_username: "org#{rand(10_000)}",
@@ -553,6 +552,20 @@ seeder.create_if_none(Listing) do
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )
     end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
+    DisplayAd.create!(
+      name: "#{Faker::Lorem.word} #{placement_area}",
+      body_markdown: Faker::Lorem.sentence,
+      published: true,
+      approved: true,
+      placement_area: placement_area
+    )
   end
 end
 
