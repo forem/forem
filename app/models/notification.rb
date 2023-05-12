@@ -101,16 +101,13 @@ class Notification < ApplicationRecord
     end
 
     def send_moderation_notification(notifiable)
-      return unless notifiable.commentable
-      return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
+      if notifiable.instance_of?(Comment)
+        return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
+      else
+        return unless [Comment, Article].include?(notifiable.class)
+      end
 
-      Notifications::CreateRoundRobinModerationNotificationsWorker.perform_async(notifiable.id, "Comment")
-    end
-
-    def send_article_moderation_notification(article)
-      return unless article.instance_of?(Article)
-
-      Notifications::CreateRoundRobinModerationNotificationsWorker.perform_async(article.id, "Article")
+      Notifications::CreateRoundRobinModerationNotificationsWorker.perform_async(notifiable.id, notifiable.class.to_s)
     end
 
     def send_tag_adjustment_notification(tag_adjustment)
