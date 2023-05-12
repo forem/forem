@@ -13,8 +13,6 @@ en:
         name: Name
         slug: Username
         profile_image: Profile image
-        nav_image: Logo for light themes
-        dark_nav_image: Logo for dark themes
         twitter_username: Twitter username
         github_username: GitHub username
         url: Website url

@@ -14,6 +14,7 @@ ignore:
   - "**/*.svg"
   - "lib/sitemap_generator"
   - "lib/generators"
+  - "lib/tasks/custom_seeds.rake"
 coverage:
   status:
     patch:

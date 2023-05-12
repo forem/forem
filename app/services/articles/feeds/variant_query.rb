@@ -292,9 +292,9 @@ module Articles
       end
 
       def default_offset
-        return 0 if @page == 1
+        return 0 if @page.zero?
 
-        @page.to_i - (1 * default_limit)
+        (@page.to_i - 1) * default_limit
       end
 
       # We want to ensure that we're not randomizing someone's feed all the time; and instead aiming
