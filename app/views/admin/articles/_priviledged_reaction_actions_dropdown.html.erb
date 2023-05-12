@@ -8,6 +8,7 @@
       <% if vomit_reaction.status != 'confirmed' %>
         <li>
           <button
+            data-testid="mark-as-valid"
             type="button"
             data-mark-valid="<%= vomit_reaction.id %>"
             data-reactable="user"
@@ -24,6 +25,7 @@
       <% if vomit_reaction.status != 'invalid' %>
         <li>
           <button
+            data-testid="mark-as-invalid"
             type="button"
             data-mark-invalid="<%= vomit_reaction.id %>"
             data-altstatus="invalid"

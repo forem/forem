@@ -128,13 +128,17 @@ seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local")
       #{Faker::Markdown.random}
       #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
-    Article.create!(
+    article = Article.create!(
       body_markdown: markdown,
       featured: true,
       show_comments: true,
       user_id: user.id,
       slug: "apostrophe-user-slug",
     )
+    seeder.create_if_none(Reaction) do
+      trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+      trusted_user.reactions.create!(category: :vomit, reactable: article)
+    end
   end
 end
 

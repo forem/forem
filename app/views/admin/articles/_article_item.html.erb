@@ -95,7 +95,7 @@
       </div>
 
       <div class="flex gap-1">
-        <a href="/<%= article.id %>" class="c-link c-link--block"><%= t("views.moderations.article.view_details") %></a>
+        <a href="/admin/content_manager/articles/<%= article.id %>" class="c-link c-link--block"><%= t("views.moderations.article.view_details") %></a>
         <% if decorated_article.pinned? %>
           <form method="post" action="<%= unpin_admin_article_path(decorated_article.id) %>" class="inline"
             data-action="submit->article#unpinArticle">
