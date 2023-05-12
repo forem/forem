@@ -33,16 +33,14 @@ describe('Flagging to admins', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('admin');
-
-    cy.get('@admin').then((admin) => {
-      cy.loginAndVisit(admin, '/');
-    });
+    cy.fixture('users/seriesUser.json').as('contentUser');
   });
 
   context('when targeting an article', () => {
     beforeEach(() => {
-      cy.fixture('users/seriesUser.json').as('contentUser');
-      cy.visit('/series_user/series-test-article-slug/mod');
+      cy.get('@admin').then((admin) => {
+        cy.loginAndVisit(admin, '/series_user/series-test-article-slug/mod');
+      });
     });
 
     it('flags and unflags only the article when clicked', flagContentSpec);
@@ -50,20 +48,31 @@ describe('Flagging to admins', () => {
 
   context('when targeting a comment', () => {
     beforeEach(() => {
-      cy.fixture('users/notificationsUser.json').as('contentUser');
+      cy.get('@contentUser')
+        .then((user) => cy.loginUser(user))
+        .then(() =>
+          cy.createArticle({
+            title: 'Test Article',
+            content: 'Test article contents',
+            published: true,
+          }),
+        )
+        .then((response) =>
+          cy.createComment({
+            content: 'This is a test comment.',
+            commentableId: response.body.id,
+            commentableType: 'Article',
+          }),
+        )
+        .then((response) => {
+          cy.signOutUser().then(() => {
+            cy.get('@admin').then((admin) => {
+              cy.loginAndVisit(admin, `${response.body.url}/mod`);
+            });
+          });
+        });
     });
 
-    it('flags and unflags only the comment when clicked', () => {
-      cy.get('#comment-trees-container').within(() => {
-        cy.findAllByLabelText(/Toggle dropdown menu/i)
-          .first()
-          .click();
-        cy.findByRole('link', { name: 'Moderate' }).then((link) => {
-          // For some reason just clicking the link times out in Cypress only?
-          cy.visit(link.href);
-          flagContentSpec();
-        });
-      });
-    });
+    it('flags and unflags only the comment when clicked', flagContentSpec);
   });
 });

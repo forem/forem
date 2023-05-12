@@ -82,7 +82,7 @@
   </p>
   <div class="tag-mod-form" style="display: flex; flex-direction: column; align-items: center;">
     <h2><%= t("views.moderations.actions.abusive.subtitle_html", user: link_to(@moderatable.user.username, @moderatable.user.path)) %></h2>
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.user.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">
