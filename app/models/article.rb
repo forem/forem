@@ -608,7 +608,7 @@ class Article < ApplicationRecord
     # using nth_published because it doesn't count draft articles by the new author
     return if nth_published_by_author > 2
 
-    Notification.send_moderation_notification(self)
+    Notification.send_article_moderation_notification(self)
   end
 
   private
