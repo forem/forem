@@ -151,6 +151,6 @@ describe('Article flagged by a user', () => {
       .should('contain', 'Mark as Invalid')
       .click();
 
-    cy.get('.crayons-dropdown').should('not.visible');
+    cy.get('.crayons-dropdown').should('not.be.visible');
   });
 });
