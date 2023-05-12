@@ -50,7 +50,7 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
     rm -rf "${APP_HOME}"/.git/
 
-RUN rm -rf node_modules vendor/assets spec
+RUN rm -rf node_modules spec
 
 ## Development
 FROM builder AS development
