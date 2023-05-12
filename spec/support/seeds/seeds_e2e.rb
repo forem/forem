@@ -142,8 +142,6 @@ seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local")
   end
 end
 
-##############################################################################
-
 seeder.create_if_doesnt_exist(User, "email", "user-with-many-orgs@forem.local") do
   User.create!(
     name: "Many orgs user",

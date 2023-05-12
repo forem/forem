@@ -6,7 +6,6 @@ describe('New article has empty flags, quality reactions and score', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        //cy.visit('/admin_mcadmin/test-article-slug');
         cy.createArticle({
           title: 'Test article',
           tags: ['beginner', 'ruby', 'go'],
@@ -64,7 +63,7 @@ describe('New article has empty flags, quality reactions and score', () => {
   });
 });
 
-describe('Article flagged by a trusted user', () => {
+describe('Article flagged by a user', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -131,5 +130,27 @@ describe('Article flagged by a trusted user', () => {
       .find('ul.list-none')
       .should('contain', 'Mark as Valid')
       .and('contain', 'Mark as Invalid');
+  });
+
+  it('should close dropdown on click of "Mark as Valid"', () => {
+    cy.get('.c-btn--icon-alone:first').click();
+
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .should('contain', 'Mark as Valid')
+      .click();
+
+    cy.get('.crayons-dropdown').should('not.be.visible');
+  });
+
+  it('should close dropdown on click of "Mark as Invalid"', () => {
+    cy.get('.c-btn--icon-alone:first').click();
+
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .should('contain', 'Mark as Invalid')
+      .click();
+
+    cy.get('.crayons-dropdown').should('not.visible');
   });
 });
