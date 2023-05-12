@@ -557,6 +557,20 @@ end
 
 ##############################################################################
 
+seeder.create_if_none(DisplayAd) do
+  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
+    DisplayAd.create!(
+      name: "#{Faker::Lorem.word} #{placement_area}",
+      body_markdown: Faker::Lorem.sentence,
+      published: true,
+      approved: true,
+      placement_area: placement_area
+    )
+  end
+end
+
+##############################################################################
+
 # change locale to en to work around non-ascii slug problem
 loc = I18n.locale
 Faker::Config.locale = "en"

@@ -112,6 +112,16 @@ body {
   // when/if we "redesign" liquid tags.
   [class*='ltag'] a {
     text-decoration: none;
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+
+  a[class*='ltag'] {
+    text-decoration: none;
+    &:hover {
+      color: var(--color-hover);
+    }
   }
 
   h1,
