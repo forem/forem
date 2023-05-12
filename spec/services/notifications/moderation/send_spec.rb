@@ -78,17 +78,46 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       Article.set_callback(:commit, :after, :send_to_moderator)
     end
 
-    it "calls article_data since parameter is a comment" do
+    it "calls article_data since parameter is an article" do
       allow(Notifications).to receive(:article_data)
       described_class.call(moderator, article)
       expect(Notifications).to have_received(:article_data)
     end
-  end
 
-  it "includes all needed user data in the notification" do
-    notification = described_class.call(moderator, comment)
+    it "checks whether Notification is inserted on DB" do
+      expect do
+        described_class.call(moderator, article)
+      end.to change(Notification, :count).by(1)
+    end
 
-    expect(notification.json_data["user"]["id"]).to eq(staff_account.id)
-    expect(notification.json_data["comment_user"]["id"]).to eq(comment.user.id)
+    it "checks whether created Notification is valid", :aggregate_failures do
+      notification = described_class.call(moderator, article)
+      expect(notification).to be_a Notification
+      expect(notification.action).to eq "Moderation"
+      expect(notification.notifiable_type).to eq "Article"
+      expect(notification.user_id).to eq moderator.id
+      expect(notification.notifiable_id).to eq article.id
+    end
+
+    it "checks that moderator last notification time updates" do
+      expect do
+        described_class.call(moderator, article)
+      end.to change(moderator, :last_moderation_notification)
+    end
+
+    it "does not create a notification if the moderator is the article's author" do
+      article = create(:article, user: moderator)
+
+      expect do
+        described_class.call(moderator, article)
+      end.not_to change(Notification, :count)
+    end
+
+    it "includes all needed user data in the notification" do
+      notification = described_class.call(moderator, article)
+
+      expect(notification.json_data["user"]["id"]).to eq(staff_account.id)
+      expect(notification.json_data["article_user"]["id"]).to eq(article.user.id)
+    end
   end
 end
