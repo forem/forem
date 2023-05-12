@@ -40,6 +40,10 @@ class AudienceSegment < ApplicationRecord
     query_for_segment(segment_type)&.call(scope) || []
   end
 
+  def self.all_users_in_segment(segment_type, scope: User)
+    query_for_segment(segment_type)&.call(scope) || []
+  end
+
   def self.recently_active_users_in_segment(segment_type, scope: User.recently_active)
     scoped_users_in_segment(segment_type, scope: scope)
   end
@@ -58,6 +62,15 @@ class AudienceSegment < ApplicationRecord
     return if manual?
 
     self.users = self.class.recently_active_users_in_segment(type_of)
+  end
+
+  def all_users_in_segment
+    self.class.all_users_in_segment(type_of)
+  end
+
+  def includes?(user_or_id)
+    user_id = user_or_id.respond_to?(:id) ? user_or_id.id : user_or_id
+    all_users_in_segment.exists?(user_id)
   end
 
   alias refresh! save!
