@@ -76,22 +76,22 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
   end
 
   context "when considering article_exclude_ids" do
-    let!(:excluded_article1) { create_display_ad exclude_article_ids: "11,12" }
-    let!(:excluded_article2) { create_display_ad exclude_article_ids: "12,13" }
+    let!(:ex_article1) { create_display_ad exclude_article_ids: "11,12" }
+    let!(:another_ex_article2) { create_display_ad exclude_article_ids: "12,13" }
     let!(:no_excludes) { create_display_ad }
 
     it "will show display ads that exclude articles appropriately" do
       filtered = filter_ads article_id: 11
-      expect(filtered).to contain_exactly(excluded_article2, no_excludes)
+      expect(filtered).to contain_exactly(another_ex_article2, no_excludes)
 
       filtered = filter_ads article_id: 12
       expect(filtered).to contain_exactly(no_excludes)
 
       filtered = filter_ads article_id: 13
-      expect(filtered).to contain_exactly(excluded_article1, no_excludes)
+      expect(filtered).to contain_exactly(ex_article1, no_excludes)
 
       filtered = filter_ads article_id: 14
-      expect(filtered).to contain_exactly(excluded_article1, excluded_article2, no_excludes)
+      expect(filtered).to contain_exactly(ex_article1, anoyher_ex_article2, no_excludes)
     end
   end
 
