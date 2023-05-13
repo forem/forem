@@ -36,6 +36,7 @@ class DisplayAd < ApplicationRecord
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
   validate :validate_tag
+  validate :validate_in_house_hero_ads
 
   before_save :process_markdown
   after_save :generate_display_ad_name
@@ -95,6 +96,14 @@ class DisplayAd < ApplicationRecord
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     validate_tag_name(tag_list)
+  end
+
+  def validate_in_house_hero_ads
+    if placement_area == "home_hero" && type_of != "in_house"
+      return errors.add(:type_of, "must be in_house if display ad is a Home Hero")
+    end
+
+    nil
   end
 
   def audience_segment_type=(type)
