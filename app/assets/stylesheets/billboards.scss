@@ -40,6 +40,23 @@
   display: block;
 }
 
+.crayons-card.hero-billboard .ltag_cta {
+  display: block;
+}
+
+.hero-billboard h1,
+h2,
+h3,
+p {
+  text-align: center;
+}
+
+@media (min-width: $breakpoint-s) {
+  .hero-billboard h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
 // these are inline CTA's
 //refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story
