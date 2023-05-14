@@ -55,7 +55,7 @@ export function localizeTimeElements(elements, timeOptions) {
     if (timestamp) {
       const localDateTime = timestampToLocalDateTime(
         timestamp,
-        navigator.language,
+        "uk",
         timeOptions,
       );
 

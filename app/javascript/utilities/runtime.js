@@ -149,4 +149,4 @@ export const getOSKeyboardModifierKeyString = () =>
 /**
  * @returns {string} A string representing the locale as per the user's browser settings
  */
-export const getCurrentLocale = () => navigator.language;
+export const getCurrentLocale = () => "uk";

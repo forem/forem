@@ -8,9 +8,8 @@ const dateOptions = {
   day: 'numeric',
 };
 
-const currentLocale = window.navigator.languages
-  ? window.navigator.languages[0]
-  : window.navigator.userLanguage || window.navigator.language;
+const currentLocale = "uk"
+
 
 export const formatDate = (timestamp) => {
   const dateToday = new Date();
