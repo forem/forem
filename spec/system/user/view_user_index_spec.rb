@@ -15,7 +15,7 @@ RSpec.describe "User index" do
 
     context "when 1 article" do
       it "shows header", :aggregate_failures, js: true do
-        within("h1") { expect(page).to have_content(user.name) }
+        within("h1.crayons-title") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button(I18n.t("core.follow"))
         end
@@ -99,7 +99,7 @@ RSpec.describe "User index" do
 
     context "when user is logged in" do
       it "shows_header", :aggregate_failures, js: true do
-        within("h1") { expect(page).to have_content(user.name) }
+        within("h1.crayons-title") { expect(page).to have_content(user.name) }
         within(".profile-header__actions") do
           expect(page).to have_button(I18n.t("core.edit_profile"))
         end
