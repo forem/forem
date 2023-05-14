@@ -35,9 +35,9 @@ ua:
     - лис
     - гру
     formats:
-    full: "%-d %B, %Y - %A"
+    full: "%H:%M %-d %B, %Y - %A"
     full_month: "%B, %Y"
-    full_day: "%-d %B, %Y"
+    full_day: "%H:%M %-d %B, %Y"
     week_abbr: "%a"
     month_names_with_day:
     -
@@ -228,13 +228,13 @@ ua:
         other: має неправильну довжину (має мати %{count} символів)
   time:
     formats:
-      comment: "%B %d, %Y"
+      comment: "%H:%M %B %d, %Y"
       github: "%b %d, %Y"
       json: "%b %e, %Y"
       medium: "%b %-d, %Y"
       reddit: "%b %e '%y"
-      short: "%b %-e"
-      short_with_yy: "%b %-d '%y"
-      short_with_year: "%b %-e, %Y"
-      stackexchange: "%b %e '%y"
+      short: "%H:%M %b %-e"
+      short_with_yy: "%H:%M %b %-d '%y"
+      short_with_year: "%H:%M %b %-e, %Y"
+      stackexchange: "%H:%M %b %e '%y"
       tweet: "%H:%M %p - %d %b %Y"

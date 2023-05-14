@@ -145,7 +145,7 @@ RSpec.describe Articles::Builder, type: :service do
       expect(subject).to be_an_instance_of(Article)
       expect(subject).to have_attributes(correct_attributes)
 
-      date = Time.current.strftime("%k:%M %Y-%m-%d")
+      date = Time.current.strftime("%Y-%m-%d")
       zone = Time.current.strftime("%z")
 
       body_start = "---\ntitle: \npublished: false\ndescription: " \
