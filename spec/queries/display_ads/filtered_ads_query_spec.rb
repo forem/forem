@@ -91,7 +91,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).to contain_exactly(ex_article1, no_excludes)
 
       filtered = filter_ads article_id: 14
-      expect(filtered).to contain_exactly(ex_article1, anoyher_ex_article2, no_excludes)
+      expect(filtered).to contain_exactly(ex_article1, another_ex_article2, no_excludes)
     end
   end
 
