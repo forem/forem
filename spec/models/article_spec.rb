@@ -809,7 +809,7 @@ RSpec.describe Article do
     it "does not show year in readable time if not current year" do
       time_now = Time.current
       article.published_at = time_now
-      expect(article.readable_publish_date).to eq(time_now.strftime("%b %-e"))
+      expect(article.readable_publish_date).to eq(time_now.strftime("%H:%M:%S %b %-e"))
     end
 
     it "shows year in readable time if not current year" do
