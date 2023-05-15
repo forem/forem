@@ -21,7 +21,7 @@ hr {
 .hr-no-margins {
   margin-top: 0px;
   margin-bottom: 0px;
-  color: var(--grey-100);
+  border-top: 1px solid rgba(var(--grey-100), 1);
 }
 
 a:hover {
