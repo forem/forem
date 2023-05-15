@@ -33,11 +33,14 @@ RSpec.describe "Api::V1::AudienceSegments" do
   end
 
   shared_examples "an endpoint for only manual audience segments" do
-    before do
+    it "returns not found if the segment is automatic" do
       segment.update!(type_of: "trusted")
+      make_request
+      expect(response).to have_http_status(:not_found)
     end
 
-    it "returns not found" do
+    it "returns not found if the segment has been deleted" do
+      segment.destroy
       make_request
       expect(response).to have_http_status(:not_found)
     end
@@ -141,6 +144,60 @@ RSpec.describe "Api::V1::AudienceSegments" do
         "id" => segment.id,
         "type_of" => "manual",
       )
+    end
+  end
+
+  describe "GET /api/segments/:id/users" do
+    subject(:make_request) { get users_api_segment_path(segment.id), headers: headers }
+
+    let(:segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:users) { create_list(:user, 5) }
+
+    it_behaves_like "an admin-only protected resource"
+
+    it_behaves_like "an endpoint for only manual audience segments"
+
+    it "returns a list of users in the segment" do
+      segment.users << users
+
+      expected_data = users.map do |user|
+        hash_including(
+          "id" => user.id,
+          "username" => user.username,
+          "name" => user.name,
+          "twitter_username" => user.twitter_username,
+          "github_username" => user.github_username,
+          "summary" => user.profile.summary,
+          "location" => user.profile.location,
+          "website_url" => user.profile.website_url,
+        )
+      end
+
+      make_request
+
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body).to match_array(expected_data)
+    end
+
+    it "supports pagination" do
+      segment.users << users
+
+      get users_api_segment_path(segment.id), params: { page: 1, per_page: 3 }, headers: headers
+      expect(response.parsed_body.length).to eq(3)
+      get users_api_segment_path(segment.id), params: { page: 2, per_page: 4 }, headers: headers
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "respects API_PER_PAGE_MAX env variable limit" do
+      segment.users << users
+
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(3)
+
+      get users_api_segment_path(segment.id), params: { per_page: 5 }, headers: headers
+      expect(response.parsed_body.length).to eq(3)
     end
   end
 
