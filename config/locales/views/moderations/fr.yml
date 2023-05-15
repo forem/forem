@@ -117,7 +117,7 @@ fr:
         unpublish_post:
           modal_text1: Une fois dépublié, cet article sera invisible pour le public et accessible uniquement à %{username}.
           modal_text2: Ils peuvent toujours republier l'article tant qu'ils ne sont pas suspendus.
-        vomit: Vomir
+        vomit: Drapeaux valides et ouverts
         vote_down: Faible qualité
         flag_to_admins: Signaler aux admins
         vote_up: Haute qualité

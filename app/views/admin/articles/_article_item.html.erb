@@ -40,6 +40,17 @@
       </a>
     <% end %>
 
+    <% privileged_article_reactions = article.reactions.privileged_category.select { |reaction| reaction.reactable_type == "Article" } %>
+    <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" } %>
+    <% countable_vomits = 0 %>
+    <% if vomit_article_reactions.present? %>
+      <% vomit_article_reactions.each do |vomit_reaction| %>
+        <% if vomit_reaction.status != 'invalid' %>
+          <% countable_vomits += 1 %>
+        <% end %>
+      <% end %>
+    <% end %>
+
     <div class="flex justify-between gap-4 items-center">
       <h2 class="crayons-subtitle-1">
         <a href="<%= article.path %>" target="_blank" rel="noopener" class="c-link c-link--branded">
@@ -59,7 +70,7 @@
 
         <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center">
           <%= crayons_icon_tag("twemoji/suspicious", native: true, title: t("views.moderations.actions.vomit"), width: 16, height: 16) %>
-          <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["vomit"] || "0" %></span>
+          <span class="fs-s fw-medium lh-base"><%= countable_vomits %></span>
         </span>
 
         <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center">

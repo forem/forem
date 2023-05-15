@@ -118,7 +118,7 @@ en:
         unpublish_post:
           modal_text1: Once unpublished, this post will become invisible to the public and only accessible to %{username}.
           modal_text2: They can still re-publish the post if they are not suspended.
-        vomit: Vomit
+        vomit: Valid and open flags
         vote_down: Low Quality
         flag_to_admins: Flag to Admins
         vote_up: High Quality
