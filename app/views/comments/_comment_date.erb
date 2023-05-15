@@ -2,7 +2,7 @@
 
 <a href="<%= contextual_comment_url(decorated_comment, article: @article) %>" class="comment-date crayons-link crayons-link--secondary fs-s">
   <time datetime="<%= decorated_comment.published_timestamp %>" class=<%= decorated_comment.created_at.year == Time.current.year ? "date-no-year" : "date-short-year" %>>
-    <%= decorated_comment.readable_publish_date %>
+    <%= decorated_comment.published_timestamp %>
   </time>
 
   <% if decorated_comment.edited_at.present? %>

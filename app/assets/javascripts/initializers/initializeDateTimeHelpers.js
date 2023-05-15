@@ -7,6 +7,8 @@ function initializeDateHelpers() {
   localizeTimeElements(document.querySelectorAll('time.date-no-year'), {
     month: 'short',
     day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   });
 
   // Full date: Jul 12, 2020
@@ -14,6 +16,8 @@ function initializeDateHelpers() {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   });
 
   // Date with short year: Jul 12 '20
@@ -21,5 +25,7 @@ function initializeDateHelpers() {
     year: '2-digit',
     month: 'short',
     day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
   });
 }

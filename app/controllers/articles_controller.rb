@@ -341,7 +341,7 @@ class ArticlesController < ApplicationController
 
     if date.present?
       time_zone = Time.find_zone(time_zone_str)
-      time_zone ||= Time.find_zone("UTC")
+      time_zone ||= Time.find_zone("Kyiv")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
     elsif params["article"]["version"] != "v1" && !params["article"]["from_dashboard"]
       params["article"]["published_at"] = nil

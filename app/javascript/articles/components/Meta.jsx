@@ -81,7 +81,6 @@ export const Meta = ({ article, organization }) => {
           <PublishDate
             readablePublishDate={article.readable_publish_date}
             publishedTimestamp={article.published_timestamp}
-            publishedAtInt={article.published_at_int}
           />
         </a>
       </div>

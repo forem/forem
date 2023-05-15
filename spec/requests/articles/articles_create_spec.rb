@@ -127,7 +127,7 @@ RSpec.describe "ArticlesCreate" do
       attributes[:timezone] = "Europe/Moscow"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
-      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = a.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
     end
 
@@ -136,7 +136,7 @@ RSpec.describe "ArticlesCreate" do
       attributes[:timezone] = "Pacific/Honolulu"
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
-      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = a.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 04:00")
     end
 
@@ -147,7 +147,7 @@ RSpec.describe "ArticlesCreate" do
       post "/articles", params: { article: attributes }
       a = Article.find_by(title: new_title)
       # 00:00 in user timezone (attributes[:timezone])
-      published_at_utc = a.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = a.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 21:00")
     end
 
@@ -178,7 +178,7 @@ RSpec.describe "ArticlesCreate" do
     end
 
     it "sets published_at from frontmatter" do
-      published_at = 10.days.from_now.in_time_zone("UTC")
+      published_at = 10.days.from_now.in_time_zone("Kyiv")
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
