@@ -3,7 +3,7 @@
 
 /* eslint-env node */
 
-process.env.TZ = 'UTC';
+process.env.TZ = 'Europe/Kiev';
 
 module.exports = {
   setupFilesAfterEnv: ['./testSetup.js'],
