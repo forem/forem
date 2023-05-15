@@ -193,15 +193,11 @@ function buildArticleHTML(article, currentUserId = null) {
           article.published_timestamp +
           '">' +
           article.readable_publish_date +
-          ' ' +
-          timeAgoInWords +
           '</time>';
       } else {
         publishDate =
           '<time>' +
           article.readable_publish_date +
-          ' ' +
-          timeAgoInWords +
           '</time>';
       }
     }

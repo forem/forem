@@ -35,9 +35,9 @@ ua:
     - лис
     - гру
     formats:
-    full: "%H:%M %-d %B, %Y - %A"
+    full: "%-d %B, %H:%M, %Y - %A"
     full_month: "%B, %Y"
-    full_day: "%H:%M %-d %B, %Y"
+    full_day: "%-d %B, %H:%M, %Y"
     week_abbr: "%a"
     month_names_with_day:
     -
@@ -233,8 +233,8 @@ ua:
       json: "%b %e, %Y"
       medium: "%b %-d, %Y"
       reddit: "%b %e '%y"
-      short: "%H:%M %b %-e"
-      short_with_yy: "%H:%M %b %-d '%y"
-      short_with_year: "%H:%M %b %-e, %Y"
+      short: "%b %-e %H:%M"
+      short_with_yy: "%b %-d %H:%M '%y"
+      short_with_year: "%b %-e, %H:%M, %Y"
       stackexchange: "%H:%M %b %e '%y"
       tweet: "%H:%M %p - %d %b %Y"
