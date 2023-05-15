@@ -152,4 +152,39 @@ RSpec.describe "Api::V1::AudienceSegments" do
       expect(response).to have_http_status(:unprocessable_entity)
     end
   end
+
+  describe "DELETE /api/segments/:id" do
+    subject(:make_request) { delete api_segment_path(segment.id), headers: headers }
+
+    let(:segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:users) { create_list(:user, 3) }
+    let(:billboard) { create(:display_ad, published: true, approved: true, type_of: "community") }
+
+    it_behaves_like "an admin-only protected resource"
+
+    it_behaves_like "an endpoint for only manual audience segments"
+
+    it "destroys the segment and cleans up its list of users" do
+      segment.users << users
+
+      make_request
+
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq("application/json")
+      expect(AudienceSegment.exists?(segment.id)).to be(false)
+      expect(SegmentedUser.where(audience_segment_id: segment.id)).to be_empty
+    end
+
+    it "does not destroy the segment or its user list if it is associated with a billboard" do
+      segment.users << users
+      billboard.update!(audience_segment: segment)
+
+      make_request
+
+      expect(response).to have_http_status(:conflict)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body.keys).to include("error")
+      expect(segment.reload.users).to match_array(users)
+    end
+  end
 end

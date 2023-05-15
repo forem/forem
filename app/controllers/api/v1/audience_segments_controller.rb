@@ -13,14 +13,25 @@ module Api
         render json: @segment, status: :created
       end
 
+      def destroy
+        @segment = scope.find(params[:id])
+
+        if DisplayAd.where(audience_segment_id: @segment.id).any?
+          render json: { error: "Segments cannot be deleted while in use by any billboards" }, status: :conflict
+        else
+          result = @segment.destroy
+          render json: @segment, status: (result ? :ok : :conflict)
+        end
+      end
+
       def add_users
-        @segment = AudienceSegment.manual.find(params[:id])
+        @segment = scope.find(params[:id])
 
         render json: BulkSegmentedUsers.upsert(@segment, user_ids: @user_ids)
       end
 
       def remove_users
-        @segment = AudienceSegment.manual.find(params[:id])
+        @segment = scope.find(params[:id])
 
         render json: BulkSegmentedUsers.delete(@segment, user_ids: @user_ids)
       end
@@ -36,6 +47,10 @@ module Api
         return unless @user_ids.size > MAX_USER_IDS
 
         render json: { error: "Too many user IDs provided" }, status: :unprocessable_entity
+      end
+
+      def scope
+        AudienceSegment.manual
       end
     end
   end

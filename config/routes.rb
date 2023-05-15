@@ -55,7 +55,7 @@ Rails.application.routes.draw do
           put "unpublish", on: :member
         end
 
-        resources :segments, controller: "audience_segments", only: %i[create] do
+        resources :segments, controller: "audience_segments", only: %i[create destroy] do
           put "add_users", on: :member
           put "remove_users", on: :member
         end
