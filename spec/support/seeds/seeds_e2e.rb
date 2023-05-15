@@ -137,7 +137,7 @@ seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local")
     )
     seeder.create_if_none(Reaction) do
       trusted_user = User.find_by(email: "trusted-user-1@forem.local")
-      trusted_user.reactions.create!(category: :vomit, reactable: article)
+      admin_user.reactions.create!(category: :vomit, reactable: article)
     end
   end
 end

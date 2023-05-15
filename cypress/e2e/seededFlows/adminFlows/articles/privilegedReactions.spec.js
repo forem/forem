@@ -68,6 +68,31 @@ describe('Article flagged by a user', () => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
 
+    cy.intercept('POST', '/admin/reactions/*', (req) => {
+      req.reply((res) => {
+        const { id } = req.body;
+        const response = {
+          statusCode: 200,
+          body: {
+            outcome: 'Success',
+          },
+        };
+
+        if (req.body.removeElement === true) {
+          cy.get(`#${id}`).then(($element) => {
+            $element.remove();
+          });
+          cy.get(`#js__reaction__div__hr__${id}`).then(($element) => {
+            $element.remove();
+          });
+        } else {
+          cy.reload();
+        }
+
+        res.send(response);
+      });
+    });
+
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.visit('/admin/content_manager/articles/1'); // This article contains one flagged reaction.
