@@ -201,6 +201,8 @@ en:
             placeholder: basic, rich, or compact
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
+          index_minimum_date:
+            description: Minimum date needed for a post to be indexed by search engines (Unix Timestamp).
           index_minimum_score:
             description: Minimum score needed for a post to be indexed by search engines.
           primary_hex:

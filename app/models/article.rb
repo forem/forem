@@ -594,7 +594,7 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
-      published_at.to_i < 1_500_000_000 ||
+      published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
   end
 
