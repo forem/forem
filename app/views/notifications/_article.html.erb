@@ -3,7 +3,7 @@
   <%= render "notifications/shared/profile_pic", json_data: json_data %>
 
   <div class="notification__content">
-    <% if notification.action.blank? %>
+    <% if notification.action == "Published" %>
       <header class="mb-4">
         <h2 class="fs-base fw-normal">
           <%= message_user_acted_maybe_org(json_data, "views.notifications.new_post.verb_html", if_org: "views.notifications.new_post.if_org_html") %>
