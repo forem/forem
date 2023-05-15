@@ -43,7 +43,7 @@ module Articles
     end
 
     def refresh_user_segments
-      SegmentedUserRefreshWorker.perform_async(user)
+      SegmentedUserRefreshWorker.perform_async(user.id)
     end
 
     def create_article
