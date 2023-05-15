@@ -56,6 +56,7 @@ Rails.application.routes.draw do
         end
 
         resources :segments, controller: "audience_segments", only: %i[index show create destroy] do
+          get "users", on: :member
           put "add_users", on: :member
           put "remove_users", on: :member
         end
