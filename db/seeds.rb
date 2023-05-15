@@ -1,5 +1,7 @@
 # rubocop:disable Rails/Output
 
+return if Rails.env.production?
+
 # NOTE: when adding new data, please use the Seeder class to ensure the seed tasks
 # stays idempotent.
 require Rails.root.join("app/lib/seeder")
