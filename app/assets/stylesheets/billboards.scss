@@ -1,0 +1,50 @@
+@import 'config/import';
+@import 'variables';
+@import '_mixins';
+
+.crayons-layout__comments-display-ad {
+  .crayons-sponsorship {
+    .c-indicator.crayons-sponsorship__indicator {
+      line-height: 15px;
+    }
+
+    padding-left: var(--content-padding-x);
+    padding-bottom: var(--su-6);
+
+    @media (min-width: $breakpoint-s) {
+      .text-styles {
+        padding-right: var(--su-8);
+      }
+    }
+  }
+}
+
+.sponsorship-dropdown {
+  hr {
+    border: 0.5px solid var(--divider);
+    margin: 8px;
+  }
+}
+
+.billboard .ltag_cta {
+  padding-top: var(--su-2);
+  padding-bottom: var(--su-2);
+
+  @media (max-width: $breakpoint-s) {
+    display: block;
+  }
+}
+
+// refers to the sidebar billboards where we use cards
+.crayons-card.billboard .ltag_cta {
+  display: block;
+}
+
+// these are inline CTA's
+//refers to the below the comments billboard on the article page
+//refers to the feed/stories where we use story
+.crayons-layout__comments-display-ad .crayons-card.billboard .ltag_cta,
+.crayons-story.billboard .ltag_cta {
+  padding-right: var(--su-7);
+  padding-left: var(--su-7);
+}
