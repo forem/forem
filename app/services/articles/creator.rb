@@ -20,6 +20,8 @@ module Articles
                                         config: "all_comments")
       end
 
+      refresh_user_segments if article.published?
+
       article
     end
 
@@ -35,6 +37,10 @@ module Articles
                           end
 
       user.rate_limiter.check_limit!(rate_limit_to_use)
+    end
+
+    def refresh_user_segments
+      SegmentedUserRefreshWorker.perform_async(user)
     end
 
     def save_article

@@ -5,7 +5,8 @@ class SegmentedUserRefreshWorker
 
   # Ignore manually-updated segments, remove user if they no longer belong,
   # add the user if they now belong
-  def perform(user_id)
+  def perform(user_or_id)
+    user_id = user_or_id.respond_to?(:id) ? user_or_id.id : user_or_id
     automated_segments = AudienceSegment.not_manual
     matching = SegmentedUser.where(user_id: user_id).pluck(:audience_segment_id)
 
