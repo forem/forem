@@ -54,6 +54,12 @@ class AudienceSegment < ApplicationRecord
       .map { |(id, type)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), id] }
   end
 
+  def self.including_user_counts
+    left_joins(:segmented_users)
+      .select("audience_segments.*, COUNT(segmented_users.id) AS user_count")
+      .group("audience_segments.id")
+  end
+
   def run_query
     return if manual?
 

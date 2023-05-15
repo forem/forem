@@ -32,13 +32,105 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
   end
 
-  describe "POST /api/segments" do
-    it_behaves_like "an admin-only protected resource" do
-      subject(:make_request) { post api_segments_path, headers: headers }
+  shared_examples "an endpoint for only manual audience segments" do
+    before do
+      segment.update!(type_of: "trusted")
     end
 
+    it "returns not found" do
+      make_request
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
+  describe "GET /api/segments" do
+    subject(:make_request) { get api_segments_path, headers: headers }
+
+    let(:first_manual_segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:second_manual_segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:automatic_segment) { AudienceSegment.create!(type_of: "trusted") }
+    let(:users) { create_list(:user, 3) }
+
+    it_behaves_like "an admin-only protected resource"
+
+    it "returns only manual segments including their user counts" do
+      first_manual_segment.users << users
+      expected_data = [
+        hash_including(
+          "id" => first_manual_segment.id,
+          "type_of" => "manual",
+          "user_count" => 3,
+        ),
+        hash_including(
+          "id" => second_manual_segment.id,
+          "type_of" => "manual",
+          "user_count" => 0,
+        ),
+      ]
+      excluded_data = hash_including("id" => automatic_segment.id)
+
+      make_request
+
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq("application/json")
+
+      expect(response.parsed_body).to include(*expected_data)
+      expect(response.parsed_body).not_to include(excluded_data)
+    end
+
+    it "supports pagination" do
+      5.times.each { AudienceSegment.create!(type_of: :manual) }
+
+      get api_segments_path, params: { page: 1, per_page: 3 }, headers: headers
+      expect(response.parsed_body.length).to eq(3)
+      get api_segments_path, params: { page: 2, per_page: 4 }, headers: headers
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "respects API_PER_PAGE_MAX env variable limit" do
+      5.times.each { AudienceSegment.create!(type_of: :manual) }
+
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(3)
+
+      get api_segments_path, params: { per_page: 10 }, headers: headers
+      expect(response.parsed_body.length).to eq(3)
+    end
+  end
+
+  describe "GET /api/segments/:id" do
+    subject(:make_request) { get api_segment_path(segment.id), headers: headers }
+
+    let(:segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:users) { create_list(:user, 3) }
+
+    it_behaves_like "an admin-only protected resource"
+
+    it_behaves_like "an endpoint for only manual audience segments"
+
+    it "returns the segment including its user count" do
+      segment.users << users
+
+      make_request
+
+      expect(response).to have_http_status(:success)
+      expect(response.media_type).to eq("application/json")
+      expect(response.parsed_body).to include(
+        "id" => segment.id,
+        "type_of" => "manual",
+        "user_count" => 3,
+      )
+    end
+  end
+
+  describe "POST /api/segments" do
+    subject(:make_request) { post api_segments_path, headers: headers }
+
+    it_behaves_like "an admin-only protected resource"
+
     it "creates a new manual audience segment" do
-      post api_segments_path, headers: headers
+      make_request
 
       expect(response).to have_http_status(:created)
       expect(response.media_type).to eq("application/json")
@@ -53,16 +145,20 @@ RSpec.describe "Api::V1::AudienceSegments" do
   end
 
   describe "PUT /api/segments/:id/add_users" do
-    let(:segment) { AudienceSegment.create!(type_of: "manual") }
-    let(:users) { create_list(:user, 3) }
-
-    it_behaves_like "an admin-only protected resource" do
-      subject(:make_request) { put add_users_api_segment_path(segment.id), headers: headers }
+    subject(:make_request) do
+      put add_users_api_segment_path(segment.id), params: { user_ids: user_ids }, headers: headers, as: :json
     end
 
-    it "adds the provided users if it is a manual audience segment" do
-      user_ids = users.map(&:id)
-      put add_users_api_segment_path(segment.id), params: { user_ids: user_ids }, headers: headers, as: :json
+    let(:segment) { AudienceSegment.create!(type_of: "manual") }
+    let(:users) { create_list(:user, 3) }
+    let(:user_ids) { users.map(&:id) }
+
+    it_behaves_like "an admin-only protected resource"
+
+    it_behaves_like "an endpoint for only manual audience segments"
+
+    it "adds the provided users" do
+      make_request
 
       expect(response).to have_http_status(:success)
       expect(response.media_type).to eq("application/json")
@@ -75,7 +171,6 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     it "returns user ids that failed to be added" do
-      user_ids = users.map(&:id)
       fake_user_ids = [999_999, 777_777]
       params = { user_ids: user_ids + fake_user_ids }
       put add_users_api_segment_path(segment.id), params: params, headers: headers, as: :json
@@ -100,8 +195,13 @@ RSpec.describe "Api::V1::AudienceSegments" do
   end
 
   describe "PUT /api/segments/:id/remove_users" do
+    subject(:make_request) do
+      put remove_users_api_segment_path(segment.id), params: { user_ids: user_ids }, headers: headers, as: :json
+    end
+
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
     let(:users) { create_list(:user, 3) }
+    let(:user_ids) { users.map(&:id) }
     let(:retained_users) { create_list(:user, 3) }
     let(:users_not_in_segment) { create_list(:user, 3) }
 
@@ -110,13 +210,12 @@ RSpec.describe "Api::V1::AudienceSegments" do
       segment.users << retained_users
     end
 
-    it_behaves_like "an admin-only protected resource" do
-      subject(:make_request) { put remove_users_api_segment_path(segment.id), headers: headers }
-    end
+    it_behaves_like "an admin-only protected resource"
 
-    it "removes only the provided users if they are part of the manual audience segment" do
-      user_ids = users.map(&:id)
-      put remove_users_api_segment_path(segment.id), params: { user_ids: user_ids }, headers: headers, as: :json
+    it_behaves_like "an endpoint for only manual audience segments"
+
+    it "removes only the provided users if they are part of the segment" do
+      make_request
 
       expect(response).to have_http_status(:success)
       expect(response.media_type).to eq("application/json")
@@ -129,7 +228,6 @@ RSpec.describe "Api::V1::AudienceSegments" do
     end
 
     it "returns user ids that failed to be removed" do
-      user_ids = users.map(&:id)
       ids_to_fail = [*users_not_in_segment.map(&:id), 123_456]
       params = { user_ids: user_ids + ids_to_fail }
       put remove_users_api_segment_path(segment.id), params: params, headers: headers, as: :json
