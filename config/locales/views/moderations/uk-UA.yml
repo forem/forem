@@ -1,0 +1,149 @@
+---
+uk-UA:
+  views:
+    moderations:
+      heading: Mod Center
+      actions:
+        meta:
+          title: Moderating %{title}
+          title2: '[Moderate] %{title}'
+        heading: Moderate Post
+        subtitle: Rate the quality of this post
+        abusive:
+          subtitle_html: Flag %{user} as Abusive
+          desc_html: This is the equivalent of flagging <b>all</b> of this user's posts and will lower their post scores.
+        adjust:
+          heading: Запропонувати теґи
+          subtitle: Add or remove tags
+          aria_label: Open adjust tags section
+          icon: Adjust tags
+          add: Додати теґ
+          add_placeholder: Add a tag
+          reason: Reason for tag adjustment
+          remove: Remove tag
+          submit: Submit
+        approve:
+          add: Mark as approved
+          remove: Remove approval
+        checkmark: Checkmark
+        close: Close moderator actions panel
+        delete:
+          subtitle: Delete This Comment
+          button: Delete Comment
+        edit:
+          post: Редагувати допис
+          article_admin: Admin:Article
+          comment_admin: Admin:Comment
+          user_admin: Admin:User
+          resource_admin: ResourceAdmin:Article
+        errors:
+          one: '1 error prohibited this block from being saved:'
+          other: '%{count} errors prohibited this block from being saved:'
+        experience:
+          heading: Set experience level
+          heading2: Experience Level of Post
+          subtitle: Curate the most appropriate audience for this post
+          aria_label: Open experience level section
+          icon: Book
+          desc_html: Who <em>might</em> find this post most valuable, based on overall experience level?
+          from: '%{lvl} - '
+          level:
+            Advanced: Advanced
+            Beginner: Beginner
+            Expert: Expert
+            Mid-level: Mid-level
+            Novice: Novice
+        admin:
+          heading: Moderating actions
+          heading2: Moderating actions for %{user}
+          subtitle: Moderating actions for %{user}
+          aria_label: Open admin actions
+          icon: Crown
+        flag: Поскартижится %{username}
+        unflag: Зняти скаргу з %{username}
+        how: Як це працює?
+        hidden:
+          subtitle: Сховані коментарі
+          by: Коментарі від %{user}
+        hint:
+          subtitle: Усі погані оцінки є анонімними.
+          desc_html: |-
+            Ставте оціку <b>Висока якість</b> щоб підняти допис у алгоритмах через високу якість, корисність, тощо.
+            <br />
+            Ставте оціку <b>Низка якість</b> щоб попустити допис як неякісний, некорисний.
+            <br />
+            Натискайте на <b>Порушує правила</b> якщо це порущує правила сайту чи норми поведінки (спам, погрози, образи, тощо).
+        other: Ще штуки, які можете робити
+        add_reaction: Додати реакцію
+        suspend:
+          suspend_title: Заблокувати %{username}
+          suspend_user: Заблокувати %{username}
+          suspend_modal_text: Заблокувавши %{username}, ця людина не зможе створювати дописи чи писати коментарі, поки її не разблокують.
+          suspend_modal_button: Заблокувати
+          unsuspend_title: Разблокувати %{username}
+          unsuspend_user: Разблокувати %{username}
+          unsuspend_modal_text: Разблокувавши %{username} ця людина знов зможе створювати дописи та писати коментарі.
+          unsuspend_modal_button: Submit & Unsuspend
+        suspicious: Suspicious
+        tag:
+          subtitle: Налаштування тегів
+          add: Додати
+          added_html: '<b>Наразі доданий теґ:</b> %{tag}'
+          live_html: '<b>Поточні теґи:</b> %{tags}'
+          reason: Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.
+          remove: Remove
+          removed_html: '<b>Currently removed tag:</b> %{tag}'
+          select: Обрати теґ
+          submit: Submit Tag Adjustment
+          tag_name: Tag Name
+          undo:
+            button: '×'
+            confirm: Are you sure you want to undo the %{type} of the %{tag} tag?
+            type:
+              addition: addition
+              removal: removal
+        thumb_down: Лайк
+        thumb_up: Дизлайк
+        toggle: Toggle section
+        feature: Зафічерити допис
+        unfeature: Розфічерити допис
+        unpublish: Приховати допис
+        unpublish_all:
+          title: Приховати усі дописи
+          button: Приховати усі дописи від %{username}
+          modal_text1: Once unpublished, all posts by %{username} will become hidden and only accessible to themselves.
+          modal_text2: If %{username} is not suspended, they can still re-publish their posts from their dashboard.
+          modal_button: Розпублікувати усі дописи
+        vote_down: Низька якість
+        flag_to_admins: Порушує правила
+        vote_up: Висока якість
+        featured_past_day:
+          one: '%{count} post from the past day is featured.'
+          other: '%{count} posts from the past day are featured.'
+      all: All topics
+      aside:
+        all: All topics
+        code_of_conduct: Code of Conduct
+        external: External link
+        feedback:
+          subtitle: Have feedback to improve your Mod experience?
+          description: Please email %{email}!
+        hello: 'Hello! 👋'
+        thanks: Thank you for helping to keep %{community} safe! ❤️
+        inbox: Inbox
+        resources: Resources
+        tag: Tag Moderation Guide
+        terms_and_conditions: Terms & Conditions
+        trusted: Trusted User Guide
+      author: Author
+      date: Date
+      notice:
+        subtitle: '%{community} Mods'
+        desc1_html: We periodically award some %{community} members with heightened privileges to help moderate the community.
+        desc2_html: Check out our %{code} and read through our %{trusted} and %{tag}.
+        desc3_html: If you'd like to assist us as a trusted user or tag mod, please email us at %{email} and let us know which role you're interested in and why. If it's tag moderation, please tell us what tags you'd like to moderate for.
+        desc4: P.S. You are not currently signed in.
+        code_of_conduct: Code of Conduct
+        tag: Tag Moderation Guide
+        trusted: Trusted User Guide
+      post: Post

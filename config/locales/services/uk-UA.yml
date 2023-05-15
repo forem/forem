@@ -1,0 +1,133 @@
+---
+uk-UA:
+  services:
+    analytics_service:
+      no_stats: Ви не можете переглядати статистику цієї статті
+    article_with_video_creation_service:
+      unpublished_video: Неопубліковане відео ~ %{rand}
+    authentication:
+      authenticator:
+        not_allowed: Домен вашої адреси електронної пошти заборонений.
+      providers:
+        apple:
+          name: "%{first} %{last}"
+        not_available: Provider %{name} is not available!
+        not_enabled: Provider %{name} is not enabled!
+    badges:
+      award_beloved_comment:
+        message: Ви знаменитість! [Це коментар ](%{comment}) за що вас визнають. 😄
+      award_streak:
+        longest: 16 тижнів! Ви досягли найдовшої серії написання. Це дає вам право на
+          участь у спеціальних квестах у майбутньому. Продовжуйте робити чудові
+          внески в нашу спільноту!
+        message:
+          one: Вітаємо з досягненням цієї серії! Послідовно писати важко. Наступний значок
+            ви отримаєте за %{count} тижнів. 😉
+          other: Вітаємо з досягненням цієї серії! Послідовно писати важко. Наступний
+            значок ви отримаєте за %{count} тижнів. 😉
+      award_yearly_club:
+        message:
+          one: Вітаємо з річницею на сайті! Чи можете ви уявити, що пройшов вже один рік?
+          other: Вітаємо з річницею на сайті! Чи можете ви уявити, що пройшло вже %{count}
+            роки?!
+      congrats: Вітаємо!!!
+      thank_you: Щиро дякуємо за ваші внески!
+      community_wellness:
+        first: Дякуємо за участь у конструктивних розмовах! Цього тижня ви залишили два
+          або більше коментарів. Продовжуйте в тому ж дусі, щоб продовжити
+          серію!
+        longest: 32 тижні! Ви досягли найдовшої серії бейджу "Експерт Обговорень". Ви
+          робите чудову роботу, беручи участь у житті спільноти, і продовжуйте
+          робити свій дивовижний внесок у розвиток українського контенту!
+        other: 'Вітаємо з отриманням бейджу "Експерт Обговорень (Тижні: %{weeks})".
+          Залишайте конструктивні коментарі, щоб продовжити серію!'
+    broadcasts:
+      welcome_notification:
+        generator:
+          welcome: "Привітальне сповіщення: %{key}"
+    error_messages:
+      clean:
+        parse_error: Виникла проблема при розборі YAML переднього плану. Можливо, вам
+          потрібно екранувати лапки, двокрапку або щось подібне. Пошта %{email}
+          .
+    html:
+      parser:
+        enter_fullscreen_mode: Увімкніть повноекранний режим
+        exit_fullscreen_mode: Вийти з повноекранного режиму
+    markdown_processor:
+      parser:
+        invalid_markdown_detected: Виявлено невірну розмітку!
+    moderator:
+      banish_user:
+        spam_account: спам акаунт
+      manage_activity_and_roles:
+        need_super: You need super admin status to take this action
+      merge_user:
+        duplicate: The user has duplicate authentication methods on the two accounts.
+          Please double check and delete the identity that the user is no longer
+          using. This is usually the already-deleted social account, or the
+          authentication method tied to the user to be deleted.
+        multiple: The user being deleted already has two or more authentication methods.
+          Are you sure this is the right user to be deleted? If so, a super
+          admin will need to do this from the console to be safe.
+        same_user: You cannot merge the same two user IDs
+    notifications:
+      new_comment:
+        new: 💬 Новий коментар
+      new_mention:
+        new: 🗣️ Нова згадка
+    payments:
+      customer:
+        usd: usd
+      errors:
+        select_payment_method: Please select a payment method
+      process_credit_purchase:
+        charge:
+          one: Purchase of %{count} credits.
+          other: Purchase of %{count} credits.
+    rate_limit_checker:
+      invalid_key: "Invalid Cache Key: no unique component present"
+      limit_reached:
+        one: Rate limit reached, try again in %{count} seconds
+        other: Rate limit reached, try again in %{count} seconds
+    slack:
+      messengers:
+        article_fetched_feed:
+          body: |
+            New Article Retrieved via RSS: %{title}
+            %{url}
+        article_published:
+          body: |
+            New Article Published: %{title}
+            %{url}
+        feedback:
+          anonymous_report: "*Anonymous report:"
+          final_message: |-
+            %{user_detail}
+            Category: %{category}
+            Internal Report: %{reports_url}
+            *_ Reported URL: %{reported_url} _*
+            -----
+            *Message:* %{message}
+          body: |
+            *Logged in user:*
+            reporter: %{username} - %{url}
+            email: <mailto:%{email}|%{email}>
+        potential_spammer:
+          body: |
+            Potential spam user! %{url}
+        sponsorship:
+          body: |
+            %{user} bought a %{type} sponsorship for %{organization}
+    spam:
+      article_handler:
+        suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.
+    user_subscriptions:
+      create_from_controller_params:
+        source_not_found: Source not found.
+        email_mismatch: Subscriber email mismatch.
+    users:
+      remove_role:
+        remove_self: Admins cannot remove roles from themselves.
+        remove_super: Super Admin roles cannot be removed.
+        error: There was an issue removing this role. %{e_message}

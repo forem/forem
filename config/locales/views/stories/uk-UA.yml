@@ -1,0 +1,25 @@
+---
+uk-UA:
+  views:
+    stories:
+      meta:
+        description_tagged: "%{tag} контент на %{name}"
+        page: " Сторінка %{page}"
+        rss: "%{name} RSS стрічка"
+      heading: Дописи
+      discuss: "#discuss"
+      follow: Підписатись
+      menu:
+        aria_left: nav-button-left
+        aria_right: nav-button-right
+      sort:
+        aria_label: Показати дописи за
+        aria_tagged: Показати дописи с теґом за
+        relevant: Релевантні
+        week: Тиждень
+        month: Місяць
+        year: Рік
+        infinity: Весь час
+        latest: Нові
+        signin_html: "👋 <a href=\"%{path}\">Увійдіть</a>, щоб мати можливість сортувати дописи за <strong>релевантністю</strong>, <strong>новизною</strong>, або <strong>популярністю</strong>."
+        top: Популярні

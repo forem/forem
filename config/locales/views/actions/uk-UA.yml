@@ -1,0 +1,26 @@
+---
+uk-UA:
+  views:
+    actions:
+      copy:
+        text: Копіювати у буфер обміну
+        button: Копіювати посилання
+      more:
+        title: Більше...
+        aria_label: Поширення
+      share:
+        facebook:
+          text: Поширити на Facebook
+        hackernews:
+          text: Поширити на Hacker News
+        linkedin:
+          text: Поширити на LinkedIn
+        reddit:
+          text: Поширити на Reddit
+        twitter:
+          text: Поширити на Twitter
+        mastodon:
+          text: Поширити на Mastodon
+          query: '"%{article}" від %{author}'
+        link: Поширити допис через...
+        report: Поскаржитись

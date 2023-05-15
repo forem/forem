@@ -1,0 +1,36 @@
+---
+uk-UA:
+  views:
+    podcasts:
+      meta:
+        title: Подкасти
+        description: Знайдіть подкасти для %{member}
+        og:
+          title: Подкасти на Кутку
+      browse: Огляд
+      heading: Подкасти
+      close: "×"
+      form:
+        heading: Запропонувати подкаст
+        errors:
+          one: '1 помилка під час створення подкасту:'
+          other: "%{count} помилки під час створення подкасту:"
+        owner: Я є власником цього подкасту
+        return: "< повернутися до подкастів"
+        suggest: Подати
+      list: подкасти
+      listen: Натисніть тут, щоб завантажити/послухати
+      source: Джерело випуску
+      statuses:
+        ssl_failed: Під час отримання feed_url подкасту сталася помилка перевірки SSL-сертифіката
+        unparsable: Не вдалося прочитати rss подкасту
+        unplayable: Цей подкаст може не програватися в браузері
+        unreachable: Адреса feed_url подкасту недоступна
+      speed: 1x
+      tag: подкаст
+      initializing: ініціалізація...
+      unsupported: Ваш браузер не підтримує аудіо елемент.
+      featured_shows: Вибрані шоу
+      latest_episodes: Останні випуски
+      suggest_a_podcast: Запропонувати подкаст
+      view_all_podcasts: Переглянути всі подкасти

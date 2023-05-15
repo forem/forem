@@ -1,5 +1,0 @@
----
-ua:
-  decorators:
-    article_decorator:
-      tagged_with: " Tagged with %{cached_tag_list}."

@@ -1,0 +1,71 @@
+---
+uk-UA:
+  views:
+    main:
+      aria_home: "%{community}"
+      header:
+        create_account: Реєстрація
+        login: Увійти
+        nav:
+          aria_label: Меню
+        moderation:
+          aria_label: Модерація
+          icon: Модерація
+        notifications:
+          aria_label: Повідомлення
+          icon: Повідомлення
+        skip: Пропустити
+      modal:
+        create_account:
+          aria_label: Створити новий акаунт
+          text: Реєстрація
+        login:
+          aria_label: Увійти
+          text: Увійти
+      nav:
+        admin: Адмін
+        dashboard: Панель управління
+        placeholder: "..."
+        list: Збережене
+        moderator_center: Центр модерації
+        other: Інше
+        settings: Налаштування
+      nav_name:
+        About: Про нас
+        Code of Conduct: Правила
+        Contact: Контакти
+        FAQ: FAQ
+        Listings: Списки
+        Podcasts: Подкасти
+        Privacy Policy: Політика конфіденційності
+        Reading List: Збережене
+        Sponsors: Спонсори
+        Tags: Теґи
+        Terms of use: Умови використання
+        Videos: Відео
+      side:
+        listings:
+          heading: Списки
+          all: Побачити все
+          new: Створити список
+        trend: трендовий контент
+        recent: нещодавно запитували
+      tags:
+        aria_label: Налаштування пріоритету теґів
+        follow: Підписатися
+        my_tags: Мої теґи
+        popular_tags: Популярні теґи
+      footer:
+        built:
+          text_html: Створено на базі %{forem} — %{opensource} ПЗ.
+          forem: Forem
+          opensource: відкритого
+          dev: DEV
+        desc_html: "%{community} — %{desc}"
+        logo: Forem logo
+        powered:
+          text_html: На базі %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+      home: Головна
+      create_post: Створити допис
+      signout: Вийти

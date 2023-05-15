@@ -1,0 +1,240 @@
+---
+uk-UA:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Зв'яжіться з нами</a>, якщо маєте питання.
+    if_continued_trouble_html: <a href="/contact">Зв'яжіться з нами</a>, якщо у вас є проблеми з сайтом.
+    if_we_can_help_html: <a href="/contact">Зв'яжіться з нами</a>, якщо ми можемо чимось допомогти.
+  core:
+    add_comment: Додати коментар
+    beta: бета
+    comment: Коментар
+    copy_link: Копіювати посилання
+    edit_profile: Редагувати профіль
+    follow: Підписатися
+    follow_back: Взаємно підписатися
+    following: Ви підписані
+    like: Лайки
+    loading: завантаження...
+    reaction: Реакції
+    report_abuse: Поскаржитись
+    search: Пошук
+    success_settings: Налаштування успішно оновлені.
+  date:
+    abbr_month_names:
+    - 
+    - січ
+    - лют
+    - бер
+    - кві
+    - тра
+    - чер
+    - лип
+    - сер
+    - вер
+    - жов
+    - лис
+    - гру
+    formats:
+    full: "%-d %B, %H:%M, %Y - %A"
+    full_month: "%B, %Y"
+    full_day: "%-d %B, %H:%M, %Y"
+    week_abbr: "%a"
+    month_names_with_day:
+    -
+    - січня
+    - лютого
+    - березня
+    - квітня
+    - травня
+    - червня
+    - липня
+    - серпня
+    - вересня
+    - жовтня
+    - листопада
+    - грудня
+    month_names_standalone:
+    -
+    - Січень
+    - Лютий
+    - Березень
+    - Квітень
+    - Травень
+    - Червень
+    - Липень
+    - Серпень
+    - Вересень
+    - Жовтень
+    - Листопад
+    - Грудень
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: годину тому
+        other: "%{count} годин тому"
+      about_x_months:
+        one: місяць тому
+        other: "%{count} місяців тому"
+      about_x_years:
+        one: рік  тому
+        other: "%{count} років тому"
+      almost_x_years:
+        one: майже рік тому
+        other: майже %{count} років тому
+      half_a_minute: 30 секунд тому
+      less_than_x_seconds:
+        one: тільки що
+        other: менше %{count} сек. тому
+      less_than_x_minutes:
+        one: менше хвилини тому
+        other: менше %{count} хв. тому
+      over_x_years:
+        one: більше року тому
+        other: більше %{count} років тому
+      x_seconds:
+        one: секунду тому
+        other: "%{count} сек. тому"
+      x_minutes:
+        one: хв. тому
+        other: "%{count} хв. тому"
+      x_days:
+        one: 1 день тому
+        other: "%{count} дн. тому"
+      x_months:
+        one: місяць тому
+        other: "%{count} місяців тому"
+      x_years:
+        one: рік тому
+        other: "%{count} років тому"
+    expired_ago:
+      about_x_hours:
+        one: Десь годину тому
+        other: "%{count} годин тому"
+      about_x_months:
+        one: місяць тому
+        other: "%{count} місяців тому"
+      about_x_years:
+        one: рік тому
+        other: "%{count} років тому"
+      almost_x_years:
+        one: майже рік тому
+        other: майже %{count} років тому
+      half_a_minute: півхвилини тому
+      less_than_x_seconds:
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
+      less_than_x_minutes:
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
+      over_x_years:
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
+      x_seconds:
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
+      x_minutes:
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
+      x_days:
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
+      x_months:
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
+      x_years:
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
+    expires_in:
+      about_x_hours:
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
+      about_x_months:
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
+      about_x_years:
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
+      almost_x_years:
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
+      less_than_x_seconds:
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
+      less_than_x_minutes:
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
+      over_x_years:
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
+      x_seconds:
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
+      x_minutes:
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
+      x_days:
+        one: Expires in 1 day
+        other: Expires in %{count} days
+      x_months:
+        one: Expires in 1 month
+        other: Expires in %{count} months
+      x_years:
+        one: Expires in 1 year
+        other: Expires in %{count} years
+  display_ad:
+    promoted: Реклама
+    menu:
+      aria_label: Перемикання випадаючого меню
+      icon: Випадаюче меню
+      manage_preferences: Керувати вподобаннями
+      what_is_a_billboard: Що таке рекламний щит?
+  errors:
+    messages:
+      accepted: має бути прийнятно
+      bad_protocol: має починатися з %{protocols}
+      bad_uri: не правильне url
+      blank: не може бути пустим
+      confirmation: не відповідає %{attribute}
+      contains_prohibited_characters: містить заборонені символи
+      empty: не може бути пустим
+      equal_to: має дорівнювати %{count}
+      even: повинні бути рівними
+      exclusion: зайняято
+      general: 'Помилка: %{errors}'
+      greater_than: має бути більше ніж %{count}
+      greater_than_or_equal_to: має бути  більше або рівним %{count}
+      inclusion: не включено до переліку
+      invalid: є неправильним
+      less_than: має бути менше, ніж %{count}
+      less_than_or_equal_to: має бути менше або дорівнювати %{count}
+      model_invalid: 'Валідація не пройшла: %{errors}'
+      not_a_number: не є числом
+      not_an_integer: має бути цілим числом
+      odd: must be odd
+      other_than: має бути іншим, ніж %{count}
+      present: має бути пустим
+      required: має існувати
+      taken: вже зайнято
+      too_long:
+        one: занадто довгий (maximum is 1 character)
+        other: занадто довге (максимум %{count} символів)
+      too_short:
+        one: is too short (minimum is 1 character)
+        other: занадто коротке (мінімум %{count} символів)
+      try_again_email: 'Виникла  помилка. Спробуйте ще раз, або напишіть про це сюди: %{email}'
+      wrong_length:
+        one: має неправильну довжину (should be 1 character)
+        other: має неправильну довжину (має мати %{count} символів)
+  time:
+    formats:
+      comment: "%H:%M %B %d, %Y"
+      github: "%b %d, %Y"
+      json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
+      reddit: "%b %e '%y"
+      short: "%b %-e, %H:%M"
+      short_with_yy: "%b %-d, %H:%M '%y"
+      short_with_year: "%b %-e, %H:%M, %Y"
+      stackexchange: "%H:%M %b %e '%y"
+      tweet: "%H:%M %p - %d %b %Y"

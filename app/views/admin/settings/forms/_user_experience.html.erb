@@ -61,7 +61,7 @@
           <%= admin_config_description Constants::Settings::UserExperience.details[:default_locale][:description] %>
           <%= select_tag "settings_user_experience[default_locale]",
                          options_for_select(
-                           [%w[English en], %w[Français fr], %w[Українська ua]],
+                           [%w[English en], %w[Français fr], %w[Українська uk-UA]],
                            Settings::UserExperience.default_locale,
                          ),
                          multiple: false,

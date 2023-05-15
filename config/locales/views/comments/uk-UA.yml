@@ -1,0 +1,149 @@
+---
+uk-UA:
+  views:
+    comments:
+      meta:
+        title_root: Обговорення %{title}
+        description: Стаття від спільноти
+        og:
+          title: Обговорення %{title}
+          title_rel: "%{root} — %{site}"
+          title_root: "[Discussion] %{title} — %{site}"
+          description: "%{site} Comment"
+      parent:
+        subtitle_html: "%{start}Коментарі на: %{end}%{title}"
+        metadata_html: "%{name}%{on}"
+        date: " on %{date}"
+        full: Уся дискусія
+        read: Читати повністю
+        view: Переглянути допис
+        view_full:
+          one: Читати повністю (%{count} коментарь)
+          other: Читати повністю (%{count} коментарів)
+        reply_html: "%{start}Відповіді для:%{end} %{title}"
+      delete:
+        heading: Ви впевнені, що хочете видалити цей коментар?
+        desc_html: Ви не зможете це відмінити. Може потрібна функція %{action}?
+        action: Редагувати
+        submit: Видалити
+        edit: Редагувати
+        cancel: Відмінити
+        comment_deleted: Коментар видалено
+      collapse: Звернути
+      edit: Редагування коментаря
+      edited:
+        text_html: "&bull; Відредаговано %{on}"
+        on_html: on %{date}
+      expand: Розвернути
+      hidden:
+        text_html: Деякі коментарі були приховані автором допису - %{info}
+        info: дізнатися більше
+        comment_hidden: Коментар приховано автором допису
+      hider:
+        description_html: Ви впевнені, що хочете приховати цей коментар? Він буде прихований у вашому дописі, але все ще буде видимим через %{permalink} коментаря.
+        hide_child: Приховати внутрішні коментрі
+        note_html: For further actions, you may consider blocking this person and/or %{reporting}
+        permalink: постійне посилання
+        reporting: повідомити про порушення
+        submit: Підтвердити
+      locked: Обговорення закрито. Нові коментарі не можуть бути додані.
+      orphan:
+        deleted: "[Коментар з видаленого допису]"
+      re:
+        text_html: "%{re}%{title}"
+        re: 'Re: '
+      settings:
+        meta:
+          title: Налаштування коментарів
+        heading: Налаштування коментарів
+        state:
+          show:
+            subtitle: Показувати сповіщення теми
+            desc: Ви отримаєте всі сповіщення щодо цього коментаря та всіх ваших коментарів у цьому ланцюжку.
+          mute:
+            subtitle: Вимкнення сповіщень теми
+            desc: Усі сповіщення для цього коментаря та будь-яких інших ваших коментарів у темі наразі вимкнено.
+        subscribe:
+          subtitle: Підписка
+          desc: Ви вже підписані на всі коментарі в ширшій гілці, а це означає, що ви все ще отримуватимете сповіщення про відповіді на цей коментар.
+          mute: Вимкнути сповіщення
+          unmute: Увімкнути сповіщення
+      quality:
+        low: Коментар, позначений спільнотою як низькоякісний/неконструктивний.
+        conduct: Почитати норми поведінки
+        hidden:
+          icon: Info
+          text:
+            visible_in_permalink: Коментар приховано автором допису - тему видно лише за цим посиланням
+            accessible_via_permalink: Коментар приховано автором повідомлення - тема доступна лише за перманентним посиланням
+      write:
+        errors:
+          one: '1 error prohibited this comment from being saved:'
+          other: "%{count} errors prohibited this comment from being saved:"
+        field:
+          aria_label: Додати коментар
+          placeholder: Додати коментар
+          submit: Завантажити
+          templates: Шаблони
+          upload: Завантажити зображення
+          use: Use a response template
+          guide:
+            title: Посібник з розмітки
+            icon: Ґайд редактора
+        template:
+          article: До цього допису додається шаблон коментаря
+          create:
+            subtitle: Create template
+            desc: Templates let you quickly answer FAQs or store snippets for re-use.
+          moderator: Довірений користувач
+          personal: Особистий
+        submit: Відправити
+        preview: Передперегляд
+        cancel: Відмінити
+      menu:
+        aria_label: Toggle dropdown menu
+        icon: Dropdown menu
+        copy:
+          aria_label: Copy link to %{user}'s comment
+          text: Скопіювати посилання
+        settings:
+          aria_label: Go to %{user}'s comment settings
+        action:
+          aria_label: "%{action} %{user}'s comment"
+          hide: Приховати
+          unhide: Показати
+          hide_text: Приховати
+          unhide_text: Показати
+        moderate:
+          aria_label: Moderate %{user}'s comment
+        report:
+          aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
+      footer:
+        heart:
+          aria_label: лайк
+          title: Лайк
+          icon: 'Лайки: '
+          count_html: "%{num}%{likes}"
+          text: Лайк
+        reply:
+          aria_label: Відповідь на коментар...
+          icon: Кнопка коментаря
+          done: Відповідь надано
+          text: Відповісти
+          placeholder: Відповідь...
+        thread:
+          icon: Тред
+          text: Тред
+        view:
+          icon: Кнопка перегляду
+          text: Показати
+      count:
+        one: "%{count} коментар"
+        other: "%{count} коментаря(ів)"
+      empty: Новий
+      add: "Додати\_коментар"
+      summary:
+        count_html:
+          one: "%{count}%{start}\_коментар%{end}"
+          other: "%{count}%{start}\_коментарів%{end}"
+        title: Коментарі
