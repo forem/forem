@@ -50,6 +50,8 @@ module Articles
                                     notifiable_type: "Mention")
           end
         end
+
+        refresh_user_segments if article.published? && !article.published_previously_was
       end
       Result.new(success: success, article: article.decorate)
     end
@@ -57,5 +59,9 @@ module Articles
     private
 
     attr_reader :user, :article, :article_params
+
+    def refresh_user_segments
+      SegmentedUserRefreshWorker.perform_async(user)
+    end
   end
 end
