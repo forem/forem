@@ -57,7 +57,7 @@
     <p>
       <%= t("views.settings.org.admin.secret_code") %>
       <div class="flex">
-        <input type="text" class="ff-monospace ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
+        <input type="text" class="ff-monospace ff-s fw-medium" autocomplete="off" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="<%= t("views.settings.org.admin.copy.input.aria_label") %>">
         <button id="settings-org-secret-copy-btn" aria-label="<%= t("views.settings.org.admin.copy.button.aria_label") %>" class="c-btn"><%= crayons_icon_tag(:copy, title: t("views.settings.org.admin.copy.icon"), aria_hidden: true) %></button>
       </div>
       <div class="crayons-notice crayons-notice--success mt-2 hidden" id="copy-text-announcer" role="alert"><%= t("views.settings.org.admin.copy.text") %></div>
@@ -96,26 +96,6 @@
             <% end %>
           </span>
           <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
-      </div>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :nav_image, "Logo for light themes", class: "crayons-field__label" %>
-      <div class="flex items-center">
-        <% if @organization.nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.nav_image_url, width: 50) %>" />
-        <% end %>
-        <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
-      </div>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :dark_nav_image, "Logo for dark themes", class: "crayons-field__label" %>
-      <div class="flex items-center">
-        <% if @organization.dark_nav_image_url.present? %>
-          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= optimized_image_url(@organization.dark_nav_image_url, width: 50) %>" />
-        <% end %>
-        <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
 

@@ -18,7 +18,6 @@ RSpec.describe "ArticlesShow" do
       expect(response).to have_http_status(:ok)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for an article" do
       expect(response_json).to include(
         "@context" => "http://schema.org",
@@ -66,6 +65,8 @@ RSpec.describe "ArticlesShow" do
   end
 
   describe "GET /:username/:slug (scheduled)" do
+    before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
     let(:scheduled_article) { create(:article, published: true, published_at: Date.tomorrow) }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
     let(:scheduled_article_path) { scheduled_article.path + query_params }
@@ -109,7 +110,6 @@ RSpec.describe "ArticlesShow" do
       },
     )
   end
-  # rubocop:enable RSpec/ExampleLength
 
   context "when keywords are set" do
     it "shows keywords" do

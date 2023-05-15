@@ -75,6 +75,49 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when considering article_exclude_ids" do
+    let!(:exclude_article1) { create_display_ad exclude_article_ids: "11,12" }
+    let!(:exclude_article2) { create_display_ad exclude_article_ids: "12,13" }
+    let!(:no_excludes) { create_display_ad }
+
+    it "will show display ads that exclude articles appropriately" do
+      filtered = filter_ads article_id: 11
+      expect(filtered).to contain_exactly(exclude_article2, no_excludes)
+
+      filtered = filter_ads article_id: 12
+      expect(filtered).to contain_exactly(no_excludes)
+
+      filtered = filter_ads article_id: 13
+      expect(filtered).to contain_exactly(exclude_article1, no_excludes)
+
+      filtered = filter_ads article_id: 14
+      expect(filtered).to contain_exactly(exclude_article1, exclude_article2, no_excludes)
+    end
+  end
+
+  context "when considering audience segmentation" do
+    let!(:in_segment) { create(:user) }
+    let!(:audience_segment) { create(:audience_segment, type_of: :no_posts_yet) }
+    let!(:targets_segment) { create_display_ad audience_segment: audience_segment }
+    let!(:no_targets) { create_display_ad display_to: :all }
+    let!(:not_in_segment) { create(:user) } # won't be in any segment
+
+    before do
+      _targets_other = create_display_ad audience_segment: create(:audience_segment)
+    end
+
+    it "targets users in/out of segment appropriately" do
+      filtered = filter_ads user_signed_in: true, user_id: in_segment
+      expect(filtered).to contain_exactly(targets_segment, no_targets)
+
+      filtered = filter_ads user_signed_in: true, user_id: not_in_segment
+      expect(filtered).to contain_exactly(no_targets)
+
+      filtered = filter_ads user_signed_in: false
+      expect(filtered).to contain_exactly(no_targets)
+    end
+  end
+
   context "when considering ads with organization_id" do
     let!(:in_house_ad) { create_display_ad type_of: :in_house }
 
@@ -86,19 +129,23 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:external_ad) { create_display_ad organization_id: organization.id, type_of: :external }
     let!(:other_external) { create_display_ad organization_id: other_org.id, type_of: :external }
 
-    it "always shows :in_house, only shows community/external appropriately" do
+    it "always shows :community ad if matching, otherwise shows in_house/external" do
       filtered = filter_ads organization_id: organization.id
-      expect(filtered).to contain_exactly(community_ad, in_house_ad, other_external)
+      expect(filtered).to contain_exactly(community_ad)
+      expect(filtered).not_to include(other_community)
+
+      filtered = filter_ads organization_id: 123
+      expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil
       expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
-      expect(filtered).not_to include(other_community)
+      expect(filtered).not_to include(community_ad, other_community)
     end
 
     it "suppresses external ads when permit_adjacent_sponsors is false" do
       filtered = filter_ads organization_id: organization.id, permit_adjacent_sponsors: false
-      expect(filtered).to contain_exactly(community_ad, in_house_ad)
+      expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false

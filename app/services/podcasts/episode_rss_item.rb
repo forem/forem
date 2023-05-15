@@ -5,12 +5,6 @@ module Podcasts
 
     attr_reader(*ATTRIBUTES)
 
-    def initialize(attributes)
-      ATTRIBUTES.each do |key|
-        instance_variable_set("@#{key}", attributes[key])
-      end
-    end
-
     def self.from_item(item)
       new(
         title: item.title,
@@ -22,6 +16,12 @@ module Podcasts
         enclosure_url: item.enclosure&.url,
         body: item.content_encoded || item.itunes_summary || item.description,
       )
+    end
+
+    def initialize(attributes)
+      ATTRIBUTES.each do |key|
+        instance_variable_set("@#{key}", attributes[key])
+      end
     end
 
     def to_h

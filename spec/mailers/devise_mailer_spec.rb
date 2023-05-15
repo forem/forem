@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DeviseMailer, type: :mailer do
+RSpec.describe DeviseMailer do
   let(:user) { create(:user) }
 
   describe "#reset_password_instructions" do

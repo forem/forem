@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   resourcify
-  rolify
+  rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
 
@@ -24,8 +24,8 @@ class User < ApplicationRecord
 
   include StringAttributeCleaner.nullify_blanks_for(:email)
 
+  extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
@@ -34,6 +34,8 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x
+
+  RECENTLY_ACTIVE_LIMIT = 10_000
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -136,14 +138,6 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
-  validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
-  validates :username, presence: true, exclusion: {
-    in: ReservedWords.all,
-    message: proc { I18n.t("models.user.username_is_reserved") }
-  }
-  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
-    I18n.t("models.user.is_taken", username: (data[:value]))
-  end }, if: :username_changed?
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -158,7 +152,9 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validates :username, unique_cross_model_slug: true, if: :username_changed?
+
+  unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
+
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -206,6 +202,15 @@ class User < ApplicationRecord
       ),
     )
   }
+
+  scope :with_experience_level, lambda { |level = nil|
+    includes(:setting).where("users_settings.experience_level": level)
+  }
+
+  scope :recently_active, lambda { |active_limit = RECENTLY_ACTIVE_LIMIT|
+    order(updated_at: :desc).limit(active_limit)
+  }
+
   before_validation :downcase_email
 
   # make sure usernames are not empty, to be able to use the database unique index
@@ -296,7 +301,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
+    cache_key = "#{cache_key_with_version}/following_podcasts_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
       Follow.follower_podcast(id).pluck(:followable_id)
     end
@@ -569,33 +574,19 @@ class User < ApplicationRecord
   end
 
   def set_username
-    set_temp_username if username.blank?
-    self.username = username&.downcase
+    self.username = username&.downcase&.presence || generate_username
   end
 
-  # @todo Should we do something to ensure that we don't create a username that violates our
-  # USERNAME_MAX_LENGTH constant?
-  #
-  # @see USERNAME_MAX_LENGTH
-  def set_temp_username
-    self.username = if temp_name_exists?
-                      "#{temp_username}_#{rand(100)}"
-                    else
-                      temp_username
-                    end
+  def auth_provider_usernames
+    attributes
+      .with_indifferent_access
+      .slice(*Authentication::Providers.username_fields)
+      .values.compact || []
   end
 
-  def temp_name_exists?
-    User.exists?(username: temp_username) || Organization.exists?(slug: temp_username)
-  end
-
-  def temp_username
-    Authentication::Providers.username_fields.each do |username_field|
-      value = public_send(username_field)
-      next if value.blank?
-
-      return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
-    end
+  def generate_username
+    Users::UsernameGenerator
+      .call(auth_provider_usernames)
   end
 
   def downcase_email
@@ -646,5 +637,11 @@ class User < ApplicationRecord
 
   def confirmation_required?
     ForemInstance.smtp_enabled?
+  end
+
+  def update_user_roles_cache(...)
+    authorizer.clear_cache
+    Rails.cache.delete("user-#{id}/has_trusted_role")
+    trusted?
   end
 end

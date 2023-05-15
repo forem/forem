@@ -209,7 +209,7 @@ RSpec.describe User do
       context "when evaluating the custom error message for username uniqueness" do
         subject { create(:user, username: "test_user_123") }
 
-        it { is_expected.to validate_uniqueness_of(:username).with_message("test_user_123 is taken.").case_insensitive }
+        it { is_expected.to validate_uniqueness_of(:username).with_message("has already been taken").case_insensitive }
       end
       # rubocop:enable RSpec/NestedGroups
 
@@ -222,7 +222,7 @@ RSpec.describe User do
       create(:user, username: "test_user_123")
       same_username = build(:user, username: "test_user_123")
       expect(same_username).not_to be_valid
-      expect(same_username.errors[:username].to_s).to include("test_user_123 is taken.")
+      expect(same_username.errors[:username].to_s).to include("has already been taken")
     end
 
     it "validates username against reserved words" do
@@ -313,10 +313,16 @@ RSpec.describe User do
     end
 
     describe "#username" do
-      it "receives a temporary username if none is given" do
+      it "receives a generated username if none is given" do
         user.username = ""
         user.validate!
         expect(user.username).not_to be_blank
+      end
+
+      it "is not valid if generate_username returns nil" do
+        user.username = ""
+        allow(user).to receive(:generate_username).and_return(nil)
+        expect(user).not_to be_valid
       end
 
       it "does not allow to change to a username that is taken" do
@@ -811,6 +817,24 @@ RSpec.describe User do
         user = create(:user, last_comment_at: 1.minute.ago)
         expect(user.last_activity).to eq(Time.zone.now)
       end
+    end
+  end
+
+  describe ".recently_active" do
+    let(:early) { build(:user) }
+    let(:later) { build(:user) }
+
+    before do
+      later.save!
+
+      Timecop.travel(5.days.ago) do
+        early.save!
+      end
+    end
+
+    it "returns the most recently updated" do
+      results = described_class.recently_active(1)
+      expect(results).to contain_exactly(later)
     end
   end
 end

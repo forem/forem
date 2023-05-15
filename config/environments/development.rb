@@ -138,9 +138,17 @@ Rails.application.configure do
     # Suppress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :distinct_reaction_categories)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
+    # There were some warnings about eager loading the organization for a display ad, however since the code goes down
+    # different paths (in_house where we don’t need the organization info vs external/community where we need the
+    # organization info), bullet was getting confused on whether we need the eager loading or not.
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "DisplayAd", association: :organization)
+
     # TODO: Temporarily ignoring this while working out user - profile relationship
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)
+
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?

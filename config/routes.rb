@@ -187,8 +187,13 @@ Rails.application.routes.draw do
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
 
-    get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
-    get "/async_info/navigation_links", controller: "async_info#navigation_links"
+    get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
+    get "/async_info/navigation_links", to: "async_info#navigation_links"
+
+    # Display ads
+    scope "/:username/:slug" do
+      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+    end
 
     # Settings
     post "users/join_org", to: "users#join_org"

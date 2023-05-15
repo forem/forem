@@ -1,7 +1,7 @@
 require "rails_helper"
 require "sidekiq/testing"
 
-RSpec.describe Notification, type: :model do
+RSpec.describe Notification do
   let(:user)            { create(:user) }
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }

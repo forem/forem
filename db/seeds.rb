@@ -38,8 +38,7 @@ seeder.create_if_none(Organization) do
     Organization.create!(
       name: Faker::Company.name,
       summary: Faker::Company.bs,
-      profile_image: logo = File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-      nav_image: logo,
+      profile_image: logo = Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
       github_username: "org#{rand(10_000)}",
@@ -67,7 +66,7 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
     user = User.create!(
       name: name,
-      profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+      profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
       # Twitter username should be always ASCII
       twitter_username: Faker::Internet.username(specifier: username.transliterate),
       # Emails limited to 50 characters
@@ -191,7 +190,7 @@ seeder.create_if_doesnt_exist(User, "email", "admin@forem.local") do
     name: "Admin \"The \\:/ Administrator\" McAdmin",
     email: "admin@forem.local",
     username: "Admin_McAdmin",
-    profile_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
     confirmed_at: Time.current,
     registered_at: Time.current,
     password: "password",
@@ -425,7 +424,7 @@ seeder.create_if_none(Badge) do
     Badge.create!(
       title: "#{Faker::Lorem.word} #{rand(100)}",
       description: Faker::Lorem.sentence,
-      badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+      badge_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
     )
   end
 
@@ -553,6 +552,20 @@ seeder.create_if_none(Listing) do
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )
     end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
+    DisplayAd.create!(
+      name: "#{Faker::Lorem.word} #{placement_area}",
+      body_markdown: Faker::Lorem.sentence,
+      published: true,
+      approved: true,
+      placement_area: placement_area
+    )
   end
 end
 

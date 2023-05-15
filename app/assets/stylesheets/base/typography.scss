@@ -112,6 +112,16 @@ body {
   // when/if we "redesign" liquid tags.
   [class*='ltag'] a {
     text-decoration: none;
+    &:hover {
+      color: var(--color-hover);
+    }
+  }
+
+  a[class*='ltag'] {
+    text-decoration: none;
+    &:hover {
+      color: var(--color-hover);
+    }
   }
 
   h1,
@@ -347,7 +357,8 @@ body {
 // This class should eventually have its own dedicated file
 .c-embed {
   padding: var(--su-3);
-
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth) !important;
   @media screen and (min-width: $breakpoint-s) {
     padding: var(--su-5);
   }
@@ -363,7 +374,6 @@ body {
   }
 
   &__favicon {
-    width: 32px;
-    height: auto;
+    display: none !important;
   }
 }

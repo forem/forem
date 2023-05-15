@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Badge, type: :model do
+RSpec.describe Badge do
   let(:badge) { create(:badge) }
   let(:cache_bust) { instance_double(EdgeCache::Bust) }
 

@@ -254,6 +254,7 @@ RSpec.describe "Comments" do
 
   describe "PUT /comments/:id" do
     before do
+      allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
       sign_in user
     end
 
@@ -289,9 +290,28 @@ RSpec.describe "Comments" do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    context "when logged-in" do
+    context "when logged-in and consistent rendering" do
       before do
         sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
+        post "/comments/preview",
+             params: { comment: { body_markdown: "hi" } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+    end
+
+    context "when logged-in and inconsistent rendering" do
+      before do
+        sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(false)
         post "/comments/preview",
              params: { comment: { body_markdown: "hi" } },
              headers: { HTTP_ACCEPT: "application/json" }
@@ -319,7 +339,9 @@ RSpec.describe "Comments" do
       }
     end
 
-    context "when a user is coment_suspended" do
+    before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
+    context "when a user is comment_suspended" do
       before do
         sign_in user
         user.add_role(:comment_suspended)

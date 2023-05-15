@@ -314,6 +314,7 @@
   padding-bottom: var(--su-4);
 
   &__header {
+    width: 100%;
     display: flex;
     align-items: center;
   }
@@ -335,6 +336,11 @@
     display: inline-block;
     vertical-align: middle;
   }
+
+  &__indicator {
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
 }
 
 .crayons-article-sticky,
@@ -342,22 +348,6 @@
   .crayons-card {
     .text-styles {
       font-size: var(--fs-base);
-    }
-  }
-}
-
-.crayons-layout__comments-display-ad {
-  .crayons-sponsorship {
-    .crayons-sponsorship__title {
-      padding-top: var(--su-5);
-    }
-    .crayons-sponsorship__dropdown {
-      margin-top: -15px;
-    }
-    padding-left: var(--content-padding-x);
-    padding-bottom: var(--su-6);
-    .text-styles {
-      padding-right: var(--su-8);
     }
   }
 }

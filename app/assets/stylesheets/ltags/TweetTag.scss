@@ -5,16 +5,13 @@ blockquote.ltag__twitter-tweet {
   max-width: 500px;
   font-size: 0.75em;
   line-height: 1.35em;
-  border-radius: 3px;
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
   margin: 1.6em auto !important;
   min-height: 60px;
   cursor: pointer;
   padding: 0px !important;
-  border: 1px solid $light-medium-gray !important;
-  box-shadow: $shadow;
-  &:hover {
-    border: 1px solid darken($light-medium-gray, 3%) !important;
-  }
   a {
     color: #55acee;
   }

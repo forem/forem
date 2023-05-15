@@ -2,26 +2,26 @@
   Hey <%= @user.name %>!
 </p>
 <p>
-  We are happy to let you know that you've been granted new permissions on <%= community_name %>!
+  Good news! You’ve been granted Trusted Member permissions on <%= community_name %>!
 </p>
 <p>
-  <b>You will now see a shield icon on post pages. Click on the shield to take <em>private</em> actions to help vote on community content.</b>
+  <b>From now on, a shield icon will be visible on post pages. Simply click on it to take <em>private</em> actions on community content.</b>
 </p>
 <p>
   Here's an overview of your new abilities:
   <ul>
-    <li>Use private reactions (👎, 👍) to vote on content quality</li>
-    <li>Quickly flag rule-breaking behavior with the 🧐 icon</li>
-    <li>Rate the appropriate "experience level" of a post</li>
+    <li>Rank content (👎👍) with emoji reactions</li>
+    <li>Rate the experience level of posts</li>
+    <li>Use the Flag to Admins icon 🧐 to report problematic content</li>
   </ul>
 </p>
 <% if Page.find_by(slug: "trusted-member") %>
   <p>
-    <mark>For full details on how to use your new permissions, <b><a href="<%= app_url("trusted-member") %>">check out this page</a></b></mark>.
+    <mark>Visit the <b><a href="<%= app_url("trusted-member") %>">Trusted Member Guide</a></b> for full details on your new role and instructions on how to get started.</mark>.
   </p>
 <% end %>
 <p>
-  Let's cultivate a welcoming and constructive community. Thanks for being such an awesome member of the community!
+  Thank you for being an awesome member of our community. Let’s work together to create a welcoming and constructive space!
 </p>
 <p>
   <%= community_name %> Team

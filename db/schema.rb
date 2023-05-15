@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_30_145039) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_stat_statements"
@@ -168,6 +168,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "audience_segments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "type_of"
+    t.datetime "updated_at", null: false
   end
 
   create_table "audit_logs", force: :cascade do |t|
@@ -455,12 +461,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
 
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
+    t.integer "audience_segment_id"
     t.text "body_markdown"
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
     t.integer "display_to", default: 0, null: false
+    t.integer "exclude_article_ids", default: [], array: true
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
@@ -471,6 +479,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
+    t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
   end
 
   create_table "email_authorizations", force: :cascade do |t|
@@ -984,6 +993,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
     t.index ["name"], name: "index_roles_on_name"
   end
 
+  create_table "segmented_users", force: :cascade do |t|
+    t.bigint "audience_segment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
+    t.index ["user_id"], name: "index_segmented_users_on_user_id"
+  end
+
   create_table "settings_authentications", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1399,6 +1417,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_16_132930) do
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
   add_foreign_key "response_templates", "users"
+  add_foreign_key "segmented_users", "audience_segments"
+  add_foreign_key "segmented_users", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade

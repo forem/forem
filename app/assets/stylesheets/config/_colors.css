@@ -53,6 +53,8 @@
   --card-color-secondary: rgb(var(--grey-700));
   --card-color-tertiary: rgb(var(--grey-600));
   --card-secondary-bg: rgb(var(--grey-50));
+  --card-tertiary-bg: rgb(var(--grey-100));
+  --card-tertiary-bg-hover: rgba(var(--grey-200), 0.55);
   --card-secondary-color: rgb(var(--grey-700));
   --card-border: rgba(var(--grey-900), 0.1);
   --card-secondary-border: rgba(var(--grey-900), 0.05);
@@ -269,6 +271,10 @@
   --indicator-bg: rgb(var(--grey-300));
   --indicator-color: rgb(var(--grey-700));
 
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-200));
+  --indicator-subtle-color: rgb(var(--grey-600));
+
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-400));
   --indicator-success-color: rgb(var(--green-900));
@@ -347,7 +353,7 @@
   /***********************************************
   ** Banners *************************************
   ***********************************************/
-  
+
   --banner-bg: rgb(var(--grey-800));
   --banner-color: var(--white);
   --banner-accent: var(--accent-brand);
@@ -367,4 +373,5 @@
     0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
     0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
 }

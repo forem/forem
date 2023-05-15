@@ -27,7 +27,10 @@ export class FollowUsers extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ users: data });
+        this.setState({
+          selectedUsers: data,
+          users: data,
+        });
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -202,9 +205,7 @@ export class FollowUsers extends Component {
                     </div>
                     <label
                       className={`relative user-following-status crayons-btn ${
-                        selected
-                          ? 'color-base-inverted'
-                          : 'crayons-btn--outlined'
+                        selected ? 'color-primary' : 'crayons-btn--outlined'
                       }`}
                     >
                       <input
