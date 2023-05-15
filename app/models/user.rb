@@ -222,7 +222,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification
 
-  after_save :create_conditional_autovomits
+  after_save :create_conditional_autovomits, :refresh_user_segments
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
@@ -639,9 +639,14 @@ class User < ApplicationRecord
     ForemInstance.smtp_enabled?
   end
 
+  def refresh_user_segments
+    SegmentedUserRefreshWorker.perform_async(id)
+  end
+
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    refresh_user_segments
     trusted?
   end
 end
