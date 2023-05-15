@@ -351,6 +351,10 @@ class User < ApplicationRecord
     end
   end
 
+  def refresh_user_segments
+    SegmentedUserRefreshWorker.perform_async(id)
+  end
+
   ##############################################################################
   #
   # Heads Up: Start Authorization Refactor
@@ -637,10 +641,6 @@ class User < ApplicationRecord
 
   def confirmation_required?
     ForemInstance.smtp_enabled?
-  end
-
-  def refresh_user_segments
-    SegmentedUserRefreshWorker.perform_async(id)
   end
 
   def update_user_roles_cache(...)

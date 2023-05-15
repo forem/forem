@@ -955,6 +955,7 @@ class Article < ApplicationRecord
     return unless destroying || saved_changes.keys.intersection(%w[title cached_tag_list]).present?
 
     user.touch(:latest_article_updated_at)
+    user.refresh_user_segments
     organization&.touch(:latest_article_updated_at)
   end
 
