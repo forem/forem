@@ -25,6 +25,10 @@ module Constants
             description: I18n.t("lib.constants.settings.user_experience.index_minimum_score.description"),
             placeholder: "0"
           },
+          index_minimum_date: {
+            description: I18n.t("lib.constants.settings.user_experience.index_minimum_date.description"),
+            placeholder: "1500000000"
+          },
           primary_brand_color_hex: {
             description: I18n.t("lib.constants.settings.user_experience.primary_hex.description"),
             placeholder: "#0a0a0a"
