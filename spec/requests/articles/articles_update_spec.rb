@@ -177,7 +177,7 @@ RSpec.describe "ArticlesUpdate" do
       attributes[:published] = true
       put "/articles/#{article.id}", params: { article: attributes }
       article.reload
-      published_at_utc = article.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = article.published_at.in_time_zone("Europe/Kiev").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
     end
 
@@ -199,7 +199,7 @@ RSpec.describe "ArticlesUpdate" do
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
-      published_at_utc = draft.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = draft.published_at.in_time_zone("Europe/Kiev").strftime("%m/%d/%Y %H:%M")
       draft.published_at.in_time_zone(attributes[:timezone])
       expected_time = "#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 00:00"
       expect(published_at_utc).to eq(expected_time)
@@ -249,7 +249,7 @@ RSpec.describe "ArticlesUpdate" do
     end
 
     it "allows to set past published_at when publishing with date and no published_at for exported articles" do
-      date = "2022-05-02 19:00:30 Kyiv"
+      date = "2022-05-02 19:00:30 Europe/Kiev"
       draft = create(:article, published: false, user_id: user.id, published_from_feed: true, published_at: nil)
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \ndate: #{date}---\n\nHey this is the article"
@@ -260,8 +260,8 @@ RSpec.describe "ArticlesUpdate" do
     end
 
     it "doesn't allow changing published_at when updating a published article published_from_feed" do
-      date_was = "2022-05-02 19:00:30 Kyiv"
-      date_new = "2022-08-30 19:00:30 Kyiv"
+      date_was = "2022-05-02 19:00:30 Europe/Kiev"
+      date_new = "2022-08-30 19:00:30 Europe/Kiev"
       article = create(:article, :past, published: true, user_id: user.id,
                                         published_from_feed: true, past_published_at: DateTime.parse(date_was))
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
