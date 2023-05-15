@@ -6,28 +6,31 @@ module Articles
 
     def initialize(user, article_params)
       @user = user
-      @article_params = article_params
+      @article_params = normalize_params(article_params)
     end
 
     def call
       rate_limit!
 
-      article = save_article
-
-      if article.persisted?
-        # Subscribe author to notifications for all comments on their article.
-        NotificationSubscription.create(user: user, notifiable_id: article.id, notifiable_type: "Article",
-                                        config: "all_comments")
+      create_article.tap do
+        set_series if series.present?
+        subscribe_author if article.persisted?
+        refresh_user_segments if article.published?
       end
-
-      refresh_user_segments if article.published?
-
-      article
     end
 
     private
 
-    attr_reader :user, :article_params
+    attr_reader :article, :user, :article_params
+
+    def normalize_params(original_params)
+      original_params.except(:tags).tap do |params|
+        # convert tags from array to a string
+        if (tags = original_params[:tags]).present?
+          params[:tag_list] = tags.join(", ")
+        end
+      end
+    end
 
     def rate_limit!
       rate_limit_to_use = if user.decorate.considered_new?
@@ -43,22 +46,27 @@ module Articles
       SegmentedUserRefreshWorker.perform_async(user)
     end
 
-    def save_article
-      series = article_params[:series]
-      tags = article_params[:tags]
-
-      # convert tags from array to a string
-      if tags.present?
-        article_params.delete(:tags)
-        article_params[:tag_list] = tags.join(", ")
+    def create_article
+      @article = Article.create(article_params) do |article|
+        article.user_id = user.id
+        article.show_comments = true
       end
+    end
 
-      article = Article.new(article_params)
-      article.user_id = user.id
-      article.show_comments = true
-      article.collection = Collection.find_series(series, user) if series.present?
-      article.save
-      article
+    def series
+      @series ||= [] if article_params[:series].blank?
+      @series ||= Collection.find_series(article_params[:series], user)
+    end
+
+    def set_series
+      article.collection = series if series.present?
+    end
+
+    # Subscribe author to notifications for all comments on their article.
+    def subscribe_author
+      NotificationSubscription.create(user: user,
+                                      notifiable: article,
+                                      config: "all_comments")
     end
   end
 end
