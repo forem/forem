@@ -10,13 +10,13 @@ module Api
 
       def index
         page = params[:page].to_i
-        @segments = AudienceSegment.manual.including_user_counts.order(id: :desc).page(page).per(per_page)
+        @segments = scope.including_user_counts.order(id: :desc).page(page).per(per_page)
 
         render json: @segments
       end
 
       def show
-        @segment = AudienceSegment.manual.including_user_counts.find(params[:id])
+        @segment = scope.including_user_counts.find(params[:id])
 
         render json: @segment
       end
@@ -27,14 +27,25 @@ module Api
         render json: @segment, status: :created
       end
 
+      def destroy
+        @segment = scope.find(params[:id])
+
+        if DisplayAd.where(audience_segment_id: @segment.id).any?
+          render json: { error: "Segments cannot be deleted while in use by any billboards" }, status: :conflict
+        else
+          result = @segment.destroy
+          render json: @segment, status: (result ? :ok : :conflict)
+        end
+      end
+
       def add_users
-        @segment = AudienceSegment.manual.find(params[:id])
+        @segment = scope.find(params[:id])
 
         render json: BulkSegmentedUsers.upsert(@segment, user_ids: @user_ids)
       end
 
       def remove_users
-        @segment = AudienceSegment.manual.find(params[:id])
+        @segment = scope.find(params[:id])
 
         render json: BulkSegmentedUsers.delete(@segment, user_ids: @user_ids)
       end
@@ -56,6 +67,10 @@ module Api
         page_param = params[:per_page] || DEFAULT_PER_PAGE
         max_per_page = ApplicationConfig["API_PER_PAGE_MAX"] || 1000
         [page_param, max_per_page].map(&:to_i).min
+      end
+
+      def scope
+        AudienceSegment.manual
       end
     end
   end
