@@ -40,7 +40,7 @@ module Users
     private
 
     def refresh_user_segments
-      SegmentedUserRefreshWorker.perform_async(user_id)
+      user.refresh_user_segments
     end
 
     def validate_feed_url
