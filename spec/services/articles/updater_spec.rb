@@ -301,7 +301,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
 
     it "refreshes user segments" do
       described_class.call(user, unpublished, attributes)
-      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
     end
   end
 
@@ -312,7 +312,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
 
     it "refreshes user segments" do
       described_class.call(user, published, attributes)
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -323,7 +323,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
 
     it "refreshes user segments" do
       described_class.call(user, unpublished, attributes)
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end

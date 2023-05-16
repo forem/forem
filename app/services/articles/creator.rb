@@ -13,7 +13,6 @@ module Articles
       rate_limit!
 
       create_article.tap do
-        set_series if series.present?
         subscribe_author if article.persisted?
         refresh_user_segments if article.published?
       end
@@ -50,16 +49,13 @@ module Articles
       @article = Article.create(article_params) do |article|
         article.user_id = user.id
         article.show_comments = true
+        article.collection = series if series.present?
       end
     end
 
     def series
       @series ||= [] if article_params[:series].blank?
       @series ||= Collection.find_series(article_params[:series], user)
-    end
-
-    def set_series
-      article.collection = series if series.present?
     end
 
     # Subscribe author to notifications for all comments on their article.

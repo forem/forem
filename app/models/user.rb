@@ -217,12 +217,13 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
+  after_update :refresh_user_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
   after_create_commit :send_welcome_notification
 
-  after_save :create_conditional_autovomits, :refresh_user_segments
+  after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 

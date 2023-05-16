@@ -65,7 +65,7 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "refreshes user segments" do
       described_class.call(user, article_params)
-      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "does not refresh user segments" do
       described_class.call(user, article_params)
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 
@@ -83,7 +83,7 @@ RSpec.describe Articles::Creator, type: :service do
 
     it "does not refresh user segments" do
       described_class.call(user, article_params)
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end
