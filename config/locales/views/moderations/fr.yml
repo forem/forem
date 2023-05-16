@@ -189,7 +189,7 @@ fr:
         trusted: Guide de l'utilisateur de confiance
       post: Article
       priviliged_actions:
-        description: Toutes les actions privilégiées affectent le score. Le score global est une combinaison d'actions privilégiées et de réactions du public.
+        description: Toutes les actions du modérateur affectent le score. Le score global est une combinaison des actions des modérateurs et des réactions du public.
         no_flags: L'article n'a pas de drapeaux.
         no_quality_reactions: L'article n'a pas de réactions de qualité par des utilisateurs de confiance
         title: Actions privilégiées

@@ -190,7 +190,7 @@ en:
         trusted: Trusted User Guide
       post: Post
       priviliged_actions:
-        description: All the privileged actions affects the score. Overall score is combination of privileged actions and public reactions.
+        description: All the moderator actions affect the score. The overall score is a combination of moderator actions and public reactions.
         no_flags: Article has no flags.
         no_quality_reactions: Article has no quality reactions by trusted users.
-        title: Priviliged actions
+        title: Moderator actions
