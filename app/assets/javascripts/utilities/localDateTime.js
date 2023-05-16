@@ -20,7 +20,7 @@ function timestampToLocalDateTime(timestamp, locale, options) {
   try {
     var time = new Date(timestamp);
     let formattedTime = new Intl.DateTimeFormat(
-      locale || 'default',
+      locale || 'uk',
       options,
     ).format(time);
     return options.year === '2-digit'
