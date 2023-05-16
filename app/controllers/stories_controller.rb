@@ -49,7 +49,7 @@ class StoriesController < ApplicationController
   private
 
   def assign_hero_banner
-    @hero_display_ad = DisplayAd.where(placement_area: "home_hero").first
+    @hero_display_ad = DisplayAd.for_display(area: "home_hero")
   end
 
   def assign_hero_html
