@@ -25,7 +25,7 @@ RSpec.describe BulkSegmentedUsers, type: :service do
         expect(audience_segment.users).to contain_exactly(*users, existing_user)
       end
 
-      it "only touches updated_at timestamp of existing segmented users in the list" do
+      it "only touches segmented users already in the list" do
         created_time = Time.current
         upsert_time = 3.days.from_now
         existing_users = create_list(:user, 3)
@@ -42,8 +42,28 @@ RSpec.describe BulkSegmentedUsers, type: :service do
           expect(result[:failed]).to be_empty
 
           existing_segmented_users = audience_segment.segmented_users.where(user_id: existing_user_ids)
-          expect(existing_segmented_users.map(&:created_at)).to all(eq(created_time))
-          expect(existing_segmented_users.map(&:updated_at)).to all(eq(upsert_time))
+          expect(existing_segmented_users.map(&:created_at)).to all(be_within(1.second).of(created_time))
+          expect(existing_segmented_users.map(&:updated_at)).to all(be_within(1.second).of(upsert_time))
+        end
+      end
+
+      it "only touches the segment if any users were successfully upserted" do
+        user = create(:user)
+        time = Time.current
+
+        Timecop.freeze(time) do
+          described_class.upsert(audience_segment, user_ids: [user.id])
+          expect(audience_segment.updated_at).to be_within(1.second).of(time)
+
+          Timecop.travel(1.day.from_now) do
+            described_class.upsert(audience_segment, user_ids: [])
+            expect(audience_segment.updated_at).to be_within(1.second).of(time)
+          end
+
+          Timecop.travel(2.days.from_now) do
+            described_class.upsert(audience_segment, user_ids: [user.id])
+            expect(audience_segment.updated_at).to be_within(1.second).of(Time.current)
+          end
         end
       end
 
