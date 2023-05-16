@@ -1,7 +1,7 @@
 'use strict';
 
 function formatDateTime(options, value) {
-  return new Intl.DateTimeFormat('en-US', options).format(value);
+  return new Intl.DateTimeFormat('ua', options).format(value);
 }
 
 function convertUtcTime(utcTime) {
