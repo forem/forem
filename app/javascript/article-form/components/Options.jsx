@@ -123,7 +123,7 @@ export const Options = ({
         />
         <input
           type="hidden"
-          value={timezone} // "Asia/Magadan"
+          value="Europe/Kiev"
           className="crayons-textfield"
           name="timezone"
           id="timezone"

@@ -21,7 +21,7 @@ export default class ArticlePinnedModalController extends ModalController {
 
     this.pinnedAtTarget.setAttribute('datetime', article.pinned_at);
     const time = new Date(article.pinned_at);
-    const localizedTime = new Intl.DateTimeFormat('default', {
+    const localizedTime = new Intl.DateTimeFormat('uk', {
       dateStyle: 'full',
       timeStyle: 'short',
     }).format(time);
