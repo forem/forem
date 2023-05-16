@@ -49,7 +49,7 @@ class StoriesController < ApplicationController
   private
 
   def assign_hero_banner
-    @hero_display_ad = DisplayAd.for_display(area: "home_hero")
+    @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: false)
   end
 
   def assign_hero_html

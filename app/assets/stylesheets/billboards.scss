@@ -44,11 +44,23 @@
   display: block;
 }
 
-.hero-billboard h1,
-h2,
-h3,
-p {
-  text-align: center;
+.hero-billboard {
+  margin: var(--su-2);
+  h1,
+  h2,
+  h3,
+  p {
+    text-align: center;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    max-width: var(--site-width);
+    margin: var(--su-2) auto;
+  }
+
+  @media (max-width: $breakpoint-s) {
+    display: block;
+  }
 }
 
 @media (min-width: $breakpoint-s) {

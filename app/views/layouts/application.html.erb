@@ -89,10 +89,6 @@
   <div id="page-content-inner">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
-    <% if @hero_display_ad %>
-      <%= render partial: "shared/display_ad", locals: { display_ad: @hero_display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
-    <% end %>
-
     <% if @hero_html && @hero_display_ad.blank? %>
       <aside id="hero-html-wrapper" aria-label="Campaign banner" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
