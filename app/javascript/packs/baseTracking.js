@@ -88,7 +88,7 @@ function fallbackActivityRecording() {
   const screenH = window.screen.availHeight;
   const dataBody = {
     path: location.pathname + location.search,
-    user_language: "uk",
+    user_language: "uk-UA",
     referrer: document.referrer,
     user_agent: navigator.userAgent,
     viewport_size: `${h  }x${  w}`,

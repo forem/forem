@@ -57,7 +57,7 @@ function localizeTimeElements(elements, timeOptions) {
     if (timestamp) {
       const localDateTime = timestampToLocalDateTime(
         timestamp,
-        "uk",
+        "uk-UA",
         timeOptions,
       );
 
@@ -69,7 +69,7 @@ function localizeTimeElements(elements, timeOptions) {
 function timestampToLocalDateTimeLong(timestamp) {
   // example: "Wednesday, April 3, 2019, 2:55:14 PM"
 
-  return timestampToLocalDateTime(timestamp, "uk", {
+  return timestampToLocalDateTime(timestamp, "uk-UA", {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -97,7 +97,7 @@ function timestampToLocalDateTimeShort(timestamp) {
       timeOptions.year = 'numeric';
     }
 
-    return timestampToLocalDateTime(timestamp, "uk", timeOptions);
+    return timestampToLocalDateTime(timestamp, "uk-UA", timeOptions);
   }
 
   return '';
