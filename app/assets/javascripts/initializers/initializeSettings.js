@@ -33,7 +33,7 @@ function initializeSettings() {
 
     timeNode.textContent = timestampToLocalDateTime(
       timeStamp,
-      "uk-UA",
+      "uk",
       timeOptions,
     );
   }

@@ -8,7 +8,7 @@ const dateOptions = {
   day: 'numeric',
 };
 
-const currentLocale = "uk-UA"
+const currentLocale = "uk"
 
 
 export const formatDate = (timestamp) => {
