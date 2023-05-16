@@ -5,7 +5,7 @@ module Middlewares
     end
 
     def call(env)
-      Time.zone = "Europe/Kiev"
+      Time.zone = 'Europe/Kiev'
 
       @app.call(env)
     end

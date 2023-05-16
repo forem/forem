@@ -187,7 +187,7 @@ RSpec.describe "ArticlesCreate" do
     end
 
     it "sets published_at with timezone from frontmatter" do
-      published_at = 10.days.from_now.in_time_zone("America/Caracas")
+      published_at = 10.days.from_now.in_time_zone("Europe/Kiev")
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
