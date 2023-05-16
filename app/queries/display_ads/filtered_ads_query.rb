@@ -24,8 +24,6 @@ module DisplayAds
       @filtered_display_ads = approved_and_published_ads
       @filtered_display_ads = placement_area_ads
 
-      return @filtered_display_ads if @area == "home_hero"
-
       if @article_tags.any?
         @filtered_display_ads = tagged_post_comment_ads
       end
