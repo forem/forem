@@ -142,14 +142,14 @@ RSpec.describe Users::Setting do
     it "refreshes user segment" do
       setting.experience_level = setting.experience_level.to_i + 1
       setting.save!
-      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
     end
   end
 
   context "when creating from scratch" do
     it "does not refresh user segment" do
       create(:user).setting
-      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async).with(user)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end

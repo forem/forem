@@ -370,6 +370,8 @@ RSpec.describe User do
 
     it "refreshes user segments" do
       expect(user).to be_persisted
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+      user.update name: "New Name Here"
       expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
     end
   end
@@ -425,7 +427,7 @@ RSpec.describe User do
 
     it "refreshes user segments" do
       without_role.add_role :trusted
-      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(without_role.id)
     end
   end
 
