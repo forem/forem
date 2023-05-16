@@ -18,7 +18,7 @@ export function timestampToLocalDateTime(timestamp, locale, options) {
   try {
     const time = new Date(timestamp);
     const formattedTime = new Intl.DateTimeFormat(
-      locale || 'default',
+      locale || 'uk',
       options,
     ).format(time);
     return options.year === '2-digit'
