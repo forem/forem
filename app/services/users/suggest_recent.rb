@@ -75,7 +75,7 @@ module Users
     end
 
     def user_relation
-      User.includes(:profile)
+      User.includes(:profile).without_role(:suspended)
     end
   end
 end

@@ -21,6 +21,18 @@ RSpec.describe Users::SuggestRecent, type: :service do
       expect(suggested_users.size).to eq(1)
       expect(suggested_users.map(&:id)).to include(article.user_id)
     end
+
+    it "does not return recent producer if suspended" do
+      articles = create_list(:article, 3, score: 10)
+      article = articles.last
+      article.update(score: 100)
+      allow(user).to receive(:decorate).and_return(user)
+      allow(user).to receive(:cached_followed_tag_names).and_return(["html"])
+      article.user.add_role(:suspended)
+
+      suggested_users = suggester.suggest
+      expect(suggested_users.size).to eq(0)
+    end
   end
 
   context "without cached_followed_tags" do
