@@ -114,13 +114,6 @@ module Constants
             description: I18n.t("lib.constants.settings.general.tags.description"),
             placeholder: I18n.t("lib.constants.settings.general.tags.placeholder")
           },
-          suggested_users: {
-            description: I18n.t("lib.constants.settings.general.users.description"),
-            placeholder: I18n.t("lib.constants.settings.general.users.placeholder")
-          },
-          prefer_manual_suggested_users: {
-            description: I18n.t("lib.constants.settings.general.prefer_manual.description")
-          },
           twitter_hashtag: {
             description: I18n.t("lib.constants.settings.general.hashtag.description"),
             placeholder: I18n.t("lib.constants.settings.general.hashtag.placeholder")
