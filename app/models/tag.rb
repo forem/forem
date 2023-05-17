@@ -81,11 +81,7 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
 
-  scope :suggested_for_onboarding, -> { where(name: tag_names_suggested_for_onboarding) }
-
-  def self.tag_names_suggested_for_onboarding
-    Settings::General.suggested_tags
-  end
+  scope :suggested_for_onboarding, -> { where(suggested: true) }
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates

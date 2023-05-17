@@ -26,7 +26,7 @@ module Tags
     def suggested_for_onboarding_or_supported
       builder = Tag.arel_table
       supported = builder[:supported].eq(true)
-      suggested = builder[:name].in(Tag.tag_names_suggested_for_onboarding)
+      suggested = builder[:suggested].eq(true)
       suggested.or(supported)
     end
   end
