@@ -39,18 +39,21 @@ describe('FollowTags', () => {
       id: 715,
       name: 'discuss',
       text_color_hex: '#ffffff',
+      taggings_count: 12,
     },
     {
       bg_color_hex: '#f7df1e',
       id: 6,
       name: 'javascript',
       text_color_hex: '#000000',
+      taggings_count: 0,
     },
     {
       bg_color_hex: '#2a2566',
       id: 630,
       name: 'career',
       text_color_hex: '#ffffff',
+      taggings_count: 1,
     },
   ]);
 
@@ -60,16 +63,22 @@ describe('FollowTags', () => {
     document.body.setAttribute('data-user', getUserData());
   });
 
-  it('should render the correct tags', async () => {
+  it('should render the correct tags and counts', async () => {
     fetch.mockResponseOnce(fakeTagsResponse);
     const { findByText } = renderFollowTags();
     const javascriptTag = await findByText(/javascript/i);
+    const javascriptCount = await findByText('0 posts');
     const discussTag = await findByText(/discuss/i);
+    const discussCount = await findByText('12 posts');
     const careerTag = await findByText(/career/i);
+    const careerCount = await findByText('1 post');
 
     expect(javascriptTag).toBeInTheDocument();
+    expect(javascriptCount).toBeInTheDocument();
     expect(discussTag).toBeInTheDocument();
+    expect(discussCount).toBeInTheDocument();
     expect(careerTag).toBeInTheDocument();
+    expect(careerCount).toBeInTheDocument();
   });
 
   it('should render the correct navigation button on first load', () => {
