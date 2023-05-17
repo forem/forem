@@ -99,11 +99,9 @@ class DisplayAd < ApplicationRecord
   end
 
   def validate_in_house_hero_ads
-    if placement_area == "home_hero" && type_of != "in_house"
-      return errors.add(:type_of, "must be in_house if display ad is a Home Hero")
-    end
+    return unless placement_area == "home_hero" && type_of != "in_house"
 
-    nil
+    errors.add(:type_of, "must be in_house if display ad is a Home Hero")
   end
 
   def audience_segment_type=(type)
