@@ -214,12 +214,10 @@ RSpec.describe "Tags", proper_status: true do
       get onboarding_tags_path, headers: headers
 
       response_tag = response.parsed_body.first
-      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex following])
+      expect(response_tag.keys).to match_array(%w[id name taggings_count])
       expect(response_tag["id"]).to eq(tag.id)
       expect(response_tag["name"]).to eq(tag.name)
-      expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
-      expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
-      expect(response_tag[I18n.t("core.following")]).to be_nil
+      expect(response_tag["taggings_count"]).to eq(tag.taggings_count)
     end
 
     it "returns only suggested tags" do

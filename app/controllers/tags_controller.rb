@@ -3,7 +3,8 @@ class TagsController < ApplicationController
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id taggings_count].freeze
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
+  ONBOARDING_API_ATTRIBUTES = %i[id name taggings_count].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[

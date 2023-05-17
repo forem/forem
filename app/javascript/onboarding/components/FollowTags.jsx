@@ -133,6 +133,7 @@ export class FollowTags extends Component {
                     className={`onboarding-tags__item ${
                       selected ? 'onboarding-tags__item--selected' : ''
                     }`}
+                    aria-label={`Follow ${tag.name}`}
                     key={tag.id}
                     onClick={() => this.handleClick(tag)}
                     onKeyPress={(event) => {
@@ -159,7 +160,7 @@ export class FollowTags extends Component {
                         class="crayons-checkbox"
                         type="checkbox"
                         checked={selected}
-                        aria-label={`Follow ${tag.name}`}
+                        disabled
                       />
                     </div>
                   </div>
