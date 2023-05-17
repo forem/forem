@@ -310,7 +310,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     let(:markdown) { "body text here, no frontmatter" }
     let(:published) { create(:published_article, :past, user: user) }
 
-    it "refreshes user segments" do
+    it "does not refresh user segments" do
       described_class.call(user, published, attributes)
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
@@ -321,7 +321,7 @@ description:\ntags: heytag\n---\n\nHey this is the article"
     let(:markdown) { "body text here, no frontmatter" }
     let(:unpublished) { create(:unpublished_article, user: user) }
 
-    it "refreshes user segments" do
+    it "does not refresh user segments" do
       described_class.call(user, unpublished, attributes)
       expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
