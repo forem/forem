@@ -81,6 +81,12 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
 
+  scope :suggested_for_onboarding, -> { where(name: tag_names_suggested_for_onboarding) }
+
+  def self.tag_names_suggested_for_onboarding
+    Settings::General.suggested_tags
+  end
+
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
