@@ -150,7 +150,9 @@ export class FollowTags extends Component {
                           #{tag.name}
                         </div>
                         <div className="onboarding-tags__item__inner__content-count">
-                          {tag.taggings_count} posts
+                          {tag.taggings_count === 1
+                            ? '1 post'
+                            : `${tag.taggings_count} posts`}
                         </div>
                       </div>
                       <input
