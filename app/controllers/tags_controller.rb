@@ -65,7 +65,7 @@ class TagsController < ApplicationController
   def onboarding
     skip_authorization
 
-    @tags = Tag.where(name: Settings::General.suggested_tags)
+    @tags = Tags::SuggestedForOnboarding.call
       .select(ATTRIBUTES_FOR_SERIALIZATION)
 
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
