@@ -241,8 +241,9 @@
     $item: &;
 
     input[type='checkbox'] {
-      background: #fafafa;
-      border: 1px solid #e5e5e5;
+      border-radius: 50%;
+      background-color: #fafafa;
+      background-image: none;
     }
 
     &:hover {
@@ -251,7 +252,6 @@
       box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
 
       input[type='checkbox'] {
-        background: #fafafa;
         border: 1px solid #4f46e5;
       }
     }
@@ -305,8 +305,10 @@
         box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
       }
 
-      input[type='checkbox']:checked {
-        background: #4f46e5;
+      input[type='checkbox'] {
+        border: 1px solid #4f46e5;
+        background-color: #4f46e5;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='10' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11.157.933a.75.75 0 01.077 1.058L4.817 9.407a.75.75 0 01-1.134 0L.766 6.037a.75.75 0 011.135-.982L4.25 7.77l5.85-6.76a.75.75 0 011.057-.077z' fill='%23fff'/%3E%3C/svg%3E");
       }
     }
   }

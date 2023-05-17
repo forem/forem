@@ -154,6 +154,7 @@ export class FollowTags extends Component {
                         </div>
                       </div>
                       <input
+                        class="crayons-checkbox"
                         type="checkbox"
                         checked={selected}
                         aria-label={`Follow ${tag.name}`}
