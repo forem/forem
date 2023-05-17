@@ -67,7 +67,7 @@ class TagsController < ApplicationController
     skip_authorization
 
     @tags = Tag.where(name: Settings::General.suggested_tags)
-      .select(ATTRIBUTES_FOR_SERIALIZATION)
+      .select(ONBOARDING_API_ATTRIBUTES)
 
     render json: @tags
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
