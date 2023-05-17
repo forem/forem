@@ -541,7 +541,7 @@ RSpec.describe "NotificationsIndex" do
       it "renders a round robin notification with the option to opt out", :aggregate_failures do
         expect(response.body).to include "Hey Alice 👋"
         expect(response.body).to include(
-          "Jesse is new to the community. Please drop a nice reply to make them feel welcome",
+          "Jesse is new to the community. Please check out their post and drop a nice reply to make them feel welcome!",
         )
         renders_article_path(article)
         expect(response.body).to include CGI.escapeHTML("Don't want to receive these notifications?")
