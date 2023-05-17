@@ -219,82 +219,59 @@
 .onboarding-tags {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: var(--su-4);
+  grid-gap: var(--su-2);
   width: 100%;
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  &__button {
-    @extend .crayons-btn;
-    border: 0;
-    display: block;
-    position: absolute;
-    left: var(--su-4);
-    right: var(--su-4);
-    bottom: var(--su-4);
-    width: calc(100% - 32px);
-    transform: translateY(0px);
-    font-family: var(--ff-sans-serif);
-    $button: &;
-
-    @media screen and (min-width: 800px) {
-      transform: translateY(60px);
-    }
-
-    &-default {
-      display: inline-block;
-    }
-
-    &-alt {
-      display: none;
-    }
-  }
-
   &__item {
+    border: 1px solid rgba(var(--grey-200), 1);
+    background: var(--white);
     border-radius: var(--radius);
+    padding: var(--su-3) var(--su-4);
     position: relative;
     overflow: hidden;
-    height: 150px;
+    height: 73px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     $item: &;
 
-    &__inner {
-      background: var(--base-10);
-      bottom: 0;
-      font-family: var(--ff-monospace);
-      hyphens: auto;
-      left: 0;
-      padding: var(--su-4);
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: all ease-in-out 0.1s;
+    input[type='checkbox'] {
+      background: #fafafa;
+      border: 1px solid #e5e5e5;
     }
 
     &:hover,
     &:focus-within {
-      #{$item}__inner {
-        background: transparent;
-      }
+      background: #ffffff;
+      border: 1px solid #4f46e5;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
 
-      .onboarding-tags__button {
-        transform: translateY(0);
-
-        &:hover,
-        &:focus-within {
-          transform: translateY(-2px);
-        }
+      input[type='checkbox'] {
+        background: #fafafa;
+        border: 1px solid #4f46e5;
       }
     }
 
+    &__inner {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
     &--selected {
-      #{$item}__inner {
-        background: transparent;
-      }
+      background: rgba(79, 70, 229, 0.1);
+      border: 1px solid #4f46e5;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
 
       input[type='checkbox']:checked {
-        background: var(--link-branded-color);
+        background: #4f46e5;
       }
     }
   }

@@ -79,20 +79,18 @@ describe('FollowTags', () => {
     expect(queryByText(/skip for now/i)).toBeDefined();
   });
 
-  it('should update the navigation button text, follow status and count when you follow a tag', async () => {
+  it('should update the nfollow status and count when you follow a tag', async () => {
     fetch.mockResponse(fakeTagsResponse);
 
-    const { queryByText, findByText, findAllByText } = renderFollowTags();
-    const followButtons = await findAllByText('Follow');
+    const { queryByText, findByText, findAllByRole } = renderFollowTags();
+
+    const tagItems = await findAllByRole('button');
 
     findByText(/skip for now/);
 
-    // click on the first follow button
-    const button = followButtons[0];
-    button.click();
-
-    // it should change to Following and update the count
-    await findByText(/Following/i);
+    // click on the first tag item
+    const firstTagItem = tagItems[0];
+    firstTagItem.click();
 
     expect(queryByText(/1 tag selected/i)).toBeDefined();
     expect(queryByText(/continue/i)).toBeDefined();
