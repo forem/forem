@@ -14,7 +14,7 @@ module Articles
 
       create_article.tap do
         subscribe_author if article.persisted?
-        refresh_user_segments if article.published?
+        refresh_auto_audience_segments if article.published?
       end
     end
 
@@ -41,8 +41,8 @@ module Articles
       user.rate_limiter.check_limit!(rate_limit_to_use)
     end
 
-    def refresh_user_segments
-      user.refresh_user_segments
+    def refresh_auto_audience_segments
+      user.refresh_auto_audience_segments
     end
 
     def create_article

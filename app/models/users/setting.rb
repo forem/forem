@@ -31,7 +31,7 @@ module Users
 
     validate :validate_feed_url, if: :feed_url_changed?
 
-    after_update :refresh_user_segments
+    after_update :refresh_auto_audience_segments
 
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
@@ -39,8 +39,8 @@ module Users
 
     private
 
-    def refresh_user_segments
-      user.refresh_user_segments
+    def refresh_auto_audience_segments
+      user.refresh_auto_audience_segments
     end
 
     def validate_feed_url

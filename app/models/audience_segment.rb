@@ -18,7 +18,7 @@ class AudienceSegment < ApplicationRecord
   has_many :segmented_users, dependent: :destroy
   has_many :users, through: :segmented_users
 
-  after_validation :run_query
+  after_validation :persist_recently_active_users, unless: :manual?
 
   QUERIES = {
     manual: ->(scope = User) { scope.where(id: nil) },
@@ -58,13 +58,13 @@ class AudienceSegment < ApplicationRecord
       .map { |(id, type)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), id] }
   end
 
-  def run_query
-    return if manual?
-
+  def persist_recently_active_users
     self.users = self.class.recently_active_users_in_segment(type_of)
   end
 
   def all_users_in_segment
+    return users if manual?
+
     self.class.all_users_in_segment(type_of)
   end
 

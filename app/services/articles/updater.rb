@@ -21,7 +21,7 @@ module Articles
 
         remove_all_notifications if was_and_now_is_not_published?
         send_to_mentioned_users_and_followers if is_and_remains_published?
-        refresh_user_segments if has_become_published?
+        refresh_auto_audience_segments if has_become_published?
       end
 
       Result.new(success: success, article: article.decorate)
@@ -46,8 +46,8 @@ module Articles
         .for_update(update_edited_at: update_edited_at)
     end
 
-    def refresh_user_segments
-      user.refresh_user_segments
+    def refresh_auto_audience_segments
+      user.refresh_auto_audience_segments
     end
 
     def has_become_published?
