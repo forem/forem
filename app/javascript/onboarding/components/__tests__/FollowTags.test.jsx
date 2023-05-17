@@ -79,7 +79,7 @@ describe('FollowTags', () => {
     expect(queryByText(/skip for now/i)).toBeDefined();
   });
 
-  it('should update the nfollow status and count when you follow a tag', async () => {
+  it('should update the status and count when you follow a tag', async () => {
     fetch.mockResponse(fakeTagsResponse);
 
     const { queryByText, findByText, findAllByRole } = renderFollowTags();

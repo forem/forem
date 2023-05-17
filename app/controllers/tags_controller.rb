@@ -1,5 +1,4 @@
 class TagsController < ApplicationController
-  extend ActiveSupport::Concern
   before_action :set_cache_control_headers, only: %i[index onboarding]
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized

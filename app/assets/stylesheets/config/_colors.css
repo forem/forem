@@ -144,6 +144,8 @@
   --tag-bg-hover: rgba(var(--grey-900), 0.05);
   --tag-prefix: rgba(var(--grey-900), 0.6);
   --tag-prefix-hover: rgb(var(--grey-900));
+  --tag-onboarding-bg: var(--white);
+  --tag-onboarding-border: var(--grey-200);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-50));
@@ -380,5 +382,4 @@
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
     0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
   --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
-
 }
