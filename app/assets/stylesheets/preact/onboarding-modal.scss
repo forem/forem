@@ -245,8 +245,7 @@
       border: 1px solid #e5e5e5;
     }
 
-    &:hover,
-    &:focus-within {
+    &:hover {
       background: #ffffff;
       border: 1px solid #4f46e5;
       box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
@@ -269,6 +268,12 @@
       background: rgba(79, 70, 229, 0.1);
       border: 1px solid #4f46e5;
       box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
+
+      &:hover {
+        background: rgba(79, 70, 229, 0.1);
+        border: 1px solid #4f46e5;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.06);
+      }
 
       input[type='checkbox']:checked {
         background: #4f46e5;
