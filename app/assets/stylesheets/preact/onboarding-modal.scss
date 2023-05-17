@@ -262,6 +262,36 @@
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
+
+      &__content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 4px;
+      }
+
+      &__content-name {
+        font-family: 'SF Pro Text';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 150%;
+        letter-spacing: -0.02em;
+        color: #171717;
+      }
+
+      &__content-count {
+        font-family: 'SF Pro Text';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 150%;
+        letter-spacing: -0.02em;
+        color: #171717;
+        opacity: 0.6;
+      }
     }
 
     &--selected {

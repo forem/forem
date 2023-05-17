@@ -1,9 +1,10 @@
 class TagsController < ApplicationController
+  extend ActiveSupport::Concern
   before_action :set_cache_control_headers, only: %i[index onboarding]
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id taggings_count].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[
@@ -68,6 +69,7 @@ class TagsController < ApplicationController
     @tags = Tag.where(name: Settings::General.suggested_tags)
       .select(ATTRIBUTES_FOR_SERIALIZATION)
 
+    render json: @tags
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 

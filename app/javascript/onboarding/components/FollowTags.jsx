@@ -89,11 +89,7 @@ export class FollowTags extends Component {
       followingStatus = `${selectedTags.length} tags selected`;
     }
 
-    const classStyle =
-      selectedTags.length > 0
-        ? 'fw-bold color-base-60 fs-base'
-        : 'color-base-60 fs-base';
-    return <p className={classStyle}>{followingStatus}</p>;
+    return <p className="color-base-60 fs-base">{followingStatus}</p>;
   }
 
   render() {
@@ -149,7 +145,14 @@ export class FollowTags extends Component {
                     role="button"
                   >
                     <div className="onboarding-tags__item__inner">
-                      #{tag.name}
+                      <div className="onboarding-tags__item__inner__content">
+                        <div className="onboarding-tags__item__inner__content-name">
+                          #{tag.name}
+                        </div>
+                        <div className="onboarding-tags__item__inner__content-count">
+                          {tag.taggings_count} posts
+                        </div>
+                      </div>
                       <input
                         type="checkbox"
                         checked={selected}
