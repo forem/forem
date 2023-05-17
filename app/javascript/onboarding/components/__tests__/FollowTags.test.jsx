@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -115,5 +115,35 @@ describe('FollowTags', () => {
     const { queryByTestId } = renderFollowTags();
 
     expect(queryByTestId('back-button')).toBeDefined();
+  });
+
+  it('should call handleClick when enter key is pressed', async () => {
+    fetch.mockResponseOnce(fakeTagsResponse);
+    const { findByText, queryByText } = renderFollowTags();
+    const javascriptTag = await findByText(/javascript/i);
+
+    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 13 });
+
+    expect(queryByText(/1 tag selected/i)).toBeDefined();
+  });
+
+  it('should call handleClick when space key is pressed', async () => {
+    fetch.mockResponseOnce(fakeTagsResponse);
+    const { findByText, queryByText } = renderFollowTags();
+    const javascriptTag = await findByText(/javascript/i);
+
+    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 32 });
+
+    expect(queryByText(/1 tag selected/i)).toBeDefined();
+  });
+
+  it('should call handleClick and not select the tag when any other key is pressed', async () => {
+    fetch.mockResponseOnce(fakeTagsResponse);
+    const { findByText, queryByText } = renderFollowTags();
+    const javascriptTag = await findByText(/javascript/i);
+
+    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 12 });
+
+    expect(queryByText(/0 tags selected/i)).toBeDefined();
   });
 });
