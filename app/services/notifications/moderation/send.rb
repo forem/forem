@@ -3,7 +3,7 @@ module Notifications
   module Moderation
     MODERATORS_AVAILABILITY_DELAY = 22.hours
     class Send
-      SUPPORTED = [Comment].freeze
+      SUPPORTED = [Comment, Article].freeze
 
       def self.call(...)
         new(...).call
@@ -14,7 +14,7 @@ module Notifications
         @notifiable = notifiable
       end
 
-      delegate :user_data, :comment_data, to: Notifications
+      delegate :user_data, :comment_data, :article_data, to: Notifications
 
       def call
         # notifiable is currently only comment
