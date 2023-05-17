@@ -2454,6 +2454,296 @@
         }
       }
     },
+    "/api/segments": {
+      "post": {
+        "summary": "Create a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a DisplayAd/Billboard/Widget. This API only permits managing segments you create and maintain yourself.",
+        "operationId": "createSegment",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "A manually managed audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 42,
+                  "type_of": "manual",
+                  "created_at": "2023-05-16T12:45:11Z",
+                  "updated_at": "2023-05-16T12:45:11Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          }
+        }
+      }
+    },
+    "/api/segments/{id}": {
+      "delete": {
+        "summary": "Delete a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any DisplayAds/Billboards/Widgets using them.",
+        "operationId": "deleteSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deleted audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 42,
+                  "type_of": "manual",
+                  "created_at": "2023-05-16T12:45:11Z",
+                  "updated_at": "2023-05-16T12:45:11Z"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Audience segment could not be deleted",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Still In Use": {
+                    "value": {
+                      "error": "Segments cannot be deleted while in use by any billboards",
+                      "status": 409
+                    }
+                  },
+                  "Other": {
+                    "value": {
+                      "id": 42,
+                      "type_of": "manual",
+                      "created_at": "2023-05-16T12:45:11Z",
+                      "updated_at": "2023-05-16T12:45:11Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/add_users": {
+      "put": {
+        "summary": "Add users to a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to add users in bulk to an audience segment specified by ID.\n\nSuccesses are users that were included in the segment (even if they were already in it), and failures are users that could not be added to the segment.",
+        "operationId": "addUsersToSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentUserIds"
+              },
+              "example": {
+                "user_ids": [2, 10, 32, 57, 99, 413]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result of adding the users to the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [10, 32, 99, 413],
+                  "failed": [2, 57]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "No User IDs": {
+                    "value": {
+                      "error": "param is missing or the value is empty: user_ids",
+                      "status": 422
+                    }
+                  },
+                  "More than 10K User IDs": {
+                    "value": {
+                      "error": "Too many user IDs provided",
+                      "status": 422
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/remove_users": {
+      "put": {
+        "summary": "Remove users from a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to remove users in bulk from an audience segment specified by ID.\n\nSuccesses are users that were removed; failures are users that weren't a part of the segment.",
+        "operationId": "removeUsersFromSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentUserIds"
+              },
+              "example": {
+                "user_ids": [2, 10, 106]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result of removing the users from the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [2, 10],
+                  "failed": [106]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "No User IDs": {
+                    "value": {
+                      "error": "param is missing or the value is empty: user_ids",
+                      "status": 422
+                    }
+                  },
+                  "More than 10K User IDs": {
+                    "value": {
+                      "error": "Too many user IDs provided",
+                      "status": 422
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/tags": {
       "get": {
         "summary": "Tags",
@@ -3568,6 +3858,38 @@
           }
         },
         "required": ["name", "body_markdown", "placement_area"]
+      },
+      "Segment": {
+        "description": "A manually managed audience segment",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the segment"
+          },
+          "type_of": {
+            "type": "string",
+            "enum": ["manual"],
+            "default": "manual",
+            "description": "Marks the segment as manually managed (other types are internal)"
+          },
+          "user_count": {
+            "type": "integer",
+            "description": "The current number of users in the segment"
+          }
+        }
+      },
+      "SegmentUserIds": {
+        "type": "object",
+        "properties": {
+          "user_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 10000
+          }
+        }
       }
     }
   }
