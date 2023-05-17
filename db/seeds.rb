@@ -253,7 +253,7 @@ seeder.create_if_none(Article, num_articles) do
 
     article = Article.create!(
       body_markdown: markdown,
-      featured: true,
+      featured: i.zero?, # only feature the first article,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
