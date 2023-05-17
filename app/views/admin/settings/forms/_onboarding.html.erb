@@ -27,25 +27,6 @@
                            value: Settings::General.suggested_tags.join(","),
                            placeholder: Constants::Settings::General.details[:suggested_tags][:placeholder] %>
         </div>
-
-        <div class="crayons-field">
-          <%= admin_config_label :suggested_users %>
-          <%= admin_config_description Constants::Settings::General.details[:suggested_users][:description] %>
-          <%= f.text_field :suggested_users,
-                           class: "crayons-textfield",
-                           value: Settings::General.suggested_users.join(","),
-                           placeholder: Constants::Settings::General.details[:suggested_users][:placeholder] %>
-        </div>
-
-        <div class="crayons-field crayons-field--checkbox">
-          <%= f.check_box :prefer_manual_suggested_users, checked: Settings::General.prefer_manual_suggested_users, class: "crayons-checkbox" %>
-          <div class="mt-0">
-            <%= admin_config_label :prefer_manual_suggested_users %>
-            <p class="crayons-field__description">
-            <%= Constants::Settings::General.details[:prefer_manual_suggested_users][:description] %>
-            </p>
-          </div>
-        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

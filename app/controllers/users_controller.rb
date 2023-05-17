@@ -5,7 +5,6 @@ class UsersController < ApplicationController
                 only: %i[update update_password request_destroy full_delete remove_identity]
   after_action :verify_authorized,
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
-  before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
@@ -255,23 +254,11 @@ class UsersController < ApplicationController
 
   private
 
-  def set_suggested_users
-    @suggested_users = Settings::General.suggested_users
-  end
-
-  def default_suggested_users
-    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
-  end
-
   def determine_follow_suggestions(current_user)
-    return default_suggested_users if Settings::General.prefer_manual_suggested_users? && default_suggested_users
-
-    recent_suggestions = Users::SuggestRecent.call(
+    Users::SuggestRecent.call(
       current_user,
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
     )
-
-    recent_suggestions.presence || default_suggested_users
   end
 
   def handle_organization_tab

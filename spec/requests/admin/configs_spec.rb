@@ -427,40 +427,6 @@ RSpec.describe "/admin/customization/config" do
           }
           expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
-
-        it "removes space suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "downcases suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "updates prefer_manual_suggested_users to true" do
-          prefer_manual = true
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
-        end
-
-        it "updates prefer_manual_suggested_users to false" do
-          prefer_manual = false
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
-        end
       end
 
       describe "Rate Limits and spam" do
