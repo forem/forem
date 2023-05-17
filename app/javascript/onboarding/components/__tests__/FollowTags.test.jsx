@@ -132,7 +132,7 @@ describe('FollowTags', () => {
     const { findByText, queryByText } = renderFollowTags();
     const javascriptTag = await findByText(/javascript/i);
 
-    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 32 });
+    fireEvent.keyPress(javascriptTag, { key: 'Space', code: 32 });
 
     expect(queryByText(/1 tag selected/i)).toBeDefined();
   });
