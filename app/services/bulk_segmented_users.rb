@@ -39,7 +39,7 @@ class BulkSegmentedUsers
 
     segmented_users = audience_segment.segmented_users.where(user_id: user_ids)
     valid_user_ids = segmented_users.pluck(:user_id)
-    deleted_count = segmented_users.delete_all
+    deleted_count = segmented_users.in_batches.delete_all
 
     audience_segment.touch if deleted_count.positive?
 

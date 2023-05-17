@@ -3,7 +3,7 @@ module Api
     class AudienceSegmentsController < ApiController
       MAX_USER_IDS = 10_000
 
-      before_action :authenticate!
+      before_action :authenticate_with_api_key!
       before_action :require_admin
       before_action :restrict_user_ids, only: %i[add_users remove_users]
 
@@ -19,6 +19,7 @@ module Api
         if DisplayAd.where(audience_segment_id: @segment.id).any?
           render json: { error: "Segments cannot be deleted while in use by any billboards" }, status: :conflict
         else
+          @segment.segmented_users.in_batches.delete_all
           result = @segment.destroy
           render json: @segment, status: (result ? :ok : :conflict)
         end
