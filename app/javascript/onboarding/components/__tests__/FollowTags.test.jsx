@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render, waitFor, fireEvent } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -83,26 +83,23 @@ describe('FollowTags', () => {
 
   it('should render the correct navigation button on first load', () => {
     fetch.mockResponseOnce(fakeTagsResponse);
-    const { queryByText } = renderFollowTags();
+    const { getByText } = renderFollowTags();
 
-    expect(queryByText(/skip for now/i)).toBeDefined();
+    expect(getByText(/skip for now/i)).toBeDefined();
   });
 
   it('should update the status and count when you follow a tag', async () => {
     fetch.mockResponse(fakeTagsResponse);
 
-    const { queryByText, findByText, findAllByRole } = renderFollowTags();
+    const { getByText, findByTestId } = renderFollowTags();
 
-    const tagItems = await findAllByRole('button');
+    const javascriptTag = await findByTestId(`onboarding-tag-item-6`);
+    javascriptTag.click();
 
-    findByText(/skip for now/);
-
-    // click on the first tag item
-    const firstTagItem = tagItems[0];
-    firstTagItem.click();
-
-    expect(queryByText(/1 tag selected/i)).toBeDefined();
-    expect(queryByText(/continue/i)).toBeDefined();
+    await waitFor(() =>
+      expect(getByText('1 tag selected')).toBeInTheDocument(),
+    );
+    await waitFor(() => expect(getByText(/continue/i)).toBeInTheDocument());
   });
 
   it('should render a stepper', () => {
@@ -119,31 +116,50 @@ describe('FollowTags', () => {
 
   it('should call handleClick when enter key is pressed', async () => {
     fetch.mockResponseOnce(fakeTagsResponse);
-    const { findByText, queryByText } = renderFollowTags();
-    const javascriptTag = await findByText(/javascript/i);
+    const { findByTestId, getByText } = renderFollowTags();
+    const javascriptTag = await findByTestId(`onboarding-tag-item-6`);
 
-    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 13 });
+    // Simulate 'Enter' key press
+    fireEvent.keyDown(javascriptTag, {
+      key: 'Enter',
+      code: 'Enter',
+      keyCode: 13,
+      charCode: 13,
+    });
 
-    expect(queryByText(/1 tag selected/i)).toBeDefined();
+    await waitFor(() =>
+      expect(getByText('1 tag selected')).toBeInTheDocument(),
+    );
   });
 
   it('should call handleClick when space key is pressed', async () => {
     fetch.mockResponseOnce(fakeTagsResponse);
-    const { findByText, queryByText } = renderFollowTags();
-    const javascriptTag = await findByText(/javascript/i);
+    const { findByTestId, getByText } = renderFollowTags();
+    const javascriptTag = await findByTestId(`onboarding-tag-item-6`);
 
-    fireEvent.keyPress(javascriptTag, { key: 'Space', code: 32 });
+    // Simulate 'Space' key press
+    fireEvent.keyDown(javascriptTag, {
+      key: ' ',
+      code: 'Space',
+      keyCode: 32,
+      charCode: 32,
+    });
 
-    expect(queryByText(/1 tag selected/i)).toBeDefined();
+    await waitFor(() =>
+      expect(getByText('1 tag selected')).toBeInTheDocument(),
+    );
   });
 
   it('should call handleClick and not select the tag when any other key is pressed', async () => {
     fetch.mockResponseOnce(fakeTagsResponse);
-    const { findByText, queryByText } = renderFollowTags();
-    const javascriptTag = await findByText(/javascript/i);
+    const { findByTestId, getByText } = renderFollowTags();
+    const javascriptTag = await findByTestId(`onboarding-tag-item-6`);
 
-    fireEvent.keyPress(javascriptTag, { key: 'Enter', code: 12 });
+    // Simulate 'A' key press
+    fireEvent.keyDown(javascriptTag, { key: 'A', code: 'KeyA', charCode: 65 });
 
-    expect(queryByText(/0 tags selected/i)).toBeDefined();
+    await waitFor(() =>
+      expect(getByText('0 tags selected')).toBeInTheDocument(),
+    );
   });
 });

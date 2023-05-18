@@ -130,15 +130,16 @@ export class FollowTags extends Component {
                 const selected = selectedTags.includes(tag);
                 return (
                   <div
+                    data-testid={`onboarding-tag-item-${tag.id}`}
                     className={`onboarding-tags__item ${
                       selected ? 'onboarding-tags__item--selected' : ''
                     }`}
                     aria-label={`Follow ${tag.name}`}
                     key={tag.id}
                     onClick={() => this.handleClick(tag)}
-                    onKeyPress={(event) => {
+                    onKeyDown={(event) => {
                       // Trigger for enter (13) and space (32) keys
-                      if (event.which === 13 || event.which === 32) {
+                      if (event.keyCode === 13 || event.keyCode === 32) {
                         this.handleClick(tag);
                       }
                     }}
