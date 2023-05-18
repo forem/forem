@@ -157,9 +157,8 @@ Rails.application.routes.draw do
       get :podcasts
     end
 
-    resource :onboarding, only: %i[show] do
+    resource :onboarding, only: %i[show update] do
       member do
-        patch :follow_users
         patch :checkbox
         get :tags
       end

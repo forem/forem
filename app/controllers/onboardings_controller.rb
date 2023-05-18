@@ -1,8 +1,8 @@
 class OnboardingsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_cache_control_headers, only: %i[show tags]
-  before_action :set_no_cache_header, only: %i[follow_users]
-  after_action :verify_authorized, only: %i[follow_users checkbox]
+  before_action :set_no_cache_header, only: %i[update]
+  after_action :verify_authorized, only: %i[update checkbox]
 
   ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
   ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
@@ -33,7 +33,7 @@ class OnboardingsController < ApplicationController
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 
-  def follow_users
+  def update
     authorize User, :onboarding_update?
 
     user_params = {}
