@@ -24,7 +24,7 @@ module Users
               format: { with: HEX_COLOR_REGEXP,
                         message: I18n.t("models.users.setting.invalid_hex") },
               allow_nil: true
-    validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
+    validates :experience_level, numericality: { in: 1..10 }, allow_blank: true
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
