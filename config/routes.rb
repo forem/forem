@@ -114,7 +114,6 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
-        get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
@@ -160,6 +159,10 @@ Rails.application.routes.draw do
     scope module: "users" do
       resource :onboarding, only: %i[show update]
       patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
+    end
+
+    resource :onboarding, only: %i[show] do
+      get :tags, on: :member
     end
 
     resources :profiles, only: %i[update]
