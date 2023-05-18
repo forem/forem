@@ -1,3 +1,4 @@
+# rubocop:disable Naming/PredicateName
 module Articles
   class Updater
     Result = Struct.new(:success, :article, keyword_init: true)
@@ -86,3 +87,4 @@ module Articles
     end
   end
 end
+# rubocop:enable Naming/PredicateName
