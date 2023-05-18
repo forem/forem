@@ -122,18 +122,13 @@
     flex-direction: column;
 
     &.opened {
-      margin-top: var(--su-4);
+      margin-top: -5px;
       border: 1px solid var(--base-20);
       box-shadow: 0 0 4px 2px var(--base-10);
     }
 
     iframe {
       border: none;
-    }
-
-    .article-referrer-heading {
-      padding: var(--su-4);
-      width: 100%;
     }
 
     .iframes-container {
