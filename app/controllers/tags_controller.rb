@@ -1,9 +1,8 @@
 class TagsController < ApplicationController
-  before_action :set_cache_control_headers, only: %i[index onboarding]
+  before_action :set_cache_control_headers, only: %i[index]
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[
@@ -23,7 +22,7 @@ class TagsController < ApplicationController
 
   def bulk
     skip_authorization
-    @tags = Tag.includes(:badge).select(ATTRIBUTES_FOR_SERIALIZATION)
+    @tags = Tag.includes(:badge).select_attributes_for_serialization
 
     page = params[:page]
     per_page = (params[:per_page] || 10).to_i
@@ -36,7 +35,7 @@ class TagsController < ApplicationController
     end
 
     @tags = @tags.order(taggings_count: :desc).page(page).per(num)
-    render json: @tags, only: ATTRIBUTES_FOR_SERIALIZATION, include: [badge: { only: [:badge_image] }]
+    render json: @tags, only: Tag::ATTRIBUTES_FOR_SERIALIZATION, include: [badge: { only: [:badge_image] }]
   end
 
   def edit
@@ -62,15 +61,6 @@ class TagsController < ApplicationController
     redirect_to edit_admin_tag_path(tag.id)
   end
 
-  def onboarding
-    skip_authorization
-
-    @tags = Tags::SuggestedForOnboarding.call
-      .select(ATTRIBUTES_FOR_SERIALIZATION)
-
-    set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
-  end
-
   def suggest
     skip_authorization
     tags = Tag.supported.order(hotness_score: :desc).limit(100).select(INDEX_API_ATTRIBUTES)
@@ -93,6 +83,4 @@ class TagsController < ApplicationController
     convert_empty_string_to_nil
     params.require(:tag).permit(TAGS_ALLOWED_PARAMS)
   end
-
-  private_constant :ATTRIBUTES_FOR_SERIALIZATION
 end
