@@ -17,10 +17,9 @@ module Notifications
       delegate :user_data, :comment_data, :article_data, to: Notifications
 
       def call
-        # notifiable is currently only comment
         return unless notifiable_supported?(notifiable)
 
-        # do not create the notification if the comment was created by the moderator
+        # do not create the notification if the comment/article was created by the moderator
         return if moderator == notifiable.user
 
         json_data = { user: user_data(User.staff_account) }
