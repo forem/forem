@@ -45,7 +45,7 @@
 }
 
 .hero-billboard {
-  margin: var(--su-2);
+  margin: var(--su-2) 0 0;
   h1,
   h2,
   h3,
@@ -53,13 +53,21 @@
     text-align: center;
   }
 
-  @media (min-width: $breakpoint-l) {
-    max-width: var(--site-width);
-    margin: var(--su-2) auto;
-  }
-
   @media (max-width: $breakpoint-s) {
     display: block;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    margin: var(--su-2) var(--su-2) 0;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    max-width: var(--site-width);
+    margin: var(--su-4) auto 0;
   }
 }
 
