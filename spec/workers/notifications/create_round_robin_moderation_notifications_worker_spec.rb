@@ -23,7 +23,7 @@ RSpec.describe Notifications::CreateRoundRobinModerationNotificationsWorker do
   end
   let(:worker) { subject }
 
-  def check_received_call(notifiable_type=nil)
+  def check_received_call(notifiable_type = nil)
     worker.perform(id, notifiable_type)
     expect(Notifications::Moderation::Send).to have_received(:call)
   end
