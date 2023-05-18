@@ -67,6 +67,11 @@
 
   @media (min-width: $breakpoint-xl) {
     max-width: var(--site-width);
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: 1284px) {
+    max-width: var(--site-width);
     margin: var(--su-4) auto 0;
   }
 }
