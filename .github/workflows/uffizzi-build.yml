@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name != 'pull_request' || github.event.action != 'closed' }}
     outputs:
-      tags: ${{ steps.meta.outputs.tags }}
+      compose-file-cache-key: ${{ steps.hash.outputs.hash }}
+      compose-file-cache-path: docker-compose.rendered.yml
     steps:
       - name: Checkout git repo
         uses: actions/checkout@v3
@@ -38,19 +39,10 @@ jobs:
           file: ./uffizzi/Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-  render-compose-file:
-    name: Render Docker Compose File
-    runs-on: ubuntu-latest
-    needs: build-application
-    outputs:
-      compose-file-cache-key: ${{ steps.hash.outputs.hash }}
-      compose-file-cache-path: docker-compose.rendered.yml
-    steps:
       - uses: actions/checkout@v3
       - name: Render Compose File
         run: |
-          APP_IMAGE=$(echo ${{ needs.build-application.outputs.tags }})
+          APP_IMAGE=$(echo ${{ steps.meta.outputs.tags }})
           export APP_IMAGE
           export UFFIZZI_URL=\$UFFIZZI_URL
           envsubst '$APP_IMAGE' < ./uffizzi/docker-compose.uffizzi.yml > docker-compose.rendered.yml
@@ -66,12 +58,12 @@ jobs:
 
   deploy-uffizzi-preview:
     name: Deploy preview
-    needs: render-compose-file
+    needs: build-application
     uses: UffizziCloud/preview-action/.github/workflows/reusable.yaml@v2
     if: ${{ github.event_name == 'pull_request' && github.event.action != 'closed' }}
     with:
-      compose-file-cache-key: ${{ needs.render-compose-file.outputs.compose-file-cache-key }}
-      compose-file-cache-path: ${{ needs.render-compose-file.outputs.compose-file-cache-path }}
+      compose-file-cache-key: ${{ needs.build-application.outputs.compose-file-cache-key }}
+      compose-file-cache-path: ${{ needs.build-application.outputs.compose-file-cache-path }}
       server: https://app.uffizzi.com/
     permissions:
       contents: read
