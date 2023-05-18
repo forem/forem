@@ -15,7 +15,7 @@ export const UserMetadata = memo(
   ({ email, location, summary, created_at, education, work }) => {
     const joinedOnDate = new Date(created_at);
     const joinedOnDateString = new Intl.DateTimeFormat(
-      navigator.language || 'default',
+      navigator.language || 'uk',
       {
         day: 'numeric',
         month: 'long',
