@@ -75,20 +75,15 @@ class SearchController < ApplicationController
     render json: { result: result }
   end
 
-  # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def feed_content
-    class_name = feed_params[:class_name].to_s.inquiry
-
-    is_homepage_search = (
-      class_name.Article? &&
-      feed_params[:search_fields].blank? &&
-      feed_params[:sort_by].present?
+    requested_resource_class = Search::FeedContent::RequestedResourceType.new(
+      feed_params: feed_params
     )
 
     result =
-      if class_name.blank?
+      if requested_resource_class.empty_or_articles_not_sorted?
         search_postgres_article
-      elsif is_homepage_search
+      elsif requested_resource_class.sorted_articles_request?
         # NOTE: published_at is sent from the frontend in the following ES-friendly format:
         # => {"published_at"=>{"gte"=>"2021-04-06T14:53:23Z"}}
         published_at_gte = feed_params.dig(:published_at, :gte)
@@ -111,7 +106,7 @@ class SearchController < ApplicationController
           page: params[:page],
           per_page: params[:per_page],
         )
-      elsif class_name.Comment?
+      elsif requested_resource_class.class_name.Comment?
         Search::Comment.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -119,7 +114,7 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
-      elsif class_name.Organization?
+      elsif requested_resource_class.class_name.Organization?
         Search::Organization.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -127,7 +122,7 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
-      elsif class_name.PodcastEpisode?
+      elsif requested_resource_class.class_name.PodcastEpisode?
         Search::PodcastEpisode.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
@@ -135,7 +130,7 @@ class SearchController < ApplicationController
           sort_direction: feed_params[:sort_direction],
           term: feed_params[:search_fields],
         )
-      elsif class_name.User?
+      elsif requested_resource_class.class_name.User?
         Search::User.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
@@ -143,9 +138,7 @@ class SearchController < ApplicationController
           sort_by: feed_params[:sort_by] == "published_at" ? :created_at : nil,
           sort_direction: feed_params[:sort_direction],
         )
-      elsif class_name.Article?
-        search_postgres_article
-      elsif class_name.Tag?
+      elsif requested_resource_class.class_name.Tag?
         Search::Tag.search_documents(
           term: feed_params[:search_fields],
           page: feed_params[:page],
@@ -154,7 +147,6 @@ class SearchController < ApplicationController
       end
     render json: { result: result }
   end
-  # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def reactions
     # [@rhymes] we're recycling the existing params as we want to change the frontend as
