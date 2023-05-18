@@ -68,7 +68,7 @@ RSpec.describe Notifications::CreateRoundRobinModerationNotificationsWorker do
       end
     end
 
-    describe "When no valid comment or article" do
+    describe "when no valid comment or article" do
       it "does not call the service" do
         mod
         check_non_received_call("Article")
