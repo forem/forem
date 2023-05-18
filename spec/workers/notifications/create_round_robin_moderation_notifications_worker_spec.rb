@@ -46,7 +46,7 @@ RSpec.describe Notifications::CreateRoundRobinModerationNotificationsWorker do
       end
     end
 
-    describe "When available moderator(s) + article" do
+    describe "when available moderator(s) + article" do
       it "calls the service" do
         mod
         article
