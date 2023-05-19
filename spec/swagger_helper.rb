@@ -446,7 +446,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               user_ids: {
                 type: :array,
                 items: { type: :integer },
-                max_items: 10_000
+                maxItems: 10_000
               }
             }
           }
