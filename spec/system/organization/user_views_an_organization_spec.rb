@@ -30,6 +30,16 @@ RSpec.describe "Organization index" do
         end
       end
 
+      it "shows the right amount of articles in sidebar" do
+        expect(page).to have_content("2 posts published")
+      end
+
+      it "shows the right amount of articles when articles > 8" do
+        create_list(:article, 7, organization: organization)
+        visit "/#{organization.slug}"
+        expect(page).to have_content("9 posts published")
+      end
+
       it "shows the proper title tag" do
         expect(page).to have_title("#{organization.name} - #{Settings::Community.community_name}")
       end
