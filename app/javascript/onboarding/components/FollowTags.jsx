@@ -89,11 +89,7 @@ export class FollowTags extends Component {
       followingStatus = `${selectedTags.length} tags selected`;
     }
 
-    const classStyle =
-      selectedTags.length > 0
-        ? 'fw-bold color-base-60 fs-base'
-        : 'color-base-60 fs-base';
-    return <p className={classStyle}>{followingStatus}</p>;
+    return <p className="color-base-60 fs-base">{followingStatus}</p>;
   }
 
   render() {
@@ -134,49 +130,39 @@ export class FollowTags extends Component {
                 const selected = selectedTags.includes(tag);
                 return (
                   <div
+                    data-testid={`onboarding-tag-item-${tag.id}`}
                     className={`onboarding-tags__item ${
-                      selected && 'onboarding-tags__item--selected'
+                      selected ? 'onboarding-tags__item--selected' : ''
                     }`}
-                    style={{
-                      boxShadow: selected
-                        ? `inset 0 0 0 100px ${tag.bg_color_hex}`
-                        : `inset 0 0 0 0px ${tag.bg_color_hex}`,
-                      color: selected ? tag.text_color_hex : '',
-                    }}
+                    aria-label={`Follow ${tag.name}`}
                     key={tag.id}
+                    onClick={() => this.handleClick(tag)}
+                    onKeyDown={(event) => {
+                      // Trigger for enter (13) and space (32) keys
+                      if (event.keyCode === 13 || event.keyCode === 32) {
+                        this.handleClick(tag);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
                   >
                     <div className="onboarding-tags__item__inner">
-                      #{tag.name}
-                      <button
-                        type="button"
-                        onClick={() => this.handleClick(tag)}
-                        className={`onboarding-tags__button  ${
-                          selected &&
-                          'onboarding-tags__button--selected crayons-btn--icon-left'
-                        }`}
-                        aria-pressed={selected}
-                        aria-label={`Follow ${tag.name}`}
-                        style={{
-                          backgroundColor: selected
-                            ? tag.text_color_hex
-                            : tag.bg_color_hex,
-                          color: selected
-                            ? tag.bg_color_hex
-                            : tag.text_color_hex,
-                        }}
-                      >
-                        {selected && (
-                          <svg
-                            width="24"
-                            height="24"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="crayons-icon"
-                          >
-                            <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
-                          </svg>
-                        )}
-                        {selected ? 'Following' : 'Follow'}
-                      </button>
+                      <div className="onboarding-tags__item__inner__content">
+                        <div className="onboarding-tags__item__inner__content-name">
+                          #{tag.name}
+                        </div>
+                        <div className="onboarding-tags__item__inner__content-count">
+                          {tag.taggings_count === 1
+                            ? '1 post'
+                            : `${tag.taggings_count} posts`}
+                        </div>
+                      </div>
+                      <input
+                        class="crayons-checkbox"
+                        type="checkbox"
+                        checked={selected}
+                        disabled
+                      />
                     </div>
                   </div>
                 );
