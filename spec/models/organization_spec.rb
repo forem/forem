@@ -342,12 +342,12 @@ RSpec.describe Organization do
 
   describe ".simple_name_match" do
     before do
-      create :organization, name: "Not Matching"
-      create :organization, name: "For Fans of Books"
-      create :organization, name: "Boo! A Ghost"
+      create(:organization, name: "Not Matching")
+      create(:organization, name: "For Fans of Books")
+      create(:organization, name: "Boo! A Ghost")
     end
 
-    it "should find them by simple ilike match" do
+    it "finds them by simple ilike match" do
       query = "boo"
       results = described_class.simple_name_match(query)
       expect(results.pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
@@ -361,7 +361,7 @@ RSpec.describe Organization do
       expect(results.pluck(:name)).to eq(["For Fans of Books"])
     end
 
-    it "should return all orgs on empty query" do
+    it "returns all orgs on empty query" do
       query = nil
       results = described_class.simple_name_match(query)
       expect(results.size).to eq(3)

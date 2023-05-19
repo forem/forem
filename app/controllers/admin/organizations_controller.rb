@@ -10,7 +10,7 @@ module Admin
 
     def index
       @organizations = Organization.simple_name_match(params[:search].presence)
-                                   .page(params[:page]).per(PER_PAGE_MAX)
+        .page(params[:page]).per(PER_PAGE_MAX)
     end
 
     def show

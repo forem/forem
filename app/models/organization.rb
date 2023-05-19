@@ -71,8 +71,9 @@ class Organization < ApplicationRecord
   def self.simple_name_match(query)
     scope = order(:name)
     query&.strip!
-    return scope unless query.present?
-    scope = scope.where("name ILIKE ?", "%#{query}%")
+    return scope if query.blank?
+
+    scope.where("name ILIKE ?", "%#{query}%")
   end
 
   def self.integer_only
