@@ -161,7 +161,7 @@ export class FollowTags extends Component {
                         class="crayons-checkbox"
                         type="checkbox"
                         checked={selected}
-                        disabled
+                        tabindex="-1"
                       />
                     </div>
                   </div>
