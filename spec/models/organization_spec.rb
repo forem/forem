@@ -339,4 +339,18 @@ RSpec.describe Organization do
       expect(organization.enough_credits?(1)).to be(true)
     end
   end
+
+  describe "#public_articles_count" do
+    it "returns the count of published articles" do
+      published_articles = create_list(:article, 3, organization: organization, published: true)
+
+      expect(organization.public_articles_count).to eq(published_articles.count)
+    end
+
+    it "returns 0 if there are no published articles" do
+      create_list(:article, 2, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(0)
+    end
+  end
 end
