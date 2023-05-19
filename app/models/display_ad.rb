@@ -6,7 +6,7 @@ class DisplayAd < ApplicationRecord
   belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third post_sidebar post_comments].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third home_hero post_sidebar post_comments].freeze
   # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
@@ -14,6 +14,7 @@ class DisplayAd < ApplicationRecord
                                             "Home Feed First",
                                             "Home Feed Second",
                                             "Home Feed Third",
+                                            "Home Hero",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
@@ -35,6 +36,7 @@ class DisplayAd < ApplicationRecord
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
   validate :validate_tag
+  validate :validate_in_house_hero_ads
 
   before_save :process_markdown
   after_save :generate_display_ad_name
@@ -94,6 +96,12 @@ class DisplayAd < ApplicationRecord
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     validate_tag_name(tag_list)
+  end
+
+  def validate_in_house_hero_ads
+    return unless placement_area == "home_hero" && type_of != "in_house"
+
+    errors.add(:type_of, "must be in_house if display ad is a Home Hero")
   end
 
   def audience_segment_type=(type)

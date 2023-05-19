@@ -39,7 +39,7 @@ class AdminMenu
     scope :moderation, "mod", [
       item(name: "reports"),
       item(name: "mods"),
-      item(name: "moderator actions ads", controller: "moderator_actions"),
+      item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
     ]
 
