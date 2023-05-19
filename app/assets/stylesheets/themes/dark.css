@@ -153,6 +153,8 @@
   --tag-bg-hover: rgba(var(--grey-50), 0.05);
   --tag-prefix: rgba(var(--grey-50), 0.6);
   --tag-prefix-hover: rgb(var(--grey-50));
+  --tag-onboarding-bg: var(--grey-900);
+  --tag-onboarding-border: var(--grey-700);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-800));
@@ -299,6 +301,12 @@
   
   --list-item-bg-hover: rgb(var(--grey-800));
   
+  /***********************************************
+  ** Checkbox ************************************
+  ***********************************************/
+
+  --checkbox-default-bg: rgb(var(--grey-800));
+
   /***********************************************
   ** Modals **************************************
   ***********************************************/
