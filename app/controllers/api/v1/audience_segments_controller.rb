@@ -28,13 +28,13 @@ module Api
       def add_users
         @segment = scope.find(params[:id])
 
-        render json: BulkSegmentedUsers.upsert(@segment, user_ids: @user_ids)
+        render json: SegmentedUsers::BulkUpsert.call(@segment, user_ids: @user_ids)
       end
 
       def remove_users
         @segment = scope.find(params[:id])
 
-        render json: BulkSegmentedUsers.delete(@segment, user_ids: @user_ids)
+        render json: SegmentedUsers::BulkDelete.call(@segment, user_ids: @user_ids)
       end
 
       private
