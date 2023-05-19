@@ -1,4 +1,3 @@
-# rubocop:disable Naming/PredicateName
 module Articles
   class Updater
     Result = Struct.new(:success, :article, keyword_init: true)
@@ -20,9 +19,9 @@ module Articles
       if success
         user.rate_limiter.track_limit_by_action(:article_update)
 
-        remove_all_notifications if was_and_now_is_not_published?
-        send_to_mentioned_users_and_followers if is_and_remains_published?
-        refresh_auto_audience_segments if has_become_published?
+        remove_all_notifications if became_unpublished?
+        send_to_mentioned_users_and_followers if remains_published?
+        refresh_auto_audience_segments if became_published?
       end
 
       Result.new(success: success, article: article.decorate)
@@ -51,15 +50,15 @@ module Articles
       user.refresh_auto_audience_segments
     end
 
-    def has_become_published?
+    def became_published?
       article.published? && !article.published_previously_was
     end
 
-    def is_and_remains_published?
+    def remains_published?
       article.published && article.saved_change_to_published.blank?
     end
 
-    def was_and_now_is_not_published?
+    def became_unpublished?
       article.saved_changes["published"] == [true, false]
     end
 
@@ -87,4 +86,3 @@ module Articles
     end
   end
 end
-# rubocop:enable Naming/PredicateName
