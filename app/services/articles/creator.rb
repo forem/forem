@@ -54,8 +54,11 @@ module Articles
     end
 
     def series
-      @series ||= [] if article_params[:series].blank?
-      @series ||= Collection.find_series(article_params[:series], user)
+      @series ||= if article_params[:series].blank?
+                    []
+                  else
+                    Collection.find_series(article_params[:series], user)
+                  end
     end
 
     # Subscribe author to notifications for all comments on their article.
