@@ -1,0 +1,28 @@
+name: Deploy with msrk
+
+on: pull_request
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set environment variables
+      run: |
+        echo "${{ secrets.PRODUCTION_ENV_FILE }}" > .env
+
+    - uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_DO_PRIVATE_KEY }}
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+
+    - name: Install mrsk
+      run: gem install mrsk
+
+    - name: Deploy branch
+      run: mrsk deploy -d ci
