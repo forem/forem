@@ -45,8 +45,10 @@ function fetchNext(el, endpoint, insertCallback) {
 function insertNext(params, buildCallback) {
   return function insertEntries(entries = []) {
     var indexContainer = document.getElementById('index-container');
-    var containerAction = JSON.parse(indexContainer.dataset.params).action;
-    var matchingAction = params.action === containerAction;
+    var containerAction =
+      JSON.parse(indexContainer.dataset.params).action || null;
+    var action = params.action || null;
+    var matchingAction = action === containerAction;
     var list = document.getElementById(params.listId || 'sublist');
     var newFollowersHTML = '';
     entries.forEach(function insertAnEntry(entry) {
