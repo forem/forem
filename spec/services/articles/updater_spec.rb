@@ -6,7 +6,10 @@ RSpec.describe Articles::Updater, type: :service do
   let(:attributes) { { body_markdown: "sample" } }
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+  before do
+    allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
+    allow(SegmentedUserRefreshWorker).to receive(:perform_async)
+  end
 
   it "updates an article" do
     described_class.call(user, article, attributes)
@@ -288,6 +291,39 @@ description:\ntags: heytag\n---\n\nHey this is the article"
         )
         expect(article.mentions.length).to eq(1)
       end
+    end
+  end
+
+  context "when publishing a previously unpublished article" do
+    let(:attributes) { { published: true } }
+    let(:markdown) { "body text here, no frontmatter" }
+    let(:unpublished) { create(:unpublished_article, user: user) }
+
+    it "refreshes user segments" do
+      described_class.call(user, unpublished, attributes)
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
+    end
+  end
+
+  context "when unpublished a previously published article" do
+    let(:attributes) { { published: false } }
+    let(:markdown) { "body text here, no frontmatter" }
+    let(:published) { create(:published_article, :past, user: user) }
+
+    it "does not refresh user segments" do
+      described_class.call(user, published, attributes)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+    end
+  end
+
+  context "when setting published_at for a previously unpublished article" do
+    let(:attributes) { { published_at: 5.days.from_now } }
+    let(:markdown) { "body text here, no frontmatter" }
+    let(:unpublished) { create(:unpublished_article, user: user) }
+
+    it "does not refresh user segments" do
+      described_class.call(user, unpublished, attributes)
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end
