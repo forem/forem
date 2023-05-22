@@ -40,6 +40,48 @@
   display: block;
 }
 
+.crayons-card.hero-billboard .ltag_cta {
+  display: block;
+}
+
+.hero-billboard {
+  margin: var(--su-2) 0 0;
+  h1,
+  h2,
+  h3,
+  p {
+    text-align: center;
+  }
+
+  @media (max-width: $breakpoint-s) {
+    display: block;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    margin: var(--su-2) var(--su-2) 0;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    max-width: var(--site-width);
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: 1284px) {
+    max-width: var(--site-width);
+    margin: var(--su-4) auto 0;
+  }
+}
+
+@media (min-width: $breakpoint-s) {
+  .hero-billboard h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
 // these are inline CTA's
 //refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story

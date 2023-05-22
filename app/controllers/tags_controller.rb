@@ -4,6 +4,7 @@ class TagsController < ApplicationController
   after_action :verify_authorized
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
+  ONBOARDING_API_ATTRIBUTES = %i[id name taggings_count].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[
@@ -66,8 +67,9 @@ class TagsController < ApplicationController
     skip_authorization
 
     @tags = Tag.where(name: Settings::General.suggested_tags)
-      .select(ATTRIBUTES_FOR_SERIALIZATION)
+      .select(ONBOARDING_API_ATTRIBUTES)
 
+    render json: @tags
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 
