@@ -351,24 +351,3 @@
     }
   }
 }
-
-.crayons-layout__comments-display-ad {
-  .crayons-sponsorship {
-    .c-indicator.crayons-sponsorship__indicator {
-      line-height: 15px;
-    }
-
-    padding-left: var(--content-padding-x);
-    padding-bottom: var(--su-6);
-    .text-styles {
-      padding-right: var(--su-8);
-    }
-  }
-}
-
-.sponsorship-dropdown {
-  hr {
-    border: 0.5px solid var(--divider);
-    margin: 8px;
-  }
-}

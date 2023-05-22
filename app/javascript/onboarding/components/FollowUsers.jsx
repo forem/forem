@@ -27,7 +27,10 @@ export class FollowUsers extends Component {
     })
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ users: data });
+        this.setState({
+          selectedUsers: data,
+          users: data,
+        });
       });
 
     const csrfToken = getContentOfToken('csrf-token');

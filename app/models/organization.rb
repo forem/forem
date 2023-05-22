@@ -1,5 +1,6 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
+  include PgSearch::Model
 
   include Images::Profile.for(:profile_image_url)
 
@@ -20,6 +21,8 @@ class Organization < ApplicationRecord
 
   after_update_commit :conditionally_update_articles
   after_destroy_commit :bust_cache
+
+  pg_search_scope :search_organizations, against: :name
 
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
@@ -59,8 +62,6 @@ class Organization < ApplicationRecord
   unique_across_models :slug, length: { in: 2..30 }
 
   mount_uploader :profile_image, ProfileImageUploader
-  mount_uploader :nav_image, ProfileImageUploader
-  mount_uploader :dark_nav_image, ProfileImageUploader
 
   alias_attribute :username, :slug
   alias_attribute :old_username, :old_slug

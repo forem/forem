@@ -86,8 +86,6 @@ module Settings
     # Onboarding
     setting :onboarding_background_image, type: :string, validates: { url: true, unless: -> { value.blank? } }
     setting :suggested_tags, type: :array, default: %w[]
-    setting :suggested_users, type: :array, default: %w[]
-    setting :prefer_manual_suggested_users, type: :boolean, default: false
 
     # Social Media
     setting :social_media_handles, type: :hash, default: {

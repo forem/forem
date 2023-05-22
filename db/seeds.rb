@@ -18,6 +18,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
+Settings::Authentication.allow_email_password_registration = true
 
 ##############################################################################
 
@@ -39,7 +40,6 @@ seeder.create_if_none(Organization) do
       name: Faker::Company.name,
       summary: Faker::Company.bs,
       profile_image: logo = Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
-      nav_image: logo,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
       github_username: "org#{rand(10_000)}",
@@ -254,7 +254,7 @@ seeder.create_if_none(Article, num_articles) do
 
     article = Article.create!(
       body_markdown: markdown,
-      featured: true,
+      featured: i.zero?, # only feature the first article,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
@@ -553,6 +553,20 @@ seeder.create_if_none(Listing) do
         tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
       )
     end
+  end
+end
+
+##############################################################################
+
+seeder.create_if_none(DisplayAd) do
+  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
+    DisplayAd.create!(
+      name: "#{Faker::Lorem.word} #{placement_area}",
+      body_markdown: Faker::Lorem.sentence,
+      published: true,
+      approved: true,
+      placement_area: placement_area
+    )
   end
 end
 
