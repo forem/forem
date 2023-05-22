@@ -478,7 +478,10 @@
   column-gap: 2.2em;
   flex-wrap: wrap;
 
-   & > span {
+  &>span {
+    &.hidden {
+      display: none;
+    }
     display: flex;
     column-gap: 0.3em;
     align-items: center;
