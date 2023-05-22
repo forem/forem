@@ -16,7 +16,7 @@ jobs:
 
     - uses: webfactory/ssh-agent@v0.7.0
       with:
-        ssh-private-key: ${{ secrets.SSH_DO_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.SSH_VULTR_PRIVATE_KEY }}
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
