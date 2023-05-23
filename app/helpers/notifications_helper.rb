@@ -43,4 +43,11 @@ module NotificationsHelper
     comment_username = data["comment"]["path"].split("/")[1]
     { "name" => comment_username, "path" => "/#{comment_username}" }
   end
+
+  def mod_article_user(data)
+    return data["article_user"] if data["article_user"].present?
+
+    article_username = data["article"]["path"].split("/")[1]
+    { "name" => article_username, "path" => "/#{article_username}" }
+  end
 end

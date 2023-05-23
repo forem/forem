@@ -3,19 +3,6 @@ require "rails_helper"
 RSpec.describe "Users" do
   describe "GET /users" do
     let(:user) { create(:user, username: "Sloan") }
-    let!(:suggested_users_list) { %w[eeyore] }
-    let!(:suggested_user_profile) do
-      create(
-        :profile,
-        user: create(:user, :without_profile, username: "eeyore", name: "Eeyore"),
-        summary: "I am always sad",
-      )
-    end
-    let!(:suggested_user) { suggested_user_profile.user }
-
-    before do
-      allow(Settings::General).to receive(:suggested_users).and_return(suggested_users_list)
-    end
 
     context "when no state params are present" do
       it "returns no users" do
@@ -28,20 +15,13 @@ RSpec.describe "Users" do
     end
 
     context "when follow_suggestions params are present and no suggestions are found" do
-      it "returns the default suggested_users from Settings::General if they are present" do
+      it "returns an empty array (no automated suggested follow)" do
         sign_in user
 
         get users_path(state: "follow_suggestions")
 
         expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.first).to include(
-          "id" => suggested_user.id,
-          "name" => suggested_user.name,
-          "username" => suggested_user.username,
-          "summary" => suggested_user.profile.summary,
-          "profile_image_url" => suggested_user.profile_image_url_for(length: 90),
-          "following" => false,
-        )
+        expect(response.parsed_body).to eq([])
       end
     end
 
@@ -72,24 +52,6 @@ RSpec.describe "Users" do
 
         response_user = response.parsed_body.first
         expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
-      end
-
-      it "returns the default suggested_users from Settings::General if prefer_manual_suggested_users is true" do
-        allow(Settings::General).to receive(:prefer_manual_suggested_users).and_return(true)
-
-        sign_in user
-
-        get users_path(state: "follow_suggestions")
-
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body.first).to include(
-          "id" => suggested_user.id,
-          "name" => suggested_user.name,
-          "username" => suggested_user.username,
-          "summary" => suggested_user.profile.summary,
-          "profile_image_url" => suggested_user.profile_image_url_for(length: 90),
-          "following" => false,
-        )
       end
     end
 

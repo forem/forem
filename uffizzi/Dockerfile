@@ -50,7 +50,7 @@ RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
     echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
     rm -rf "${APP_HOME}"/.git/
 
-RUN rm -rf node_modules vendor/assets spec
+RUN rm -rf node_modules spec
 
 ## Development
 FROM builder AS development
@@ -77,7 +77,7 @@ RUN ./scripts/bundle.sh
 ## Yarn install
 RUN bash -c yarn install --dev
 
-
-ENTRYPOINT ["./scripts/entrypoint.sh"]
-
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+# Document that we're going to expose port 3000
+EXPOSE 3000
+# Use Bash as the default command
+CMD ["/usr/bin/bash"]

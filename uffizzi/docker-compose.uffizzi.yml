@@ -30,27 +30,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 4000M     
-
-  seed:
-    image: "${APP_IMAGE}"
-    container_name: forem_seed
-    depends_on:
-      - rails
-      - redis
-      - db
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://localhost:6379
-      REDIS_SIDEKIQ_URL: redis://localhost:6379
-      REDIS_URL: redis://localhost:6379
-      DATABASE_URL: postgresql://forem:forem@localhost:5432/PracticalDeveloper_development
-    entrypoint: ["dockerize", "-wait", "tcp://localhost:5432", "-wait", "tcp://localhost:6379", "-wait", "http://localhost:3000", "-timeout", "5400s"]
-    command: ["./uffizzi/db_seed.sh"]
-    deploy:
-      resources:
-        limits:
-          memory: 500M
+          memory: 4000M
 
   sidekiq:
     image: "${APP_IMAGE}"

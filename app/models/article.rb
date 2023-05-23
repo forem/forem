@@ -205,6 +205,8 @@ class Article < ApplicationRecord
   after_save :bust_cache
   after_save :collection_cleanup
 
+  after_create_commit :send_to_moderator
+
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
                                                  }
@@ -594,12 +596,19 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score &&
        user.comments_count < 1 &&
        !featured) ||
-      published_at.to_i < 1_500_000_000 ||
+      published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
   end
 
   def privileged_reaction_counts
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
+  end
+
+  def send_to_moderator
+    # using nth_published because it doesn't count draft articles by the new author
+    return if nth_published_by_author > 2
+
+    Notification.send_moderation_notification(self)
   end
 
   private

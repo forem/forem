@@ -2,8 +2,8 @@
   "schema_version": "v1",
   "name_for_human": "DEV Community",
   "name_for_model": "dev",
-  "description_for_human": "Plugin for recommending articles or users from DEV Community.",
-  "description_for_model": "Plugin for recommending articles or users from DEV Community. Always link to a url for the resource returned.",
+  "description_for_human": "Recommending posts and members from DEV Community.",
+  "description_for_model": "Recommending articles or users from DEV Community. Always link to a url for the resource returned.",
   "auth": {
     "type": "none"
   },

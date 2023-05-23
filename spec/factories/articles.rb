@@ -62,6 +62,27 @@ FactoryBot.define do
     end
   end
 
+  factory :published_article, class: "Article" do
+    transient do
+      past_published_at { 3.days.ago }
+    end
+
+    title { generate(:title) }
+    published { true }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
+  factory :unpublished_article, class: "Article" do
+    title { generate(:title) }
+    published { false }
+    published_at { nil }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
   trait :video do
     after(:create) do |article|
       article.update_columns(

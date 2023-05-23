@@ -76,22 +76,22 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
   end
 
   context "when considering article_exclude_ids" do
-    let!(:exclude_article1) { create_display_ad exclude_article_ids: "11,12" }
-    let!(:exclude_article2) { create_display_ad exclude_article_ids: "12,13" }
+    let!(:ex_article1) { create_display_ad exclude_article_ids: "11,12" }
+    let!(:another_ex_article2) { create_display_ad exclude_article_ids: "12,13" }
     let!(:no_excludes) { create_display_ad }
 
     it "will show display ads that exclude articles appropriately" do
       filtered = filter_ads article_id: 11
-      expect(filtered).to contain_exactly(exclude_article2, no_excludes)
+      expect(filtered).to contain_exactly(another_ex_article2, no_excludes)
 
       filtered = filter_ads article_id: 12
       expect(filtered).to contain_exactly(no_excludes)
 
       filtered = filter_ads article_id: 13
-      expect(filtered).to contain_exactly(exclude_article1, no_excludes)
+      expect(filtered).to contain_exactly(ex_article1, no_excludes)
 
       filtered = filter_ads article_id: 14
-      expect(filtered).to contain_exactly(exclude_article1, exclude_article2, no_excludes)
+      expect(filtered).to contain_exactly(ex_article1, another_ex_article2, no_excludes)
     end
   end
 
@@ -151,6 +151,22 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       filtered = filter_ads organization_id: nil, permit_adjacent_sponsors: false
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
+    end
+  end
+
+  context "when considering home hero ads" do
+    let!(:in_house_ad) { create_display_ad placement_area: "home_hero", type_of: :in_house }
+
+    let(:organization) { create(:organization) }
+    let(:other_org) { create(:organization) }
+    let!(:community_ad) { create_display_ad organization_id: organization.id, type_of: :community }
+    let!(:other_community) { create_display_ad organization_id: other_org.id, type_of: :community }
+
+    it "always shows home hero ads only" do
+      filtered = filter_ads(area: "home_hero")
+      expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).not_to include(other_community)
+      expect(filtered).not_to include(community_ad)
     end
   end
 end
