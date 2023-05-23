@@ -1,4 +1,4 @@
-FROM quay.io/forem/ruby:3.0.2 as base
+FROM quay.io/forem/ruby:3.0.6 as base
 
 FROM base as builder
 
