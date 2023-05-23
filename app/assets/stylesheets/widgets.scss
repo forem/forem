@@ -324,6 +324,7 @@
     font-size: var(--fs-s);
     line-height: var(--lh-base);
     margin-left: var(--su-1);
+    align-self: center;
   }
 
   &__dropdown {
@@ -335,11 +336,15 @@
     border-radius: var(--radius);
     display: inline-block;
     vertical-align: middle;
+    align-self: center;
   }
 
   &__indicator {
     letter-spacing: -0.02em;
     text-transform: uppercase;
+    align-self: center;
+    word-wrap: normal;
+    word-break: keep-all;
   }
 }
 
