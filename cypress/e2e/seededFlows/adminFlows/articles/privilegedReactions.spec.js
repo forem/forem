@@ -68,7 +68,7 @@ describe('Article flagged by a user', () => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
 
-    cy.intercept('POST', '/admin/reactions/*', (req) => {
+    cy.intercept('PATCH', '/admin/reactions/*', (req) => {
       req.reply((res) => {
         const { id } = req.body;
         const response = {
