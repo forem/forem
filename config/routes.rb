@@ -149,6 +149,7 @@ Rails.application.routes.draw do
         get "/subscribed", action: "subscribed"
       end
     end
+
     namespace :followings, defaults: { format: :json } do
       get :users
       get :tags
@@ -156,13 +157,10 @@ Rails.application.routes.draw do
       get :podcasts
     end
 
-    scope module: "users" do
-      patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
-    end
-
     resource :onboarding, only: %i[show] do
       member do
         patch :follow_users
+        patch :checkbox
         get :tags
       end
     end

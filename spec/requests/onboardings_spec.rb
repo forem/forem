@@ -94,7 +94,7 @@ RSpec.describe "Onboardings" do
     end
   end
 
-  describe "PATCH /follow_users" do
+  describe "PATCH /onboarding/follow_users" do
     context "when signed in" do
       before { sign_in user }
 
@@ -136,6 +136,24 @@ RSpec.describe "Onboardings" do
     context "when signed out" do
       it "returns a not found error if user is not signed in" do
         patch "/onboarding/follow_users.json", params: {}
+        expect(response.parsed_body["error"]).to include("Please sign in")
+      end
+    end
+  end
+
+  describe "PATCH /onboarding/checkbox" do
+    context "when signed in" do
+      before { sign_in user }
+
+      it "updates saw_onboarding boolean" do
+        patch "/onboarding/checkbox.json", params: {}
+        expect(user.saw_onboarding).to be(true)
+      end
+    end
+
+    context "when signed out" do
+      it "returns a not found error if user is not signed in" do
+        patch "/onboarding/checkbox.json", params: {}
         expect(response.parsed_body["error"]).to include("Please sign in")
       end
     end
