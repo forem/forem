@@ -30,6 +30,20 @@ RSpec.describe DisplayAd do
       expect(display_ad).to be_valid
     end
 
+    it "allows home_hero with in_house" do
+      display_ad.placement_area = "home_hero"
+      display_ad.type_of = "in_house"
+      expect(display_ad).to be_valid
+    end
+
+    it "does not allow home_hero with community" do
+      display_ad.placement_area = "home_hero"
+      display_ad.type_of = "community"
+      expect(display_ad).not_to be_valid
+      expect(display_ad.errors[:type_of])
+        .to include("must be in_house if display ad is a Home Hero")
+    end
+
     it "disallows unacceptable placement_area" do
       display_ad.placement_area = "tsdsdsdds"
       expect(display_ad).not_to be_valid

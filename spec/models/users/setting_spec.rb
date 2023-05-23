@@ -4,6 +4,10 @@ RSpec.describe Users::Setting do
   let(:user) { create(:user) }
   let(:setting) { described_class.find_by(user_id: user.id) }
 
+  before do
+    allow(SegmentedUserRefreshWorker).to receive(:perform_async)
+  end
+
   describe "validations" do
     subject { setting }
 
@@ -131,6 +135,21 @@ RSpec.describe Users::Setting do
       user_comic_sans.setting.update(config_font: "comic_sans")
       allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
       expect(user_comic_sans.setting.resolved_font_name).to eq("comic_sans")
+    end
+  end
+
+  context "when updating a setting" do
+    it "refreshes user segment" do
+      setting.experience_level = setting.experience_level.to_i + 1
+      setting.save!
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
+    end
+  end
+
+  context "when creating from scratch" do
+    it "does not refresh user segment" do
+      create(:user).setting
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end

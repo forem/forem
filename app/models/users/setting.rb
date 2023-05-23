@@ -31,11 +31,17 @@ module Users
 
     validate :validate_feed_url, if: :feed_url_changed?
 
+    after_update :refresh_auto_audience_segments
+
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
     end
 
     private
+
+    def refresh_auto_audience_segments
+      user.refresh_auto_audience_segments
+    end
 
     def validate_feed_url
       return if feed_url.blank?
