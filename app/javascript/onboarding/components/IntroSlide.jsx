@@ -28,7 +28,7 @@ export class IntroSlide extends Component {
     const { next } = this.props;
     const csrfToken = getContentOfToken('csrf-token');
 
-    fetch('/onboarding_checkbox_update', {
+    fetch('/onboarding/checkbox', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
