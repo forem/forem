@@ -160,6 +160,7 @@ Rails.application.routes.draw do
     resource :onboarding, only: %i[show update] do
       member do
         patch :checkbox
+        patch :notifications
         get :tags
       end
     end
@@ -180,8 +181,6 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_notifications_checkbox_update",
-          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
 
     get "/internal", to: redirect("/admin")
