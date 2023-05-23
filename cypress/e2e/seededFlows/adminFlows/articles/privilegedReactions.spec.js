@@ -110,10 +110,7 @@ describe('Article flagged by a user', () => {
   });
 
   it('should display the correct user name', () => {
-    cy.get('.flex .crayons-subtitle-3').should(
-      'contain',
-      'Trusted User 1 \\:/',
-    );
+    cy.get('.flex .crayons-subtitle-3').should('contain', 'Admin McAdmin');
   });
 
   it('should display the open flag status', () => {
