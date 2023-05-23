@@ -95,7 +95,12 @@ describe('Article flagged by a user', () => {
 
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
-        cy.visit('/admin/content_manager/articles/1'); // This article contains one flagged reaction.
+        cy.visit('/admin/content_manager/articles');
+
+        cy.contains('.crayons-subtitle-1 a', 'Punctuation user article')
+          .parents('.js-individual-article')
+          .find('a[href*="/admin/content_manager/articles/"]')
+          .click();
       });
     });
   });
