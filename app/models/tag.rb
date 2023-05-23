@@ -56,6 +56,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :calculate_hotness_score
   before_save :mark_as_updated
 
+  after_save :update_suggested_tags, if: :saved_change_to_suggested?
   after_commit :bust_cache
 
   # @note Even though we have a data migration script (see further
@@ -80,6 +81,8 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
+
+  scope :suggested_for_onboarding, -> { where(suggested: true) }
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
@@ -292,5 +295,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   def mark_as_updated
     self.updated_at = Time.current # Acts-as-taggable didn't come with this by default
+  end
+
+  def update_suggested_tags
+    Settings::General.suggested_tags = Tag.suggested_for_onboarding.pluck(:name).join(",")
   end
 end
