@@ -32,7 +32,7 @@ export default class ReactionController extends Controller {
               this.element.remove();
               document.getElementById(`js__reaction__div__hr__${id}`).remove();
             } else {
-              // Once the status of item gets updated in dmin/content_manager/articles/<article-id>, we
+              // Once the status of item gets updated in admin/content_manager/articles/<article-id>, we
               // reload the entire page here. Ideally we should only re-render the item which was updated
               // but given the case that this feature is used by internal-team, for now its fine.
               location.reload();
