@@ -342,7 +342,8 @@ RSpec.describe Organization do
 
   describe "#public_articles_count" do
     it "returns the count of published articles" do
-      published_articles = create_list(:article, 3, organization: organization, published: true)
+      published_articles = create_list(:article, 2, organization: organization, published: true)
+      create_list(:article, 1, organization: organization, published: false)
 
       expect(organization.public_articles_count).to eq(published_articles.count)
     end

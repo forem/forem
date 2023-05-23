@@ -47,12 +47,12 @@ RSpec.describe "Organization index" do
 
     context "when more than 8 articles" do
       before do
-        create_list(:article, 42, organization: organization)
+        create_list(:article, 9, organization: organization)
         visit "/#{organization.slug}"
       end
 
       it "tells the user the correct amount of posts published" do
-        expect(page).to have_content("42 posts published")
+        expect(page).to have_content("9 posts published")
       end
     end
   end
