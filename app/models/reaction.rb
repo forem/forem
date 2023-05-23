@@ -139,6 +139,7 @@ class Reaction < ApplicationRecord
   # - reaction is negative
   # - receiver is the same user as the one who reacted
   # - reaction status is marked invalid
+  # - reaction is not in a category that should be notified
   def skip_notification_for?(_receiver)
     reactor_id = case reactable
                  when User
@@ -147,7 +148,7 @@ class Reaction < ApplicationRecord
                    reactable.user_id
                  end
 
-    (status == "invalid") || points.negative? || (user_id == reactor_id)
+    !should_notify? || (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
   def reaction_on_organization_article?
@@ -215,5 +216,9 @@ class Reaction < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_ARTICLE_REACTION_GOAL)
+  end
+
+  def should_notify?
+    ReactionCategory.notifiable.include?(category.to_sym)
   end
 end
