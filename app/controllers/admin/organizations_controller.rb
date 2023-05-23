@@ -1,6 +1,7 @@
 module Admin
   class OrganizationsController < Admin::ApplicationController
     layout "admin"
+    PER_PAGE_MAX = 50
 
     CREDIT_ACTIONS = {
       add: :add_to,
@@ -8,14 +9,8 @@ module Admin
     }.with_indifferent_access.freeze
 
     def index
-      @organizations = Organization.order(name: :desc).page(params[:page]).per(50)
-
-      return if params[:search].blank?
-
-      @organizations = @organizations.where(
-        "name ILIKE ?",
-        "%#{params[:search].strip}%",
-      )
+      @organizations = Organization.simple_name_match(params[:search].presence)
+        .page(params[:page]).per(PER_PAGE_MAX)
     end
 
     def show

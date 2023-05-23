@@ -217,6 +217,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
+  after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -349,6 +350,10 @@ class User < ApplicationRecord
         ).select(:followable_id),
       ).pluck(:name)
     end
+  end
+
+  def refresh_auto_audience_segments
+    SegmentedUserRefreshWorker.perform_async(id)
   end
 
   ##############################################################################
@@ -642,6 +647,7 @@ class User < ApplicationRecord
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    refresh_auto_audience_segments
     trusted?
   end
 end

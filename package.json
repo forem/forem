@@ -110,7 +110,7 @@
     "@cypress/code-coverage": "^3.10.0",
     "@etchteam/storybook-addon-css-variables-theme": "^1.4.0",
     "@github/time-elements": "3.1.2",
-    "@honeybadger-io/js": "^4.9.3",
+    "@honeybadger-io/js": "^5.4.1",
     "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.1.0",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",

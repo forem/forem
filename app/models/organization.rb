@@ -68,6 +68,14 @@ class Organization < ApplicationRecord
   alias_attribute :old_old_username, :old_old_slug
   alias_attribute :website_url, :url
 
+  def self.simple_name_match(query)
+    scope = order(:name)
+    query&.strip!
+    return scope if query.blank?
+
+    scope.where("name ILIKE ?", "%#{query}%")
+  end
+
   def self.integer_only
     I18n.t("models.organization.integer_only")
   end
