@@ -190,7 +190,7 @@ jobs:
           name: rspec-artifacts
           path: tmp/capybara
       - name: Rename folder
-        run: mv coverage/simplecov coverage/simplecov-${KNAPSACK_PRO_CI_NODE_INDEX}
+        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
@@ -387,7 +387,7 @@ jobs:
             tmp/cypress_screenshots
             cypress/logs
       - name: rename folder
-        run: mv coverage/cypress coverage/cypress-${KNAPSACK_PRO_CI_NODE_INDEX}
+        run: mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
