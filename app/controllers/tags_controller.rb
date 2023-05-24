@@ -66,7 +66,7 @@ class TagsController < ApplicationController
   def onboarding
     skip_authorization
 
-    @tags = Tag.where(name: Settings::General.suggested_tags)
+    @tags = Tags::SuggestedForOnboarding.call
       .select(ONBOARDING_API_ATTRIBUTES)
 
     render json: @tags

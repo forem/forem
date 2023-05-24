@@ -220,12 +220,14 @@ RSpec.describe "Tags", proper_status: true do
       expect(response_tag["taggings_count"]).to eq(tag.taggings_count)
     end
 
-    it "returns only suggested tags" do
-      not_suggested_tag = create(:tag, name: "definitelynotasuggestedtag")
+    it "returns suggested and supported tags" do
+      not_suggested_but_supported = create(:tag, name: "notsuggestedbutsupported", supported: true, suggested: false)
+      neither_suggested_nor_supported = create(:tag, name: "definitelynotasuggestedtag", supported: false)
 
       get onboarding_tags_path, headers: headers
 
-      expect(response.parsed_body.filter { |t| t["name"] == not_suggested_tag.name }).to be_empty
+      expect(response.parsed_body.filter { |t| t["name"] == not_suggested_but_supported.name }).not_to be_empty
+      expect(response.parsed_body.filter { |t| t["name"] == neither_suggested_nor_supported.name }).to be_empty
     end
 
     it "sets the correct edge caching surrogate key for all tags" do
