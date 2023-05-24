@@ -63,7 +63,7 @@ describe('New article has empty flags, quality reactions and score', () => {
   });
 });
 
-describe('Article flagged by a user', () => {
+describe('Article flagged by an admin user', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -125,25 +125,105 @@ describe('Article flagged by a user', () => {
     cy.get('.crayons-dropdown').should('not.visible');
   });
 
-  // it('should display both "Mark as Valid" and "Mark as Invalid" options in the dropdown', () => {
-  //   cy.get('.c-btn--icon-alone').click();
+  it('should close dropdown on click of "Mark as Invalid"', () => {
+    cy.get('.c-btn--icon-alone:first').click();
 
-  //   cy.get('.crayons-dropdown')
-  //     .find('ul.list-none')
-  //     .should('contain', 'Mark as Valid')
-  //     .and('contain', 'Mark as Invalid');
-  // });
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .should('contain', 'Mark as Invalid')
+      .click();
 
-  // it('should close dropdown on click of "Mark as Valid"', () => {
-  //   cy.get('.c-btn--icon-alone:first').click();
+    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    cy.get('@flagStatus')
+      .should('have.class', 'c-indicator--relaxed')
+      .and('contain', 'Invalid');
+  });
+});
 
-  //   cy.get('.crayons-dropdown')
-  //     .find('ul.list-none')
-  //     .should('contain', 'Mark as Valid')
-  //     .click();
+describe('Article flagged by a trusted user', () => {
+  beforeEach(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
 
-  //   cy.get('.crayons-dropdown').should('not.be.visible');
-  // });
+    cy.get('@user').then((user) => {
+      cy.loginUser(user).then(() => {
+        cy.visit('/admin/content_manager/articles');
+
+        cy.contains('.crayons-subtitle-1 a', 'Notification article')
+          .parents('.js-individual-article')
+          .find('a[href*="/admin/content_manager/articles/"]')
+          .click();
+      });
+    });
+  });
+
+  it('should display the correct default data', () => {
+    cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
+  });
+
+  it('should display the correct user name', () => {
+    cy.get('.flex .crayons-subtitle-3').should(
+      'contain',
+      'Trusted User 1 \\:/',
+    );
+  });
+
+  it('should display the open flag status', () => {
+    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    cy.get('@flagStatus')
+      .should('have.class', 'c-indicator--warning')
+      .and('contain', 'Open');
+  });
+
+  it('should display the correct score for open flag', () => {
+    cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '-50');
+  });
+
+  it('should open the dropdown on button click', () => {
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('be.visible');
+  });
+
+  it('should open the dropdown on button click and close the dropdown on same button click', () => {
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('be.visible');
+
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('not.visible');
+  });
+
+  it('should open the dropdown on button click', () => {
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('be.visible');
+  });
+
+  it('should open the dropdown on button click and close the dropdown on same button click', () => {
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('be.visible');
+
+    cy.get('.c-btn--icon-alone').click();
+    cy.get('.crayons-dropdown').should('not.visible');
+  });
+
+  it('should display both "Mark as Valid" and "Mark as Invalid" options in the dropdown', () => {
+    cy.get('.c-btn--icon-alone').click();
+
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .should('contain', 'Mark as Valid')
+      .and('contain', 'Mark as Invalid');
+  });
+
+  it('should close dropdown on click of "Mark as Valid"', () => {
+    cy.get('.c-btn--icon-alone:first').click();
+
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .should('contain', 'Mark as Valid')
+      .click();
+
+    cy.get('.crayons-dropdown').should('not.be.visible');
+  });
 
   it('should close dropdown on click of "Mark as Invalid"', () => {
     cy.get('.c-btn--icon-alone:first').click();

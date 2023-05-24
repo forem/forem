@@ -136,8 +136,7 @@ seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local")
       slug: "apostrophe-user-slug",
     )
     seeder.create_if_none(Reaction) do
-      # trusted_user = User.find_by(email: "trusted-user-1@forem.local")
-      admin_user.reactions.create!(category: :vomit, reactable: article, status: "confirmed")
+      admin_user.reactions.create!(category: :vomit, reactable: article, status: :confirmed)
     end
   end
 end
@@ -441,6 +440,8 @@ seeder.create_if_doesnt_exist(User, "email", "notifications-user@forem.local") d
       commentable_id: article.id,
       commentable_type: "Article"
     }
+
+    trusted_user.reactions.create!(category: :vomit, reactable: article)
 
     parent_comment = Comment.create!(parent_comment_attributes)
     Notification.send_new_comment_notifications_without_delay(parent_comment)
