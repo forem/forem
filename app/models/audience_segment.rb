@@ -59,7 +59,7 @@ class AudienceSegment < ApplicationRecord
   end
 
   def self.valid_type?(type)
-    type_ofs.keys.include?(type.to_s)
+    type_ofs.key?(type.to_s)
   end
 
   def persist_recently_active_users
