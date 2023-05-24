@@ -194,7 +194,7 @@ jobs:
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage
+          name: code-coverage-rspec
           path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -236,7 +236,7 @@ jobs:
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage
+          name: code-coverage-jest
           path: coverage/
 
   storybook:
@@ -391,7 +391,7 @@ jobs:
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage
+          name: code-coverage-cypress
           path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -409,11 +409,21 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: code-coverage
+          name: code-coverage-rspec
+          path: coverage/simplecov
+      - uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-jest
+          path: coverage/jest
+      - uses: actions/download-artifact@v3
+        with:
+          name: code-coverage-cypress
+          path: coverage/cypress
+      - uses: actions/download-artifact@v3
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
-          directory: coverage/simplecov*
+          directory: coverage/simplecov
           fail_ci_if_error: true
       - uses: codecov/codecov-action@v3
         with:
@@ -423,7 +433,7 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress, javascript
-          directory: coverage/cypress*
+          directory: coverage/cypress
           fail_ci_if_error: true
 
   CI-status-report:
