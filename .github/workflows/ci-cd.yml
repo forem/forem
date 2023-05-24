@@ -406,28 +406,25 @@ jobs:
   upload-coverage:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress]
+    if: always()
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: coverage
-      - run: |
-          mkdir coverage/simplecov coverage/cypress
-          mv coverage/simplecov-* coverage/simplecov
-          mv coverage/cypress-* coverage/cypress
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
-          directory: coverage/simplecov
+          directory: simplecov-*
           fail_ci_if_error: true
       - uses: codecov/codecov-action@v3
         with:
           flags: jest, javascript
-          directory: coverage/jest
+          directory: jest
           fail_ci_if_error: true
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress, javascript
-          directory: coverage/cypress
+          directory: cypress-*
           fail_ci_if_error: true
 
   CI-status-report:
