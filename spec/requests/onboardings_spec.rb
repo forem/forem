@@ -149,6 +149,17 @@ RSpec.describe "Onboardings" do
         patch "/onboarding/checkbox.json", params: {}
         expect(user.saw_onboarding).to be(true)
       end
+
+      it "updates checked_code_of_conduct and checked_terms_and_conditions" do
+        patch "/onboarding/checkbox.json",
+              params: {
+                checked_code_of_conduct: "1",
+                checked_terms_and_conditions: "1"
+              }
+
+        expect(user.checked_code_of_conduct).to be(true)
+        expect(user.checked_terms_and_conditions).to be(true)
+      end
     end
 
     context "when signed out" do
