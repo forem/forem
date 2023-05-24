@@ -68,18 +68,3 @@ const closeCurrentlyOpenDropdown = (focusTrigger = false) => {
     triggerButton.focus();
   }
 };
-
-// We listen for key up events on this page to make sure users can close the dropdowns via keyboard
-document.addEventListener('keyup', ({ key }) => {
-  if (key === 'Escape') {
-    closeCurrentlyOpenDropdown(true);
-    return;
-  }
-  if (key === 'Tab') {
-    // If we're not inside a dropdown any more, let's close it
-    const closestDropdown = document.activeElement.closest('.crayons-dropdown');
-    if (!closestDropdown) {
-      closeCurrentlyOpenDropdown();
-    }
-  }
-});
