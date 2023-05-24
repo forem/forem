@@ -136,8 +136,8 @@ seeder.create_if_doesnt_exist(User, "email", "punctuated-name-user@forem.local")
       slug: "apostrophe-user-slug",
     )
     seeder.create_if_none(Reaction) do
-      trusted_user = User.find_by(email: "trusted-user-1@forem.local")
-      admin_user.reactions.create!(category: :vomit, reactable: article)
+      # trusted_user = User.find_by(email: "trusted-user-1@forem.local")
+      admin_user.reactions.create!(category: :vomit, reactable: article, status: "confirmed")
     end
   end
 end

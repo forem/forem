@@ -21,7 +21,7 @@
     <%# In both the FE and BE, 'Invalid' remains the same. This status appears when an admin user marks a flag or vomit reaction as invalid, with a score of 0. %>
     <div class="flex w-100 m:w-60 gap-0 m:gap-6 ml-2">
       <% if vomit_reaction.status == 'valid' %>
-        <span class="c-indicator c-indicator--warning c-indicator--relaxed" title="<%= t("views.moderations.flags.open.title") %>">
+        <span class="c-indicator c-indicator--warning" title="<%= t("views.moderations.flags.open.title") %>">
           <%= t("views.moderations.flags.open.value") %>
         </span>
       <% elsif vomit_reaction.status == 'invalid' %>

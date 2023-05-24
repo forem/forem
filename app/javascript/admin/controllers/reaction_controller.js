@@ -15,7 +15,7 @@ export default class ReactionController extends Controller {
       headers: {
         Accept: 'application/json',
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
-          .content,
+          ?.content,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
