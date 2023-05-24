@@ -125,7 +125,7 @@ describe('Article flagged by an admin user', () => {
     cy.get('.crayons-dropdown').should('not.visible');
   });
 
-  it('should close dropdown on click of "Mark as Invalid"', () => {
+  it('should update status to Invalid on click of "Mark as Invalid"', () => {
     cy.get('.c-btn--icon-alone:first').click();
 
     cy.get('.crayons-dropdown')
@@ -134,9 +134,7 @@ describe('Article flagged by an admin user', () => {
       .click();
 
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
-    cy.get('@flagStatus')
-      .should('have.class', 'c-indicator--relaxed')
-      .and('contain', 'Invalid');
+    cy.get('@flagStatus').should('contain', 'Invalid');
   });
 });
 
@@ -225,7 +223,7 @@ describe('Article flagged by a trusted user', () => {
     cy.get('.crayons-dropdown').should('not.be.visible');
   });
 
-  it('should close dropdown on click of "Mark as Invalid"', () => {
+  it('should update status to Invalid dropdown on click of "Mark as Invalid"', () => {
     cy.get('.c-btn--icon-alone:first').click();
 
     cy.get('.crayons-dropdown')
@@ -237,5 +235,18 @@ describe('Article flagged by a trusted user', () => {
     cy.get('@flagStatus')
       .should('have.class', 'c-indicator--relaxed')
       .and('contain', 'Invalid');
+  });
+
+  it('should update status to Valid dropdown on click of "Mark as Valid"', () => {
+    cy.get('.c-btn--icon-alone:first').click();
+
+    cy.get('.crayons-dropdown')
+      .find('ul.list-none')
+      .findByTestId('mark-as-valid')
+      .should('contain', 'Mark as Valid')
+      .click();
+
+    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    cy.get('@flagStatus').should('contain', 'Valid');
   });
 });

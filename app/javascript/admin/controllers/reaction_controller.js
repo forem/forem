@@ -7,7 +7,7 @@ export default class ReactionController extends Controller {
     url: String,
   };
 
-  updateReaction(status, removeElement) {
+  updateReaction(status, removeElement = true) {
     const id = this.idValue;
 
     fetch(this.urlValue, {
@@ -62,10 +62,10 @@ export default class ReactionController extends Controller {
       if (
         window.confirm('You are confirming a User flag reaction; are you sure?')
       ) {
-        this.updateReaction(this.confirmedStatus, true);
+        this.updateReaction(this.confirmedStatus);
       }
     } else {
-      this.updateReaction(this.confirmedStatus, true);
+      this.updateReaction(this.confirmedStatus);
     }
   }
 
