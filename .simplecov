@@ -1,4 +1,5 @@
 unless ENV["COVERAGE"] == "false"
+  SimpleCov.coverage_dir("coverage/simplecov#{KNAPSACK_PRO_CI_NODE_INDEX}")
   SimpleCov.start "rails" do
     add_filter "/spec/"
     add_filter "/app/controllers/admin/"
