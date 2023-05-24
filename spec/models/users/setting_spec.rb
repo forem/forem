@@ -12,6 +12,7 @@ RSpec.describe Users::Setting do
     subject { setting }
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+    it { is_expected.to validate_numericality_of(:experience_level).is_in(1..10) }
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
     it { is_expected.to define_enum_for(:config_font).with_values(default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5).with_suffix(:font) }
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
