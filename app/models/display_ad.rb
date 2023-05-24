@@ -40,6 +40,7 @@ class DisplayAd < ApplicationRecord
   validate :valid_audience_segment_type,
            :valid_audience_segment_match,
            :validate_in_house_hero_ads,
+           :valid_manual_audience_segment,
            :validate_tag
 
   before_save :process_markdown
@@ -199,5 +200,11 @@ class DisplayAd < ApplicationRecord
     return if audience_segment.blank? || audience_segment_type.blank?
 
     errors.add(:audience_segment_type) if audience_segment.type_of.to_s != audience_segment_type.to_s
+  end
+
+  def valid_manual_audience_segment
+    return if audience_segment_type != "manual"
+
+    errors.add(:audience_segment_type) if audience_segment.blank?
   end
 end

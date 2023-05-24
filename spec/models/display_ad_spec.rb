@@ -103,6 +103,12 @@ RSpec.describe DisplayAd do
       expect(audience_segment.type_of).not_to eq("posted")
       expect(display_ad).not_to be_valid
     end
+
+    it "disallows valid but imprecise manual audience segment type" do
+      display_ad.audience_segment = nil
+      display_ad.audience_segment_type = "manual"
+      expect(display_ad).not_to be_valid
+    end
   end
 
   context "when parsing liquid tags" do
