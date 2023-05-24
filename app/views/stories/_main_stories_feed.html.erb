@@ -14,35 +14,45 @@
   <% end %>
 <% end %>
 
+<%# This second-display-ad should be shown between 2nd and 3rd article. %>
+<% second_display_ad_position = 2 %>
+
 <% if @pinned_article %>
+  <% second_display_ad_position -= 1 %>
   <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
 <% end %>
 
 <% if @featured_story.id && @pinned_article&.id != @featured_story.id %>
+  <% second_display_ad_position -= 1 %>
   <%= render partial: "articles/single_story", locals: { story: @featured_story, featured: true, pinned: false } %>
 <% end %>
 
 <div id="article-index-podcast-div"></div>
 
+<%# This third-display-ad should be shown between 7th and 8th article. %>
+<% third_display_ad_position = second_display_ad_position + 5 %>
+
 <div class="substories" id="substories">
   <% if @stories.any? %>
     <% @stories.each_with_index do |story, i| %>
-      <% if !user_signed_in? && i == 1 %>
+      <% if !user_signed_in? && i == second_display_ad_position %>
         <% @sidebar_ad_second = DisplayAd.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
         <% if @sidebar_ad_second %>
           <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_second, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
 
-      <% if !user_signed_in? && i == 7 %>
+      <% if !user_signed_in? && i == third_display_ad_position %>
         <% @sidebar_ad_third = DisplayAd.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
         <% if @sidebar_ad_third %>
           <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_third, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
-      <% next if story.id == @featured_story.id %>
-      <% next if story.id == @pinned_article&.id %>
-      <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
+      <% if story.id != @featured_story.id && story.id != @pinned_article&.id %>
+        <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
+      <% else %>
+        <% third_display_ad_position += 1 %>
+      <% end %>
     <% end %>
     <% if @stories.size > 1 %>
       <div class="placeholder-div"></div>
