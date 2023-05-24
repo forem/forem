@@ -413,17 +413,17 @@ jobs:
       - uses: codecov/codecov-action@v3
         with:
           flags: ruby
-          directory: coverage/simplecov*
+          directory: code-coverage/simplecov*
           fail_ci_if_error: true
       - uses: codecov/codecov-action@v3
         with:
           flags: jest, javascript
-          directory: coverage/jest
+          directory: code-coverage/jest
           fail_ci_if_error: true
       - uses: codecov/codecov-action@v3
         with:
           flags: cypress, javascript
-          directory: coverage/cypress*
+          directory: code-coverage/cypress*
           fail_ci_if_error: true
 
   CI-status-report:
