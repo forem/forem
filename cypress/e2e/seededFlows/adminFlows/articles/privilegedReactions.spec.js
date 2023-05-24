@@ -126,12 +126,37 @@ describe('Article flagged by an admin user', () => {
   });
 
   it('should update status to Invalid on click of "Mark as Invalid"', () => {
+    cy.intercept('PATCH', '/admin/reactions/**', (req) => {
+      req.reply((res) => {
+        const { id } = req.body;
+        const response = {
+          statusCode: 200,
+          body: {
+            outcome: 'Success',
+          },
+        };
+
+        if (req.body.removeElement === true) {
+          cy.get(`#${id}`).then(($element) => {
+            $element.remove();
+          });
+          cy.get(`#js__reaction__div__hr__${id}`).then(($element) => {
+            $element.remove();
+          });
+        }
+
+        res.send(response);
+      });
+    }).as('request');
+
     cy.get('.c-btn--icon-alone:first').click();
 
     cy.get('.crayons-dropdown')
       .find('ul.list-none')
       .should('contain', 'Mark as Invalid')
       .click();
+
+    cy.wait('@request');
 
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
     cy.get('@flagStatus').should('contain', 'Invalid');
@@ -223,7 +248,30 @@ describe('Article flagged by a trusted user', () => {
     cy.get('.crayons-dropdown').should('not.be.visible');
   });
 
-  it('should update status to Invalid dropdown on click of "Mark as Invalid"', () => {
+  it('should update status to Invalid on click of "Mark as Invalid"', () => {
+    cy.intercept('PATCH', '/admin/reactions/**', (req) => {
+      req.reply((res) => {
+        const { id } = req.body;
+        const response = {
+          statusCode: 200,
+          body: {
+            outcome: 'Success',
+          },
+        };
+
+        if (req.body.removeElement === true) {
+          cy.get(`#${id}`).then(($element) => {
+            $element.remove();
+          });
+          cy.get(`#js__reaction__div__hr__${id}`).then(($element) => {
+            $element.remove();
+          });
+        }
+
+        res.send(response);
+      });
+    }).as('request');
+
     cy.get('.c-btn--icon-alone:first').click();
 
     cy.get('.crayons-dropdown')
@@ -231,13 +279,38 @@ describe('Article flagged by a trusted user', () => {
       .should('contain', 'Mark as Invalid')
       .click();
 
+    cy.wait('@request');
+
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
     cy.get('@flagStatus')
       .should('have.class', 'c-indicator--relaxed')
       .and('contain', 'Invalid');
   });
 
-  it('should update status to Valid dropdown on click of "Mark as Valid"', () => {
+  it('should update status to Valid on click of "Mark as Valid"', () => {
+    cy.intercept('PATCH', '/admin/reactions/**', (req) => {
+      req.reply((res) => {
+        const { id } = req.body;
+        const response = {
+          statusCode: 200,
+          body: {
+            outcome: 'Success',
+          },
+        };
+
+        if (req.body.removeElement === true) {
+          cy.get(`#${id}`).then(($element) => {
+            $element.remove();
+          });
+          cy.get(`#js__reaction__div__hr__${id}`).then(($element) => {
+            $element.remove();
+          });
+        }
+
+        res.send(response);
+      });
+    }).as('request');
+
     cy.get('.c-btn--icon-alone:first').click();
 
     cy.get('.crayons-dropdown')
@@ -245,6 +318,8 @@ describe('Article flagged by a trusted user', () => {
       .findByTestId('mark-as-valid')
       .should('contain', 'Mark as Valid')
       .click();
+
+    cy.wait('@request');
 
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
     cy.get('@flagStatus').should('contain', 'Valid');
