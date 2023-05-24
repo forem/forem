@@ -410,6 +410,21 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: code-coverage
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: ruby
+          directory: coverage/simplecov*
+          fail_ci_if_error: true
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: jest, javascript
+          directory: coverage/jest
+          fail_ci_if_error: true
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: cypress, javascript
+          directory: coverage/cypress*
+          fail_ci_if_error: true
 
   CI-status-report:
     runs-on: ubuntu-latest
