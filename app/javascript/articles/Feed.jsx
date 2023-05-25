@@ -78,15 +78,15 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // we filter by null in case there was not a pinned Article
             organizedFeedItems = organizedFeedItems.flat();
 
-            if (organizeFeedItems.length >= 0) {
+            if (organizedFeedItems.length >= 0) {
               organizedFeedItems.splice(0, 0, feedFirstBillboard);
             }
 
-            if (organizeFeedItems.length >= 3) {
+            if (organizedFeedItems.length >= 3) {
               organizedFeedItems.splice(3, 0, feedSecondBillboard);
             }
 
-            if (organizeFeedItems.length >= 9) {
+            if (organizedFeedItems.length >= 9) {
               organizedFeedItems.splice(9, 0, feedThirdBillboard);
             }
 
