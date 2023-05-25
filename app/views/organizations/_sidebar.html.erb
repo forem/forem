@@ -46,7 +46,7 @@
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:post, class: "mr-3 color-base", title: t("views.organizations.side.post.icon")) %>
-        <%= t "views.organizations.side.post.text", count: @stories.size %>
+        <%= t "views.organizations.side.post.text", count: @organization.public_articles_count %>
       </div>
       <div class="flex items-center">
         <%= crayons_icon_tag(:team, class: "mr-3 color-base", title: t("views.organizations.side.member.icon")) %>
