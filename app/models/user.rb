@@ -268,6 +268,8 @@ class User < ApplicationRecord
     update_column(:score, calculated_score)
   end
 
+  alias touch_by_reaction calculate_score
+
   def path
     "/#{username}"
   end
