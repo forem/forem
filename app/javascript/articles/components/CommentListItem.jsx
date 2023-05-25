@@ -25,7 +25,7 @@ function contentAwareComments(comment) {
       node.outerHTML.length > 250
       && !node.outerHTML.includes('article-body-image-wrapper')
     ) {
-      node.innerHTML = `${node.innerHTML.substring(0, 250)}...`;
+      node.innerHTML = `${node.innerHTML.substring(0, 230)}...`;
       text = `${text} ${node.outerHTML}`;
       nodesSelected = 2;
     } else if (node.outerHTML && nodesSelected < 2) {
