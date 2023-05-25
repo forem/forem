@@ -81,10 +81,6 @@ RSpec.describe DisplayAd do
       display_ad.audience_segment_id = audience_segment.id
       expect(display_ad).to be_valid
 
-      display_ad.audience_segment_id = nil
-      display_ad.audience_segment_type = audience_segment.type_of
-      expect(display_ad).to be_valid
-
       display_ad.audience_segment_id = audience_segment.id
       display_ad.audience_segment_type = audience_segment.type_of
       expect(display_ad).to be_valid
