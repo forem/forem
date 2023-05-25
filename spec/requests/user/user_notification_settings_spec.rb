@@ -37,42 +37,4 @@ RSpec.describe "UserNotificationSettings" do
       expect(user.notification_setting.reload.subscribed_to_welcome_notifications?).to be(true)
     end
   end
-
-  describe "PATCH /onboarding_notifications_checkbox_update" do
-    before { sign_in user }
-
-    it "updates onboarding checkbox" do
-      user.update_column(:saw_onboarding, false)
-
-      expect do
-        patch onboarding_notifications_checkbox_update_path(format: :json),
-              params: { notifications: { tab: "notifications", email_newsletter: 1 } }
-      end.to change { user.notification_setting.reload.email_newsletter }.from(false).to(true)
-      expect(user.saw_onboarding).to be(true)
-    end
-
-    it "can toggle email_newsletter" do
-      expect do
-        patch onboarding_notifications_checkbox_update_path(format: :json),
-              params: { notifications: { tab: "notifications", email_newsletter: 1 } }
-      end.to change { user.notification_setting.reload.email_newsletter }.from(false).to(true)
-
-      expect do
-        patch onboarding_notifications_checkbox_update_path(format: :json),
-              params: { notifications: { tab: "notifications", email_newsletter: 0 } }
-      end.to change { user.notification_setting.reload.email_newsletter }.from(true).to(false)
-    end
-
-    it "can toggle email_digest_periodic" do
-      expect do
-        patch onboarding_notifications_checkbox_update_path(format: :json),
-              params: { notifications: { tab: "notifications", email_digest_periodic: 1 } }
-      end.to change { user.notification_setting.reload.email_digest_periodic }.from(false).to(true)
-
-      expect do
-        patch onboarding_notifications_checkbox_update_path(format: :json),
-              params: { notifications: { tab: "notifications", email_digest_periodic: 0 } }
-      end.to change { user.notification_setting.reload.email_digest_periodic }.from(true).to(false)
-    end
-  end
 end

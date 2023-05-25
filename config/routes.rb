@@ -114,7 +114,6 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
-        get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
@@ -150,6 +149,7 @@ Rails.application.routes.draw do
         get "/subscribed", action: "subscribed"
       end
     end
+
     namespace :followings, defaults: { format: :json } do
       get :users
       get :tags
@@ -157,9 +157,12 @@ Rails.application.routes.draw do
       get :podcasts
     end
 
-    scope module: "users" do
-      resource :onboarding, only: %i[show update]
-      patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
+    resource :onboarding, only: %i[show update] do
+      member do
+        patch :checkbox
+        patch :notifications
+        get :tags
+      end
     end
 
     resources :profiles, only: %i[update]
@@ -178,8 +181,6 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_notifications_checkbox_update",
-          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
 
     get "/internal", to: redirect("/admin")
