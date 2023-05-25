@@ -38,14 +38,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               (story) => story.main_image !== null,
             );
 
-            // Remove that first story from the array to
-            // prevent it from rendering twice in the feed.
-            const featuredPostIndex = feedPosts.indexOf(featuredPost);
-            if (featuredPost) {
-              feedPosts.splice(featuredPostIndex, 1);
-            }
-
-            setFeaturedItem(featuredPost);
             // Here we extract from the feed two special items: pinned and featured
             const pinnedPost = feedPosts.find((story) => story.pinned === true);
 
@@ -58,14 +50,21 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               // (either because featuredPost is missing or because they represent two different articles),
               // we set the pinnedPost.
               if (pinnedPost.id !== featuredPost?.id) {
-                // organizedFeedItems.push(pinnedPost);
                 setPinnedItem(pinnedPost);
                 organizedFeedItems.push(pinnedPost);
               }
             }
 
-            organizedFeedItems.push(featuredPost);
+            // Remove that first story from the array to
+            // prevent it from rendering twice in the feed.
+            const featuredPostIndex = feedPosts.indexOf(featuredPost);
+            if (featuredPost) {
+              feedPosts.splice(featuredPostIndex, 1);
+              setFeaturedItem(featuredPost);
+              organizedFeedItems.push(featuredPost);
+            }
 
+            // Get and set the podcasts
             const podcasts = getPodcastEpisodes();
             setPodcastEpisodes(podcasts);
 
@@ -78,9 +77,18 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // 4. Rest of the stories for the feed
             // we filter by null in case there was not a pinned Article
             organizedFeedItems = organizedFeedItems.flat();
-            organizedFeedItems.splice(0, 0, feedFirstBillboard);
-            organizedFeedItems.splice(3, 0, feedSecondBillboard);
-            organizedFeedItems.splice(9, 0, feedThirdBillboard);
+
+            if (organizeFeedItems.length >= 0) {
+              organizedFeedItems.splice(0, 0, feedFirstBillboard);
+            }
+
+            if (organizeFeedItems.length >= 3) {
+              organizedFeedItems.splice(3, 0, feedSecondBillboard);
+            }
+
+            if (organizeFeedItems.length >= 9) {
+              organizedFeedItems.splice(9, 0, feedThirdBillboard);
+            }
 
             setFeedItems(organizedFeedItems);
           },
