@@ -43,6 +43,93 @@ function sendFeaturedArticleAnalyticsGA4(articleId) {
   })();
 }
 
+function feedConstruct(
+  pinnedItem,
+  featuredItem,
+  feedItems,
+  podcastEpisodes,
+  bookmarkedFeedItems,
+  bookmarkClick,
+  currentUserId,
+  timeFrame,
+) {
+  const commonProps = {
+    bookmarkClick,
+  };
+
+  const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
+
+  if (featuredItem) {
+    sendFeaturedArticleGoogleAnalytics(featuredItem.id);
+    sendFeaturedArticleAnalyticsGA4(featuredItem.id);
+  }
+
+  return feedItems.map((item) => {
+    // billboard is an html string
+    if (typeof item === 'string') {
+      return (
+        <div
+          key={item.id}
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: item,
+          }}
+        />
+      );
+    }
+
+    if (typeof item === 'object') {
+      // For "saveable" props, "!=" is used instead of "!==" to compare user_id
+      // and currentUserId because currentUserId is a String while user_id is an Integer
+
+      if (item.id === pinnedItem?.id && timeFrame === '') {
+        return (
+          <Article
+            {...commonProps}
+            key={item.id}
+            article={pinnedItem}
+            pinned={true}
+            feedStyle={feedStyle}
+            isBookmarked={bookmarkedFeedItems.has(pinnedItem.id)}
+            saveable={pinnedItem.user_id != currentUserId}
+          />
+        );
+      }
+
+      if (item.id === featuredItem?.id) {
+        return (
+          <Article
+            {...commonProps}
+            key={item.id}
+            article={featuredItem}
+            isFeatured
+            feedStyle={feedStyle}
+            isBookmarked={bookmarkedFeedItems.has(featuredItem.id)}
+            saveable={featuredItem.user_id != currentUserId}
+          />
+        );
+      }
+
+      if (item.podcast) {
+        return <PodcastEpisodes key={item.id} episodes={podcastEpisodes} />;
+      }
+
+      if (item.class_name === 'Article') {
+        return (
+          <Article
+            {...commonProps}
+            key={item.id}
+            article={item}
+            feedStyle={feedStyle}
+            isBookmarked={bookmarkedFeedItems.has(item.id)}
+            saveable={item.user_id != currentUserId}
+          />
+        );
+      }
+    }
+  });
+}
+
 const FeedLoading = () => (
   <div data-testid="feed-loading">
     <LoadingArticle version="featured" />
@@ -80,78 +167,37 @@ export const renderFeed = async (timeFrame) => {
   const { currentUser } = await getUserDataAndCsrfToken();
   const currentUserId = currentUser && currentUser.id;
 
-  render(
-    <Feed
-      timeFrame={timeFrame}
-      renderFeed={({
-        pinnedArticle,
-        feedItems,
-        podcastEpisodes,
-        bookmarkedFeedItems,
-        bookmarkClick,
-      }) => {
-        if (feedItems.length === 0) {
-          // Fancy loading ✨
-          return <FeedLoading />;
-        }
+  const callback = ({
+    pinnedItem,
+    featuredItem,
+    feedItems,
+    podcastEpisodes,
+    bookmarkedFeedItems,
+    bookmarkClick,
+  }) => {
+    if (feedItems.length === 0) {
+      // Fancy loading ✨
+      return <FeedLoading />;
+    }
 
-        const commonProps = {
+    return (
+      <div>
+        {feedConstruct(
+          pinnedItem,
+          featuredItem,
+          feedItems,
+          podcastEpisodes,
+          bookmarkedFeedItems,
           bookmarkClick,
-        };
+          currentUserId,
+          timeFrame,
+        )}
+      </div>
+    );
+  };
 
-        const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
-
-        const [featuredStory, ...subStories] = feedItems;
-        if (featuredStory) {
-          sendFeaturedArticleGoogleAnalytics(featuredStory.id);
-          sendFeaturedArticleAnalyticsGA4(featuredStory.id);
-        }
-
-        // 1. Show the pinned article first
-        // 2. Show the featured story next
-        // 3. Podcast episodes out today
-        // 4. Rest of the stories for the feed
-        // For "saveable", "!=" is used instead of "!==" to compare user_id
-        // and currentUserId because currentUserId is a String while user_id is an Integer
-        return (
-          <div>
-            {timeFrame === '' && pinnedArticle && (
-              <Article
-                {...commonProps}
-                article={pinnedArticle}
-                pinned={true}
-                feedStyle={feedStyle}
-                isBookmarked={bookmarkedFeedItems.has(pinnedArticle.id)}
-                saveable={pinnedArticle.user_id != currentUserId}
-              />
-            )}
-            {featuredStory && (
-              <Article
-                {...commonProps}
-                article={featuredStory}
-                isFeatured
-                feedStyle={feedStyle}
-                isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
-                saveable={featuredStory.user_id != currentUserId}
-              />
-            )}
-            {podcastEpisodes.length > 0 && (
-              <PodcastEpisodes episodes={podcastEpisodes} />
-            )}
-            {(subStories || []).map((story) => (
-              <Article
-                {...commonProps}
-                key={story.id}
-                article={story}
-                feedStyle={feedStyle}
-                isBookmarked={bookmarkedFeedItems.has(story.id)}
-                saveable={story.user_id != currentUserId}
-              />
-            ))}
-          </div>
-        );
-      }}
-    />,
+  render(
+    <Feed timeFrame={timeFrame} renderFeed={callback} />,
     feedContainer,
     feedContainer.firstElementChild,
   );

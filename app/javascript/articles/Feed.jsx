@@ -11,82 +11,129 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
   );
-  const [pinnedArticle, setPinnedArticle] = useState(null);
+  const [pinnedItem, setPinnedItem] = useState(null);
+  const [featuredItem, setFeaturedItem] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [onError, setOnError] = useState(false);
 
   useEffect(() => {
-    setPodcastEpisodes(getPodcastEpisodes());
-  }, []);
-
-  useEffect(() => {
-    const fetchFeedItems = async () => {
+    const organizeFeedItems = async () => {
       try {
         if (onError) setOnError(false);
 
-        let feedItems = await getFeedItems(timeFrame);
+        fetchFeedItems(timeFrame).then(
+          ([
+            feedPosts,
+            feedFirstBillboard,
+            feedSecondBillboard,
+            feedThirdBillboard,
+          ]) => {
+            // Ensure first article is one with a main_image
+            // This is important because the featuredPost will
+            // appear at the top of the feed, with a larger
+            // main_image than any of the stories or feed elements.
+            const featuredPost = feedPosts.find(
+              (story) => story.main_image !== null,
+            );
 
-        // Here we extract from the feed two special items: pinned and featured
+            // Remove that first story from the array to
+            // prevent it from rendering twice in the feed.
+            const featuredPostIndex = feedPosts.indexOf(featuredPost);
+            if (featuredPost) {
+              feedPosts.splice(featuredPostIndex, 1);
+            }
 
-        const pinnedArticle = feedItems.find((story) => story.pinned === true);
+            setFeaturedItem(featuredPost);
 
-        // Ensure first article is one with a main_image
-        // This is important because the featuredStory will
-        // appear at the top of the feed, with a larger
-        // main_image than any of the stories or feed elements.
-        const featuredStory = feedItems.find(
-          (story) => story.main_image !== null,
+            // Here we extract from the feed two special items: pinned and featured
+            const pinnedPost = feedPosts.find((story) => story.pinned === true);
+
+            // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
+            if (pinnedPost && timeFrame === '') {
+              // remove pinned article from the feed without setting it as state.
+              feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
+
+              // If pinned and featured article aren't the same,
+              // (either because featuredPost is missing or because they represent two different articles),
+              // we set the pinnedPost.
+              if (pinnedPost.id !== featuredPost?.id) {
+                // organizedFeedItems.push(pinnedPost);
+                setPinnedItem(pinnedPost);
+              }
+            }
+
+            const podcasts = getPodcastEpisodes();
+            setPodcastEpisodes(podcasts);
+
+            // 1. Show the pinned post first
+            // 2. Show the featured post next
+            // 3. Podcast episodes out today
+            // 4. Rest of the stories for the feed
+            // we filter by null in case there was not a pinned Article
+            const organizedFeedItems = [
+              pinnedPost,
+              featuredPost,
+              podcasts,
+              feedPosts,
+            ]
+              .filter((item) => item !== null)
+              .flat();
+
+            organizedFeedItems.splice(0, 0, feedFirstBillboard);
+            organizedFeedItems.splice(3, 0, feedSecondBillboard);
+            organizedFeedItems.splice(9, 0, feedThirdBillboard);
+
+            setFeedItems(organizedFeedItems);
+          },
         );
-
-        // If pinned and featured article aren't the same,
-        // (either because featuredStory is missing or because they represent two different articles),
-        // we set the pinnedArticle and remove it from feedItems.
-        // If pinned and featured are the same, we just remove it from feedItems without setting it as state.
-        // NB: We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
-        if (pinnedArticle && timeFrame === '') {
-          feedItems = feedItems.filter((item) => item.id !== pinnedArticle.id);
-
-          if (pinnedArticle.id !== featuredStory?.id) {
-            setPinnedArticle(pinnedArticle);
-          }
-        }
-
-        // Remove that first story from the array to
-        // prevent it from rendering twice in the feed.
-        const featuredIndex = feedItems.indexOf(featuredStory);
-        if (featuredStory) {
-          feedItems.splice(featuredIndex, 1);
-        }
-        const organizedFeedItems = [featuredStory, feedItems].flat();
-
-        setFeedItems(organizedFeedItems);
       } catch {
         if (!onError) setOnError(true);
       }
     };
-
-    fetchFeedItems();
+    organizeFeedItems();
   }, [timeFrame, onError]);
 
-  /**
-   * Retrieves feed data.
-   *
-   * @param {number} [page=1] Page of feed data to retrieve
-   *
-   * @returns {Promise} A promise containing the JSON response for the feed data.
-   */
-  async function getFeedItems(timeFrame = '', page = 1) {
-    const response = await fetch(`/stories/feed/${timeFrame}?page=${page}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    });
-    return await response.json();
+  // /**
+  //  * Retrieves data for the feed. The data will include articles and billboards.
+  //  *
+  //  * @param {number} [page=1] Page of feed data to retrieve
+  //  * @param {string} The time frame of feed data to retrieve
+  //  *
+  //  * @returns {Promise} A promise containing the JSON response for the feed data.
+  //  */
+  async function fetchFeedItems(timeFrame = '', page = 1) {
+    const [
+      feedPostsResponse,
+      feedFirstBillboardResponse,
+      feedSecondBillboardResponse,
+      feedThirdBillboardResponse,
+    ] = await Promise.all([
+      fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': window.csrfToken,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      }),
+      fetch(`/display_ads/feed_first`),
+      fetch(`/display_ads/feed_second`),
+      fetch(`/display_ads/feed_third`),
+    ]);
+
+    const feedPosts = await feedPostsResponse.json();
+    const feedFirstBillboard = await feedFirstBillboardResponse.text();
+    const feedSecondBillboard = await feedSecondBillboardResponse.text();
+    const feedThirdBillboard = await feedThirdBillboardResponse.text();
+
+    return [
+      feedPosts,
+      feedFirstBillboard,
+      feedSecondBillboard,
+      feedThirdBillboard,
+    ];
   }
 
   function getPodcastEpisodes() {
@@ -182,7 +229,8 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         </div>
       ) : (
         renderFeed({
-          pinnedArticle,
+          pinnedItem,
+          featuredItem,
           feedItems,
           podcastEpisodes,
           bookmarkedFeedItems,
