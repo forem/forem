@@ -29,6 +29,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
+            let organizedFeedItems = [];
             // Ensure first article is one with a main_image
             // This is important because the featuredPost will
             // appear at the top of the feed, with a larger
@@ -45,7 +46,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             }
 
             setFeaturedItem(featuredPost);
-
             // Here we extract from the feed two special items: pinned and featured
             const pinnedPost = feedPosts.find((story) => story.pinned === true);
 
@@ -60,26 +60,24 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               if (pinnedPost.id !== featuredPost?.id) {
                 // organizedFeedItems.push(pinnedPost);
                 setPinnedItem(pinnedPost);
+                organizedFeedItems.push(pinnedPost);
               }
             }
 
+            organizedFeedItems.push(featuredPost);
+
             const podcasts = getPodcastEpisodes();
             setPodcastEpisodes(podcasts);
+
+            organizedFeedItems.push(podcasts);
+            organizedFeedItems.push(feedPosts);
 
             // 1. Show the pinned post first
             // 2. Show the featured post next
             // 3. Podcast episodes out today
             // 4. Rest of the stories for the feed
             // we filter by null in case there was not a pinned Article
-            const organizedFeedItems = [
-              pinnedPost,
-              featuredPost,
-              podcasts,
-              feedPosts,
-            ]
-              .filter((item) => item !== null)
-              .flat();
-
+            organizedFeedItems = organizedFeedItems.flat();
             organizedFeedItems.splice(0, 0, feedFirstBillboard);
             organizedFeedItems.splice(3, 0, feedSecondBillboard);
             organizedFeedItems.splice(9, 0, feedThirdBillboard);
