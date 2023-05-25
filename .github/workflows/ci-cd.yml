@@ -387,7 +387,9 @@ jobs:
             tmp/cypress_screenshots
             cypress/logs
       - name: rename folder
-        run: mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
+        run: |
+          rm -rf coverage/cypress/lcov-report
+          mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
         uses: actions/upload-artifact@v3
         with:
