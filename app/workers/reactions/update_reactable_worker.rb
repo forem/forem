@@ -1,5 +1,5 @@
 module Reactions
-  class SyncCountWorker
+  class UpdateReactableWorker
     include Sidekiq::Job
 
     sidekiq_options queue: :high_priority, retry: 10

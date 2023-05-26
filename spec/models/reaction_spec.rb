@@ -145,7 +145,7 @@ RSpec.describe Reaction do
         { category: "raised_hands", count: 0 },
         { category: "readinglist", count: 0 },
       ]
-      expect(described_class.count_for_article(article.id)).to contain_exactly(*expected_result)
+      expect(described_class.count_for_article(article.id)).to match_array(expected_result)
     end
   end
 
@@ -238,6 +238,7 @@ RSpec.describe Reaction do
 
   context "when callbacks are called before destroy" do
     let!(:reaction) { create(:reaction, reactable: article, user: user) }
+    let(:scores_worker) { double }
 
     it "enqueues a ScoreCalcWorker on article reaction destroy" do
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
@@ -245,10 +246,13 @@ RSpec.describe Reaction do
       end
     end
 
-    it "updates reactable with delay" do
-      allow(Reactions::UpdateRelevantScoresWorker).to receive(:perform_async)
+    it "updates reactable without delay" do
+      allow(Reactions::UpdateRelevantScoresWorker).to receive(:new).and_return(scores_worker)
+      allow(scores_worker).to receive(:perform)
+
       reaction.destroy
-      expect(Reactions::UpdateRelevantScoresWorker).to have_received(:perform_async)
+
+      expect(scores_worker).to have_received(:perform).with(reaction.id)
     end
 
     it "busts reactable cache without delay" do

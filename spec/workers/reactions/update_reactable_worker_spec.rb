@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Reactions::SyncCountWorker, throttled_call: true, type: :worker do
+RSpec.describe Reactions::UpdateReactableWorker, throttled_call: true, type: :worker do
   describe "#perform" do
     let(:worker) { subject }
 

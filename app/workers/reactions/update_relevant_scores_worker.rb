@@ -8,7 +8,7 @@ module Reactions
       reaction = Reaction.find_by(id: reaction_id)
       return unless reaction
 
-      Reactions::SyncCountWorker.perform_async(reaction.reactable_id, reaction.reactable_type)
+      Reactions::UpdateReactableWorker.perform_async(reaction.reactable_id, reaction.reactable_type)
 
       return unless reaction.reactable_type == "Article" && reaction.visible_to_public?
 
