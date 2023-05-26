@@ -35,30 +35,26 @@ describe('New article has empty flags, quality reactions and score', () => {
     );
   });
 
-  it('should not contain any flags', () => {
+  it('should not contain any flags and quality reactions', () => {
     cy.findByText('Article has no flags.').should('exist');
-  });
 
-  it('should not contain quality reactions', () => {
     cy.findByRole('link', { name: 'Quality reactions' }).click();
     cy.findByText('Article has no quality reactions by trusted users.').should(
       'exist',
     );
   });
 
-  it('should display the correct thumb up count', () => {
+  it('should display the correct values for privileged reactions and score', () => {
+    // Thumbs-up count
     cy.get('.flex .crayons-card:nth-child(1) .fs-s').should('contain', '0');
-  });
 
-  it('should display the correct thumb down count', () => {
+    // Thumbs-down count
     cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '0');
-  });
 
-  it('should display the correct vomit count', () => {
+    // Vomit/flag count
     cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '0');
-  });
 
-  it('should display the correct score', () => {
+    //Score
     cy.get('.flex .crayons-card:nth-child(4) .fs-s').should('contain', '0');
   });
 });
@@ -80,47 +76,29 @@ describe('Article flagged by an admin user', () => {
     });
   });
 
-  it('should display the correct default data', () => {
+  it('should display the correct default data for flag reaction', () => {
+    // Vomit/flag count
     cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
-  });
 
-  it('should display the correct user name', () => {
+    // Reaction username
     cy.get('.flex .crayons-subtitle-3').should('contain', 'Admin McAdmin');
-  });
 
-  it('should display the valid flag status', () => {
+    // Shows "Valid" status
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
     cy.get('@flagStatus')
       .should('have.class', 'c-indicator--danger')
       .and('contain', 'Valid');
-  });
 
-  it('should display the correct score for valid flag', () => {
+    // Reeaction score
     cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '-100');
   });
 
-  it('should open the dropdown on button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-  });
-
   it('should open the dropdown on button click and close the dropdown on same button click', () => {
+    // Opens the dropdown
     cy.get('.c-btn--icon-alone').click();
     cy.get('.crayons-dropdown').should('be.visible');
 
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('not.visible');
-  });
-
-  it('should open the dropdown on button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-  });
-
-  it('should open the dropdown on button click and close the dropdown on same button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-
+    // Closes the dropdown on same button click
     cy.get('.c-btn--icon-alone').click();
     cy.get('.crayons-dropdown').should('not.visible');
   });
@@ -180,52 +158,15 @@ describe('Article flagged by a trusted user', () => {
     });
   });
 
-  it('should display the correct default data', () => {
-    cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
-  });
-
-  it('should display the correct user name', () => {
-    cy.get('.flex .crayons-subtitle-3').should(
-      'contain',
-      'Trusted User 1 \\:/',
-    );
-  });
-
-  it('should display the open flag status', () => {
+  it('should display the open flag status and correct score', () => {
+    // Open flag status
     cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
     cy.get('@flagStatus')
       .should('have.class', 'c-indicator--warning')
       .and('contain', 'Open');
-  });
 
-  it('should display the correct score for open flag', () => {
+    // Score
     cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '-50');
-  });
-
-  it('should open the dropdown on button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-  });
-
-  it('should open the dropdown on button click and close the dropdown on same button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('not.visible');
-  });
-
-  it('should open the dropdown on button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-  });
-
-  it('should open the dropdown on button click and close the dropdown on same button click', () => {
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('be.visible');
-
-    cy.get('.c-btn--icon-alone').click();
-    cy.get('.crayons-dropdown').should('not.visible');
   });
 
   it('should display both "Mark as Valid" and "Mark as Invalid" options in the dropdown', () => {
