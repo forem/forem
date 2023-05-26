@@ -1,11 +1,29 @@
 module Api
   module V1
     class AudienceSegmentsController < ApiController
+      DEFAULT_PER_PAGE = 30
       MAX_USER_IDS = 10_000
+      USER_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id username name twitter_username github_username
+        profile_image website_url location summary created_at
+      ].freeze
 
       before_action :authenticate_with_api_key!
       before_action :require_admin
       before_action :restrict_user_ids, only: %i[add_users remove_users]
+
+      def index
+        page, per_page = pagination_params
+        @segments = scope.including_user_counts.order(id: :desc).page(page).per(per_page)
+
+        render json: @segments
+      end
+
+      def show
+        @segment = scope.including_user_counts.find(params[:id])
+
+        render json: @segment
+      end
 
       def create
         @segment = AudienceSegment.create!(type_of: "manual")
@@ -23,6 +41,13 @@ module Api
           result = @segment.destroy
           render json: @segment, status: (result ? :ok : :conflict)
         end
+      end
+
+      def users
+        @segment = scope.find(params[:id])
+
+        page, per_page = pagination_params
+        @users = @segment.users.joins(:profile).select(USER_ATTRIBUTES_FOR_SERIALIZATION).page(page).per(per_page)
       end
 
       def add_users
@@ -48,6 +73,14 @@ module Api
         return unless @user_ids.size > MAX_USER_IDS
 
         render json: { error: "Too many user IDs provided" }, status: :unprocessable_entity
+      end
+
+      def pagination_params
+        per_page_param = params[:per_page] || DEFAULT_PER_PAGE
+        max_per_page = ApplicationConfig["API_PER_PAGE_MAX"] || 1000
+        per_page = [per_page_param, max_per_page].map(&:to_i).min
+
+        [params[:page].to_i, per_page]
       end
 
       def scope
