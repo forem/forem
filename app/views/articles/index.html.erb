@@ -39,7 +39,7 @@
 
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
-      <%= render(partial: "users/onboardings/task_card") if user_signed_in? %>
+      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
