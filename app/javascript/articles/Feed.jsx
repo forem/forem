@@ -12,7 +12,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     new Set(reading_list_ids),
   );
   const [pinnedItem, setPinnedItem] = useState(null);
-  const [featuredItem, setFeaturedItem] = useState(null);
+  const [imageItem, setimageItem] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
   const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [onError, setOnError] = useState(false);
@@ -31,10 +31,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
           ]) => {
             let organizedFeedItems = [];
             // Ensure first article is one with a main_image
-            // This is important because the featuredPost will
+            // This is important because the imagePost will
             // appear at the top of the feed, with a larger
             // main_image than any of the stories or feed elements.
-            const featuredPost = feedPosts.find(
+            const imagePost = feedPosts.find(
               (story) => story.main_image !== null,
             );
 
@@ -47,9 +47,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
 
               // If pinned and featured article aren't the same,
-              // (either because featuredPost is missing or because they represent two different articles),
+              // (either because imagePost is missing or because they represent two different articles),
               // we set the pinnedPost.
-              if (pinnedPost.id !== featuredPost?.id) {
+              if (pinnedPost.id !== imagePost?.id) {
                 setPinnedItem(pinnedPost);
                 organizedFeedItems.push(pinnedPost);
               }
@@ -57,11 +57,11 @@ export const Feed = ({ timeFrame, renderFeed }) => {
 
             // Remove that first story from the array to
             // prevent it from rendering twice in the feed.
-            const featuredPostIndex = feedPosts.indexOf(featuredPost);
-            if (featuredPost) {
-              feedPosts.splice(featuredPostIndex, 1);
-              setFeaturedItem(featuredPost);
-              organizedFeedItems.push(featuredPost);
+            const imagePostIndex = feedPosts.indexOf(imagePost);
+            if (imagePost) {
+              feedPosts.splice(imagePostIndex, 1);
+              setimageItem(imagePost);
+              organizedFeedItems.push(imagePost);
             }
 
             // Get and set the podcasts
@@ -236,7 +236,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
       ) : (
         renderFeed({
           pinnedItem,
-          featuredItem,
+          imageItem,
           feedItems,
           podcastEpisodes,
           bookmarkedFeedItems,

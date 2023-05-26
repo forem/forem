@@ -45,7 +45,7 @@ function sendFeaturedArticleAnalyticsGA4(articleId) {
 
 function feedConstruct(
   pinnedItem,
-  featuredItem,
+  imageItem,
   feedItems,
   podcastEpisodes,
   bookmarkedFeedItems,
@@ -59,9 +59,9 @@ function feedConstruct(
 
   const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
 
-  if (featuredItem) {
-    sendFeaturedArticleGoogleAnalytics(featuredItem.id);
-    sendFeaturedArticleAnalyticsGA4(featuredItem.id);
+  if (imageItem) {
+    sendFeaturedArticleGoogleAnalytics(imageItem.id);
+    sendFeaturedArticleAnalyticsGA4(imageItem.id);
   }
 
   return feedItems.map((item) => {
@@ -96,16 +96,16 @@ function feedConstruct(
         );
       }
 
-      if (item.id === featuredItem?.id) {
+      if (item.id === imageItem?.id) {
         return (
           <Article
             {...commonProps}
             key={item.id}
-            article={featuredItem}
+            article={imageItem}
             isFeatured
             feedStyle={feedStyle}
-            isBookmarked={bookmarkedFeedItems.has(featuredItem.id)}
-            saveable={featuredItem.user_id != currentUserId}
+            isBookmarked={bookmarkedFeedItems.has(imageItem.id)}
+            saveable={imageItem.user_id != currentUserId}
           />
         );
       }
@@ -169,7 +169,7 @@ export const renderFeed = async (timeFrame) => {
 
   const callback = ({
     pinnedItem,
-    featuredItem,
+    imageItem,
     feedItems,
     podcastEpisodes,
     bookmarkedFeedItems,
@@ -184,7 +184,7 @@ export const renderFeed = async (timeFrame) => {
       <div>
         {feedConstruct(
           pinnedItem,
-          featuredItem,
+          imageItem,
           feedItems,
           podcastEpisodes,
           bookmarkedFeedItems,
