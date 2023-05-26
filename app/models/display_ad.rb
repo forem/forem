@@ -25,8 +25,6 @@ class DisplayAd < ApplicationRecord
   RARELY = (0...5) # 5 percent chance
   SELDOM = (5...35) # 30 percent chance
 
-  attr_reader :audience_segment_type
-
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
@@ -109,6 +107,10 @@ class DisplayAd < ApplicationRecord
     errors.add(:type_of, "must be in_house if display ad is a Home Hero")
   end
 
+  def audience_segment_type
+    @audience_segment_type ||= audience_segment&.type_of
+  end
+
   def audience_segment_type=(type)
     errors.delete(:audience_segment_type)
     @audience_segment_type = type
@@ -118,7 +120,7 @@ class DisplayAd < ApplicationRecord
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
     overrides = {
-      "audience_segment_type" => audience_segment&.type_of,
+      "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
