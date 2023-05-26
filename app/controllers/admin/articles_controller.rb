@@ -33,7 +33,7 @@ module Admin
     end
 
     def show
-      @article = Article.find(params[:id])
+      @article = Article.includes(reactions: :user).find(params[:id])
     end
 
     def update
@@ -59,7 +59,7 @@ module Admin
           redirect_to admin_article_path(article.id)
         end
         format.js do
-          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+          render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
         end
       end
     end
@@ -75,7 +75,7 @@ module Admin
           redirect_to admin_article_path(article.id)
         end
         format.js do
-          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+          render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
         end
       end
     end
