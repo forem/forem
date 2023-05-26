@@ -35,8 +35,10 @@ class DisplayAd < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
-  validate :valid_audience_segment_type,
-           :valid_audience_segment_match,
+  validates :audience_segment_type,
+            inclusion: { in: AudienceSegment.type_ofs },
+            allow_blank: true
+  validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
            :validate_tag
@@ -190,12 +192,6 @@ class DisplayAd < ApplicationRecord
     change_relevant_to_audience &&
       audience_segment &&
       audience_segment.updated_at < 1.day.ago
-  end
-
-  def valid_audience_segment_type
-    return if audience_segment_type.blank?
-
-    errors.add(:audience_segment_type) unless AudienceSegment.valid_type?(audience_segment_type)
   end
 
   def valid_audience_segment_match
