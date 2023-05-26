@@ -7,7 +7,6 @@ codecov:
   require_ci_to_pass: no
   notify:
     wait_for_ci: no
-    after_n_builds: 12 # Actually we have 18 total but this ensure we get a (incomplete) result even if some failed to upload
 ignore:
   - "vendor"
   - "bin"
@@ -23,4 +22,4 @@ coverage:
     project: false
 flag_management:
   default_rules:
-    carryforward: true
+    carryforward: false

@@ -430,6 +430,25 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                 }
             },
             required: %w[name body_markdown placement_area]
+          },
+          Segment: {
+            description: "A manually managed audience segment",
+            type: "object",
+            properties: {
+              id: { type: :integer, description: "The ID of the segment" },
+              type_of: { type: :string, enum: ["manual"], default: "manual", description: "Marks the segment as manually managed (other types are internal)" },
+              user_count: { type: :integer, description: "The current number of users in the segment" }
+            }
+          },
+          SegmentUserIds: {
+            type: "object",
+            properties: {
+              user_ids: {
+                type: :array,
+                items: { type: :integer },
+                maxItems: 10_000
+              }
+            }
           }
         }
       }

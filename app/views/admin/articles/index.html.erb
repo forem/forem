@@ -20,7 +20,7 @@
 
 <%= paginate @articles %>
 
-<div
+<div id="member-index-content"
   class="flex flex-col gap-4"
   data-controller="article-pinned-modal"
   data-article-pinned-modal-root-selector-value="#article-pin-modal-root"
@@ -34,18 +34,18 @@
   <% if @pinned_article.present? %>
     <div class="crayons-card crayons-card--elevated p-2">
       <h2 class="crayons-subtitle-1 flex gap-2 items-center mb-2 p-2"><%= crayons_icon_tag("pin.svg") %> Pinned Article</h2>
-      <%= render partial: "individual_article", locals: { article: @pinned_article } %>
+      <%= render partial: "article_item", locals: { article: @pinned_article } %>
     </div>
   <% end %>
 
   <% if @featured_articles.present? %>
     <div class="crayons-card p-3">
       <h2 class="crayons-subtitle-1 flex gap-2 items-center mb-2">Manually Featured Articles</h2>
-      <%= render partial: "individual_article", collection: @featured_articles, as: :article %>
+      <%= render partial: "article_item", collection: @featured_articles, as: :article %>
     </div>
   <% end %>
 
-  <%= render partial: "individual_article", collection: @articles, as: :article %>
+  <%= render partial: "article_item", collection: @articles, as: :article %>
   <%= paginate @articles %>
 
   <%= render partial: "pinned_article_modal" %>
