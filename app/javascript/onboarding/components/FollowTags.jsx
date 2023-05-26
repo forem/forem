@@ -18,7 +18,7 @@ export class FollowTags extends Component {
   }
 
   componentDidMount() {
-    fetch('/tags/onboarding')
+    fetch('/onboarding/tags')
       .then((response) => response.json())
       .then((data) => {
         this.setState({ allTags: data });
@@ -161,7 +161,7 @@ export class FollowTags extends Component {
                         class="crayons-checkbox"
                         type="checkbox"
                         checked={selected}
-                        disabled
+                        tabindex="-1"
                       />
                     </div>
                   </div>
