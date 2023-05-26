@@ -46,8 +46,8 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               // remove pinned article from the feed without setting it as state.
               feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
 
-              // If pinned and image article aren't the same,
-              // (either because imagePost is missing or because they represent two different articles),
+              // If the pinned and the image post aren't the same,
+              // (either because imagePost is missing or because they represent two different posts),
               // we set the pinnedPost.
               if (pinnedPost.id !== imagePost?.id) {
                 setPinnedItem(pinnedPost);
@@ -55,7 +55,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               }
             }
 
-            // Remove that first story from the array to
+            // Remove that first post from the array to
             // prevent it from rendering twice in the feed.
             const imagePostIndex = feedPosts.indexOf(imagePost);
             if (imagePost) {
