@@ -38,7 +38,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               (story) => story.main_image !== null,
             );
 
-            // Here we extract from the feed two special items: pinned and featured
+            // Here we extract from the feed two special items: pinned and image
             const pinnedPost = feedPosts.find((story) => story.pinned === true);
 
             // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
@@ -46,7 +46,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               // remove pinned article from the feed without setting it as state.
               feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
 
-              // If pinned and featured article aren't the same,
+              // If pinned and image article aren't the same,
               // (either because imagePost is missing or because they represent two different articles),
               // we set the pinnedPost.
               if (pinnedPost.id !== imagePost?.id) {
@@ -72,7 +72,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             organizedFeedItems.push(feedPosts);
 
             // 1. Show the pinned post first
-            // 2. Show the featured post next
+            // 2. Show the image post next
             // 3. Podcast episodes out today
             // 4. Rest of the stories for the feed
             // we filter by null in case there was not a pinned Article
