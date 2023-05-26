@@ -998,6 +998,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_132219) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
     t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
     t.index ["user_id"], name: "index_segmented_users_on_user_id"
   end

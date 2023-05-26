@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [
-    "/tags/onboarding", # Needs to change when suggested_tags is edited.
+    "/onboarding/tags", # Needs to change when suggested_tags is edited.
     "/onboarding", # Page is cached at edge.
     "/", # Page is cached at edge.
   ].freeze
