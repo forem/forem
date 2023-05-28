@@ -23,31 +23,43 @@
       </div>
       <div class="crayons-field">
         <%= form.label :title, class: "crayons-field__label" %>
-        <%= form.text_field :title, placeholder: "Code Newbie", class: "crayons-textfield" %>
+        <%= form.text_field :title, placeholder: "Подкаст про бджол", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :description, "Description", class: "crayons-field__label" %>
-        <%= form.text_area :description, placeholder: "Stories and interviews from people on their coding journey.", class: "crayons-textfield" %>
+        <%= form.label :description, "Опис", class: "crayons-field__label" %>
+        <%= form.text_area :description, placeholder: "Найсвіжіші новини зі світу пасіки.", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
         <%= form.label :website_url, class: "crayons-field__label" %>
-        <%= form.text_field :website_url, class: "crayons-textfield", placeholder: "https://codenewbie.org/podcast" %>
+        <%= form.text_field :website_url, class: "crayons-textfield", placeholder: "https://bjola.com.ua/podcast" %>
       </div>
       <div class="crayons-field">
         <%= form.label :feed_url, class: "crayons-field__label" %>
-        <%= form.text_field :feed_url, class: "crayons-textfield", placeholder: "http://feeds.codenewbie.org/cnpodcast.xml" %>
+        <%= form.text_field :feed_url, class: "crayons-textfield", placeholder: "https://bjola.com.ua/podcast/rss" %>
       </div>
       <div class="crayons-field">
         <%= form.label :twitter_username, class: "crayons-field__label" %>
-        <%= form.text_field :twitter_username, class: "crayons-textfield", placeholder: "CodeNewbies" %>
+        <%= form.text_field :twitter_username, class: "crayons-textfield", placeholder: "bjolaua" %>
       </div>
       <div class="crayons-field">
         <%= form.label :slug, class: "crayons-field__label" %>
-        <%= form.text_field :slug, class: "crayons-textfield", placeholder: "podcast-title" %>
+        <%= form.text_field :slug, class: "crayons-textfield", placeholder: "bjola" %>
       </div>
       <div class="crayons-field">
         <%= form.label :main_color_hex, class: "crayons-field__label" %>
         <%= form.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
+		
+
+        <%= f.public_send(:text_field, "podcast_main_color_hex"]",
+                          value: "podcast_main_color_hex",
+						  name: "podcast[main_color_hex]",
+						  id: "podcast_main_color_hex",
+                          placeholder: "#FF00FF",
+                          class: "crayons-textfield",
+                          data: { color_picker: "true", label_text: "Основний колір" }) %>
+
+
+		
       </div>
       <div class="crayons-field">
         <%= form.label :image, class: "crayons-field__label" %>
