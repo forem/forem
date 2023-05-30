@@ -388,6 +388,14 @@ class Article < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
+  scope :above_average, -> {
+    order(:score).where("score >= ?", average_score)
+  }
+
+  def self.average_score
+    sum(:score).to_f / count
+  end
+
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
     time_ago = 5.days.ago if time_ago == "latest"

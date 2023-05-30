@@ -1359,4 +1359,20 @@ RSpec.describe Article do
       expect(categories.map(&:slug)).to contain_exactly(*%i[like])
     end
   end
+
+  describe ".above_average and .average_score" do
+    before do
+      create :article, score: 10
+      create :article, score: 6
+      create :article, score: 4
+      create :article, score: 1
+      # averages 4.2
+    end
+
+    it "should work as expected" do
+      expect(Article.average_score).to be_within(0.1).of(4.2)
+      articles = Article.above_average
+      expect(articles.pluck(:score)).to contain_exactly(10, 6)
+    end
+  end
 end
