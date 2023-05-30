@@ -46,8 +46,8 @@
         <%= form.text_field :slug, class: "crayons-textfield", placeholder: "bjola" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :main_color_hex, class: "crayons-field__label" %>
-        <%= form.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
+        <%= form.label :main_color_hex, class: "crayons-field__label", for: "colorpicker" %>
+        <%= form.color_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield"%>
       </div>
       <div class="crayons-field">
         <%= form.label :image, class: "crayons-field__label" %>
