@@ -6,12 +6,11 @@ describe('Flagging to admins', () => {
     });
   };
 
-  const findButton = (labelText, { as, highlighted }) => {
-    const assertion = highlighted ? 'have.class' : 'not.have.class';
+  const findButton = (labelText, { as }) => {
     cy.get('.reaction-button')
       .filter(`:contains("${labelText}")`)
       .as(as)
-      .should(assertion, 'reacted');
+      .should('not.have.class', 'reacted');
   };
 
   const clickButton = (buttonAlias) => {
@@ -24,7 +23,6 @@ describe('Flagging to admins', () => {
 
     cy.fixture('users/adminUser.json').as('admin');
     cy.fixture('users/questionableUser.json').as('contentUser');
-    cy.intercept('POST', '/reactions').as('flagRequest');
 
     cy.get('@admin').then((admin) => {
       cy.loginAndVisit(admin, '/series_user/series-test-article-slug');
@@ -34,18 +32,24 @@ describe('Flagging to admins', () => {
   it('flags and unflags only the comment when clicked', () => {
     navigateToCommentFlagPage().then(() => {
       cy.get('@contentUser').then(({ username }) => {
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
+        cy.intercept('POST', '/reactions').as('flagRequest');
+
+        findButton('Flag to Admins', { as: 'contentFlag' });
+        findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@contentFlag');
 
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: true });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
+        cy.get('@contentFlag').should('have.class', 'reacted');
+        cy.get('@userFlag').should('not.have.class', 'reacted');
+        // findButton('Flag to Admins', { as: 'contentFlag' });
+        // findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@contentFlag');
 
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
+        cy.get('@contentFlag').should('not.have.class', 'reacted');
+        cy.get('@userFlag').should('not.have.class', 'reacted');
+        // findButton('Flag to Admins', { as: 'contentFlag' });
+        // findButton(`Flag ${username}`, { as: 'userFlag' });
       });
     });
   });
@@ -53,18 +57,24 @@ describe('Flagging to admins', () => {
   it('flags and unflags only the user when clicked', () => {
     navigateToCommentFlagPage().then(() => {
       cy.get('@contentUser').then(({ username }) => {
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
+        cy.intercept('POST', '/reactions').as('flagRequest');
+
+        findButton('Flag to Admins', { as: 'contentFlag' });
+        findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@userFlag');
 
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: true });
+        cy.get('@contentFlag').should('not.have.class', 'reacted');
+        cy.get('@userFlag').should('have.class', 'reacted');
+        // findButton('Flag to Admins', { as: 'contentFlag' });
+        // findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@userFlag');
 
-        findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
-        findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
+        cy.get('@contentFlag').should('not.have.class', 'reacted');
+        cy.get('@userFlag').should('not.have.class', 'reacted');
+        // findButton('Flag to Admins', { as: 'contentFlag' });
+        // findButton(`Flag ${username}`, { as: 'userFlag' });
       });
     });
   });

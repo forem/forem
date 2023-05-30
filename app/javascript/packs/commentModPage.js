@@ -79,8 +79,8 @@ Array.from(document.getElementsByClassName('level-rating-button')).forEach(
 document
   .querySelectorAll('.reaction-button, .reaction-vomit-button')
   .forEach((btn) => {
-    btn.addEventListener('click', () => {
-      updateMainReactions(btn);
+    btn.addEventListener('click', async () => {
+      await updateMainReactions(btn);
     });
   });
 
