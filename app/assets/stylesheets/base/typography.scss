@@ -15,7 +15,9 @@
     --content-font-size: var(--fs-xl);
   }
 }
-
+#podcast_main_color_hex{
+    height:50px;
+}
 @font-face {
   font-family: OpenDyslexic;
   @include font-src('OpenDyslexic-Regular.otf');

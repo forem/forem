@@ -138,6 +138,11 @@ sub {
 sup {
   top: -0.5em;
 }
+#podcast_main_color_hex{
+    height:50px;
+}
+
+
 
 // Remove all animations and transitions for people that prefer not to see them
 @media (prefers-reduced-motion: reduce) {
