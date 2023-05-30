@@ -75,8 +75,9 @@ RSpec.describe ReactionHandler, type: :service do
     end
 
     context "when the reactable is a comment" do
+      let(:user) { moderator }
       let(:comment) { create(:comment) }
-      let!(:contradictory_mod) { article.reactions.create! user: moderator, category: "thumbsup" }
+      let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
       let(:params) do
         {
           reactable_id: comment.id,
@@ -136,8 +137,9 @@ RSpec.describe ReactionHandler, type: :service do
     end
 
     context "when the reactable is a comment" do
+      let(:user) { moderator }
       let(:comment) { create(:comment) }
-      let!(:contradictory_mod) { article.reactions.create! user: moderator, category: "thumbsup" }
+      let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
       let(:params) do
         {
           reactable_id: comment.id,
