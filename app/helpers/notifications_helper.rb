@@ -34,7 +34,7 @@ module NotificationsHelper
       )
     else
       I18n.t(action, user: key_to_link.call("user"))
-    end.html_safe # rubocop:disable Rails/OutputSafety
+    end.html_safe
   end
 
   def mod_comment_user(data)

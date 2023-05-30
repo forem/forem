@@ -74,6 +74,7 @@ fr:
             <br />
             Utilisez <b>Signaler aux admins</b> pour les violations du code de conduite (harcèlement, être un abruti, spam, etc.).
         other: Autres choses que vous pouvez faire
+        score: Score
         suspend:
           suspend_title: Suspendre %{username}
           suspend_user: Suspendre %{username}
@@ -116,6 +117,7 @@ fr:
         unpublish_post:
           modal_text1: Une fois dépublié, cet article sera invisible pour le public et accessible uniquement à %{username}.
           modal_text2: Ils peuvent toujours republier l'article tant qu'ils ne sont pas suspendus.
+        vomit: Drapeaux valides et ouverts
         vote_down: Faible qualité
         flag_to_admins: Signaler aux admins
         vote_up: Haute qualité
@@ -123,6 +125,27 @@ fr:
           one: '%{count} des articles de la journée précédente sont mis en avant.'
           other: '%{count} des articles de la journée précédente sont mis en avant.'
       all: Tous les sujets
+      article:
+        approved: Approuvée
+        author_id: Identifiant de l'auteur
+        comments: commentaires
+        contains_video: Contient une vidéo
+        co_author_ids: ID de co-auteur
+        edit: Modifier
+        featured: Mis en exergue
+        likes: aime
+        notes:
+          user_notes: notes d'utilisateur
+          view_all: Voir tout
+        pinned: Épinglé
+        pin_post: Épingler la publication
+        published_at: Publié à
+        save: Sauvegarder
+        unpin_post: Détacher la publication
+        unplublished: Inédit
+        user: Utilisateur
+        user_warned: Utilisateur averti
+        view_details: Voir les détails
       aside:
         all: Tous les sujets
         code_of_conduct: Code de conduite
@@ -139,6 +162,22 @@ fr:
         trusted: Guide de l'utilisateur de confiance
       author: Auteur
       date: Date
+      flags:
+        actions:
+          mark_as_invalid: Marquer comme non valide
+          mark_as_valid: Marquer comme valide
+        invalid:
+          title: Drapeau marqué comme invalide par l'administrateur
+          value: Invalide
+        open:
+          title: Drapeau ouvert
+          value: Ouvrir
+        unidentified:
+          title: Non identifié
+          value: Non identifié
+        valid:
+          title: Drapeau marqué comme valide par l'administrateur
+          value: Valide
       notice:
         subtitle: '%{community} Mods'
         desc1_html: Nous accordons périodiquement à certains membres de la %{community} des privilèges accrus afin de contribuer à la modération de la communauté.
@@ -149,3 +188,8 @@ fr:
         tag: Guide de modération des étiquettes
         trusted: Guide de l'utilisateur de confiance
       post: Article
+      priviliged_actions:
+        description: Toutes les actions du modérateur affectent le score. Le score global est une combinaison des actions des modérateurs et des réactions du public.
+        no_flags: L'article n'a pas de drapeaux.
+        no_quality_reactions: L'article n'a pas de réactions de qualité par des utilisateurs de confiance
+        title: Actions privilégiées
