@@ -168,6 +168,7 @@ Rails.application.routes.draw do
         patch :checkbox
         patch :notifications
         get :tags
+        get :suggestions, defaults: { format: :json }
       end
     end
 
