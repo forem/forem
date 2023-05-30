@@ -170,13 +170,13 @@ class Tag < ActsAsTaggableOn::Tag
       .order(hotness_score: :desc)
   end
 
-  def self.followed_by(user, points=(1..))
+  def self.followed_by(user, points = (1..))
     where(
       id: Follow.where(
         follower_id: user.id,
         followable_type: "ActsAsTaggableOn::Tag",
         points: points,
-      ).select(:followable_id)
+      ).select(:followable_id),
     )
   end
 

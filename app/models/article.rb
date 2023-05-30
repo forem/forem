@@ -388,7 +388,7 @@ class Article < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
-  scope :above_average, -> {
+  scope :above_average, lambda {
     order(:score).where("score >= ?", average_score)
   }
 

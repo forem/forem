@@ -1218,7 +1218,7 @@ RSpec.describe Article do
       co_author1 = create(:user)
       co_author2 = create(:user)
       article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
-      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+      expect(article.co_author_ids).to contain_exactly(co_author1.id, co_author2.id)
     end
   end
 
@@ -1356,22 +1356,22 @@ RSpec.describe Article do
 
     it "reports accurately" do
       categories = article.public_reaction_categories
-      expect(categories.map(&:slug)).to contain_exactly(*%i[like])
+      expect(categories.map(&:slug)).to match_array(%i[like])
     end
   end
 
   describe ".above_average and .average_score" do
     before do
-      create :article, score: 10
-      create :article, score: 6
-      create :article, score: 4
-      create :article, score: 1
+      create(:article, score: 10)
+      create(:article, score: 6)
+      create(:article, score: 4)
+      create(:article, score: 1)
       # averages 4.2
     end
 
-    it "should work as expected" do
-      expect(Article.average_score).to be_within(0.1).of(4.2)
-      articles = Article.above_average
+    it "works as expected" do
+      expect(described_class.average_score).to be_within(0.1).of(4.2)
+      articles = described_class.above_average
       expect(articles.pluck(:score)).to contain_exactly(10, 6)
     end
   end
