@@ -49,10 +49,14 @@ _Please replace this line with instructions on how to test your changes, a note
 on the devices and browsers this has been tested on, as well as any relevant
 images for UI changes._
 
-### UI accessibility concerns?
+### UI accessibility checklist
+_If your PR includes UI changes, please utilize this checklist:_
+- [ ] Semantic HTML implemented?
+- [ ] Keyboard operability supported?
+- [ ] Checked with [axe DevTools](https://www.deque.com/axe/) and addressed `Critical` and `Serious` issues?
+- [ ] Color contrast tested?
 
-_If your PR includes UI changes, please replace this line with details on how
-accessibility is impacted and tested. For more info, check out the
+_For more info, check out the
 [Forem Accessibility Docs](https://developers.forem.com/frontend/accessibility)._
 
 ## Added/updated tests?

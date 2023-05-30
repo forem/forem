@@ -25,11 +25,59 @@ RSpec.describe "Api::V1::Docs::AudienceSegments" do
     admin_api_secret.user.add_role(:admin)
   end
 
-  describe "POST /segments" do
-    path "/api/segments" do
+  path "/api/segments" do
+    describe "GET /segments" do
+      get "Manually managed audience segments" do
+        tags "segments"
+        description "This endpoint allows the client to retrieve a list of audience segments.
+
+An audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.
+
+The endpoint supports pagination, and each page will contain `30` segments by default."
+        operationId "getSegments"
+        produces "application/json"
+        consumes "application/json"
+
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "200", "A List of manually managed audience segments" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:second_segment) { AudienceSegment.create!(type_of: "manual") }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/Segment" }
+
+          before do
+            segment.users << users
+            second_segment.users << create(:user)
+          end
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { regular_api_secret.secret }
+
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+
+    describe "POST /segments" do
       post "Create a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a DisplayAd/Billboard/Widget. This API only permits managing segments you create and maintain yourself."
+        description "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself."
         operationId "createSegment"
         produces "application/json"
         consumes "application/json"
@@ -61,11 +109,65 @@ RSpec.describe "Api::V1::Docs::AudienceSegments" do
     end
   end
 
-  describe "DELETE /segments/:id" do
-    path "/api/segments/{id}" do
+  path "/api/segments/{id}" do
+    describe "GET /segments/:id" do
+      get "A manually managed audience segment" do
+        tags "segments"
+        description "This endpoint allows the client to retrieve a single manually-managed audience segment specified by ID."
+        operationId "getSegment"
+        produces "application/json"
+        consumes "application/json"
+
+        parameter name: :id, in: :path, required: true, schema: id_schema
+
+        response "200", "The audience segment" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:id) { segment.id }
+          schema  type: :object,
+                  items: { "$ref": "#/components/schemas/Segment" }
+
+          before do
+            segment.users << users
+          end
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:id) { segment.id }
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { regular_api_secret.secret }
+          let(:id) { segment.id }
+
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Audience Segment Not Found" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:id) { automatic_segment.id }
+
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+
+    describe "DELETE /segments/:id" do
       delete "Delete a manually managed audience segment" do
         tags "segments"
-        description "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any DisplayAds/Billboards/Widgets using them."
+        description "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any Billboards using them."
         operationId "deleteSegment"
         produces "application/json"
         consumes "application/json"
@@ -116,6 +218,63 @@ RSpec.describe "Api::V1::Docs::AudienceSegments" do
           before do
             billboard.update!(audience_segment: segment)
           end
+
+          add_examples
+
+          run_test!
+        end
+      end
+    end
+  end
+
+  describe "GET /segments/:id/users" do
+    path "/api/segments/{id}/users" do
+      get "Users in a manually managed audience segment" do
+        tags "segments"
+        description "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default."
+        operationId "getUsersInSegment"
+        produces "application/json"
+        consumes "application/json"
+
+        parameter name: :id, in: :path, required: true, schema: id_schema
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
+
+        response "200", "A List of users in the audience segment" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:id) { segment.id }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/User" }
+
+          before do
+            segment.users << users
+          end
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { nil }
+          let(:id) { segment.id }
+
+          add_examples
+
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:"api-key") { regular_api_secret.secret }
+          let(:id) { segment.id }
+
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Audience Segment Not Found" do
+          let(:"api-key") { admin_api_secret.secret }
+          let(:id) { automatic_segment.id }
 
           add_examples
 
