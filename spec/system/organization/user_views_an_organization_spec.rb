@@ -4,13 +4,12 @@ RSpec.describe "Organization index" do
   let!(:org_user) { create(:user, :org_member) }
   let(:organization) { org_user.organizations.first }
 
-  before do
-    create_list(:article, 2, organization: organization)
-  end
-
   context "when user does not follow organization" do
     context "when 2 articles" do
-      before { visit "/#{organization.slug}" }
+      before do
+        create_list(:article, 2, organization: organization)
+        visit "/#{organization.slug}"
+      end
 
       it "shows the header", js: true do
         within("h1.crayons-title") { expect(page).to have_content(organization.name) }
@@ -30,6 +29,10 @@ RSpec.describe "Organization index" do
         end
       end
 
+      it "shows the right amount of articles in sidebar" do
+        expect(page).to have_content("2 posts published")
+      end
+
       it "shows the proper title tag" do
         expect(page).to have_title("#{organization.name} - #{Settings::Community.community_name}")
       end
@@ -39,6 +42,17 @@ RSpec.describe "Organization index" do
       it "visits ok", js: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
+      end
+    end
+
+    context "when more than 8 articles" do
+      before do
+        create_list(:article, 9, organization: organization)
+        visit "/#{organization.slug}"
+      end
+
+      it "tells the user the correct amount of posts published" do
+        expect(page).to have_content("9 posts published")
       end
     end
   end

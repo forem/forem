@@ -33,6 +33,7 @@ class Tag < ActsAsTaggableOn::Tag
   include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
 
   belongs_to :badge, optional: true
 
@@ -74,6 +75,8 @@ class Tag < ActsAsTaggableOn::Tag
   #       for a non-aliased tag (aside from "not an alias").  With
   #       this scope we have a name.
   scope :direct, -> { where(alias_for: [nil, ""]) }
+
+  scope :select_attributes_for_serialization, -> { select(ATTRIBUTES_FOR_SERIALIZATION) }
 
   pg_search_scope :search_by_name,
                   against: :name,
