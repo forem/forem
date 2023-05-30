@@ -14,10 +14,9 @@ describe('Flagging to admins', () => {
       .should(assertion, 'reacted');
   };
 
-  const clickWithPageReload = (buttonAlias) => {
+  const clickButton = (buttonAlias) => {
     cy.get(buttonAlias).click();
     cy.wait('@flagRequest');
-    cy.reload();
   };
 
   beforeEach(() => {
@@ -38,12 +37,12 @@ describe('Flagging to admins', () => {
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
 
-        clickWithPageReload('@contentFlag');
+        clickButton('@contentFlag');
 
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: true });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
 
-        clickWithPageReload('@contentFlag');
+        clickButton('@contentFlag');
 
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
@@ -57,12 +56,12 @@ describe('Flagging to admins', () => {
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });
 
-        clickWithPageReload('@userFlag');
+        clickButton('@userFlag');
 
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: true });
 
-        clickWithPageReload('@userFlag');
+        clickButton('@userFlag');
 
         findButton('Flag to Admins', { as: 'contentFlag', highlighted: false });
         findButton(`Flag ${username}`, { as: 'userFlag', highlighted: false });

@@ -33,7 +33,7 @@
     <hr />
   <% end %>
 
-  <div style="display: flex; justify-content: space-around;">
+  <div id="content-mod-actions" class="flex justify-around">
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
           data-category="thumbsup"
