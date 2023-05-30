@@ -21,13 +21,23 @@
       </button>
 
       <button
-        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
         data-reactable-id="<%= json_data["article"]["id"] %>"
         data-category="readinglist"
         data-reactable-type="Article">
         <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
         <%= crayons_icon_tag("small-save", class: "reaction-icon not-reacted", title: t("views.reactions.readingList.icon")) %>
         <%= crayons_icon_tag("small-save-filled", class: "reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.readingList.icon")) %>
+      </button>
+
+      <button
+        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
+        data-reactable-id="<%= json_data["article"]["id"] %>"
+        data-category="readinglist"
+        data-reactable-type="Article">
+        <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.subscribe.text") %></span>
+        <%= crayons_icon_tag("small-save", class: "reaction-icon not-reacted", title: t("views.reactions.subscribe.icon")) %>
+        <%= crayons_icon_tag("small-save-filled", class: "reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.subscribe.icon")) %>
       </button>
     </footer>
   <% end %>
