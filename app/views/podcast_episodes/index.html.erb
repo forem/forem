@@ -2,7 +2,7 @@
   <%= render "podcast_episodes/meta" %>
 <% end %>
 <% if @podcast %>
-  <div class="spec__podcast-header mb-3" style="background:#<%= @podcast.main_color_hex %>;" class="mb-4">
+  <div class="spec__podcast-header mb-3" style="background:<%= @podcast.main_color_hex %>;" class="mb-4">
     <div class="crayons-layout relative">
       <nav class="s:absolute mt-2">
         <a href="/pod" class="crayons-btn crayons-btn--ghost crayons-btn--inverted"><%= t("views.podcasts.view_all_podcasts") %></a>

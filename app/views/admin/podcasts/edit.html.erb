@@ -98,8 +98,9 @@
           <%= f.text_field :twitter_username, class: "crayons-textfield" %>
         </div>
         <div class="crayons-field">
-          <%= f.label :main_color_hex, for: "main_color_hex", class: "crayons-field__label" %>
-          <%= f.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
+        <%= form.label :main_color_hex, class: "crayons-field__label", for: "colorpicker" %>
+        <%= form.color_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield"%>
+
         </div>
         <div class="crayons-field">
           <%= f.label :slug, for: "slug", class: "crayons-field__label" %>
