@@ -1,6 +1,9 @@
 module Organizations
   class SuggestProminent
     class_attribute :average_score
+    def self.recently_published
+      3.weeks.ago.freeze
+    end
 
     def self.call(...)
       new(...).suggest
@@ -12,8 +15,9 @@ module Organizations
 
     def suggest
       article_scope = articles_from_followed_tags || Article
+      recently_published = article_scope.where(published_at: RECENTLY_PUBLISHED..)
 
-      organization_ids = above_average_articles_with_organization(article_scope)
+      organization_ids = above_average_articles_with_organization(recently_published)
         .pluck(:organization_id)
 
       Organization.where(id: organization_ids)

@@ -45,4 +45,16 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
     expect(results).not_to include(bad_organizations.first)
     expect(results).not_to include(bad_organizations.last)
   end
+
+  it "does not include orgs with posts published more than 3 weeks ago" do
+    old_timer = nil # so this is still accessible after block
+
+    Timecop.travel(5.weeks.ago) do
+      old_timer = create(:organization)
+      create(:article, organization_id: old_timer.id, score: 50)
+    end
+
+    results = suggester.suggest
+    expect(results).not_to include(old_timer)
+  end
 end
