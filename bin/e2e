@@ -2,6 +2,7 @@
 
 # Setting the port that the Rails app launches on for a stable app domain in permalinks
 # (otherwise, Cypress chooses a random port each run)
+# Choosing 30300 here to avoid conflicts with local dev on :3000
 export CYPRESS_RAILS_HOST="localhost"
 export CYPRESS_RAILS_PORT="30300"
 export APP_DOMAIN="localhost:30300"
