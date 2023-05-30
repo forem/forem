@@ -41,15 +41,11 @@ describe('Flagging to admins', () => {
 
         cy.get('@contentFlag').should('have.class', 'reacted');
         cy.get('@userFlag').should('not.have.class', 'reacted');
-        // findButton('Flag to Admins', { as: 'contentFlag' });
-        // findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@contentFlag');
 
         cy.get('@contentFlag').should('not.have.class', 'reacted');
         cy.get('@userFlag').should('not.have.class', 'reacted');
-        // findButton('Flag to Admins', { as: 'contentFlag' });
-        // findButton(`Flag ${username}`, { as: 'userFlag' });
       });
     });
   });
@@ -66,15 +62,11 @@ describe('Flagging to admins', () => {
 
         cy.get('@contentFlag').should('not.have.class', 'reacted');
         cy.get('@userFlag').should('have.class', 'reacted');
-        // findButton('Flag to Admins', { as: 'contentFlag' });
-        // findButton(`Flag ${username}`, { as: 'userFlag' });
 
         clickButton('@userFlag');
 
         cy.get('@contentFlag').should('not.have.class', 'reacted');
         cy.get('@userFlag').should('not.have.class', 'reacted');
-        // findButton('Flag to Admins', { as: 'contentFlag' });
-        // findButton(`Flag ${username}`, { as: 'userFlag' });
       });
     });
   });
