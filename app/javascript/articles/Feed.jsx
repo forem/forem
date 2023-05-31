@@ -14,7 +14,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   const [pinnedItem, setPinnedItem] = useState(null);
   const [imageItem, setimageItem] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
-  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [onError, setOnError] = useState(false);
 
   useEffect(() => {
@@ -64,10 +63,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               organizedFeedItems.push(imagePost);
             }
 
-            // Get and set the podcasts
             const podcasts = getPodcastEpisodes();
-            setPodcastEpisodes(podcasts);
-
             organizedFeedItems.push(podcasts);
             // we want to expand the array into the organizedFeedItems
             organizedFeedItems.push(...feedPosts);
@@ -237,7 +233,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
           pinnedItem,
           imageItem,
           feedItems,
-          podcastEpisodes,
           bookmarkedFeedItems,
           bookmarkClick,
         })

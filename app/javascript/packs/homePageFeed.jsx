@@ -47,7 +47,6 @@ function feedConstruct(
   pinnedItem,
   imageItem,
   feedItems,
-  podcastEpisodes,
   bookmarkedFeedItems,
   bookmarkClick,
   currentUserId,
@@ -171,7 +170,6 @@ export const renderFeed = async (timeFrame) => {
     pinnedItem,
     imageItem,
     feedItems,
-    podcastEpisodes,
     bookmarkedFeedItems,
     bookmarkClick,
   }) => {
@@ -186,7 +184,6 @@ export const renderFeed = async (timeFrame) => {
           pinnedItem,
           imageItem,
           feedItems,
-          podcastEpisodes,
           bookmarkedFeedItems,
           bookmarkClick,
           currentUserId,
