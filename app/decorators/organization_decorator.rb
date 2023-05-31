@@ -29,4 +29,8 @@ class OrganizationDecorator < ApplicationDecorator
     # We deal with them in other ways, but we still need to respond to this question.
     false
   end
+
+  def type_identifier
+    class_name.downcase
+  end
 end

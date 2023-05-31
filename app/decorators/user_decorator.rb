@@ -136,6 +136,10 @@ class UserDecorator < ApplicationDecorator
     profile.summary.presence || DEFAULT_PROFILE_SUMMARY.call
   end
 
+  def type_identifier
+    class_name.downcase
+  end
+
   delegate :display_sponsors, to: :setting
 
   delegate :display_announcements, to: :setting

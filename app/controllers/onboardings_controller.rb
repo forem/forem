@@ -16,8 +16,8 @@ class OnboardingsController < ApplicationController
   end
 
   def suggestions
-    @suggestions = suggested_user_follows
-    @suggestions += suggested_organization_follows
+    suggested_follows = suggested_user_follows + suggested_organization_follows
+    @suggestions = ApplicationDecorator.decorate_collection(suggested_follows)
   end
 
   def tags
