@@ -55,7 +55,16 @@ describe('<Feed /> component', () => {
       });
     });
 
-    it.skip('should set the imageItem', async () => {});
+    it('should set the imageItem', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        const firstImageItem = feedPosts.find(
+          (post) => post.main_image !== null,
+        );
+        expect(lastCallback.imageItem).toEqual(firstImageItem);
+      });
+    });
 
     it.skip('should set the correct podcastEpisodes', async () => {
       // we can remove this

@@ -35,11 +35,11 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // appear at the top of the feed, with a larger
             // main_image than any of the stories or feed elements.
             const imagePost = feedPosts.find(
-              (story) => story.main_image !== null,
+              (post) => post.main_image !== null,
             );
 
             // Here we extract from the feed two special items: pinned and image
-            const pinnedPost = feedPosts.find((story) => story.pinned === true);
+            const pinnedPost = feedPosts.find((post) => post.pinned === true);
 
             // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
             if (pinnedPost && timeFrame === '') {
