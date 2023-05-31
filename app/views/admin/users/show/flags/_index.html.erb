@@ -1,3 +1,4 @@
+<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdowmButton", defer: true %>
 <% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
 
 <h2 class="crayons-subtitle-2 px-1"><%= t("views.moderations.priviliged_actions.title") %></h2>
