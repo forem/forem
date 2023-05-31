@@ -16,8 +16,8 @@ class OnboardingsController < ApplicationController
   end
 
   def suggestions
-    @suggestions = Users::SuggestRecent.call(current_user,
-                                             attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
+    @suggestions = suggested_user_follows
+    @suggestions += suggested_organization_follows
   end
 
   def tags
@@ -100,5 +100,14 @@ class OnboardingsController < ApplicationController
     respond_to do |format|
       format.json { render json: { errors: errors }, status: status }
     end
+  end
+
+  def suggested_organization_follows
+    Organizations::SuggestProminent.call(current_user)
+  end
+
+  def suggested_user_follows
+    Users::SuggestRecent.call(current_user,
+                              attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
   end
 end
