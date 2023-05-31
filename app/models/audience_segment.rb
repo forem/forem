@@ -58,10 +58,6 @@ class AudienceSegment < ApplicationRecord
       .map { |(id, type)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), id] }
   end
 
-  def self.valid_type?(type)
-    type_ofs.key?(type.to_s)
-  end
-
   def persist_recently_active_users
     self.users = self.class.recently_active_users_in_segment(type_of)
   end
