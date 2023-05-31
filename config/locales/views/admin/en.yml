@@ -213,7 +213,7 @@ en:
             comment: Comment on "%{title}"
             profile: User's profile
           origin_html: Flagged by %{user}
-          score: Score affected by a particular flag
+          score: Article and comment score affected by particular flag
         notes:
           empty1: No previous notes found for %{user}.
           empty2: Any notes added for %{user} will be found here.

@@ -39,7 +39,10 @@
         </span>
       <% end %>
 
-      <span data-testid="flag-score" class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.admin.articles.flags.score") %>">
+      <span
+        data-testid="flag-score"
+        class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center"
+        title="<%= t("views.admin.#{text_section}.flags.score") %>">
         <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
         <span class="fs-s fw-medium lh-base"><%= vomit_reaction.points %></span>
       </span>

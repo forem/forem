@@ -7,7 +7,7 @@
 <div id="reaction-content" class="flex flex-col gap-3 px-1 pt-6" style="overflow: auto; height: 406px;">
   <% if user_vomit_reactions.present? %>
     <% user_vomit_reactions.each do |vomit_reaction| %>
-      <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction %>
+      <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction, text_section: "users" %>
       <hr id="js__reaction__div__hr__<%= vomit_reaction.id %>" class="w-100 hr-no-margins">
     <% end %>
   <% else %>
