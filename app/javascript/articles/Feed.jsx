@@ -29,7 +29,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
-            let organizedFeedItems = [];
+            const organizedFeedItems = [];
             // Ensure first article is one with a main_image
             // This is important because the imagePost will
             // appear at the top of the feed, with a larger
@@ -69,14 +69,14 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             setPodcastEpisodes(podcasts);
 
             organizedFeedItems.push(podcasts);
-            organizedFeedItems.push(feedPosts);
+            // we want to expand the array into the organizedFeedItems
+            organizedFeedItems.push(...feedPosts);
 
             // 1. Show the pinned post first
             // 2. Show the image post next
-            // 3. Podcast episodes out today
+            // 3. Podcast episodes out today as an array
             // 4. Rest of the stories for the feed
             // we filter by null in case there was not a pinned Article
-            organizedFeedItems = organizedFeedItems.flat();
 
             if (organizedFeedItems.length >= 0) {
               organizedFeedItems.splice(0, 0, feedFirstBillboard);
@@ -89,7 +89,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             if (organizedFeedItems.length >= 9) {
               organizedFeedItems.splice(9, 0, feedThirdBillboard);
             }
-
             setFeedItems(organizedFeedItems);
           },
         );

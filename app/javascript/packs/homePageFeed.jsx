@@ -110,8 +110,8 @@ function feedConstruct(
         );
       }
 
-      if (item.podcast) {
-        return <PodcastEpisodes key={item.id} episodes={podcastEpisodes} />;
+      if (Array.isArray(item) && item[0].podcast) {
+        return <PodcastEpisodes key={item.id} episodes={item} />;
       }
 
       if (item.class_name === 'Article') {
