@@ -185,7 +185,7 @@ module Admin
                                  user: @user.username,
                                  email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
                                  id: @user.id,
-                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
+                                 the_page: link).html_safe
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -363,7 +363,7 @@ module Admin
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
           .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
-          .includes(:reactable)
+          .includes(:user)
           .order(created_at: :desc).limit(15)
     end
 

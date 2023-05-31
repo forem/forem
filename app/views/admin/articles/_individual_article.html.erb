@@ -219,7 +219,7 @@
       <% if params[:tab].blank? || params[:tab] == "flags" %>
         <% if vomit_article_reactions.present? %>
           <% vomit_article_reactions.each do |vomit_reaction| %>
-            <%= render "admin/articles/flag_action_item", vomit_reaction: vomit_reaction %>
+            <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction %>
             <hr id="js__reaction__div__hr__<%= vomit_reaction.id %>" class="w-100 hr-no-margins">
           <% end %>
         <% else %>
