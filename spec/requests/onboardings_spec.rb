@@ -82,10 +82,10 @@ RSpec.describe "Onboardings" do
     end
 
     context "when organization suggestions are found" do
-      let(:suggested_orgs) { create_list :organization, 2 }
+      let(:suggested_orgs) { create_list(:organization, 2) }
 
       let(:expected_json_keys) do
-        %w[ id name username profile_image_url following summary ]
+        %w[id name username profile_image_url following summary]
       end
 
       before do
@@ -97,11 +97,11 @@ RSpec.describe "Onboardings" do
 
         get suggestions_onboarding_path
 
-        response_org_ids = response.parsed_body.map { |json| json["id"] }
+        response_org_ids = response.parsed_body.pluck("id")
         expect(response_org_ids.size).to eq(2)
 
-        suggested_org_ids = suggested_orgs.map &:id
-        expect(response_org_ids).to contain_exactly(*suggested_org_ids)
+        suggested_org_ids = suggested_orgs.map(&:id)
+        expect(response_org_ids).to match_array(suggested_org_ids)
       end
 
       it "returns organization follow suggestions that have profile images" do
@@ -110,17 +110,17 @@ RSpec.describe "Onboardings" do
         get suggestions_onboarding_path
 
         response_org = response.parsed_body.first
-        expect(response_org.keys).to contain_exactly(*expected_json_keys)
+        expect(response_org.keys).to match_array(expected_json_keys)
         expect(response_org["profile_image_url"]).to eq(suggested_orgs.first.profile_image_url)
       end
     end
 
     context "when organization and user suggestions are found" do
-      let(:suggested_users) { create_list :user, 2 }
-      let(:suggested_orgs) { create_list :organization, 2 }
+      let(:suggested_users) { create_list(:user, 2) }
+      let(:suggested_orgs) { create_list(:organization, 2) }
 
       let(:expected_json_keys) do
-        %w[ id name username profile_image_url following summary ]
+        %w[id name username profile_image_url following summary]
       end
 
       before do
@@ -133,7 +133,7 @@ RSpec.describe "Onboardings" do
 
         get suggestions_onboarding_path
 
-        response_ids = response.parsed_body.map { |json| json["id"] }
+        response_ids = response.parsed_body.pluck("id")
         expect(response_ids.size).to eq(4)
 
         suggested_ids = suggested_users.map(&:id) + suggested_orgs.map(&:id)
