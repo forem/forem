@@ -116,6 +116,11 @@ RSpec.describe Reaction do
       expect(reaction.skip_notification_for?(user)).to be(true)
     end
 
+    it "is true when the reaction is a bookmark" do
+      reaction.category = "readinglist"
+      expect(reaction.skip_notification_for?(user)).to be(true)
+    end
+
     context "when reactable is a user" do
       let(:user) { create(:user) }
       let(:reaction) { build(:reaction, reactable: user, user: nil) }
@@ -145,7 +150,7 @@ RSpec.describe Reaction do
         { category: "raised_hands", count: 0 },
         { category: "readinglist", count: 0 },
       ]
-      expect(described_class.count_for_article(article.id)).to contain_exactly(*expected_result)
+      expect(described_class.count_for_article(article.id)).to match_array(expected_result)
     end
   end
 

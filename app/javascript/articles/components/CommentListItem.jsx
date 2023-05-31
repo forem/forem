@@ -20,12 +20,13 @@ function contentAwareComments(comment) {
   nodes.forEach((node) => {
     if (
       node.outerHTML &&
-      node.tagName === 'P' &&
+      (node.tagName === 'P' || node.className.includes('highlight')) &&
       nodesSelected < 2 &&
       node.outerHTML.length > 250
       && !node.outerHTML.includes('article-body-image-wrapper')
     ) {
-      text = `${text} ${node.outerHTML.substring(0, 230)} ...`;
+      node.innerHTML = `${node.innerHTML.substring(0, 230)}...`;
+      text = `${text} ${node.outerHTML}`;
       nodesSelected = 2;
     } else if (node.outerHTML && nodesSelected < 2) {
       text = text + node.outerHTML;
