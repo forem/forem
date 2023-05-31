@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe DisplayAd do
   let(:organization) { build(:organization) }
   let(:display_ad) { build(:display_ad, organization: nil) }
+  let(:audience_segment) { create(:audience_segment) }
 
   before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
 
@@ -28,6 +29,20 @@ RSpec.describe DisplayAd do
     it "allows sidebar_left" do
       display_ad.placement_area = "sidebar_left"
       expect(display_ad).to be_valid
+    end
+
+    it "allows home_hero with in_house" do
+      display_ad.placement_area = "home_hero"
+      display_ad.type_of = "in_house"
+      expect(display_ad).to be_valid
+    end
+
+    it "does not allow home_hero with community" do
+      display_ad.placement_area = "home_hero"
+      display_ad.type_of = "community"
+      expect(display_ad).not_to be_valid
+      expect(display_ad.errors[:type_of])
+        .to include("must be in_house if display ad is a Home Hero")
     end
 
     it "disallows unacceptable placement_area" do
@@ -60,6 +75,35 @@ RSpec.describe DisplayAd do
       display_ad.organization = organization
       expect(display_ad).to be_valid
       expect(display_ad.errors[:organization]).to be_blank
+    end
+
+    it "allows clear audience segment" do
+      display_ad.audience_segment_id = audience_segment.id
+      expect(display_ad).to be_valid
+
+      display_ad.audience_segment_id = audience_segment.id
+      display_ad.audience_segment_type = audience_segment.type_of
+      expect(display_ad).to be_valid
+    end
+
+    it "disallows invalid audience segment" do
+      display_ad.audience_segment_id = audience_segment.id
+      display_ad.audience_segment_type = "something_invalid_here"
+      expect(audience_segment.type_of).not_to eq("something_invalid_here")
+      expect(display_ad).not_to be_valid
+    end
+
+    it "disallows valid but ambiguous audience segment & id mismatch" do
+      display_ad.audience_segment_id = audience_segment.id
+      display_ad.audience_segment_type = "posted"
+      expect(audience_segment.type_of).not_to eq("posted")
+      expect(display_ad).not_to be_valid
+    end
+
+    it "disallows valid but imprecise manual audience segment type" do
+      display_ad.audience_segment = nil
+      display_ad.audience_segment_type = "manual"
+      expect(display_ad).not_to be_valid
     end
   end
 

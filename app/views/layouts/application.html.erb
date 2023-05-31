@@ -55,8 +55,7 @@
         data-deployed-at="<%= j(ForemInstance.deployed_at) %>"
         data-latest-commit-id="<%= j(ForemInstance.latest_commit_id) %>"
         data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
-        data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>"
-        >
+        data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
         <div id="body-styles">
@@ -89,7 +88,8 @@
   <% end %>
   <div id="page-content-inner">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
-    <% if @hero_html %>
+
+    <% if @hero_html && @hero_display_ad.blank? %>
       <aside id="hero-html-wrapper" aria-label="Campaign banner" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
           // Make sure html variant element has id hero-html-wrapper and data-name as its name

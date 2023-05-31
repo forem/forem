@@ -1,0 +1,18 @@
+<div class="flex justify-between items-center">
+  <div class="flex items-center">
+    <div class="crayons-card crayons-card--secondary p-3 mr-7">
+      <%= crayons_icon_tag("twemoji/#{quality_reaction.category == 'thumbsup' ? 'thumb-up' : 'thumb-down'}", native: true, title: t("views.moderations.actions.#{quality_reaction.category == 'thumbsup' ? 'thumb_up' : 'thumb_down'}"), width: 24, height: 24) %>
+    </div>
+    <div class="p-0">
+      <p class="crayons-subtitle-3"><%= quality_reaction.user.name %></p>
+      <time datetime="<%= quality_reaction.updated_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(quality_reaction.updated_at, format: :admin_user) if quality_reaction.created_at %>">
+        <%= l(quality_reaction.updated_at, format: :long) %>
+      </time>
+    </div>
+  </div>
+
+  <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by particular quality reaction">
+    <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+    <span class="fs-s fw-medium lh-base"><%= quality_reaction.points %></span>
+  </span>
+</div>

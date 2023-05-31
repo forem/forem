@@ -339,4 +339,55 @@ RSpec.describe Organization do
       expect(organization.enough_credits?(1)).to be(true)
     end
   end
+
+  describe "#public_articles_count" do
+    it "returns the count of published articles" do
+      published_articles = create_list(:article, 2, organization: organization, published: true)
+      create_list(:article, 1, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(published_articles.count)
+    end
+
+    it "returns 0 if there are no published articles" do
+      create_list(:article, 2, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(0)
+    end
+  end
+
+  describe ".simple_name_match" do
+    before do
+      create(:organization, name: "Not Matching")
+      create(:organization, name: "For Fans of Books")
+      create(:organization, name: "Boo! A Ghost")
+    end
+
+    it "finds them by simple ilike match" do
+      query = "boo"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
+
+      query = "book"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+
+      query = "  BOOK  "
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+    end
+
+    it "returns all orgs on empty query" do
+      query = nil
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = ""
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = "        "
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+    end
+  end
 end
