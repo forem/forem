@@ -1,8 +1,8 @@
 <%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdowmButton", defer: true %>
 <% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
 
-<h2 class="crayons-subtitle-2 px-1"><%= t("views.moderations.priviliged_actions.title") %></h2>
-<p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.moderations.priviliged_actions.description") %></p>
+<h2 class="crayons-subtitle-2 px-1"><%= t("views.admin.users.priviliged_actions.title") %></h2>
+<p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.priviliged_actions.description") %></p>
 
 <div id="reaction-content" class="flex flex-col gap-3 px-1 pt-6" style="overflow: auto; height: 406px;">
   <% if user_vomit_reactions.present? %>
@@ -15,7 +15,7 @@
       <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
         <%= crayons_icon_tag("flags", native: true, width: 56, height: 56) %>
       </div>
-      <p class="crayons-subtitle-3 fw-normal color-secondary"><%= t("views.moderations.priviliged_actions.no_flags") %></p>
+      <p class="crayons-subtitle-3 fw-normal color-secondary"><%= t("views.admin.users.priviliged_actions.no_flags") %></p>
     </div>
   <% end %>
 <div>
