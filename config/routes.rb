@@ -165,9 +165,9 @@ Rails.application.routes.draw do
 
     resource :onboarding, only: %i[show update] do
       member do
-        patch :checkbox
-        patch :notifications
-        get :tags
+        patch :checkbox, defaults: { format: :json }
+        patch :notifications, defaults: { format: :json }
+        get :tags, defaults: { format: :json }
         get :suggestions, defaults: { format: :json }
       end
     end
