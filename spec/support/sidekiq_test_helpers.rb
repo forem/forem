@@ -37,7 +37,7 @@ module SidekiqTestHelpers
     expected = { job: job, args: args, at: at, queue: queue }.compact
     expected_args = Utils.prepare_args(expected)
 
-    yield
+    yield if block_given?
 
     # check there's at least one job with the given args
     matching_job = job.jobs.detect do |queued_job|

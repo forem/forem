@@ -929,10 +929,63 @@
       }
     },
     "/api/segments": {
+      "get": {
+        "summary": "Manually managed audience segments",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a list of audience segments.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.\n\nThe endpoint supports pagination, and each page will contain `30` segments by default.",
+        "operationId": "getSegments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of manually managed audience segments",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 127,
+                    "created_at": "2023-05-19T13:29:19.013-05:00",
+                    "type_of": "manual",
+                    "updated_at": "2023-05-19T13:29:19.013-05:00",
+                    "user_count": 1
+                  },
+                  {
+                    "id": 126,
+                    "created_at": "2023-05-19T13:29:19.013-05:00",
+                    "type_of": "manual",
+                    "updated_at": "2023-05-19T13:29:19.013-05:00",
+                    "user_count": 3
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Segment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "summary": "Create a manually managed audience segment",
         "tags": ["segments"],
-        "description": "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a DisplayAd/Billboard/Widget. This API only permits managing segments you create and maintain yourself.",
+        "description": "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.",
         "operationId": "createSegment",
         "responses": {
           "201": {
@@ -963,10 +1016,72 @@
       }
     },
     "/api/segments/{id}": {
+      "get": {
+        "summary": "A manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a single manually-managed audience segment specified by ID.",
+        "operationId": "getSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 131,
+                  "created_at": "2023-05-19T13:29:19.481-05:00",
+                  "type_of": "manual",
+                  "updated_at": "2023-05-19T13:29:19.481-05:00",
+                  "user_count": 3
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Segment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "summary": "Delete a manually managed audience segment",
         "tags": ["segments"],
-        "description": "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any DisplayAds/Billboards/Widgets using them.",
+        "description": "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any Billboards using them.",
         "operationId": "deleteSegment",
         "parameters": [
           {
@@ -1022,6 +1137,107 @@
               "application/json": {
                 "example": {
                   "error": "Segments cannot be deleted while in use by any billboards"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/users": {
+      "get": {
+        "summary": "Users in a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default.",
+        "operationId": "getUsersInSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of users in the audience segment",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user",
+                    "id": 1032,
+                    "username": "username586",
+                    "name": "Katrina \"Kirsten\" \\:/ Schiller",
+                    "twitter_username": "twitter586",
+                    "github_username": "github586",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 19, 2023",
+                    "profile_image": "/uploads/user/profile_image/1947/02641cc1-4268-4203-8f2d-59cf53d4433a.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 1033,
+                    "username": "username587",
+                    "name": "Breanne \"Steve\" \\:/ Marquardt",
+                    "twitter_username": "twitter587",
+                    "github_username": "github587",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 19, 2023",
+                    "profile_image": "/uploads/user/profile_image/1948/621613c2-2990-4b92-8a26-8dac49725a95.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 1034,
+                    "username": "username588",
+                    "name": "Eugene \"Jamar\" \\:/ Keebler",
+                    "twitter_username": "twitter588",
+                    "github_username": "github588",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "May 19, 2023",
+                    "profile_image": "/uploads/user/profile_image/1949/7d5a54bc-faf2-408b-a988-3ea5b8ef40f1.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
                 }
               }
             }
