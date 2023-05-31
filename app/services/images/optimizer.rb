@@ -7,6 +7,8 @@ module Images
         imgproxy(img_src, **kwargs)
       elsif cloudinary_enabled?
         cloudinary(img_src, **kwargs)
+      elsif cloudflare_enabled?
+        cloudflare(img_src, **kwargs)
       else
         img_src
       end
@@ -22,6 +24,11 @@ module Images
       fetch_format: "auto",
       sign_url: true
     }.freeze
+
+    def self.cloudflare(img_src, **kwargs)
+      prefix = "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image"
+      "#{prefix}/width=#{kwargs[:width]},height=#{kwargs[:height]},fit=cover,gravity=auto,format=auto/#{img_src}"
+    end
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
@@ -66,6 +73,10 @@ module Images
       config = Cloudinary.config
 
       config.cloud_name.present? && config.api_key.present? && config.api_secret.present?
+    end
+
+    def self.cloudflare_enabled?
+      ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].present?
     end
 
     def self.get_imgproxy_endpoint
