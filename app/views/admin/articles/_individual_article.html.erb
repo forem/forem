@@ -215,7 +215,7 @@
       </ul>
     </nav>
 
-    <div id="reaction-content" class="flex flex-col gap-3 px-6 mt-6" style="overflow: scroll; height: 406px;">
+    <div id="reaction-content" class="flex flex-col gap-3 px-6 mt-6" style="overflow: auto; height: 406px;">
       <% if params[:tab].blank? || params[:tab] == "flags" %>
         <% if vomit_article_reactions.present? %>
           <% vomit_article_reactions.each do |vomit_reaction| %>

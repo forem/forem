@@ -214,6 +214,7 @@ en:
             profile: User's profile
           origin_html: Flagged by %{user}
           score: Article and comment score affected by particular flag
+          total_score: Article and comment score affected by user flags
         notes:
           empty1: No previous notes found for %{user}.
           empty2: Any notes added for %{user} will be found here.

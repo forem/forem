@@ -1,8 +1,29 @@
 <%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdowmButton", defer: true %>
 <% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
+<% score = 0 %>
+<% if user_vomit_reactions.present? %>
+  <% user_vomit_reactions.each do |flag| %>
+    <% score += flag.points %>
+  <% end %>
+<% end %>
 
-<h2 class="crayons-subtitle-2 px-1"><%= t("views.admin.users.priviliged_actions.title") %></h2>
-<p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.priviliged_actions.description") %></p>
+<div class="flex justify-between gap-4 items-center">
+  <div class="flex flex-col flex-1">
+    <h2 class="crayons-subtitle-2 px-1"><%= t("views.admin.users.priviliged_actions.title") %></h2>
+    <p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.priviliged_actions.description") %></p>
+  </div>
+  <div class="flex items-center gap-1">
+    <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+      <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
+      <span class="fs-s fw-medium lh-base"><%= user_vomit_reactions.count %></span>
+    </span>
+
+    <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.admin.users.flags.total_score") %>">
+      <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+      <span class="fs-s fw-medium lh-base"><%= score %></span>
+    </span>
+  </div>
+</div>
 
 <div id="reaction-content" class="flex flex-col gap-3 px-1 pt-6" style="overflow: auto; height: 406px;">
   <% if user_vomit_reactions.present? %>
