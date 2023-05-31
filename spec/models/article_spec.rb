@@ -1361,18 +1361,28 @@ RSpec.describe Article do
   end
 
   describe ".above_average and .average_score" do
-    before do
-      create(:article, score: 10)
-      create(:article, score: 6)
-      create(:article, score: 4)
-      create(:article, score: 1)
-      # averages 4.2
+    context "when there are not yet any articles with score" do
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(0.0)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to eq([])
+      end
     end
 
-    it "works as expected" do
-      expect(described_class.average_score).to be_within(0.1).of(4.2)
-      articles = described_class.above_average
-      expect(articles.pluck(:score)).to contain_exactly(10, 6)
+    context "when there are articles with score" do
+      before do
+        create(:article, score: 10)
+        create(:article, score: 6)
+        create(:article, score: 4)
+        create(:article, score: 1)
+        # averages 4.2
+      end
+
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(4.2)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(10, 6)
+      end
     end
   end
 end
