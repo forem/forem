@@ -62,6 +62,27 @@ class ApplicationRecord < ActiveRecord::Base
     connection.execute "SET statement_timeout = #{milliseconds}"
   end
 
+  # ActiveRecord's `find_each` method allows you to work with a large collection of records
+  # in batches,
+  # @see https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/Batches.html#method-i-find_each
+  def self.find_each_respecting_scope!(batch_size: 1000)
+    all_ids = ids.to_a
+
+    # Remove scopes that might conflict with the batched loading by ID later
+    batch_relation = unscope(:where, :limit, :offset)
+    # We're loading in batches to reduce memory usage; if the results get cached anyway, that defeats the purpose
+    batch_relation.skip_query_cache!
+
+    all_ids.in_groups_of(batch_size) do |ids|
+      records = batch_relation.where(id: ids).index_by(&:id)
+      ids.each do |id|
+        record = records[id]
+        # Avoid yielding nil if e.g. record has been deleted since loading IDs
+        yield record if record
+      end
+    end
+  end
+
   # Decorate object with appropriate decorator
   def decorate
     self.class.decorator_class.new(self)

@@ -128,29 +128,32 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
         end
 
         context "when the tag has moderators" do
-          let(:first) { create(:user, badge_achievements_count: 6) }
-          let(:second) { create(:user, badge_achievements_count: 2) }
-          let(:third) { create(:user, badge_achievements_count: 10) }
-          let(:fourth) { create(:user, badge_achievements_count: 2) }
-          let(:fifth) { create(:user, badge_achievements_count: 8) }
-          let(:mods) { [first, second, third, fourth, fifth] }
+          let(:six_badge_mod) { create(:user, badge_achievements_count: 6) }
+          let(:three_badge_mod) { create(:user, badge_achievements_count: 3) }
+          let(:ten_badge_mod) { create(:user, badge_achievements_count: 10) }
+          let(:two_badge_mod) { create(:user, badge_achievements_count: 2) }
+          let(:eight_badge_mod) { create(:user, badge_achievements_count: 8) }
+          let(:mods) { [six_badge_mod, three_badge_mod, ten_badge_mod, two_badge_mod, eight_badge_mod] }
 
           before do
             mods.each { |mod| mod.add_role(:tag_moderator, tag) }
           end
 
-          it "shows them in the sidebar" do
+          def nth_avatar(user_position)
+            ".widget-user-pic:nth-child(#{user_position})"
+          end
+
+          it "shows them in the sidebar in descending order of badge achievement count" do
             get "/t/#{tag.name}"
 
             page = Capybara.string(response.body)
             sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
 
-            # Should appear in descending order of badge achievement count
-            expect(sidebar.find(".widget-user-pic:nth-child(1)")).to have_link(third.username, href: third.path)
-            expect(sidebar.find(".widget-user-pic:nth-child(2)")).to have_link(fifth.username, href: fifth.path)
-            expect(sidebar.find(".widget-user-pic:nth-child(3)")).to have_link(first.username, href: first.path)
-            expect(sidebar.find(".widget-user-pic:nth-child(4)")).to have_link(second.username, href: second.path)
-            expect(sidebar.find(".widget-user-pic:nth-child(5)")).to have_link(fourth.username, href: fourth.path)
+            expect(sidebar.find(nth_avatar(1))).to have_link(nil, href: ten_badge_mod.path)
+            expect(sidebar.find(nth_avatar(2))).to have_link(nil, href: eight_badge_mod.path)
+            expect(sidebar.find(nth_avatar(3))).to have_link(nil, href: six_badge_mod.path)
+            expect(sidebar.find(nth_avatar(4))).to have_link(nil, href: three_badge_mod.path)
+            expect(sidebar.find(nth_avatar(5))).to have_link(nil, href: two_badge_mod.path)
           end
         end
 
