@@ -127,6 +127,33 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           )
         end
 
+        context "when the tag has moderators" do
+          let(:first) { create(:user, badge_achievements_count: 6) }
+          let(:second) { create(:user, badge_achievements_count: 2) }
+          let(:third) { create(:user, badge_achievements_count: 10) }
+          let(:fourth) { create(:user, badge_achievements_count: 2) }
+          let(:fifth) { create(:user, badge_achievements_count: 8) }
+          let(:mods) { [first, second, third, fourth, fifth] }
+
+          before do
+            mods.each { |mod| mod.add_role(:tag_moderator, tag) }
+          end
+
+          it "shows them in the sidebar" do
+            get "/t/#{tag.name}"
+
+            page = Capybara.string(response.body)
+            sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
+
+            # Should appear in descending order of badge achievement count
+            expect(sidebar.find(".widget-user-pic:nth-child(1)")).to have_link(third.username, href: third.path)
+            expect(sidebar.find(".widget-user-pic:nth-child(2)")).to have_link(fifth.username, href: fifth.path)
+            expect(sidebar.find(".widget-user-pic:nth-child(3)")).to have_link(first.username, href: first.path)
+            expect(sidebar.find(".widget-user-pic:nth-child(4)")).to have_link(second.username, href: second.path)
+            expect(sidebar.find(".widget-user-pic:nth-child(5)")).to have_link(fourth.username, href: fourth.path)
+          end
+        end
+
         context "with user signed in" do
           before do
             sign_in user
