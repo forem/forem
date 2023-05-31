@@ -205,13 +205,13 @@ export function initializePodcastPlayback() {
     const el = getById('speed');
     const speed = parseFloat(el.getAttribute('data-speed'));
     if (speed === 2) {
-      el.setAttribute('data-speed', 0.5);
-      el.innerHTML = '0.5x';
-      currentState.playbackRate = 0.5;
+      el.setAttribute('data-speed', 0.25);
+      el.innerHTML = '0.25x';
+      currentState.playbackRate = 0.25;
     } else {
-      el.setAttribute('data-speed', speed + 0.5);
-      el.innerHTML = `${speed + 0.5}x`;
-      currentState.playbackRate = speed + 0.5;
+      el.setAttribute('data-speed', speed + 0.25);
+      el.innerHTML = `${speed + 0.25}x`;
+      currentState.playbackRate = speed + 0.25;
     }
     saveMediaState(currentState);
 
