@@ -28,7 +28,17 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
-            const organizedFeedItems = [];
+            // We do the following for organizedFeedItems:
+            // 1. Place the pinned post first
+            // 2. Place the image post next
+            // 3. Place the podcast episodes out today as an array
+            // 4. Place the rest of the stories for the feed
+            // 5. Insert the billboards in that array accordingly
+            // - feed_first: Before all home page posts
+            // - feed_second: Between 2nd and 3rd posts in the feed
+            // - feed_third: Between 7th and 8th posts in the feed
+            let organizedFeedItems = [];
+
             // Ensure first article is one with a main_image
             // This is important because the imagePost will
             // appear at the top of the feed, with a larger
@@ -37,61 +47,27 @@ export const Feed = ({ timeFrame, renderFeed }) => {
               (post) => post.main_image !== null,
             );
 
-            // Here we extract from the feed two special items: pinned and image
-            const pinnedPost = feedPosts.find((post) => post.pinned === true);
+            ({ feedPosts, organizedFeedItems } = managePinnedItem(
+              feedPosts,
+              imagePost,
+              organizedFeedItems,
+            ));
+            ({ feedPosts, organizedFeedItems } = manageImageItem(
+              feedPosts,
+              imagePost,
+              organizedFeedItems,
+            ));
+            ({ organizedFeedItems } = managePodcastItem(organizedFeedItems));
 
-            // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
-            if (pinnedPost && timeFrame === '') {
-              // remove pinned article from the feed without setting it as state.
-              feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
-
-              // If the pinned and the image post aren't the same,
-              // (either because imagePost is missing or because they represent two different posts),
-              // we set the pinnedPost.
-              if (pinnedPost.id !== imagePost?.id) {
-                setPinnedItem(pinnedPost);
-                organizedFeedItems.push(pinnedPost);
-              }
-            }
-
-            // Remove that first post from the array to
-            // prevent it from rendering twice in the feed.
-            const imagePostIndex = feedPosts.indexOf(imagePost);
-            if (imagePost) {
-              feedPosts.splice(imagePostIndex, 1);
-              setimageItem(imagePost);
-              organizedFeedItems.push(imagePost);
-            }
-
-            const podcasts = getPodcastEpisodes();
-
-            if (podcasts.length > 0) {
-              organizedFeedItems.push(podcasts);
-            }
             // we want to expand the array into the organizedFeedItems
             organizedFeedItems.push(...feedPosts);
 
-            // 1. Show the pinned post first
-            // 2. Show the image post next
-            // 3. Podcast episodes out today as an array
-            // 4. Rest of the stories for the feed
-            // 5. Insert the billboards accordingly
-            // feed_first - Before all home page posts
-            // feed_second - Between 2nd and 3rd posts in the feed
-            // feed_third - Between 7th and 8th posts in the feed
-
-            if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
-              organizedFeedItems.splice(7, 0, feedThirdBillboard);
-            }
-
-            if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
-              organizedFeedItems.splice(2, 0, feedSecondBillboard);
-            }
-
-            if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
-              organizedFeedItems.splice(0, 0, feedFirstBillboard);
-            }
-
+            ({ organizedFeedItems } = manageBillboardItem(
+              organizedFeedItems,
+              feedFirstBillboard,
+              feedSecondBillboard,
+              feedThirdBillboard,
+            ));
             setFeedItems(organizedFeedItems);
           },
         );
@@ -101,6 +77,69 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     };
     organizeFeedItems();
   }, [timeFrame, onError]);
+
+  function managePinnedItem(feedPosts, imagePost, organizedFeedItems) {
+    // Here we extract from the feed two special items: pinned and image
+    const pinnedPost = feedPosts.find((post) => post.pinned === true);
+
+    // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
+    if (pinnedPost && timeFrame === '') {
+      // remove pinned article from the feed without setting it as state.
+      feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
+
+      // If the pinned and the image post aren't the same,
+      // (either because imagePost is missing or because they represent two different posts),
+      // we set the pinnedPost.
+      if (pinnedPost.id !== imagePost?.id) {
+        setPinnedItem(pinnedPost);
+        organizedFeedItems.push(pinnedPost);
+      }
+    }
+
+    return { feedPosts, organizedFeedItems };
+  }
+
+  function manageImageItem(feedPosts, imagePost, organizedFeedItems) {
+    // Remove that first post from the array to
+    // prevent it from rendering twice in the feed.
+    const imagePostIndex = feedPosts.indexOf(imagePost);
+    if (imagePost) {
+      feedPosts.splice(imagePostIndex, 1);
+      setimageItem(imagePost);
+      organizedFeedItems.push(imagePost);
+    }
+    return { feedPosts, organizedFeedItems };
+  }
+
+  function managePodcastItem(organizedFeedItems) {
+    const podcasts = getPodcastEpisodes();
+
+    if (podcasts.length > 0) {
+      organizedFeedItems.push(podcasts);
+    }
+    return { organizedFeedItems };
+  }
+
+  function manageBillboardItem(
+    organizedFeedItems,
+    feedFirstBillboard,
+    feedSecondBillboard,
+    feedThirdBillboard,
+  ) {
+    if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
+      organizedFeedItems.splice(7, 0, feedThirdBillboard);
+    }
+
+    if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
+      organizedFeedItems.splice(2, 0, feedSecondBillboard);
+    }
+
+    if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
+      organizedFeedItems.splice(0, 0, feedFirstBillboard);
+    }
+
+    return { organizedFeedItems };
+  }
 
   // /**
   //  * Retrieves data for the feed. The data will include articles and billboards.
