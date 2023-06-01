@@ -64,7 +64,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             }
 
             const podcasts = getPodcastEpisodes();
-            organizedFeedItems.push(podcasts);
+
+            if (podcasts.length > 0) {
+              organizedFeedItems.push(podcasts);
+            }
             // we want to expand the array into the organizedFeedItems
             organizedFeedItems.push(...feedPosts);
 
@@ -74,15 +77,15 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // 4. Rest of the stories for the feed
             // we filter by null in case there was not a pinned Article
 
-            if (organizedFeedItems.length >= 0) {
+            if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
               organizedFeedItems.splice(0, 0, feedFirstBillboard);
             }
 
-            if (organizedFeedItems.length >= 3) {
+            if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
               organizedFeedItems.splice(3, 0, feedSecondBillboard);
             }
 
-            if (organizedFeedItems.length >= 9) {
+            if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
               organizedFeedItems.splice(9, 0, feedThirdBillboard);
             }
             setFeedItems(organizedFeedItems);
