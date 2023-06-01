@@ -473,18 +473,19 @@
 
 .multiple_reactions_engagement {
   padding: 0.5em 0;
-  height: 43px;
   cursor: default;
+  display: flex;
+  column-gap: 2.2em;
+  flex-wrap: wrap;
+  min-height: 40px;
 
-  span {
-    margin-right: 1em;
-    vertical-align: middle;
-  }
-  svg {
-    display: inline-block;
-  }
-  img {
-    vertical-align: middle;
+  &>span {
+    &.hidden {
+      display: none;
+    }
+    display: flex;
+    column-gap: 0.3em;
+    align-items: center;
   }
 }
 

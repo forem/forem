@@ -35,8 +35,13 @@ class DisplayAd < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
-  validate :validate_tag
-  validate :validate_in_house_hero_ads
+  validates :audience_segment_type,
+            inclusion: { in: AudienceSegment.type_ofs },
+            allow_blank: true
+  validate :valid_audience_segment_match,
+           :validate_in_house_hero_ads,
+           :valid_manual_audience_segment,
+           :validate_tag
 
   before_save :process_markdown
   after_save :generate_display_ad_name
@@ -104,23 +109,24 @@ class DisplayAd < ApplicationRecord
     errors.add(:type_of, "must be in_house if display ad is a Home Hero")
   end
 
+  def audience_segment_type
+    @audience_segment_type ||= audience_segment&.type_of
+  end
+
   def audience_segment_type=(type)
-    self.audience_segment = if type.blank?
-                              nil
-                            elsif (segment = AudienceSegment.find_by(type_of: type))
-                              segment
-                            end
+    errors.delete(:audience_segment_type)
+    @audience_segment_type = type
   end
 
   # This needs to correspond with Rails built-in method signature
   # rubocop:disable Style/OptionHash
   def as_json(options = {})
     overrides = {
-      "audience_segment_type" => audience_segment&.type_of,
+      "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
-    super(options.merge(except: %i[tags tag_list audience_segment_id])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
@@ -186,5 +192,17 @@ class DisplayAd < ApplicationRecord
     change_relevant_to_audience &&
       audience_segment &&
       audience_segment.updated_at < 1.day.ago
+  end
+
+  def valid_audience_segment_match
+    return if audience_segment.blank? || audience_segment_type.blank?
+
+    errors.add(:audience_segment_type) if audience_segment.type_of.to_s != audience_segment_type.to_s
+  end
+
+  def valid_manual_audience_segment
+    return if audience_segment_type != "manual"
+
+    errors.add(:audience_segment_type) if audience_segment.blank?
   end
 end
