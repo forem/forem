@@ -85,7 +85,7 @@ RSpec.describe "Onboardings" do
       let(:suggested_orgs) { create_list(:organization, 2) }
 
       let(:expected_json_keys) do
-        %w[id name username profile_image_url following summary]
+        %w[id name username profile_image_url following summary type_identifier]
       end
 
       before do
@@ -120,7 +120,7 @@ RSpec.describe "Onboardings" do
       let(:suggested_orgs) { create_list(:organization, 2) }
 
       let(:expected_json_keys) do
-        %w[id name username profile_image_url following summary]
+        %w[id name username profile_image_url following summary type_identifier]
       end
 
       before do
