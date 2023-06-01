@@ -9,6 +9,7 @@ import {
   firstBillboard,
   secondBillboard,
   thirdBillboard,
+  podcastEpisodes,
 } from './utilities/feedUtilities';
 import '../../../assets/javascripts/lib/xss';
 import '../../../assets/javascripts/utilities/timeAgo';
@@ -16,22 +17,26 @@ import '../../../assets/javascripts/utilities/timeAgo';
 global.fetch = fetch;
 
 describe('<Feed /> component', () => {
-  beforeAll(() => {
-    document.head.innerHTML =
-      '<meta name="csrf-token" content="some-csrf-token" />';
-    document.body.setAttribute('data-user', getUserData());
-
-    global.userData = async () => getUserData();
-  });
-
-  const getUserData = () =>
-    JSON.stringify({
+  const getUserData = () => {
+    return {
       followed_tag_names: ['javascript'],
+      followed_podcast_ids: [1], //should we make this dynamic
       profile_image_90: 'mock_url_link',
       name: 'firstname lastname',
       username: 'username',
       reading_list_ids: [],
-    });
+    };
+  };
+
+  beforeAll(() => {
+    global.userData = jest.fn(() => getUserData());
+    document.body.setAttribute('data-user', JSON.stringify(getUserData()));
+
+    const node = document.createElement('div');
+    node.setAttribute('id', 'followed-podcasts');
+    node.setAttribute('data-episodes', JSON.stringify(podcastEpisodes));
+    document.body.appendChild(node);
+  });
 
   //   test that the callback is called
   describe('pinnedItem, imageItem, bookmarkedFeedItems and bookmarkClick', () => {
