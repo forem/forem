@@ -1,23 +1,23 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
+import { I18n } from 'i18n-js';
 import { getContentOfToken } from '../utilities';
 import { Navigation } from './Navigation';
-import { I18n } from 'i18n-js';
 
 const i18n = new I18n();
 
 function groupFollowsByType(array) {
-  return array.reduce(function (returning, item) {
-    let type = item.type_identifier
+  return array.reduce((returning, item) => {
+    const type = item.type_identifier
     returning[type] = (returning[type] || []).concat(item);
     return returning;
   }, {})
 }
 
 function groupFollowIdsByType(array) {
-  return array.reduce(function (returning, item) {
-    let type = item.type_identifier
+  return array.reduce((returning, item) => {
+    const type = item.type_identifier
     returning[type] = (returning[type] || []).concat({id: item.id});
     return returning;
   }, {})
@@ -124,16 +124,16 @@ export class FollowUsers extends Component {
     if (selectedFollows.length === 0) {
       followingStatus = I18n.t("core.not_following");
     } else if (selectedFollows.length === follows.length) {
-      followingStatus = I18n.t("core.following_everyone") + " -";
+      followingStatus = `${I18n.t("core.following_everyone")  } -`;
     } else {
-      let groups = groupFollowsByType(selectedFollows);
+      const groups = groupFollowsByType(selectedFollows);
       let together = []
       for (const type in groups) {
-        let counted = i18n.t(`core.counted_${type}`, {count: groups[type].length});
+        const counted = i18n.t(`core.counted_${type}`, {count: groups[type].length});
         together = together.concat(counted)
       }
 
-      let anded_together = together.join(I18n.t("core.and"));
+      const anded_together = together.join(I18n.t("core.and"));
       followingStatus = `${I18n.t("core.you_are_following")} ${anded_together} -`;
     }
 
