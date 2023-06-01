@@ -1,11 +1,9 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
-import { I18n } from 'i18n-js';
 import { getContentOfToken } from '../utilities';
 import { Navigation } from './Navigation';
-
-const i18n = new I18n();
+import { locale } from '../../utilities/locale';
 
 function groupFollowsByType(array) {
   return array.reduce((returning, item) => {
@@ -122,19 +120,19 @@ export class FollowUsers extends Component {
 
     let followingStatus;
     if (selectedFollows.length === 0) {
-      followingStatus = I18n.t("core.not_following");
+      followingStatus = locale("core.not_following");
     } else if (selectedFollows.length === follows.length) {
-      followingStatus = `${I18n.t("core.following_everyone")  } -`;
+      followingStatus = `${locale("core.following_everyone")  }`;
     } else {
       const groups = groupFollowsByType(selectedFollows);
       let together = []
       for (const type in groups) {
-        const counted = i18n.t(`core.counted_${type}`, {count: groups[type].length});
+        const counted = locale(`core.counted_${type}`, {count: groups[type].length});
         together = together.concat(counted)
       }
 
-      const anded_together = together.join(I18n.t("core.and"));
-      followingStatus = `${I18n.t("core.you_are_following")} ${anded_together} -`;
+      const anded_together = together.join(` ${locale("core.and")} `);
+      followingStatus = `${locale("core.you_are_following")} ${anded_together}`;
     }
 
     const klassName =
@@ -142,7 +140,7 @@ export class FollowUsers extends Component {
         ? 'fw-bold color-base-60 inline-block fs-base'
         : 'color-base-60 inline-block fs-base';
 
-    return <p className={klassName}>{followingStatus}</p>;
+    return <p className={klassName}>{followingStatus} -</p>;
   }
 
   renderFollowToggle() {
