@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import { Feed } from '../Feed';
 import {
   feedPosts,
+  feedPostsWherePinnedAndImagePostsSame,
   firstBillboard,
   secondBillboard,
   thirdBillboard,
@@ -38,6 +39,34 @@ describe('<Feed /> component', () => {
     document.body.appendChild(node);
   });
 
+  describe('pinned and image posts are the same', () => {
+    let callback;
+    beforeAll(() => {
+      fetch.mockResponseOnce(
+        JSON.stringify(feedPostsWherePinnedAndImagePostsSame),
+      );
+      fetch.mockResponseOnce(firstBillboard);
+      fetch.mockResponseOnce(secondBillboard);
+      fetch.mockResponseOnce(thirdBillboard);
+
+      callback = jest.fn();
+      render(<Feed timeFrame="" renderFeed={callback} />);
+    });
+
+    it('should not set a pinned item', async () => {
+      const lastCallback =
+        callback.mock.calls[callback.mock.calls.length - 1][0];
+      const postAndImageItem = feedPostsWherePinnedAndImagePostsSame.find(
+        (post) => post.main_image !== null && post.pinned === true,
+      );
+
+      expect(lastCallback.pinnedItem).toEqual(null);
+      expect(lastCallback.imageItem).toEqual(postAndImageItem);
+      expect(lastCallback.feedItems[1]).toEqual(postAndImageItem);
+      expect(lastCallback.feedItems[2]).not.toEqual(postAndImageItem);
+    });
+  });
+
   //   test that the callback is called
   describe('pinnedItem, imageItem, bookmarkedFeedItems and bookmarkClick', () => {
     let callback;
@@ -49,34 +78,6 @@ describe('<Feed /> component', () => {
 
       callback = jest.fn();
       render(<Feed timeFrame="" renderFeed={callback} />);
-    });
-
-    it('should set the pinnedItem', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        const firstPinnedItem = feedPosts.find((o) => o.pinned === true);
-        expect(lastCallback.pinnedItem).toEqual(firstPinnedItem);
-      });
-    });
-
-    it('should set the imageItem', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        const firstImageItem = feedPosts.find(
-          (post) => post.main_image !== null,
-        );
-        expect(lastCallback.imageItem).toEqual(firstImageItem);
-      });
-    });
-
-    it('should set the correct podcastEpisodes', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
-      });
     });
 
     it.skip('should set the correct bookmarkedFeedItems', async () => {});
@@ -107,6 +108,28 @@ describe('<Feed /> component', () => {
       });
     });
 
+    it('should set the pinnedItem and place it correctly in the feed', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        const firstPinnedItem = feedPosts.find((o) => o.pinned === true);
+        expect(lastCallback.pinnedItem).toEqual(firstPinnedItem);
+        expect(lastCallback.feedItems[1]).toEqual(firstPinnedItem);
+      });
+    });
+
+    it('should set the imageItem and place it correctly in the feed', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        const firstImageItem = feedPosts.find(
+          (post) => post.main_image !== null,
+        );
+        expect(lastCallback.imageItem).toEqual(firstImageItem);
+        expect(lastCallback.feedItems[2]).toEqual(firstImageItem);
+      });
+    });
+
     it('should set the billboards in the correct placements within the feedItems', async () => {
       await waitFor(() => {
         const lastCallback =
@@ -116,7 +139,13 @@ describe('<Feed /> component', () => {
       });
     });
 
-    it('should set the podcasts in the correct placement in the feedItems', async () => {});
+    it('should set the podcasts in the correct placement in the feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
+      });
+    });
   });
 
   describe.skip('feedItem configuration alternate', () => {
