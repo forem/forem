@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
 import { getContentOfToken } from '../utilities';
-import { Navigation } from './Navigation';
 import { locale } from '../../utilities/locale';
+import { Navigation } from './Navigation';
 
 function groupFollowsByType(array) {
   return array.reduce((returning, item) => {
