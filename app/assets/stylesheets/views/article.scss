@@ -477,6 +477,7 @@
   display: flex;
   column-gap: 2.2em;
   flex-wrap: wrap;
+  min-height: 40px;
 
   &>span {
     &.hidden {
