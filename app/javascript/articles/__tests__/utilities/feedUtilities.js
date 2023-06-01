@@ -480,6 +480,55 @@ export const feedPosts = [
   },
 ];
 
+export const podcastEpisodes = [
+  {
+    slug: 's22e8-from-opera-to-code-anna-mcdougall',
+    title: 'S22:E8 - From Opera to Code (Anna McDougall)',
+    podcast_id: 1,
+    image: { url: null },
+    id: null,
+    tag_list: [],
+    podcast: {
+      id: 1,
+      title: 'CodeNewbie',
+      slug: 'codenewbie',
+      image_90:
+        '/uploads/podcast/image/1/3f7dca78-b9fb-4b7f-b985-49b34417d37b.jpeg',
+    },
+  },
+  {
+    slug: 's22e2-building-the-bridge-across-the-tech-gap-michelle-glauser',
+    title:
+      'S22:E2 - Building the bridge across the tech gap (Michelle Glauser)',
+    podcast_id: 1,
+    image: { url: null },
+    id: null,
+    tag_list: [],
+    podcast: {
+      id: 1,
+      title: 'CodeNewbie',
+      slug: 'codenewbie',
+      image_90:
+        '/uploads/podcast/image/1/3f7dca78-b9fb-4b7f-b985-49b34417d37b.jpeg',
+    },
+  },
+  {
+    slug: 's22e7-starting-out-in-open-source-brian-douglas',
+    title: 'S22:E7 - Starting out in Open Source (Brian Douglas)',
+    podcast_id: 1,
+    image: { url: null },
+    id: null,
+    tag_list: [],
+    podcast: {
+      id: 1,
+      title: 'CodeNewbie',
+      slug: 'codenewbie',
+      image_90:
+        '/uploads/podcast/image/1/3f7dca78-b9fb-4b7f-b985-49b34417d37b.jpeg',
+    },
+  },
+];
+
 export const firstBillboard = 'billboard one';
 export const secondBillboard = 'billboard two';
 export const thirdBillboard = undefined;
