@@ -25,6 +25,10 @@ en:
     counted_user:
       one: "%{count} person"
       other: "%{count} people"
+    not_following: "You're not following anyone"
+    following_everyone: "You're following everyone -"
+    you_are_following: "You're following"
+    and: "and"
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:

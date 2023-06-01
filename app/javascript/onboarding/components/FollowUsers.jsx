@@ -122,9 +122,9 @@ export class FollowUsers extends Component {
 
     let followingStatus;
     if (selectedFollows.length === 0) {
-      followingStatus = "You're not following anyone";
+      followingStatus = I18n.t("core.not_following");
     } else if (selectedFollows.length === follows.length) {
-      followingStatus = "You're following everyone -";
+      followingStatus = I18n.t("core.following_everyone") + " -";
     } else {
       let groups = groupFollowsByType(selectedFollows);
       let together = []
@@ -133,7 +133,8 @@ export class FollowUsers extends Component {
         together = together.concat(counted)
       }
 
-      followingStatus = `You're following ${together.join(" and ")} -`;
+      let anded_together = together.join(I18n.t("core.and"));
+      followingStatus = `${I18n.t("core.you_are_following")} ${anded_together} -`;
     }
 
     const klassName =
