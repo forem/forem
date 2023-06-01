@@ -71,8 +71,12 @@ describe('<Feed /> component', () => {
       });
     });
 
-    it.skip('should set the correct podcastEpisodes', async () => {
-      // we can remove this
+    it('should set the correct podcastEpisodes', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
+      });
     });
 
     it.skip('should set the correct bookmarkedFeedItems', async () => {});
@@ -83,10 +87,34 @@ describe('<Feed /> component', () => {
   // if pinned and featured are the same
   // pinned and featured should only appear once
 
-  describe.skip('feedItem configuration', () => {
-    it('should return the correct length of feedItems', () => {});
+  describe('feedItem configuration', () => {
+    let callback;
+    beforeAll(() => {
+      fetch.mockResponseOnce(JSON.stringify(feedPosts));
+      fetch.mockResponseOnce(firstBillboard);
+      fetch.mockResponseOnce(secondBillboard);
+      fetch.mockResponseOnce(thirdBillboard);
 
-    it('should set the billboards in the correct placements within the feedItems', async () => {});
+      callback = jest.fn();
+      render(<Feed timeFrame="" renderFeed={callback} />);
+    });
+
+    it('should return the correct length of feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems.length).toEqual(13);
+      });
+    });
+
+    it('should set the billboards in the correct placements within the feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
+        expect(lastCallback.feedItems[3]).toEqual(secondBillboard);
+      });
+    });
 
     it('should set the podcasts in the correct placement in the feedItems', async () => {});
   });
