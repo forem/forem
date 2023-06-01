@@ -128,7 +128,7 @@ describe('<Feed /> component', () => {
     });
   });
 
-  describe("when timeframe is set to 'latest'", () => {
+  describe('when the timeframe prop is not an empty string', () => {
     let callback;
     beforeAll(() => {
       fetch.mockResponseOnce(JSON.stringify(feedPosts));
