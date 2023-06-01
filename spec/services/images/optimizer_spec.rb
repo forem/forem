@@ -8,6 +8,7 @@ RSpec.describe Images::Optimizer, type: :service do
   describe "#call" do
     before do
       allow(described_class).to receive(:cloudinary)
+      allow(described_class).to receive(:cloudflare)
       allow(described_class).to receive(:imgproxy)
     end
 
@@ -85,6 +86,13 @@ RSpec.describe Images::Optimizer, type: :service do
     end
   end
 
+  describe "#cloudflare", cloudfalre: true do
+    it "generates correct url based on h/w input" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
+      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{image_url}})
+    end
+  end
+
   describe "#cloudinary_enabled?" do
     it "returns false if cloud_name, api_key or api_secret are missing", :aggregate_failures do
       allow(Cloudinary.config).to receive(:cloud_name).and_return("")
@@ -124,6 +132,18 @@ RSpec.describe Images::Optimizer, type: :service do
       allow(Imgproxy).to receive(:config).and_return(imgproxy_config_stub)
 
       expect(described_class.imgproxy_enabled?).to be(true)
+    end
+  end
+
+  describe "#cloudflare_enabled?" do
+    it "returns false if config missing" do
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
+      expect(described_class.cloudflare_enabled?).to be(false)
+    end
+
+    it "returns true if config is present" do
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("images.com")
+      expect(described_class.cloudflare_enabled?).to be(true)
     end
   end
 
