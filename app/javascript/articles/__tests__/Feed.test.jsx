@@ -39,7 +39,68 @@ describe('<Feed /> component', () => {
     document.body.appendChild(node);
   });
 
-  describe('pinned and image posts are the same', () => {
+  describe('feedItem organization', () => {
+    let callback;
+    beforeAll(() => {
+      fetch.mockResponseOnce(JSON.stringify(feedPosts));
+      fetch.mockResponseOnce(firstBillboard);
+      fetch.mockResponseOnce(secondBillboard);
+      fetch.mockResponseOnce(thirdBillboard);
+
+      callback = jest.fn();
+      render(<Feed timeFrame="" renderFeed={callback} />);
+    });
+
+    it('should return the correct length of feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems.length).toEqual(14);
+      });
+    });
+
+    it('should set the pinnedItem and place it correctly in the feed', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        const firstPinnedItem = feedPosts.find((o) => o.pinned === true);
+        expect(lastCallback.pinnedItem).toEqual(firstPinnedItem);
+        expect(lastCallback.feedItems[1]).toEqual(firstPinnedItem);
+      });
+    });
+
+    it('should set the imageItem and place it correctly in the feed', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        const firstImageItem = feedPosts.find(
+          (post) => post.main_image !== null,
+        );
+        expect(lastCallback.imageItem).toEqual(firstImageItem);
+        expect(lastCallback.feedItems[2]).toEqual(firstImageItem);
+      });
+    });
+
+    it('should place the billboards correctly within the feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
+        expect(lastCallback.feedItems[3]).toEqual(secondBillboard);
+        expect(lastCallback.feedItems[9]).toEqual(thirdBillboard);
+      });
+    });
+
+    it('should place the podcasts correctly within feedItems', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
+      });
+    });
+  });
+
+  describe('when pinned and image posts are the same', () => {
     let callback;
     beforeAll(() => {
       fetch.mockResponseOnce(
@@ -67,8 +128,76 @@ describe('<Feed /> component', () => {
     });
   });
 
-  //   test that the callback is called
-  describe('pinnedItem, imageItem, bookmarkedFeedItems and bookmarkClick', () => {
+  describe("when we there isn't all three billboards on the home feed", () => {
+    describe("when there isn't a feed_second billboard", () => {
+      let callback;
+      beforeAll(() => {
+        fetch.mockResponseOnce(JSON.stringify(feedPosts));
+        fetch.mockResponseOnce(firstBillboard);
+        fetch.mockResponseOnce(undefined);
+        fetch.mockResponseOnce(thirdBillboard);
+
+        callback = jest.fn();
+        render(<Feed timeFrame="" renderFeed={callback} />);
+      });
+
+      it('should return the correct length of feedItems', async () => {
+        await waitFor(() => {
+          const lastCallback =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+          expect(lastCallback.feedItems.length).toEqual(13);
+        });
+      });
+
+      it('should still amend the organization of the feedItems correctly', async () => {
+        await waitFor(() => {
+          const lastCallback =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+          expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
+          // there is no second bilboard so podcasts get rendered in 4th place
+          expect(lastCallback.feedItems[3]).toEqual(podcastEpisodes);
+          expect(lastCallback.feedItems[8]).toEqual(thirdBillboard);
+        });
+      });
+    });
+
+    describe("when there isn't a feed_first or feed_second billboard", () => {
+      let callback;
+      beforeAll(() => {
+        fetch.mockResponseOnce(JSON.stringify(feedPosts));
+        fetch.mockResponseOnce(undefined);
+        fetch.mockResponseOnce(undefined);
+        fetch.mockResponseOnce(thirdBillboard);
+
+        callback = jest.fn();
+        render(<Feed timeFrame="" renderFeed={callback} />);
+      });
+
+      it('should return the correct length of feedItems', async () => {
+        await waitFor(() => {
+          const lastCallback =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+          expect(lastCallback.feedItems.length).toEqual(12);
+        });
+      });
+
+      it('should still amend the organization of the feedItems correctly', async () => {
+        await waitFor(() => {
+          const lastCallback =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+
+          const pinnedItem = feedPosts.find((o) => o.pinned === true);
+          // there is no first billboard
+          expect(lastCallback.feedItems[0]).toEqual(pinnedItem);
+          // there is no second bilboard so podcsats get rendered in 3rd place
+          expect(lastCallback.feedItems[2]).toEqual(podcastEpisodes);
+          expect(lastCallback.feedItems[7]).toEqual(thirdBillboard);
+        });
+      });
+    });
+  });
+
+  describe('bookmarkedFeedItems and bookmarkClick', () => {
     let callback;
     beforeAll(() => {
       fetch.mockResponseOnce(JSON.stringify(feedPosts));
@@ -83,95 +212,5 @@ describe('<Feed /> component', () => {
     it.skip('should set the correct bookmarkedFeedItems', async () => {});
 
     it.skip('should set the correct bookmarkClick', async () => {});
-  });
-
-  // if pinned and featured are the same
-  // pinned and featured should only appear once
-
-  describe('feedItem configuration', () => {
-    let callback;
-    beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
-
-      callback = jest.fn();
-      render(<Feed timeFrame="" renderFeed={callback} />);
-    });
-
-    it('should return the correct length of feedItems', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems.length).toEqual(13);
-      });
-    });
-
-    it('should set the pinnedItem and place it correctly in the feed', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        const firstPinnedItem = feedPosts.find((o) => o.pinned === true);
-        expect(lastCallback.pinnedItem).toEqual(firstPinnedItem);
-        expect(lastCallback.feedItems[1]).toEqual(firstPinnedItem);
-      });
-    });
-
-    it('should set the imageItem and place it correctly in the feed', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        const firstImageItem = feedPosts.find(
-          (post) => post.main_image !== null,
-        );
-        expect(lastCallback.imageItem).toEqual(firstImageItem);
-        expect(lastCallback.feedItems[2]).toEqual(firstImageItem);
-      });
-    });
-
-    it('should set the billboards in the correct placements within the feedItems', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
-        expect(lastCallback.feedItems[3]).toEqual(secondBillboard);
-      });
-    });
-
-    it('should set the podcasts in the correct placement in the feedItems', async () => {
-      await waitFor(() => {
-        const lastCallback =
-          callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
-      });
-    });
-  });
-
-  describe.skip('feedItem configuration alternate', () => {
-    it('should return the correct length of feedItems', () => {});
-
-    it('should set the billboards in the correct placements within the feedItems', async () => {});
-
-    it('should set the podcasts in the correct placement in the feedItems', async () => {});
-  });
-
-  it.skip('should return the organized feed items', async () => {
-    // const callback = jest.fn();
-    // fetch.mockResponseOnce(fakeTagsResponse);
-    // const { container } = render(
-    //   <Feed timeFrame='' renderFeed={callback} />
-    // );
-    // await waitFor(() =>
-    //  {
-    //     expect(callback).toHaveBeenCalled();
-    //     const lastCallback = callback.mock.calls[callback.mock.calls.length - 1]
-    //     console.log("last callback", lastCallback)
-    //     return expect(object).toBe({
-    //       html: expect.any(String)
-    //     });
-    //   }
-    // //  expect(array).toMatchObject(['billboard 1', expect.any(Object), 'sdfsdf'])
-    // )
   });
 });

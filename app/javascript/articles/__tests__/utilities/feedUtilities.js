@@ -682,4 +682,4 @@ export const podcastEpisodes = [
 
 export const firstBillboard = 'billboard one';
 export const secondBillboard = 'billboard two';
-export const thirdBillboard = undefined;
+export const thirdBillboard = 'billboard three';

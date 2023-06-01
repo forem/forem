@@ -75,18 +75,30 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // 2. Show the image post next
             // 3. Podcast episodes out today as an array
             // 4. Rest of the stories for the feed
-            // we filter by null in case there was not a pinned Article
-
+            // 5. Insert the billboards accordingly
+            // feed_first - Before all home page posts
+            // feed_second - Between 2nd and 3rd posts in the feed
+            // feed_third - Between 7th and 8th posts in the feed
             if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
               organizedFeedItems.splice(0, 0, feedFirstBillboard);
             }
 
             if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
-              organizedFeedItems.splice(3, 0, feedSecondBillboard);
+              if (feedFirstBillboard) {
+                organizedFeedItems.splice(3, 0, feedSecondBillboard);
+              } else {
+                organizedFeedItems.splice(2, 0, feedSecondBillboard);
+              }
             }
 
             if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
-              organizedFeedItems.splice(9, 0, feedThirdBillboard);
+              if (feedFirstBillboard && feedSecondBillboard) {
+                organizedFeedItems.splice(9, 0, feedThirdBillboard);
+              } else if (!feedFirstBillboard && !feedSecondBillboard) {
+                organizedFeedItems.splice(7, 0, feedThirdBillboard);
+              } else {
+                organizedFeedItems.splice(8, 0, feedThirdBillboard);
+              }
             }
             setFeedItems(organizedFeedItems);
           },
