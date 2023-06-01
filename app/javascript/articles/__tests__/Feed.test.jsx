@@ -128,6 +128,25 @@ describe('<Feed /> component', () => {
     });
   });
 
+  describe("when timeframe is set to 'latest'", () => {
+    let callback;
+    beforeAll(() => {
+      fetch.mockResponseOnce(JSON.stringify(feedPosts));
+      fetch.mockResponseOnce(firstBillboard);
+      fetch.mockResponseOnce(secondBillboard);
+      fetch.mockResponseOnce(thirdBillboard);
+
+      callback = jest.fn();
+      render(<Feed timeFrame="lastest" renderFeed={callback} />);
+    });
+
+    it('should not set the pinned items', async () => {
+      const lastCallback =
+        callback.mock.calls[callback.mock.calls.length - 1][0];
+      expect(lastCallback.pinnedItem).toEqual(null);
+    });
+  });
+
   describe("when we there isn't all three billboards on the home feed", () => {
     describe("when there isn't a feed_second billboard", () => {
       let callback;
@@ -195,22 +214,5 @@ describe('<Feed /> component', () => {
         });
       });
     });
-  });
-
-  describe('bookmarkedFeedItems and bookmarkClick', () => {
-    let callback;
-    beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
-
-      callback = jest.fn();
-      render(<Feed timeFrame="" renderFeed={callback} />);
-    });
-
-    it.skip('should set the correct bookmarkedFeedItems', async () => {});
-
-    it.skip('should set the correct bookmarkClick', async () => {});
   });
 });
