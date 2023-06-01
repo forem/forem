@@ -26,7 +26,7 @@ module Images
     }.freeze
 
     def self.cloudflare(img_src, **kwargs)
-      prefix = "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image"
+      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
       "#{prefix}/width=#{kwargs[:width]},height=#{kwargs[:height]},fit=cover,gravity=auto,format=auto/#{img_src}"
     end
 
