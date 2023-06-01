@@ -6,6 +6,8 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
   let(:current_user) { create(:user) }
   let(:top_organizations) { create_list(:organization, 4) }
   let(:bad_organizations) { create_list(:organization, 2) }
+  let(:mid_included) { create(:organization) }
+  let(:mid_excluded) { create(:organization) }
 
   before do
     top_organizations.each do |organization|
@@ -15,6 +17,9 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
     bad_organizations.each do |organization|
       create(:article, organization_id: organization.id, score: 1)
     end
+
+    create(:article, organization_id: mid_included.id, score: 15)
+    create(:article, organization_id: mid_excluded.id, score: 14)
   end
 
   context "when user is following any tags" do
@@ -39,9 +44,12 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
     end
   end
 
-  it "returns organizations with posts with at least an average score under any tags" do
+  it "returns max 5 organizations with posts with at least an average score under any tags" do
     results = suggester.suggest
-    expect(results).to match_array(top_organizations)
+    expect(results.size).to eq(5)
+    expect(results).to include(*top_organizations)
+    expect(results).to include(mid_included)
+    expect(results).not_to include(mid_excluded)
     expect(results).not_to include(bad_organizations.first)
     expect(results).not_to include(bad_organizations.last)
   end

@@ -20,11 +20,9 @@ module Organizations
       recently_published = article_scope.where(published_at: self.class.recently_published_at)
 
       organization_ids = above_average_articles_with_organization(recently_published)
-        .select("DISTINCT ON (articles.organization_id) *")
-        .limit(5)
         .pluck(:organization_id)
 
-      Organization.where(id: organization_ids)
+      Organization.where(id: organization_ids).limit(5)
     end
 
     private
