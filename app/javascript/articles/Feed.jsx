@@ -144,6 +144,12 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     ];
   }
 
+  // /**
+  //  * Retrieves the podcasts for the feed from the user data and the `followed-podcasts`
+  //  * div item.
+  //  *
+  //  * @returns {Object} An Object containing today's podcast episodes for the podcasts found in followed_podcast_ids.
+  //  */
   function getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
@@ -164,7 +170,8 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   }
 
   /**
-   * Dispatches a click event to bookmark/unbookmark an article.
+   * Dispatches a click event to bookmark/unbookmark an article and sets the ID's of the
+   * updated bookmark feed items.
    *
    * @param {Event} event
    */
