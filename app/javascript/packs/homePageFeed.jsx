@@ -77,6 +77,10 @@ function feedConstruct(
       );
     }
 
+    if (Array.isArray(item) && item[0].podcast) {
+      return <PodcastEpisodes key={item.id} episodes={item} />;
+    }
+
     if (typeof item === 'object') {
       // For "saveable" props, "!=" is used instead of "!==" to compare user_id
       // and currentUserId because currentUserId is a String while user_id is an Integer
@@ -89,7 +93,7 @@ function feedConstruct(
             article={pinnedItem}
             pinned={true}
             feedStyle={feedStyle}
-            isBookmarked={bookmarkedFeedItems.has(pinnedItem.id)}
+            isBookmarked={bookmarkedFeedItems.has(pinnedItem?.id)}
             saveable={pinnedItem.user_id != currentUserId}
           />
         );
@@ -107,10 +111,6 @@ function feedConstruct(
             saveable={imageItem.user_id != currentUserId}
           />
         );
-      }
-
-      if (Array.isArray(item) && item[0].podcast) {
-        return <PodcastEpisodes key={item.id} episodes={item} />;
       }
 
       if (item.class_name === 'Article') {
