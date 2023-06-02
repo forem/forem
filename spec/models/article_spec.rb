@@ -1359,4 +1359,17 @@ RSpec.describe Article do
       expect(categories.map(&:slug)).to contain_exactly(*%i[like])
     end
   end
+
+  it "should not send moderator notifications when a draft post" do
+    allow(Notification).to receive(:send_moderation_notification)
+
+    draft_post = build(:article, published: false)
+    draft_post.save!
+    expect(draft_post).not_to be_published
+    expect(Notification).not_to have_received(:send_moderation_notification)
+
+    published_post = build(:article, published: true)
+    published_post.save!
+    expect(Notification).to have_received(:send_moderation_notification)
+  end
 end
