@@ -53,49 +53,49 @@ describe('<Feed /> component', () => {
 
     it('should return the correct length of feedItems', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems.length).toEqual(14);
+        expect(lastCallbackResult.feedItems.length).toEqual(14);
       });
     });
 
     it('should set the pinnedItem and place it correctly in the feed', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
         const firstPinnedItem = feedPosts.find((o) => o.pinned === true);
-        expect(lastCallback.pinnedItem).toEqual(firstPinnedItem);
-        expect(lastCallback.feedItems[1]).toEqual(firstPinnedItem);
+        expect(lastCallbackResult.pinnedItem).toEqual(firstPinnedItem);
+        expect(lastCallbackResult.feedItems[1]).toEqual(firstPinnedItem);
       });
     });
 
     it('should set the imageItem and place it correctly in the feed', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
         const firstImageItem = feedPosts.find(
           (post) => post.main_image !== null,
         );
-        expect(lastCallback.imageItem).toEqual(firstImageItem);
-        expect(lastCallback.feedItems[2]).toEqual(firstImageItem);
+        expect(lastCallbackResult.imageItem).toEqual(firstImageItem);
+        expect(lastCallbackResult.feedItems[2]).toEqual(firstImageItem);
       });
     });
 
     it('should place the billboards correctly within the feedItems', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
-        expect(lastCallback.feedItems[3]).toEqual(secondBillboard);
-        expect(lastCallback.feedItems[9]).toEqual(thirdBillboard);
+        expect(lastCallbackResult.feedItems[0]).toEqual(firstBillboard);
+        expect(lastCallbackResult.feedItems[3]).toEqual(secondBillboard);
+        expect(lastCallbackResult.feedItems[9]).toEqual(thirdBillboard);
       });
     });
 
     it('should place the podcasts correctly within feedItems', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems[4]).toEqual(podcastEpisodes);
+        expect(lastCallbackResult.feedItems[4]).toEqual(podcastEpisodes);
       });
     });
   });
@@ -115,16 +115,16 @@ describe('<Feed /> component', () => {
     });
 
     it('should not set a pinned item', async () => {
-      const lastCallback =
+      const lastCallbackResult =
         callback.mock.calls[callback.mock.calls.length - 1][0];
       const postAndImageItem = feedPostsWherePinnedAndImagePostsSame.find(
         (post) => post.main_image !== null && post.pinned === true,
       );
 
-      expect(lastCallback.pinnedItem).toEqual(null);
-      expect(lastCallback.imageItem).toEqual(postAndImageItem);
-      expect(lastCallback.feedItems[1]).toEqual(postAndImageItem);
-      expect(lastCallback.feedItems[2]).not.toEqual(postAndImageItem);
+      expect(lastCallbackResult.pinnedItem).toEqual(null);
+      expect(lastCallbackResult.imageItem).toEqual(postAndImageItem);
+      expect(lastCallbackResult.feedItems[1]).toEqual(postAndImageItem);
+      expect(lastCallbackResult.feedItems[2]).not.toEqual(postAndImageItem);
     });
   });
 
@@ -141,16 +141,16 @@ describe('<Feed /> component', () => {
     });
 
     it('should not set the pinned items', async () => {
-      const lastCallback =
+      const lastCallbackResult =
         callback.mock.calls[callback.mock.calls.length - 1][0];
-      expect(lastCallback.pinnedItem).toEqual(null);
+      expect(lastCallbackResult.pinnedItem).toEqual(null);
     });
 
     it('should return the correct length of feedItems (by excluding pinned item)', async () => {
       await waitFor(() => {
-        const lastCallback =
+        const lastCallbackResult =
           callback.mock.calls[callback.mock.calls.length - 1][0];
-        expect(lastCallback.feedItems.length).toEqual(13);
+        expect(lastCallbackResult.feedItems.length).toEqual(13);
       });
     });
   });
@@ -170,20 +170,20 @@ describe('<Feed /> component', () => {
 
       it('should return the correct length of feedItems', async () => {
         await waitFor(() => {
-          const lastCallback =
+          const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
-          expect(lastCallback.feedItems.length).toEqual(13);
+          expect(lastCallbackResult.feedItems.length).toEqual(13);
         });
       });
 
       it('should still amend the organization of the feedItems correctly', async () => {
         await waitFor(() => {
-          const lastCallback =
+          const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
-          expect(lastCallback.feedItems[0]).toEqual(firstBillboard);
+          expect(lastCallbackResult.feedItems[0]).toEqual(firstBillboard);
           // there is no second bilboard so podcasts get rendered in 4th place
-          expect(lastCallback.feedItems[3]).toEqual(podcastEpisodes);
-          expect(lastCallback.feedItems[8]).toEqual(thirdBillboard);
+          expect(lastCallbackResult.feedItems[3]).toEqual(podcastEpisodes);
+          expect(lastCallbackResult.feedItems[8]).toEqual(thirdBillboard);
         });
       });
     });
@@ -202,23 +202,23 @@ describe('<Feed /> component', () => {
 
       it('should return the correct length of feedItems', async () => {
         await waitFor(() => {
-          const lastCallback =
+          const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
-          expect(lastCallback.feedItems.length).toEqual(12);
+          expect(lastCallbackResult.feedItems.length).toEqual(12);
         });
       });
 
       it('should still amend the organization of the feedItems correctly', async () => {
         await waitFor(() => {
-          const lastCallback =
+          const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
 
           const pinnedItem = feedPosts.find((o) => o.pinned === true);
           // there is no first billboard
-          expect(lastCallback.feedItems[0]).toEqual(pinnedItem);
+          expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
           // there is no second bilboard so podcsats get rendered in 3rd place
-          expect(lastCallback.feedItems[2]).toEqual(podcastEpisodes);
-          expect(lastCallback.feedItems[7]).toEqual(thirdBillboard);
+          expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
+          expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
         });
       });
     });
