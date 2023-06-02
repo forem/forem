@@ -147,9 +147,11 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   //  * @returns {Array} We return the new array that no longer contains the pinned post or the image post.
   //  */
   function updateFeedPosts(feedPosts, imagePost, pinnedPost) {
-    const filteredFeedPost = feedPosts.filter(
-      (item) => item.id !== pinnedPost.id,
-    );
+    let filteredFeedPost = feedPosts;
+    if (pinnedPost) {
+      filteredFeedPost = feedPosts.filter((item) => item.id !== pinnedPost.id);
+    }
+
     if (imagePost) {
       const imagePostIndex = filteredFeedPost.indexOf(imagePost);
       filteredFeedPost.splice(imagePostIndex, 1);
