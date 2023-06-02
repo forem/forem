@@ -28,47 +28,44 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             feedSecondBillboard,
             feedThirdBillboard,
           ]) => {
-            // We do the following for organizedFeedItems:
+            const imagePost = getImagePost(feedPosts);
+            const pinnedPost = getPinnedPost(feedPosts);
+            const podcastPost = getPodcastEpisodes();
+
+            const hasSetPinnedPost = setPinnedPostItem(pinnedPost, imagePost);
+            const hasSetImagePostItem = setImagePostItem(imagePost);
+
+            const updatedFeedPosts = updateFeedPosts(
+              feedPosts,
+              imagePost,
+              pinnedPost,
+            );
+
+            // We implement the following organization for the feed:
             // 1. Place the pinned post first
             // 2. Place the image post next
-            // 3. Place the podcast episodes out today as an array
+            // 3. Place the podcast episodes that are out today as an array
             // 4. Place the rest of the stories for the feed
             // 5. Insert the billboards in that array accordingly
             // - feed_first: Before all home page posts
             // - feed_second: Between 2nd and 3rd posts in the feed
             // - feed_third: Between 7th and 8th posts in the feed
-            let organizedFeedItems = [];
 
-            // Ensure first article is one with a main_image
-            // This is important because the imagePost will
-            // appear at the top of the feed, with a larger
-            // main_image than any of the stories or feed elements.
-            const imagePost = feedPosts.find(
-              (post) => post.main_image !== null,
-            );
+            const organizedFeedItems = [
+              ...insertIf(hasSetPinnedPost, pinnedPost),
+              ...insertIf(hasSetImagePostItem, imagePost),
+              ...insertIf(podcastPost.length > 0, podcastPost),
+              ...updatedFeedPosts,
+            ];
 
-            ({ feedPosts, organizedFeedItems } = managePinnedItem(
-              feedPosts,
-              imagePost,
-              organizedFeedItems,
-            ));
-            ({ feedPosts, organizedFeedItems } = manageImageItem(
-              feedPosts,
-              imagePost,
-              organizedFeedItems,
-            ));
-            ({ organizedFeedItems } = managePodcastItem(organizedFeedItems));
-
-            // we want to expand the array into the organizedFeedItems
-            organizedFeedItems.push(...feedPosts);
-
-            ({ organizedFeedItems } = manageBillboardItem(
+            const organizedFeedItemsWithBillboards = insertBillboardsInFeed(
               organizedFeedItems,
               feedFirstBillboard,
               feedSecondBillboard,
               feedThirdBillboard,
-            ));
-            setFeedItems(organizedFeedItems);
+            );
+
+            setFeedItems(organizedFeedItemsWithBillboards);
           },
         );
       } catch {
@@ -78,49 +75,103 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     organizeFeedItems();
   }, [timeFrame, onError]);
 
-  function managePinnedItem(feedPosts, imagePost, organizedFeedItems) {
-    // Here we extract from the feed two special items: pinned and image
-    const pinnedPost = feedPosts.find((post) => post.pinned === true);
+  function insertIf(condition, ...elements) {
+    // In line A, the triple dots are the rest operator which collects the remaining arguments in an Array and assigns it to elements.
+    return condition ? elements : [];
+  }
+  // /**
+  //  * Retrieves the imagePost which will later appear at the top of the feed,
+  //  * with a larger main_image than any of the stories or feed elements.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  *
+  //  * @returns {Object} The first post with a main_image
+  //  */
+  function getImagePost(feedPosts) {
+    return feedPosts.find((post) => post.main_image !== null);
+  }
 
+  // /**
+  //  * Retrieves the pinnedPost which will later appear at the top the feed with a pin.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  *
+  //  * @returns {Object} The first post that has pinned set to true
+  //  */
+  function getPinnedPost(feedPosts) {
+    return feedPosts.find((post) => post.pinned === true);
+  }
+
+  // /**
+  //  * Sets the Pinned Item into state.
+  //  *
+  //  * @param {Object} The pinnedPost
+  //  * @param {Object} The imagePost
+  //  *
+  //  * @returns {boolean} If we set the pinned post we return true else we return false
+  //  */
+  function setPinnedPostItem(pinnedPost, imagePost) {
     // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
-    if (pinnedPost && timeFrame === '') {
-      // remove pinned article from the feed without setting it as state.
-      feedPosts = feedPosts.filter((item) => item.id !== pinnedPost.id);
+    if (!pinnedPost || timeFrame !== '') return false;
 
-      // If the pinned and the image post aren't the same,
-      // (either because imagePost is missing or because they represent two different posts),
-      // we set the pinnedPost.
-      if (pinnedPost.id !== imagePost?.id) {
-        setPinnedItem(pinnedPost);
-        organizedFeedItems.push(pinnedPost);
-      }
+    // If the pinned and the image post aren't the same, (either because imagePost is missing or
+    // because they represent two different posts), we set the pinnedPost
+    if (pinnedPost.id !== imagePost?.id) {
+      setPinnedItem(pinnedPost);
+      return true;
     }
 
-    return { feedPosts, organizedFeedItems };
+    return false;
   }
 
-  function manageImageItem(feedPosts, imagePost, organizedFeedItems) {
-    // Remove that first post from the array to
-    // prevent it from rendering twice in the feed.
-    const imagePostIndex = feedPosts.indexOf(imagePost);
+  // /**
+  //  * Sets the Image Item into state.
+  //  *
+  //  * @param {Object} The imagePost
+  //  *
+  //  * @returns {boolean} If we set the pinned post we return true
+  //  */
+  function setImagePostItem(imagePost) {
     if (imagePost) {
-      feedPosts.splice(imagePostIndex, 1);
       setimageItem(imagePost);
-      organizedFeedItems.push(imagePost);
+      return true;
     }
-    return { feedPosts, organizedFeedItems };
   }
 
-  function managePodcastItem(organizedFeedItems) {
-    const podcasts = getPodcastEpisodes();
-
-    if (podcasts.length > 0) {
-      organizedFeedItems.push(podcasts);
+  // /**
+  //  * Updates the feedPosts to remove the relevant items like the pinned
+  //  * post and the image post that will be added to the top of final organized feed
+  //  * items separately. We do not want duplication.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  * @param {Object} The imagePost
+  //  * @param {Object} The pinnedPost
+  //  *
+  //  * @returns {Array} We return the new array that no longer contains the pinned post or the image post.
+  //  */
+  function updateFeedPosts(feedPosts, imagePost, pinnedPost) {
+    const filteredFeedPost = feedPosts.filter(
+      (item) => item.id !== pinnedPost.id,
+    );
+    if (imagePost) {
+      const imagePostIndex = filteredFeedPost.indexOf(imagePost);
+      filteredFeedPost.splice(imagePostIndex, 1);
     }
-    return { organizedFeedItems };
+
+    return filteredFeedPost;
   }
 
-  function manageBillboardItem(
+  // /**
+  //  * Inserts the billboards (if they exist) into the feed.
+  //  *
+  //  * @param {organizedFeedItems} The partially organized feed items.
+  //  * @param {String} feedFirstBillboard is the feed_first billboard retrieved from an endpoint.
+  //  * @param {String} feedSecondBillboard is the feed_second billboard retrieved from an endpoint.
+  //  * @param {String} feedThirdBillboard is the feed_third billboard retrieved from an endpoint.
+  //  *
+  //  * @returns {Array} We return the array containing the billboards slotted into the correct positions.
+  //  */
+  function insertBillboardsInFeed(
     organizedFeedItems,
     feedFirstBillboard,
     feedSecondBillboard,
@@ -138,7 +189,7 @@ export const Feed = ({ timeFrame, renderFeed }) => {
       organizedFeedItems.splice(0, 0, feedFirstBillboard);
     }
 
-    return { organizedFeedItems };
+    return organizedFeedItems;
   }
 
   // /**
