@@ -354,7 +354,7 @@ RSpec.describe Organization do
       expect(organization.public_articles_count).to eq(0)
     end
   end
-  
+
   describe ".simple_name_match" do
     before do
       create(:organization, name: "Not Matching")
