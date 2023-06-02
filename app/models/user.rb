@@ -324,7 +324,6 @@ class User < ApplicationRecord
     true
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
@@ -332,7 +331,6 @@ class User < ApplicationRecord
     end
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
