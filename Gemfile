@@ -173,3 +173,5 @@ group :test do
   gem "with_model", "~> 2.1.6" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
+
+gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
