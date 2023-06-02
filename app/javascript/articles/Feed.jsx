@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
@@ -52,9 +53,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             // - feed_third: Between 7th and 8th posts in the feed
 
             const organizedFeedItems = [
-              ...insertIf(hasSetPinnedPost, pinnedPost),
-              ...insertIf(hasSetImagePostItem, imagePost),
-              ...insertIf(podcastPost.length > 0, podcastPost),
+              ...insertInArrayIf(hasSetPinnedPost, pinnedPost),
+              ...insertInArrayIf(hasSetImagePostItem, imagePost),
+              ...insertInArrayIf(podcastPost.length > 0, podcastPost),
               ...updatedFeedPosts,
             ];
 
@@ -75,10 +76,6 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     organizeFeedItems();
   }, [timeFrame, onError]);
 
-  function insertIf(condition, ...elements) {
-    // In line A, the triple dots are the rest operator which collects the remaining arguments in an Array and assigns it to elements.
-    return condition ? elements : [];
-  }
   // /**
   //  * Retrieves the imagePost which will later appear at the top of the feed,
   //  * with a larger main_image than any of the stories or feed elements.
