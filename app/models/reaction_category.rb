@@ -21,6 +21,10 @@ class ReactionCategory
       list.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
     end
 
+    def notifiable
+      public
+    end
+
     def privileged
       list.filter_map { |category| category.slug if category.privileged? }
     end
