@@ -11,12 +11,12 @@
   <% end %>
 <% end %>
 
-<div class="flex justify-between gap-4 items-center">
+<div class="flex justify-between gap-10">
   <div class="flex flex-col flex-1">
     <h2 class="crayons-subtitle-2 px-1"><%= t("views.admin.users.priviliged_actions.title") %></h2>
     <p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.priviliged_actions.description") %></p>
   </div>
-  <div class="flex items-center gap-1">
+  <div class="flex items-start gap-1">
     <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
       <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
       <span class="fs-s fw-medium lh-base"><%= countable_flags %></span>
