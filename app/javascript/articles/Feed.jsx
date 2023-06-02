@@ -43,9 +43,10 @@ export const Feed = ({ timeFrame, renderFeed }) => {
             );
 
             // We implement the following organization for the feed:
-            // 1. Place the pinned post first
+            // 1. Place the pinned post first (if the timeframe is relevant)
             // 2. Place the image post next
-            // 3. Place the podcast episodes that are out today as an array
+            // 3. If you follow podcasts, place the podcast episodes that are
+            // published today (this is an array)
             // 4. Place the rest of the stories for the feed
             // 5. Insert the billboards in that array accordingly
             // - feed_first: Before all home page posts
