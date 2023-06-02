@@ -128,7 +128,7 @@ describe('<Feed /> component', () => {
     });
   });
 
-  describe('when the timeframe prop is not an empty string', () => {
+  describe("when the timeframe prop is 'latest'", () => {
     let callback;
     beforeAll(() => {
       fetch.mockResponseOnce(JSON.stringify(feedPosts));
@@ -137,13 +137,21 @@ describe('<Feed /> component', () => {
       fetch.mockResponseOnce(thirdBillboard);
 
       callback = jest.fn();
-      render(<Feed timeFrame="lastest" renderFeed={callback} />);
+      render(<Feed timeFrame="latest" renderFeed={callback} />);
     });
 
     it('should not set the pinned items', async () => {
       const lastCallback =
         callback.mock.calls[callback.mock.calls.length - 1][0];
       expect(lastCallback.pinnedItem).toEqual(null);
+    });
+
+    it('should return the correct length of feedItems (by excluding pinned item)', async () => {
+      await waitFor(() => {
+        const lastCallback =
+          callback.mock.calls[callback.mock.calls.length - 1][0];
+        expect(lastCallback.feedItems.length).toEqual(13);
+      });
     });
   });
 
