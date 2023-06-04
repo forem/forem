@@ -13,11 +13,8 @@ exploding_head:
 cry_face:
   position: 4
   icon: cry
-fire:
-  position: 5
-  icon: fire
 thinking:
-  position: 6
+  position: 5
   icon: thinking_face
 readinglist:
   position: 5
