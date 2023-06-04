@@ -10,12 +10,13 @@ unicorn:
 exploding_head:
   position: 3
   icon: exploding-head
-cry_face:
+raised_hands:
   position: 4
-  icon: cry
-thinking:
+  icon: raised-hands
+  published: false
+fire:
   position: 5
-  icon: thinking_face
+  icon: fire
 readinglist:
   position: 5
   icon: save

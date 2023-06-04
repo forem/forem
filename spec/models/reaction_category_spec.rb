@@ -18,7 +18,7 @@ RSpec.describe ReactionCategory do
 
   it "lists all category slugs" do
     expect(described_class.all_slugs).to contain_exactly(*%i[exploding_head fire hands like
-                                                             cry_face readinglist thinking
+                                                             raised_hands readinglist thinking
                                                              thumbsdown thumbsup unicorn vomit])
   end
 
