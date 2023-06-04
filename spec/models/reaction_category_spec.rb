@@ -18,12 +18,12 @@ RSpec.describe ReactionCategory do
 
   it "lists all category slugs" do
     expect(described_class.all_slugs).to contain_exactly(*%i[exploding_head fire hands like
-                                                             cry_face readinglist thinking
+                                                             raised_hands readinglist thinking
                                                              thumbsdown thumbsup unicorn vomit])
   end
 
   it "lists public categories" do
-    expect(described_class.public).to contain_exactly(*%i[like unicorn cry_face fire exploding_head])
+    expect(described_class.public).to contain_exactly(*%i[like unicorn raised_hands fire exploding_head])
   end
 
   it "lists privileged categories" do
