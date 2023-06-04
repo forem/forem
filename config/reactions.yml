@@ -13,7 +13,6 @@ exploding_head:
 raised_hands:
   position: 4
   icon: raised-hands
-  published: false
 fire:
   position: 5
   icon: fire
@@ -32,6 +31,6 @@ vomit:
   name: Vomit
   score: -50.0
 thinking:
-  published: true
+  published: false
 hands:
   published: false
