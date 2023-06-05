@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i[preview create hide unhide]
+  before_action :authenticate_user!, only: %i[preview create hide unhide subscribe]
   after_action :verify_authorized
   after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
@@ -200,6 +200,32 @@ class CommentsController < ApplicationController
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }
     end
+  end
+
+  def subscribe
+    skip_authorization
+    Rails.logger.info "*********************************************************"
+    Rails.logger.info permitted_attributes(Comment)[:notification_id]
+    Rails.logger.info current_user
+
+    comment = Comment.find(permitted_attributes(Comment)[:comment_id]) 
+                if permitted_attributes(Comment)[:comment_id].present?
+    notification_id = permitted_attributes(Comment)[:notification_id]
+    notification = NotificationSubscription
+                    .where(notifiable_type: "Comment", user_id: current_user.id, id: notification_id)
+
+    if notification_id && notification.count.positive?
+      notification.first.destroy
+    else
+      NotificationSubscription.create(user: current_user,
+                                      config: "all_comments",
+                                      notifiable_id: comment.id,
+                                      notifiable_type: "Comment")
+
+    end
+
+
+    render json: { updated: "true" }, status: :ok
   end
 
   def settings

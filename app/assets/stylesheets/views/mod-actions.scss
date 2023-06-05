@@ -94,7 +94,7 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .reaction-button {
+  .reaction-button, .subscribe-button {
     position: relative;
     background: transparent;
     border-color: transparent;
@@ -625,6 +625,15 @@
       background: $red;
     }
   }
+}
+
+.subscribe-button.reacted {
+  background: rgba(59, 73, 223, 0.1);
+  color: #4338CA;
+}
+
+.comment-subscribed, .comment-unsubscribed {
+  width: 16px;
 }
 
 // these styles are to correct height and margin issues in the iframe

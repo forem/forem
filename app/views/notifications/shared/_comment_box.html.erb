@@ -33,7 +33,7 @@
         </div>
       <% end %>
 
-      <footer class="comment-actions">
+      <footer class="comment-actions" data-subscribe-button-container="true">
         <div class="notification__actions">
           <button
             class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "like") ? "reacted" : "" %>"
@@ -71,7 +71,21 @@
             <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
+          <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: @last_user_comment).first %>
+            <button
+              class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button reacted"
+              data-info='<%= @notification.to_json %>'
+              data-comment='<%= json_data['comment']['id'] %>'>
+              <% if !@notification.nil? %>
+                <%= crayons_icon_tag("bell-active", class: "comment-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+              <% else %>
+                <%= crayons_icon_tag("bell", class: "comment-unsubscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+              <% end %>
+              <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>
+            </button>
+
         </div>
+        <%= javascript_packs_with_chunks_tag "subscribeButton", defer: true %>
 
         <% @comment = Comment.new %>
         <%= form_for(@comment,

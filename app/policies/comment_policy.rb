@@ -25,6 +25,10 @@ class CommentPolicy < ApplicationPolicy
     true
   end
 
+  def subscribe?
+    true
+  end
+
   def moderate?
     return true if user.trusted?
 
@@ -52,6 +56,10 @@ class CommentPolicy < ApplicationPolicy
 
   def permitted_attributes_for_preview
     %i[body_markdown]
+  end
+
+  def permitted_attributes_for_subscribe
+    %i[notification_id comment_id]
   end
 
   def permitted_attributes_for_create
