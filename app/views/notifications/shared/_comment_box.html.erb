@@ -75,7 +75,7 @@
           <% Rails.logger.info "***********************************************" %>
           <% Rails.logger.info json_data["comment"]["id"] %>
             <button
-              class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button reacted"
+              class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "reacted" %>"
               data-info='<%= @notification.to_json %>'
               data-comment='<%= json_data["comment"]["id"] %>'>
               <% if !@notification.nil? %>
