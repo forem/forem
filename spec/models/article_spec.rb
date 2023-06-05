@@ -700,8 +700,8 @@ RSpec.describe Article do
 
   describe "#slug" do
     let(:title) { "hey This' is$ a SLUG" }
-    let(:article0) { build(:article, title: title, published: false) }
-    let(:article1) { build(:article, title: title, published: false) }
+    let(:article0) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
+    let(:article1) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
 
     before do
       article0.validate!
@@ -1218,7 +1218,7 @@ RSpec.describe Article do
       co_author1 = create(:user)
       co_author2 = create(:user)
       article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
-      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+      expect(article.co_author_ids).to contain_exactly(co_author1.id, co_author2.id)
     end
   end
 
@@ -1356,7 +1356,20 @@ RSpec.describe Article do
 
     it "reports accurately" do
       categories = article.public_reaction_categories
-      expect(categories.map(&:slug)).to contain_exactly(*%i[like])
+      expect(categories.map(&:slug)).to match_array(%i[like])
     end
+  end
+
+  it "does not send moderator notifications when a draft post" do
+    allow(Notification).to receive(:send_moderation_notification)
+
+    draft_post = build(:article, published: false)
+    draft_post.save!
+    expect(draft_post).not_to be_published
+    expect(Notification).not_to have_received(:send_moderation_notification)
+
+    published_post = build(:article, published: true)
+    published_post.save!
+    expect(Notification).to have_received(:send_moderation_notification)
   end
 end
