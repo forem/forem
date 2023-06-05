@@ -26,7 +26,8 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets",
     "e2e": "bin/e2e",
-    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed",
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=assets"
   },
   "nyc": {
     "report-dir": "coverage/cypress"
@@ -127,6 +128,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "3",
+    "esbuild": "^0.17.19",
     "file-loader": "^6.2.0",
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",

@@ -43,6 +43,7 @@
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= Settings::General.app_domain %>" />
     <% end %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
   </head>
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>

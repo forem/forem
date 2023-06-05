@@ -422,6 +422,8 @@ GEM
       sass (>= 3.2)
     js-routes (2.2.5)
       railties (>= 4)
+    jsbundling-rails (1.1.1)
+      railties (>= 6.0.0)
     json (2.6.3)
     json-schema (2.8.1)
       addressable (>= 2.4)
@@ -1025,6 +1027,7 @@ DEPENDENCIES
   inline_svg (~> 1.8)
   jbuilder (~> 2.11)
   js-routes (~> 2.2)
+  jsbundling-rails (~> 1.1)
   jsonapi-serializer (~> 2.2)
   kaminari (~> 1.2)
   katex (~> 0.9.0)
@@ -1121,4 +1124,4 @@ RUBY VERSION
    ruby 3.0.2p107
 
 BUNDLED WITH
-   2.2.22
+   2.4.10
