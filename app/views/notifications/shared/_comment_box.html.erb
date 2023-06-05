@@ -71,11 +71,13 @@
             <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
-          <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: @last_user_comment).first %>
+          <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: json_data["comment"]["id"]).first %>
+          <% Rails.logger.info "***********************************************" %>
+          <% Rails.logger.info json_data["comment"]["id"] %>
             <button
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button reacted"
               data-info='<%= @notification.to_json %>'
-              data-comment='<%= json_data['comment']['id'] %>'>
+              data-comment='<%= json_data["comment"]["id"] %>'>
               <% if !@notification.nil? %>
                 <%= crayons_icon_tag("bell-active", class: "comment-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
               <% else %>

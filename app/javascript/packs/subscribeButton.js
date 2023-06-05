@@ -24,7 +24,7 @@ function addButtonSubscribeText(button, config) {
       pressed = 'false';
   }
   button.setAttribute('aria-label', label);
-  button.querySelector("span").innerText = label;
+  button.querySelector('span').innerText = label;
   pressed.length === 0
     ? button.removeAttribute('aria-pressed')
     : button.setAttribute('aria-pressed', pressed);
@@ -41,7 +41,7 @@ function optimisticallyUpdateButtonUI(button) {
       case 'top_level_comments':
       case 'author_comments':
         button.classList.remove('reacted');
-        button.querySelector("span").innerText = 'Subscribe to comments';
+        button.querySelector('span').innerText = 'Subscribe to comments';
         break;
       default:
         button.classList.add('reacted');
@@ -53,20 +53,29 @@ function optimisticallyUpdateButtonUI(button) {
     return;
   }
 
-  return
+  return;
 }
 
 function handleSubscribeButtonClick({ target }) {
   optimisticallyUpdateButtonUI(target);
 
-
-  const { id } = JSON.parse(target.dataset.info);
-  const payload = JSON.stringify({
-    comment: {
-      notification_id: id,
-      comment_id: Number(target.dataset.comment)
-    },
-  });
+  let payload;
+  if (JSON.parse(target.dataset.info)) {
+    const { id } = JSON.parse(target.dataset.info);
+    payload = JSON.stringify({
+      comment: {
+        notification_id: id,
+        comment_id: Number(target.dataset.comment),
+      },
+    });
+  } else {
+    payload = JSON.stringify({
+      comment: {
+        notification_id: null,
+        comment_id: Number(target.dataset.comment),
+      },
+    });
+  }
   getCsrfToken()
     .then(sendFetch('comment-subscribe', payload))
     .then((response) => {
@@ -83,9 +92,7 @@ function handleSubscribeButtonClick({ target }) {
 }
 
 function initializeSubscribeButton() {
-  const buttons = document.querySelectorAll(
-    '.subscribe-button',
-  );
+  const buttons = document.querySelectorAll('.subscribe-button');
 
   if (buttons.length === 0) {
     return;
@@ -93,10 +100,14 @@ function initializeSubscribeButton() {
 
   Array.from(buttons, (button) => {
     const buttonInfo = JSON.parse(button.dataset.info);
-    const { config } = buttonInfo;
 
-    addButtonSubscribeText(button, config)
+    if (buttonInfo) {
+      const { config } = buttonInfo;
 
+      addButtonSubscribeText(button, config);
+    } else {
+      addButtonSubscribeText(button, '');
+    }
   });
 }
 
@@ -106,9 +117,8 @@ function listenForSubscribeButtonClicks() {
     .addEventListener('click', handleSubscribeButtonClick);
 }
 
-
-initializeSubscribeButton()
-listenForSubscribeButtonClicks()
+initializeSubscribeButton();
+listenForSubscribeButtonClicks();
 // Some follow buttons are added to the DOM dynamically, e.g. search results,
 // So we listen for any new additions to be fetched
 // const observer = new MutationObserver((mutationsList) => {
