@@ -40,15 +40,15 @@ function optimisticallyUpdateButtonUI(button) {
       case 'all_comments':
       case 'top_level_comments':
       case 'author_comments':
-        button.classList.remove('reacted');
+        button.classList.remove('comment-subscribed');
         button.querySelector('span').innerText = 'Subscribe to comments';
         break;
       default:
-        button.classList.add('reacted');
+        button.classList.add('comment-subscribed');
         addButtonSubscribeText(button, 'all_comments');
     }
   } else {
-    button.classList.add('reacted');
+    button.classList.add('comment-subscribed');
     addButtonSubscribeText(button, 'all_comments');
     return;
   }
@@ -78,8 +78,15 @@ function handleSubscribeButtonClick({ target }) {
   }
   getCsrfToken()
     .then(sendFetch('comment-subscribe', payload))
-    .then((response) => {
-      if (response.status !== 200) {
+    .then(async (response) => {
+      if (response.status === 200) {
+        const res = await response.json();
+        if (res.notification) {
+          target.dataset.info = res.notification;
+        } else {
+          target.dataset.info = null;
+        }
+      } else {
         showModalAfterError({
           response,
           element: 'comment',

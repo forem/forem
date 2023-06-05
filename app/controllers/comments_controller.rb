@@ -204,21 +204,15 @@ class CommentsController < ApplicationController
 
   def subscribe
     skip_authorization
-    Rails.logger.info "*********************************************************"
-    Rails.logger.info permitted_attributes(Comment)[:notification_id]
-    Rails.logger.info current_user.id
 
     comment_id = permitted_attributes(Comment)[:comment_id]
     comment = Comment.find(comment_id) if comment_id.present?
     notification_id = permitted_attributes(Comment)[:notification_id]
-    notification = NotificationSubscription.where(
-      notifiable_type: "Comment",
-      user_id: current_user.id,
-      id: notification_id,
-    )
+    notification = NotificationSubscription.where(id: notification_id)
 
     if notification_id && notification.count.positive?
       notification.first.destroy
+      render json: { destroyed: "true" }, status: :ok
     else
       notif = NotificationSubscription.create(user: current_user,
                                               config: "all_comments",
@@ -227,10 +221,10 @@ class CommentsController < ApplicationController
 
       if notif.errors.empty?
         render json: { updated: "true", notification: notif.to_json }, status: :ok
+      else
+        render json: { errors: notif.errors_as_sentence, status: 422 }, status: :unprocessable_entity
       end
     end
-
-    render json: { updated: "true" }, status: :ok
   end
 
   def settings
