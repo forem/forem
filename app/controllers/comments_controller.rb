@@ -206,7 +206,9 @@ class CommentsController < ApplicationController
     skip_authorization
 
     comment_id = permitted_attributes(Comment)[:comment_id]
+    article_id = permitted_attributes(Comment)[:article_id]
     comment = Comment.find(comment_id) if comment_id.present?
+    article = Article.find(article_id) if article_id.present?
     notification_id = permitted_attributes(Comment)[:notification_id]
     notification = NotificationSubscription.where(id: notification_id)
 
@@ -216,8 +218,8 @@ class CommentsController < ApplicationController
     else
       notif = NotificationSubscription.find_or_create_by(user: current_user,
                                                          config: "all_comments",
-                                                         notifiable: comment,
-                                                         notifiable_type: "Comment")
+                                                         notifiable: article.nil? ? comment : article,
+                                                         notifiable_type: article.nil? ? "Comment" : "Article")
 
       if notif.errors.empty?
         render json: { updated: "true", notification: notif.to_json }, status: :ok

@@ -72,6 +72,9 @@ function handleSubscribeButtonClick({ target }) {
       comment: {
         notification_id: id,
         comment_id: Number(target.dataset.comment),
+        article_id: target.dataset.article
+          ? Number(target.dataset.article)
+          : null,
       },
     });
   } else {
@@ -79,6 +82,9 @@ function handleSubscribeButtonClick({ target }) {
       comment: {
         notification_id: null,
         comment_id: Number(target.dataset.comment),
+        article_id: target.dataset.article
+          ? Number(target.dataset.article)
+          : null,
       },
     });
   }

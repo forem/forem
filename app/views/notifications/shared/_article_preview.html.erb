@@ -31,10 +31,11 @@
       </button>
 
       <% article = Article.find(json_data["article"]["id"]) %>
-      <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: article.comments.last.id).first %>
+      <% @notification = NotificationSubscription.where(notifiable_type: "Article", user_id: current_user.id, notifiable_id: article.id).first %>
       <button
         class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "comment-subscribed" %>"
         data-info="<%= @notification.to_json %>"
+        data-article="<%= article.id %>"
         data-comment="<%= article.comments.last.id %>">
         <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
         <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>

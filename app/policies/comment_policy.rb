@@ -59,7 +59,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_subscribe
-    %i[notification_id comment_id]
+    %i[notification_id comment_id article_id]
   end
 
   def permitted_attributes_for_create
