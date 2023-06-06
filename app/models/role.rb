@@ -1,23 +1,29 @@
 class Role < ApplicationRecord
-  ROLES = %w[
-    admin
-    codeland_admin
-    comment_suspended
-    creator
-    mod_relations_admin
-    super_moderator
-    podcast_admin
-    restricted_liquid_tag
-    single_resource_admin
-    super_admin
-    support_admin
-    suspended
-    tag_moderator
-    tech_admin
-    trusted
-    warned
-    workshop_pass
-  ].freeze
+  ROLES = {
+    admin: "admin",
+    codeland_admin: "codeland_admin",
+    comment_suspended: "comment_suspended",
+    creator: "creator",
+    mod_relations_admin: "mod_relations_admin",
+    super_moderator: "super_moderator",
+    podcast_admin: "podcast_admin",
+    restricted_liquid_tag: "restricted_liquid_tag",
+    single_resource_admin: "single_resource_admin",
+    super_admin: "super_admin",
+    support_admin: "support_admin",
+    suspended: "suspended",
+    tag_moderator: "tag_moderator",
+    tech_admin: "tech_admin",
+    trusted: "trusted",
+    warned: "warned",
+    workshop_pass: "workshop_pass"
+  }.freeze
+
+  ROLES.each do |key, value|
+    define_method("#{key}?") do
+      name == value
+    end
+  end
 
   has_and_belongs_to_many :users, join_table: :users_roles # rubocop:disable Rails/HasAndBelongsToMany
 
@@ -29,7 +35,7 @@ class Role < ApplicationRecord
             allow_nil: true
 
   validates :name,
-            inclusion: { in: ROLES }
+            inclusion: { in: ROLES.values }
 
   scopify
 

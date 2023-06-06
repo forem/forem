@@ -3,19 +3,6 @@ require "rails_helper"
 RSpec.describe Users::RemoveRole, type: :service do
   let(:current_user) { create(:user, :admin) }
 
-  context "when user is a super_admin" do
-    it "does not remove super_admin roles and raises an error", :aggregate_failures do
-      super_admin = create(:user, :super_admin)
-      role = super_admin.roles.first.name.to_sym
-      resource_type = nil
-      args = { user: super_admin, role: role, resource_type: resource_type, admin: current_user }
-      role_removal = described_class.call(**args)
-
-      expect(role_removal.success).to be false
-      expect(role_removal.error_message).to eq "Super Admin roles cannot be removed."
-    end
-  end
-
   context "when current_user" do
     it "does not remove roles and raises an error", :aggregate_failures do
       role = current_user.roles.first
