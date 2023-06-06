@@ -214,14 +214,15 @@ class CommentsController < ApplicationController
       notification.first.destroy
       render json: { destroyed: "true" }, status: :ok
     else
-      notif = NotificationSubscription.create(user: current_user,
-                                              config: "all_comments",
-                                              notifiable: comment,
-                                              notifiable_type: "Comment")
+      notif = NotificationSubscription.find_or_create_by(user: current_user,
+                                                         config: "all_comments",
+                                                         notifiable: comment,
+                                                         notifiable_type: "Comment")
 
       if notif.errors.empty?
         render json: { updated: "true", notification: notif.to_json }, status: :ok
       else
+        Rails.logger.info notif.errors_as_sentence
         render json: { errors: notif.errors_as_sentence, status: 422 }, status: :unprocessable_entity
       end
     end

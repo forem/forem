@@ -6,25 +6,31 @@
 function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
+  let mobileLabel = '';
   switch (config) {
     case 'all_comments':
       label = `Subscribed to comments`;
+      mobileLabel = `Comments`;
       pressed = 'true';
       break;
     case 'top_level_comments':
       label = `Subscribed to top comments`;
+      mobileLabel = `Top Comments`;
       pressed = 'true';
       break;
     case 'author_comments':
       label = `Subscribed to author comments`;
+      mobileLabel = `Author Comments`;
       pressed = 'true';
       break;
     default:
       label = `Subscribe to comments`;
+      mobileLabel = `Comments`;
       pressed = 'false';
   }
   button.setAttribute('aria-label', label);
-  button.querySelector('span').innerText = label;
+  button.querySelector('span').innerText =
+    window.innerWidth <= 760 ? mobileLabel : label;
   pressed.length === 0
     ? button.removeAttribute('aria-pressed')
     : button.setAttribute('aria-pressed', pressed);
@@ -119,9 +125,18 @@ function initializeSubscribeButton() {
 }
 
 function listenForSubscribeButtonClicks() {
-  document
-    .querySelector('.subscribe-button')
-    .addEventListener('click', handleSubscribeButtonClick);
+  const button = document.querySelector('.subscribe-button');
+  const buttonInfo = JSON.parse(button.dataset.info);
+
+  button.addEventListener('click', handleSubscribeButtonClick);
+
+  if (buttonInfo) {
+    const { config } = buttonInfo;
+
+    window.onresize = addButtonSubscribeText(button, config);
+  } else {
+    window.onresize = addButtonSubscribeText(button, '');
+  }
 }
 
 initializeSubscribeButton();
