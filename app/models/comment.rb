@@ -164,7 +164,7 @@ class Comment < ApplicationRecord
     return self.class.title_hidden if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
-    return self.class.title_image_only if text.blank? && processed_html.include?("<img") # Indicates that we escaped a lone image
+    return self.class.title_image_only if only_contains_image?(text)
 
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
     Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
@@ -394,5 +394,10 @@ class Comment < ApplicationRecord
 
   def parent_exists?
     parent_id && Comment.exists?(id: parent_id)
+  end
+
+  def only_contains_image?(stripped_text)
+    # If stripped text is blank and processed html has <img> tags, then it's an image-only comment
+    stripped_text.blank? && processed_html.include?("<img")
   end
 end
