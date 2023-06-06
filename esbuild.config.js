@@ -1,16 +1,21 @@
 /*eslint no-undef: "error"*/
 /*eslint-env node*/
 
+const glob = require('glob');
 const esbuild = require('esbuild');
 
 async () => {
   const context = await esbuild.context({
-    entryPoints: [
-      'app/javascript/application.js',
-      'app/assets/javascripts/initializePage.js',
-    ],
+    entryPoints: glob.sync([
+      'app/javascript/packs/**/*.js',
+      'app/assets/javascripts/*.js',
+    ]),
     bundle: true,
     sourcemap: true,
+    assetNames: '[name]-[hash].digested',
+    chunkNames: '[name]-[hash].digested',
+    logLevel: 'info',
+    splitting: true,
     outdir: 'app/assets/builds',
     loader: { '.erb': 'file', '.toml': 'file' },
     publicPath: 'assets',
@@ -19,5 +24,3 @@ async () => {
   await context.watch();
   await context.dispose();
 };
-
-(' app/javascript/*.* --bundle --loader:.erb=file --loader:.toml=file --sourcemap --outdir=app/assets/builds --public-path=assets');
