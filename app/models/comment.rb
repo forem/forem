@@ -104,6 +104,10 @@ class Comment < ApplicationRecord
     I18n.t("models.comment.hidden")
   end
 
+  def self.title_image_only
+    I18n.t("models.comment.image_only")
+  end
+
   def self.build_comment(params, &blk)
     includes(user: :profile).new(params, &blk)
   end
@@ -160,6 +164,8 @@ class Comment < ApplicationRecord
     return self.class.title_hidden if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
+    return self.class.title_image_only if text.blank? && processed_html.include?("<img") # Indicates that we escaped a lone image
+
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
     Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
   end
