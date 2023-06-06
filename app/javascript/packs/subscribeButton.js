@@ -112,14 +112,17 @@ function initializeSubscribeButton() {
   }
 
   Array.from(buttons, (button) => {
+    button.addEventListener('click', handleSubscribeButtonClick);
     const buttonInfo = JSON.parse(button.dataset.info);
 
     if (buttonInfo) {
       const { config } = buttonInfo;
 
       addButtonSubscribeText(button, config);
+      window.onresize = addButtonSubscribeText(button, config);
     } else {
       addButtonSubscribeText(button, '');
+      window.onresize = addButtonSubscribeText(button, '');
     }
   });
 }
