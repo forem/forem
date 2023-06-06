@@ -4,7 +4,7 @@ import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import {
   observeDisplayAds,
   initializeDisplayAdVisibility,
-} from '../packs/displayAdPostRender';
+} from '../packs/billboardAfterRenderActions';
 import { setupDisplayAdDropdown } from '@utilities/displayAdDropdown';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
