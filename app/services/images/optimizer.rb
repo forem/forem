@@ -27,6 +27,7 @@ module Images
 
     def self.cloudflare(img_src, **kwargs)
       prefix = "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image"
+      img_src = extract_suffix_url(img_src) if img_src.include?(prefix) # We don't want to nest prefixes
       "#{prefix}/width=#{kwargs[:width]},height=#{kwargs[:height]},fit=cover,gravity=auto,format=auto/#{img_src}"
     end
 
@@ -91,6 +92,12 @@ module Images
         # ie. default imgproxy endpoint is localhost:8080
         ApplicationConfig["IMGPROXY_ENDPOINT"] || "http://localhost:8080"
       end
+    end
+
+    def self.extract_suffix_url(full_url)
+      uri = URI.parse(full_url)
+      match = uri.path.match(%r{https?://.+})
+      match[0] if match
     end
   end
 end
