@@ -8,7 +8,7 @@ async () => {
   const context = await esbuild.context({
     entryPoints: glob.sync([
       'app/javascript/packs/**/*.js',
-      'app/assets/javascripts/*.js',
+      'app/assets/javascripts/**/*.js',
     ]),
     bundle: true,
     sourcemap: true,
