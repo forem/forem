@@ -7,7 +7,7 @@ import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
-export const Feed = ({ timeFrame, renderFeed }) => {
+export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
@@ -77,6 +77,11 @@ export const Feed = ({ timeFrame, renderFeed }) => {
     organizeFeedItems();
   }, [timeFrame, onError]);
 
+  useEffect(() => {
+    if (feedItems.length > 0) {
+      afterRender();
+    }
+  }, [feedItems.length]);
   // /**
   //  * Retrieves the imagePost which will later appear at the top of the feed,
   //  * with a larger main_image than any of the stories or feed elements.
