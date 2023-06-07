@@ -9,7 +9,7 @@ esbuild
     entryPoints: glob.sync('app/javascript/packs/**/*.*'),
     bundle: true,
     sourcemap: true,
-    // assetNames: '[name]-[hash].digested',
+    assetNames: '[name]-[hash].digested',
     // chunkNames: '[name]-[hash].digested',
     logLevel: 'info',
     // splitting: true,
