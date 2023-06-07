@@ -1375,7 +1375,7 @@ RSpec.describe Article do
         create(:article, score: 6)
         create(:article, score: 4)
         create(:article, score: 1)
-        # averages 4.2
+        # averages 4.2 with article created earlier, see let on line 13
       end
 
       it "works as expected" do

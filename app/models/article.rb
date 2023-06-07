@@ -393,9 +393,9 @@ class Article < ApplicationRecord
   }
 
   def self.average_score
-    return 0 unless count > 0 # rubocop:disable Style/NumericPredicate
-
-    sum(:score).to_f / count
+    Rails.cache.fetch("article_average_score", expires_in: 1.day) do
+      unscoped { where(score: 0..).average(:score) } || 0.0
+    end
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
