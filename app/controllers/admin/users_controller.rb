@@ -90,19 +90,21 @@ module Admin
     end
 
     def destroy
-      role = params[:role].to_sym
+      role = Role.find_by(name: params[:role])
+      authorize(role, :remove_role?)
+
       resource_type = params[:resource_type]
 
       @user = User.find(params[:user_id])
 
       response = ::Users::RemoveRole.call(user: @user,
-                                          role: role,
+                                          role: role.name,
                                           resource_type: resource_type,
                                           admin: current_user)
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
-                 role: role.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
+                 role: role.name.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
@@ -185,7 +187,7 @@ module Admin
                                  user: @user.username,
                                  email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
                                  id: @user.id,
-                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
+                                 the_page: link).html_safe
       rescue StandardError => e
         flash[:danger] = e.message
       end
