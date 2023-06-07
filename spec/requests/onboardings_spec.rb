@@ -40,7 +40,7 @@ RSpec.describe "Onboardings" do
     end
   end
 
-  describe "GET /suggestions" do
+  describe "GET /users_and_organizations" do
     context "when no suggestions are found" do
       it "returns an empty array (no automated suggested follow)" do
         sign_in user
@@ -89,6 +89,7 @@ RSpec.describe "Onboardings" do
       end
 
       before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(true)
         allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
       end
 
@@ -124,6 +125,7 @@ RSpec.describe "Onboardings" do
       end
 
       before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(true)
         allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
         allow(Users::SuggestRecent).to receive(:call).and_return(suggested_users)
       end
