@@ -205,7 +205,7 @@ class Article < ApplicationRecord
   after_save :bust_cache
   after_save :collection_cleanup
 
-  after_create_commit :send_to_moderator
+  after_create_commit :send_to_moderator, if: :published?
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?

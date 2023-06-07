@@ -73,7 +73,7 @@
         <%= @moderatable.featured ? t("views.moderations.actions.unfeature") : t("views.moderations.actions.feature") %>
       </button>
       <div class="additional-subtext-section py-4 pt-2">
-        <% recent_featured_count = Article.where(featured: true).where("published_at > ?", 1.day.ago).size %>
+        <% recent_featured_count = Article.featured.published.where(published_at: 1.day.ago..).size %>
         <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
       </div>
     <% end %>
@@ -112,7 +112,7 @@
         <% if policy(@moderatable).can_adjust_any_tag? %>
           <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
             <div class="add-tag-container">
-              <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+              <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
             </div>
           <% end %>
 

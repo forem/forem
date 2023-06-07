@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { userData, updateOnboarding } from '../utilities';
 
+import { ProfileImage } from './ProfileForm/ProfileImage';
 import { Navigation } from './Navigation';
 import { TextArea } from './ProfileForm/TextArea';
 import { TextInput } from './ProfileForm/TextInput';
@@ -21,9 +22,13 @@ export class ProfileForm extends Component {
     this.user = userData();
     this.state = {
       groups: [],
-      formValues: { username: this.user.username },
+      formValues: {
+        username: this.user.username,
+        profile_image_90: this.user.profile_image_90,
+      },
       canSkip: false,
       last_onboarding_page: 'v2: personal info form',
+      profile_image_90: this.user.profile_image_90,
     };
   }
 
@@ -48,12 +53,12 @@ export class ProfileForm extends Component {
 
   async onSubmit() {
     const { formValues, last_onboarding_page } = this.state;
-    const { username, ...newFormValues } = formValues;
+    const { username, profile_image_90, ...newFormValues } = formValues;
     try {
       const response = await request('/onboarding', {
         method: 'PATCH',
         body: {
-          user: { last_onboarding_page, username },
+          user: { last_onboarding_page, profile_image_90, username },
           profile: { ...newFormValues },
         },
       });
@@ -142,10 +147,27 @@ export class ProfileForm extends Component {
     }
   }
 
+  // Callback for when the profile image URL changes.
+  // Again, this will need to be updated to work with your backend.
+  onProfileImageUrlChange = ({ links }) => {
+    this.setState(
+      {
+        profile_image_90: links[0],
+      },
+      () => {
+        // const { formValues } = this.state;
+        // const updatedFormValues = { ...formValues, profile_image: links[0] };
+        this.handleFieldChange({
+          target: { name: 'profile_image_90', value: links[0] },
+        });
+      },
+    );
+  };
+
   render() {
     const { prev, slidesCount, currentSlideIndex, communityConfig } =
       this.props;
-    const { profile_image_90, username, name } = this.user;
+    const { username, name } = this.user;
     const { canSkip, groups = [], error, errorMessage } = this.state;
     const SUMMARY_MAXLENGTH = 200;
     const summaryCharacters = this.state?.formValues?.summary?.length || 0;
@@ -209,10 +231,15 @@ export class ProfileForm extends Component {
                 <img
                   className="current-user-avatar"
                   alt="profile"
-                  src={profile_image_90}
+                  src={this.state.profile_image_90}
                 />
               </figure>
               <h3>{name}</h3>
+
+              <ProfileImage
+                onMainImageUrlChange={this.onProfileImageUrlChange}
+                mainImage={this.state.profile_image_90}
+              />
             </div>
             <div className="onboarding-profile-sub-section">
               <TextInput
