@@ -30,7 +30,7 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
 
     before do
       current_user.follow(followed)
-      create_list(:article, 3, organization_id: suggest_this_org.id, score: 5, tags: followed.name)
+      create_list(:article, 3, organization_id: suggest_this_org.id, score: 25, tags: followed.name)
       create(:article, organization_id: dont_suggest_this.id, score: 15, tags: unfollowed.name)
     end
 
