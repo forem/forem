@@ -35,7 +35,7 @@ export class FollowUsers extends Component {
   }
 
   componentDidMount() {
-    fetch('/onboarding/suggestions', {
+    fetch('/onboarding/users_and_organizations', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',

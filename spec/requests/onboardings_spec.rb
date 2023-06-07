@@ -45,7 +45,7 @@ RSpec.describe "Onboardings" do
       it "returns an empty array (no automated suggested follow)" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body).to eq([])
@@ -65,7 +65,7 @@ RSpec.describe "Onboardings" do
       it "returns follow suggestions for an authenticated user" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         response_user = response.parsed_body.first
         expect(response_user["id"]).to eq(other_user.id)
@@ -74,7 +74,7 @@ RSpec.describe "Onboardings" do
       it "returns follow suggestions that have profile images" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         response_user = response.parsed_body.first
         expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
@@ -95,7 +95,7 @@ RSpec.describe "Onboardings" do
       it "returns organization follow suggestions for an authenticated user" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         response_org_ids = response.parsed_body.pluck("id")
         expect(response_org_ids.size).to eq(2)
@@ -107,7 +107,7 @@ RSpec.describe "Onboardings" do
       it "returns organization follow suggestions that have profile images" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         response_org = response.parsed_body.first
         expect(response_org.keys).to match_array(expected_json_keys)
@@ -131,7 +131,7 @@ RSpec.describe "Onboardings" do
       it "returns users first, then organizations" do
         sign_in user
 
-        get suggestions_onboarding_path
+        get users_and_organizations_onboarding_path
 
         response_ids = response.parsed_body.pluck("id")
         expect(response_ids.size).to eq(4)
