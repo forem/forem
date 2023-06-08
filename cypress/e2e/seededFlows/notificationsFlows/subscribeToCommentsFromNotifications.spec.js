@@ -15,6 +15,7 @@ describe('Subscribe to Comments from notifications', () => {
       'subscribeButton',
     );
     cy.get('@subscribeButton').should('have.attr', 'aria-pressed', 'false');
+    cy.get('@subscribeButton').should('have.attr', 'data-info', 'null');
     cy.get('@subscribeButton').click();
 
     cy.findByRole('button', { name: 'Subscribed to comments' }).as(
@@ -22,6 +23,11 @@ describe('Subscribe to Comments from notifications', () => {
     );
     cy.get('@subscribedButton').contains('Subscribed to comments');
     cy.get('@subscribedButton').should('have.attr', 'aria-pressed', 'true');
+    cy.get('@subscribedButton').should(
+      'have.attr',
+      'aria-label',
+      'Subscribed to comments',
+    );
 
     cy.get('@subscribedButton').click();
   });
