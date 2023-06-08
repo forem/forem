@@ -71,11 +71,14 @@
             <%= crayons_icon_tag("small-link", title: t("views.comments.footer.view.icon")) %>
             <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
-          <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: json_data["comment"]["id"]).first %>
+          <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: @last_user_comment).first %>
+          <% Rails.logger.info "*********************************************" %>
+          <% Rails.logger.info json_data["comment"]["id"] %>
+          <% Rails.logger.info @last_user_comment %>
             <button
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "comment-subscribed" %>"
               data-info="<%= @notification.to_json %>"
-              data-comment="<%= json_data["comment"]["id"] %>">
+              data-comment="<%= @last_user_comment %>">
               <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
               <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
               <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>
