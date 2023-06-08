@@ -7,25 +7,26 @@ function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
   let mobileLabel = '';
+  const noun = button.dataset.comment ? 'threads' : 'comments';
   switch (config) {
     case 'all_comments':
-      label = `Subscribed to comments`;
-      mobileLabel = `Comments`;
+      label = `Subscribed to ${noun}`;
+      mobileLabel = `${noun}`;
       pressed = 'true';
       break;
     case 'top_level_comments':
       label = `Subscribed to top comments`;
-      mobileLabel = `Top Comments`;
+      mobileLabel = `Top ${noun}`;
       pressed = 'true';
       break;
     case 'author_comments':
       label = `Subscribed to author comments`;
-      mobileLabel = `Author Comments`;
+      mobileLabel = `Author ${noun}`;
       pressed = 'true';
       break;
     default:
-      label = `Subscribe to comments`;
-      mobileLabel = `Comments`;
+      label = `Subscribe to ${noun}`;
+      mobileLabel = `${noun}`;
       pressed = 'false';
   }
   button.setAttribute('aria-label', label);
