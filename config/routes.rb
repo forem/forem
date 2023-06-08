@@ -116,6 +116,7 @@ Rails.application.routes.draw do
         patch "/bulk_update", to: "follows#bulk_update"
       end
     end
+    resources :image_uploads, only: [:create]
     resources :picture_uploads, only: [:create]
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
