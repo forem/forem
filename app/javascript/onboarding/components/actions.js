@@ -1,38 +1,44 @@
 import { validateFileInputs } from '../../packs/validateFileInputs';
 
-function generateUploadFormdata(payload) {
-  const token = window.csrfToken;
+function generateUploadFormdata(image) {
   const formData = new FormData();
-  formData.append('authenticity_token', token);
-  formData.append('image', payload.image);
-
-  // Object.entries(payload.image).forEach(([_, value]) =>
-  //   formData.append('image[]', value),
-  // );
-
+  formData.append('user[profile_image]', image);
   return formData;
 }
 
 export function generateMainImage({ payload, successCb, failureCb, signal }) {
-  fetch('/picture_uploads', {
-    method: 'POST',
-    headers: {
-      'X-CSRF-Token': window.csrfToken,
-    },
-    body: generateUploadFormdata(payload),
-    credentials: 'same-origin',
-    signal,
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      if (json.error) {
-        throw new Error(json.error);
-      }
-      const { links } = json;
-      const { image } = payload;
-      return successCb({ links, image });
+  const image = payload.image[0];
+  const { userId } = payload;
+
+  if (image) {
+    fetch(`/users/${userId}`, {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': window.csrfToken,
+      },
+      body: generateUploadFormdata(image),
+      credentials: 'same-origin',
+      signal,
     })
-    .catch((message) => failureCb(message));
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((json) => {
+        if (json.error) {
+          throw new Error(json.error);
+        }
+        return successCb(json);
+      })
+      .catch((error) => {
+        console.error('There was a problem with the request.', error);
+        if (failureCb) {
+          failureCb(error);
+        }
+      });
+  }
 }
 
 /**
@@ -47,10 +53,11 @@ export function processImageUpload(
   handleImageUploading,
   handleImageSuccess,
   handleImageFailure,
+  userId,
 ) {
   // Currently only one image is supported for upload.
   if (images.length > 0 && validateFileInputs()) {
-    const payload = { image: images };
+    const payload = { image: images, userId };
 
     handleImageUploading();
     generateMainImage({

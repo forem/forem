@@ -56,7 +56,7 @@ const StandardImageUpload = ({
     </Fragment>
   );
 
-export const ProfileImage = ({ onMainImageUrlChange, mainImage }) => {
+export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -74,7 +74,7 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage }) => {
 
     if (validateFileInputs()) {
       const { files: image } = event.dataTransfer || event.target;
-      const payload = { image };
+      const payload = { image, userId };
 
       generateMainImage({
         payload,

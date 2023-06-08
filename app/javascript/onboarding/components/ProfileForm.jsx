@@ -239,6 +239,7 @@ export class ProfileForm extends Component {
               <ProfileImage
                 onMainImageUrlChange={this.onProfileImageUrlChange}
                 mainImage={this.state.profile_image_90}
+                userId={this.user.id}
               />
             </div>
             <div className="onboarding-profile-sub-section">
