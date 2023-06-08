@@ -157,7 +157,7 @@ GEM
       carrierwave
       fastimage
     chartkick (4.2.1)
-    cloudinary (1.25.0)
+    cloudinary (1.26.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
     coderay (1.1.3)
