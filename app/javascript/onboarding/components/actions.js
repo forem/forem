@@ -12,9 +12,10 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
 
   if (image) {
     fetch(`/users/${userId}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         'X-CSRF-Token': window.csrfToken,
+        Accept: 'application/json',
       },
       body: generateUploadFormdata(image),
       credentials: 'same-origin',
@@ -30,7 +31,7 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
         if (json.error) {
           throw new Error(json.error);
         }
-        return successCb(json);
+        return successCb(json.user.profile_image);
       })
       .catch((error) => {
         console.error('There was a problem with the request.', error);
