@@ -854,4 +854,15 @@ RSpec.describe User do
       expect(results).to contain_exactly(later)
     end
   end
+
+  describe "#currently_following_tags" do
+    before do
+      allow(Tag).to receive(:followed_by)
+    end
+
+    it "calls Tag.followed_by" do
+      user.currently_following_tags
+      expect(Tag).to have_received(:followed_by).with(user)
+    end
+  end
 end

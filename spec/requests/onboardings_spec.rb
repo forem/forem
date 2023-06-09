@@ -40,6 +40,110 @@ RSpec.describe "Onboardings" do
     end
   end
 
+  describe "GET /users_and_organizations" do
+    context "when no suggestions are found" do
+      it "returns an empty array (no automated suggested follow)" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to eq([])
+      end
+    end
+
+    context "when only user suggestions are found" do
+      let(:tag) { create(:tag) }
+      let(:other_user) { create(:user) }
+
+      # Prepare auto-generated user suggestions
+      before do
+        user.follow(tag)
+        create(:article, user: other_user, tags: [tag.name])
+      end
+
+      it "returns follow suggestions for an authenticated user" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        response_user = response.parsed_body.first
+        expect(response_user["id"]).to eq(other_user.id)
+      end
+
+      it "returns follow suggestions that have profile images" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        response_user = response.parsed_body.first
+        expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
+      end
+    end
+
+    context "when organization suggestions are found" do
+      let(:suggested_orgs) { create_list(:organization, 2) }
+
+      let(:expected_json_keys) do
+        %w[id name username profile_image_url following summary type_identifier]
+      end
+
+      before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(true)
+        allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
+      end
+
+      it "returns organization follow suggestions for an authenticated user" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        response_org_ids = response.parsed_body.pluck("id")
+        expect(response_org_ids.size).to eq(2)
+
+        suggested_org_ids = suggested_orgs.map(&:id)
+        expect(response_org_ids).to match_array(suggested_org_ids)
+      end
+
+      it "returns organization follow suggestions that have profile images" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        response_org = response.parsed_body.first
+        expect(response_org.keys).to match_array(expected_json_keys)
+        expect(response_org["profile_image_url"]).to eq(suggested_orgs.first.profile_image_url)
+      end
+    end
+
+    context "when organization and user suggestions are found" do
+      let(:suggested_users) { create_list(:user, 2) }
+      let(:suggested_orgs) { create_list(:organization, 2) }
+
+      let(:expected_json_keys) do
+        %w[id name username profile_image_url following summary type_identifier]
+      end
+
+      before do
+        allow(FeatureFlag).to receive(:enabled?).and_return(true)
+        allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
+        allow(Users::SuggestRecent).to receive(:call).and_return(suggested_users)
+      end
+
+      it "returns users first, then organizations" do
+        sign_in user
+
+        get users_and_organizations_onboarding_path
+
+        response_ids = response.parsed_body.pluck("id")
+        expect(response_ids.size).to eq(4)
+
+        suggested_ids = suggested_users.map(&:id) + suggested_orgs.map(&:id)
+        expect(response_ids).to eq(suggested_ids)
+      end
+    end
+  end
+
   describe "GET /onboarding/tags" do
     let(:headers) do
       {
