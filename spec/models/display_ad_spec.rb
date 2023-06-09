@@ -344,7 +344,7 @@ RSpec.describe DisplayAd do
     end
 
     it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
-      expect(DisplayAd.seldom_seen).not_to include(high_impression_ad)
+      expect(described_class.seldom_seen).not_to include(high_impression_ad)
     end
 
     it "includes ads with priority set to true" do
