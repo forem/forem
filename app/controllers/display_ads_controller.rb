@@ -16,6 +16,7 @@ class DisplayAdsController < ApplicationController
         user_signed_in: user_signed_in?,
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
+        user_tags: params[:user_tags]&.split(",")&.map(&:strip),
       )
 
       if @display_ad && !session_current_user_id
