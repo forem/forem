@@ -348,7 +348,7 @@ RSpec.describe DisplayAd do
     end
 
     it "includes ads with priority set to true" do
-      expect(DisplayAd.seldom_seen).to include(priority_ad)
+      expect(described_class.seldom_seen).to include(priority_ad)
     end
 
     it "includes both priority to be proper size when two qualifying ads exist" do
