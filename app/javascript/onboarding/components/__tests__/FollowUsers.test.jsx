@@ -106,7 +106,7 @@ describe('FollowUsers', () => {
     );
 
     expect(queryAllByLabelText('Following')).toHaveLength(3);
-    expect(queryByText(/You're following everyone/i)).toExist();
+    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
     expect(queryByText(/Continue/i)).toExist();
 
     // Unfollow the first user
@@ -159,7 +159,7 @@ describe('FollowUsers', () => {
 
     expect(queryByText('Follow')).not.toExist();
     expect(queryAllByLabelText('Following')).toHaveLength(3);
-    expect(queryByText(/You're following everyone/i)).toExist();
+    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
   });
 
   it('should render a stepper', () => {
