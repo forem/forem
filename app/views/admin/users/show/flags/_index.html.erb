@@ -1,15 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
 <% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
-<% score = 0 %>
-<% countable_flags = 0 %>
-<% if user_vomit_reactions.present? %>
-  <% user_vomit_reactions.each do |flag| %>
-    <% score += flag.points %>
-      <% if flag.status != 'invalid' %>
-        <% countable_flags += 1 %>
-      <% end %>
-  <% end %>
-<% end %>
 
 <div class="flex justify-between gap-10">
   <div class="flex flex-col flex-1">
@@ -19,12 +8,12 @@
   <div class="flex items-start gap-1">
     <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
       <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
-      <span class="fs-s fw-medium lh-base"><%= countable_flags %></span>
+      <span class="fs-s fw-medium lh-base"><%= @countable_flags %></span>
     </span>
 
     <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.admin.users.flags.total_score") %>">
       <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
-      <span class="fs-s fw-medium lh-base"><%= score %></span>
+      <span class="fs-s fw-medium lh-base"><%= @score %></span>
     </span>
   </div>
 </div>

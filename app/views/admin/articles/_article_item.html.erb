@@ -7,18 +7,6 @@
   data-article-border-highlighted-class="border-highlighted"
   data-action="ajax:success@document->article#ajaxSuccess">
 
-  <% privileged_article_reactions = article.reactions.privileged_category.select { |reaction| reaction.reactable_type == "Article" } %>
-  <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }.reverse %>
-  <% quality_article_reactions = (privileged_article_reactions - vomit_article_reactions).reverse %>
-  <% countable_vomits = 0 %>
-  <% if vomit_article_reactions.present? %>
-    <% vomit_article_reactions.each do |vomit_reaction| %>
-      <% if vomit_reaction.status != 'invalid' %>
-        <% countable_vomits += 1 %>
-      <% end %>
-    <% end %>
-  <% end %>
-
   <article class="js-individual-article crayons-card p-6 flex flex-col gap-4">
     <header>
       <% if decorated_article.pinned? || article.featured || article.approved || (!article.published? && article.published_from_feed?) || article.video || article.user&.warned? %>
@@ -208,6 +196,9 @@
   </article>
 
   <% if defined?(show_on_individual_article_only) && show_on_individual_article_only %>
+    <% privileged_article_reactions = article.reactions.privileged_category.select { |reaction| reaction.reactable_type == "Article" } %>
+    <% vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }.reverse %>
+    <% quality_article_reactions = (privileged_article_reactions - vomit_article_reactions).reverse %>
     <article class="js-individual-article crayons-card py-6 flex flex-col mt-4">
       <h2 class="crayons-subtitle-2 mx-6"><%= t("views.admin.articles.priviliged_actions.title") %></h2>
       <p class="crayons-subtitle-3 fw-normal color-secondary mt-1 mx-6"><%= t("views.admin.articles.priviliged_actions.description") %></p>

@@ -28,6 +28,9 @@ module Admin
         @featured_articles = articles_featured
       end
 
+      @pinned_article = PinnedArticle.get
+      @articles = @articles.where.not(id: @pinned_article) if @pinned_article
+
       @countable_vomits = {}
       @articles.each do |article|
         @countable_vomits[article.id] = calculate_flags_for_single_article(article)
