@@ -206,6 +206,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   //  * @returns {Promise} A promise containing the JSON response for the feed data.
   //  */
   async function fetchFeedItems(timeFrame = '', page = 1) {
+    const userTags = getUserTags();
     const [
       feedPostsResponse,
       feedFirstBillboardResponse,
@@ -221,9 +222,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
         },
         credentials: 'same-origin',
       }),
-      fetch(`/display_ads/feed_first`),
-      fetch(`/display_ads/feed_second`),
-      fetch(`/display_ads/feed_third`),
+      fetch(`/display_ads/feed_first?user_tags=${userTags}`),
+      fetch(`/display_ads/feed_second?user_tags=${userTags}`),
+      fetch(`/display_ads/feed_third?user_tags=${userTags}`),
     ]);
 
     const feedPosts = await feedPostsResponse.json();
@@ -237,6 +238,19 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       feedSecondBillboard,
       feedThirdBillboard,
     ];
+  }
+  // /**
+  //  * Retrieves the user tags for the feed from the user data
+  //  * @returns {String} A String containing the followed user tags
+  //  */
+  function getUserTags() {
+    if (userData()?.followed_tags) {
+      return JSON.parse(userData().followed_tags)
+        .map((tag) => {
+          return tag.name;
+        })
+        .toString();
+    }
   }
 
   // /**
