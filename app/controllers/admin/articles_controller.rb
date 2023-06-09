@@ -56,7 +56,7 @@ module Admin
       respond_to do |format|
         format.html do
           flash[:danger] = I18n.t("admin.articles_controller.unpinned")
-          redirect_back(fallback_location: admin_articles_path)
+          redirect_to admin_article_path(article.id)
         end
         format.js do
           render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
@@ -72,7 +72,7 @@ module Admin
       respond_to do |format|
         format.html do
           flash[:success] = I18n.t("admin.articles_controller.pinned")
-          redirect_back(fallback_location: admin_articles_path)
+          redirect_to admin_article_path(article.id)
         end
         format.js do
           render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
