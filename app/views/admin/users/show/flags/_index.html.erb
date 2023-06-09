@@ -30,17 +30,8 @@
 </div>
 
 <div id="reaction-content" class="flex flex-col gap-3 px-1 pt-6" style="overflow: auto; height: 406px;">
-  <% if user_vomit_reactions.present? %>
-    <% user_vomit_reactions.each do |vomit_reaction| %>
-      <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction, text_section: "users" %>
-      <hr id="js__reaction__div__hr__<%= vomit_reaction.id %>" class="w-100 hr-no-margins">
-    <% end %>
-  <% else %>
-    <div class="flex flex-col justify-center items-center gap-4 h-100">
-      <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
-        <%= crayons_icon_tag("flags", native: true, width: 56, height: 56) %>
-      </div>
-      <p class="crayons-subtitle-3 fw-normal color-secondary"><%= t("views.admin.users.priviliged_actions.no_flags") %></p>
-    </div>
-  <% end %>
+  <%= render "admin/shared/flag_reactions_table",
+             vomit_reactions: user_vomit_reactions,
+             text_section: "users",
+             empty_text: t("views.admin.users.priviliged_actions.no_flags") %>
 <div>
