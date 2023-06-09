@@ -62,6 +62,48 @@ class ApplicationRecord < ActiveRecord::Base
     connection.execute "SET statement_timeout = #{milliseconds}"
   end
 
+  # ActiveRecord's `find_each` method allows you to work with a large collection of records
+  # in batches, but strictly only orders those batches by IDs in ascending order.
+  # Any other specified order is either ignored or raises an error (depending on configuration).
+  # This method allows performing batch queries of arbitrary order.
+  #
+  # @param batch_size [Integer] Batch size limit
+  # @yieldparam [self]
+  # @return [Enumerator<self>] if no block is given
+  #
+  # @see https://api.rubyonrails.org/v7.0.4.2/classes/ActiveRecord/Batches.html#method-i-find_each
+  def self.find_each_respecting_scope(batch_size: 1000, &block)
+    load_in_batches = Enumerator.new do |e|
+      in_batches_respecting_scope(batch_size: batch_size) do |batch|
+        batch.each { |record| e.yield record }
+      end
+    end
+
+    return load_in_batches unless block
+
+    load_in_batches.each(&block)
+  end
+
+  def self.in_batches_respecting_scope(batch_size: 1000)
+    relation = self
+
+    # Without a specified order, the sorting of PostgreSQL's query results is undefined behaviour
+    relation = relation.order(id: :asc) if all.arel.orders.blank?
+    all_ids = relation.ids.to_a
+
+    # `where` and `order` are unnecessary as we already know the exact records we need (and in what order)
+    # `limit` and `offset` would conflict with the manual batching
+    batch_relation = relation.unscope(:where, :order, :limit, :offset)
+    # We're loading in batches to reduce memory usage; if the results get cached anyway, that defeats the purpose
+    batch_relation.skip_query_cache!
+
+    all_ids.in_groups_of(batch_size, false) do |ids|
+      records = batch_relation.where(id: ids).index_by(&:id)
+      # Avoid yielding nil if e.g. record has been deleted since loading IDs
+      yield ids.filter_map { |id| records[id] }
+    end
+  end
+
   # Decorate object with appropriate decorator
   def decorate
     self.class.decorator_class.new(self)
