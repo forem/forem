@@ -24,15 +24,15 @@ module DisplayAds
       @filtered_display_ads = approved_and_published_ads
       @filtered_display_ads = placement_area_ads
 
-      if @article_tags.any?
-        @filtered_display_ads = tagged_post_comment_ads
-      end
-
-      if @article_tags.blank?
-        @filtered_display_ads = untagged_post_comment_ads
-      end
-
       if @article_id.present?
+        if @article_tags.any?
+          @filtered_display_ads = tagged_ads(@article_tags)
+        end
+
+        if @article_tags.blank?
+          @filtered_display_ads = untagged_ads
+        end
+
         @filtered_display_ads = unexcluded_article_ads
       end
 
@@ -62,12 +62,12 @@ module DisplayAds
       @filtered_display_ads.where(placement_area: @area)
     end
 
-    def tagged_post_comment_ads
-      display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
-      untagged_post_comment_ads.or(display_ads_with_targeted_article_tags)
+    def tagged_ads(tag_type)
+      display_ads_with_tags = @filtered_display_ads.cached_tagged_with_any(tag_type)
+      untagged_ads.or(display_ads_with_tags)
     end
 
-    def untagged_post_comment_ads
+    def untagged_ads
       @filtered_display_ads.where(cached_tag_list: "")
     end
 
