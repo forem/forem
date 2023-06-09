@@ -340,7 +340,7 @@ RSpec.describe DisplayAd do
     let!(:priority_ad) { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
 
     it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
-      expect(DisplayAd.seldom_seen).to include(low_impression_ad)
+      expect(described_class.seldom_seen).to include(low_impression_ad)
     end
 
     it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
