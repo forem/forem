@@ -9,7 +9,7 @@ module DisplayAds
     # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
                    permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd,
-                   user_id: nil)
+                   user_id: nil, user_tags: nil)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -18,6 +18,7 @@ module DisplayAds
       @article_tags = article_tags
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
+      @user_tags = user_tags
     end
 
     def call
