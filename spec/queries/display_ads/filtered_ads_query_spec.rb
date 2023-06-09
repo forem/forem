@@ -61,6 +61,34 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     end
   end
 
+  context "when considering user_tags" do
+    let!(:no_tags) { create_display_ad cached_tag_list: "" }
+    let!(:mismatched) { create_display_ad cached_tag_list: "career" }
+
+    it "will show no-tag display ads if the user tags do not contain matching tags" do
+      filtered = filter_ads(user_tags: %w[javascript])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
+    end
+
+    it "will show display ads with no tags set if there are no user tags" do
+      filtered = filter_ads(user_tags: [])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
+    end
+
+    context "when available ads have matching tags" do
+      let!(:matching) { create_display_ad cached_tag_list: "linux, git, go" }
+
+      it "will show the display ads that contain tags that match any of the user tags" do
+        filtered = filter_ads user_tags: %w[linux productivity]
+        expect(filtered).not_to include(mismatched)
+        expect(filtered).to include(matching)
+        expect(filtered).to include(no_tags)
+      end
+    end
+  end
+
   context "when considering users_signed_in" do
     let!(:for_logged_in) { create_display_ad display_to: :logged_in }
     let!(:for_logged_out) { create_display_ad display_to: :logged_out }
