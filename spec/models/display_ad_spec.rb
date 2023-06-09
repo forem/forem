@@ -352,7 +352,7 @@ RSpec.describe DisplayAd do
     end
 
     it "includes both priority to be proper size when two qualifying ads exist" do
-      expect(DisplayAd.seldom_seen.size).to be 2
+      expect(described_class.seldom_seen.size).to be 2
     end
   end
 end
