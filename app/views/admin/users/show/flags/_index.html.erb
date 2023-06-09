@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdowmButton", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
 <% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
 <% score = 0 %>
 <% countable_flags = 0 %>
