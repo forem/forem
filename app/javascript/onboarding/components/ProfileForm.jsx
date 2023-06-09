@@ -149,14 +149,14 @@ export class ProfileForm extends Component {
 
   // Callback for when the profile image URL changes.
   // Again, this will need to be updated to work with your backend.
-  onProfileImageUrlChange = ({ link }) => {
+  onProfileImageUrlChange = (url) => {
     this.setState(
       {
-        profile_image_90: link,
+        profile_image_90: url,
       },
       () => {
         this.handleFieldChange({
-          target: { name: 'profile_image_90', value: link },
+          target: { name: 'profile_image_90', value: url },
         });
       },
     );

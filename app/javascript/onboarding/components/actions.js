@@ -31,7 +31,7 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
         if (json.error) {
           throw new Error(json.error);
         }
-        return successCb(json.user.profile_image);
+        return successCb(json.user.profile_image.url);
       })
       .catch((error) => {
         console.error('There was a problem with the request.', error);

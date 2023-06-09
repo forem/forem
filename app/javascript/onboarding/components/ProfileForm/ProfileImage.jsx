@@ -13,11 +13,7 @@ import { Spinner } from '@crayons/Spinner/Spinner';
 import { DragAndDropZone } from '@utilities/dragAndDrop';
 import { isNativeIOS } from '@utilities/runtime';
 
-const NativeIosImageUpload = ({
-  extraProps,
-  uploadLabel,
-  isUploadingImage,
-}) => (
+const NativeIosImageUpload = ({ extraProps, isUploadingImage }) => (
   <Fragment>
     {isUploadingImage ? null : (
       <Button
@@ -25,21 +21,17 @@ const NativeIosImageUpload = ({
         className="mr-2 whitespace-nowrap"
         {...extraProps}
       >
-        {uploadLabel}
+        Edit profile image
       </Button>
     )}
   </Fragment>
 );
 
-const StandardImageUpload = ({
-  uploadLabel,
-  handleImageUpload,
-  isUploadingImage,
-}) =>
+const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
   isUploadingImage ? null : (
     <Fragment>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator">
-        {uploadLabel}
+        Edit profile image
         <input
           data-testid="cover-image-input"
           id="cover-image-input"
@@ -61,8 +53,8 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
 
-  const onImageUploadSuccess = (...args) => {
-    onMainImageUrlChange(...args);
+  const onImageUploadSuccess = (url) => {
+    onMainImageUrlChange(url);
     setUploadingImage(false);
   };
 
@@ -136,13 +128,6 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
     /* eslint-enable no-case-declarations */
   };
 
-  const triggerMainImageRemoval = (e) => {
-    e.preventDefault();
-    onMainImageUrlChange({
-      links: [null],
-    });
-  };
-
   const onDropImage = (event) => {
     onDragExit(event);
 
@@ -156,8 +141,6 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
 
     handleMainImageUpload(event);
   };
-
-  const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
 
   // When the component is rendered in an environment that supports a native
   // image picker for image upload we want to add the aria-label attr and the
@@ -201,20 +184,12 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
               <NativeIosImageUpload
                 isUploadingImage={uploadingImage}
                 extraProps={extraProps}
-                uploadLabel={uploadLabel}
               />
             ) : (
               <StandardImageUpload
                 isUploadingImage={uploadingImage}
-                uploadLabel={uploadLabel}
                 handleImageUpload={handleMainImageUpload}
               />
-            )}
-
-            {mainImage && !uploadingImage && (
-              <Button variant="ghost-danger" onClick={triggerMainImageRemoval}>
-                Remove
-              </Button>
             )}
           </Fragment>
         </div>
