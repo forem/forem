@@ -47,6 +47,7 @@ en:
       deleted: '[deleted]'
       has_been_deleted: '%{type} has been deleted.'
       hidden: '[hidden by post author]'
+      image_only: '[image]'
       is_not_valid: is not valid.
       locked: the discussion is locked on this Post
       published_article: is not a published article
