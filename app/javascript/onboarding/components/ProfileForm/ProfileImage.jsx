@@ -48,7 +48,12 @@ const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
     </Fragment>
   );
 
-export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
+export const ProfileImage = ({
+  onMainImageUrlChange,
+  mainImage,
+  userId,
+  name,
+}) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -164,15 +169,16 @@ export const ProfileImage = ({ onMainImageUrlChange, mainImage, userId }) => {
     >
       <div className="crayons-article-form__cover" role="presentation">
         {!uploadingImage && mainImage && (
-          <img
-            src={mainImage}
-            className="crayons-article-form__cover__image"
-            width="250"
-            height="105"
-            alt="Post cover"
-          />
+          <figure className="current-user-avatar-container">
+            <img
+              className="current-user-avatar"
+              alt="profile"
+              src={mainImage}
+            />
+          </figure>
         )}
         <div className="flex items-center">
+          <h3>{name}</h3>
           {uploadingImage && (
             <span class="lh-base pl-1 border-0 py-2 inline-block">
               <Spinner /> Uploading...

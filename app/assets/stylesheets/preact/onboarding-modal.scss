@@ -446,11 +446,13 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     margin-bottom: 1rem;
 
     .current-user-avatar-container {
+      width: 80px;
       height: 80px;
     }
 
     .current-user-avatar {
       border-radius: 100%;
+      width: inherit;
       height: inherit;
       object-fit: cover;
       border: 2px solid var(--base-90);
