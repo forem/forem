@@ -46,6 +46,7 @@ fr:
       deleted: '[supprimé]'
       has_been_deleted: '%{type} a été supprimé'
       hidden: "[caché par l'auteur du message]"
+      image_only: '[image]'
       is_not_valid: n'est pas valide.
       locked: la discussion est verrouillée sur ce message
       published_article: n'est pas un article publié

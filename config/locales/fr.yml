@@ -19,6 +19,16 @@ fr:
     report_abuse: Signaler un abus
     search: Recherche
     success_settings: Successfully updated settings.
+    counted_organization:
+      one: "%{count} organisation"
+      other: "%{count} organisations"
+    counted_user:
+      one: "%{count} personne"
+      other: "%{count} personnes"
+    not_following: "Vous ne suivez personne"
+    following_everyone: "Vous les suivez tous"
+    you_are_following: "Vous suivez"
+    and: "et"
   date:
     abbr_month_names:
     -
