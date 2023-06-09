@@ -1,5 +1,4 @@
 <% decorated_article = article.decorate %>
-<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
 <div
   data-controller="article"
   data-article-id-value="<%= article.id %>"
@@ -72,7 +71,7 @@
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
             <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= countable_vomits %></span>
+            <span class="fs-s fw-medium lh-base"><%= @countable_vomits[article.id] %></span>
           </span>
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
