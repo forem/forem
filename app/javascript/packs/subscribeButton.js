@@ -1,7 +1,7 @@
 // import { getInstantClick } from '../topNavigation/utilities';
 // import { locale } from '@utilities/locale';
 
-/* global showModalAfterError*/
+// /* global showModalAfterError*/
 
 function addButtonSubscribeText(button, config) {
   let label = '';
@@ -63,7 +63,7 @@ function optimisticallyUpdateButtonUI(button) {
   return;
 }
 
-function handleSubscribeButtonClick({ target }) {
+async function handleSubscribeButtonClick({ target }) {
   optimisticallyUpdateButtonUI(target);
 
   let payload;
@@ -89,24 +89,27 @@ function handleSubscribeButtonClick({ target }) {
       },
     });
   }
-  getCsrfToken()
-    .then(sendFetch('comment-subscribe', payload))
+  await getCsrfToken()
+    .then(await sendFetch('comment-subscribe', payload))
     .then(async (response) => {
       if (response.status === 200) {
         const res = await response.json();
+        console.log(res); // eslint-disable-line no-console
         if (res.notification) {
           target.dataset.info = res.notification;
+        } else if (res.destroyed) {
+          target.dataset.info = null;
         } else {
           target.dataset.info = null;
         }
       } else {
-        showModalAfterError({
-          response,
-          element: 'comment',
-          action_ing: 'subscribing',
-          action_past: 'subscribed',
-          timeframe: 'for a day',
-        });
+        // showModalAfterError({
+        //   response,
+        //   element: 'comment',
+        //   action_ing: 'subscribing',
+        //   action_past: 'subscribed',
+        //   timeframe: 'for a day',
+        // });
       }
     });
 }

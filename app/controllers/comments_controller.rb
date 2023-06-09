@@ -1,7 +1,8 @@
 class CommentsController < ApplicationController
+  skip_before_action :verify_authenticity_token, only: [:subscribe]
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
-  before_action :authenticate_user!, only: %i[preview create hide unhide subscribe]
+  before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
   after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
@@ -202,6 +203,7 @@ class CommentsController < ApplicationController
     end
   end
 
+  # rubocop:disable Metrics/PerceivedComplexity
   def subscribe
     skip_authorization
 
@@ -210,18 +212,22 @@ class CommentsController < ApplicationController
     comment = Comment.find(comment_id) if comment_id.present?
     article = Article.find(article_id) if article_id.present?
     notification_id = permitted_attributes(Comment)[:notification_id]
-    notification = NotificationSubscription.where(id: notification_id)
+    notification = NotificationSubscription&.find(notification_id) unless notification_id.nil?
 
-    if notification_id && notification.count.positive?
-      notification.first.destroy
-      render json: { destroyed: "true" }, status: :ok
+    if notification_id && notification
+      notification.destroy
+      if notification.destroyed?
+        render json: { destroyed: "true" }, status: :ok
+      else
+        render json: { error: notification.errors_as_sentence }, status: :bad_request
+      end
     else
       notif = NotificationSubscription.find_or_create_by(user: current_user,
                                                          config: "all_comments",
                                                          notifiable: article.nil? ? comment : article,
                                                          notifiable_type: article.nil? ? "Comment" : "Article")
 
-      if notif.errors.empty?
+      if notif || notif.new_record?
         render json: { updated: "true", notification: notif.to_json }, status: :ok
       else
         Rails.logger.info notif.errors_as_sentence
@@ -229,6 +235,7 @@ class CommentsController < ApplicationController
       end
     end
   end
+  # rubocop:enable Metrics/PerceivedComplexity
 
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))
