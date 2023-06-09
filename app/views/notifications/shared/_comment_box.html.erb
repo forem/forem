@@ -33,7 +33,7 @@
         </div>
       <% end %>
 
-      <footer class="comment-actions" data-subscribe-button-container="true">
+      <footer class="comment-actions">
         <div class="notification__actions">
           <button
             class="crayons-tooltip__activator crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s mr-1 reaction-like inline-flex reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "like") ? "reacted" : "" %>"
@@ -82,7 +82,6 @@
             </button>
 
         </div>
-        <%= javascript_packs_with_chunks_tag "subscribeButton", defer: true %>
 
         <% @comment = Comment.new %>
         <%= form_for(@comment,

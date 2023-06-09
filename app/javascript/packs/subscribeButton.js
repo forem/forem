@@ -1,4 +1,4 @@
-// import { getInstantClick } from '../topNavigation/utilities';
+//import { getInstantClick } from '../topNavigation/utilities';
 // import { locale } from '@utilities/locale';
 
 // /* global showModalAfterError*/
@@ -7,16 +7,16 @@ function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
   let mobileLabel = '';
-  const noun = button.dataset.comment ? 'threads' : 'comments';
+  const noun = button.dataset.comment ? 'thread' : 'comments';
   switch (config) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
-      mobileLabel = `${noun}`;
+      mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
       pressed = 'true';
       break;
     case 'top_level_comments':
-      label = `Subscribed to top comments`;
-      mobileLabel = `Top ${noun}`;
+      label = `Subscribed to top-level comments`;
+      mobileLabel = `Top-level ${noun}`;
       pressed = 'true';
       break;
     case 'author_comments':
@@ -26,7 +26,7 @@ function addButtonSubscribeText(button, config) {
       break;
     default:
       label = `Subscribe to ${noun}`;
-      mobileLabel = `${noun}`;
+      mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
       pressed = 'false';
   }
   button.setAttribute('aria-label', label);
@@ -89,7 +89,8 @@ async function handleSubscribeButtonClick({ target }) {
       },
     });
   }
-  await getCsrfToken()
+
+  getCsrfToken()
     .then(await sendFetch('comment-subscribe', payload))
     .then(async (response) => {
       if (response.status === 200) {
@@ -122,57 +123,41 @@ function initializeSubscribeButton() {
   }
 
   Array.from(buttons, (button) => {
+    button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
+
     const buttonInfo = JSON.parse(button.dataset.info);
 
     if (buttonInfo) {
       const { config } = buttonInfo;
-
       addButtonSubscribeText(button, config);
-      window.onresize = addButtonSubscribeText(button, config);
     } else {
       addButtonSubscribeText(button, '');
-      window.onresize = addButtonSubscribeText(button, '');
     }
   });
 }
 
-function listenForSubscribeButtonClicks() {
-  const button = document.querySelector('.subscribe-button');
-  const buttonInfo = JSON.parse(button.dataset.info);
-
-  button.addEventListener('click', handleSubscribeButtonClick);
-
-  if (buttonInfo) {
-    const { config } = buttonInfo;
-
-    window.onresize = addButtonSubscribeText(button, config);
-  } else {
-    window.onresize = addButtonSubscribeText(button, '');
-  }
-}
-
 initializeSubscribeButton();
-listenForSubscribeButtonClicks();
-// Some follow buttons are added to the DOM dynamically, e.g. search results,
+
+// Some subscribe buttons are added to the DOM dynamically.
 // So we listen for any new additions to be fetched
-// const observer = new MutationObserver((mutationsList) => {
-//   mutationsList.forEach((mutation) => {
-//     if (mutation.type === 'childList') {
-//       initializeSubscribeButton()
-//     }
-//   });
-// });
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      initializeSubscribeButton();
+    }
+  });
+});
 
 // Any element containing the given data-attribute will be monitored for new follow buttons
-// document
-//   .querySelectorAll('[data-subscribe-button-container]')
-//   .forEach((subscribeButtonContainer) => {
-//     observer.observe(subscribeButtonContainer, {
-//       childList: true,
-//       subtree: true,
-//     });
-//   });
+document
+  .querySelectorAll('[data-subscribe-button-container]')
+  .forEach((subscribeButtonContainer) => {
+    observer.observe(subscribeButtonContainer, {
+      childList: true,
+      attributes: true,
+    });
+  });
 
 // getInstantClick().then((ic) => {
 //   ic.on('change', () => {
@@ -180,6 +165,6 @@ listenForSubscribeButtonClicks();
 //   });
 // });
 
-// window.addEventListener('beforeunload', () => {
-//   observer.disconnect();
-// });
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
+});
