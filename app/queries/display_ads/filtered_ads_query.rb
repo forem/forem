@@ -37,6 +37,14 @@ module DisplayAds
         @filtered_display_ads = unexcluded_article_ads
       end
 
+      if @user_tags.present? && @user_tags.any?
+        @filtered_display_ads = tagged_ads(@user_tags)
+      end
+
+      if @user_tags.blank? && DisplayAd::HOME_FEED_PLACEMENTS.include?(@area)
+        @filtered_display_ads = untagged_ads
+      end
+
       @filtered_display_ads = user_targeting_ads
 
       @filtered_display_ads = if @user_signed_in
