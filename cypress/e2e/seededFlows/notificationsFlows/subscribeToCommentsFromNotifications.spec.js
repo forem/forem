@@ -11,22 +11,22 @@ describe('Subscribe to Comments from notifications', () => {
   it('Subscribes and unsubscribes to comments from notification', () => {
     cy.findByRole('heading', { name: 'Notifications' });
 
-    cy.findByRole('button', { name: 'Subscribe to threads' }).as(
+    cy.findByRole('button', { name: 'Subscribe to thread' }).as(
       'subscribeButton',
     );
     cy.get('@subscribeButton').should('have.attr', 'aria-pressed', 'false');
     cy.get('@subscribeButton').should('have.attr', 'data-info', 'null');
     cy.get('@subscribeButton').click();
 
-    cy.findByRole('button', { name: 'Subscribed to threads' }).as(
+    cy.findByRole('button', { name: 'Subscribed to thread' }).as(
       'subscribedButton',
     );
-    cy.get('@subscribedButton').contains('Subscribed to threads');
+    cy.get('@subscribedButton').contains('Subscribed to thread');
     cy.get('@subscribedButton').should('have.attr', 'aria-pressed', 'true');
     cy.get('@subscribedButton').should(
       'have.attr',
       'aria-label',
-      'Subscribed to threads',
+      'Subscribed to thread',
     );
 
     cy.get('@subscribedButton').click();
