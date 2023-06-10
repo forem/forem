@@ -222,12 +222,12 @@ class CommentsController < ApplicationController
         render json: { error: notification.errors_as_sentence }, status: :bad_request
       end
     else
-      notif = NotificationSubscription.find_or_create_by(user: current_user,
-                                                         config: "all_comments",
-                                                         notifiable: article.nil? ? comment : article,
-                                                         notifiable_type: article.nil? ? "Comment" : "Article")
+      notif = NotificationSubscription.create(user: current_user,
+                                              config: "all_comments",
+                                              notifiable: article.nil? ? comment : article,
+                                              notifiable_type: article.nil? ? "Comment" : "Article")
 
-      if notif || notif.new_record?
+      if notif && notif.errors.empty?
         render json: { updated: "true", notification: notif.to_json }, status: :ok
       else
         Rails.logger.info notif.errors_as_sentence

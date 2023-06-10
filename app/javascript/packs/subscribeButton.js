@@ -8,6 +8,10 @@ function addButtonSubscribeText(button, config) {
   let pressed = '';
   let mobileLabel = '';
   const noun = button.dataset.comment ? 'thread' : 'comments';
+  
+  // Find the <span> element within the button
+  const spanElement = button.querySelector('span');
+
   switch (config) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
@@ -29,17 +33,16 @@ function addButtonSubscribeText(button, config) {
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
       pressed = 'false';
   }
+
   button.setAttribute('aria-label', label);
-  button.querySelector('span').innerText =
-    window.innerWidth <= 760 ? mobileLabel : label;
+  spanElement.innerText = window.innerWidth <= 760 ? mobileLabel : label;
   pressed.length === 0
     ? button.removeAttribute('aria-pressed')
     : button.setAttribute('aria-pressed', pressed);
 }
 
 function optimisticallyUpdateButtonUI(button) {
-  const { info } = button.dataset;
-  const buttonInfo = JSON.parse(info);
+  const buttonInfo = button.dataset.info ? JSON.parse(button.dataset.info) : null;
   if (buttonInfo) {
     const { config } = buttonInfo;
 
@@ -115,7 +118,7 @@ async function handleSubscribeButtonClick({ target }) {
     });
 }
 
-function initializeSubscribeButton() {
+export function initializeSubscribeButton() {
   const buttons = document.querySelectorAll('.subscribe-button');
 
   if (buttons.length === 0) {
@@ -126,7 +129,7 @@ function initializeSubscribeButton() {
     button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
 
-    const buttonInfo = JSON.parse(button.dataset.info);
+    const buttonInfo = button.dataset.info ? JSON.parse(button.dataset.info) : null;
 
     if (buttonInfo) {
       const { config } = buttonInfo;

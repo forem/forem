@@ -369,6 +369,32 @@ RSpec.describe "Comments" do
       end
     end
 
+    context "when logged in and subscribing to thread comments that exist" do
+      let(:new_article) { create(:article, user: user) }
+
+      before do
+        sign_in user
+        create(
+          :notification_subscription,
+          user_id: user.id,
+          notifiable: new_article,
+          config: "all_comments",
+          notifiable_type: "Article",
+        )
+        post "/comments/subscribe",
+             params: { comment: { article_id: new_article.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 422 on good request" do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+    end
+
     context "when logged in and subscription exist" do
       let!(:subscription) { create(:notification_subscription, user_id: article.user_id, notifiable: article) }
 
@@ -389,6 +415,47 @@ RSpec.describe "Comments" do
 
       it "destroys the notification subscription" do
         expect(NotificationSubscription.exists?(id: subscription.id)).to be(false)
+      end
+    end
+
+    context "when logged in and subscription already destroyed" do
+      let!(:subscription) { create(:notification_subscription, user_id: article.user_id, notifiable: article) }
+
+      before do
+        sign_in user
+        allow(NotificationSubscription).to receive(:find).with(subscription.id.to_s).and_return(subscription)
+        allow(subscription).to receive(:destroyed?).and_return(false)
+        allow(subscription).to receive(:errors_as_sentence).and_return("Notification could not be destroyed.")
+      end
+
+      it "renders the error message with a bad request status" do
+        post "/comments/subscribe",
+             params: { comment: { notification_id: subscription.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to eq({ error: "Notification could not be destroyed." }.to_json)
+      end
+    end
+
+    context "when notification creation fails" do
+      let(:notif_errors) { ["Validation failed", "Another error occurred"] }
+      let(:error_string) { "errors" }
+      let(:notification) { instance_double(NotificationSubscription, errors_as_sentence: notif_errors) }
+
+      before do
+        sign_in user
+        allow(NotificationSubscription).to receive(:create).and_return(notification)
+        allow(notification).to receive(:errors).and_return(instance_double(error_string, empty?: false))
+      end
+
+      it "renders the notification creation errors with an unprocessable entity status" do
+        post "/comments/subscribe",
+             params: { comment: { article_id: article.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to eq({ errors: notif_errors, status: 422 }.to_json)
       end
     end
   end
