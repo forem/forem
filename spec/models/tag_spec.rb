@@ -212,6 +212,31 @@ RSpec.describe Tag do
     end
   end
 
+  describe "followed_by and antifollowed_by" do
+    let(:user) { create(:user) }
+    let(:follow_tag) { create(:tag, name: "following") }
+    let(:antifollow_tag) { create(:tag, name: "antifollowing") }
+    let(:unrelated) { create(:tag, name: "unrelated") }
+    let(:other) { create(:user) }
+
+    before do
+      follow = user.follow(follow_tag)
+      follow.update explicit_points: 5
+
+      antifollow = user.follow(antifollow_tag)
+      antifollow.update explicit_points: -5
+
+      other.follow(unrelated)
+    end
+
+    it "works as expected" do
+      results = described_class.followed_by(user)
+      expect(results).to contain_exactly(follow_tag)
+      antiresults = described_class.antifollowed_by(user)
+      expect(antiresults).to contain_exactly(antifollow_tag)
+    end
+  end
+
   # [@jeremyf] The implementation details of #accessible_name are contingent on a feature flag that
   #            we're using for this refactoring.  Once we remove the flag, please adjust the specs
   #            accordingly.

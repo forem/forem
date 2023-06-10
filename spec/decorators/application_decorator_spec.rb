@@ -54,4 +54,17 @@ RSpec.describe ApplicationDecorator, type: :decorator do
       expect(decorated_collection.map(&:object)).to eq(relation.to_a)
     end
   end
+
+  describe ".type_identifier" do
+    it "returns the class downcased" do
+      decorated_article = Article.new.decorate
+      expect(decorated_article.type_identifier).to eq("article")
+
+      decorated_user = User.new.decorate
+      expect(decorated_user.type_identifier).to eq("user")
+
+      decorated_organization = Organization.new.decorate
+      expect(decorated_organization.type_identifier).to eq("organization")
+    end
+  end
 end
