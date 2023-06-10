@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :role do
-    name { Role::ROLES[:admin] }
+    name { "admin" }
   end
 end

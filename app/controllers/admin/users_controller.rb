@@ -90,7 +90,7 @@ module Admin
     end
 
     def destroy
-      role = Role.find_by(name: params[:role])
+      role = Role.find(params[:role_id])
       authorize(role, :remove_role?)
 
       resource_type = params[:resource_type]

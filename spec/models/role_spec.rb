@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Role do
   it { is_expected.to belong_to(:resource).optional }
   it { is_expected.to validate_inclusion_of(:resource_type).in_array(Rolify.resource_types) }
-  it { is_expected.to validate_inclusion_of(:name).in_array(described_class::ROLES.values) }
+  it { is_expected.to validate_inclusion_of(:name).in_array(described_class::ROLES) }
 
   describe "::ROLES" do
     it "contains the correct values" do
@@ -12,13 +12,13 @@ RSpec.describe Role do
         restricted_liquid_tag single_resource_admin super_admin support_admin suspended tag_moderator tech_admin
         trusted warned workshop_pass creator super_moderator
       ]
-      expect(described_class::ROLES.values).to match_array(expected_roles)
+      expect(described_class::ROLES).to match_array(expected_roles)
     end
   end
 
   describe "#super_admin?" do
     let(:role) { create(:role, name: role_name) }
-    let(:role_name) { Role::ROLES[:super_admin] }
+    let(:role_name) { "super_admin" }
 
     it "has a visible method" do
       expect(role.respond_to?(:super_admin?)).to be true
@@ -29,7 +29,7 @@ RSpec.describe Role do
     end
 
     context "with different role" do
-      let(:role_name) { Role::ROLES[:admin] }
+      let(:role_name) { "admin" }
 
       it "returns false" do
         expect(role.super_admin?).to be false

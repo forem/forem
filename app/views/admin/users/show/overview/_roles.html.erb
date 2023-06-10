@@ -34,7 +34,7 @@
                               else
                                 t("views.admin.users.overview.roles.remove_confirm")
                               end %>
-          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: confirm_dialog }, class: "c-pill c-pill--action-icon" do %>
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role_id: role.id, resource_type: role.resource_type), method: :delete, data: { confirm: confirm_dialog }, class: "c-pill c-pill--action-icon" do %>
             <span class="screen-reader-only"><%= t("views.admin.users.overview.roles.remove") %></span>
               <%= t("views.admin.users.overview.roles.name.#{role.name}", default: role.resource_name ? role.resource_name.to_s : role_display_name(role)) %>
             <%= crayons_icon_tag(:x, class: "c-pill__action-icon", aria_hidden: true, width: 18, height: 18) %>
