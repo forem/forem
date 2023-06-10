@@ -327,6 +327,72 @@ RSpec.describe "Comments" do
     end
   end
 
+  describe "POST /comments/subscribe" do
+    it "returns 401 if user is not logged in" do
+      post "/comments/preview",
+           params: { comment: { body_markdown: "hi" } },
+           headers: { HTTP_ACCEPT: "application/json" }
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    context "when logged in and subscribing to article comments" do
+      before do
+        sign_in user
+        post "/comments/subscribe",
+             params: { comment: { article_id: article.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+    end
+
+    context "when logged in and subscribing to thread comments" do
+      before do
+        sign_in user
+        post "/comments/subscribe",
+             params: { comment: { comment_id: comment.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+    end
+
+    context "when logged in and subscription exist" do
+      let!(:subscription) { create(:notification_subscription, user_id: article.user_id, notifiable: article) }
+
+      before do
+        sign_in user
+        post "/comments/subscribe",
+             params: { comment: { notification_id: subscription.id } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+
+      it "destroys the notification subscription" do
+        expect(NotificationSubscription.exists?(id: subscription.id)).to be(false)
+      end
+    end
+  end
+
   describe "POST /comments" do
     let(:base_comment_params) do
       {
