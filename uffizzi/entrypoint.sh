@@ -45,6 +45,7 @@ case "$@" in
   bootstrap)
     echo "Running rake app_initializer:setup..."
     bundle exec rake app_initializer:setup
+    bundle exec rails db:seed
     ;;
   *)
     echo "Running command:"

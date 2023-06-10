@@ -188,12 +188,14 @@ jobs:
         if: failure()
         with:
           name: rspec-artifacts
-          path: |
-            tmp/capybara
-      - uses: codecov/codecov-action@v3
+          path: tmp/capybara
+      - name: Rename folder
+        run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
+      - name: Upload test coverage result
+        uses: actions/upload-artifact@v3
         with:
-          flags: ruby
-          fail_ci_if_error: false
+          name: coverage
+          path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -231,10 +233,11 @@ jobs:
           path: junit.xml
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
-      - uses: codecov/codecov-action@v3
+      - name: Upload test coverage result
+        uses: actions/upload-artifact@v3
         with:
-          flags: jest, javascript
-          fail_ci_if_error: false
+          name: coverage
+          path: coverage/
 
   storybook:
     runs-on: ubuntu-latest
@@ -383,10 +386,15 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
-      - uses: codecov/codecov-action@v3
+      - name: rename folder
+        run: |
+          rm -rf coverage/cypress/lcov-report
+          mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
+      - name: Upload test coverage result
+        uses: actions/upload-artifact@v3
         with:
-          flags: cypress, javascript
-          fail_ci_if_error: false
+          name: coverage
+          path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -397,6 +405,34 @@ jobs:
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
 
+  upload-coverage:
+    runs-on: ubuntu-latest
+    needs: [rspec, jest, cypress]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: coverage
+      - run: |
+          mkdir coverage coverage/simplecov coverage/cypress
+          mv simplecov-* coverage/simplecov
+          mv cypress-* coverage/cypress
+          mv jest coverage/jest
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: ruby
+          directory: coverage/simplecov
+          fail_ci_if_error: true
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: jest, javascript
+          directory: coverage/jest
+          fail_ci_if_error: true
+      - uses: codecov/codecov-action@v3
+        with:
+          flags: cypress, javascript
+          directory: coverage/cypress
+          fail_ci_if_error: true
 
   CI-status-report:
     runs-on: ubuntu-latest

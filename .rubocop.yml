@@ -973,3 +973,6 @@ RSpec/NoExpectationExample:
     - ^expect_
     - ^assert_
     - sidekiq_assert_
+
+RSpec/IndexedLet:
+  Enabled: false

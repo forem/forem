@@ -18,6 +18,7 @@ puts "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}\n\n"
 Settings::UserExperience.public = true
 Settings::General.waiting_on_first_user = false
 Settings::Authentication.providers = Authentication::Providers.available
+Settings::Authentication.allow_email_password_registration = true
 
 ##############################################################################
 
@@ -253,7 +254,7 @@ seeder.create_if_none(Article, num_articles) do
 
     article = Article.create!(
       body_markdown: markdown,
-      featured: true,
+      featured: i.zero?, # only feature the first article,
       show_comments: true,
       user_id: User.order(Arel.sql("RANDOM()")).first.id,
     )
