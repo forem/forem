@@ -3,12 +3,12 @@
 
 // /* global showModalAfterError*/
 
-function addButtonSubscribeText(button, config) {
+export function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
   let mobileLabel = '';
   const noun = button.dataset.comment ? 'thread' : 'comments';
-  
+
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
@@ -41,8 +41,10 @@ function addButtonSubscribeText(button, config) {
     : button.setAttribute('aria-pressed', pressed);
 }
 
-function optimisticallyUpdateButtonUI(button) {
-  const buttonInfo = button.dataset.info ? JSON.parse(button.dataset.info) : null;
+export function optimisticallyUpdateButtonUI(button) {
+  const buttonInfo = button.dataset.info
+    ? JSON.parse(button.dataset.info)
+    : null;
   if (buttonInfo) {
     const { config } = buttonInfo;
 
@@ -129,7 +131,9 @@ export function initializeSubscribeButton() {
     button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
 
-    const buttonInfo = button.dataset.info ? JSON.parse(button.dataset.info) : null;
+    const buttonInfo = button.dataset.info
+      ? JSON.parse(button.dataset.info)
+      : null;
 
     if (buttonInfo) {
       const { config } = buttonInfo;
