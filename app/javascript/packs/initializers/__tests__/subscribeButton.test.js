@@ -1,11 +1,17 @@
 // subscribeButton.test.js
 
-import { initializeSubscribeButton } from '../../subscribeButton';
+import {
+  initializeSubscribeButton,
+  addButtonSubscribeText,
+} from '../../subscribeButton';
 
 describe('subscribeButton', () => {
   let button;
   // let handleSubscribeButtonClickSpy;
   let originalFetch;
+  const mockDatasetComment = (comment) => {
+    button.dataset.comment = comment;
+  };
 
   beforeEach(() => {
     button = document.createElement('button');
@@ -40,6 +46,59 @@ describe('subscribeButton', () => {
     expect(button.querySelector('span').innerText).toBe(
       'Subscribed to comments',
     );
+  });
+
+  it('should set label, mobileLabel, and pressed for config "all_comments"', () => {
+    addButtonSubscribeText(button, 'all_comments');
+
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribed to comments',
+    );
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('should set label, mobileLabel, and pressed for config "top_level_comments"', () => {
+    addButtonSubscribeText(button, 'top_level_comments');
+
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to top-level comments',
+    );
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribed to top-level comments',
+    );
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('should set label, mobileLabel, and pressed for config "author_comments"', () => {
+    addButtonSubscribeText(button, 'author_comments');
+
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to author comments',
+    );
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribed to author comments',
+    );
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('should set label, mobileLabel, and pressed for default config', () => {
+    addButtonSubscribeText(button, 'unknown_config');
+
+    expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribe to comments',
+    );
+    expect(button.hasAttribute('aria-pressed')).toBe(true);
+  });
+
+  it('should capitalize the mobileLabel', () => {
+    mockDatasetComment('some comment');
+    addButtonSubscribeText(button, 'all_comments');
+
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to thread');
+    expect(button.querySelector('span').innerText).toBe('Subscribed to thread');
+    expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 
   // it('should add click event listener to the button', () => {
