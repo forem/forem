@@ -2,7 +2,7 @@
   <%# given the probability that organizations can have lots of users,
       here we're using the any?/find_each pattern to avoid loading possibly
       too many objects in memory %>
-  <% if @organization.users.any? %>
+  <% if @organization_users.any? %>
     <div class="crayons-card crayons-card--secondary org-sidebar-widget">
       <header class="crayons-card__header">
         <h3 class="crayons-subtitle-3">
@@ -10,7 +10,7 @@
         </h3>
       </header>
       <div class="org-sidebar-widget-body">
-        <% @organization.users.find_each do |user| %>
+        <% @organization_users.find_each_respecting_scope do |user| %>
           <div class="org-sidebar-widget-user-pic">
             <a href="/<%= user.username %>">
               <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
@@ -42,7 +42,7 @@
       </div>
     </div>
   <% end %>
-  <% if @organization.users.any? %>
+  <% if @organization_users.any? %>
     <div class="crayons-card crayons-card--secondary p-4">
       <div class="flex items-center mb-4">
         <%= crayons_icon_tag(:post, class: "mr-3 color-base", title: t("views.organizations.side.post.icon")) %>
@@ -50,7 +50,7 @@
       </div>
       <div class="flex items-center">
         <%= crayons_icon_tag(:team, class: "mr-3 color-base", title: t("views.organizations.side.member.icon")) %>
-        <%= t "views.organizations.side.member.text", count: @organization.users.size %>
+        <%= t "views.organizations.side.member.text", count: @organization_users.size %>
       </div>
     </div>
   <% end %>
