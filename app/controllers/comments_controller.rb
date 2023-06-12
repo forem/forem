@@ -223,20 +223,34 @@ class CommentsController < ApplicationController
         render json: { error: notification.errors_as_sentence }, status: :bad_request
       end
     else
-      notif = NotificationSubscription.create(user: current_user,
-                                              config: if article.nil? && comment.ancestry.nil?
-                                                        "all_comments"
-                                                      else
-                                                        "top_level_comments"
-                                                      end,
-                                              notifiable: article.nil? ? comment : article,
-                                              notifiable_type: article.nil? ? "Comment" : "Article")
+      comment_article = comment.ancestry.nil? ? comment.article : nil
+      notifiable = if article.nil? && comment_article.nil?
+                     comment
+                   elsif article.nil?
+                     comment_article
+                   else
+                     article
+                   end
+      notifiable_type = if article.nil? && comment_article.nil?
+                          "Comment"
+                        elsif article.nil?
+                          "Article"
+                        else
+                          "Article"
+                        end
+      subscription = NotificationSubscription.create(user: current_user,
+                                                     config: if article.nil? && comment.ancestry.nil?
+                                                               "all_comments"
+                                                             else
+                                                               "top_level_comments"
+                                                             end,
+                                                     notifiable: notifiable,
+                                                     notifiable_type: notifiable_type)
 
-      if notif && notif.errors.empty?
-        render json: { updated: "true", notification: notif.to_json }, status: :ok
+      if subscription.save
+        render json: { updated: "true", notification: subscription.to_json }, status: :ok
       else
-        Rails.logger.info notif.errors_as_sentence
-        render json: { errors: notif.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+        render json: { errors: subscription.errors_as_sentence, status: 422 }, status: :unprocessable_entity
       end
     end
   end
