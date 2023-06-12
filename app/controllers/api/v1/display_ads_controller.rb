@@ -53,7 +53,8 @@ module Api
         params.permit :approved, :body_markdown, :creator_id, :display_to,
                       :name, :organization_id, :placement_area, :published,
                       :tag_list, :type_of, :exclude_article_ids,
-                      :audience_segment_type, :audience_segment_id
+                      :audience_segment_type, :audience_segment_id,
+                      :priority
       end
     end
   end
