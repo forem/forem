@@ -43,13 +43,16 @@ describe('subscribeButton', () => {
   });
 
   it('should initialize subscribe buttons', () => {
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to top-level comments',
+    );
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to comments',
+      'Subscribed to top-level comments',
     );
   });
 
   it('should set label, mobileLabel, and pressed for config "all_comments"', () => {
+    button.setAttribute('data-ancestry', null);
     addButtonSubscribeText(button, 'all_comments');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
@@ -60,6 +63,7 @@ describe('subscribeButton', () => {
   });
 
   it('should set label, mobileLabel, and pressed for config "top_level_comments"', () => {
+    button.setAttribute('data-ancestry', null);
     addButtonSubscribeText(button, 'top_level_comments');
 
     expect(button.getAttribute('aria-label')).toBe(
@@ -97,8 +101,12 @@ describe('subscribeButton', () => {
     mockDatasetComment('some comment');
     addButtonSubscribeText(button, 'all_comments');
 
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to thread');
-    expect(button.querySelector('span').innerText).toBe('Subscribed to thread');
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to top-level comments',
+    );
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribed to top-level comments',
+    );
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 
@@ -118,8 +126,8 @@ describe('subscribeButton', () => {
     expect(button.querySelector('span').innerText).toBe(
       'Subscribe to comments',
     );
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
-    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
+    expect(button.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('should add "comment-subscribed" class and call addButtonSubscribeText when buttonInfo is null', () => {
@@ -128,9 +136,11 @@ describe('subscribeButton', () => {
 
     expect(button.classList.contains('comment-subscribed')).toBe(true);
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to comments',
+      'Subscribed to top-level comments',
     );
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to top-level comments',
+    );
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 

@@ -75,7 +75,8 @@
             <button
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "comment-subscribed" %>"
               data-info="<%= @notification.to_json %>"
-              data-comment="<%= json_data["comment"]["id"] %>">
+              data-comment="<%= json_data["comment"]["id"] %>"
+              data-ancestry="<%= json_data["comment"]["ancestry"] %>">
               <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
               <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
               <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>

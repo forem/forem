@@ -30,5 +30,10 @@ describe('Subscribe to Comments from notifications', () => {
     );
 
     cy.get('@subscribedButton').click();
+
+    cy.findByRole('button', { name: 'Subscribed to thread' }).as(
+      'subscribedButton',
+    );
+    cy.get('@subscribeButton').should('have.attr', 'data-info', 'null');
   });
 });

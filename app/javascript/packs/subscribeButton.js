@@ -7,12 +7,20 @@ export function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
   let mobileLabel = '';
-  const noun = button.dataset.comment ? 'thread' : 'comments';
+  const noun =
+    button.dataset.comment && button.dataset.ancestry ? 'thread' : 'comments';
 
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
-  switch (config) {
+  const revisedConfig =
+    button.dataset.ancestry ||
+    button.dataset.article ||
+    config !== 'all_comments'
+      ? config
+      : 'top_level_comments';
+
+  switch (revisedConfig) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
@@ -36,9 +44,7 @@ export function addButtonSubscribeText(button, config) {
 
   button.setAttribute('aria-label', label);
   spanElement.innerText = window.innerWidth <= 760 ? mobileLabel : label;
-  pressed.length === 0
-    ? button.removeAttribute('aria-pressed')
-    : button.setAttribute('aria-pressed', pressed);
+  button.setAttribute('aria-pressed', pressed);
 }
 
 export function optimisticallyUpdateButtonUI(button) {
@@ -53,7 +59,7 @@ export function optimisticallyUpdateButtonUI(button) {
       case 'top_level_comments':
       case 'author_comments':
         button.classList.remove('comment-subscribed');
-        button.querySelector('span').innerText = 'Subscribe to comments';
+        addButtonSubscribeText(button, '');
         break;
       default:
         button.classList.add('comment-subscribed');

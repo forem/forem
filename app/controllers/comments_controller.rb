@@ -203,7 +203,8 @@ class CommentsController < ApplicationController
     end
   end
 
-  # rubocop:disable Metrics/PerceivedComplexity
+  ## TODO: Service-orient this method
+  # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def subscribe
     skip_authorization
 
@@ -223,7 +224,11 @@ class CommentsController < ApplicationController
       end
     else
       notif = NotificationSubscription.create(user: current_user,
-                                              config: "all_comments",
+                                              config: if article.nil? && comment.ancestry.nil?
+                                                        "all_comments"
+                                                      else
+                                                        "top_level_comments"
+                                                      end,
                                               notifiable: article.nil? ? comment : article,
                                               notifiable_type: article.nil? ? "Comment" : "Article")
 
@@ -235,7 +240,7 @@ class CommentsController < ApplicationController
       end
     end
   end
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))
