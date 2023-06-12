@@ -223,15 +223,15 @@ class CommentsController < ApplicationController
         render json: { error: notification.errors_as_sentence }, status: :bad_request
       end
     else
-      comment_article = comment.ancestry.nil? ? comment.article : nil
-      notifiable = if article.nil? && comment_article.nil?
+      comment_article = comment && comment.ancestry.nil? ? comment.article : nil
+      notifiable = if comment && article.nil? && comment_article.nil?
                      comment
                    elsif article.nil?
                      comment_article
                    else
                      article
                    end
-      notifiable_type = if article.nil? && comment_article.nil?
+      notifiable_type = if comment && article.nil? && comment_article.nil?
                           "Comment"
                         elsif article.nil?
                           "Article"
