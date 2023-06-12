@@ -1,6 +1,3 @@
-//import { getInstantClick } from '../topNavigation/utilities';
-// import { locale } from '@utilities/locale';
-
 // /* global showModalAfterError*/
 
 export function addButtonSubscribeText(button, config) {
@@ -171,12 +168,6 @@ document
       attributes: true,
     });
   });
-
-// getInstantClick().then((ic) => {
-//   ic.on('change', () => {
-//     observer.disconnect();
-//   });
-// });
 
 window.addEventListener('beforeunload', () => {
   observer.disconnect();
