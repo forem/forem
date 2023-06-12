@@ -127,6 +127,36 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           )
         end
 
+        context "when the tag has moderators" do
+          let(:six_badge_mod) { create(:user, badge_achievements_count: 6) }
+          let(:three_badge_mod) { create(:user, badge_achievements_count: 3) }
+          let(:ten_badge_mod) { create(:user, badge_achievements_count: 10) }
+          let(:two_badge_mod) { create(:user, badge_achievements_count: 2) }
+          let(:eight_badge_mod) { create(:user, badge_achievements_count: 8) }
+          let(:mods) { [six_badge_mod, three_badge_mod, ten_badge_mod, two_badge_mod, eight_badge_mod] }
+
+          before do
+            mods.each { |mod| mod.add_role(:tag_moderator, tag) }
+          end
+
+          def nth_avatar(user_position)
+            ".widget-user-pic:nth-child(#{user_position})"
+          end
+
+          it "shows them in the sidebar in descending order of badge achievement count" do
+            get "/t/#{tag.name}"
+
+            page = Capybara.string(response.body)
+            sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
+
+            expect(sidebar.find(nth_avatar(1))).to have_link(nil, href: ten_badge_mod.path)
+            expect(sidebar.find(nth_avatar(2))).to have_link(nil, href: eight_badge_mod.path)
+            expect(sidebar.find(nth_avatar(3))).to have_link(nil, href: six_badge_mod.path)
+            expect(sidebar.find(nth_avatar(4))).to have_link(nil, href: three_badge_mod.path)
+            expect(sidebar.find(nth_avatar(5))).to have_link(nil, href: two_badge_mod.path)
+          end
+        end
+
         context "with user signed in" do
           before do
             sign_in user

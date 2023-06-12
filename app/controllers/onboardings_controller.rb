@@ -2,9 +2,10 @@ class OnboardingsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_suspended, only: %i[notifications]
   before_action :set_cache_control_headers, only: %i[show tags]
-  before_action :set_no_cache_header, only: %i[update]
+  before_action :set_no_cache_header, only: %i[update users_and_organizations]
   after_action :verify_authorized, only: %i[update checkbox]
 
+  SUGGESTED_USER_ATTRIBUTES = %i[id name username summary profile_image].freeze
   TAG_ONBOARDING_ATTRIBUTES = %i[id name taggings_count].freeze
   ALLOWED_USER_PARAMS = %i[last_onboarding_page username].freeze
   ALLOWED_CHECKBOX_PARAMS = %i[checked_code_of_conduct checked_terms_and_conditions].freeze
@@ -12,6 +13,12 @@ class OnboardingsController < ApplicationController
 
   def show
     set_surrogate_key_header "onboarding-slideshow"
+  end
+
+  def users_and_organizations
+    suggested_follows = suggested_user_follows
+    suggested_follows += suggested_organization_follows if feature_flag_enabled?(:suggest_organizations)
+    @suggestions = ApplicationDecorator.decorate_collection(suggested_follows)
   end
 
   def tags
@@ -94,5 +101,14 @@ class OnboardingsController < ApplicationController
     respond_to do |format|
       format.json { render json: { errors: errors }, status: status }
     end
+  end
+
+  def suggested_organization_follows
+    Organizations::SuggestProminent.call(current_user)
+  end
+
+  def suggested_user_follows
+    Users::SuggestRecent.call(current_user,
+                              attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
   end
 end

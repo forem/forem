@@ -287,6 +287,10 @@ class ApplicationController < ActionController::Base
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
   end
 
+  def feature_flag_enabled?(flag_name, acting_as: current_user)
+    FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
+  end
+
   private
 
   def configure_permitted_parameters

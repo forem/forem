@@ -12,14 +12,22 @@ RSpec.describe "Api::V1::FollowsController" do
     context "when user is authorized" do
       let(:user) { create(:user) }
       let(:users_hash) { [{ id: create(:user).id }, { id: create(:user).id }] }
+      let(:orgs_hash) { [{ id: create(:organization).id }, { id: create(:organization).id }] }
 
       before do
         sign_in user
       end
 
       it "returns the number of followed users" do
-        post "/api/follows", params: { users: users_hash }, headers: headers
-        expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
+        post "/api/follows",
+             params: {
+               users: users_hash,
+               organizations: orgs_hash
+             },
+             headers: headers
+
+        expected_outcome = users_hash.size + orgs_hash.size
+        expect(response.parsed_body["outcome"]).to include("#{expected_outcome} users")
       end
 
       it "creates follows" do
