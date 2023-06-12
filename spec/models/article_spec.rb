@@ -700,8 +700,8 @@ RSpec.describe Article do
 
   describe "#slug" do
     let(:title) { "hey This' is$ a SLUG" }
-    let(:article0) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
-    let(:article1) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
+    let(:article0) { build(:article, title: title, published: false) }
+    let(:article1) { build(:article, title: title, published: false) }
 
     before do
       article0.validate!
@@ -1357,6 +1357,32 @@ RSpec.describe Article do
     it "reports accurately" do
       categories = article.public_reaction_categories
       expect(categories.map(&:slug)).to match_array(%i[like])
+    end
+  end
+
+  describe ".above_average and .average_score" do
+    context "when there are not yet any articles with score above 0" do
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(0.0)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(0)
+      end
+    end
+
+    context "when there are articles with score" do
+      before do
+        create(:article, score: 10)
+        create(:article, score: 6)
+        create(:article, score: 4)
+        create(:article, score: 1)
+        # averages 4.2 with article created earlier, see let on line 13
+      end
+
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(4.2)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(10, 6)
+      end
     end
   end
 

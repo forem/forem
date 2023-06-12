@@ -7,19 +7,8 @@ class UsersController < ApplicationController
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   before_action :initialize_stripe, only: %i[edit]
 
-  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
-  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
-
   def index
-    @users =
-      case params[:state]
-      when "follow_suggestions"
-        determine_follow_suggestions(current_user)
-      when "sidebar_suggestions"
-        Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
-      else
-        User.none
-      end
+    @users = sidebar_suggestions || User.none
   end
 
   # GET /settings/@tab
@@ -254,13 +243,6 @@ class UsersController < ApplicationController
 
   private
 
-  def determine_follow_suggestions(current_user)
-    Users::SuggestRecent.call(
-      current_user,
-      attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-    )
-  end
-
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
     if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
@@ -322,5 +304,11 @@ class UsersController < ApplicationController
 
   def password_params
     params.permit(:current_password, :password, :password_confirmation)
+  end
+
+  def sidebar_suggestions
+    return if params[:state].to_s != "sidebar_suggestions"
+
+    Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
   end
 end

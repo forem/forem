@@ -4,6 +4,7 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
 import { axe } from 'jest-axe';
+import { i18nSupport } from '../../../utilities/i18n_support';
 import { FollowUsers } from '../FollowUsers';
 
 global.fetch = fetch;
@@ -39,20 +40,24 @@ describe('FollowUsers', () => {
       id: 1,
       name: 'Ben Halpern',
       profile_image_url: 'apple-icon.png',
+      type_identifier: 'user',
     },
     {
       id: 2,
       name: 'Krusty the Clown',
       profile_image_url: 'clown.jpg',
+      type_identifier: 'user',
     },
     {
       id: 3,
       name: 'dev.to staff',
       profile_image_url: 'dev.jpg',
+      type_identifier: 'user',
     },
   ]);
 
   beforeAll(() => {
+    i18nSupport();
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
@@ -101,7 +106,7 @@ describe('FollowUsers', () => {
     );
 
     expect(queryAllByLabelText('Following')).toHaveLength(3);
-    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
+    expect(queryByText(/You're following everyone/i)).toExist();
     expect(queryByText(/Continue/i)).toExist();
 
     // Unfollow the first user
@@ -148,13 +153,13 @@ describe('FollowUsers', () => {
     expect(queryByText(/You're not following anyone/i)).toExist();
 
     // select all then test following count
-    const followAllSelector = await findByText(/Select all 3 people/i);
+    const followAllSelector = await findByText(/Select all 3/i);
 
     fireEvent.click(followAllSelector);
 
     expect(queryByText('Follow')).not.toExist();
     expect(queryAllByLabelText('Following')).toHaveLength(3);
-    expect(queryByText(/You're following 3 people \(everyone\)/i)).toExist();
+    expect(queryByText(/You're following everyone/i)).toExist();
   });
 
   it('should render a stepper', () => {
