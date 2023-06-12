@@ -446,6 +446,7 @@ RSpec.describe "Comments" do
       before do
         sign_in user
         allow(NotificationSubscription).to receive(:create).and_return(notification)
+        allow(notification).to receive(:save).and_return(false)
         allow(notification).to receive(:errors).and_return(instance_double(error_string, empty?: false))
       end
 
