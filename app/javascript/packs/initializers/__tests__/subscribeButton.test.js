@@ -72,8 +72,8 @@ describe('subscribeButton', () => {
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('should set label, mobileLabel, and pressed for config "author_comments"', () => {
-    addButtonSubscribeText(button, 'author_comments');
+  it('should set label, mobileLabel, and pressed for config "only_author_comments"', () => {
+    addButtonSubscribeText(button, 'only_author_comments');
 
     expect(button.getAttribute('aria-label')).toBe(
       'Subscribed to author comments',

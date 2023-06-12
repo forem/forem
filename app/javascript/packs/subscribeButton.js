@@ -21,7 +21,7 @@ export function addButtonSubscribeText(button, config) {
       mobileLabel = `Top-level ${noun}`;
       pressed = 'true';
       break;
-    case 'author_comments':
+    case 'only_author_comments':
       label = `Subscribed to author comments`;
       mobileLabel = `Author ${noun}`;
       pressed = 'true';
@@ -47,7 +47,7 @@ export function optimisticallyUpdateButtonUI(button) {
     switch (config) {
       case 'all_comments':
       case 'top_level_comments':
-      case 'author_comments':
+      case 'only_author_comments':
         button.classList.remove('comment-subscribed');
         addButtonSubscribeText(button, '');
         break;
