@@ -8,7 +8,6 @@ import {
 
 describe('subscribeButton', () => {
   let button;
-  // let handleSubscribeButtonClickSpy;
   let originalFetch;
   const mockDatasetComment = (comment) => {
     button.dataset.comment = comment;
@@ -43,11 +42,9 @@ describe('subscribeButton', () => {
   });
 
   it('should initialize subscribe buttons', () => {
-    expect(button.getAttribute('aria-label')).toBe(
-      'Subscribed to top-level comments',
-    );
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to top-level comments',
+      'Subscribed to comments',
     );
   });
 
@@ -101,11 +98,9 @@ describe('subscribeButton', () => {
     mockDatasetComment('some comment');
     addButtonSubscribeText(button, 'all_comments');
 
-    expect(button.getAttribute('aria-label')).toBe(
-      'Subscribed to top-level comments',
-    );
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to top-level comments',
+      'Subscribed to comments',
     );
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
@@ -136,63 +131,9 @@ describe('subscribeButton', () => {
 
     expect(button.classList.contains('comment-subscribed')).toBe(true);
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to top-level comments',
+      'Subscribed to comments',
     );
-    expect(button.getAttribute('aria-label')).toBe(
-      'Subscribed to top-level comments',
-    );
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
-
-  // it('should add click event listener to the button', () => {
-  //   button.click();
-
-  //   expect(handleSubscribeButtonClickSpy).toHaveBeenCalled();
-  // });
-
-  // it('should update button UI when clicked', () => {return new Promise((done) => {
-  //   button.click();
-
-  //   setTimeout(() => {
-  //     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
-  //     expect(button.querySelector('span').innerText).toBe('Subscribed to comments');
-  //     done();
-  //   }, 0);
-  // })});
-
-  // it('should make AJAX request when clicked', () => {
-  //   button.click();
-
-  //   expect(window.fetch).toHaveBeenCalled();
-  //   expect(window.fetch).toHaveBeenCalledWith('comment-subscribe', {
-  //     method: 'POST',
-  //     body: JSON.stringify({
-  //       comment: {
-  //         notification_id: null,
-  //         comment_id: null,
-  //         article_id: null
-  //       }
-  //     })
-  //   });
-  // });
-
-  // it('should handle successful response', () => {return new Promise((done) => {
-  //   const response = {
-  //     status: 200,
-  //     json: () => Promise.resolve({
-  //       notification: '{"config":"all_comments"}'
-  //     })
-  //   };
-
-  //   jest.spyOn(window, 'alert');
-
-  //   window.fetch.and.returnValue(Promise.resolve(response));
-  //   button.click();
-
-  //   setTimeout(() => {
-  //     expect(button.dataset.info).toBe('{"config":"all_comments"}');
-  //     // expect(window.alert).toHaveBeenCalledWith('Subscription updated successfully!');
-  //     done();
-  //   }, 0);
-  // })});
 });

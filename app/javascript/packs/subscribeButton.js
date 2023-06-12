@@ -10,14 +10,7 @@ export function addButtonSubscribeText(button, config) {
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
-  const revisedConfig =
-    button.dataset.ancestry ||
-    button.dataset.article ||
-    config !== 'all_comments'
-      ? config
-      : 'top_level_comments';
-
-  switch (revisedConfig) {
+  switch (config) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
