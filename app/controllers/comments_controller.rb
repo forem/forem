@@ -239,7 +239,7 @@ class CommentsController < ApplicationController
                           "Article"
                         end
       subscription = NotificationSubscription.create(user: current_user,
-                                                     config: if article.nil? && comment.ancestry.nil?
+                                                     config: if comment && article.nil? && comment.ancestry.nil?
                                                                "all_comments"
                                                              elsif article.nil?
                                                                "all_comments"
