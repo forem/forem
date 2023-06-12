@@ -203,7 +203,7 @@ class CommentsController < ApplicationController
     end
   end
 
-  ## TODO: Service-orient this method
+  ## TODO: Service-orient this method - SubscriptionCreator.call(...)
   # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def subscribe
     skip_authorization
@@ -240,6 +240,8 @@ class CommentsController < ApplicationController
                         end
       subscription = NotificationSubscription.create(user: current_user,
                                                      config: if article.nil? && comment.ancestry.nil?
+                                                               "all_comments"
+                                                             elsif article.nil?
                                                                "all_comments"
                                                              else
                                                                "top_level_comments"
