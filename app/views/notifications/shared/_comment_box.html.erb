@@ -72,7 +72,11 @@
             <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
           <%# <% if FeatureFlag.enabled?(:subscribe_to_comments) %>
-            <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: json_data["comment"]["id"]).first %>
+            <% if json_data["comment"]["ancestry"].nil? %>
+              <% @notification = NotificationSubscription.where(notifiable_type: "Article", user_id: current_user.id, notifiable_id: json_data["comment"]["commentable"]["id"]).first %>
+            <% else %>
+              <% @notification = NotificationSubscription.where(notifiable_type: "Comment", user_id: current_user.id, notifiable_id: json_data["comment"]["id"]).first %>
+            <% end %>
             <button
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "comment-subscribed" %>"
               data-info="<%= @notification.to_json %>"
