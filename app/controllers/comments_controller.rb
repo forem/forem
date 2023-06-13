@@ -206,17 +206,19 @@ class CommentsController < ApplicationController
   def subscribe
     permitted_params = permitted_attributes(Comment)
     toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
-  
+
     if toggler[:errors]
       render json: { errors: toggler[:errors], status: 422 }, status: :unprocessable_entity
     else
       render json: toggler, status: :ok
     end
   end
-  
+
   def unsubscribe
     permitted_params = permitted_attributes(Comment)
-    toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params, :destroy)
+    toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
+
+    render json: toggler, status: :ok
   end
 
   def settings
