@@ -203,60 +203,19 @@ class CommentsController < ApplicationController
     end
   end
 
-  ## TODO: Service-orient this method - SubscriptionCreator.call(...)
-  # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def subscribe
     skip_authorization
 
-    comment_id = permitted_attributes(Comment)[:comment_id]
-    article_id = permitted_attributes(Comment)[:article_id]
-    comment = Comment.find(comment_id) if comment_id.present?
-    article = Article.find(article_id) if article_id.present?
-    notification_id = permitted_attributes(Comment)[:notification_id]
-    notification = NotificationSubscription&.find(notification_id) unless notification_id.nil?
-
-    if notification_id && notification
-      notification.destroy
-      if notification.destroyed?
-        render json: { destroyed: "true" }, status: :ok
-      else
-        render json: { error: notification.errors_as_sentence }, status: :bad_request
-      end
+    permitted_params = permitted_attributes(Comment)
+    toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
+  
+    puts toggler
+    if toggler[:errors]
+      render json: { errors: toggler[:errors], status: 422 }, status: :unprocessable_entity
     else
-      comment_article = comment && comment.ancestry.nil? ? comment.commentable : nil
-      notifiable = if comment && article.nil? && comment_article.nil?
-                     comment
-                   elsif article.nil?
-                     comment_article
-                   else
-                     article
-                   end
-      notifiable_type = if comment && article.nil? && comment_article.nil?
-                          "Comment"
-                        elsif article.nil?
-                          "Article"
-                        else
-                          "Article"
-                        end
-      subscription = NotificationSubscription.create(user: current_user,
-                                                     config: if comment && article.nil? && comment.ancestry.nil?
-                                                               "all_comments"
-                                                             elsif article.nil?
-                                                               "all_comments"
-                                                             else
-                                                               "top_level_comments"
-                                                             end,
-                                                     notifiable: notifiable,
-                                                     notifiable_type: notifiable_type)
-
-      if subscription.save
-        render json: { updated: "true", notification: subscription.to_json }, status: :ok
-      else
-        render json: { errors: subscription.errors_as_sentence, status: 422 }, status: :unprocessable_entity
-      end
+      render json: toggler, status: :ok
     end
   end
-  # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def settings
     @comment = Comment.find(params[:id_code].to_i(26))

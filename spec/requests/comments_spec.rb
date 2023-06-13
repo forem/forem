@@ -433,8 +433,8 @@ RSpec.describe "Comments" do
              params: { comment: { notification_id: subscription.id } },
              headers: { HTTP_ACCEPT: "application/json" }
 
-        expect(response).to have_http_status(:bad_request)
-        expect(response.body).to eq({ error: "Notification could not be destroyed." }.to_json)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.body).to eq({ errors: "Notification could not be destroyed.", status: 422 }.to_json)
       end
     end
 
