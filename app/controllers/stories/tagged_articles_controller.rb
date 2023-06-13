@@ -16,7 +16,9 @@ module Stories
 
       @page = (params[:page] || 1).to_i
 
-      @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
+      @moderators = User.with_role(:tag_moderator, @tag)
+        .order(badge_achievements_count: :desc)
+        .select(:username, :profile_image, :id)
 
       set_number_of_articles(tag: @tag)
 
