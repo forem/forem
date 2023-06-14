@@ -224,7 +224,7 @@ export class ProfileForm extends Component {
                 able to edit this later in your Settings.
               </h2>
             </header>
-            <div className="onboarding-profile-sub-section">
+            <div className="onboarding-profile-sub-section mt-8">
               <ProfileImage
                 onMainImageUrlChange={this.onProfileImageUrlChange}
                 mainImage={this.state.profile_image_90}

@@ -30,7 +30,7 @@ const NativeIosImageUpload = ({ extraProps, isUploadingImage }) => (
 const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
   isUploadingImage ? null : (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined crayons-tooltip__activator">
+      <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         Edit profile image
         <input
           data-testid="cover-image-input"
@@ -41,9 +41,6 @@ const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
           className="screen-reader-only"
           data-max-file-size-mb="25"
         />
-        <span data-testid="tooltip" className="crayons-tooltip__content">
-          Use a ratio of 100:42 for best results.
-        </span>
       </label>
     </Fragment>
   );
@@ -69,18 +66,29 @@ export const ProfileImage = ({
     setUploadingImage(true);
     clearUploadError();
 
-    if (validateFileInputs()) {
-      const { files: image } = event.dataTransfer || event.target;
-      const payload = { image, userId };
+    const { files: image } = event.dataTransfer || event.target;
 
-      generateMainImage({
-        payload,
-        successCb: onImageUploadSuccess,
-        failureCb: onUploadError,
-      });
-    } else {
-      setUploadingImage(false);
-    }
+    const img = new Image();
+    img.onload = function () {
+      if (this.width > 4096 || this.height > 4096) {
+        setUploadingImage(false);
+        setUploadError(true);
+        setUploadErrorMessage(
+          'Image size should be less than or equal to 4096x4096.',
+        );
+      } else if (validateFileInputs()) {
+        const payload = { image, userId };
+
+        generateMainImage({
+          payload,
+          successCb: onImageUploadSuccess,
+          failureCb: onUploadError,
+        });
+      } else {
+        setUploadingImage(false);
+      }
+    };
+    img.src = URL.createObjectURL(image[0]);
   };
 
   const clearUploadError = () => {
@@ -198,7 +206,9 @@ export const ProfileImage = ({
           </Fragment>
         </div>
         {uploadError && (
-          <p className="articleform__uploaderror">{uploadErrorMessage}</p>
+          <p className="onboarding-profile-upload-error">
+            {uploadErrorMessage}
+          </p>
         )}
       </div>
     </DragAndDropZone>

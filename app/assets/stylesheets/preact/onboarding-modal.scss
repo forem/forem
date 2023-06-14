@@ -712,6 +712,11 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   line-height: var(--lh-base);
 }
 
+.onboarding-profile-upload-error {
+  color: darken($red, 8%);
+  font-size: 0.8em;
+}
+
 // Adjusting modals... This is naughty... Santa won't come.
 .onboarding-main {
   --onboarding-modal-height: 800px;
