@@ -1,16 +1,10 @@
 import { h, Fragment } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-import { addSnackbarItem } from '../../../Snackbar';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../../packs/validateFileInputs';
-import {
-  onDragOver,
-  onDragExit,
-} from '../../../article-form/components/dragAndDropHelpers';
 import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
-import { DragAndDropZone } from '@utilities/dragAndDrop';
 import { isNativeIOS } from '@utilities/runtime';
 
 const NativeIosImageUpload = ({ extraProps, isUploadingImage }) => (
@@ -141,20 +135,6 @@ export const ProfileImage = ({
     /* eslint-enable no-case-declarations */
   };
 
-  const onDropImage = (event) => {
-    onDragExit(event);
-
-    if (event.dataTransfer.files.length > 1) {
-      addSnackbarItem({
-        message: 'Only one image can be dropped at a time.',
-        addCloseButton: true,
-      });
-      return;
-    }
-
-    handleMainImageUpload(event);
-  };
-
   // When the component is rendered in an environment that supports a native
   // image picker for image upload we want to add the aria-label attr and the
   // onClick event to the UI button. This event will kick off the native UX.
@@ -170,48 +150,40 @@ export const ProfileImage = ({
   document.addEventListener('ForemMobile', handleNativeMessage);
 
   return (
-    <DragAndDropZone
-      onDragOver={onDragOver}
-      onDragExit={onDragExit}
-      onDrop={onDropImage}
-    >
-      <div className="onboarding-profile-details-container" role="presentation">
-        {!uploadingImage && mainImage && (
-          <img
-            className="onboarding-profile-image"
-            alt="profile"
-            src={mainImage}
-          />
+    <div className="onboarding-profile-details-container" role="presentation">
+      {!uploadingImage && mainImage && (
+        <img
+          className="onboarding-profile-image"
+          alt="profile"
+          src={mainImage}
+        />
+      )}
+      <div className="onboarding-profile-details-sub-container">
+        <h3 className="onboarding-profile-user-name">{name}</h3>
+        {uploadingImage && (
+          <span class="lh-base pl-1 border-0 py-2 inline-block">
+            <Spinner /> Uploading...
+          </span>
         )}
-        <div className="onboarding-profile-details-sub-container">
-          <h3 className="onboarding-profile-user-name">{name}</h3>
-          {uploadingImage && (
-            <span class="lh-base pl-1 border-0 py-2 inline-block">
-              <Spinner /> Uploading...
-            </span>
-          )}
 
-          <Fragment>
-            {useNativeUpload() ? (
-              <NativeIosImageUpload
-                isUploadingImage={uploadingImage}
-                extraProps={extraProps}
-              />
-            ) : (
-              <StandardImageUpload
-                isUploadingImage={uploadingImage}
-                handleImageUpload={handleMainImageUpload}
-              />
-            )}
-          </Fragment>
-        </div>
-        {uploadError && (
-          <p className="onboarding-profile-upload-error">
-            {uploadErrorMessage}
-          </p>
-        )}
+        <Fragment>
+          {useNativeUpload() ? (
+            <NativeIosImageUpload
+              isUploadingImage={uploadingImage}
+              extraProps={extraProps}
+            />
+          ) : (
+            <StandardImageUpload
+              isUploadingImage={uploadingImage}
+              handleImageUpload={handleMainImageUpload}
+            />
+          )}
+        </Fragment>
       </div>
-    </DragAndDropZone>
+      {uploadError && (
+        <p className="onboarding-profile-upload-error">{uploadErrorMessage}</p>
+      )}
+    </div>
   );
 };
 
