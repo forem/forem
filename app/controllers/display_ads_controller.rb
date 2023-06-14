@@ -15,7 +15,7 @@ class DisplayAdsController < ApplicationController
         area: params[:placement_area],
         user_signed_in: user_signed_in?,
         user_id: current_user&.id,
-        article: ArticleDecorator.new(@article),
+        article: @article ? ArticleDecorator.new(@article) : nil,
       )
 
       if @display_ad && !session_current_user_id
