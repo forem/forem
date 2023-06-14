@@ -11,8 +11,8 @@ const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         Edit profile image
         <input
-          data-testid="cover-image-input"
-          id="cover-image-input"
+          data-testid="profile-image-input"
+          id="profile-image-input"
           type="file"
           onChange={handleImageUpload}
           accept="image/*"

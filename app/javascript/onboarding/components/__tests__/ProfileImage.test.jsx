@@ -7,14 +7,29 @@ import { ProfileImage } from '../ProfileForm/ProfileImage';
 import { processImageUpload } from '../actions';
 import { validateFileInputs } from '../../../packs/validateFileInputs';
 
+global.fetch = fetch;
+global.URL.createObjectURL = jest.fn();
+
 jest.mock('../actions');
 jest.mock('../../../packs/validateFileInputs.js', () => ({
   validateFileInputs: jest.fn(),
 }));
-global.fetch = fetch;
-global.URL.createObjectURL = jest.fn();
 
 describe('<ProfileImage />', () => {
+  it('should render correctly', () => {
+    const onMainImageUrlChangeMock = jest.fn();
+    const { getByTestId } = render(
+      <ProfileImage
+        onMainImageUrlChange={onMainImageUrlChangeMock}
+        mainImage="test.jpg"
+        userId="1"
+        name="Test User"
+      />,
+    );
+
+    expect(getByTestId('profile-image-input')).toBeInTheDocument();
+  });
+
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ProfileImage
