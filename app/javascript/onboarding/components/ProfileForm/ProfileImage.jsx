@@ -27,8 +27,8 @@ const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         Edit profile image
         <input
-          data-testid="cover-image-input"
-          id="cover-image-input"
+          data-testid="profile-image-input"
+          id="profile-image-input"
           type="file"
           onChange={handleImageUpload}
           accept="image/*"
@@ -102,15 +102,15 @@ export const ProfileImage = ({
 
   const initNativeImagePicker = (e) => {
     e.preventDefault();
-    window.ForemMobile?.injectNativeMessage('coverUpload', {
-      action: 'coverImageUpload',
-      ratio: `${100.0 / 42.0}`,
+    window.ForemMobile?.injectNativeMessage('profileUpload', {
+      action: 'profileImageUpload',
+      ratio: `${100.0 / 100.0}`,
     });
   };
 
   const handleNativeMessage = (e) => {
     const message = JSON.parse(e.detail);
-    if (message.namespace !== 'coverUpload') {
+    if (message.namespace !== 'imageUpload') {
       return;
     }
 
@@ -142,7 +142,7 @@ export const ProfileImage = ({
   const extraProps = useNativeUpload()
     ? {
         onClick: initNativeImagePicker,
-        'aria-label': 'Upload cover image',
+        'aria-label': 'Upload profile image',
       }
     : {};
 
