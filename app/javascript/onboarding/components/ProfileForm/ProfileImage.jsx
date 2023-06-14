@@ -3,23 +3,7 @@ import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../../packs/validateFileInputs';
-import { Button } from '@crayons';
 import { Spinner } from '@crayons/Spinner/Spinner';
-import { isNativeIOS } from '@utilities/runtime';
-
-const NativeIosImageUpload = ({ extraProps, isUploadingImage }) => (
-  <Fragment>
-    {isUploadingImage ? null : (
-      <Button
-        variant="outlined"
-        className="mr-2 whitespace-nowrap"
-        {...extraProps}
-      >
-        Edit profile image
-      </Button>
-    )}
-  </Fragment>
-);
 
 const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
   isUploadingImage ? null : (
@@ -27,8 +11,8 @@ const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
       <label className="cursor-pointer crayons-btn crayons-btn--outlined">
         Edit profile image
         <input
-          data-testid="profile-image-input"
-          id="profile-image-input"
+          data-testid="cover-image-input"
+          id="cover-image-input"
           type="file"
           onChange={handleImageUpload}
           accept="image/*"
@@ -96,59 +80,6 @@ export const ProfileImage = ({
     setUploadErrorMessage(error.message);
   };
 
-  const useNativeUpload = () => {
-    return isNativeIOS('imageUpload');
-  };
-
-  const initNativeImagePicker = (e) => {
-    e.preventDefault();
-    window.ForemMobile?.injectNativeMessage('profileUpload', {
-      action: 'profileImageUpload',
-      ratio: `${100.0 / 100.0}`,
-    });
-  };
-
-  const handleNativeMessage = (e) => {
-    const message = JSON.parse(e.detail);
-    if (message.namespace !== 'imageUpload') {
-      return;
-    }
-
-    /* eslint-disable no-case-declarations */
-    switch (message.action) {
-      case 'uploading':
-        setUploadingImage(true);
-        clearUploadError();
-        break;
-      case 'error':
-        setUploadingImage(false);
-        setUploadError(true);
-        setUploadErrorMessage(message.error);
-        break;
-      case 'success':
-        onMainImageUrlChange({
-          links: [message.link],
-        });
-        setUploadingImage(false);
-        break;
-    }
-    /* eslint-enable no-case-declarations */
-  };
-
-  // When the component is rendered in an environment that supports a native
-  // image picker for image upload we want to add the aria-label attr and the
-  // onClick event to the UI button. This event will kick off the native UX.
-  // The props are unwrapped (using spread operator) in the button below
-  const extraProps = useNativeUpload()
-    ? {
-        onClick: initNativeImagePicker,
-        'aria-label': 'Upload profile image',
-      }
-    : {};
-
-  // Native Bridge messages come through ForemMobile events
-  document.addEventListener('ForemMobile', handleNativeMessage);
-
   return (
     <div className="onboarding-profile-details-container" role="presentation">
       {!uploadingImage && mainImage && (
@@ -167,17 +98,10 @@ export const ProfileImage = ({
         )}
 
         <Fragment>
-          {useNativeUpload() ? (
-            <NativeIosImageUpload
-              isUploadingImage={uploadingImage}
-              extraProps={extraProps}
-            />
-          ) : (
-            <StandardImageUpload
-              isUploadingImage={uploadingImage}
-              handleImageUpload={handleMainImageUpload}
-            />
-          )}
+          <StandardImageUpload
+            isUploadingImage={uploadingImage}
+            handleImageUpload={handleMainImageUpload}
+          />
         </Fragment>
       </div>
       {uploadError && (
