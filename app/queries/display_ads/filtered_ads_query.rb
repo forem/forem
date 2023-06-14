@@ -1,5 +1,6 @@
 module DisplayAds
   class FilteredAdsQuery
+    include DisplayAdHelper
     def self.call(...)
       new(...).call
     end
