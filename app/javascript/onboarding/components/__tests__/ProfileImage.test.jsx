@@ -1,13 +1,18 @@
 import { h } from 'preact';
-import { render } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { ProfileImage } from '../ProfileForm/ProfileImage';
-
-global.fetch = fetch;
+import { processImageUpload } from '../actions';
+import { validateFileInputs } from '../../../packs/validateFileInputs';
 
 jest.mock('../actions');
+jest.mock('../../../packs/validateFileInputs.js', () => ({
+  validateFileInputs: jest.fn(),
+}));
+global.fetch = fetch;
+global.URL.createObjectURL = jest.fn();
 
 describe('<ProfileImage />', () => {
   it('should have no a11y violations', async () => {
@@ -47,5 +52,45 @@ describe('<ProfileImage />', () => {
     );
     const uploadInput = getByRole('img', { name: 'profile' });
     expect(uploadInput.getAttribute('src')).toEqual('/some-fake-image.jpg');
+  });
+
+  it('shows the "Uploading..." message when an image is being uploaded', () => {
+    const { getByLabelText, getByText } = render(
+      <ProfileImage
+        mainImage=""
+        onMainImageUrlChange={jest.fn()}
+        userId="user1"
+        name="User 1"
+      />,
+    );
+
+    const file = new File(['file content'], 'filename.png', {
+      type: 'image/png',
+    });
+
+    const uploadInput = getByLabelText(/edit profile image/i);
+    fireEvent.change(uploadInput, { target: { files: [file] } });
+
+    expect(getByText('Uploading...')).toBeInTheDocument();
+  });
+});
+
+describe('processImageUpload', () => {
+  it('should not process the image upload when validateFileInputs returns false', () => {
+    validateFileInputs.mockImplementation(() => false);
+
+    const handleImageUploading = jest.fn();
+    const handleImageSuccess = jest.fn();
+    const handleImageFailure = jest.fn();
+
+    processImageUpload(
+      ['mock-image'],
+      handleImageUploading,
+      handleImageSuccess,
+      handleImageFailure,
+      'user1',
+    );
+
+    expect(handleImageUploading).not.toHaveBeenCalled();
   });
 });
