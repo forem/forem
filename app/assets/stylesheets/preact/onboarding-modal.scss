@@ -685,7 +685,6 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
 .onboarding-profile-details-container {
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 0px;
   gap: 24px;
@@ -694,6 +693,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 .onboarding-profile-image {
   width: 80px;
   height: 80px;
+  aspect-ratio: 1/1;
   border-radius: 40px;
   border: 1.5px solid #d4d4d4;
 }
