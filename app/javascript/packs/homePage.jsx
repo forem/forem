@@ -1,10 +1,6 @@
 import { h, render } from 'preact';
 import ahoy from 'ahoy.js';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
-import {
-  observeDisplayAds,
-  initializeDisplayAdVisibility,
-} from '../packs/billboardAfterRenderActions';
 import { setupDisplayAdDropdown } from '@utilities/displayAdDropdown';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
@@ -97,12 +93,8 @@ if (!document.getElementById('featured-story-marker')) {
         return;
       }
       import('./homePageFeed').then(({ renderFeed }) => {
-        const callback = () => {
-          initializeDisplayAdVisibility();
-          observeDisplayAds();
-        };
-
-        renderFeed(feedTimeFrame, callback);
+        // We have user data, render followed tags.
+        renderFeed(feedTimeFrame);
 
         InstantClick.on('change', () => {
           const { userStatus: currentUserStatus } = document.body.dataset;
@@ -118,12 +110,7 @@ if (!document.getElementById('featured-story-marker')) {
             return;
           }
 
-          const callback = () => {
-            initializeDisplayAdVisibility();
-            observeDisplayAds();
-          };
-
-          renderFeed(changedFeedTimeFrame, callback);
+          renderFeed(changedFeedTimeFrame);
         });
       });
 
