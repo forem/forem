@@ -683,6 +683,35 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 }
 
+.onboarding-profile-details-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0px;
+  gap: 24px;
+}
+
+.onboarding-profile-image {
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  border: 1.5px solid #d4d4d4;
+}
+
+.onboarding-profile-details-sub-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 10px;
+}
+
+.onboarding-profile-user-name {
+  font-weight: var(--fw-bol);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-base);
+}
+
 // Adjusting modals... This is naughty... Santa won't come.
 .onboarding-main {
   --onboarding-modal-height: 800px;

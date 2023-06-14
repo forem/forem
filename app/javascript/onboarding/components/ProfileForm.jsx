@@ -224,12 +224,14 @@ export class ProfileForm extends Component {
                 able to edit this later in your Settings.
               </h2>
             </header>
-            <ProfileImage
-              onMainImageUrlChange={this.onProfileImageUrlChange}
-              mainImage={this.state.profile_image_90}
-              userId={this.user.id}
-              name={name}
-            />
+            <div className="onboarding-profile-sub-section">
+              <ProfileImage
+                onMainImageUrlChange={this.onProfileImageUrlChange}
+                mainImage={this.state.profile_image_90}
+                userId={this.user.id}
+                name={name}
+              />
+            </div>
             <div className="onboarding-profile-sub-section">
               <TextInput
                 field={{

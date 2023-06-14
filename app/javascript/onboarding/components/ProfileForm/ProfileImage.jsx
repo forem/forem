@@ -167,18 +167,16 @@ export const ProfileImage = ({
       onDragExit={onDragExit}
       onDrop={onDropImage}
     >
-      <div className="crayons-article-form__cover" role="presentation">
+      <div className="onboarding-profile-details-container" role="presentation">
         {!uploadingImage && mainImage && (
-          <figure className="current-user-avatar-container">
-            <img
-              className="current-user-avatar"
-              alt="profile"
-              src={mainImage}
-            />
-          </figure>
+          <img
+            className="onboarding-profile-image"
+            alt="profile"
+            src={mainImage}
+          />
         )}
-        <div className="flex items-center">
-          <h3>{name}</h3>
+        <div className="onboarding-profile-details-sub-container">
+          <h3 className="onboarding-profile-user-name">{name}</h3>
           {uploadingImage && (
             <span class="lh-base pl-1 border-0 py-2 inline-block">
               <Spinner /> Uploading...
