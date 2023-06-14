@@ -41,7 +41,7 @@ module DisplayAds
         @filtered_display_ads = tagged_ads(@user_tags)
       end
 
-      if @user_tags.blank? && DisplayAd::HOME_FEED_PLACEMENTS.include?(@area)
+      if @user_tags.blank? && user_tagged_placement_area?(@area)
         @filtered_display_ads = untagged_ads
       end
 

@@ -6,4 +6,8 @@ module DisplayAdHelper
   def audience_segments_for_display_ads
     AudienceSegment.human_readable_segments
   end
+
+  def user_tagged_placement_area?(area)
+    DisplayAd::HOME_FEED_PLACEMENTS.include?(area)
+  end
 end
