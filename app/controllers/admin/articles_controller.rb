@@ -39,7 +39,8 @@ module Admin
 
     def show
       @article = Article.includes(reactions: :user).find(params[:id])
-      @countable_vomits = { @article.id => calculate_flags_for_single_article(@article) }
+      @countable_vomits = {}
+      @countable_vomits[article.id] = calculate_flags_for_single_article(article)
     end
 
     def update
@@ -138,15 +139,15 @@ module Admin
         reaction.reactable_type == "Article"
       end
       vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }
-      countable_vomits = 0
+      vomit_count = 0
 
       if vomit_article_reactions.present?
         vomit_article_reactions.each do |vomit_reaction|
-          countable_vomits += 1 if vomit_reaction.status != "invalid"
+          vomit_count += 1 if vomit_reaction.status != "invalid"
         end
       end
 
-      countable_vomits
+      vomit_count
     end
   end
 end

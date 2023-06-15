@@ -47,7 +47,6 @@
           </a>
         </h2>
         <div class="flex items-center gap-1">
-          <% countable_vomits = @countable_vomits&.dig(article.id) || 0 %>
           <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
             <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["thumbsup"] || "0" %></span>
@@ -60,7 +59,7 @@
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
             <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= countable_vomits %></span>
+            <span class="fs-s fw-medium lh-base"><% countable_vomits = @countable_vomits&.dig(article.id) || 0 %></span>
           </span>
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
