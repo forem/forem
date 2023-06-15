@@ -366,12 +366,12 @@ RSpec.describe "Comments" do
       permitted_params = ActionController::Parameters.new(params)
         .require(:comment)
         .permit(:subscription_id, :action)
-      allow(NotificationSubscriptions::Toggle).to have_received(:call).with(user, permitted_params).and_return({})
+      allow(NotificationSubscriptions::Toggle).to receive(:call).with(user, permitted_params).and_return({})
       patch "/subscription/unsubscribe", params: params
     end
 
     it "renders the JSON response with the correct status" do
-      allow(NotificationSubscriptions::Toggle).to have_received(:call).and_return({ destroyed: true })
+      allow(NotificationSubscriptions::Toggle).to receive(:call).and_return({ destroyed: true })
       patch "/subscription/unsubscribe", params: { comment: { subscription_id: 1, action: "unsubscribe" } }
       expect(response).to have_http_status(:ok)
       expect(response.body).to eq("{\"destroyed\":true}")
