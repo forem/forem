@@ -1,6 +1,6 @@
 <div class="relative">
   <button type="button" id="<%= vomit_reaction.id %>-action-dropdown-btn" data-toggle-dropdown="<%= vomit_reaction.id %>-action-dropdown" class="c-btn c-btn--icon-alone ml-auto"
-    aria-expanded="false" aria-controls="<%= vomit_reaction.id %>-action-dropdown" aria-haspopup="true" aria-label="Actions: <%= vomit_reaction.id %>">
+    aria-expanded="false" aria-controls="<%= vomit_reaction.id %>-action-dropdown" aria-haspopup="true" aria-label="Flag actions: <%= vomit_reaction.id %>">
     <%= crayons_icon_tag("overflow-horizontal", aria_hidden: true) %>
   </button>
   <div id="<%= vomit_reaction.id %>-action-dropdown" class="crayons-dropdown right-0">
@@ -17,7 +17,7 @@
             data-remove-element="false"
             class="c-btn align-left w-100 c-btn--icon-left">
               <%= crayons_icon_tag("checkmark", aria_hidden: true, class: "c-btn__icon") %>
-              <%= t("views.moderations.flags.actions.mark_as_valid") %>
+              <%= t("views.admin.shared.flags.actions.mark_as_valid") %>
           </button>
         </li>
       <% end %>
@@ -33,7 +33,7 @@
             data-remove-element="false"
             class="c-btn align-left w-100 c-btn--icon-left">
               <%= crayons_icon_tag("x", aria_hidden: true, class: "c-btn__icon") %>
-              <%= t("views.moderations.flags.actions.mark_as_invalid") %>
+              <%= t("views.admin.shared.flags.actions.mark_as_invalid") %>
           </button>
         </li>
       <% end %>

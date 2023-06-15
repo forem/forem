@@ -30,10 +30,17 @@ module Admin
 
       @pinned_article = PinnedArticle.get
       @articles = @articles.where.not(id: @pinned_article) if @pinned_article
+
+      @countable_vomits = {}
+      @articles.each do |article|
+        @countable_vomits[article.id] = calculate_flags_for_single_article(article)
+      end
     end
 
     def show
       @article = Article.includes(reactions: :user).find(params[:id])
+      @countable_vomits = {}
+      @countable_vomits[@article.id] = calculate_flags_for_single_article(@article)
     end
 
     def update
@@ -125,6 +132,22 @@ module Admin
 
     def authorize_admin
       authorize Article, :access?, policy_class: InternalPolicy
+    end
+
+    def calculate_flags_for_single_article(article)
+      privileged_article_reactions = article.reactions.privileged_category.select do |reaction|
+        reaction.reactable_type == "Article"
+      end
+      vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }
+      vomit_count = 0
+
+      if vomit_article_reactions.present?
+        vomit_article_reactions.each do |vomit_reaction|
+          vomit_count += 1 if vomit_reaction.status != "invalid"
+        end
+      end
+
+      vomit_count
     end
   end
 end

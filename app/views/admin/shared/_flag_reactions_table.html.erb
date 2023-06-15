@@ -1,0 +1,14 @@
+<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
+<% if vomit_reactions.present? %>
+  <% vomit_reactions.each do |vomit_reaction| %>
+    <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction, text_section: text_section %>
+    <hr id="js__reaction__div__hr__<%= vomit_reaction.id %>" class="w-100 hr-no-margins">
+  <% end %>
+<% else %>
+  <div class="flex flex-col justify-center items-center gap-4 h-100">
+    <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
+      <%= crayons_icon_tag("flags", native: true, width: 56, height: 56) %>
+    </div>
+    <p class="crayons-subtitle-3 fw-normal color-secondary"><%= empty_text %></p>
+  </div>
+<% end %>
