@@ -5,9 +5,11 @@
   <% if @organization_users.any? %>
     <div class="crayons-card crayons-card--secondary org-sidebar-widget">
       <header class="crayons-card__header">
-        <h3 class="crayons-subtitle-3">
-          <%= t("views.organizations.team") %>
-        </h3>
+        <a href="/<%= @organization.slug %>/members" class="flex items-center crayons-link crayons-link--contentful">
+          <h3 class="crayons-subtitle-3">
+            <%= t("views.organizations.team") %>
+          </h3>
+        </a>
       </header>
       <div class="org-sidebar-widget-body">
         <% @organization_users.find_each_respecting_scope do |user| %>

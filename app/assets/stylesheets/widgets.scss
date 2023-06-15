@@ -309,6 +309,50 @@
   }
 }
 
+.org-member-page {
+  .member-item {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .member-item-top {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      .member-user-pic {
+        img {
+          width: 48px;
+          height: 48px;
+          aspect-ratio: 1/1;
+          margin: 3px;
+          border-radius: 100%;
+        }
+      }
+
+      .member-username {
+        font-weight: var(--fw-normal);
+        font-size: var(--fs-s);
+        line-height: var(--lh-base);
+        letter-spacing: -0.02em;
+        color: var(--color-secondary);
+      }
+    }
+
+    .member-item-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      flex-grow: 0;
+    }
+  }
+}
+
 .crayons-sponsorship {
   padding: var(--su-3);
   padding-bottom: var(--su-4);

@@ -1,0 +1,23 @@
+<% title "Rajat Talesra" %>
+
+<div class="blank-space"></div>
+<main class="org-member-page crayons-layout px-4 m:px-9 gap-0">
+  <h1 class="crayons-title"><%= @organization.name %> (<%= @members.count %>)</h1>
+  <div class="mt-4 l:mt-7 grid gap-16 m:gap-16 l:gap-4 l:gap-16 grid-cols-2 s:grid-cols-2 m:grid-cols-3 l:grid-cols-4 xl:grid-cols-4 mb-6">
+    <% @members.each do |member| %>
+      <a href="/<%= member.username %>">
+        <div class="crayons-card member-item">
+          <div class="member-item-top">
+            <div class="member-user-pic">
+              <img src="<%= member.profile_image_url_for(length: 90) %>" alt="<%= member.username %> profile image" loading="lazy" />
+            </div>
+          </div>
+          <div class="member-item-bottom">
+            <h3 class="crayons-subtitle-3"><%= member.name %></h3>
+            <p class="member-username"><%= member.username %></p>
+          </div>
+        </div>
+      </a>
+    <% end %>
+  </div>
+</main>
