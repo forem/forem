@@ -4,7 +4,12 @@
 class BillboardEvent < ApplicationRecord
   self.table_name = "display_ad_events"
 
-  belongs_to :billboard
+  alias_attribute :billboard_id, :display_ad_id
+
+  belongs_to :billboard,
+             class_name: "Billboard",
+             foreign_key: "display_ad_id",
+             inverse_of: :billboard_events
   belongs_to :user, optional: true
 
   CATEGORY_IMPRESSION = "impression".freeze
