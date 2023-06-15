@@ -1,6 +1,6 @@
 module NotificationSubscriptions
   class Toggle
-    attr_reader :current_user, :permitted_params, :action
+    attr_reader :current_user, :permitted_params
 
     def self.call(...)
       new(...).call
@@ -19,8 +19,8 @@ module NotificationSubscriptions
       action = permitted_params[:action]
 
       if action == "unsubscribe"
-        notification_id = permitted_params[:notification_id]
-        notification = NotificationSubscription&.find(notification_id) unless notification_id.nil?
+        subscription_id = permitted_params[:subscription_id]
+        notification = NotificationSubscription&.find(subscription_id) unless subscription_id.nil?
         destroy_notification(notification)
       else
         comment_id = permitted_params[:comment_id]
@@ -57,7 +57,7 @@ module NotificationSubscriptions
 
       subscription = NotificationSubscription.new(
         user: current_user,
-        config: subscription_config(comment, article, comment_article),
+        config: subscription_config(comment, article),
         notifiable: notifiable,
         notifiable_type: notifiable_type,
       )

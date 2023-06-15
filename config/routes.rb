@@ -238,7 +238,7 @@ Rails.application.routes.draw do
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
     post "comments/subscribe", to: "comments#subscribe"
-    delete "comments/unsubscribe", to: "comments#unsubscribe"
+    patch "subscription/unsubscribe", to: "comments#unsubscribe"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about", to: "pages#about"

@@ -1,9 +1,9 @@
 class CommentsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: [:subscribe]
   before_action :set_comment, only: %i[update destroy]
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
+  skip_after_action :verify_authorized, only: %i[subscribe unsubscribe]
   after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
@@ -204,17 +204,15 @@ class CommentsController < ApplicationController
   end
 
   def subscribe
+    skip_authorization
     permitted_params = permitted_attributes(Comment)
     toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
 
-    if toggler[:errors]
-      render json: { errors: toggler[:errors], status: 422 }, status: :unprocessable_entity
-    else
-      render json: toggler, status: :ok
-    end
+    render json: toggler, status: :ok
   end
 
   def unsubscribe
+    skip_authorization
     permitted_params = permitted_attributes(Comment)
     toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
 
