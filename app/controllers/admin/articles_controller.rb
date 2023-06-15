@@ -40,7 +40,7 @@ module Admin
     def show
       @article = Article.includes(reactions: :user).find(params[:id])
       @countable_vomits = {}
-      @countable_vomits[article.id] = calculate_flags_for_single_article(article)
+      @countable_vomits[@article.id] = calculate_flags_for_single_article(@article)
     end
 
     def update
