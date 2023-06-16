@@ -284,6 +284,22 @@
   overflow: hidden;
   display: block;
 
+  .see-all-members-container {
+    margin: 20px 4px 20px 20px;
+    button {
+      width: calc(100% - 20px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 0px;
+      gap: 10px;
+      /* Gray/700 */
+      border: 1px solid #404040;
+      background-color: var(--card-bg);
+      border-radius: 6px;
+    }
+  }
+
   .org-sidebar-widget-body {
     padding: 16px;
     overflow-wrap: break-word;

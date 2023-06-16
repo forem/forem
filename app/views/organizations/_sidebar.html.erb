@@ -4,15 +4,14 @@
       too many objects in memory %>
   <% if @organization_users.any? %>
     <div class="crayons-card crayons-card--secondary org-sidebar-widget">
+      <% user_limit = 2 %>
       <header class="crayons-card__header">
-        <a href="/<%= @organization.slug %>/members" class="flex items-center crayons-link crayons-link--contentful">
-          <h3 class="crayons-subtitle-3">
-            <%= t("views.organizations.team") %>
-          </h3>
-        </a>
+        <h3 class="crayons-subtitle-3">
+          <%= t("views.organizations.team") %>
+        </h3>
       </header>
       <div class="org-sidebar-widget-body">
-        <% @organization_users.find_each_respecting_scope do |user| %>
+        <% @organization_users.limit(user_limit).find_each_respecting_scope do |user| %>
           <div class="org-sidebar-widget-user-pic">
             <a href="/<%= user.username %>">
               <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
@@ -20,6 +19,13 @@
           </div>
         <% end %>
       </div>
+      <% if @organization_users.count > user_limit %>
+        <div class="see-all-members-container">
+          <button onclick="location.href='/<%= @organization.slug %>/members'">
+            <%= t("views.organizations.all_members") %>
+          </button>
+        </div>
+      <% end %>
     </div>
   <% end %>
   <% if @organization.story.present? %>
