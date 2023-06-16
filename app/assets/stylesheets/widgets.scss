@@ -293,10 +293,17 @@
       align-items: center;
       padding: 8px 0px;
       gap: 10px;
-      /* Gray/700 */
-      border: 1px solid #404040;
+
+      border: 1px solid var(--button-outlined-border);
       background-color: var(--card-bg);
       border-radius: 6px;
+      color: var(--button-outlined-color);
+    }
+    button:hover {
+      background-color: var(--button-outlined-bg-hover);
+      border-color: var(--button-outlined-border-hover);
+      color: var(--button-outlined-color-hover);
+      z-index: var(--z-elevate);
     }
   }
 

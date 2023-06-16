@@ -3,7 +3,7 @@
 <div class="blank-space"></div>
 <main class="org-member-page crayons-layout px-4 m:px-9 gap-0">
   <h1 class="crayons-title"><%= @organization.name %> (<%= @members.count %>)</h1>
-  <div class="mt-4 l:mt-7 grid gap-16 m:gap-16 l:gap-4 l:gap-16 grid-cols-2 s:grid-cols-2 m:grid-cols-3 l:grid-cols-4 xl:grid-cols-4 mb-6">
+  <div class="mt-4 l:mt-7 grid gap-4 grid-cols-2 s:grid-cols-2 m:grid-cols-2 l:grid-cols-3 xl:grid-cols-4 mb-6">
     <% @members.each_with_index do |member, index| %>
       <div class="crayons-card member-item">
         <div class="member-item-top">
