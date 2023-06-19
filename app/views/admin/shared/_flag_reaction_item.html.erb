@@ -21,29 +21,32 @@
     <%# In both the FE and BE, 'Invalid' remains the same. This status appears when an admin user marks a flag or vomit reaction as invalid, with a score of 0. %>
     <div class="flex w-100 m:w-60 gap-0 m:gap-6 ml-2">
       <% if vomit_reaction.status == 'valid' %>
-        <span class="c-indicator c-indicator--relaxed c-indicator--warning" title="<%= t("views.moderations.flags.open.title") %>">
-          <%= t("views.moderations.flags.open.value") %>
+        <span class="c-indicator c-indicator--relaxed c-indicator--warning" title="<%= t("views.admin.shared.flags.open.title") %>">
+          <%= t("views.admin.shared.flags.open.value") %>
         </span>
       <% elsif vomit_reaction.status == 'invalid' %>
-        <span class="c-indicator c-indicator--relaxed" title="<%= t("views.moderations.flags.invalid.title") %>">
-          <%= t("views.moderations.flags.invalid.value") %>
+        <span class="c-indicator c-indicator--relaxed" title="<%= t("views.admin.shared.flags.invalid.title") %>">
+          <%= t("views.admin.shared.flags.invalid.value") %>
         </span>
       <% elsif vomit_reaction.status == 'confirmed' %>
-        <span class="c-indicator c-indicator--relaxed c-indicator--danger" title="<%= t("views.moderations.flags.valid.title") %>">
-          <%= t("views.moderations.flags.valid.value") %>
+        <span class="c-indicator c-indicator--relaxed c-indicator--danger" title="<%= t("views.admin.shared.flags.valid.title") %>">
+          <%= t("views.admin.shared.flags.valid.value") %>
         </span>
       <% else %>
         <%# This case should never arise. %>
-        <span class="c-indicator c-indicator--relaxed c-indicator--info" title="<%= t("views.moderations.flags.unidentified.title") %>">
-          <%= t("views.moderations.flags.unidentified.value") %>
+        <span class="c-indicator c-indicator--relaxed c-indicator--info" title="<%= t("views.admin.shared.flags.unidentified.title") %>">
+          <%= t("views.admin.shared.flags.unidentified.value") %>
         </span>
       <% end %>
 
-      <span data-testid="flag-score" class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="Score affected by a particular flag">
+      <span
+        data-testid="flag-score"
+        class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center"
+        title="<%= t("views.admin.#{text_section}.flags.score") %>">
         <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
         <span class="fs-s fw-medium lh-base"><%= vomit_reaction.points %></span>
       </span>
     </div>
   </div>
-  <%= render "admin/articles/priviledged_reaction_actions_dropdown", vomit_reaction: vomit_reaction %>
+  <%= render "admin/shared/flag_reaction_item_dropdown_menu", vomit_reaction: vomit_reaction %>
 </div>
