@@ -130,7 +130,6 @@ RSpec.describe Images::Optimizer, type: :service do
       )
       expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
     end
-
   end
 
   describe "#cloudinary_enabled?" do
