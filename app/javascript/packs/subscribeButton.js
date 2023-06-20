@@ -73,14 +73,14 @@ async function handleSubscribeButtonClick({ target }) {
     payload = JSON.stringify({
       comment: {
         action: 'unsubscribe',
-        notification_id: id,
+        subscription_id: id,
       },
     });
   } else {
     payload = JSON.stringify({
       comment: {
         action: 'subscribe',
-        notification_id: null,
+        subscription_id: null,
         comment_id: Number(target.dataset.comment),
         article_id: target.dataset.article
           ? Number(target.dataset.article)
