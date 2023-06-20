@@ -96,7 +96,6 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}})
     end
 
-
     it "does not error if nil" do
       cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420)
       expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/})
