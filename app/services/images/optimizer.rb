@@ -26,9 +26,18 @@ module Images
     }.freeze
 
     def self.cloudflare(img_src, **kwargs)
-      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
-      img_src = extract_suffix_url(img_src) if img_src.include?(prefix) # We don't want to nest prefixes
-      "#{prefix}/width=#{kwargs[:width]},height=#{kwargs[:height]},fit=cover,gravity=auto,format=auto/#{img_src}"
+      template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{img_src}")
+      template.expand(
+        domain: ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN'],
+        options: {
+          width: kwargs[:width],
+          height: kwargs[:height],
+          fit: "cover",
+          gravity: "auto",
+          format: "auto"
+        },
+        img_src: extract_suffix_url(img_src),
+      ).to_s
     end
 
     def self.cloudinary(img_src, **kwargs)
@@ -95,6 +104,9 @@ module Images
     end
 
     def self.extract_suffix_url(full_url)
+      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
+      return full_url unless full_url&.starts_with?(prefix)
+
       uri = URI.parse(full_url)
       match = uri.path.match(%r{https?://.+})
       match[0] if match

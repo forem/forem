@@ -87,16 +87,42 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#cloudflare", cloudfalre: true do
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("images.example.com")
+    end
+
     it "generates correct url based on h/w input" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
-      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{image_url}})
+      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}})
+    end
+
+
+    it "does not error if nil" do
+      cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420)
+      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/})
     end
 
     it "pulls suffix if nested cloudflare url is provided" do
       cloudflare_url = described_class.cloudflare(
 "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
 )
-      expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/#{image_url}")
+      expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}")
+    end
+
+    it "does not error out if image is nil" do
+      image_url = nil
+      cloudflare_url = described_class.cloudflare(
+        "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
+        )
+      expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
+    end
+
+    it "does not error out if image is not proper url" do
+      image_url = "hello"
+      cloudflare_url = described_class.cloudflare(
+        "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
+        )
+      expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
     end
   end
 
