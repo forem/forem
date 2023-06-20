@@ -162,22 +162,6 @@ fr:
         trusted: Guide de l'utilisateur de confiance
       author: Auteur
       date: Date
-      flags:
-        actions:
-          mark_as_invalid: Marquer comme non valide
-          mark_as_valid: Marquer comme valide
-        invalid:
-          title: Drapeau marqué comme invalide par l'administrateur
-          value: Invalide
-        open:
-          title: Drapeau ouvert
-          value: Ouvrir
-        unidentified:
-          title: Non identifié
-          value: Non identifié
-        valid:
-          title: Drapeau marqué comme valide par l'administrateur
-          value: Valide
       notice:
         subtitle: '%{community} Mods'
         desc1_html: Nous accordons périodiquement à certains membres de la %{community} des privilèges accrus afin de contribuer à la modération de la communauté.

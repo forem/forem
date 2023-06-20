@@ -2,6 +2,31 @@
 en:
   views:
     admin:
+      articles:
+        flags:
+          score: Score affected by a particular flag
+        priviliged_actions:
+          description: All the moderator actions affect the score. The overall score is a combination of moderator actions and public reactions.
+          no_flags: Article has no flags.
+          no_quality_reactions: Article has no quality reactions by trusted users.
+          title: Moderator actions
+      shared:
+        flags:
+          actions:
+            mark_as_invalid: Mark as Invalid
+            mark_as_valid: Mark as Valid
+          invalid:
+            title: Flag marked as invalid by admin
+            value: Invalid
+          open:
+            title: Open Flag
+            value: Open
+          unidentified:
+            title: Unidentified
+            value: Unidentified
+          valid:
+            title: Flag marked as valid by admin
+            value: Valid
       users:
         heading: Members
         aria_paginate: Paginate users
@@ -188,6 +213,8 @@ en:
             comment: Comment on "%{title}"
             profile: User's profile
           origin_html: Flagged by %{user}
+          score: Article and comment score affected by particular flag
+          total_score: Article and comment score affected by user flags
         notes:
           empty1: No previous notes found for %{user}.
           empty2: Any notes added for %{user} will be found here.
@@ -264,6 +291,10 @@ en:
             remove: "Remove tag:"
             notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the user's ID (%{user_id}).
             tag_page: tag's page
+        priviliged_actions:
+          description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
+          no_flags: No flags received against this user yet.
+          title: Flags received
         profile:
           locked:
             icon: Access locked
