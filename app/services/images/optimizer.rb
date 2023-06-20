@@ -26,7 +26,7 @@ module Images
     }.freeze
 
     def self.cloudflare(img_src, **kwargs)
-      prefix = "https://#{ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"]}/cdn-cgi/image"
+      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
       img_src = extract_suffix_url(img_src) if img_src.include?(prefix) # We don't want to nest prefixes
       "#{prefix}/width=#{kwargs[:width]},height=#{kwargs[:height]},fit=cover,gravity=auto,format=auto/#{img_src}"
     end
