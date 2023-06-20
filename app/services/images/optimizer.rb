@@ -28,7 +28,7 @@ module Images
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{img_src}")
       template.expand(
-        domain: ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN'],
+        domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         options: {
           width: kwargs[:width],
           height: kwargs[:height],
