@@ -15,7 +15,7 @@ async function generateDisplayAd(element) {
 
   if (asyncUrl) {
     try {
-      const response = await window.fetch(`${asyncUrl}`);
+      // const response = await window.fetch(`${asyncUrl}`);
       const htmlContent = await response.text();
 
       const generatedElement = document.createElement('div');
