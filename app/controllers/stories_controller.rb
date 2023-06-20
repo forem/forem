@@ -165,6 +165,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
+    @organization_users = @organization.users.order(badge_achievements_count: :desc)
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"

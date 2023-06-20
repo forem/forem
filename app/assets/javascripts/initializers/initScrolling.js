@@ -44,6 +44,11 @@ function fetchNext(el, endpoint, insertCallback) {
 
 function insertNext(params, buildCallback) {
   return function insertEntries(entries = []) {
+    var indexContainer = document.getElementById('index-container');
+    var containerAction =
+      JSON.parse(indexContainer.dataset.params).action || null;
+    var action = params.action || null;
+    var matchingAction = action === containerAction;
     var list = document.getElementById(params.listId || 'sublist');
     var newFollowersHTML = '';
     entries.forEach(function insertAnEntry(entry) {
@@ -57,7 +62,7 @@ function insertNext(params, buildCallback) {
     });
 
     var followList = document.getElementById('following-wrapper');
-    if (followList) {
+    if (followList && matchingAction) {
       followList.insertAdjacentHTML('beforeend', newFollowersHTML);
     }
     if (nextPage > 0) {
@@ -128,25 +133,25 @@ function fetchNextFollowingPage(el) {
     fetchNext(
       el,
       '/followings/users',
-      insertNext({ elId: 'follows' }, buildFollowsHTML),
+      insertNext({ elId: 'follows', action }, buildFollowsHTML),
     );
   } else if (action.includes('podcasts')) {
     fetchNext(
       el,
       '/followings/podcasts',
-      insertNext({ elId: 'follows' }, buildFollowsHTML),
+      insertNext({ elId: 'follows', action }, buildFollowsHTML),
     );
   } else if (action.includes('organizations')) {
     fetchNext(
       el,
       '/followings/organizations',
-      insertNext({ elId: 'follows' }, buildFollowsHTML),
+      insertNext({ elId: 'follows', action }, buildFollowsHTML),
     );
   } else {
     fetchNext(
       el,
       '/followings/tags',
-      insertNext({ elId: 'follows' }, buildTagsHTML),
+      insertNext({ elId: 'follows', action }, buildTagsHTML),
     );
   }
 }

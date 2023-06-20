@@ -6,7 +6,7 @@ RSpec.describe "/admin/customization/display_ads" do
   let(:org) { create(:organization) }
   let(:params) do
     { organization_id: org.id, body_markdown: "[Click here!](https://example.com)", placement_area: "sidebar_left",
-      approved: true, published: true }
+      approved: true, published: true, priority: true }
   end
   let(:post_resource) { post admin_display_ads_path, params: params }
 
@@ -71,6 +71,14 @@ RSpec.describe "/admin/customization/display_ads" do
           expect do
             put admin_display_ad_path(display_ad.id), params: params
           end.to change { display_ad.reload.approved }.from(false).to(true)
+        end
+      end
+
+      it "updates DisplayAd's priority value" do
+        Timecop.freeze(Time.current) do
+          expect do
+            put admin_display_ad_path(display_ad.id), params: params
+          end.to change { display_ad.reload.priority }.from(false).to(true)
         end
       end
 

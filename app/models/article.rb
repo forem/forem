@@ -205,7 +205,7 @@ class Article < ApplicationRecord
   after_save :bust_cache
   after_save :collection_cleanup
 
-  after_create_commit :send_to_moderator
+  after_create_commit :send_to_moderator, if: :published?
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -387,6 +387,16 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
+
+  scope :above_average, lambda {
+    order(:score).where("score >= ?", average_score)
+  }
+
+  def self.average_score
+    Rails.cache.fetch("article_average_score", expires_in: 1.day) do
+      unscoped { where(score: 0..).average(:score) } || 0.0
+    end
+  end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date
