@@ -31,8 +31,6 @@ async function generateDisplayAd(element) {
     } catch (error) {
       if (!/NetworkError/i.test(error.message)) {
         Honeybadger.notify(error);
-      } else {
-        throw error;
       }
     }
   }
