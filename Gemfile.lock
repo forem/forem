@@ -157,7 +157,7 @@ GEM
       carrierwave
       fastimage
     chartkick (4.2.1)
-    cloudinary (1.25.0)
+    cloudinary (1.26.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
     coderay (1.1.3)
@@ -555,7 +555,7 @@ GEM
     octokit (5.6.1)
       faraday (>= 1, < 3)
       sawyer (~> 0.9)
-    oj (3.14.3)
+    oj (3.15.0)
     omniauth (2.1.0)
       hashie (>= 3.4.6)
       rack (>= 2.2.3)

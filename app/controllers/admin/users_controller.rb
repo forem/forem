@@ -185,7 +185,7 @@ module Admin
                                  user: @user.username,
                                  email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
                                  id: @user.id,
-                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
+                                 the_page: link).html_safe
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -363,8 +363,11 @@ module Admin
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
           .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
-          .includes(:reactable)
+          .includes(:user)
           .order(created_at: :desc).limit(15)
+
+      @countable_flags = calculate_countable_flags(@related_vomit_reactions)
+      @score = calculate_score(@related_vomit_reactions)
     end
 
     def user_params
@@ -409,6 +412,22 @@ module Admin
       # in theory, there could be multiple "unpublish all" actions
       # but let's query and display the last one for now, that should be enough for most cases
       @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
+    end
+
+    def calculate_countable_flags(reactions)
+      countable_flags = 0
+      reactions.each do |reaction|
+        countable_flags += 1 if reaction.status != "invalid"
+      end
+      countable_flags
+    end
+
+    def calculate_score(reactions)
+      score = 0
+      reactions.each do |reaction|
+        score += reaction.points
+      end
+      score
     end
   end
 end

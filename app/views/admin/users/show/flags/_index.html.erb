@@ -1,43 +1,26 @@
-<h2 class="crayons-subtitle-1">Flags received (<%= @related_vomit_reactions.count %>)</h2>
+<% user_vomit_reactions = @related_vomit_reactions.select { |flag| flag.reactable_type == "User" } %>
 
-<% unless @related_vomit_reactions.empty? %>
-  <div class="pt-3">
-    <% @related_vomit_reactions.each do |flag| %>
-      <article class="c-list-item flex gap-2">
-        <span class="color-secondary shrink-0">
-          <% if flag.reactable_type == "Article" %>
-            <%= crayons_icon_tag("post", aria_hidden: true) %>
-          <% elsif flag.reactable_type == "User" %>
-            <%= crayons_icon_tag("user-line", aria_hidden: true) %>
-          <% elsif flag.reactable_type == "Comment" %>
-            <%= crayons_icon_tag("comment", aria_hidden: true) %>
-          <% end %>
-        </span>
-        <div class="flex-1">
-          <h3 class="crayons-subtitle-2 mb-1">
-            <%= link_to flag.reactable.path, class: "c-link" do %>
-              <% if flag.reactable_type == "Article" %>
-                <%= t("views.admin.users.flags.type.article", title: flag.reactable.title) %>
-              <% elsif flag.reactable_type == "User" %>
-                <%= t("views.admin.users.flags.type.profile") %>
-              <% elsif flag.reactable_type == "Comment" %>
-                <%= t("views.admin.users.flags.type.comment", title: flag.reactable.title) %>
-              <% end %>
-            <% end %>
-          </h3>
-          <p class="fs-s color-secondary">
-            <%= t("views.admin.users.flags.origin_html", user: link_to(flag.user.username, admin_user_path(flag.user_id), class: "c-link c-link--branded")) %>
-          </p>
-        </div>
-        <time datetime="<%= flag.created_at&.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(flag.created_at, format: :admin_user) if flag.created_at %>">
-          <%= l(flag.created_at, format: :short_with_yy) %>
-        </time>
-      </article>
-    <% end %>
+<div class="flex justify-between gap-10">
+  <div class="flex flex-col flex-1">
+    <h2 class="crayons-subtitle-2 px-1"><%= t("views.admin.users.priviliged_actions.title") %></h2>
+    <p class="crayons-subtitle-3 fw-normal color-secondary px-1 mt-1"><%= t("views.admin.users.priviliged_actions.description") %></p>
   </div>
-<% else %>
-  <div class="align-center flex flex-col justify-center my-auto py-8">
-    <h3 class="crayons-subtitle-2 mb-2"><%= t("views.admin.users.flags.empty1", user: @user.name) %></h3>
-    <p class="color-secondary"><%= t("views.admin.users.flags.empty2", user: @user.name) %></p>
+  <div class="flex items-start gap-1">
+    <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+      <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
+      <span class="fs-s fw-medium lh-base"><%= @countable_flags %></span>
+    </span>
+
+    <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.admin.users.flags.total_score") %>">
+      <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+      <span class="fs-s fw-medium lh-base"><%= @score %></span>
+    </span>
   </div>
-<% end %>
+</div>
+
+<div id="reaction-content" class="flex flex-col gap-3 px-1 pt-6" style="overflow: auto; height: 406px;">
+  <%= render "admin/shared/flag_reactions_table",
+             vomit_reactions: user_vomit_reactions,
+             text_section: "users",
+             empty_text: t("views.admin.users.priviliged_actions.no_flags") %>
+<div>
