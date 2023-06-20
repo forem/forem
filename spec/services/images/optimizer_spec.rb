@@ -86,7 +86,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
   end
 
-  describe "#cloudflare", cloudfalre: true do
+  describe "#cloudflare" do
     before do
       allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("images.example.com")
     end
