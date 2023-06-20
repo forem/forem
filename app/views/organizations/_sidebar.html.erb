@@ -20,7 +20,7 @@
       </div>
       <% if @organization_users.count > @user_limit %>
         <div class="see-all-members-container">
-          <button onclick="location.href='/<%= @organization.slug %>/members'">
+          <button class="c-cta" onclick="location.href='/<%= @organization.slug %>/members'">
             <%= t("views.organizations.all_members") %>
           </button>
         </div>

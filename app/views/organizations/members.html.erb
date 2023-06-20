@@ -14,8 +14,8 @@
           <button id="user-follow-butt-<%= member.username %>" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='<%= DataInfo.to_json(object: member) %>'><%= t("views.users.follow") %></button>
         </div>
         <div class="member-item-bottom">
-          <h3 class="crayons-subtitle-3"><%= member.name %></h3>
-          <p class="member-username">@<%= member.username %></p>
+          <h3 class="crayons-subtitle-3 truncate"><%= member.name %></h3>
+          <p class="member-username truncate">@<%= member.username %></p>
         </div>
       </div>
     <% end %>

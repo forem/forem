@@ -50,7 +50,7 @@ class StoriesController < ApplicationController
   private
 
   def set_user_limit
-    @user_limit = 50
+    @user_limit = 2
   end
 
   def assign_hero_banner

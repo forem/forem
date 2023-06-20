@@ -293,17 +293,6 @@
       align-items: center;
       padding: 8px 0px;
       gap: 10px;
-
-      border: 1px solid var(--button-outlined-border);
-      background-color: var(--card-bg);
-      border-radius: 6px;
-      color: var(--button-outlined-color);
-    }
-    button:hover {
-      background-color: var(--button-outlined-bg-hover);
-      border-color: var(--button-outlined-border-hover);
-      color: var(--button-outlined-color-hover);
-      z-index: var(--z-elevate);
     }
   }
 
@@ -334,6 +323,8 @@
 
 .org-member-page {
   .member-item {
+    width: 100%;
+    height: 146px;
     padding: 20px;
     display: flex;
     flex-direction: column;
@@ -360,11 +351,19 @@
     }
 
     .member-item-bottom {
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       gap: 1px;
       flex-grow: 0;
+
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
 
       .member-username {
         font-weight: var(--fw-normal);
