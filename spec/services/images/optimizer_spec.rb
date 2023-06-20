@@ -89,7 +89,6 @@ RSpec.describe Images::Optimizer, type: :service do
   describe "#cloudflare" do
     before do
       allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("images.example.com")
-      @clouflare_prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
     end
 
     it "generates correct url based on h/w input" do
@@ -104,26 +103,34 @@ RSpec.describe Images::Optimizer, type: :service do
 
     it "pulls suffix if nested cloudflare url is provided" do
       cloudflare_url = described_class.cloudflare(
-        "#{@cloudflare_prefix}/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
+        "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}", width: 821, height: 420
       )
       expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}")
     end
 
-    it "does not error out if image is nil" do
-      image_url = nil
+    it "does not error out if image is empty" do
       cloudflare_url = described_class.cloudflare(
-        "#{@cloudflare_prefix}/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
+        "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/", width: 821, height: 420
       )
       expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
     end
 
-    it "does not error out if image is not proper url" do
+    it "does not error out if image is not proper url and has https" do
+      image_url = "https:hello"
+      cloudflare_url = described_class.cloudflare(
+        "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}", width: 821, height: 420
+      )
+      expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/https%3Ahello")
+    end
+
+    it "does not error out if image is not proper url and does not have https" do
       image_url = "hello"
       cloudflare_url = described_class.cloudflare(
-        "#{@cloudflare_prefix}/width=821,height=900,fit=cover,gravity=auto,format=auto/#{image_url}", width: 821, height: 420
+        "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=900,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}", width: 821, height: 420
       )
       expect(cloudflare_url).to eq("https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
     end
+
   end
 
   describe "#cloudinary_enabled?" do

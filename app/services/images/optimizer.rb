@@ -26,7 +26,8 @@ module Images
     }.freeze
 
     def self.cloudflare(img_src, **kwargs)
-      template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{img_src}")
+      p img_src
+      template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         options: {
@@ -36,7 +37,7 @@ module Images
           gravity: "auto",
           format: "auto"
         },
-        img_src: extract_suffix_url(img_src),
+        src: extract_suffix_url(img_src),
       ).to_s
     end
 
@@ -108,8 +109,8 @@ module Images
       return full_url unless full_url&.starts_with?(prefix)
 
       uri = URI.parse(full_url)
-      match = uri.path.match(%r{https?://.+})
-      match[0] if match
+      match = uri.path.match(%r{https?.+})
+      CGI.unescape(match[0]) if match
     end
   end
 end
