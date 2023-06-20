@@ -196,6 +196,23 @@ describe('FollowUsers', () => {
     expect(queryByTestId('stepper')).toExist();
   });
 
+  it('should be able to continue to the next step', async () => {
+    fetch.mockResponseOnce(fakeUsersResponse);
+
+    const { queryByText, findAllByLabelText } = renderFollowUsers();
+
+    const selectedUsers = await findAllByLabelText('Following');
+    expect(selectedUsers).toHaveLength(3);
+
+    const clickToContinue = queryByText(/Continue/i);
+    fireEvent.click(clickToContinue);
+
+    const idsToFollow = '{"users":[{"id":1},{"id":2},{"id":3}]}';
+    const [uri, request] = fetch.mock.calls.slice(-1)[0];
+    expect(uri).toEqual('/api/follows');
+    expect(request['body']).toEqual(idsToFollow);
+  });
+
   it('should render a back button', () => {
     const { queryByTestId } = renderFollowUsers();
 
