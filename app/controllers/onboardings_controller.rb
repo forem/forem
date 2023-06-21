@@ -108,7 +108,7 @@ class OnboardingsController < ApplicationController
   end
 
   def suggested_user_follows
-    Users::SuggestRecent.call(current_user,
-                              attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
+    Users::SuggestProminent.call(current_user,
+                                 attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
   end
 end
