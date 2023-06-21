@@ -4,7 +4,6 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
 import { axe } from 'jest-axe';
-import { i18nSupport } from '../../../utilities/i18n_support';
 import { FollowUsers } from '../FollowUsers';
 
 global.fetch = fetch;
@@ -57,7 +56,6 @@ describe('FollowUsers', () => {
   ]);
 
   beforeAll(() => {
-    i18nSupport();
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());

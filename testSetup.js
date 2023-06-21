@@ -2,6 +2,19 @@
 import 'jest-axe/extend-expect';
 import './app/assets/javascripts/lib/xss';
 
+// I18N SETUP
+const fs = require('fs');
+const yaml = require('js-yaml');
+
+const locale = './config/locales/en.yml';
+const data = fs.readFileSync(locale, 'utf8');
+const yamlData = yaml.load(data);
+
+document.body.innerHTML += `<div id="i18n-translations"></div>`;
+document.getElementById('i18n-translations').dataset.translations =
+  JSON.stringify(yamlData);
+//// END I18N SETUP
+
 global.setImmediate = global.setTimeout;
 
 global.ResizeObserver = class ResizeObserver {
