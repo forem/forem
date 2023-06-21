@@ -26,7 +26,7 @@ en:
       one: "%{count} person"
       other: "%{count} people"
     not_following: "You're not following anyone"
-    following_everyone: "You're following everyone"
+    following_everyone: "You're following %{details} (everyone)"
     you_are_following: "You're following"
     and: "and"
   datetime:
