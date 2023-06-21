@@ -16,8 +16,7 @@ class OnboardingsController < ApplicationController
   end
 
   def users_and_organizations
-    suggested_follows = suggested_user_follows
-    suggested_follows += suggested_organization_follows if feature_flag_enabled?(:suggest_organizations)
+    suggested_follows = suggested_user_follows + suggested_organization_follows
     @suggestions = ApplicationDecorator.decorate_collection(suggested_follows)
   end
 
