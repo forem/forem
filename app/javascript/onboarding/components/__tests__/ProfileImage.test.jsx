@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
+import { act } from 'preact/test-utils';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
@@ -10,6 +11,7 @@ import { validateFileInputs } from '../../../packs/validateFileInputs';
 global.fetch = fetch;
 global.URL.createObjectURL = jest.fn();
 
+jest.mock('../../../packs/validateFileInputs');
 jest.mock('../actions');
 jest.mock('../../../packs/validateFileInputs.js', () => ({
   validateFileInputs: jest.fn(),
@@ -107,5 +109,54 @@ describe('processImageUpload', () => {
     );
 
     expect(handleImageUploading).not.toHaveBeenCalled();
+  });
+});
+
+describe('<ProfileImage /> uploading error', () => {
+  beforeEach(() => {
+    global.URL.createObjectURL = jest.fn();
+    global.Image = class {
+      constructor() {
+        this.onload = null;
+      }
+      set src(val) {
+        this.onload();
+      }
+    };
+  });
+
+  it('should not process the image upload when image size is larger than 4096x4096', async () => {
+    validateFileInputs.mockImplementation(() => true);
+
+    const onMainImageUrlChange = jest.fn();
+    const { getByTestId, findByText } = render(
+      <ProfileImage
+        mainImage="/some-fake-image.jpg"
+        onMainImageUrlChange={onMainImageUrlChange}
+        userId="user1"
+        name="User 1"
+      />,
+    );
+
+    const fileInput = getByTestId('profile-image-input');
+    const file = new File([], 'fakeimg.png', { type: 'image/png' });
+    Object.defineProperty(file, 'size', { value: 5000000 });
+
+    Object.defineProperty(Image.prototype, 'width', {
+      value: 5000,
+      writable: true,
+    });
+    Object.defineProperty(Image.prototype, 'height', {
+      value: 5000,
+      writable: true,
+    });
+
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    expect(
+      await findByText('Image size should be less than or equal to 4096x4096.'),
+    ).toBeInTheDocument();
   });
 });
