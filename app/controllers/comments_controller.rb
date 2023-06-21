@@ -206,17 +206,17 @@ class CommentsController < ApplicationController
   def subscribe
     authorize :comment, :subscribe?
     permitted_params = permitted_attributes(Comment)
-    toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
+    subscriber = NotificationSubscriptions::Subscribe.call(current_user, permitted_params)
 
-    render json: toggler, status: :ok
+    render json: subscriber, status: :ok
   end
 
   def unsubscribe
     authorize :comment, :unsubscribe?
     permitted_params = permitted_attributes(Comment)
-    toggler = NotificationSubscriptions::Toggle.call(current_user, permitted_params)
+    unsubscriber = NotificationSubscriptions::Unsubscribe.call(current_user, permitted_params)
 
-    render json: toggler, status: :ok
+    render json: unsubscriber, status: :ok
   end
 
   def settings
