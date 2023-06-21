@@ -26,7 +26,6 @@ module Images
     }.freeze
 
     def self.cloudflare(img_src, **kwargs)
-      p img_src
       template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
