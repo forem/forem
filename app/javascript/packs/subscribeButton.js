@@ -68,6 +68,7 @@ async function handleSubscribeButtonClick({ target }) {
   optimisticallyUpdateButtonUI(target);
 
   let payload;
+  let endpoint;
   if (JSON.parse(target.dataset.info)) {
     const { id } = JSON.parse(target.dataset.info);
     payload = JSON.stringify({
@@ -76,6 +77,7 @@ async function handleSubscribeButtonClick({ target }) {
         subscription_id: id,
       },
     });
+    endpoint = 'comment-unsubscribe';
   } else {
     payload = JSON.stringify({
       comment: {
@@ -87,10 +89,11 @@ async function handleSubscribeButtonClick({ target }) {
           : null,
       },
     });
+    endpoint = 'comment-subscribe';
   }
 
   getCsrfToken()
-    .then(await sendFetch('comment-subscribe', payload))
+    .then(await sendFetch(endpoint, payload))
     .then(async (response) => {
       if (response.status === 200) {
         const res = await response.json();

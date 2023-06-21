@@ -90,6 +90,15 @@ function sendFetch(switchStatement, body) {
         },
         body,
       });
+    case 'comment-unsubscribe':
+      return fetchCallback({
+        url: 'subscription/unsubscribe',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body,
+      });
     default:
       console.log('A wrong switchStatement was used.'); // eslint-disable-line no-console
       break;
