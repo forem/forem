@@ -59,7 +59,7 @@ describe('<ProfileImage />', () => {
   });
 
   it('shows the uploaded image', () => {
-    const { getByRole } = render(
+    const { getByRole, queryByText } = render(
       <ProfileImage
         mainImage="/some-fake-image.jpg"
         onMainImageUrlChange={jest.fn()}
@@ -69,6 +69,7 @@ describe('<ProfileImage />', () => {
     );
     const uploadInput = getByRole('img', { name: 'profile' });
     expect(uploadInput.getAttribute('src')).toEqual('/some-fake-image.jpg');
+    expect(queryByText('Uploading...')).not.toBeInTheDocument();
   });
 
   it('shows the "Uploading..." message when an image is being uploaded', () => {
@@ -158,5 +159,28 @@ describe('<ProfileImage /> uploading error', () => {
     expect(
       await findByText('Image size should be less than or equal to 4096x4096.'),
     ).toBeInTheDocument();
+  });
+
+  it('should not show "Uploading..." when validateFileInputs returns false', async () => {
+    validateFileInputs.mockImplementation(() => false);
+
+    const onMainImageUrlChange = jest.fn();
+    const { getByTestId, queryByText } = render(
+      <ProfileImage
+        mainImage="/some-fake-image.jpg"
+        onMainImageUrlChange={onMainImageUrlChange}
+        userId="user1"
+        name="User 1"
+      />,
+    );
+
+    const fileInput = getByTestId('profile-image-input');
+    const file = new File([], 'fakeimg.png', { type: 'image/png' });
+
+    await act(async () => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    expect(queryByText('Uploading...')).not.toBeInTheDocument();
   });
 });
