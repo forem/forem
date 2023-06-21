@@ -90,19 +90,21 @@ module Admin
     end
 
     def destroy
-      role = params[:role].to_sym
+      role = Role.find(params[:role_id])
+      authorize(role, :remove_role?)
+
       resource_type = params[:resource_type]
 
       @user = User.find(params[:user_id])
 
       response = ::Users::RemoveRole.call(user: @user,
-                                          role: role,
+                                          role: role.name,
                                           resource_type: resource_type,
                                           admin: current_user)
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
-                 role: role.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
+                 role: role.name.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end

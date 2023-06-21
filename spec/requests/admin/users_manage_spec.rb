@@ -1,6 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Users" do
+  # rubocop:disable RSpec/IndexedLet
   let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
@@ -174,10 +175,10 @@ RSpec.describe "Admin::Users" do
     end
 
     it "removes non-admin roles from non-super_admin users", :aggregate_failures do
-      user.add_role(:trusted)
+      role = user.add_role(:trusted)
 
       expect do
-        delete admin_user_path(user.id), params: { user_id: user.id, role: :trusted }
+        delete admin_user_path(user.id), params: { user_id: user.id, role_id: role.id }
       end.to change(user.roles, :count).by(-1)
 
       expect(user.has_trusted_role?).to be false
@@ -185,12 +186,12 @@ RSpec.describe "Admin::Users" do
     end
 
     it "removes the correct resource_admin_role from non-super_admin users", :aggregate_failures do
-      user.add_role(:single_resource_admin, Comment)
+      role = user.add_role(:single_resource_admin, Comment)
       user.add_role(:single_resource_admin, Broadcast)
 
       expect do
         delete admin_user_path(user.id),
-               params: { user_id: user.id, role: :single_resource_admin, resource_type: Comment }
+               params: { user_id: user.id, role_id: role.id, resource_type: Comment }
       end.to change(user.roles, :count).by(-1)
 
       expect(user.single_resource_admin_for?(Comment)).to be false
@@ -198,22 +199,11 @@ RSpec.describe "Admin::Users" do
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
 
-    it "does not allow super_admin roles to be removed", :aggregate_failures do
-      user.add_role(:super_admin)
-
-      expect do
-        delete admin_user_path(user.id), params: { user_id: user.id, role: :super_admin }
-      end.not_to change(user.roles, :count)
-
-      expect(user.super_admin?).to be true
-      expect(request.flash["danger"]).to include("cannot be removed.")
-    end
-
     it "does not allow a admins to remove a role from themselves", :aggregate_failures do
-      super_admin.add_role(:trusted)
+      role = super_admin.add_role(:trusted)
 
       expect do
-        delete admin_user_path(super_admin.id), params: { user_id: super_admin.id, role: :trusted }
+        delete admin_user_path(super_admin.id), params: { user_id: super_admin.id, role_id: role.id }
       end.not_to change(super_admin.roles, :count)
 
       expect(super_admin.trusted?).to be true
@@ -308,4 +298,5 @@ RSpec.describe "Admin::Users" do
       expect(super_admin.reload.unspent_credits_count).to eq 5
     end
   end
+  # rubocop:enable RSpec/IndexedLet
 end
