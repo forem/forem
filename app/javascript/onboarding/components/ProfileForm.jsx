@@ -238,7 +238,7 @@ export class ProfileForm extends Component {
                   default_value: username,
                   required: true,
                   maxLength: 20,
-                  placeholder_text: username,
+                  placeholder_text: 'johndoe',
                   description: '',
                   input_type: 'text',
                 }}
