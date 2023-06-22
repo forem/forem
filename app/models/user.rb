@@ -97,6 +97,7 @@ class User < ApplicationRecord
   has_many :poll_skips, dependent: :delete_all
   has_many :poll_votes, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :segments, class_name: "SegmentedUser", dependent: :destroy
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify
