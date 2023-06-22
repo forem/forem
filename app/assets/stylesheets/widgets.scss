@@ -284,18 +284,6 @@
   overflow: hidden;
   display: block;
 
-  .see-all-members-container {
-    margin: 20px 4px 20px 20px;
-    button {
-      width: calc(100% - 20px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 8px 0px;
-      gap: 10px;
-    }
-  }
-
   .org-sidebar-widget-body {
     padding: 16px;
     overflow-wrap: break-word;
@@ -315,6 +303,8 @@
     }
   }
   a {
+    width: calc(100% - 40px);
+    justify-content: center;
     &:hover {
       opacity: 0.9;
     }
