@@ -7,18 +7,18 @@ import { Navigation } from './Navigation';
 
 function groupFollowsByType(array) {
   return array.reduce((returning, item) => {
-    const type = item.type_identifier
+    const type = item.type_identifier;
     returning[type] = (returning[type] || []).concat(item);
     return returning;
-  }, {})
+  }, {});
 }
 
 function groupFollowIdsByType(array) {
   return array.reduce((returning, item) => {
-    const type = item.type_identifier
-    returning[type] = (returning[type] || []).concat({id: item.id});
+    const type = item.type_identifier;
+    returning[type] = (returning[type] || []).concat({ id: item.id });
     return returning;
-  }, {})
+  }, {});
 }
 
 export class FollowUsers extends Component {
@@ -77,8 +77,9 @@ export class FollowUsers extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        users: idsGroupedByType["user"],
-        organizations: idsGroupedByType["organization"] }),
+        users: idsGroupedByType['user'],
+        organizations: idsGroupedByType['organization'],
+      }),
       credentials: 'same-origin',
     });
 
@@ -120,19 +121,28 @@ export class FollowUsers extends Component {
 
     let followingStatus;
     if (selectedFollows.length === 0) {
-      followingStatus = locale("core.not_following");
-    } else if (selectedFollows.length === follows.length) {
-      followingStatus = `${locale("core.following_everyone")  }`;
+      followingStatus = locale('core.not_following');
     } else {
       const groups = groupFollowsByType(selectedFollows);
-      let together = []
+      let together = [];
       for (const type in groups) {
-        const counted = locale(`core.counted_${type}`, {count: groups[type].length});
-        together = together.concat(counted)
+        const counted = locale(`core.counted_${type}`, {
+          count: groups[type].length,
+        });
+        together = together.concat(counted);
       }
 
-      const anded_together = together.join(` ${locale("core.and")} `);
-      followingStatus = `${locale("core.you_are_following")} ${anded_together}`;
+      const anded_together = together.join(` ${locale('core.and')} `);
+
+      if (selectedFollows.length === follows.length) {
+        followingStatus = `${locale('core.following_everyone', {
+          details: anded_together,
+        })}`;
+      } else {
+        followingStatus = `${locale(
+          'core.you_are_following',
+        )} ${anded_together}`;
+      }
     }
 
     const klassName =
@@ -194,10 +204,10 @@ export class FollowUsers extends Component {
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
-                Suggested people to follow
+                Suggested follows
               </h1>
               <h2 id="subtitle" className="subtitle">
-                Let&apos;s review a few things first
+                Kickstart your community
               </h2>
               <div className="onboarding-selection-status">
                 {this.renderFollowCount()}

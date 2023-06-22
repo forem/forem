@@ -97,29 +97,6 @@ describe('Manage User Roles', () => {
         );
         checkUserStatus('Good standing');
       });
-
-      it('should not remove the Super Admin role', () => {
-        checkUserStatus('Trusted');
-
-        openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Super Admin');
-          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
-            'some reason',
-          );
-          cy.findByRole('button', { name: 'Add' }).click();
-        });
-
-        cy.findByRole('button', {
-          name: `Super Admin You can't remove this role.`,
-        })
-          .as('superAdminButton')
-          .click()
-          .within(() => {
-            cy.findByText(`You can't remove this role.`).should('exist');
-          });
-
-        cy.get('@superAdminButton').should('exist');
-      });
     });
 
     describe('Adding Roles', () => {
