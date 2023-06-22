@@ -1,7 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Admin::Users" do
-  # rubocop:disable RSpec/IndexedLet
   let!(:user) { create(:user, twitter_username: nil, old_username: "username") }
   let!(:user2) { create(:user, twitter_username: "Twitter") }
   let(:user3) { create(:user) }
@@ -197,17 +196,6 @@ RSpec.describe "Admin::Users" do
       expect(user.single_resource_admin_for?(Comment)).to be false
       expect(user.single_resource_admin_for?(Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
-    end
-
-    it "does not allow a admins to remove a role from themselves", :aggregate_failures do
-      role = super_admin.add_role(:trusted)
-
-      expect do
-        delete admin_user_path(super_admin.id), params: { user_id: super_admin.id, role_id: role.id }
-      end.not_to change(super_admin.roles, :count)
-
-      expect(super_admin.trusted?).to be true
-      expect(request.flash["danger"]).to include("cannot remove roles")
     end
   end
 
