@@ -148,16 +148,11 @@ export class ProfileForm extends Component {
   }
 
   onProfileImageUrlChange = (url) => {
-    this.setState(
-      {
-        profile_image_90: url,
-      },
-      () => {
-        this.handleFieldChange({
-          target: { name: 'profile_image_90', value: url },
-        });
-      },
-    );
+    this.setState({ profile_image_90: url }, () => {
+      this.handleFieldChange({
+        target: { name: 'profile_image_90', value: url },
+      });
+    });
   };
 
   render() {
