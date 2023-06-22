@@ -238,6 +238,9 @@ export class ProfileForm extends Component {
                   default_value: username,
                   required: true,
                   maxLength: 20,
+                  placeholder_text: username,
+                  description: '',
+                  input_type: 'text',
                 }}
                 onFieldChange={this.handleFieldChange}
               />
@@ -250,6 +253,8 @@ export class ProfileForm extends Component {
                   placeholder_text: 'Tell us a little about yourself',
                   required: false,
                   maxLength: SUMMARY_MAXLENGTH,
+                  description: '',
+                  input_type: 'text_area',
                 }}
                 onFieldChange={this.handleFieldChange}
               />
