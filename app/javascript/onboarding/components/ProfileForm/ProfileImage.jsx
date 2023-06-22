@@ -44,29 +44,18 @@ export const ProfileImage = ({
     setUploadingImage(true);
     clearUploadError();
 
-    const { files: image } = event.dataTransfer || event.target;
+    if (validateFileInputs()) {
+      const { files: image } = event.dataTransfer || event.target;
+      const payload = { image, userId };
 
-    const img = new Image();
-    img.onload = function () {
-      if (this.width > 4096 || this.height > 4096) {
-        setUploadingImage(false);
-        setUploadError(true);
-        setUploadErrorMessage(
-          'Image size should be less than or equal to 4096x4096.',
-        );
-      } else if (validateFileInputs()) {
-        const payload = { image, userId };
-
-        generateMainImage({
-          payload,
-          successCb: onImageUploadSuccess,
-          failureCb: onUploadError,
-        });
-      } else {
-        setUploadingImage(false);
-      }
-    };
-    img.src = URL.createObjectURL(image[0]);
+      generateMainImage({
+        payload,
+        successCb: onImageUploadSuccess,
+        failureCb: onUploadError,
+      });
+    } else {
+      setUploadingImage(false);
+    }
   };
 
   const clearUploadError = () => {

@@ -1,21 +1,11 @@
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
-import { act } from 'preact/test-utils';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { ProfileImage } from '../ProfileForm/ProfileImage';
-import { processImageUpload } from '../actions';
-import { validateFileInputs } from '../../../packs/validateFileInputs';
 
 global.fetch = fetch;
-global.URL.createObjectURL = jest.fn();
-
-jest.mock('../../../packs/validateFileInputs');
-jest.mock('../actions');
-jest.mock('../../../packs/validateFileInputs.js', () => ({
-  validateFileInputs: jest.fn(),
-}));
 
 describe('<ProfileImage />', () => {
   it('should render correctly', () => {
@@ -91,96 +81,29 @@ describe('<ProfileImage />', () => {
 
     expect(getByText('Uploading...')).toBeInTheDocument();
   });
-});
 
-describe('processImageUpload', () => {
-  it('should not process the image upload when validateFileInputs returns false', () => {
-    validateFileInputs.mockImplementation(() => false);
-
-    const handleImageUploading = jest.fn();
-    const handleImageSuccess = jest.fn();
-    const handleImageFailure = jest.fn();
-
-    processImageUpload(
-      ['mock-image'],
-      handleImageUploading,
-      handleImageSuccess,
-      handleImageFailure,
-      'user1',
-    );
-
-    expect(handleImageUploading).not.toHaveBeenCalled();
-  });
-});
-
-describe('<ProfileImage /> uploading error', () => {
-  beforeEach(() => {
-    global.URL.createObjectURL = jest.fn();
-    global.Image = class {
-      constructor() {
-        this.onload = null;
-      }
-      set src(val) {
-        this.onload();
-      }
-    };
-  });
-
-  it('should not process the image upload when image size is larger than 4096x4096', async () => {
-    validateFileInputs.mockImplementation(() => true);
-
-    const onMainImageUrlChange = jest.fn();
-    const { getByTestId, findByText } = render(
+  it('displays an uplaod error when necessary', async () => {
+    const { getByLabelText, findByText } = render(
       <ProfileImage
-        mainImage="/some-fake-image.jpg"
-        onMainImageUrlChange={onMainImageUrlChange}
-        userId="user1"
-        name="User 1"
+        onMainImageUrlChange={jest.fn()}
+        mainImage="test.png"
+        userId="1"
+        name="Test User"
       />,
     );
+    const inputEl = getByLabelText('Edit profile image', { exact: false });
 
-    const fileInput = getByTestId('profile-image-input');
-    const file = new File([], 'fakeimg.png', { type: 'image/png' });
-    Object.defineProperty(file, 'size', { value: 5000000 });
+    expect(inputEl.getAttribute('accept')).toEqual('image/*');
 
-    Object.defineProperty(Image.prototype, 'width', {
-      value: 5000,
-      writable: true,
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
     });
-    Object.defineProperty(Image.prototype, 'height', {
-      value: 5000,
-      writable: true,
+    fetch.mockReject({
+      message: 'Some Fake Error',
     });
 
-    await act(async () => {
-      fireEvent.change(fileInput, { target: { files: [file] } });
-    });
-
-    expect(
-      await findByText('Image size should be less than or equal to 4096x4096.'),
-    ).toBeInTheDocument();
-  });
-
-  it('should not show "Uploading..." when validateFileInputs returns false', async () => {
-    validateFileInputs.mockImplementation(() => false);
-
-    const onMainImageUrlChange = jest.fn();
-    const { getByTestId, queryByText } = render(
-      <ProfileImage
-        mainImage="/some-fake-image.jpg"
-        onMainImageUrlChange={onMainImageUrlChange}
-        userId="user1"
-        name="User 1"
-      />,
-    );
-
-    const fileInput = getByTestId('profile-image-input');
-    const file = new File([], 'fakeimg.png', { type: 'image/png' });
-
-    await act(async () => {
-      fireEvent.change(fileInput, { target: { files: [file] } });
-    });
-
-    expect(queryByText('Uploading...')).not.toBeInTheDocument();
+    fireEvent.change(inputEl, { target: { files: [file] } });
+    const fakeError = await findByText(/some fake error/i);
+    expect(fakeError).toBeInTheDocument();
   });
 });

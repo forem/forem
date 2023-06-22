@@ -1,7 +1,9 @@
 import { validateFileInputs } from '../../packs/validateFileInputs';
 
 function generateUploadFormdata(image) {
+  const token = window.csrfToken;
   const formData = new FormData();
+  formData.append('authenticity_token', token);
   formData.append('user[profile_image]', image);
   return formData;
 }
@@ -21,24 +23,14 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
       credentials: 'same-origin',
       signal,
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((json) => {
         if (json.error) {
           throw new Error(json.error);
         }
         return successCb(json.user.profile_image.url);
       })
-      .catch((error) => {
-        console.error('There was a problem with the request.', error);
-        if (failureCb) {
-          failureCb(error);
-        }
-      });
+      .catch((message) => failureCb(message));
   }
 }
 
