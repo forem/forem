@@ -15,7 +15,7 @@ RSpec.describe CommentPolicy, type: :policy do
   end
 
   let(:valid_attributes_for_subscribe) do
-    %i[notification_id comment_id article_id]
+    %i[subscription_id comment_id article_id]
   end
 
   let(:valid_attributes_for_moderator_create) do

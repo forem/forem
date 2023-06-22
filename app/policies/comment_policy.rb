@@ -63,11 +63,11 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def permitted_attributes_for_subscribe
-    %i[subscription_id comment_id article_id action]
+    %i[subscription_id comment_id article_id]
   end
 
   def permitted_attributes_for_unsubscribe
-    %i[subscription_id action]
+    %i[subscription_id]
   end
 
   def permitted_attributes_for_create
