@@ -77,7 +77,7 @@ module NotificationSubscriptions
     end
 
     def subscribing_to_comment?
-      article_id.blank? && comment_id.present?
+      article.nil? && comment.present?
     end
 
     def subscribing_to_top_comment?

@@ -21,6 +21,9 @@ module NotificationSubscriptions
         notification = NotificationSubscription.find_by(user_id: current_user.id,
                                                         id: subscription_id)
       end
+      return { errors: "Subscription ID is missing" } if subscription_id.nil?
+      return { errors: "Notification subscription not found" } if notification.nil?
+
       destroy_notification(notification)
     end
 
