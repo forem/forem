@@ -48,7 +48,6 @@ export function processImageUpload(
   handleImageFailure,
   userId,
 ) {
-  // Currently only one image is supported for upload.
   if (images.length > 0 && validateFileInputs()) {
     const payload = { image: images, userId };
 

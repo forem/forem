@@ -8,7 +8,7 @@ import { Spinner } from '@crayons/Spinner/Spinner';
 const StandardImageUpload = ({ handleImageUpload, isUploadingImage }) =>
   isUploadingImage ? null : (
     <Fragment>
-      <label className="cursor-pointer crayons-btn crayons-btn--outlined">
+      <label className="cursor-pointer crayons-btn crayons-btn--secondary">
         Edit profile image
         <input
           data-testid="profile-image-input"
@@ -92,10 +92,13 @@ export const ProfileImage = ({
             handleImageUpload={handleMainImageUpload}
           />
         </Fragment>
+
+        {uploadError && (
+          <p className="onboarding-profile-upload-error">
+            {uploadErrorMessage}
+          </p>
+        )}
       </div>
-      {uploadError && (
-        <p className="onboarding-profile-upload-error">{uploadErrorMessage}</p>
-      )}
     </div>
   );
 };
