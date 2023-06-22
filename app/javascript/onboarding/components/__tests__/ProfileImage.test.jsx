@@ -82,8 +82,8 @@ describe('<ProfileImage />', () => {
     expect(getByText('Uploading...')).toBeInTheDocument();
   });
 
-  it('displays an uplaod error when necessary', async () => {
-    const { getByLabelText, findByText } = render(
+  it('displays an upload error when necessary', async () => {
+    const { getByLabelText, findByText, queryByText } = render(
       <ProfileImage
         onMainImageUrlChange={jest.fn()}
         mainImage="test.png"
@@ -105,5 +105,6 @@ describe('<ProfileImage />', () => {
     fireEvent.change(inputEl, { target: { files: [file] } });
     const fakeError = await findByText(/some fake error/i);
     expect(fakeError).toBeInTheDocument();
+    expect(queryByText('Uploading...')).not.toBeInTheDocument();
   });
 });
