@@ -1,5 +1,3 @@
-import { validateFileInputs } from '../../packs/validateFileInputs';
-
 function generateUploadFormdata(image) {
   const token = window.csrfToken;
   const formData = new FormData();
@@ -31,31 +29,5 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
         return successCb(json.user.profile_image.url);
       })
       .catch((message) => failureCb(message));
-  }
-}
-
-/**
- * Processes images for upload.
- *
- * @param {FileList} images Images to be uploaded.
- * @param {Function} handleImageSuccess The handler that runs when the image is uploaded successfully.
- * @param {Function} handleImageFailure The handler that runs when the image upload fails.
- */
-export function processImageUpload(
-  images,
-  handleImageUploading,
-  handleImageSuccess,
-  handleImageFailure,
-  userId,
-) {
-  if (images.length > 0 && validateFileInputs()) {
-    const payload = { image: images, userId };
-
-    handleImageUploading();
-    generateMainImage({
-      payload,
-      successCb: handleImageSuccess,
-      failureCb: handleImageFailure,
-    });
   }
 }
