@@ -236,13 +236,13 @@ class User < ApplicationRecord
 
   def self.average_articles_count
     Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
-      where(articles_count: 1..).average(:articles_count) || average(:articles_count) || 0.0
+      unscoped { where(articles_count: 1..).average(:articles_count) || average(:articles_count) } || 0.0
     end
   end
 
   def self.average_comments_count
     Rails.cache.fetch("established_user_comment_count", expires_in: 1.day) do
-      where(comments_count: 1..).average(:comments_count) || average(:comments_count) || 0.0
+      unscoped { where(comments_count: 1..).average(:comments_count) || average(:comments_count) } || 0.0
     end
   end
 
