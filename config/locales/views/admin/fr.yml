@@ -265,6 +265,7 @@ fr:
             locked: You can't remove this role.
             remove: "Remove role:"
             remove_confirm: Are you sure?
+            remove_confirm_super_admin: You are removing super admin access from this account. Do this carefully and always ensure you retain access to one or more super admin accounts
             name:
               admin: Admin
               codeland_admin: Codeland Admin
