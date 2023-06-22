@@ -333,10 +333,10 @@ RSpec.describe "Comments" do
     end
 
     it "calls the Toggle service object with the correct parameters" do
-      params = { comment: { comment_id: "1", article_id: "2", action: "subscribe" } }
+      params = { comment: { comment_id: "1", article_id: "2" } }
       permitted_params = ActionController::Parameters.new(params)
         .require(:comment)
-        .permit(:comment_id, :article_id, :action)
+        .permit(:comment_id, :article_id)
       allow(NotificationSubscriptions::Subscribe).to receive(:call)
         .with(user, permitted_params)
         .and_return({})
@@ -349,7 +349,7 @@ RSpec.describe "Comments" do
     it "renders the JSON response with the correct status" do
       allow(NotificationSubscriptions::Subscribe).to receive(:call).and_return({ updated: true })
 
-      post "/comments/subscribe", params: { comment: { comment_id: 1, article_id: 2, action: "subscribe" } }
+      post "/comments/subscribe", params: { comment: { comment_id: 1, article_id: 2 } }
 
       expect(response).to have_http_status(:ok)
       expect(response.body).to eq("{\"updated\":true}")
@@ -362,17 +362,17 @@ RSpec.describe "Comments" do
     end
 
     it "calls the Toggle service object with the correct parameters" do
-      params = { comment: { subscription_id: "1", action: "unsubscribe" } }
+      params = { comment: { subscription_id: "1" } }
       permitted_params = ActionController::Parameters.new(params)
         .require(:comment)
-        .permit(:subscription_id, :action)
+        .permit(:subscription_id)
       allow(NotificationSubscriptions::Unsubscribe).to receive(:call).with(user, permitted_params).and_return({})
       patch "/subscription/unsubscribe", params: params
     end
 
     it "renders the JSON response with the correct status" do
       allow(NotificationSubscriptions::Unsubscribe).to receive(:call).and_return({ destroyed: true })
-      patch "/subscription/unsubscribe", params: { comment: { subscription_id: 1, action: "unsubscribe" } }
+      patch "/subscription/unsubscribe", params: { comment: { subscription_id: 1 } }
       expect(response).to have_http_status(:ok)
       expect(response.body).to eq("{\"destroyed\":true}")
     end
