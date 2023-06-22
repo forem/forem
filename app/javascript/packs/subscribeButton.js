@@ -73,7 +73,6 @@ async function handleSubscribeButtonClick({ target }) {
     const { id } = JSON.parse(target.dataset.info);
     payload = JSON.stringify({
       comment: {
-        action: 'unsubscribe',
         subscription_id: id,
       },
     });
@@ -81,7 +80,6 @@ async function handleSubscribeButtonClick({ target }) {
   } else {
     payload = JSON.stringify({
       comment: {
-        action: 'subscribe',
         subscription_id: null,
         comment_id: Number(target.dataset.comment),
         article_id: target.dataset.article
