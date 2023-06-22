@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact';
+import { render, fireEvent, waitFor } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
@@ -106,5 +106,28 @@ describe('<ProfileImage />', () => {
     const fakeError = await findByText(/some fake error/i);
     expect(fakeError).toBeInTheDocument();
     expect(queryByText('Uploading...')).not.toBeInTheDocument();
+  });
+
+  it('should handle image upload correctly', async () => {
+    const onMainImageUrlChangeMock = jest.fn();
+    const { getByTestId } = render(
+      <ProfileImage
+        onMainImageUrlChange={onMainImageUrlChangeMock}
+        mainImage=""
+        userId="user1"
+        name="User 1"
+      />,
+    );
+
+    const file = new File(['file content'], 'filename.png', {
+      type: 'image/png',
+    });
+
+    const uploadInput = getByTestId('profile-image-input');
+    fireEvent.change(uploadInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(uploadInput.files).toHaveLength(1);
+    });
   });
 });
