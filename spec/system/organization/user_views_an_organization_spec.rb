@@ -142,5 +142,12 @@ RSpec.describe "Organization index" do
         expect(page).to have_content("See All Members")
       end
     end
+
+    it "displays the members on the '/members' page" do
+      visit "/#{many_members_org.slug}/members"
+      within(".grid-cols-1") do
+        expect(page).to have_selector(".member-item", count: 55)
+      end
+    end
   end
 end
