@@ -446,11 +446,13 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     margin-bottom: 1rem;
 
     .current-user-avatar-container {
+      width: 80px;
       height: 80px;
     }
 
     .current-user-avatar {
       border-radius: 100%;
+      width: inherit;
       height: inherit;
       object-fit: cover;
       border: 2px solid var(--base-90);
@@ -679,6 +681,40 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       margin-bottom: 25px;
     }
   }
+}
+
+.onboarding-profile-details-container {
+  display: flex;
+  align-items: center;
+  padding: 0px;
+  gap: 24px;
+}
+
+.onboarding-profile-image {
+  width: 80px;
+  height: 80px;
+  aspect-ratio: 1/1;
+  border-radius: 40px;
+  border: 1.5px solid #d4d4d4;
+}
+
+.onboarding-profile-details-sub-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 10px;
+}
+
+.onboarding-profile-user-name {
+  font-weight: var(--fw-bol);
+  font-size: var(--fs-xl);
+  line-height: var(--lh-base);
+}
+
+.onboarding-profile-upload-error {
+  color: darken($red, 8%);
+  font-size: 0.8em;
 }
 
 // Adjusting modals... This is naughty... Santa won't come.
