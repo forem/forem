@@ -1,9 +1,6 @@
 name: ci
 
-on:
-  push:
-    branches:
-      - "main"
+on: [push]
 
 jobs:
   docker:
@@ -46,7 +43,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: docker
           file: ruby.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
