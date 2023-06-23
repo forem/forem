@@ -26,7 +26,7 @@ fr:
       one: "%{count} personne"
       other: "%{count} personnes"
     not_following: "Vous ne suivez personne"
-    following_everyone: "Vous les suivez tous"
+    following_everyone: "Vous suivez %{details} (toutes)"
     you_are_following: "Vous suivez"
     and: "et"
   date:

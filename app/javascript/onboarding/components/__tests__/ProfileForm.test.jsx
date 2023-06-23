@@ -102,6 +102,66 @@ describe('ProfileForm', () => {
     );
   });
 
+  it('should render TextInput with placeholder text', () => {
+    const { getByPlaceholderText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+
+    const usernameInput = getByPlaceholderText('johndoe');
+    expect(usernameInput).toBeInTheDocument();
+  });
+
+  it('should render TextArea with placeholder text', () => {
+    const { getByPlaceholderText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+
+    const bioTextArea = getByPlaceholderText('Tell us a little about yourself');
+    expect(bioTextArea).toBeInTheDocument();
+  });
+
+  it('should render TextInput with input type "text"', () => {
+    const { getByPlaceholderText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+
+    const usernameInput = getByPlaceholderText('johndoe');
+    expect(usernameInput.type).toBe('text');
+  });
+
+  it('should render TextArea with description text', () => {
+    const { getByText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+
+    const bioDescription = getByText('Bio');
+    expect(bioDescription).toBeInTheDocument();
+  });
+
   it('should show the correct name and username', () => {
     const { queryByText } = renderProfileForm();
 

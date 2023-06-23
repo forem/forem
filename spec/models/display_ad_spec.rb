@@ -332,4 +332,27 @@ RSpec.describe DisplayAd do
       expect(AudienceSegmentRefreshWorker).not_to have_received(:perform_async)
     end
   end
+
+  describe "seldom_seen scope" do
+    let(:low_impression_count) { DisplayAd::LOW_IMPRESSION_COUNT }
+    let!(:low_impression_ad) { create(:display_ad, impressions_count: low_impression_count - 1) }
+    let!(:high_impression_ad) { create(:display_ad, impressions_count: low_impression_count + 1) }
+    let!(:priority_ad) { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
+
+    it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
+      expect(described_class.seldom_seen).to include(low_impression_ad)
+    end
+
+    it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
+      expect(described_class.seldom_seen).not_to include(high_impression_ad)
+    end
+
+    it "includes ads with priority set to true" do
+      expect(described_class.seldom_seen).to include(priority_ad)
+    end
+
+    it "includes both priority to be proper size when two qualifying ads exist" do
+      expect(described_class.seldom_seen.size).to be 2
+    end
+  end
 end
