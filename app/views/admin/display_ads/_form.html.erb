@@ -101,6 +101,11 @@
       <%= label_tag :approved, "Approved:", class: "crayons-field__label" %>
       <%= select_tag :approved, options_for_select([false, true], selected: @display_ad.approved), class: "crayons-select" %>
     </div>
+
+    <div class="crayons-field">
+      <%= label_tag :priority, "Prioritized:", class: "crayons-field__label" %>
+      <%= select_tag :priority, options_for_select([false, true], selected: @display_ad.priority), class: "crayons-select" %>
+    </div>
   </div>
   <div>
     <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--display-ad">

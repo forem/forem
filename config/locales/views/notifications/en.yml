@@ -7,6 +7,12 @@ en:
         og:
           title: Notifications - %{community}
       heading: Notifications
+      article:
+        published_html: "%{user} published %{title}"
+        mod_greeting: "Hey %{user} 👋"
+        welcome_html: "%{user} is new to the community. Please check out their post and drop a nice reply to make them feel welcome!"
+        mod_opt_out: Don't want to receive these notifications?
+        change_settings: Change settings
       badge:
         heading_html: You received the %{badge} badge
         awarded_html: "You also get %{credits} to use for %{listings} if you have anything you'd like to promote. 🎉"

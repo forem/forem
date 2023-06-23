@@ -12,6 +12,13 @@
       <p class="crayons-field__description">Allows the tag to be a searchable result when writing a post or a listing</p>
     </label>
   </div>
+  <div class="crayons-field crayons-field--checkbox mt-3">
+    <%= f.check_box :suggested, class: "crayons-checkbox" %>
+    <label class="crayons-field__label" for="tag_suggested">
+      Suggested
+      <p class="crayons-field__description">Prioritizes the tag during user onboarding</p>
+    </label>
+  </div>
   <div class="crayons-field mt-3">
     <%= f.label :badge_id, class: "crayons-field__label" %>
     <%= f.select(:badge_id, options_for_select(badges_for_options, tag.badge_id), { include_blank: true }, { class: "crayons-select" }) %>

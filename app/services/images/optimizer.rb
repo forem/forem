@@ -7,6 +7,8 @@ module Images
         imgproxy(img_src, **kwargs)
       elsif cloudinary_enabled?
         cloudinary(img_src, **kwargs)
+      elsif cloudflare_enabled?
+        cloudflare(img_src, **kwargs)
       else
         img_src
       end
@@ -22,6 +24,21 @@ module Images
       fetch_format: "auto",
       sign_url: true
     }.freeze
+
+    def self.cloudflare(img_src, **kwargs)
+      template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
+      template.expand(
+        domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
+        options: {
+          width: kwargs[:width],
+          height: kwargs[:height],
+          fit: "cover",
+          gravity: "auto",
+          format: "auto"
+        },
+        src: extract_suffix_url(img_src),
+      ).to_s
+    end
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
@@ -68,6 +85,10 @@ module Images
       config.cloud_name.present? && config.api_key.present? && config.api_secret.present?
     end
 
+    def self.cloudflare_enabled?
+      ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].present?
+    end
+
     def self.get_imgproxy_endpoint
       if Rails.env.production?
         # Use /images with the same domain on Production as
@@ -80,6 +101,15 @@ module Images
         # ie. default imgproxy endpoint is localhost:8080
         ApplicationConfig["IMGPROXY_ENDPOINT"] || "http://localhost:8080"
       end
+    end
+
+    def self.extract_suffix_url(full_url)
+      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
+      return full_url unless full_url&.starts_with?(prefix)
+
+      uri = URI.parse(full_url)
+      match = uri.path.match(%r{https?.+})
+      CGI.unescape(match[0]) if match
     end
   end
 end

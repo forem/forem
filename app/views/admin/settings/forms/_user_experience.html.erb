@@ -45,6 +45,14 @@
                              value: Settings::UserExperience.index_minimum_score,
                              placeholder: Constants::Settings::UserExperience.details[:index_minimum_score][:placeholder] %>
         </div>
+       <div class="crayons-field">
+          <%= admin_config_label :index_minimum_date, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:index_minimum_date][:description] %>
+          <%= f.number_field :index_minimum_date,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.index_minimum_date,
+                             placeholder: Constants::Settings::UserExperience.details[:index_minimum_date][:placeholder] %>
+        </div>
         <div class="crayons-field">
           <%= admin_config_label :default_font, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:default_font][:description] %>

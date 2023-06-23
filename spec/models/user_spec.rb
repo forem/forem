@@ -33,6 +33,7 @@ RSpec.describe User do
 
   before do
     omniauth_mock_providers_payload
+    allow(SegmentedUserRefreshWorker).to receive(:perform_async)
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
   end
 
@@ -366,6 +367,13 @@ RSpec.describe User do
         expect(new_user.reload.notifications.count).to eq(0)
       end
     end
+
+    it "refreshes user segments" do
+      expect(user).to be_persisted
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
+      user.update name: "New Name Here"
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
+    end
   end
 
   context "when callbacks are triggered after commit" do
@@ -411,6 +419,15 @@ RSpec.describe User do
           user.update(credits_count: 100)
         end
       end
+    end
+  end
+
+  context "when a new role is added" do
+    let(:without_role) { create(:user, roles: []) }
+
+    it "refreshes user segments" do
+      without_role.add_role :trusted
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(without_role.id)
     end
   end
 
@@ -835,6 +852,17 @@ RSpec.describe User do
     it "returns the most recently updated" do
       results = described_class.recently_active(1)
       expect(results).to contain_exactly(later)
+    end
+  end
+
+  describe "#currently_following_tags" do
+    before do
+      allow(Tag).to receive(:followed_by)
+    end
+
+    it "calls Tag.followed_by" do
+      user.currently_following_tags
+      expect(Tag).to have_received(:followed_by).with(user)
     end
   end
 end

@@ -17,9 +17,9 @@
   </div>
 <% else %>
   <ul class="flex flex-wrap gap-2">
-    <% @user.roles.reject { |role| role.name == "tag_moderator" }.each do |role| %>
+    <% @user.roles.reject(&:tag_moderator?).each do |role| %>
       <li>
-        <% if role.name == "banned" || role.name == "suspended" || role.name == "super_admin" || @user.id == current_user.id %>
+        <% if !policy(role).remove_role? || @user.id == current_user.id %>
           <button
             class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
             type="button"
@@ -29,7 +29,12 @@
             <span data-testid="tooltip" class="crayons-tooltip__content"><%= t("views.admin.users.overview.roles.locked") %></span>
           </button>
         <% else %>
-          <%= button_to url_for(action: :destroy, user_id: @user.id, role: role.name.to_sym, resource_type: role.resource_type), method: :delete, data: { confirm: t("views.admin.users.overview.roles.remove_confirm") }, class: "c-pill c-pill--action-icon" do %>
+          <% confirm_dialog = if role.super_admin?
+                                t("views.admin.users.overview.roles.remove_confirm_super_admin")
+                              else
+                                t("views.admin.users.overview.roles.remove_confirm")
+                              end %>
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role_id: role.id, resource_type: role.resource_type), method: :delete, data: { confirm: confirm_dialog }, class: "c-pill c-pill--action-icon" do %>
             <span class="screen-reader-only"><%= t("views.admin.users.overview.roles.remove") %></span>
               <%= t("views.admin.users.overview.roles.name.#{role.name}", default: role.resource_name ? role.resource_name.to_s : role_display_name(role)) %>
             <%= crayons_icon_tag(:x, class: "c-pill__action-icon", aria_hidden: true, width: 18, height: 18) %>
