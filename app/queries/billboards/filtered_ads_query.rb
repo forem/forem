@@ -1,4 +1,4 @@
-module DisplayAds
+module Billboards
   class FilteredAdsQuery
     def self.call(...)
       new(...).call
@@ -6,11 +6,11 @@ module DisplayAds
 
     # @param area [String] the site area where the ad is visible
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
-    # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
+    # @param billboards [Billboard] can be a filtered scope or Arel relationship
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd,
+                   permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil)
-      @filtered_display_ads = display_ads.includes([:organization])
+      @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @user_id = user_signed_in ? user_id : nil
@@ -21,24 +21,24 @@ module DisplayAds
     end
 
     def call
-      @filtered_display_ads = approved_and_published_ads
-      @filtered_display_ads = placement_area_ads
+      @filtered_billboards = approved_and_published_ads
+      @filtered_billboards = placement_area_ads
 
       if @article_tags.any?
-        @filtered_display_ads = tagged_post_comment_ads
+        @filtered_billboards = tagged_post_comment_ads
       end
 
       if @article_tags.blank?
-        @filtered_display_ads = untagged_post_comment_ads
+        @filtered_billboards = untagged_post_comment_ads
       end
 
       if @article_id.present?
-        @filtered_display_ads = unexcluded_article_ads
+        @filtered_billboards = unexcluded_article_ads
       end
 
-      @filtered_display_ads = user_targeting_ads
+      @filtered_billboards = user_targeting_ads
 
-      @filtered_display_ads = if @user_signed_in
+      @filtered_billboards = if @user_signed_in
                                 authenticated_ads(%w[all logged_in])
                               else
                                 authenticated_ads(%w[all logged_out])
@@ -47,51 +47,51 @@ module DisplayAds
       # type_of filter needs to be applied as near to the end as possible
       # as it checks if any type-matching ads exist (this will apply all/any
       # filters applied up to this point, thus near the end is best)
-      @filtered_display_ads = type_of_ads
+      @filtered_billboards = type_of_ads
 
-      @filtered_display_ads = @filtered_display_ads.order(success_rate: :desc)
+      @filtered_billboards = @filtered_billboards.order(success_rate: :desc)
     end
 
     private
 
     def approved_and_published_ads
-      @filtered_display_ads.approved_and_published
+      @filtered_billboards.approved_and_published
     end
 
     def placement_area_ads
-      @filtered_display_ads.where(placement_area: @area)
+      @filtered_billboards.where(placement_area: @area)
     end
 
     def tagged_post_comment_ads
-      display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
-      untagged_post_comment_ads.or(display_ads_with_targeted_article_tags)
+      billboards_with_targeted_article_tags = @filtered_billboards.cached_tagged_with_any(@article_tags)
+      untagged_post_comment_ads.or(billboards_with_targeted_article_tags)
     end
 
     def untagged_post_comment_ads
-      @filtered_display_ads.where(cached_tag_list: "")
+      @filtered_billboards.where(cached_tag_list: "")
     end
 
     def unexcluded_article_ads
-      @filtered_display_ads.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
+      @filtered_billboards.where("NOT (:id = ANY(exclude_article_ids))", id: @article_id)
     end
 
     def authenticated_ads(display_auth_audience)
-      @filtered_display_ads.where(display_to: display_auth_audience)
+      @filtered_billboards.where(display_to: display_auth_audience)
     end
 
     def user_targeting_ads
       if @user_id
         segment_ids = SegmentedUser.where(user_id: @user_id).pluck(:audience_segment_id)
-        @filtered_display_ads.where("audience_segment_id IS NULL OR audience_segment_id IN (?)", segment_ids)
+        @filtered_billboards.where("audience_segment_id IS NULL OR audience_segment_id IN (?)", segment_ids)
       else
-        @filtered_display_ads.where(audience_segment_id: nil)
+        @filtered_billboards.where(audience_segment_id: nil)
       end
     end
 
     def type_of_ads
       # If this is an organization article and community-type ads exist, show them
       if @organization_id.present?
-        community = @filtered_display_ads.where(type_of: DisplayAd.type_ofs[:community],
+        community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
                                                 organization_id: @organization_id)
         return community if community.any?
       end
@@ -108,7 +108,7 @@ module DisplayAds
         types_matching << :external
       end
 
-      @filtered_display_ads.where(type_of: DisplayAd.type_ofs.slice(*types_matching).values)
+      @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
     end
   end
 end

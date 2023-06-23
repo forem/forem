@@ -1,9 +1,9 @@
-module DisplayAdHelper
-  def display_ads_placement_area_options_array
-    DisplayAd::ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE.zip(DisplayAd::ALLOWED_PLACEMENT_AREAS)
+module BillboardHelper
+  def billboards_placement_area_options_array
+    Billboard::ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE.zip(Billboard::ALLOWED_PLACEMENT_AREAS)
   end
 
-  def audience_segments_for_display_ads
+  def audience_segments_for_billboards
     AudienceSegment.human_readable_segments
   end
 end

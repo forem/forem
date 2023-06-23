@@ -85,7 +85,7 @@
     }
   }
 
-  &__display-ad {
+  &__billboard {
     &:focus-within {
       --card-border: rgba(var(--grey-900), 0.1);
       box-shadow: 0 0 0 1px var(--card-border);
@@ -102,7 +102,7 @@
     }
   }
 
-  &__indention-display-ad {
+  &__indention-billboard {
     @media (min-width: $breakpoint-m) {
       padding-left: calc(var(--su-7) + var(--su-2));
       padding-right: calc(var(--su-7) + var(--su-2));

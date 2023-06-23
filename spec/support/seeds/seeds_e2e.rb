@@ -963,9 +963,9 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(DisplayAd) do
+seeder.create_if_none(Billboard) do
   org_id = Organization.find_by(slug: "bachmanity").id
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is an add</h1>",
     placement_area: "sidebar_left",

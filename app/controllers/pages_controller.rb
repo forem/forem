@@ -82,7 +82,7 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    billboard_url = admin_display_ad_path(params[:billboard]) if params[:billboard].present?
+    billboard_url = admin_billboard_path(params[:billboard]) if params[:billboard].present?
     reported_url = params[:reported_url] || params[:url] || request.referer.presence
     @feedback_message = FeedbackMessage.new(
       reported_url: billboard_url || reported_url&.chomp("?i=i"),

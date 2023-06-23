@@ -79,7 +79,7 @@ RSpec.describe User do
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:nullify) }
+      it { is_expected.to have_many(:billboard_events).dependent(:nullify) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }

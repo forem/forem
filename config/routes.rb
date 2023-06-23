@@ -51,7 +51,7 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
-        resources :display_ads, only: %i[index show create update] do
+        resources :billboards, only: %i[index show create update] do
           put "unpublish", on: :member
         end
 
@@ -143,7 +143,7 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :display_ad_events, only: [:create]
+    resources :billboard_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
@@ -200,7 +200,7 @@ Rails.application.routes.draw do
 
     # Display ads
     scope "/:username/:slug" do
-      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+      get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard
     end
 
     # Settings

@@ -1,4 +1,6 @@
-class DisplayAd < ApplicationRecord
+class Billboard < ApplicationRecord
+  self.table_name = "display_ads"
+
   include Taggable
   acts_as_taggable_on :tags
   resourcify
@@ -29,7 +31,7 @@ class DisplayAd < ApplicationRecord
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
-  has_many :display_ad_events, dependent: :destroy
+  has_many :billboard_events, dependent: :destroy
 
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
@@ -44,7 +46,7 @@ class DisplayAd < ApplicationRecord
            :validate_tag
 
   before_save :process_markdown
-  after_save :generate_display_ad_name
+  after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
@@ -58,8 +60,8 @@ class DisplayAd < ApplicationRecord
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
-    ads_for_display = DisplayAds::FilteredAdsQuery.call(
-      display_ads: self,
+    ads_for_display = Billboards::FilteredAdsQuery.call(
+      billboards: self,
       area: area,
       user_signed_in: user_signed_in,
       article_id: article&.id,
@@ -106,7 +108,7 @@ class DisplayAd < ApplicationRecord
   def validate_in_house_hero_ads
     return unless placement_area == "home_hero" && type_of != "in_house"
 
-    errors.add(:type_of, "must be in_house if display ad is a Home Hero")
+    errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
   def audience_segment_type
@@ -140,7 +142,7 @@ class DisplayAd < ApplicationRecord
 
   private
 
-  def generate_display_ad_name
+  def generate_billboard_name
     return unless name.nil?
 
     self.name = "Display Ad #{id}"

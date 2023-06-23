@@ -66,12 +66,12 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders all display_ads of different placements when published and approved" do
+    it "renders all billboards of different placements when published and approved" do
       org = create(:organization)
-      ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left")
-      second_left_ad = create(:display_ad, published: true, approved: true, organization: org,
+      ad = create(:billboard, published: true, approved: true, organization: org, placement_area: "sidebar_left")
+      second_left_ad = create(:billboard, published: true, approved: true, organization: org,
                                            placement_area: "sidebar_left_2")
-      right_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
+      right_ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
                                      organization: org)
 
       get "/"
@@ -80,10 +80,10 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(right_ad.processed_html)
     end
 
-    it "does not render display_ads when not approved" do
+    it "does not render billboards when not approved" do
       org = create(:organization)
-      ad = create(:display_ad, published: true, approved: false, organization: org)
-      right_ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right",
+      ad = create(:billboard, published: true, approved: false, organization: org)
+      right_ad = create(:billboard, published: true, approved: false, placement_area: "sidebar_right",
                                      organization: org)
 
       get "/"
@@ -91,10 +91,10 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).not_to include(right_ad.processed_html)
     end
 
-    it "renders only one display ad of placement" do
+    it "renders only one billboard of placement" do
       org = create(:organization)
-      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
-      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
+      left_ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_left", organization: org)
+      second_left_ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_left",
                                            organization: org)
 
       get "/"

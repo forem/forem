@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe AudienceSegmentRefreshAllWorker, type: :worker do
   let(:worker) { subject }
   let(:approved_and_published_ad) do
-    create(:display_ad,
+    create(:billboard,
            approved: true,
            published: true,
            audience_segment: create(:audience_segment))
@@ -11,20 +11,20 @@ RSpec.describe AudienceSegmentRefreshAllWorker, type: :worker do
 
   before do
     allow(AudienceSegmentRefreshWorker).to receive(:perform_bulk)
-    create(:display_ad,
+    create(:billboard,
            approved: false,
            published: true,
            audience_segment: create(:audience_segment))
-    create(:display_ad,
+    create(:billboard,
            approved: true,
            published: false,
            audience_segment: create(:audience_segment))
-    create(:display_ad,
+    create(:billboard,
            approved: false,
            published: false,
            audience_segment: create(:audience_segment))
 
-    create(:display_ad,
+    create(:billboard,
            approved: true,
            published: true,
            audience_segment: approved_and_published_ad.audience_segment)

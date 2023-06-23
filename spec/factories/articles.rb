@@ -34,7 +34,7 @@ FactoryBot.define do
 
     experience_level_rating { rand(4..6) }
     # The tags property in the markdown is a bit of a hack, and this entire factory needs refactoring.
-    # In the Tagglable spec we want to extract some common scopes from the article and display ad
+    # In the Tagglable spec we want to extract some common scopes from the article and billboard
     # models and test them, hence we want to pass through the tag_list property.
     # However, the body_markdown caters for the way that we associate tags for the v1 editor.
     # Hence, in this test we default to the transient with_tags being set to true, but if we pass a tag_list through

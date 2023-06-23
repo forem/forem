@@ -1,13 +1,13 @@
-function initializeDisplayAdVisibility() {
-  var displayAds = document.querySelectorAll('[data-display-unit]');
+function initializeBillboardVisibility() {
+  var billboards = document.querySelectorAll('[data-display-unit]');
 
-  if (displayAds && displayAds.length == 0) {
+  if (billboards && billboards.length == 0) {
     return;
   }
 
   var user = userData();
 
-  displayAds.forEach((ad) => {
+  billboards.forEach((ad) => {
     if (user && !user.display_sponsors && ad.dataset['typeOf'] == 'external') {
       ad.classList.add('hidden');
     } else {
@@ -29,15 +29,15 @@ function trackAdImpression(adBox) {
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   var dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
     },
   };
 
   window
-    .fetch('/display_ad_events', {
+    .fetch('/billboard_events', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -64,13 +64,13 @@ function trackAdClick(adBox) {
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   var dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
     },
   };
-  window.fetch('/display_ad_events', {
+  window.fetch('/billboard_events', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,
@@ -83,7 +83,7 @@ function trackAdClick(adBox) {
   adBox.dataset.clickRecorded = true;
 }
 
-function observeDisplayAds() {
+function observeBillboards() {
   let observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -117,7 +117,7 @@ function observeDisplayAds() {
 window.addEventListener(
   'load',
   (event) => {
-    observeDisplayAds();
+    observeBillboards();
   },
   false,
 );

@@ -85,7 +85,7 @@ RSpec.describe Users::Delete, type: :service do
         audit_logs
         banished_users
         created_podcasts
-        display_ad_events
+        billboard_events
         offender_feedback_messages
         page_views
         rating_votes

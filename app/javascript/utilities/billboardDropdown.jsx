@@ -1,6 +1,6 @@
 import { initializeDropdown } from './dropdownUtils';
 
-export function setupDisplayAdDropdown(){
+export function setupBillboardDropdown(){
     const sponsorshipDropdownButtons = document.querySelectorAll('button[id^=sponsorship-dropdown-trigger-]');
     if (sponsorshipDropdownButtons.length) {
         sponsorshipDropdownButtons.forEach((sponsorshipDropdownButton) => {

@@ -97,8 +97,8 @@ RSpec.describe ContentRenderer do
       end.to raise_error(ContentRenderer::ContentParsingError, /This liquid tag can only be used in Articles/)
     end
 
-    it "raises ContentParsingError for display ad" do
-      source = build(:display_ad)
+    it "raises ContentParsingError for billboard" do
+      source = build(:billboard)
       expect do
         described_class.new(markdown, source: source, user: user).process
       end.to raise_error(ContentRenderer::ContentParsingError, /This liquid tag can only be used in Articles/)

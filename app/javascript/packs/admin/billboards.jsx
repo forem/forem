@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { Tags } from '../../display-ad/tags';
+import { Tags } from '../../billboard/tags';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -24,15 +24,15 @@ function saveTags(selectionString) {
  * Shows and Renders a Tags preact component for the Targeted Tag(s) field
  */
 function showTagsField() {
-  const displayAdsTargetedTags = document.getElementById(
-    'display-ad-targeted-tags',
+  const billboardsTargetedTags = document.getElementById(
+    'billboard-targeted-tags',
   );
 
-  if (displayAdsTargetedTags) {
-    displayAdsTargetedTags.classList.remove('hidden');
+  if (billboardsTargetedTags) {
+    billboardsTargetedTags.classList.remove('hidden');
     render(
       <Tags onInput={saveTags} defaultValue={defaultTagValues()} />,
-      displayAdsTargetedTags,
+      billboardsTargetedTags,
     );
   }
 }
@@ -41,11 +41,11 @@ function showTagsField() {
  * Hides the Targeted Tag(s) field
  */
 function hideTagsField() {
-  const displayAdsTargetedTags = document.getElementById(
-    'display-ad-targeted-tags',
+  const billboardsTargetedTags = document.getElementById(
+    'billboard-targeted-tags',
   );
 
-  displayAdsTargetedTags?.classList.add('hidden');
+  billboardsTargetedTags?.classList.add('hidden');
 }
 
 /**
