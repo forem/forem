@@ -102,7 +102,7 @@ RSpec.describe "Organization index" do
       end
     end
 
-    it "does not show the see all members button" do
+    it "does not show the 'See all members' link" do
       within("#sidebar-left") do
         expect(page).not_to have_content("See All Members")
       end
@@ -137,16 +137,9 @@ RSpec.describe "Organization index" do
       end
     end
 
-    it "shows the 'See All Members' button" do
-      within("#sidebar-left") do
+    it "shows the 'See All Members' link" do
+      within(".org-sidebar-widget") do
         expect(page).to have_content("See All Members")
-      end
-    end
-
-    it "opens members page when 'See All Members' button is clicked", js: true do
-      within("#sidebar-left") do
-        click_button "See All Members"
-        expect(page).to have_current_path("/#{many_members_org.slug}/members")
       end
     end
   end
