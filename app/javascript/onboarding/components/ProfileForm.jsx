@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { userData, updateOnboarding } from '../utilities';
 
+import { ProfileImage } from './ProfileForm/ProfileImage';
 import { Navigation } from './Navigation';
 import { TextArea } from './ProfileForm/TextArea';
 import { TextInput } from './ProfileForm/TextInput';
@@ -21,9 +22,13 @@ export class ProfileForm extends Component {
     this.user = userData();
     this.state = {
       groups: [],
-      formValues: { username: this.user.username },
+      formValues: {
+        username: this.user.username,
+        profile_image_90: this.user.profile_image_90,
+      },
       canSkip: false,
       last_onboarding_page: 'v2: personal info form',
+      profile_image_90: this.user.profile_image_90,
     };
   }
 
@@ -48,12 +53,12 @@ export class ProfileForm extends Component {
 
   async onSubmit() {
     const { formValues, last_onboarding_page } = this.state;
-    const { username, ...newFormValues } = formValues;
+    const { username, profile_image_90, ...newFormValues } = formValues;
     try {
       const response = await request('/onboarding', {
         method: 'PATCH',
         body: {
-          user: { last_onboarding_page, username },
+          user: { last_onboarding_page, profile_image_90, username },
           profile: { ...newFormValues },
         },
       });
@@ -142,10 +147,18 @@ export class ProfileForm extends Component {
     }
   }
 
+  onProfileImageUrlChange = (url) => {
+    this.setState({ profile_image_90: url }, () => {
+      this.handleFieldChange({
+        target: { name: 'profile_image_90', value: url },
+      });
+    });
+  };
+
   render() {
     const { prev, slidesCount, currentSlideIndex, communityConfig } =
       this.props;
-    const { profile_image_90, username, name } = this.user;
+    const { username, name } = this.user;
     const { canSkip, groups = [], error, errorMessage } = this.state;
     const SUMMARY_MAXLENGTH = 200;
     const summaryCharacters = this.state?.formValues?.summary?.length || 0;
@@ -204,15 +217,13 @@ export class ProfileForm extends Component {
                 able to edit this later in your Settings.
               </h2>
             </header>
-            <div className="current-user-info">
-              <figure className="current-user-avatar-container">
-                <img
-                  className="current-user-avatar"
-                  alt="profile"
-                  src={profile_image_90}
-                />
-              </figure>
-              <h3>{name}</h3>
+            <div className="onboarding-profile-sub-section mt-8">
+              <ProfileImage
+                onMainImageUrlChange={this.onProfileImageUrlChange}
+                mainImage={this.state.profile_image_90}
+                userId={this.user.id}
+                name={name}
+              />
             </div>
             <div className="onboarding-profile-sub-section">
               <TextInput
@@ -222,6 +233,9 @@ export class ProfileForm extends Component {
                   default_value: username,
                   required: true,
                   maxLength: 20,
+                  placeholder_text: 'johndoe',
+                  description: '',
+                  input_type: 'text',
                 }}
                 onFieldChange={this.handleFieldChange}
               />
@@ -234,6 +248,8 @@ export class ProfileForm extends Component {
                   placeholder_text: 'Tell us a little about yourself',
                   required: false,
                   maxLength: SUMMARY_MAXLENGTH,
+                  description: '',
+                  input_type: 'text_area',
                 }}
                 onFieldChange={this.handleFieldChange}
               />
