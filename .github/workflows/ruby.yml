@@ -48,3 +48,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ghcr.io/${{ github.repository }}:${{ matrix.ruby-version }}
+          args: |
+            RUBY_MAJOR=${{ matrix.ruby-major }}
+            RUBY_VERSION=${{ matrix.ruby-version }}
