@@ -764,6 +764,48 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "questionable-user@forem.local") do
+  User.create!(
+    name: "Questionable User",
+    email: "questionable-user@forem.local",
+    username: "questionable_user",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+questionable_user = User.find_by(email: "questionable-user@forem.local")
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Questionable article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Questionable article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: false,
+    show_comments: true,
+    slug: "questionable-test-article-slug",
+    user_id: questionable_user.id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
   markdown = <<~MARKDOWN
     ---
@@ -776,13 +818,22 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
-  Article.create(
+  article = Article.create(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
     slug: "series-test-article-slug",
     user_id: User.find_by(email: "series-user@forem.local").id,
   )
+
+  comment_attributes = {
+    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    user_id: questionable_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  Comment.create!(comment_attributes)
 end
 
 ##############################################################################
