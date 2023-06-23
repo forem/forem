@@ -130,7 +130,7 @@ export function initializeVideoPlayback() {
         videoPlayerEvent(false);
         break;
       case 'tick':
-        currentTime = message.currentTime;
+        currentTime = message.currentTime; // eslint-disable-line prefer-destructuring
         break;
       default:
         console.log('Unrecognized message: ', message); // eslint-disable-line no-console
