@@ -40,6 +40,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - id: repo
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.repository }}
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -47,7 +52,7 @@ jobs:
           file: ruby.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.repository }}:${{ matrix.ruby-version }}
+          tags: ghcr.io/${{ steps.repo.outputs.lowercase }}:${{ matrix.ruby-version }}
           args: |
             RUBY_MAJOR=${{ matrix.ruby-major }}
             RUBY_VERSION=${{ matrix.ruby-version }}
