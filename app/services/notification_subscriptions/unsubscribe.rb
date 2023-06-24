@@ -17,11 +17,10 @@ module NotificationSubscriptions
 
     def unsubscribe_subscription
       subscription_id = permitted_params[:subscription_id]
-      unless subscription_id.nil?
-        notification = NotificationSubscription.find_by(user_id: current_user.id,
-                                                        id: subscription_id)
-      end
       return { errors: "Subscription ID is missing" } if subscription_id.nil?
+
+      notification = NotificationSubscription.find_by(user_id: current_user.id,
+                                                      id: subscription_id)
       return { errors: "Notification subscription not found" } if notification.nil?
 
       destroy_notification(notification)

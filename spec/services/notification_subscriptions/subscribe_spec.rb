@@ -42,10 +42,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
       let(:top_level_comment) { create(:comment, parent_id: comment.id) }
       let(:params) { { comment_id: top_level_comment.id } }
 
-      # before do
-      #   top_level_comment.move_to_child_of(comment)
-      # end
-
       it "creates a notification subscription for the top-level comment" do
         expect do
           described_class.call(current_user, params)

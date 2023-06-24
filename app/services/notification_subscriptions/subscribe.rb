@@ -33,10 +33,6 @@ module NotificationSubscriptions
       @comment_article ||= comment && comment.ancestry.nil? ? comment.commentable : nil
     end
 
-    def notifiable_type
-      @notifiable_type ||= determine_notifiable_type
-    end
-
     def notifiable
       @notifiable ||= determine_notifiable
     end
@@ -46,23 +42,12 @@ module NotificationSubscriptions
         user: current_user,
         config: subscription_config,
         notifiable: notifiable,
-        notifiable_type: notifiable_type,
       )
 
       if subscription.save
         { updated: true, notification: subscription.to_json }
       else
         { errors: subscription.errors_as_sentence }
-      end
-    end
-
-    def determine_notifiable_type
-      if comment && article.nil? && comment_article.nil?
-        "Comment"
-      elsif article.nil?
-        "Article"
-      else
-        "Article"
       end
     end
 
