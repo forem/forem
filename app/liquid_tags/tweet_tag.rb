@@ -6,7 +6,7 @@ class TweetTag < LiquidTagBase
 
   def initialize(_tag_name, id, _parse_context)
     super
-    input   = CGI.unescape_html(strip_tags(id))
+    input = CGI.unescape_html(strip_tags(id))
     @id = parse_id_or_url(input)
   end
 
