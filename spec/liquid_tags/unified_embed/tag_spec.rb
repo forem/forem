@@ -5,14 +5,13 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
 
   # See https://github.com/forem/forem/issues/17679; Note the document has `og:title` but not
   # `og:url`; should we fallback to the given URL instead?
-  # rubocop:disable RSpec/ExampleLength
   it "handles https://guides.rubyonrails.org" do
     link = "https://guides.rubyonrails.org/routing.html"
     stub_request(:head, link)
       .with(
         headers: {
           "Accept" => "*/*",
-          "User-Agent" => "DEV(local) (#{URL.url})"
+          "User-Agent" => "#{ENV.fetch('COMMUNITY_NAME')} (#{URL.url})"
         },
       )
       .to_return(status: 200, body: "", headers: {})
@@ -22,7 +21,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
         headers: {
           "Accept" => "*/*",
           "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
-          "User-Agent" => "DEV(local) (http://localhost:3000)"
+          "User-Agent" => "#{ENV.fetch('COMMUNITY_NAME')} (http://localhost:3000)"
         },
       )
       .to_return(
@@ -34,7 +33,6 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     parsed_tag = Liquid::Template.parse("{% embed #{link} %}")
     expect(parsed_tag.render).to include("<a href=\"#{link}\"")
   end
-  # rubocop:enable RSpec/ExampleLength
 
   it "delegates parsing to the link-matching class" do
     link = "https://gist.github.com/jeremyf/662585f5c4d22184a6ae133a71bf891a"
@@ -60,6 +58,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       expect(GithubTag).to have_received(:new)
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it "raises an error when link cannot be found" do
     link = "https://takeonrules.com/goes-nowhere"
@@ -70,6 +69,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
     end.to raise_error(StandardError, "URL provided was not found; please check and try again")
   end
 
+  # rubocop:disable RSpec/ExampleLength
   it "repeats validation when link returns not-allowed", vcr: true do
     link = "https://takeonrules.com/not-allowed-response"
 
@@ -83,7 +83,9 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
 
     expect(described_class).to have_received(:validate_link).twice
   end
+  # rubocop:enable RSpec/ExampleLength
 
+  # rubocop:disable RSpec/ExampleLength
   it "raises an error when link returns not-allowed too many times" do
     link = "https://takeonrules.com/not-allowed-response"
     stub_const("UnifiedEmbed::Tag::MAX_REDIRECTION_COUNT", 0)
@@ -96,7 +98,9 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       Liquid::Template.parse("{% embed #{link} %}")
     end.to raise_error(StandardError, "URL provided may have a typo or error; please check and try again")
   end
+  # rubocop:enable RSpec/ExampleLength
 
+  # rubocop:disable RSpec/ExampleLength
   it "repeats validation when link returns redirect", vcr: true do
     link = "https://bit.ly/hoagintake"
 
@@ -108,7 +112,9 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       expect(described_class).to have_received(:validate_link).twice
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
+  # rubocop:disable RSpec/ExampleLength
   it "raises error when link redirects too many times in a row", vcr: true do
     link = "https://bit.ly/hoagintake"
     stub_const("UnifiedEmbed::Tag::MAX_REDIRECTION_COUNT", 0)
@@ -119,7 +125,9 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
       end.to raise_error(StandardError, "Embedded link redirected too many times.")
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 
+  # rubocop:disable RSpec/ExampleLength
   it "calls OpenGraphTag when no link-matching class is found", vcr: true do
     link = "https://takeonrules.com/about/"
 
@@ -134,6 +142,7 @@ RSpec.describe UnifiedEmbed::Tag, type: :liquid_tag do
 
     expect(OpenGraphTag).to have_received(:new)
   end
+  # rubocop:enable RSpec/ExampleLength
 
   it "raises an error when Listings are disabled and a listing URL is embedded" do
     allow(Listing).to receive(:feature_enabled?).and_return(false)

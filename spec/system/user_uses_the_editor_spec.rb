@@ -27,7 +27,7 @@ RSpec.describe "Using the editor" do
       visit "/new"
       expect(page).to have_css(".site-logo")
       within(".truncate-at-2") do
-        expect(page).to have_text("DEV(local)")
+        expect(page).to have_text(ENV.fetch("COMMUNITY_NAME"))
       end
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe "Using the editor" do
     before do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
-      find("button", text: /\APreview\z/).click
+      click_button("button", text: /\APreview\z/)
     end
 
     after do
@@ -62,7 +62,7 @@ RSpec.describe "Using the editor" do
 
     it "fill out form and submit", cloudinary: true do
       fill_markdown_with(read_from_file(raw_text))
-      find("button", text: /\ASave changes\z/).click
+      click_button("button", text: /\ASave changes\z/)
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
@@ -77,7 +77,7 @@ RSpec.describe "Using the editor" do
 
     it "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
-      find("button", text: /\ASave changes\z/).click
+      click_button("button", text: /\ASave changes\z/)
       ["Sample Article", template[-200..], "test"].each do |text|
         expect(page).to have_text(text)
       end
@@ -86,7 +86,7 @@ RSpec.describe "Using the editor" do
     context "without a title", js: true do
       before do
         fill_markdown_with(template.gsub("Sample Article", ""))
-        find("button", text: /\ASave changes\z/).click
+        click_button("button", text: /\ASave changes\z/)
       end
 
       it "shows a message that the title cannot be blank" do

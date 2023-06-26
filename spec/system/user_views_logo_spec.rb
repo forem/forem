@@ -29,7 +29,7 @@ RSpec.describe "Logo behaviour" do
     it "renders the the community name" do
       visit root_path
       within(".truncate-at-2") do
-        expect(page).to have_text("DEV(local)")
+        expect(page).to have_text(ENV.fetch("COMMUNITY_NAME"))
       end
     end
   end
