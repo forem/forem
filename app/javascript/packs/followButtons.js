@@ -1,8 +1,8 @@
 import { getInstantClick } from '../topNavigation/utilities';
-import { locale } from '@utilities/locale';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
+import { locale } from '@utilities/locale';
 
-/* global showLoginModal  userData  showModalAfterError*/
+/* global showLoginModal  userData  showModalAfterError browserStoreCache */
 
 /**
  * Sets the text content of the button to the correct 'Follow' state
@@ -220,7 +220,7 @@ function handleFollowButtonClick({ target }) {
     }
 
     optimisticallyUpdateButtonUI(target);
-    browserStoreCache('remove')
+    browserStoreCache('remove');
 
     const { verb } = target.dataset;
 
@@ -411,38 +411,35 @@ function initializeNonUserFollowButtons() {
     '.follow-action-button:not(.follow-user):not([data-fetched])',
   );
 
-  waitOnBaseData()
-    .then(() => {
-      const userLoggedIn =
-        document.body.getAttribute('data-user-status') === 'logged-in';
+  waitOnBaseData().then(() => {
+    const userLoggedIn =
+      document.body.getAttribute('data-user-status') === 'logged-in';
 
-      const user = userLoggedIn ? userData() : null;
+    const user = userLoggedIn ? userData() : null;
 
-      console.log("followed tags 123: ", JSON.parse(user.followed_tags))
+    const followedTags = user
+      ? JSON.parse(user.followed_tags).map((tag) => tag.id)
+      : [];
 
-      const followedTags = user
-        ? JSON.parse(user.followed_tags).map((tag) => tag.id)
-        : [];
+    const followedTagIds = new Set(followedTags);
 
-      const followedTagIds = new Set(followedTags);
-
-      nonUserFollowButtons.forEach((button) => {
-        const { info } = button.dataset;
-        const buttonInfo = JSON.parse(info);
-        const { className, name } = buttonInfo;
-        addAriaLabelToButton({ button, followType: className, followName: name });
-        if (className === 'Tag' && user) {
-          // We don't need to make a network request to 'fetch' the status of tag buttons
-          button.dataset.fetched = true;
-          const initialButtonFollowState = followedTagIds.has(buttonInfo.id)
-            ? 'true'
-            : 'false';
-          updateInitialButtonUI(initialButtonFollowState, button);
-        } else {
-          fetchFollowButtonStatus(button, buttonInfo);
-        }
-      });
-    })
+    nonUserFollowButtons.forEach((button) => {
+      const { info } = button.dataset;
+      const buttonInfo = JSON.parse(info);
+      const { className, name } = buttonInfo;
+      addAriaLabelToButton({ button, followType: className, followName: name });
+      if (className === 'Tag' && user) {
+        // We don't need to make a network request to 'fetch' the status of tag buttons
+        button.dataset.fetched = true;
+        const initialButtonFollowState = followedTagIds.has(buttonInfo.id)
+          ? 'true'
+          : 'false';
+        updateInitialButtonUI(initialButtonFollowState, button);
+      } else {
+        fetchFollowButtonStatus(button, buttonInfo);
+      }
+    });
+  });
 }
 
 initializeAllUserFollowButtons();
