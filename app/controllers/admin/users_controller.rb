@@ -97,10 +97,12 @@ module Admin
 
       @user = User.find(params[:user_id])
 
-      response = ::Users::RemoveRole.call(user: @user,
-                                          role: role.name,
-                                          resource_type: resource_type,
-                                          admin: current_user)
+      response = ::Users::RemoveRole.call(
+        user: @user,
+        role: role.name,
+        resource_type: resource_type,
+      )
+
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",

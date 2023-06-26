@@ -28,6 +28,7 @@ async function generateDisplayAd(element) {
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.
       // eslint-disable-next-line no-undef
+      observeDisplayAds();
     } catch (error) {
       if (!/NetworkError/i.test(error.message)) {
         Honeybadger.notify(error);
