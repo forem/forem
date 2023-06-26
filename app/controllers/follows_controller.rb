@@ -110,7 +110,6 @@ class FollowsController < ApplicationController
     I18n.t("follows_controller.already_followed")
   end
 
-
   def clear_followed_tag_caches
     # Clear the followed_tags model cache, which is nested inside the async_info cache
     Rails.cache.delete("#{current_user.cache_key}-#{current_user.last_followed_at&.rfc3339}/followed_tags")
