@@ -356,7 +356,7 @@ RSpec.describe "Comments" do
     end
   end
 
-  describe "PATCH /subscription/unsubscribe" do
+  describe "POST /subscription/unsubscribe" do
     before do
       sign_in user
     end
@@ -367,12 +367,12 @@ RSpec.describe "Comments" do
         .require(:comment)
         .permit(:subscription_id)
       allow(NotificationSubscriptions::Unsubscribe).to receive(:call).with(user, permitted_params).and_return({})
-      patch "/subscription/unsubscribe", params: params
+      post "/subscription/unsubscribe", params: params
     end
 
     it "renders the JSON response with the correct status" do
       allow(NotificationSubscriptions::Unsubscribe).to receive(:call).and_return({ destroyed: true })
-      patch "/subscription/unsubscribe", params: { comment: { subscription_id: 1 } }
+      post "/subscription/unsubscribe", params: { comment: { subscription_id: 1 } }
       expect(response).to have_http_status(:ok)
       expect(response.body).to eq("{\"destroyed\":true}")
     end
