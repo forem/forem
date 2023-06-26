@@ -381,30 +381,6 @@ article {
         padding: 0;
         margin: 0.95em 0 0.95em;
       }
-
-      &.twitter-tweet {
-        font-family: var(--ff-sans-serif);
-        background: white;
-        max-width: 456px;
-        border: 1px solid #e9eef2;
-        font-size: 0.75em;
-        line-height: 1.35em;
-        border-radius: 5px;
-        margin: 1.6em auto;
-        padding: 60px 10px 18px;
-        color: white;
-        min-height: 60px;
-        padding: 33px 15px 8px;
-
-        a {
-          color: white;
-        }
-
-        @media screen and (min-width: 360px) {
-          padding: 60px 22px 18px;
-          min-height: 105px;
-        }
-      }
     }
 
     code {
