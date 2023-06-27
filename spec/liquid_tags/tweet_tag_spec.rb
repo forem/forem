@@ -21,7 +21,6 @@ RSpec.describe TweetTag, type: :liquid_tag do
         .and include("var iframe = document.getElementById('tweet-")
       # rubocop:enable Style/StringLiterals
     end
-  
     it "rejects invalid ids" do
       expect { generate_tweet_tag(invalid_id) }.to raise_error(StandardError)
     end
