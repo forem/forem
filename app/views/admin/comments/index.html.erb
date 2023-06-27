@@ -1,8 +1,8 @@
-<h1 class="crayons-title">Comments</h1>
-
 <% if @comment %>
+  <h1 class="crayons-title">Comment</h1>
   <%= render partial: "comment", locals: { comment: @comment, is_individual_comment: true } %>
 <% else %>
+  <h1 class="crayons-title">Comments</h1>
   <%= paginate @comments %>
 
   <div class="flex flex-col gap-2">
