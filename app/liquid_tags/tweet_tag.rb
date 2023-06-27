@@ -4,6 +4,30 @@ class TweetTag < LiquidTagBase
   VALID_ID_REGEXP = /\A(?<id>\d{10,20})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ID_REGEXP].freeze
 
+  SCRIPT = <<~JAVASCRIPT.freeze
+      // Listen for resize events and match them to the iframe
+      window.addEventListener('message', function(event) {
+        if (event.origin.startsWith('https://platform.twitter.com')) {
+            var iframes = document.getElementsByTagName('iframe');
+            for (var i = 0; i < iframes.length; i++) {
+              if (event.source === iframes[i].contentWindow) { // iframes which match the event
+                var iframe = iframes[i];
+                var data = event.data['twttr.embed'];
+                if (data && data['method'] === 'twttr.private.resize' && data['params'] && data['params']['0']) {
+                  iframe.style.height = data['params']['0']['height'] + 0.5 + 'px';
+                  iframe.style.width = data['params']['0']['width'] + 'px';
+                }
+                break;
+              }
+            }
+        }
+    }, false);
+  JAVASCRIPT
+
+  def self.script
+    SCRIPT
+  end
+
   def initialize(_tag_name, id, _parse_context)
     super
     input = CGI.unescape_html(strip_tags(id))

@@ -1,4 +1,15 @@
-<blockquote class="twitter-tweet" style="min-height: 300px;padding-top:280px;">
-  <a href="https://twitter.com/tweet/status/<%= id %>">Fetching tweet</a>
-</blockquote>
-<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<% obj_id = "#{id}-#{rand(1_000)}" %>
+<iframe
+  class="tweet-embed"
+  id="tweet-<%= obj_id %>"
+  src="https://platform.twitter.com/embed/Tweet.html?id=<%= id %>">
+</iframe>
+<script>
+  // Detect dark theme
+  var iframe = document.getElementById('tweet-<%= obj_id %>');
+  if (document.body.className.includes('dark-theme')) {
+    iframe.src = "https://platform.twitter.com/embed/Tweet.html?id=<%= id %>&theme=dark"
+  }
+
+</script>
+

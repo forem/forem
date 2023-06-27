@@ -262,6 +262,17 @@ body {
     }
   }
 
+  .tweet-embed {
+    display: block;
+    margin: var(--content-rhythm) auto !important;
+    width: 550px;
+    max-width: 100%;
+    min-height: 350px;
+    border-radius: 13px;
+    box-shadow: var(--shadow-smooth), inset 0px 0px 0px 1px var(--card-border);;
+    overflow: hidden;
+  }
+
   kbd {
     display: inline-block;
     padding: 3px 5px;
