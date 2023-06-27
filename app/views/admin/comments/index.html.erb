@@ -1,13 +1,13 @@
 <h1 class="crayons-title">Comments</h1>
 
 <% if @comment %>
-  <%= render partial: "comment", locals: { comment: @comment } %>
+  <%= render partial: "comment", locals: { comment: @comment, is_individual_comment: true } %>
 <% else %>
   <%= paginate @comments %>
 
   <div class="flex flex-col gap-2">
     <% @comments.each do |comment| %>
-      <%= render partial: "comment", locals: { comment: comment } %>
+      <%= render partial: "comment", locals: { comment: comment, is_individual_comment: false } %>
     <% end %>
   </div>
 

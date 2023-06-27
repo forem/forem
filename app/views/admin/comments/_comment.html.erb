@@ -33,7 +33,14 @@
       <% end %>
     <% end %>
     <div class="ml-auto">
-      <a class="c-link c-link--block" href="<%= comment.path %>" target="_blank" rel="noopener">View</a>
+      <a class="c-link c-link--block" href="<%= comment.path %>" target="_blank" rel="noopener">
+        <%= t("views.moderations.comments.view_comment") %>
+      </a>
     </div>
+    <% if !defined?(is_individual_comment) || !is_individual_comment %>
+      <a href="/admin/content_manager/comments/<%= comment.id %>" class="c-link c-link--block">
+        <%= t("views.moderations.comments.view_details") %>
+      </a>
+    <% end %>
   </footer>
 </article>
