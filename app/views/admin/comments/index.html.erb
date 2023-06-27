@@ -1,24 +1,19 @@
-<% if @comment %>
-  <h1 class="crayons-title">Comment</h1>
-  <%= render partial: "comment", locals: { comment: @comment, is_individual_comment: true } %>
-<% else %>
-  <h1 class="crayons-title">Comments</h1>
-  <%= paginate @comments %>
+<h1 class="crayons-title">Comments</h1>
+<%= paginate @comments %>
 
-  <div class="flex flex-col gap-2">
-    <% @comments.each do |comment| %>
-      <%= render partial: "comment", locals: { comment: comment, is_individual_comment: false } %>
-    <% end %>
-  </div>
+<div class="flex flex-col gap-2">
+  <% @comments.each do |comment| %>
+    <%= render partial: "comment", locals: { comment: comment, is_individual_comment: false } %>
+  <% end %>
+</div>
 
-  <%= paginate @comments %>
+<%= paginate @comments %>
 
-  <script>
-    window.addEventListener('load', function() {
-      document.querySelector("form").addEventListener("submit", function(e) {
-        this.classList.toggle("hidden");
-        this.classList.toggle("inline");
-      });
+<script>
+  window.addEventListener('load', function() {
+    document.querySelector("form").addEventListener("submit", function(e) {
+      this.classList.toggle("hidden");
+      this.classList.toggle("inline");
     });
-  </script>
-<% end %>
+  });
+</script>
