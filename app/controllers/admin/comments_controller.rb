@@ -19,6 +19,10 @@ module Admin
                   end
     end
 
+    def show
+      @comment =  Comment.find(params[:id]) if params[:id].present?
+    end
+
     private
 
     def authorize_admin
