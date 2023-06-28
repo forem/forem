@@ -33,7 +33,7 @@
     <hr />
   <% end %>
 
-  <div style="display: flex; justify-content: space-around;">
+  <div id="content-mod-actions" class="flex justify-around">
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
           data-category="thumbsup"
@@ -82,7 +82,7 @@
   </p>
   <div class="tag-mod-form" style="display: flex; flex-direction: column; align-items: center;">
     <h2><%= t("views.moderations.actions.abusive.subtitle_html", user: link_to(@moderatable.user.username, @moderatable.user.path)) %></h2>
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.user.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">

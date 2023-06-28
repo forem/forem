@@ -122,6 +122,25 @@ RSpec.describe ReactionHandler, type: :service do
         expect(reaction_handler.reaction.user.last_reacted_at).to eq Time.current
       end
     end
+
+    context "when the reactable is a comment" do
+      let(:user) { moderator }
+      let(:comment) { create(:comment) }
+      let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
+      let(:params) do
+        {
+          reactable_id: comment.id,
+          reactable_type: comment.class.polymorphic_name,
+          category: "vomit"
+        }
+      end
+
+      it "also destroys contradictory mod reactions" do
+        expect(result).to be_success
+        expect(result.action).to eq("create")
+        expect(Reaction.ids).not_to include(contradictory_mod.id)
+      end
+    end
   end
 
   describe "#toggle" do
@@ -216,6 +235,25 @@ RSpec.describe ReactionHandler, type: :service do
 
       it "destroys the other reaction as a side-effect" do
         expect(result).to be_success
+        expect(Reaction.ids).not_to include(contradictory_mod.id)
+      end
+    end
+
+    context "when the reactable is a comment" do
+      let(:user) { moderator }
+      let(:comment) { create(:comment) }
+      let!(:contradictory_mod) { comment.reactions.create! user: moderator, category: "thumbsup" }
+      let(:params) do
+        {
+          reactable_id: comment.id,
+          reactable_type: comment.class.polymorphic_name,
+          category: "vomit"
+        }
+      end
+
+      it "also destroys contradictory mod reactions" do
+        expect(result).to be_success
+        expect(result.action).to eq("create")
         expect(Reaction.ids).not_to include(contradictory_mod.id)
       end
     end

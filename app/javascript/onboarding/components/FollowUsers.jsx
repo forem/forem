@@ -4,6 +4,7 @@ import he from 'he';
 import { getContentOfToken } from '../utilities';
 import { locale } from '../../utilities/locale';
 import { Navigation } from './Navigation';
+import { Spinner } from '@crayons/Spinner/Spinner';
 
 function groupFollowsByType(array) {
   return array.reduce((returning, item) => {
@@ -31,6 +32,7 @@ export class FollowUsers extends Component {
     this.state = {
       follows: [],
       selectedFollows: [],
+      loading: true,
     };
   }
 
@@ -47,6 +49,7 @@ export class FollowUsers extends Component {
         this.setState({
           selectedFollows: data,
           follows: data,
+          loading: false,
         });
       });
 
@@ -179,7 +182,7 @@ export class FollowUsers extends Component {
   }
 
   render() {
-    const { follows, selectedFollows } = this.state;
+    const { follows, selectedFollows, loading } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     const canSkip = selectedFollows.length === 0;
 
@@ -212,6 +215,13 @@ export class FollowUsers extends Component {
               <div className="onboarding-selection-status">
                 {this.renderFollowCount()}
                 {this.renderFollowToggle()}
+              </div>
+              <div
+                className={`loading-spinner align-center ${
+                  loading ? '' : 'hidden'
+                }`}
+              >
+                <Spinner />
               </div>
             </header>
 

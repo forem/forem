@@ -106,6 +106,8 @@ RSpec.describe User do
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:delete_all) }
       it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:segmented_users).dependent(:destroy) }
+      it { is_expected.to have_many(:audience_segments).through(:segmented_users) }
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }

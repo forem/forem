@@ -1,0 +1,29 @@
+<% title @organization.name %>
+<div class="blank-space"></div>
+<main class="org-member-page crayons-layout px-4 m:px-9 gap-0">
+  <h1 class="crayons-title"><%= @organization.name %> (<%= @members.count %>)</h1>
+  <div class="mt-4 l:mt-7 grid gap-4 grid-cols-1 s:grid-cols-1 m:grid-cols-2 l:grid-cols-3 xl:grid-cols-4 mb-6">
+    <% @members.each_with_index do |member, index| %>
+      <div class="crayons-card member-item">
+        <div class="member-item-top">
+          <div class="member-user-pic">
+            <a href="/<%= member.username %>">
+              <img src="<%= member.profile_image_url_for(length: 90) %>" alt="<%= member.username %> profile image" loading="lazy" />
+            </a>
+          </div>
+          <button id="user-follow-butt-<%= member.username %>" class="crayons-btn whitespace-nowrap follow-action-button follow-user" data-info='<%= DataInfo.to_json(object: member) %>'><%= t("views.users.follow") %></button>
+        </div>
+        <div class="member-item-bottom">
+          <a class="crayons-subtitle-3 truncate" href="/<%= member.username %>">
+            <%= member.name %>
+          </a>
+          <a class="member-username truncate" href="/<%= member.username %>">
+            @<%= member.username %>
+          </a>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</main>
+
+<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>

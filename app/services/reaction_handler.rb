@@ -37,14 +37,14 @@ class ReactionHandler
   delegate :rate_limiter, to: :current_user
 
   def create
-    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    destroy_contradictory_mod_reactions if %w[Article Comment].include?(reactable_type)
     return noop_result if existing_reaction
 
     create_new_reaction
   end
 
   def toggle
-    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    destroy_contradictory_mod_reactions if %w[Article Comment].include?(reactable_type)
     return handle_existing_reaction if existing_reaction
 
     create_new_reaction
