@@ -156,6 +156,7 @@ GEM
       activesupport (>= 3.2.0)
       carrierwave
       fastimage
+    cgi (0.3.6)
     chartkick (4.2.1)
     cloudinary (1.26.0)
       aws_cf_signer
@@ -979,6 +980,7 @@ DEPENDENCIES
   capybara (~> 3.37.1)
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
+  cgi (~> 0.3.6)
   cloudinary (~> 1.23)
   counter_culture (~> 3.2)
   cuprite (~> 0.13)
@@ -1118,7 +1120,7 @@ DEPENDENCIES
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 3.0.2p107
+   ruby 3.0.6p216
 
 BUNDLED WITH
-   2.2.22
+   2.2.33
