@@ -29,16 +29,6 @@
           </div>
         <% end %>
       <% end %>
-      <% if @tag.sponsorship && @tag.sponsorship.status == "live" && @tag.sponsorship.expires_at > Time.current %>
-        <div class="widget">
-          <header>
-            <h4><%= t("views.tags.sidebar.sponsor", tag: @tag.name) %></h4>
-          </header>
-          <div class="widget-body">
-            <%= render "articles/single_sponsor", sponsorship: @tag.sponsorship %>
-          </div>
-        </div>
-      <% end %>
       <% if @moderators.present? %>
         <div class="widget">
           <header>

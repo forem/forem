@@ -5,13 +5,14 @@ FactoryBot.define do
     published_at { Time.current }
 
     transient do
-      title { generate :title }
+      title { generate(:title) }
       published { true }
       date { "01/01/2015" }
       tags { "javascript, html, discuss" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
+      main_image_from_frontmatter { false }
       with_date { false }
       with_tags { true }
       with_hr_issue { false }
@@ -21,6 +22,7 @@ FactoryBot.define do
       with_collection { nil }
       past_published_at { Time.current }
     end
+
     co_author_ids { [] }
     association :user, factory: :user, strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
@@ -29,15 +31,24 @@ FactoryBot.define do
         URL.url(ActionController::Base.helpers.asset_path("#{rand(1..40)}.png"))
       end
     end
+
     experience_level_rating { rand(4..6) }
+    # The tags property in the markdown is a bit of a hack, and this entire factory needs refactoring.
+    # In the Tagglable spec we want to extract some common scopes from the article and display ad
+    # models and test them, hence we want to pass through the tag_list property.
+    # However, the body_markdown caters for the way that we associate tags for the v1 editor.
+    # Hence, in this test we default to the transient with_tags being set to true, but if we pass a tag_list through
+    # then we're making the assumption that it is the v2 editor and we do not want the tags on the body markdown.
+    # Ideally, we want to create a completely different body_markdown without the frontmatter depending on the version
+    # of the editor since we pass through different JSON based on the editor.
     body_markdown do
       <<~HEREDOC
         ---
         title: #{title if with_title}
         published: #{published}
-        tags: #{tags if with_tags}
+        #{"tags: #{tags}" if with_tags && tag_list.blank?}
         date: #{date if with_date}
-        series: #{with_collection&.slug if with_collection}
+        series: #{with_collection&.slug}
         canonical_url: #{canonical_url if with_canonical_url}
         #{"cover_image: #{Faker::Avatar.image}" if with_main_image && main_image_from_frontmatter}
         ---
@@ -51,10 +62,35 @@ FactoryBot.define do
     end
   end
 
+  factory :published_article, class: "Article" do
+    transient do
+      past_published_at { 3.days.ago }
+    end
+
+    title { generate(:title) }
+    published { true }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
+  factory :unpublished_article, class: "Article" do
+    title { generate(:title) }
+    published { false }
+    published_at { nil }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
   trait :video do
-    after(:build) do |article|
-      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
-      article.save
+    after(:create) do |article|
+      article.update_columns(
+        video: "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b",
+        video_code: "video-upload__2d7dc29e39a40c7059572bca75bb646b",
+        video_source_url: "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+        video_thumbnail_url: "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+      )
     end
   end
 

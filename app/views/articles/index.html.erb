@@ -1,6 +1,6 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-       page_title: "#{community_name} #{community_emoji}",
+       page_title: community_name,
        timeframe: params[:timeframe],
        content_for: true,
      ) %>
@@ -26,6 +26,9 @@
 
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 <% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
+  <% if @hero_display_ad && FeatureFlag.enabled?(:hero_billboard) %>
+    <%= render partial: "shared/display_ad", locals: { display_ad: @hero_display_ad, data_context_type: DisplayAdEvent::CONTEXT_TYPE_HOME } %>
+  <% end %>
   <div class="crayons-layout crayons-layout--3-cols crayons-layout--3-cols--drop-right-left" id="index-container"
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
@@ -36,7 +39,7 @@
 
     <%# BEGIN Feed menu bar %>
     <main class="articles-list crayons-layout__content" id="main-content" data-follow-button-container="true">
-      <%= render(partial: "users/onboardings/task_card") if user_signed_in? %>
+      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="p-2 px-3 m:p-0 m:px-0 m:mb-2 fs-l">
         <h1 class="screen-reader-only"><%= t("views.stories.heading") %></h1>
@@ -86,6 +89,8 @@
         </nav>
       </header>
 
+      <%= render "articles/reaction_category_resources" %>
+
       <% if user_signed_in? %>
         <div id="homepage-feed" style="min-height: 90vh"></div>
       <% else %>
@@ -101,5 +106,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", defer: true %>
 <% end %>

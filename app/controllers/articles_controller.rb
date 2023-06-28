@@ -17,7 +17,7 @@ class ArticlesController < ApplicationController
   #
   #              I still want to enable this, but first want to get things mostly conformant with
   #              existing expectations.  Note, in config/application.rb, we're rescuing the below
-  #              excpetion as though it was a Pundit::NotAuthorizedError.
+  #              exception as though it was a Pundit::NotAuthorizedError.
   #
   #              The difference being that rescue_from is an ALWAYS use case.  Whereas the
   #              config/application.rb uses the config.consider_all_requests_local to determine if
@@ -111,10 +111,18 @@ class ArticlesController < ApplicationController
     authorize Article
 
     begin
-      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
-      processed_html = parsed_markdown.finalize
+      if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[current_user])
+        renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
+        result = renderer.process_article
+        processed_html = result.processed_html
+        front_matter = result.front_matter.to_h
+      else
+        fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
+        parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
+        parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
+        processed_html = parsed_markdown.finalize
+        front_matter = parsed.front_matter.to_h
+      end
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
       @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
@@ -125,7 +133,6 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
         format.json do
-          front_matter = parsed.front_matter.to_h
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
@@ -159,6 +166,7 @@ class ArticlesController < ApplicationController
   def update
     authorize @article
     @user = @article.user || current_user
+
     updated = Articles::Updater.call(@user, @article, article_params_json)
 
     respond_to do |format|
@@ -215,6 +223,14 @@ class ArticlesController < ApplicationController
     result = Articles::Unpublish.call(current_user, @article)
 
     if result.success
+      Audit::Logger.log(:moderator, current_user, params.dup)
+      Note.create(
+        noteable: @article.user,
+        reason: "unpublish_article",
+        content: "#{current_user.username} unpublished post with ID #{@article.id}",
+        author: current_user,
+      )
+
       render json: { message: "success", path: @article.current_state_path }, status: :ok
     else
       render json: { message: @article.errors.full_messages }, status: :unprocessable_entity
@@ -319,6 +335,12 @@ class ArticlesController < ApplicationController
       allowed_params << :organization_id
     end
 
+    manage_published_at_params
+
+    @article_params_json = params.require(:article).permit(allowed_params)
+  end
+
+  def manage_published_at_params
     time_zone_str = params["article"].delete("timezone")
 
     time = params["article"].delete("published_at_time")
@@ -328,11 +350,9 @@ class ArticlesController < ApplicationController
       time_zone = Time.find_zone(time_zone_str)
       time_zone ||= Time.find_zone("UTC")
       params["article"]["published_at"] = time_zone.parse("#{date} #{time}")
-    elsif params["article"]["version"] != "v1"
+    elsif params["article"]["version"] != "v1" && !params["article"]["from_dashboard"]
       params["article"]["published_at"] = nil
     end
-
-    @article_params_json = params.require(:article).permit(allowed_params)
   end
 
   def allowed_to_change_org_id?

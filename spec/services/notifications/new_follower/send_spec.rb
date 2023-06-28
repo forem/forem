@@ -104,7 +104,7 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       notification = described_class.call(follow_data(follow2))
       expect(notification.notifiable).to eq(follow2)
       expect(notification.notified_at).not_to be_nil
-      expect(notification.json_data["aggregated_siblings"].map { |j| j["id"] }.sort).to eq([user.id, user3.id].sort)
+      expect(notification.json_data["aggregated_siblings"].pluck("id").sort).to eq([user.id, user3.id].sort)
     end
 
     it "creates a notification with user data" do

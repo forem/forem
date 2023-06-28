@@ -2,14 +2,14 @@ module Moderator
   class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
+    def self.handle_user_roles(admin:, user:, user_params:)
+      new(user: user, admin: admin, user_params: user_params).update_roles
+    end
+
     def initialize(user:, admin:, user_params:)
       @user = user
       @admin = admin
       @user_params = user_params
-    end
-
-    def self.handle_user_roles(admin:, user:, user_params:)
-      new(user: user, admin: admin, user_params: user_params).update_roles
     end
 
     def delete_comments
@@ -54,7 +54,7 @@ module Moderator
         noteable_id: @user.id,
         noteable_type: "User",
         reason: reason,
-        content: content,
+        content: content || "#{@admin.username} updated #{@user.username}",
       )
     end
 
@@ -99,6 +99,11 @@ module Moderator
       check_super_admin
       remove_negative_roles
       user.add_role(role)
+
+      # Clear cache key if the elevated role matches Rack::Attack bypass roles
+      return unless Rack::Attack::ADMIN_ROLES.include?(role.to_s)
+
+      Rails.cache.delete(Rack::Attack::ADMIN_API_CACHE_KEY)
     end
 
     def check_super_admin
@@ -128,14 +133,8 @@ module Moderator
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
-    def update_trusted_cache
-      Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted?
-    end
-
     def update_roles
       handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
-      update_trusted_cache
     end
   end
 end

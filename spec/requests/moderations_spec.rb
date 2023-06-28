@@ -26,7 +26,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   end
 end
 
-RSpec.describe "Moderations", type: :request do
+RSpec.describe "Moderations" do
   let(:trusted_user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
@@ -169,6 +169,89 @@ RSpec.describe "Moderations", type: :request do
         get "/mod"
 
         expect(response.body).to include logged_out_copy
+      end
+    end
+  end
+
+  describe "Super moderator Note & AuditLog" do
+    let(:super_mod) { create(:user, :super_moderator) }
+
+    before do
+      sign_in super_mod
+      Audit::Subscribe.listen(:moderator)
+    end
+
+    after { Audit::Subscribe.forget(:moderator) }
+
+    context "when unpublish a post of user" do
+      it "creates a note on a user" do
+        expected_note = "#{super_mod.username} unpublished post with ID #{article.id}"
+        expect do
+          patch "/articles/#{article.id}/admin_unpublish",
+                params: { slug: article.slug, username: article.user.username }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(expected_note)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect do
+          patch "/articles/#{article.id}/admin_unpublish",
+                params: { slug: article.slug, username: article.user.username }
+        end.to change(AuditLog, :count).by(1)
+      end
+    end
+
+    context "when unpublish all posts of user" do
+      it "creates a note on a user when note content is provided" do
+        note_content = "Unpublish due to Spam"
+        expect do
+          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles",
+               params: { note: { content: note_content } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(note_content)
+      end
+
+      it "creates a default note on a user when note content isn't provided" do
+        expected_note = "#{super_mod.username} unpublished all articles"
+        expect do
+          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles"
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(expected_note)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect do
+          post "/admin/member_manager/users/#{article.user_id}/unpublish_all_articles",
+               params: { note: { content: "Test note" } }
+          sidekiq_perform_enqueued_jobs
+        end.to change(AuditLog, :count).by(1)
+      end
+    end
+
+    context "when suspend user" do
+      it "creates a note on a user when note content is provided" do
+        note_content = "Unpublish due to Spam"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Suspend", note_for_current_role: note_content } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(note_content)
+      end
+
+      it "creates a default note on a user when note content isn't provided" do
+        expected_note = "#{super_mod.username} updated #{article.user.username}"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Suspend" } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(expected_note)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Suspend", new_note: "Test note" } }
+        end.to change(AuditLog, :count).by(1)
       end
     end
   end

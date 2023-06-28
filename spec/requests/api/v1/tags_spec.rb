@@ -1,10 +1,8 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Tags", type: :request do
+RSpec.describe "Api::V1::Tags" do
   describe "GET /api/tags" do
     let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
-
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
     it "returns tags" do
       create(:tag, taggings_count: 10)
@@ -34,7 +32,7 @@ RSpec.describe "Api::V1::Tags", type: :request do
       get api_tags_path, headers: headers
 
       expected_result = [other_tag.id, tag.id]
-      expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
+      expect(response.parsed_body.pluck("id")).to eq(expected_result)
     end
 
     it "supports pagination" do
@@ -45,6 +43,17 @@ RSpec.describe "Api::V1::Tags", type: :request do
 
       get api_tags_path, params: { page: 2, per_page: 2 }, headers: headers
       expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+      allow(ApplicationConfig).to receive(:[]).and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+      allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+      create_list(:tag, 3)
+
+      get api_tags_path, params: { per_page: 10 }, headers: headers
+      expect(response.parsed_body.count).to eq(2)
     end
 
     it "sets the correct edge caching surrogate key for all tags" do

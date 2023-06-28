@@ -16,9 +16,7 @@ export const Default = () => {
   );
 };
 
-Default.story = {
-  name: 'Text buttons',
-};
+Default.storyName = 'Text buttons';
 
 export const TextIcon = () => {
   const Icon = () => (
@@ -40,6 +38,4 @@ export const TextIcon = () => {
   );
 };
 
-TextIcon.story = {
-  name: 'Text button + Icon',
-};
+TextIcon.storyName = 'Text button + Icon';

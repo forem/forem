@@ -1,37 +1,39 @@
 <div id="remove-social-accounts">
   <div class="flex flex-col gap-4">
-    <p>Sometimes users encounter sign-in issues when they....</p>
-    <ol>
-      <li>create an account on <%= community_name %> with a social account, and</li>
-      <li>remove the original social account, and</li>
-      <li>attempt to sign in again using the same, removed social account.</li>
-    </ol>
-    <p>If this is the case, removing the social accounts below can help restore their social accounts. To verify if this is the case, follow steps 1 and 2 below. If verified, follow through all steps to restore their social accounts.</p>
+    <%= t("views.admin.users.social.desc_html", community: community_name) %>
 
     <h3 class="crayons-subtitle-2">
-      How to restore a social account
+      <%= t("views.admin.users.social.howto.subtitle") %>
     </h3>
     <ol>
-      <li>Check their social account's UID via these third party tools: <a href="https://tweeterid.com/?username=<%= @user.twitter_username %>" target="_blank" rel="noopener nofollow">Twitter UID</a> and <a href="https://caius.github.io/github_id/#<%= @user.github_username %>" target="_blank" rel="noopener nofollow">GitHub UID</a></li>
-      <li>Check whether or not it matches the corresponding UID below.</li>
-      <li>Remove the respective account if it doesn't match.</li>
-      <li>Ask the user to reauthorize their social account via <%= app_url(user_settings_path(:account)) %></li>
+      <li><%= t("views.admin.users.social.howto.first_html",
+                twitter_uid: link_to(t("views.admin.users.social.howto.twitter_uid"), "https://tweeterid.com/?username=#{@user.twitter_username}", target: "_blank", rel: "noopener nofollow"),
+                github_uid: link_to(t("views.admin.users.social.howto.github_uid"), "https://caius.github.io/github_id/##{@user.twitter_username}", target: "_blank", rel: "noopener nofollow")) %></li>
+      <li><%= t("views.admin.users.social.howto.second") %></li>
+      <li><%= t("views.admin.users.social.howto.third") %></li>
+      <li><%= t("views.admin.users.social.howto.fourth", app: app_url(user_settings_path(:account))) %></li>
     </ol>
 
     <% @user.identities.each do |identity| %>
       <%= form_for(@user, url: remove_identity_admin_user_path(@user),
-                          html: { class: "fs-base p-4 py-3 c-card c-card--interactive flex gap-2 justify-between items-center", method: :delete, onsubmit: "return confirm('Are you sure? This should only be done as a solution for the listed example(s).)", id: nil }) do |f| %>
+                          html: { class: "fs-base p-4 py-3 c-card c-card--interactive flex gap-2 justify-between items-center", method: :delete, onsubmit: "return confirm('#{j t('views.admin.users.social.onsubmit')}')", id: nil }) do |f| %>
         <%= f.hidden_field :identity_id, value: identity.id %>
         <div class="flex-1 flex items-center gap-2">
           <%= crayons_icon_tag(identity.provider, class: "shrink-0", width: 32, height: 32) %>
           <div class="lh-tight">
-            <h4 class="crayons-subtitle-3"><%= identity.provider.capitalize %></h4>
-            <p class="fs-base color-secondary"><strong>UID:</strong> <%= identity.uid %> &bull; <strong>Username:</strong> <%= identity.auth_data_dump.present? ? identity.auth_data_dump["info"]["nickname"] : "No data available..." %></p>
+            <h4 class="crayons-subtitle-3"><%= t("views.admin.users.identities.#{identity.provider}", default: identity.provider.capitalize) %></h4>
+            <p class="fs-base color-secondary">
+              <strong>
+                <%= t("views.admin.users.social.uid") %>
+              </strong> <%= identity.uid %> &bull; <strong>
+                <%= t("views.admin.users.social.username") %>
+              </strong> <%= identity.auth_data_dump.present? ? identity.auth_data_dump["info"]["nickname"] : t("views.admin.users.social.no_data") %>
+            </p>
           </div>
         </div>
         <%= f.button class: "c-btn c-btn--icon-left c-btn--destructive", type: "submit" do %>
           <%= crayons_icon_tag(:bin, class: "c-btn__icon") %>
-          Remove
+          <%= t("views.admin.users.social.submit") %>
         <% end %>
       <% end %>
     <% end %>

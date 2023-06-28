@@ -52,7 +52,7 @@ describe('generateUtilityClassesDocumentation', () => {
 \`}</code></pre>
     </div>
 
-    _color_some_utility_class.story = { name: 'color-some-utility-class' };
+    _color_some_utility_class.storyName = 'color-some-utility-class';
     `;
     const styleSheet = {
       cssRules: [
@@ -108,7 +108,7 @@ describe('generateUtilityClassesDocumentation', () => {
 \`}</code></pre>
     </div>
 
-    _color_some_utility_class.story = { name: 'color-some-utility-class' };
+    _color_some_utility_class.storyName = 'color-some-utility-class';
     `;
     const styleSheet = {
       cssRules: [
@@ -159,7 +159,7 @@ describe('generateUtilityClassesDocumentation', () => {
 \`}</code></pre>
     </div>
 
-    _color_some_utility_class.story = { name: 'color-some-utility-class' };
+    _color_some_utility_class.storyName = 'color-some-utility-class';
     `;
     const styleSheet = {
       cssRules: [
@@ -208,7 +208,7 @@ describe('generateUtilityClassesDocumentation', () => {
 \`}</code></pre>
     </div>
 
-    _color_some_utility_class.story = { name: 'color-some-utility-class' };
+    _color_some_utility_class.storyName = 'color-some-utility-class';
     `;
     const styleSheet = {
       cssRules: [

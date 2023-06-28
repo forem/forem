@@ -7,41 +7,41 @@
         <ul class="list-none">
             <li>
                 <button class="c-btn align-left w-100 c-btn--icon-left"
-                data-modal-title="Add role"
+                data-modal-title="<%= t("views.admin.users.actions.assign_role.heading") %>"
                 data-modal-size="small"
                 data-modal-content-selector="#add-role-modal"
                 data-form-action="<%= user_status_admin_user_path(user) %>">
                 <%= crayons_icon_tag("badge", aria_hidden: true, class: "c-btn__icon") %>
-                Assign role
+                <%= t("views.admin.users.actions.assign_role.text") %>
                 </button>
             </li>
             <li>
                 <button class="c-btn align-left w-100 c-btn--icon-left"
-                        data-modal-title="Add organization"
+                        data-modal-title="<%= t("views.admin.users.actions.add_org.heading") %>"
                         data-modal-size="small"
                         data-modal-content-selector="#add-organization"
                         data-user-name="<%= user.name %>"
                         data-user-id="<%= user.id %>"
                         data-form-action="<%= user_status_admin_user_path(user) %>">
                         <%= crayons_icon_tag("team", aria_hidden: true, class: "c-btn__icon") %>
-                        Add organization
+                        <%= t("views.admin.users.actions.add_org.text") %>
                 </button>
             </li>
             <li>
                 <button class="c-btn align-left w-100 c-btn--icon-left"
-                        data-modal-title="Adjust balance"
+                        data-modal-title="<%= t("views.admin.users.actions.adjust_credit.heading") %>"
                         data-modal-size="small"
                         data-modal-content-selector="#adjust-balance"
                         data-user-name="<%= user.name %>"
                         data-unspent-credits-count="<%= user.unspent_credits_count %>"
                         data-form-action="<%= user_status_admin_user_path(user) %>">
                         <%= crayons_icon_tag("wallet", aria_hidden: true, class: "c-btn__icon") %>
-                        Adjust credit balance
+                        <%= t("views.admin.users.actions.adjust_credit.text") %>
                 </button>
                 <hr />
             </li>
 
-            <li><button data-copy-email="<%= user.email %>" type="button" class="c-btn w-100 align-left c-btn--icon-left"> <%= crayons_icon_tag("copy", aria_hidden: true, class: "c-btn__icon") %>Copy email address</button></li>
+            <li><button data-copy-email="<%= user.email %>" type="button" class="c-btn w-100 align-left c-btn--icon-left"> <%= crayons_icon_tag("copy", aria_hidden: true, class: "c-btn__icon") %><%= t("views.admin.users.actions.copy_email") %></button></li>
         </ul>
     </div>
 </div>

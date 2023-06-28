@@ -1,12 +1,12 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/customization/display_ads", type: :request do
+RSpec.describe "/admin/customization/display_ads" do
   let(:get_resource) { get admin_display_ads_path }
   let(:org) { create(:organization) }
   let(:params) do
     { organization_id: org.id, body_markdown: "[Click here!](https://example.com)", placement_area: "sidebar_left",
-      approved: true, published: true }
+      approved: true, published: true, priority: true }
   end
   let(:post_resource) { post admin_display_ads_path, params: params }
 
@@ -56,6 +56,11 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         post_resource
         expect(EdgeCache::BustSidebar).to have_received(:call).once
       end
+
+      it "sets creator to current_user" do
+        post_resource
+        expect(DisplayAd.last.creator_id).to eq(super_admin.id)
+      end
     end
 
     describe "PUT /admin/customization/display_ads" do
@@ -66,6 +71,14 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
           expect do
             put admin_display_ad_path(display_ad.id), params: params
           end.to change { display_ad.reload.approved }.from(false).to(true)
+        end
+      end
+
+      it "updates DisplayAd's priority value" do
+        Timecop.freeze(Time.current) do
+          expect do
+            put admin_display_ad_path(display_ad.id), params: params
+          end.to change { display_ad.reload.priority }.from(false).to(true)
         end
       end
 
@@ -103,6 +116,11 @@ RSpec.describe "/admin/customization/display_ads", type: :request do
         expect do
           post_resource
         end.to change { DisplayAd.all.count }.by(1)
+      end
+
+      it "sets creator to current_user" do
+        post_resource
+        expect(DisplayAd.last.creator_id).to eq(single_resource_admin.id)
       end
     end
 

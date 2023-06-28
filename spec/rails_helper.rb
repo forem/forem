@@ -1,12 +1,33 @@
 ENV["RAILS_ENV"] = "test"
 require "knapsack_pro"
+require "simplecov"
+require "simplecov_json_formatter"
+
+if ENV["CI"]
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+end
 KnapsackPro::Adapters::RSpecAdapter.bind
+KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
+  SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
+
+TMP_RSPEC_XML_REPORT = "tmp/rspec.xml".freeze
+FINAL_RSPEC_XML_REPORT = "tmp/rspec_final_results.xml".freeze
+
+KnapsackPro::Hooks::Queue.after_subset_queue do |_queue_id, _subset_queue_id|
+  if File.exist?(TMP_RSPEC_XML_REPORT)
+    FileUtils.mv(TMP_RSPEC_XML_REPORT, FINAL_RSPEC_XML_REPORT)
+  end
+end
 
 require "spec_helper"
 
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+
+Rake.application = Rake::Application.new
+Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -67,7 +88,7 @@ Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = Rails.root.join("spec/fixtures")
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper

@@ -15,6 +15,8 @@ fr:
           text: Partager sur Hacker News
         linkedin:
           text: Partager sur LinkedIn
+        mastodon:
+          text: Partager sur Mastodon
         reddit:
           text: Partager sur Reddit
         twitter:

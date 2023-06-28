@@ -1,6 +1,6 @@
 <div class="relative">
   <%= f.text_field :search, id: "search-#{context}", value: params[:search], class: "crayons-textfield mt-0", placeholder: placeholder, aria: { label: aria_label } %>
-  <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+  <button type="submit" aria-label="<%= t("views.admin.users.search.aria_label") %>" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
     <%= crayons_icon_tag(:search, aria_hidden: true) %>
   </button>
 </div>

@@ -1,6 +1,6 @@
-<%- headers = ["Name", "Username", "Email address", "Status", "Joining date", "Last activity", "Organizations"] -%>
+<%- headers = [t("views.admin.users.download.name"), t("views.admin.users.download.username"), t("views.admin.users.download.email"), t("views.admin.users.download.status"), t("views.admin.users.download.join"), t("views.admin.users.download.last_activity"), t("views.admin.users.download.orgs")] -%>
 <%= CSV.generate_line headers -%>
 <%- @users.each do |user| -%>
-  <%- row = [user.name, user.username, user.email, user_status(user), user.registered_at&.strftime("%d %b, %Y"), user.last_activity&.strftime("%d %b, %Y"), user.organizations.pluck(:name)] -%>
+  <%- row = [user.name, user.username, user.email, user_status(user), user.registered_at ? l(user.registered_at, format: :members_with_year) : '', user.last_activity ? l(user.last_activity, format: :members_with_year) : '', user.organizations.pluck(:name)] -%>
   <%= CSV.generate_line(row).html_safe -%>
 <%- end -%>

@@ -10,8 +10,10 @@ en:
     existing_published_article_id_validator:
       default: must be a valid published Article identifier
     profile_validator:
-      too_long: is too long
-    unique_cross_model_slug_validator:
-      is_taken: is taken
+      bio_too_long: Bio is too long
+    cross_model_slug_validator:
+      is_taken: has already been taken
+      is_invalid: is invalid
+      is_reserved: is reserved
     valid_domain_csv_validator:
       invalid_list_format: must be a comma-separated list of valid domains

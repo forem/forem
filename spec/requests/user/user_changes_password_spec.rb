@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User changes password", type: :request do
+RSpec.describe "User changes password" do
   let(:password) { "password123" }
   let(:user) { create(:user, password: password, password_confirmation: password) }
 

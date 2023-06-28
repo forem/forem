@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   resourcify
-  rolify
+  rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
 
@@ -24,8 +24,8 @@ class User < ApplicationRecord
 
   include StringAttributeCleaner.nullify_blanks_for(:email)
 
+  extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
-  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/
   # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
   PAYMENT_POINTER_REGEXP = %r{
     \A                # start
@@ -34,6 +34,8 @@ class User < ApplicationRecord
     (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
     \z
   }x
+
+  RECENTLY_ACTIVE_LIMIT = 10_000
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
@@ -68,7 +70,7 @@ class User < ApplicationRecord
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
-  has_many :display_ad_events, dependent: :delete_all
+  has_many :display_ad_events, dependent: :nullify
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
@@ -95,6 +97,8 @@ class User < ApplicationRecord
   has_many :poll_skips, dependent: :delete_all
   has_many :poll_votes, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :segmented_users, dependent: :destroy
+  has_many :audience_segments, through: :segmented_users
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify
@@ -110,7 +114,6 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :devices, dependent: :delete_all
-  has_many :sponsorships, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -137,14 +140,6 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
-  validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
-  validates :username, presence: true, exclusion: {
-    in: ReservedWords.all,
-    message: proc { I18n.t("models.user.username_is_reserved") }
-  }
-  validates :username, uniqueness: { case_sensitive: false, message: lambda do |_obj, data|
-    I18n.t("models.user.is_taken", username: (data[:value]))
-  end }, if: :username_changed?
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -159,7 +154,9 @@ class User < ApplicationRecord
   end
 
   validate :non_banished_username, :username_changed?
-  validates :username, unique_cross_model_slug: true, if: :username_changed?
+
+  unique_across_models :username, length: { in: 2..USERNAME_MAX_LENGTH }
+
   validate :can_send_confirmation_email
   validate :update_rate_limit
   # NOTE: when updating the password on a Devise enabled model, the :encrypted_password
@@ -207,12 +204,22 @@ class User < ApplicationRecord
       ),
     )
   }
+
+  scope :with_experience_level, lambda { |level = nil|
+    includes(:setting).where("users_settings.experience_level": level)
+  }
+
+  scope :recently_active, lambda { |active_limit = RECENTLY_ACTIVE_LIMIT|
+    order(updated_at: :desc).limit(active_limit)
+  }
+
   before_validation :downcase_email
 
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
+  after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -297,7 +304,7 @@ class User < ApplicationRecord
   end
 
   def cached_following_podcasts_ids
-    cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
+    cache_key = "#{cache_key_with_version}/following_podcasts_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
       Follow.follower_podcast(id).pluck(:followable_id)
     end
@@ -305,9 +312,9 @@ class User < ApplicationRecord
 
   def cached_reading_list_article_ids
     Rails.cache.fetch("reading_list_ids_of_articles_#{id}_#{public_reactions_count}_#{last_reacted_at}") do
-      Reaction.readinglist.where(
-        user_id: id, reactable_type: "Article",
-      ).where.not(status: "archived").order(created_at: :desc).pluck(:reactable_id)
+      readinglist = Reaction.readinglist_for_user(self).order("created_at DESC")
+      published = Article.published.where(id: readinglist.pluck(:reactable_id)).ids
+      readinglist.filter_map { |r| r.reactable_id if published.include? r.reactable_id }
     end
   end
 
@@ -319,32 +326,22 @@ class User < ApplicationRecord
     true
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: 1..,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.followed_by(self).pluck(:name)
     end
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: ...1,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.antifollowed_by(self).pluck(:name)
     end
+  end
+
+  def refresh_auto_audience_segments
+    SegmentedUserRefreshWorker.perform_async(id)
   end
 
   ##############################################################################
@@ -511,7 +508,7 @@ class User < ApplicationRecord
   end
 
   def receives_follower_email_notifications?
-    email.present? && subscribed_to_email_follower_notifications?
+    email.present? && notification_setting.subscribed_to_email_follower_notifications?
   end
 
   def authenticated_through?(provider_name)
@@ -536,18 +533,6 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
-  def subscribed_to_welcome_notifications?
-    notification_setting.welcome_notifications
-  end
-
-  def subscribed_to_mod_roundrobin_notifications?
-    notification_setting.mod_roundrobin_notifications
-  end
-
-  def subscribed_to_email_follower_notifications?
-    notification_setting.email_follower_notifications
-  end
-
   def reactions_to
     Reaction.for_user(self)
   end
@@ -557,6 +542,10 @@ class User < ApplicationRecord
 
     [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
      last_moderation_notification, last_notification_activity].compact.max
+  end
+
+  def currently_following_tags
+    Tag.followed_by(self)
   end
 
   protected
@@ -582,33 +571,19 @@ class User < ApplicationRecord
   end
 
   def set_username
-    set_temp_username if username.blank?
-    self.username = username&.downcase
+    self.username = username&.downcase&.presence || generate_username
   end
 
-  # @todo Should we do something to ensure that we don't create a username that violates our
-  # USERNAME_MAX_LENGTH constant?
-  #
-  # @see USERNAME_MAX_LENGTH
-  def set_temp_username
-    self.username = if temp_name_exists?
-                      "#{temp_username}_#{rand(100)}"
-                    else
-                      temp_username
-                    end
+  def auth_provider_usernames
+    attributes
+      .with_indifferent_access
+      .slice(*Authentication::Providers.username_fields)
+      .values.compact || []
   end
 
-  def temp_name_exists?
-    User.exists?(username: temp_username) || Organization.exists?(slug: temp_username)
-  end
-
-  def temp_username
-    Authentication::Providers.username_fields.each do |username_field|
-      value = public_send(username_field)
-      next if value.blank?
-
-      return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
-    end
+  def generate_username
+    Users::UsernameGenerator
+      .call(auth_provider_usernames)
   end
 
   def downcase_email
@@ -659,5 +634,12 @@ class User < ApplicationRecord
 
   def confirmation_required?
     ForemInstance.smtp_enabled?
+  end
+
+  def update_user_roles_cache(...)
+    authorizer.clear_cache
+    Rails.cache.delete("user-#{id}/has_trusted_role")
+    refresh_auto_audience_segments
+    trusted?
   end
 end

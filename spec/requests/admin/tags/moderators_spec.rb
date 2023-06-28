@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/tags/:id/moderator", type: :request do
+RSpec.describe "/admin/content_manager/tags/:id/moderator" do
   let(:super_admin) { create(:user, :super_admin) }
   let(:user)        { create(:user) }
   let(:tag)         { create(:tag) }

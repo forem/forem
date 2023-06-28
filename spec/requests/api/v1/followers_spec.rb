@@ -1,13 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::FollowersController", type: :request do
+RSpec.describe "Api::V1::FollowersController" do
   let(:user) { create(:user) }
   let(:api_secret) { create(:api_secret, user: user) }
   let(:headers) { { "api-key" => api_secret.secret, "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:follower) { create(:user) }
   let(:follower2) { create(:user) }
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
   describe "GET /api/followers/users" do
     before do
@@ -18,7 +16,7 @@ RSpec.describe "Api::V1::FollowersController", type: :request do
 
     context "when user is unauthorized" do
       it "returns unauthorized" do
-        get api_followers_users_path
+        get api_followers_users_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -28,7 +26,7 @@ RSpec.describe "Api::V1::FollowersController", type: :request do
       it "returns ok" do
         sign_in user
 
-        get api_followers_users_path
+        get api_followers_users_path, headers: { "Accept" => "application/vnd.forem.api-v1+json" }
         expect(response).to have_http_status(:ok)
       end
     end
@@ -67,7 +65,7 @@ RSpec.describe "Api::V1::FollowersController", type: :request do
         get api_followers_users_path, headers: headers
 
         follows = user.followings.order(id: :desc).last(2).map(&:id)
-        result = response.parsed_body.map { |f| f["id"] }
+        result = response.parsed_body.pluck("id")
         expect(result).to eq(follows)
       end
 
@@ -76,7 +74,7 @@ RSpec.describe "Api::V1::FollowersController", type: :request do
 
         follows = user.followings.order(id: :asc).last(2).map(&:id)
         get api_followers_users_path, headers: headers, params: { sort: "created_at" }
-        result = response.parsed_body.map { |f| f["id"] }
+        result = response.parsed_body.pluck("id")
         expect(result).to eq(follows)
       end
     end

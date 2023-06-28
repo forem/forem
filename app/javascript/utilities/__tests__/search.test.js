@@ -8,18 +8,18 @@ import {
 } from '../search';
 import '../../../assets/javascripts/lib/xss';
 
-/* global globalThis */
+const csrfToken = 'this-is-a-csrf-token';
+jest.mock('../../utilities/http/csrfToken', () => ({
+  getCSRFToken: jest.fn(() => Promise.resolve(csrfToken)),
+}));
 
+/* global globalThis */
 describe('Search utilities', () => {
   beforeAll(() => {
-    const csrfToken = 'this-is-a-csrf-token';
-
     globalThis.fetch = fetch;
-    globalThis.getCsrfToken = async () => csrfToken;
   });
   afterAll(() => {
     delete globalThis.fetch;
-    delete globalThis.getCsrfToken;
   });
 
   describe('getSearchTermFromUrl', () => {

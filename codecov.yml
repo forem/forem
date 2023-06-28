@@ -1,0 +1,25 @@
+# NB: Run the following command to verify this file is valid
+# > cat codecov.yml | curl --data-binary @- https://codecov.io/validate
+
+codecov:
+  ci:
+    - "!buildkite"
+  require_ci_to_pass: no
+  notify:
+    wait_for_ci: no
+ignore:
+  - "vendor"
+  - "bin"
+  - "**/*.svg"
+  - "lib/sitemap_generator"
+  - "lib/generators"
+  - "lib/tasks/custom_seeds.rake"
+coverage:
+  status:
+    patch:
+      default:
+        target: 85%
+    project: false
+flag_management:
+  default_rules:
+    carryforward: false

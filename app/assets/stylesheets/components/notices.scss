@@ -21,4 +21,17 @@
   &--info {
     background: rgba(var(--brand), 0.1);
   }
+
+  &--close {
+    float: right;
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-bold);
+    line-height: 1;
+    color: var(--base);
+    text-shadow: 0 1px 0 var(--base-inverted);
+    opacity: var(--opacity-50);
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+  }
 }

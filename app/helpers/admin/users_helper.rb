@@ -16,45 +16,46 @@ module Admin
       return if timestamp.blank?
 
       if timestamp.today?
-        "Today, #{timestamp.strftime('%d %b')}"
+        I18n.t("helpers.admin.user_helper.today", date: I18n.l(timestamp, format: :members))
       elsif timestamp.yesterday?
-        "Yesterday, #{timestamp.strftime('%d %b')}"
+        I18n.t("helpers.admin.user_helper.yesterday", date: I18n.l(timestamp, format: :members))
       else
-        timestamp.strftime("%d %b, %Y")
+        I18n.l(timestamp, format: :members_with_year)
       end
     end
 
     def cascading_high_level_roles(user)
       if user.super_admin?
-        "Super Admin"
+        I18n.t("views.admin.users.roles.Super Admin")
       elsif user.admin?
-        "Admin"
+        I18n.t("views.admin.users.roles.Admin")
       elsif user.single_resource_admin_for?(:any)
-        "Resource Admin"
+        I18n.t("views.admin.users.roles.Resource Admin")
       end
     end
 
     def format_role_tooltip(user)
       if user.super_admin?
-        "Super Admin"
+        I18n.t("views.admin.users.roles.Super Admin")
       elsif user.admin?
-        "Admin"
+        I18n.t("views.admin.users.roles.Admin")
       elsif user.single_resource_admin_for?(:any)
-        "Resource Admin: #{user.roles.pluck(:resource_type).compact.join(', ')}"
+        role = "Resource Admin: #{user.roles.pluck(:resource_type).compact.join(', ')}"
+        I18n.t("views.admin.users.roles.#{role}", default: role)
       end
     end
 
     def user_status(user)
       if user.suspended?
-        "Suspended"
+        I18n.t("views.admin.users.statuses.Suspended")
       elsif user.warned?
-        "Warned"
+        I18n.t("views.admin.users.statuses.Warned")
       elsif user.comment_suspended?
-        "Comment Suspended"
+        I18n.t("views.admin.users.statuses.Comment Suspended")
       elsif user.trusted?
-        "Trusted"
+        I18n.t("views.admin.users.statuses.Trusted")
       else
-        "Good Standing"
+        I18n.t("views.admin.users.statuses.Good Standing")
       end
     end
 
@@ -83,16 +84,12 @@ module Admin
     #  @param [Integer] The limit of organizations that we show
     # @return [String]
     def organization_tooltip(organization_names, count, imposed_limit: 0)
-      str = organization_names.first(imposed_limit).join(", ").to_s
+      str = organization_names.first(imposed_limit).join(I18n.t("helpers.admin.user_helper.org_join")).to_s
 
       return str unless count > imposed_limit
 
-      overflow = overflow_count(count, imposed_limit: imposed_limit)
-      if overflow == 1
-        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} other"
-      else
-        str + " & #{overflow_count(count, imposed_limit: imposed_limit)} others"
-      end
+      I18n.t("helpers.admin.user_helper.org_overflow", count: overflow_count(count, imposed_limit: imposed_limit),
+                                                       orgs: str)
     end
 
     # Returns a string hex code representing the indicator color for the given status (also known as BASE_ROLE)

@@ -38,22 +38,22 @@ RSpec.describe UserDecorator, type: :decorator do
 
   describe "#darker_color" do
     it "returns a darker version of the assigned color if colors are blank" do
-      saved_user.setting.update(brand_color1: "", brand_color2: "")
+      saved_user.setting.update(brand_color1: "")
       expect(saved_user.decorate.darker_color).to be_present
     end
 
     it "returns a darker version of the color if brand_color1 is present" do
-      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
+      saved_user.setting.update(brand_color1: "#dddddd")
       expect(saved_user.decorate.darker_color).to eq("#c2c2c2")
     end
 
     it "returns an adjusted darker version of the color" do
-      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
+      saved_user.setting.update(brand_color1: "#dddddd")
       expect(saved_user.decorate.darker_color(0.3)).to eq("#424242")
     end
 
     it "returns an adjusted lighter version of the color if adjustment is over 1.0" do
-      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#ffffff")
+      saved_user.setting.update(brand_color1: "#dddddd")
       expect(saved_user.decorate.darker_color(1.1)).to eq("#f3f3f3")
     end
   end
@@ -65,27 +65,10 @@ RSpec.describe UserDecorator, type: :decorator do
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
     end
 
-    it "returns assigned colors if brand_color2 is blank" do
-      saved_user.setting.update(brand_color2: "")
+    it "returns brand_color1 if present" do
+      saved_user.setting.update(brand_color1: "#dddddd")
       expect(saved_user.decorate.enriched_colors[:bg]).to be_present
       expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns brand_color1 and assigned brand_color2 if brand_color2 is blank" do
-      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns brand_color2 and assigned brand_color1 if brand_color1 is blank" do
-      saved_user.setting.update(brand_color1: "", brand_color2: "#ffffff")
-      expect(saved_user.decorate.enriched_colors[:bg]).to be_present
-      expect(saved_user.decorate.enriched_colors[:text]).to be_present
-    end
-
-    it "returns brand_color1 and brand_color2 if both are present" do
-      saved_user.setting.update(brand_color1: "#dddddd", brand_color2: "#fffff3")
-      expect(saved_user.decorate.enriched_colors).to eq(bg: "#dddddd", text: "#fffff3")
     end
   end
 
@@ -93,6 +76,7 @@ RSpec.describe UserDecorator, type: :decorator do
     it "creates proper body class with defaults" do
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -102,6 +86,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_font = "sans_serif"
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -111,6 +96,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_theme = "dark_theme"
       expected_result = %W[
         dark-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -120,6 +106,7 @@ RSpec.describe UserDecorator, type: :decorator do
       user.setting.config_navbar = "static"
       expected_result = %W[
         light-theme sans-serif-article-body
+        mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} static-header
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
@@ -132,7 +119,7 @@ RSpec.describe UserDecorator, type: :decorator do
         user.add_role(:trusted)
 
         expected_result = %w[
-          light-theme sans-serif-article-body
+          light-theme sans-serif-article-body mod-status-false
           trusted-status-true default-header
         ].join(" ")
         expect(user.decorate.config_body_class).to eq(expected_result)

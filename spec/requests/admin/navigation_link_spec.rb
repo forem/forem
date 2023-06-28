@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NavigationLinks", type: :request do
+RSpec.describe "NavigationLinks" do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -12,7 +12,7 @@ RSpec.describe "NavigationLinks", type: :request do
 
     it "returns a successful response" do
       get admin_navigation_links_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 

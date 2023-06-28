@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Comments", type: :request do
+RSpec.describe "Api::V1::Comments" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:article) { create(:article) }
   let!(:root_comment) { create(:comment, commentable: article) }
@@ -36,8 +36,6 @@ RSpec.describe "Api::V1::Comments", type: :request do
     end
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
   describe "GET /api/comments" do
     it "returns not found if wrong article id" do
       get api_comments_path(a_id: "gobbledygook"), headers: headers
@@ -56,7 +54,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
       get api_comments_path(a_id: article.id), headers: headers
 
       expected_ids = article.comments.roots.map(&:id_code_generated)
-      response_ids = response.parsed_body.map { |cm| cm["id_code"] }
+      response_ids = response.parsed_body.pluck("id_code")
       expect(response_ids).to match_array(expected_ids)
     end
 

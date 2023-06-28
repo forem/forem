@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/users/export", type: :request do
+RSpec.describe "/admin/users/export" do
   let(:admin) do
     create(:user, :super_admin,
            name: "Admin1", username: "admin1", email: "admin1@gmail.com",

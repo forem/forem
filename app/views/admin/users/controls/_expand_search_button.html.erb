@@ -1,4 +1,4 @@
-<button type="button" id="expand-search-btn" class="relative c-btn c-btn--icon-alone indicator-btn" aria-label="Expand search" aria-expanded="false" aria-controls="search-users">
-    <%= crayons_icon_tag("search", aria_hidden: true) %>
+<button type="button" id="expand-search-btn" class="relative c-btn c-btn--icon-alone indicator-btn" aria-label="<%= t("views.admin.users.search.aria_expand") %>" aria-expanded="false" aria-controls="search-users">
+    <%= crayons_icon_tag(t("views.admin.users.search.icon"), aria_hidden: true) %>
     <span data-testid="search-indicator" class="search-indicator absolute top-1 right-1 c-indicator c-indicator--info <%= params[:search].blank? ? "hidden" : "" %>"></span>
 </button>

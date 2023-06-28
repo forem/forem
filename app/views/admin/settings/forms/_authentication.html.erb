@@ -155,10 +155,10 @@
         <hr class="my-0" />
 
         <section class="mb-6">
-          <div class="form-group mb-0">
+          <div class="crayons-field mb-0">
             <%= f.text_field :auth_providers_to_enable,
                              id: "auth_providers_to_enable",
-                             class: "form-control hidden",
+                             class: "crayons-textfield bg-base-10 hidden",
                              value: Settings::Authentication.providers.join(","),
                              readonly: true %>
           </div>

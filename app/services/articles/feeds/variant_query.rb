@@ -10,6 +10,19 @@ module Articles
     # @see config/feed-variants/README.md
     # @see app/models/articles/feeds/README.md
     class VariantQuery
+      Config = Struct.new(
+        :variant,
+        :description,
+        :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
+        :order_by, # Articles::Feeds::OrderByLever
+        :max_days_since_published,
+        # when true, each time you call the query you will get different randomized numbers; when
+        # false, the resulting randomized numbers will be the same within a window of time.
+        :reseed_randomizer_on_each_request,
+        keyword_init: true,
+      ) do
+        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
+      end
       # @api public
       #
       # @param variant [Symbol, #to_sym] the name of the variant query we're building.
@@ -23,23 +36,6 @@ module Articles
       def self.build_for(variant:, assembler: VariantAssembler, **kwargs)
         config = assembler.call(variant: variant)
         new(config: config, **kwargs)
-      end
-
-      # Let's make sure that folks initialize this with a variant configuration.
-      private_class_method :new
-
-      Config = Struct.new(
-        :variant,
-        :description,
-        :levers, # Array <Articles::Feeds::RelevancyLever::Configured>
-        :order_by, # Articles::Feeds::OrderByLever
-        :max_days_since_published,
-        # when true, each time you call the query you will get different randomized numbers; when
-        # false, the resulting randomized numbers will be the same within a window of time.
-        :reseed_randomizer_on_each_request,
-        keyword_init: true,
-      ) do
-        alias_method :reseed_randomizer_on_each_request?, :reseed_randomizer_on_each_request
       end
 
       # @param config [Articles::Feeds::VariantQuery::Config]
@@ -137,6 +133,7 @@ module Articles
         Article.joins(join_fragment)
           .limited_column_select
           .includes(top_comments: :user)
+          .includes(:distinct_reaction_categories)
           .order(config.order_by.to_sql)
       end
 
@@ -261,6 +258,7 @@ module Articles
         where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
         # See Articles.published scope discussion regarding the query planner
         where_clauses += " AND articles.published_at < :now"
+        where_clauses += " AND articles.score >= 0" # We only want positive values here.
 
         # Without the compact, if we have `omit_article_ids: [nil]` we
         # have the following SQL clause: `articles.id NOT IN (NULL)`
@@ -294,9 +292,9 @@ module Articles
       end
 
       def default_offset
-        return 0 if @page == 1
+        return 0 if @page.zero?
 
-        @page.to_i - (1 * default_limit)
+        (@page.to_i - 1) * default_limit
       end
 
       # We want to ensure that we're not randomizing someone's feed all the time; and instead aiming

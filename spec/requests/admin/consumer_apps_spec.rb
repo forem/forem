@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "Admin - Consumer Apps", type: :request do
+RSpec.describe "Admin - Consumer Apps" do
   let(:get_resource) { get admin_consumer_apps_path }
   let(:params) do
     {

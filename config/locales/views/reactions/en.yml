@@ -11,6 +11,12 @@ en:
         thumbsdown: Thumbs down
         unicorn: Unicorn
         vomit: Flag
+        lightbulb: Lightbulb
+        raised_hands: Raised hands
+        rocket: Rocket
+        exploding_head: Exploding head
+        fire: Fire
+      drawer_button: Add reaction
       summary:
         count_html:
           one: "%{count}%{start}\_reaction%{end}"

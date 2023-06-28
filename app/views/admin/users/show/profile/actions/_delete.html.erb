@@ -1,14 +1,14 @@
 <div id="delete-user">
   <% if current_user.super_admin? %>
-    <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('Are you sure? This action is irreversible.')", id: nil }) do |f| %>
-      <p>This action is irreversible.</p>
-      <p>Once deleted, all data relating to <%= @user.name %> will be removed from our database.</p>
-      <p>Be careful with this action.</p>
+    <%= form_for(@user, url: full_delete_admin_user_path(@user), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('#{j t('views.admin.users.delete.onsubmit')}')", id: nil }) do |f| %>
+      <p><%= t("views.admin.users.danger.desc1") %></p>
+      <p><%= t("views.admin.users.delete.desc2", user: @user.name) %></p>
+      <p><%= t("views.admin.users.danger.desc3") %></p>
       <div>
-        <button class="c-btn c-btn--primary c-btn--destructive">Delete now</button>
+        <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.users.delete.submit") %></button>
       </div>
     <% end %>
   <% else %>
-    <div class="crayons-notice crayons-notice--danger">Only Super Admins are allowed to delete users.</div>
+    <div class="crayons-notice crayons-notice--danger"><%= t("views.admin.users.delete.notice") %></div>
   <% end %>
 </div>

@@ -13,8 +13,6 @@ en:
         name: Name
         slug: Username
         profile_image: Profile image
-        nav_image: Logo for light themes
-        dark_nav_image: Logo for dark themes
         twitter_username: Twitter username
         github_username: GitHub username
         url: Website url
@@ -230,3 +228,11 @@ en:
       novice: Novice
     social_link_helper:
       n_a: N/A
+    admin:
+      user_helper:
+        today: Today, %{date}
+        yesterday: Yesterday, %{date}
+        org_join: ", "
+        org_overflow:
+          one: "%{orgs} & %{count} other"
+          other: "%{orgs} & %{count} others"

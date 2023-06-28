@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ResponseTemplate", type: :request do
+RSpec.describe "ResponseTemplate" do
   let(:user) { create(:user) }
   let(:trusted_user) { create(:user, :trusted) }
   let(:moderator) { create(:user, :tag_moderator) }
@@ -39,7 +39,7 @@ RSpec.describe "ResponseTemplate", type: :request do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: user, type_of: "personal_comment")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.keys).to contain_exactly("personal_comment")
         expect(json.values.flatten.count).to eq(2)
       end
@@ -51,7 +51,7 @@ RSpec.describe "ResponseTemplate", type: :request do
         headers = { HTTP_ACCEPT: "application/json" }
         get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
 
-        user_ids = response.parsed_body.map { |hash| hash["user_id"] }
+        user_ids = response.parsed_body.pluck("user_id")
         expect(user_ids).to eq([user.id, user.id])
       end
 
@@ -83,14 +83,14 @@ RSpec.describe "ResponseTemplate", type: :request do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 2
+        expect(response.parsed_body.length).to eq 2
       end
 
       it "returns both personal and moderator response templates if type_of unspecified" do
         create_list(:response_template, 2, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: nil }, headers: { HTTP_ACCEPT: "application/json" }
-        json = JSON.parse(response.body)
+        json = response.parsed_body
         expect(json.keys).to contain_exactly("mod_comment", "personal_comment")
         expect(json.values.flatten.count).to eq(4)
       end
@@ -114,7 +114,7 @@ RSpec.describe "ResponseTemplate", type: :request do
       it "allows access and returns an array of admin level response templates" do
         create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
         get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(JSON.parse(response.body).length).to eq 2
+        expect(response.parsed_body.length).to eq 2
       end
     end
   end
@@ -256,7 +256,20 @@ RSpec.describe "ResponseTemplate", type: :request do
     context "when signed-in as trusted user updating a mod_comment template" do
       before { sign_in trusted_user }
 
-      let(:response_template) { create :response_template, user: nil, type_of: "mod_comment" }
+      let(:response_template) { create(:response_template, user: nil, type_of: "mod_comment") }
+
+      it "does not permit the action" do
+        title = "something else"
+        expect do
+          patch response_template_path(response_template.id), params: { response_template: { title: title } }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+
+    context "when signed-in as super_moderator user updating a mod_comment template" do
+      before { sign_in create(:user, :super_moderator) }
+
+      let(:response_template) { create(:response_template, user: nil, type_of: "mod_comment") }
 
       it "successfully updates the response template" do
         title = "something else"

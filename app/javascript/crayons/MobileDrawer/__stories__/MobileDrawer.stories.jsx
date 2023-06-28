@@ -31,6 +31,4 @@ export const Default = () => {
   );
 };
 
-Default.story = {
-  name: 'MobileDrawer',
-};
+Default.storyName = 'MobileDrawer';

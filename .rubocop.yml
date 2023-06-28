@@ -6,6 +6,7 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-capybara
 
 AllCops:
   Exclude:
@@ -673,7 +674,7 @@ Style/SwapValues:
 Style/TopLevelMethodDefinition:
   Description: 'This cop looks for top-level method definitions.'
   Enabled: false
-# We're disabling it for the time being until a new version of rubocop 
+# We're disabling it for the time being until a new version of rubocop
 # (> 1.31.2) is released with a fix for false positives that are coming up.
 # These files below were the original files excluded from this rule.
 #  Exclude:
@@ -925,9 +926,11 @@ RSpec/DescribeClass:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
   Exclude:
-    - 'spec/requests/**/*'
-    - 'spec/system/**/*'
-    - 'spec/tasks/**/*'
+    - '**/spec/features/**/*'
+    - '**/spec/requests/**/*'
+    - '**/spec/routing/**/*'
+    - '**/spec/system/**/*'
+    - '**/spec/views/**/*'
 
 RSpec/DescribedClassModuleWrapping:
   Description: Avoid opening modules and defining specs within them.
@@ -936,9 +939,7 @@ RSpec/DescribedClassModuleWrapping:
 
 RSpec/ExampleLength:
   Description: Checks for long examples.
-  Enabled: true
-  Max: 15
-  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+  Enabled: false
 
 RSpec/IdenticalEqualityAssertion:
   Description: Checks for equality assertions with identical expressions on both sides.
@@ -965,3 +966,13 @@ RSpec/Rails/AvoidSetupHook:
   Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook
+
+RSpec/NoExpectationExample:
+  Enabled: false
+  AllowedPatterns:
+    - ^expect_
+    - ^assert_
+    - sidekiq_assert_
+
+RSpec/IndexedLet:
+  Enabled: false

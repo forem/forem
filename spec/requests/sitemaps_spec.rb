@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Sitemaps", type: :request do
+RSpec.describe "Sitemaps" do
   describe "GET /sitemap-*" do
     it "renders xml file" do
       get "/sitemap-Mar-2011.xml"

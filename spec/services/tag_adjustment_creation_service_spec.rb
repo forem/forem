@@ -12,7 +12,6 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
       status: "committed",
       tag_name: tag.name,
       article_id: article.id,
-      reason_for_adjustment: "Test",
     )
   end
 

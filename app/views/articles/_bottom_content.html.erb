@@ -5,9 +5,11 @@
       <a href="<%= article.path %>" data-preload-image="<%= cloud_cover_url(article.main_image) %>" class="crayons-link mt-6 block">
         <div class="flex items-center">
           <span class="crayons-avatar crayons-avatar--xl m:crayons-avatar--2xl mr-4 shrink-0">
-            <%= optimized_image_tag(article.cached_user.profile_image_url,
-                                    optimizer_options: { crop: "imagga_scale", width: 100, height: 100 },
-                                    image_options: { loading: "lazy", alt: "#{article.cached_user.username} profile image", class: "crayons-avatar__image" }) %>
+            <% if article.cached_user.profile_image_url %>
+              <%= optimized_image_tag(article.cached_user.profile_image_url,
+                                      optimizer_options: { crop: "imagga_scale", width: 100, height: 100 },
+                                      image_options: { loading: "lazy", alt: "#{article.cached_user.username} profile image", class: "crayons-avatar__image" }) %>
+            <% end %>
           </span>
           <div>
             <h3 class="fs-xl mb-0 lh-tight"><%= article.title %></h3>

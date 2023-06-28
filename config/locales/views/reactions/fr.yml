@@ -11,13 +11,19 @@ fr:
         thumbsdown: Thumbs down
         unicorn: Unicorn
         vomit: Flag
+        lightbulb: Lightbulb
+        raised_hands: Raised hands
+        rocket: Rocket
+        exploding_head: Exploding head
+        fire: Fire
+      drawer_button: Add reaction
       summary:
         count_html:
           one: "%{count}%{start}\_réaction%{end}"
           other: "%{count}%{start}\_réactions%{end}"
         title: Reactions
       like:
-        title: Coeur
+        title: Like
         aria_label: Like
         icon: Favorite heart button
         text: Like

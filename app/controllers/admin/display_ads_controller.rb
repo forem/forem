@@ -10,9 +10,7 @@ module Admin
 
       return if params[:search].blank?
 
-      @display_ads = @display_ads
-        .where("processed_html ILIKE :search OR placement_area ILIKE :search OR organizations.name ILIKE :search",
-               search: "%#{params[:search]}%")
+      @display_ads = @display_ads.search_ads(params[:search])
     end
 
     def new
@@ -25,6 +23,7 @@ module Admin
 
     def create
       @display_ad = DisplayAd.new(display_ad_params)
+      @display_ad.creator = current_user
 
       if @display_ad.save
         flash[:success] = I18n.t("admin.display_ads_controller.created")
@@ -60,7 +59,8 @@ module Admin
     private
 
     def display_ad_params
-      params.permit(:organization_id, :body_markdown, :placement_area, :published, :approved)
+      params.permit(:organization_id, :body_markdown, :placement_area, :published, :approved, :name, :display_to,
+                    :tag_list, :type_of, :exclude_article_ids, :audience_segment_id, :priority)
     end
 
     def authorize_admin

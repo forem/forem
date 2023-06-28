@@ -70,35 +70,7 @@ Cypress.Commands.add(
   },
 );
 
-/**
- * Runs necessary test setup to run a clean test.
- */
 Cypress.Commands.add('testSetup', () => {
-  const MAX_RETRIES = 3;
-
-  // Required for the moment because of https://github.com/cypress-io/cypress/issues/781
-  cy.clearCookies();
-
-  function retryClearCookies(retryCount) {
-    if (retryCount > MAX_RETRIES) {
-      cy.log('Could not clear cookies');
-    }
-
-    cy.getCookies().then((cookie) => {
-      if (cookie.length === 0) {
-        return;
-      }
-
-      // Instead of always waiting, only wait if the cookies aren't
-      // cleared yet and attempt to clear again.
-      cy.log(`Cookies not cleared yet, retrying... (attempt ${retryCount})`);
-      cy.wait(500); // eslint-disable-line cypress/no-unnecessary-waiting
-      cy.clearCookies();
-      retryClearCookies(retryCount + 1);
-    });
-  }
-
-  retryClearCookies(1);
   cy.request('/cypress_rails_reset_state');
 });
 
@@ -108,31 +80,58 @@ Cypress.Commands.add('testSetup', () => {
  * @param credentials
  * @param credentials.email {string} An email address
  * @param credentials.password {string} A password
- *
- * @returns {Cypress.Chainable<Cypress.Response>} A cypress request for signing in a user.
  */
 Cypress.Commands.add('loginUser', ({ email, password }) => {
-  const encodedEmail = encodeURIComponent(email);
-  const encodedPassword = encodeURIComponent(password);
+  cy.session(
+    [email, password],
+    () => {
+      cy.visit('/new');
+      cy.get('input[name="user[email]"]').type(email);
+      cy.get('input[name="user[password]"]').type(`${password}{enter}`);
+      cy.url().should('include', '/new?signin=true');
+    },
+    {
+      validate() {
+        cy.request('/api/users/me').its('status').should('eq', 200);
+      },
+      cacheAcrossSpecs: true,
+    },
+  );
+});
 
-  function getLoginRequest() {
-    return cy.request(
-      'POST',
-      '/users/sign_in',
-      `utf8=%E2%9C%93&user%5Bemail%5D=${encodedEmail}&user%5Bpassword%5D=${encodedPassword}&user%5Bremember_me%5D=0&user%5Bremember_me%5D=1&commit=Continue`,
-    );
-  }
+/**
+ * Visits a URL with the specified locale. Useful for localisation testing.
+ *
+ * @param url {string} The url to visit
+ * @param locale {string} A valid locale to mock
+ */
+Cypress.Commands.add('visitWithLocale', (url, locale) => {
+  cy.visit(url, {
+    onBeforeLoad: (window) => {
+      Object.defineProperty(window.navigator, 'language', { value: locale });
+      Object.defineProperty(window.navigator, 'languages', {
+        value: [locale],
+      });
+    },
+  });
+});
 
-  return getLoginRequest().then((response) => {
-    if (response.status === 200) {
-      return response;
-    }
-
-    cy.log('Login failed. Attempting one more login.');
-
-    // If we have a login failure, try one more time.
-    // This is to combat some flaky tests where the login fails occasionally.
-    return getLoginRequest();
+/**
+ * Visits a URL as a "proper" mobile device, mocking the user agent and not just
+ * the viewport.
+ *
+ * @param url {string} The url to visit
+ */
+Cypress.Commands.add('visitOnMobile', (url) => {
+  cy.viewport('iphone-x');
+  cy.visit(url, {
+    onBeforeLoad: (window) => {
+      Object.defineProperty(window.navigator, 'userAgent', {
+        value:
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 14_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1',
+      });
+      Object.defineProperty(window.navigator, 'platform', { value: 'iPhone' });
+    },
   });
 });
 
@@ -423,3 +422,62 @@ Cypress.Commands.add('inviteUser', ({ name, email }) => {
     `utf8=%E2%9C%93&user%5Bemail%5D=${email}&user%5Bname%5D=${name}&commit=Invite+User`,
   );
 });
+
+Cypress.Commands.add('assertValueCopiedToClipboard', (value) => {
+  cy.window().then((win) => {
+    win.navigator.clipboard.readText().then((text) => {
+      expect(text).to.contain(value);
+    });
+  });
+});
+
+Cypress.Commands.add(
+  'createHtmlVariant',
+  ({
+    name = '',
+    group = 'campaign',
+    target_tag = 'tag1',
+    html = '',
+    published = true,
+    approved = false,
+  }) => {
+    return cy.request('POST', '/admin/customization/html_variants', {
+      name,
+      group,
+      target_tag,
+      html,
+      published,
+      approved,
+      commit: 'Create HTML Variant',
+    });
+  },
+);
+
+Cypress.Commands.add(
+  'setCampaign',
+  ({
+    display_name = '',
+    hero_html_variant_name = '',
+    articles_require_approval = false,
+    sidebar_enabled = false,
+    sidebar_image = 'https://example.com/image.png',
+    url = '',
+    featured_tags = '',
+    call_to_action = '',
+    articles_expiry_time = '4',
+  }) => {
+    return cy.request('POST', '/admin/settings/campaigns', {
+      settings_campaign: {
+        display_name,
+        hero_html_variant_name,
+        articles_require_approval,
+        sidebar_enabled,
+        sidebar_image,
+        url,
+        featured_tags,
+        call_to_action,
+        articles_expiry_time,
+      },
+    });
+  },
+);

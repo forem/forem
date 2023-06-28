@@ -1,7 +1,7 @@
 # rubocop:disable Metrics/BlockLength
 namespace :navigation_links do
   def image_path(*paths)
-    File.read(Rails.root.join("app/assets/images/#{paths.join('/')}")).freeze
+    Rails.root.join("app/assets/images/#{paths.join('/')}").read.freeze
   end
 
   def twemoji_path(name)
@@ -20,7 +20,6 @@ namespace :navigation_links do
   tag_icon = twemoji_path("tag.svg")
   bulb_icon = twemoji_path("bulb.svg")
   shopping_icon = twemoji_path("shopping.svg")
-  heart_icon = twemoji_path("heart.svg")
   rainbowdev = image_path("rainbowdev.svg")
 
   def perform_create_of_navigation_links?
@@ -190,14 +189,6 @@ namespace :navigation_links do
       icon: shopping_icon,
       display_to: :all,
       position: 6,
-      section: :default,
-    )
-    NavigationLink.create_or_update_by_identity(
-      url: "#{base_url}/sponsors",
-      name: "Sponsors",
-      icon: heart_icon,
-      display_to: :all,
-      position: 7,
       section: :default,
     )
     NavigationLink.create_or_update_by_identity(

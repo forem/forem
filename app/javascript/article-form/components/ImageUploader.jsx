@@ -279,7 +279,7 @@ export const ImageUploader = ({
     // Cleanup afterwards
     return () =>
       document.removeEventListener('ForemMobile', handleNativeMessage);
-  }, []);
+  });
 
   const [state, dispatch] = useReducer(imageUploaderReducer, {
     insertionImageUrls: [],

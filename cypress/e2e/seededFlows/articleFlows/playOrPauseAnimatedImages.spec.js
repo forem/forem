@@ -27,6 +27,7 @@ describe('play or pause animated images', () => {
 
   describe('no reduced motion preference', () => {
     beforeEach(() => {
+      cy.testSetup();
       Cypress.on('window:before:load', (window) => {
         window.document.body = generateFakePageBody();
       });

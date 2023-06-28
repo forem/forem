@@ -12,7 +12,6 @@ module Admin
                                  approved
                                  email_digest_eligible
                                  main_image_background_hex_color
-                                 featured_number
                                  user_id
                                  co_author_ids_list
                                  published_at].freeze
@@ -31,10 +30,17 @@ module Admin
 
       @pinned_article = PinnedArticle.get
       @articles = @articles.where.not(id: @pinned_article) if @pinned_article
+
+      @countable_vomits = {}
+      @articles.each do |article|
+        @countable_vomits[article.id] = calculate_flags_for_single_article(article)
+      end
     end
 
     def show
-      @article = Article.find(params[:id])
+      @article = Article.includes(reactions: :user).find(params[:id])
+      @countable_vomits = {}
+      @countable_vomits[@article.id] = calculate_flags_for_single_article(@article)
     end
 
     def update
@@ -60,7 +66,7 @@ module Admin
           redirect_to admin_article_path(article.id)
         end
         format.js do
-          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+          render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
         end
       end
     end
@@ -76,7 +82,7 @@ module Admin
           redirect_to admin_article_path(article.id)
         end
         format.js do
-          render partial: "admin/articles/individual_article", locals: { article: article }, content_type: "text/html"
+          render partial: "admin/articles/article_item", locals: { article: article }, content_type: "text/html"
         end
       end
     end
@@ -114,10 +120,10 @@ module Admin
     def articles_featured
       Article.published.or(Article.where(published_from_feed: true))
         .featured
-        .where("featured_number > ?", Time.current.to_i)
+        .where("published_at > ?", Time.current)
         .includes(:user)
         .limited_columns_internal_select
-        .order(featured_number: :desc)
+        .order(published_at: :desc)
     end
 
     def article_params
@@ -126,6 +132,22 @@ module Admin
 
     def authorize_admin
       authorize Article, :access?, policy_class: InternalPolicy
+    end
+
+    def calculate_flags_for_single_article(article)
+      privileged_article_reactions = article.reactions.privileged_category.select do |reaction|
+        reaction.reactable_type == "Article"
+      end
+      vomit_article_reactions = privileged_article_reactions.select { |reaction| reaction.category == "vomit" }
+      vomit_count = 0
+
+      if vomit_article_reactions.present?
+        vomit_article_reactions.each do |vomit_reaction|
+          vomit_count += 1 if vomit_reaction.status != "invalid"
+        end
+      end
+
+      vomit_count
     end
   end
 end

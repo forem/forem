@@ -32,9 +32,7 @@ export const DefaultArticle = () => (
   />
 );
 
-DefaultArticle.story = {
-  name: 'default',
-};
+DefaultArticle.storyName = 'default';
 
 export const IsFeatured = () => (
   <Article
@@ -46,9 +44,7 @@ export const IsFeatured = () => (
   />
 );
 
-IsFeatured.story = {
-  name: 'is featured',
-};
+IsFeatured.storyName = 'is featured';
 
 export const WithOrganization = () => (
   <Article
@@ -59,9 +55,7 @@ export const WithOrganization = () => (
   />
 );
 
-WithOrganization.story = {
-  name: 'with organization',
-};
+WithOrganization.storyName = 'with organization';
 
 export const WithFlareTag = () => (
   <Article
@@ -72,9 +66,7 @@ export const WithFlareTag = () => (
   />
 );
 
-WithFlareTag.story = {
-  name: 'with flare tag',
-};
+WithFlareTag.storyName = 'with flare tag';
 
 export const WithSnippetResult = () => (
   <Article
@@ -85,9 +77,7 @@ export const WithSnippetResult = () => (
   />
 );
 
-WithSnippetResult.story = {
-  name: 'with snippet result',
-};
+WithSnippetResult.storyName = 'with snippet result';
 
 export const WithReactions = () => (
   <Article
@@ -98,9 +88,7 @@ export const WithReactions = () => (
   />
 );
 
-WithReactions.story = {
-  name: 'with reactions',
-};
+WithReactions.storyName = 'with reactions';
 
 export const WithComments = () => (
   <Article
@@ -111,9 +99,7 @@ export const WithComments = () => (
   />
 );
 
-WithComments.story = {
-  name: 'with comments',
-};
+WithComments.storyName = 'with comments';
 
 export const OnReadingList = () => (
   <Article
@@ -124,6 +110,4 @@ export const OnReadingList = () => (
   />
 );
 
-OnReadingList.story = {
-  name: 'on reading list',
-};
+OnReadingList.storyName = 'on reading list';

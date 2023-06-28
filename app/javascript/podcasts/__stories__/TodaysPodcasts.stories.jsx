@@ -25,4 +25,4 @@ export const Standard = () => (
   </TodaysPodcasts>
 );
 
-Standard.story = { name: 'standard' };
+Standard.storyName = 'standard';

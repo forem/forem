@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesUpdate", type: :request do
+RSpec.describe "ArticlesUpdate" do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
   let(:user) { create(:user, :org_admin) }
@@ -15,6 +15,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   before do
     sign_in user
+    allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
   end
 
   it "updates ordinary article with proper params" do
@@ -30,7 +31,8 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: {
         title: "hello",
         body_markdown: "---\ntitle: hey hey hahuu\npublished: false\n---\nYo ho ho#{rand(100)}",
-        tag_list: "yo"
+        tag_list: "yo",
+        version: "v1"
       }
     }
     expect(article.reload.edited_at).to be > 5.seconds.ago
@@ -133,7 +135,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     article.update_column(:published, false)
     sidekiq_assert_not_enqueued_with(job: Notifications::NotifiableActionWorker) do
       put "/articles/#{article.id}", params: {
-        article: { published: true, body_markdown: "blah" }
+        article: { published: true, body_markdown: "blah", version: "v1" }
       }
     end
   end
@@ -146,7 +148,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
     expect(article.notifications.size).to eq 1
 
     put "/articles/#{article.id}", params: {
-      article: { body_markdown: article.body_markdown.gsub("published: true", "published: false") }
+      article: { body_markdown: article.body_markdown.gsub("published: true", "published: false"), version: "v1" }
     }
     expect(article.notifications.size).to eq 0
   end
@@ -193,13 +195,15 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
     # draft => scheduled
     it "sets published_at according to the timezone when updating draft => scheduled" do
-      draft = create(:article, published: false, user_id: user.id)
+      draft = create(:article, published: false, user_id: user.id, published_at: nil)
       attributes[:published] = true
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
       published_at_utc = draft.published_at.in_time_zone("UTC").strftime("%m/%d/%Y %H:%M")
-      expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 23:00")
+      draft.published_at.in_time_zone(attributes[:timezone])
+      expected_time = "#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 00:00"
+      expect(published_at_utc).to eq(expected_time)
       expect(draft.published).to be true
     end
 
@@ -250,10 +254,64 @@ RSpec.describe "ArticlesUpdate", type: :request do
       draft = create(:article, published: false, user_id: user.id, published_from_feed: true, published_at: nil)
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \ndate: #{date}---\n\nHey this is the article"
-      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown } }
+      put "/articles/#{draft.id}", params: { article: { body_markdown: body_markdown, version: "v1" } }
       draft.reload
       expect(draft.published).to be true
       expect(draft.published_at).to be_within(1.minute).of(DateTime.parse(date))
+    end
+
+    it "doesn't allow changing published_at when updating a published article published_from_feed" do
+      date_was = "2022-05-02 19:00:30 UTC"
+      date_new = "2022-08-30 19:00:30 UTC"
+      article = create(:article, :past, published: true, user_id: user.id,
+                                        published_from_feed: true, past_published_at: DateTime.parse(date_was))
+      body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
+      \ndate: #{date_new}---\n\nHey this is the article"
+      put "/articles/#{article.id}", params: { article: { body_markdown: body_markdown, version: "v1" } }
+      article.reload
+      expect(article.published_at).to be_within(1.minute).of(DateTime.parse(date_was))
+    end
+  end
+
+  context "when changing an author inside an organization" do
+    before do
+      user.add_role(:admin)
+      user.organization_memberships.create(organization: organization, type_of_user: "admin")
+    end
+
+    let(:draft) { create(:article, user: user2, published: false, organization: organization) }
+    let(:scheduled_article) do
+      create(:article, user: user2, published_at: 2.days.from_now, published: false, organization: organization)
+    end
+
+    it "changes an author" do
+      put "/articles/#{draft.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      draft.reload
+      expect(draft.user_id).to eq(user.id)
+    end
+
+    it "doesn't remove the published_at when changing author for a scheduled draft article" do
+      published_at_was = scheduled_article.published_at
+      put "/articles/#{scheduled_article.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      scheduled_article.reload
+      expect(scheduled_article.user_id).to eq(user.id)
+      expect(scheduled_article.published_at).to be_within(1.second).of(published_at_was)
+    end
+
+    it "doesn't remove published_at when changing author for a scheduled article" do
+      scheduled_article.update_column(:published, true)
+
+      published_at_was = scheduled_article.published_at
+      put "/articles/#{scheduled_article.id}", params: {
+        article: { user_id: user.id, from_dashboard: true }
+      }
+      scheduled_article.reload
+      expect(scheduled_article.user_id).to eq(user.id)
+      expect(scheduled_article.published_at).to be_within(1.second).of(published_at_was)
     end
   end
 end

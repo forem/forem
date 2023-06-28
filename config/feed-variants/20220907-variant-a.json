@@ -1,0 +1,131 @@
+{
+  "max_days_since_published": 15,
+  "description": "Copy of 20220830-variant-c with Lower Starting, same number of steps",
+  "order_by": "final_order_by_random_weighted_to_score",
+  "reseed_randomizer_on_each_request": false,
+  "levers": {
+    "daily_decay": {
+      "cases": [
+        [0, 1],
+        [1, 0.99],
+        [2, 0.985],
+        [3, 0.98],
+        [4, 0.975],
+        [5, 0.97],
+        [6, 0.965],
+        [7, 0.96],
+        [8, 0.955],
+        [9, 0.95],
+        [10, 0.945],
+        [11, 0.94],
+        [12, 0.935],
+        [13, 0.93],
+        [14, 0.925]
+      ],
+      "fallback": 0.9
+    },
+    "comments_count_by_those_followed": {
+      "cases": [
+        [0, 0.95],
+        [1, 0.98],
+        [2, 0.99]
+      ],
+      "fallback": 0.93
+    },
+    "comments_count": {
+      "cases": [
+        [0, 0.5],
+        [1, 0.6],
+        [2, 0.66],
+        [3, 0.7],
+        [4, 0.75],
+        [5, 0.8],
+        [6, 0.85],
+        [7, 0.88],
+        [8, 0.9],
+        [9, 0.92],
+        [12, 1.0],
+        [18, 1.0],
+        [22, 1.0],
+        [25, 1.0],
+        [30, 1.0],
+        [35, 1.0],
+        [40, 1.0],
+        [45, 1.0]
+      ],
+      "fallback": 0.98
+    },
+    "featured_article": { "cases": [[1, 1]], "fallback": 0.85 },
+    "latest_comment": {
+      "cases": [
+        [0, 1],
+        [1, 0.9988]
+      ],
+      "fallback": 0.988
+    },
+    "matching_negative_tags_intersection_count": {
+      "cases": [
+        [0, 1],
+        [1, 0.5],
+        [2, 0.4],
+        [3, 0.3],
+        [4, 0.2]
+      ],
+      "fallback": 0
+    },
+    "matching_positive_tags_intersection_count": {
+      "cases": [
+        [0, 0.5],
+        [1, 0.85],
+        [2, 0.9],
+        [3, 0.95],
+        [4, 1]
+      ],
+      "fallback": 1
+    },
+    "privileged_user_reaction": {
+      "cases": [
+        [-1, 0.2],
+        [1, 1]
+      ],
+      "fallback": 0.95,
+      "negative_reaction_threshold": -9,
+      "positive_reaction_threshold": 4
+    },
+    "public_reactions_score": {
+      "cases": [
+        [0, 0.25],
+        [1, 0.2758],
+        [2, 0.3016],
+        [3, 0.3274],
+        [4, 0.3532],
+        [5, 0.379],
+        [6, 0.4048],
+        [7, 0.4306],
+        [8, 0.4564],
+        [9, 0.4822],
+        [10, 0.508],
+        [11, 0.5338],
+        [12, 0.5596],
+        [13, 0.5854],
+        [14, 0.6112],
+        [15, 0.637],
+        [16, 0.6628],
+        [17, 0.6886],
+        [18, 0.7144],
+        [19, 0.7402],
+        [20, 0.766],
+        [21, 0.7918],
+        [22, 0.8176],
+        [23, 0.8434],
+        [24, 0.8692],
+        [25, 0.895],
+        [26, 0.9208],
+        [27, 0.9466],
+        [28, 0.9724],
+        [29, 0.9982]
+      ],
+      "fallback": 1
+    }
+  }
+}

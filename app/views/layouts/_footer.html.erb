@@ -1,8 +1,24 @@
+<% navigation_links = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
+  {
+    default_nav_ids: NavigationLink.default_section.ordered.ids,
+    other_nav_ids: NavigationLink.other_section.ordered.ids
+  }
+end %>
+
 <footer class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-footer__container">
     <p class="fs-s crayons-footer__description">
       <%= t("views.main.footer.desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>
     </p>
+
+    <ul class="footer__nav-links flex gap-2 justify-center flex-wrap fs-s p-0" style="" />
+      <%= render partial: "layouts/nav_link", collection: NavigationLink.where(id: navigation_links[:default_nav_ids]).ordered, as: :link, cached: true %>
+    </ul>
+
+    <ul class="footer__nav-links flex gap-2 justify-center flex-wrap fs-s p-0" style="" />
+      <%= render partial: "layouts/nav_link", collection: NavigationLink.where(id: navigation_links[:other_nav_ids]).ordered, as: :link, cached: true %>
+    </ul>
+
     <div class="fs-s">
       <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
       <p><%= t("views.main.footer.built.text_html",
@@ -14,9 +30,6 @@
                community: community_name,
                copyright: copyright_notice) %></p>
     </div>
-    <a href="https://www.forem.com" target="_blank" rel="noopener" class="c-link c-link c-link--block c-link--icon-alone self-center">
-      <%= crayons_icon_tag("logo-forem", class: "c-link__icon", native: true, title: t("views.main.footer.logo")) %>
-    </a>
   </div>
 </footer>
 <div id="snack-zone"></div>

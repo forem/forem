@@ -9,4 +9,4 @@ export default { title: 'App Components/Podcasts/Episode' };
 
 export const Standard = () => <PodcastEpisode episode={podcastArticle} />;
 
-Standard.story = { name: 'standard' };
+Standard.storyName = 'standard';

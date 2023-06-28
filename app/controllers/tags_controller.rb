@@ -1,9 +1,8 @@
 class TagsController < ApplicationController
-  before_action :set_cache_control_headers, only: %i[index onboarding]
+  before_action :set_cache_control_headers, only: %i[index]
   before_action :authenticate_user!, only: %i[edit update]
   after_action :verify_authorized
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
   INDEX_API_ATTRIBUTES = %i[name rules_html short_summary bg_color_hex badge_id].freeze
 
   TAGS_ALLOWED_PARAMS = %i[
@@ -23,7 +22,7 @@ class TagsController < ApplicationController
 
   def bulk
     skip_authorization
-    @tags = Tag.includes(:badge).select(ATTRIBUTES_FOR_SERIALIZATION)
+    @tags = Tag.includes(:badge).select_attributes_for_serialization
 
     page = params[:page]
     per_page = (params[:per_page] || 10).to_i
@@ -35,8 +34,8 @@ class TagsController < ApplicationController
       @tags = @tags.where(name: params[:tag_names])
     end
 
-    @tags = @tags.order(taggings_count: :desc).page(page).per(num)
-    render json: @tags, only: ATTRIBUTES_FOR_SERIALIZATION, include: [badge: { only: [:badge_image] }]
+    @tags = @tags.order(taggings_count: :desc).select_attributes_for_serialization.page(page).per(num)
+    render json: @tags, only: Tag::ATTRIBUTES_FOR_SERIALIZATION, include: [badge: { only: [:badge_image] }]
   end
 
   def edit
@@ -51,7 +50,7 @@ class TagsController < ApplicationController
       flash[:success] = I18n.t("tags_controller.tag_successfully_updated")
       redirect_to "#{URL.tag_path(@tag)}/edit"
     else
-      flash[:error] = @tag.errors.full_messages
+      flash.now[:error] = @tag.errors.full_messages
       render :edit
     end
   end
@@ -60,15 +59,6 @@ class TagsController < ApplicationController
     tag = Tag.find_by!(name: params[:tag])
     authorize tag
     redirect_to edit_admin_tag_path(tag.id)
-  end
-
-  def onboarding
-    skip_authorization
-
-    @tags = Tag.where(name: Settings::General.suggested_tags)
-      .select(ATTRIBUTES_FOR_SERIALIZATION)
-
-    set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
   end
 
   def suggest
@@ -80,7 +70,7 @@ class TagsController < ApplicationController
   private
 
   def tags
-    @tags ||= Tag.direct.includes(:sponsorship).limit(100)
+    @tags ||= Tag.direct.order("hotness_score DESC").limit(100)
   end
 
   def convert_empty_string_to_nil
@@ -93,6 +83,4 @@ class TagsController < ApplicationController
     convert_empty_string_to_nil
     params.require(:tag).permit(TAGS_ALLOWED_PARAMS)
   end
-
-  private_constant :ATTRIBUTES_FOR_SERIALIZATION
 end

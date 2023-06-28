@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Organization, type: :model do
+RSpec.describe Organization do
   let(:organization) { create(:organization) }
 
   describe "validations" do
@@ -15,7 +15,6 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
       it { is_expected.to have_many(:profile_pins).dependent(:destroy) }
-      it { is_expected.to have_many(:sponsorships).dependent(:destroy) }
       it { is_expected.to have_many(:unspent_credits).class_name("Credit") }
       it { is_expected.to have_many(:users).through(:organization_memberships) }
 
@@ -28,7 +27,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:name).is_at_most(50) }
       it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
-      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
       it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
@@ -256,7 +255,7 @@ RSpec.describe Organization, type: :model do
 
         # Create an organization and article, verify the article has cached the initial profile
         # image of the organization.
-        original_org = create(:organization, profile_image: File.open(Rails.root.join("app/assets/images/1.png")))
+        original_org = create(:organization, profile_image: Rails.root.join("app/assets/images/1.png").open)
         article = create(:article, organization: original_org)
         expect(article.cached_organization.profile_image_url).to eq(original_org.profile_image_url)
 
@@ -273,6 +272,8 @@ RSpec.describe Organization, type: :model do
           organization.profile_image = File.open(Rails.root.join("app/assets/images/2.png"))
           organization.save!
         end.to change { organization.reload.profile_image_url }
+
+        sidekiq_perform_enqueued_jobs
 
         # I want to collect reloaded versions of the organization's articles so I can see their
         # cached organization profile image
@@ -305,6 +306,8 @@ RSpec.describe Organization, type: :model do
 
           organization.update(name: "ACME Org")
 
+          sidekiq_perform_enqueued_jobs
+
           expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
         end
 
@@ -334,6 +337,57 @@ RSpec.describe Organization, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, organization: organization, spent: false)
       expect(organization.enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#public_articles_count" do
+    it "returns the count of published articles" do
+      published_articles = create_list(:article, 2, organization: organization, published: true)
+      create_list(:article, 1, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(published_articles.count)
+    end
+
+    it "returns 0 if there are no published articles" do
+      create_list(:article, 2, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(0)
+    end
+  end
+
+  describe ".simple_name_match" do
+    before do
+      create(:organization, name: "Not Matching")
+      create(:organization, name: "For Fans of Books")
+      create(:organization, name: "Boo! A Ghost")
+    end
+
+    it "finds them by simple ilike match" do
+      query = "boo"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
+
+      query = "book"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+
+      query = "  BOOK  "
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+    end
+
+    it "returns all orgs on empty query" do
+      query = nil
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = ""
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = "        "
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
     end
   end
 end

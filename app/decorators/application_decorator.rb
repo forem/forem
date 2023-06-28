@@ -11,6 +11,10 @@ class ApplicationDecorator
 
   attr_reader :object
 
+  def self.decorate_collection(objects)
+    objects.map(&:decorate)
+  end
+
   def initialize(object)
     @object = object
   end
@@ -29,7 +33,7 @@ class ApplicationDecorator
     self
   end
 
-  def self.decorate_collection(objects)
-    objects.map(&:decorate)
+  def type_identifier
+    class_name.downcase
   end
 end

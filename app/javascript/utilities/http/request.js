@@ -1,3 +1,5 @@
+import { getCSRFToken } from './csrfToken';
+
 /**
  * Generic request with all the default headers required by the application.
  *
@@ -25,7 +27,7 @@ export async function request(url, options = {}) {
     headers,
     body,
     method = 'GET',
-    csrfToken = await getCsrfToken(),
+    csrfToken = await getCSRFToken(),
     // These are any other options that might be passed in e.g. keepalive
     ...restOfOptions
   } = options;

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NotificationSubscriptions", type: :request do
+RSpec.describe "NotificationSubscriptions" do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:article) { create(:article, :with_notification_subscription, user: user) }
@@ -48,14 +48,14 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "returns the correct subscription boolean as JSON" do
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(JSON.parse(response.body)["config"]).to eq "all_comments"
+        expect(response.parsed_body["config"]).to eq "all_comments"
       end
 
       it "returns the correct subscription boolean as JSON if unsubscribed" do
         article.notification_subscriptions.first.delete
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(JSON.parse(response.body)["config"]).to eq "not_subscribed"
+        expect(response.parsed_body["config"]).to eq "not_subscribed"
       end
     end
 

@@ -70,9 +70,7 @@ export const Default = () => {
   );
 };
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';
 
 export const Buttons = () => (
   <nav className="crayons-tabs" aria-label="View post options">
@@ -91,6 +89,4 @@ export const Buttons = () => (
     </ul>
   </nav>
 );
-Buttons.story = {
-  name: 'buttons',
-};
+Buttons.storyName = 'buttons';

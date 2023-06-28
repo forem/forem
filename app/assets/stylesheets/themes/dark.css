@@ -65,6 +65,8 @@
   --card-color-tertiary: rgb(var(--grey-400));
   --card-secondary-bg: rgb(var(--grey-900));
   --card-secondary-color: rgb(var(--grey-200));
+  --card-tertiary-bg: rgb(var(--grey-800));
+  --card-tertiary-bg-hover: rgba(var(--grey-800), 0.9);
   --card-border: rgba(var(--white), 0.15);
   --card-secondary-border: rgba(var(--white), 0.1);
 
@@ -151,6 +153,8 @@
   --tag-bg-hover: rgba(var(--grey-50), 0.05);
   --tag-prefix: rgba(var(--grey-50), 0.6);
   --tag-prefix-hover: rgb(var(--grey-50));
+  --tag-onboarding-bg: var(--grey-900);
+  --tag-onboarding-border: var(--grey-700);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-800));
@@ -169,6 +173,12 @@
   --reaction-save-bg: rgba(var(--indigo-500), 0.1);
   --reaction-comment-color: rgb(var(--yellow-500));
   --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
+
+  /* Code */
+  --code-inline-bg: rgb(var(--white), 0.1);
+
+  /* Onboarding suggested people */
+  --content-row-hover-bg: rgba(var(--base-20));
 }
 
 :root {
@@ -292,6 +302,12 @@
   --list-item-bg-hover: rgb(var(--grey-800));
   
   /***********************************************
+  ** Checkbox ************************************
+  ***********************************************/
+
+  --checkbox-default-bg: rgb(var(--grey-800));
+
+  /***********************************************
   ** Modals **************************************
   ***********************************************/
 
@@ -354,4 +370,5 @@
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.5),
     0 10px 10px -5px rgba(var(--black), 0.25),
     inset 0 0 0 1px rgba(var(--white), 0.1);
+  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
 }

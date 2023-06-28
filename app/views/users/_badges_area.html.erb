@@ -6,15 +6,19 @@
   <div class="crayons-card__body">
     <div class="grid gap-4 grid-cols-3 s:grid-cols-4 m:grid-cols-2 align-center items-center js-profile-badges">
       <% achievements.each_with_index do |achievement, i| %>
-        <a href="<%= badge_path(achievement.badge_slug) %>"
+        <div role="button" onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= achievement.badge_id %>', overlay: true})"
            title="<%= achievement.badge_title %>"
            class="js-profile-badge <% if i >= limit %>hidden<% end %>">
           <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
                alt="<%= achievement.badge_title %>"
                class="mx-auto max-w-75 h-auto align-middle"
-               style="transform: rotate(<%= rand(-10..10) %>deg);"
+               style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1; transform: rotate(<%= rand(-10..10) %>deg);"
                loading="lazy" />
-        </a>
+        </div>
+
+        <div id="badge-<%= achievement.badge_id %>" class="hidden">
+          <%= render partial: "badges/badge_detail", locals: { badge: achievement.badge } %>
+        </div>
       <% end %>
     </div>
 

@@ -6,7 +6,7 @@ module Users
 
     CORE_PROFILE_FIELDS = %i[summary].freeze
     CORE_USER_FIELDS = %i[name username profile_image].freeze
-    CORE_SETTINGS_FIELDS = %i[brand_color1 brand_color2].freeze
+    CORE_SETTINGS_FIELDS = %i[brand_color1].freeze
 
     # @param user [User] the user whose profile we are updating
     # @param updated_attributes [Hash<Symbol, Hash<Symbol, Object>>] the profile

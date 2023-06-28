@@ -24,6 +24,7 @@
     data-path="<%= commentable&.path %>/comments/<%= comment.id_code_generated %>"
     data-comment-author-id="<%= comment_user_id_unless_deleted comment %>"
     data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
+    <a name="comment-<%= comment.id_code %>" style="position: absolute; top: -8px;">&nbsp;</a>
     <%= render("comments/comment_proper",
                comment: comment,
                commentable: commentable,

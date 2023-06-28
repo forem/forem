@@ -1,17 +1,20 @@
 require "rails_helper"
 
-RSpec.describe Article, type: :model do
+RSpec.describe Article do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate!
     article
   end
 
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
   it_behaves_like "UserSubscriptionSourceable"
+  it_behaves_like "Taggable"
 
   describe "validations" do
     it { is_expected.to belong_to(:collection).optional }
@@ -23,8 +26,6 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
-    it { is_expected.to have_many(:html_variant_successes).dependent(:nullify) }
-    it { is_expected.to have_many(:html_variant_trials).dependent(:nullify) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
     it { is_expected.to have_many(:page_views).dependent(:delete_all) }
@@ -163,7 +164,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#canonical_url_must_not_have_spaces" do
-      let!(:article) { build :article, user: user }
+      let!(:article) { build(:article, user: user) }
 
       it "is valid without spaces" do
         valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
@@ -207,7 +208,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "liquid tags" do
-      xit "is not valid if it contains invalid liquid tags" do
+      it "is not valid if it contains invalid liquid tags" do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
@@ -253,17 +254,18 @@ RSpec.describe Article, type: :model do
         expect(test_article.title).to eq("An Article Title")
       end
 
-      it "sanitizes the title" do
-        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+      it "sanitizes the title with deprecated BIDI marks" do
+        test_article = build(:article, title: "\u202bThis starts with BIDI embedding\u202c\u061cALM\u200e")
 
         test_article.validate
 
-        expect(test_article.title).not_to match(/\u202d/)
-        expect(test_article.title).to eq("This starts with BIDI override")
+        expect(test_article.title).not_to match(/\u202b/)
+        expect(test_article.title).to eq("This starts with BIDI embedding\u202c\u061cALM\u200e")
       end
 
       it "rejects empty titles after sanitizing" do
-        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+        test_article = build(:article,
+                             title: "\u061c\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
 
         test_article.validate
 
@@ -484,7 +486,7 @@ RSpec.describe Article, type: :model do
       expect(article_with_date.published_at.strftime("%d/%m/%Y")).to eq(date)
     end
 
-    it "sets published_at from frontmatter" do
+    it "sets future published_at from frontmatter" do
       published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
       body_markdown = "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\ndescription:\ntags: heytag
       \n---\n\nHey this is the article"
@@ -493,18 +495,36 @@ RSpec.describe Article, type: :model do
       expect(article_with_published_at.published_at.strftime("%d/%m/%Y %H:%M")).to eq(published_at)
     end
 
+    it "sets published_at when publishing but no published_at passed from frontmatter" do
+      body_markdown = "---\ntitle: Title\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      article = create(:article, body_markdown: body_markdown)
+      article.reload
+      expect(article.published_at).to be > 10.minutes.ago
+    end
+
+    it "sets published_at when publishing from draft and no published_at passed from frontmatter" do
+      body_markdown = "---\ntitle: Title\npublished: true\ndescription:\ntags: heytag
+      \n---\n\nHey this is the article"
+      draft = create(:article, published: false, published_at: nil)
+      draft.update(body_markdown: body_markdown)
+      draft.reload
+      expect(draft.published).to be true
+      expect(draft.published_at).to be > 10.minutes.ago
+    end
+
     it "doesn't allow past published_at when publishing on create" do
       article2 = build(:article, published_at: 10.days.ago, published: true)
       expect(article2.valid?).to be false
       expect(article2.errors[:published_at])
-        .to include("only future or current published_at allowed when publishing an article")
+        .to include("only future or current published_at allowed")
     end
 
     it "doesn't allow recent published_at when publishing on create" do
       article2 = build(:article, published_at: 1.hour.ago, published: true)
       expect(article2.valid?).to be false
       expect(article2.errors[:published_at])
-        .to include("only future or current published_at allowed when publishing an article")
+        .to include("only future or current published_at allowed")
     end
 
     it "allows recent published_at when publishing on create" do
@@ -512,11 +532,122 @@ RSpec.describe Article, type: :model do
       expect(article2.valid?).to be true
     end
 
-    it "doesn't allow updating published_at if an article has already been published" do
-      article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
-      expect(article.valid?).to be false
-      expect(article.errors[:published_at])
-        .to include("updating published_at for articles that have already been published is not allowed")
+    it "allows removing published_at when updating a scheduled draft" do
+      scheduled_draft = create(:article, published: false, published_at: 1.day.from_now)
+      scheduled_draft.published_at = nil
+      expect(scheduled_draft).to be_valid
+    end
+
+    context "when unpublishing" do
+      let!(:published_at_was) { article.published_at }
+
+      it "keeps published_at" do
+        article.update(published: false)
+        article.reload
+        expect(article.published_at).to be_within(1.second).of(published_at_was)
+      end
+
+      it "keeps published_at if we try to unset it" do
+        article.update(published: false, published_at: nil)
+        article.reload
+        expect(article.published_at).to be_within(1.second).of(published_at_was)
+      end
+
+      it "keeps published_at when unpublising a scheduled article" do
+        scheduled_published_at = 1.day.from_now
+        article.update_columns(published_at: scheduled_published_at)
+        article.update(published: false)
+        article.reload
+        expect(article.published_at).to be_within(1.second).of(scheduled_published_at)
+      end
+    end
+
+    context "when unpublishing a frontmatter article" do
+      let(:published_at) { "2022-05-05 18:00 +0300" }
+      let(:body_markdown) { "---\ntitle: Title\npublished: true\npublished_at: #{published_at}\n---\n\n" }
+      let(:frontmatter_article) do
+        a = create(:article, :past, past_published_at: DateTime.parse(published_at))
+        # if we would set markdown on create, past_published_at would be overriden by body_markdown values
+        # and the validation wouldn't pass
+        a.update_columns(body_markdown: body_markdown)
+        a
+      end
+
+      it "keeps published at" do
+        new_body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
+        frontmatter_article.update(body_markdown: new_body_markdown)
+        expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
+      end
+
+      it "keeps published at when trying to set published_at" do
+        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at: 2022-05-12 18:00 +0300---\n\n"
+        frontmatter_article.update(body_markdown: new_body_markdown)
+        frontmatter_article.reload
+        expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
+      end
+
+      it "keeps published_at when unpublishing a scheduled article" do
+        scheduled_time = 1.day.from_now
+        time_str = scheduled_time.strftime("%d/%m/%Y %H:%M %z")
+        scheduled_body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{time_str}\n---\n\n"
+        frontmatter_scheduled_article = create(:article, body_markdown: scheduled_body_markdown)
+        new_body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
+        frontmatter_scheduled_article.update(body_markdown: new_body_markdown)
+        frontmatter_scheduled_article.reload
+        expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
+      end
+    end
+
+    context "when publishing on update (draft => published)" do
+      # has published_at means that the article was published before (and unpublished later, in this)
+      it "doesn't allow updating published_at if an article has already been published" do
+        article.published_at = (Date.current + 10.days).strftime("%d/%m/%Y %H:%M")
+        expect(article.valid?).to be false
+        expect(article.errors[:published_at])
+          .to include("updating published_at for articles that have already been published is not allowed")
+      end
+
+      it "allows past published_at for published_from_feed articles when publishing on update" do
+        published_at = 10.days.ago
+        article2 = create(:article, published: false, published_at: nil, published_from_feed: true)
+        body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')}
+        \ndescription:\ntags: heytag\n---\n\nHey this is the article"
+        article2.update(body_markdown: body_markdown)
+        expect(article2.published_at).to be_within(1.minute).of(published_at)
+      end
+
+      it "doesn't allow changing published_at for published_from_feed articles that have been published before" do
+        published_at = Time.current
+        published_at_was = 10.days.ago
+        # has published_at means that the article was published before
+        article2 = create(:article, published: false, published_at: published_at_was, published_from_feed: true)
+        body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{published_at.strftime('%d/%m/%Y %H:%M')}
+        \ndescription:\ntags: heytag\n---\n\nHey this is the article"
+        success = article2.update(body_markdown: body_markdown)
+        expect(success).to be false
+        expect(article2.errors[:published_at]).to include(I18n.t("models.article.immutable_published_at"))
+      end
+    end
+
+    context "when updating a previously published (and unpublished) frontmatter article" do
+      let(:published_at) { "2022-05-05 18:00 +0300" }
+      let(:body_markdown) { "---\ntitle: Title\npublished: false\npublished_at: #{published_at}\n---\n\n" }
+      let(:frontmatter_article) { create(:article, body_markdown: body_markdown) }
+
+      it "doesn't allow updating published_at if specifying published_at" do
+        # expect(frontmatter_article.published_at < 10.days.ago).to be true
+        new_body_markdown = "---\ntitle: Title\npublished: true\npublished_at: 2022-10-05 18:00 +0300\n---\n\n"
+        success = frontmatter_article.update(body_markdown: new_body_markdown)
+        expect(success).to be false
+        expect(frontmatter_article.errors[:published_at]).to include(I18n.t("models.article.immutable_published_at"))
+      end
+
+      it "doesn't allow updating published_at if removing published_at" do
+        new_body_markdown = "---\ntitle: Title\npublished: true\n---\n\n"
+        frontmatter_article.update(body_markdown: new_body_markdown)
+        frontmatter_article.reload
+        expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
+      end
     end
   end
 
@@ -564,19 +695,6 @@ RSpec.describe Article, type: :model do
     it "does have crossposted_at if not published_from_feed" do
       article.update(published_from_feed: true)
       expect(article.crossposted_at).not_to be_nil
-    end
-  end
-
-  describe "#featured_number" do
-    it "is updated if approved when already true" do
-      body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
-      article.update(body_markdown: body, approved: true)
-
-      Timecop.travel(1.second.from_now) do
-        article.update(body_markdown: "#{body}s")
-      end
-
-      expect(article.featured_number).not_to eq(article.updated_at.to_i)
     end
   end
 
@@ -820,7 +938,7 @@ RSpec.describe Article, type: :model do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
     end
 
-    it "returns articles ordered by organic_page_views_count" do
+    it "returns articles ordered by organic_page_views_past_month_count" do
       articles = described_class.seo_boostable
       expect(articles.first[0]).to eq(top_article.path)
     end
@@ -835,7 +953,7 @@ RSpec.describe Article, type: :model do
       expect(articles).to be_empty
     end
 
-    it "returns articles ordered by organic_page_views_count by tag" do
+    it "returns articles ordered by organic_page_views_past_month_count by tag" do
       articles = described_class.seo_boostable("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end
@@ -878,210 +996,6 @@ RSpec.describe Article, type: :model do
     it "returns nothing if no tagged articles" do
       articles = described_class.search_optimized("godsdsdsdsgoo")
       expect(articles).to be_empty
-    end
-  end
-
-  describe ".cached_tagged_with" do
-    it "can search for a single tag" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      articles = described_class.cached_tagged_with("includeme")
-
-      expect(articles).to include included
-      expect(articles).not_to include excluded
-      expect(articles.to_a).to eq described_class.tagged_with("includeme").to_a
-    end
-
-    it "can search for a single tag when given a symbol" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      articles = described_class.cached_tagged_with(:includeme)
-
-      expect(articles).to include(included)
-      expect(articles).not_to include(excluded)
-      expect(articles.to_a).to eq(described_class.tagged_with("includeme").to_a)
-    end
-
-    it "can search for a single tag when given a Tag object" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      tag = Tag.find_by(name: :includeme)
-
-      articles = described_class.cached_tagged_with(tag)
-
-      expect(articles).to include included
-      expect(articles).not_to include excluded
-      expect(articles.to_a).to eq described_class.tagged_with("includeme").to_a
-    end
-
-    it "can search among multiple tags" do
-      included = [
-        create(:article, tags: "omg, wtf"),
-        create(:article, tags: "omg, lol"),
-      ]
-      excluded = create(:article, tags: "nope, excluded")
-
-      articles = described_class.cached_tagged_with("omg")
-
-      expect(articles).to include(*included)
-      expect(articles).not_to include excluded
-      expect(articles.to_a).to include(*described_class.tagged_with("omg").to_a)
-    end
-
-    it "can search for multiple tags" do
-      included = create(:article, tags: "includeme, please, lol")
-      excluded_partial_match = create(:article, tags: "excluded, please")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      articles = described_class.cached_tagged_with(%w[includeme please])
-
-      expect(articles).to include included
-      expect(articles).not_to include excluded_partial_match
-      expect(articles).not_to include excluded_no_match
-      expect(articles.to_a).to eq described_class.tagged_with(%w[includeme please]).to_a
-    end
-
-    it "can search for multiple tags passed as an array of symbols" do
-      included = create(:article, tags: "includeme, please, lol")
-      excluded_partial_match = create(:article, tags: "excluded, please")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      articles = described_class.cached_tagged_with(%i[includeme please])
-
-      expect(articles).to include(included)
-      expect(articles).not_to include(excluded_partial_match)
-      expect(articles).not_to include(excluded_no_match)
-      expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
-    end
-
-    it "can search for multiple tags passed as an array of Tag objects" do
-      included = create(:article, tags: "includeme, please, lol")
-      excluded_partial_match = create(:article, tags: "excluded, please")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      tags = Tag.where(name: %i[includeme please]).to_a
-      articles = described_class.cached_tagged_with(tags)
-
-      expect(articles).to include(included)
-      expect(articles).not_to include(excluded_partial_match)
-      expect(articles).not_to include(excluded_no_match)
-      expect(articles.to_a).to eq(described_class.tagged_with(%i[includeme please]).to_a)
-    end
-  end
-
-  describe ".cached_tagged_with_any" do
-    it "can search for a single tag" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      articles = described_class.cached_tagged_with_any("includeme")
-
-      expect(articles).to include included
-      expect(articles).not_to include excluded
-      expect(articles.to_a).to eq described_class.tagged_with("includeme", any: true).to_a
-    end
-
-    it "can search for a single tag when given a symbol" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      articles = described_class.cached_tagged_with_any(:includeme)
-
-      expect(articles).to include(included)
-      expect(articles).not_to include(excluded)
-      expect(articles.to_a).to eq(described_class.tagged_with("includeme", any: true).to_a)
-    end
-
-    it "can search for a single tag when given a Tag object" do
-      included = create(:article, tags: "includeme")
-      excluded = create(:article, tags: "lol, nope")
-
-      tag = Tag.find_by(name: :includeme)
-      articles = described_class.cached_tagged_with_any(tag)
-
-      expect(articles).to include(included)
-      expect(articles).not_to include(excluded)
-      expect(articles.to_a).to eq(described_class.tagged_with("includeme", any: true).to_a)
-    end
-
-    it "can search among multiple tags" do
-      included = [
-        create(:article, tags: "omg, wtf"),
-        create(:article, tags: "omg, lol"),
-      ]
-      excluded = create(:article, tags: "nope, excluded")
-
-      articles = described_class.cached_tagged_with_any("omg")
-      expected = described_class.tagged_with("omg", any: true).to_a
-
-      expect(articles).to include(*included)
-      expect(articles).not_to include excluded
-      expect(articles.to_a).to include(*expected)
-    end
-
-    it "can search for multiple tags" do
-      included = create(:article, tags: "includeme, please, lol")
-      included_partial_match = create(:article, tags: "includeme, omg")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      articles = described_class.cached_tagged_with_any(%w[includeme please])
-      expected = described_class.tagged_with(%w[includeme please], any: true).to_a
-
-      expect(articles).to include included
-      expect(articles).to include included_partial_match
-      expect(articles).not_to include excluded_no_match
-
-      expect(articles.to_a).to include(*expected)
-    end
-
-    it "can search for multiple tags when given an array of symbols" do
-      included = create(:article, tags: "includeme, please, lol")
-      included_partial_match = create(:article, tags: "includeme, omg")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      articles = described_class.cached_tagged_with_any(%i[includeme please])
-      expected = described_class.tagged_with(%i[includeme please], any: true).to_a
-
-      expect(articles).to include(included)
-      expect(articles).to include(included_partial_match)
-      expect(articles).not_to include(excluded_no_match)
-
-      expect(articles.to_a).to include(*expected)
-    end
-
-    it "can search for multiple tags when given an array of Tag objects" do
-      included = create(:article, tags: "includeme, please, lol")
-      included_partial_match = create(:article, tags: "includeme, omg")
-      excluded_no_match = create(:article, tags: "excluded, omg")
-
-      tags = Tag.where(name: %i[includeme please]).to_a
-      articles = described_class.cached_tagged_with_any(tags)
-      expected = described_class.tagged_with(%i[includeme please], any: true).to_a
-
-      expect(articles).to include(included)
-      expect(articles).to include(included_partial_match)
-      expect(articles).not_to include(excluded_no_match)
-
-      expect(articles.to_a).to include(*expected)
-    end
-  end
-
-  describe ".not_cached_tagged_with_any" do
-    it "can exclude multiple tags when given an array of strings" do
-      included = create(:article, tags: "includeme")
-      excluded1 = create(:article, tags: "includeme, lol")
-      excluded2 = create(:article, tags: "includeme, omg")
-
-      articles = described_class
-        .cached_tagged_with_any("includeme")
-        .not_cached_tagged_with_any(%w[lol omg])
-
-      expect(articles).to include included
-      expect(articles).not_to include excluded1
-      expect(articles).not_to include excluded2
     end
   end
 
@@ -1239,6 +1153,26 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "collection cleanup" do
+    let(:collection) { create(:collection, title: "test series") }
+    let(:article) { create(:article, with_collection: collection) }
+
+    it "destroys the collection if collection is empty" do
+      expect do
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
+      end.to change(Collection, :count).by(-1)
+    end
+
+    it "avoids destroying the collection if the collection has other articles" do
+      expect do
+        create(:article, user: user, with_collection: collection)
+        article.body_markdown.gsub!("series: #{collection.slug}", "")
+        article.save
+      end.not_to change(Collection, :count)
+    end
+  end
+
   describe "#top_comments" do
     context "when article has comments" do
       let(:root_comment) { create(:comment, commentable: article, score: 20) }
@@ -1284,7 +1218,7 @@ RSpec.describe Article, type: :model do
       co_author1 = create(:user)
       co_author2 = create(:user)
       article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
-      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+      expect(article.co_author_ids).to contain_exactly(co_author1.id, co_author2.id)
     end
   end
 
@@ -1407,5 +1341,61 @@ RSpec.describe Article, type: :model do
       expect(another_article.errors.messages[:canonical_url]).to include(error_message)
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
     end
+  end
+
+  describe "#public_reaction_categories reports unique associated reaction categories" do
+    before do
+      user2 = create(:user)
+      user2.add_role(:trusted)
+
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "readinglist")
+      create(:reaction, reactable: article, category: "vomit", user: user2)
+    end
+
+    it "reports accurately" do
+      categories = article.public_reaction_categories
+      expect(categories.map(&:slug)).to match_array(%i[like])
+    end
+  end
+
+  describe ".above_average and .average_score" do
+    context "when there are not yet any articles with score above 0" do
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(0.0)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(0)
+      end
+    end
+
+    context "when there are articles with score" do
+      before do
+        create(:article, score: 10)
+        create(:article, score: 6)
+        create(:article, score: 4)
+        create(:article, score: 1)
+        # averages 4.2 with article created earlier, see let on line 13
+      end
+
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(4.2)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(10, 6)
+      end
+    end
+  end
+
+  it "does not send moderator notifications when a draft post" do
+    allow(Notification).to receive(:send_moderation_notification)
+
+    draft_post = build(:article, published: false)
+    draft_post.save!
+    expect(draft_post).not_to be_published
+    expect(Notification).not_to have_received(:send_moderation_notification)
+
+    published_post = build(:article, published: true)
+    published_post.save!
+    expect(Notification).to have_received(:send_moderation_notification)
   end
 end

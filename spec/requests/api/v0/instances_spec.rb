@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Instances", type: :request do
+RSpec.describe "Api::V0::Instances" do
   describe "GET /api/instance" do
     it "returns the correct attributes", :aggregate_failures do
       create(:user)

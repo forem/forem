@@ -1,11 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/organizations", type: :request do
+RSpec.describe "/admin/content_manager/organizations" do
   let(:admin) { create(:user, :super_admin) }
   let(:organization) { Organization.first }
 
   before do
-    create_list :organization, 5
+    create_list(:organization, 5)
     sign_in(admin)
   end
 

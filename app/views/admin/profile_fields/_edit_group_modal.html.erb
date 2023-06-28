@@ -4,17 +4,17 @@
   </button>
 
   <div id="edit-group-<%= dom_safe_name %>-modal" class="hidden">
-    <div class="form-group grid p-6 mb-6 gap-1">
+    <div class="flex flex-col p-6 mb-6 gap-1">
       <%= form_for [:admin, group] do |form| %>
-        <div class="form-group">
-          <%= form.label :name %>
-          <%= form.text_field :name, class: "form-control" %>
+        <div class="crayons-field">
+          <%= form.label :name, class: "crayons-field__label" %>
+          <%= form.text_field :name, class: "crayons-textfield" %>
         </div>
-        <div class="form-group">
-          <%= form.label :description %>
-          <%= form.text_field :description, class: "form-control" %>
+        <div class="crayons-field">
+          <%= form.label :description, class: "crayons-field__label" %>
+          <%= form.text_field :description, class: "crayons-textfield" %>
         </div>
-        <%= form.submit class: "btn btn-primary" %>
+        <%= form.submit class: "c-btn c-btn--primary mt-4" %>
       <% end %>
     </div>
   </div>

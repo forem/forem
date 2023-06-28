@@ -50,7 +50,7 @@
           <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit"><%= t("views.dashboard.following_tags.update") %></button>
         <% end %>
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.following_tags.empty") %></div>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.following_tags.empty_html", link: tags_path) %></div>
       <% end %>
       <%= render "sublist" %>
     </div>

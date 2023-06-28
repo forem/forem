@@ -2,7 +2,7 @@ FactoryBot.define do
   sequence(:name) { |n| "tag#{n}" }
 
   factory :tag do
-    name { generate :name }
+    name { generate(:name) }
     supported { true }
   end
 

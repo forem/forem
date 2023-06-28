@@ -10,17 +10,17 @@ RSpec.describe ReactionPolicy do
   describe ".policy_query_for" do
     subject { described_class.policy_query_for(category: category) }
 
-    Reaction::PRIVILEGED_CATEGORIES.each do |category|
+    ReactionCategory.privileged.each do |category|
       context "when #{category} cateogry" do
-        let(:category) { category }
+        let(:category) { category.to_s }
 
         it { is_expected.to eq(:privileged_create?) }
       end
     end
 
-    (Reaction::CATEGORIES - Reaction::PRIVILEGED_CATEGORIES).each do |category|
-      context "when #{category} cateogry" do
-        let(:category) { category }
+    (ReactionCategory.all_slugs - ReactionCategory.privileged).each do |category|
+      context "when #{category} category" do
+        let(:category) { category.to_s }
 
         it { is_expected.to eq(:create?) }
       end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system, js: true do
+RSpec.describe "Views an article", js: true do
   let(:user) { create(:user) }
   let(:co_author) { create(:user) }
   let(:article) { create(:article, user: user, co_author_ids: [co_author.id]) }
@@ -22,14 +22,14 @@ RSpec.describe "Views an article", type: :system, js: true do
     create(:comment, user: co_author, commentable: article)
     visit "#{article.path}/comments"
 
-    expect(page).to have_selector(".spec-op-author", visible: :visible, text: "Author", count: 2)
+    expect(page).to have_selector(".spec-op-author[data-tooltip='Author']", visible: :visible, count: 2)
   end
 
   it "shows special op marker on ama articles" do
     create(:comment, user: user, commentable: ama_article)
     visit "#{ama_article.path}/comments"
 
-    expect(page).to have_selector(".spec-op-author", visible: :visible, text: "Ask Me Anything")
+    expect(page).to have_selector(".spec-op-author[data-tooltip='Ask Me Anything']", visible: :visible)
   end
 
   it "shows a thread" do

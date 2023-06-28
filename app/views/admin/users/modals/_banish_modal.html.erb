@@ -1,15 +1,15 @@
 <div id="banish-for-spam">
   <div class="flex flex-col gap-4">
     <div class="js-banishable-user hidden">
-      <p>This action is irreversible.</p>
-      <p>Once banished, we will delete all content created by <span class="js-user-name"></span> and change their username to @spam_###.</p>
-      <p>Be careful with this action.</p>
+      <p><%= t("views.admin.users.danger.desc1") %></p>
+      <p><%= t("views.admin.users.banish.desc2_html", user: tag.span(class: "js-user-name")) %></p>
+      <p><%= t("views.admin.users.danger.desc3") %></p>
       <%= form_for(:user, html: { method: :post, id: nil, class: "js-banish-form" }) do %>
-        <button class="c-btn c-btn--primary c-btn--destructive">Banish <span class="js-user-name"></span></button>
+        <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.users.banish.submit_html", user: tag.span(class: "js-user-name")) %></button>
       <% end %>
     </div>
     <div class="js-not-banishable-user">
-      <div class="crayons-notice crayons-notice--danger">This is not a new user. Only Super Admins or Support Admins are allowed to banish <span class="js-user-name"></span>.</div>
+      <div class="crayons-notice crayons-notice--danger"><%= t("views.admin.users.banish.notice_html", user: tag.span(class: "js-user-name")) %></div>
     </div>
   </div>
 </div>

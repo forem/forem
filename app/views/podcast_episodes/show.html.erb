@@ -103,7 +103,7 @@
                    commentable: @episode,
                    commentable_type: "PodcastEpisode" %>
         <div class="comment-trees" id="comment-trees-container">
-          <% Comment.tree_for(@episode, 12).each do |comment, sub_comments| %>
+          <% podcast_comment_tree(@episode).each do |comment, sub_comments| %>
             <% cache ["comment_root_#{user_signed_in?}", comment] do %>
               <%= tree_for(comment, sub_comments, @episode) %>
             <% end %>

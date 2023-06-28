@@ -2,16 +2,16 @@ module Articles
   class Builder
     LINE_BREAK = "\n".freeze
 
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user, tag, prefill)
       @user = user
       @tag = tag
       @prefill = prefill
 
       @editor_version2 = @user&.setting&.editor_version == "v2"
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     # the Builder returns a pair of [article, needs_authorization?]

@@ -19,6 +19,16 @@ en:
     report_abuse: Report abuse
     search: Search
     success_settings: Successfully updated settings.
+    counted_organization:
+      one: "%{count} organization"
+      other: "%{count} organizations"
+    counted_user:
+      one: "%{count} person"
+      other: "%{count} people"
+    not_following: "You're not following anyone"
+    following_everyone: "You're following %{details} (everyone)"
+    you_are_following: "You're following"
+    and: "and"
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
@@ -134,6 +144,14 @@ en:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
+  display_ad:
+    promoted: Promoted
+    menu:
+      aria_label: Toggle dropdown menu
+      icon: Dropdown menu
+      manage_preferences: Manage preferences
+      what_is_a_billboard: What's a billboard?
+      report_billboard: Report billboard
   errors:
     messages:
       accepted: must be accepted
@@ -173,10 +191,14 @@ en:
         other: is the wrong length (should be %{count} characters)
   time:
     formats:
+      admin_user: "%Y-%m-%d, %H:%M"
       comment: "%B %d, %Y"
+      email_verified: "%b %e '%y, %H:%M"
       github: "%b %d, %Y"
       json: "%b %e, %Y"
       medium: "%b %-d, %Y"
+      members: "%d %b"
+      members_with_year: "%d %b, %Y"
       reddit: "%b %e '%y"
       short: "%b %-e"
       short_with_yy: "%b %-d '%y"

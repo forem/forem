@@ -18,7 +18,7 @@ module Reactions
 
       reactable.calculate_score if reaction.reactable_type == "User"
 
-      return unless reaction.reactable_type == "Article" && Reaction::PUBLIC_CATEGORIES.include?(reaction.category)
+      return unless reaction.reactable_type == "Article" && reaction.visible_to_public?
 
       Follows::UpdatePointsWorker.perform_async(reaction.reactable_id, reaction.user_id)
     end

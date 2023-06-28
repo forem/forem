@@ -9,6 +9,10 @@ import '@testing-library/jest-dom';
 fetch.enableMocks();
 
 let renderResult;
+const csrfToken = 'this-is-a-csrf-token';
+jest.mock('../../utilities/http/csrfToken', () => ({
+  getCSRFToken: jest.fn(() => Promise.resolve(csrfToken)),
+}));
 
 describe('<ListingTagsField />', () => {
   beforeAll(() => {
@@ -17,7 +21,6 @@ describe('<ListingTagsField />', () => {
     document.body.appendChild(environment);
     fetch.resetMocks();
     window.fetch = fetch;
-    window.getCsrfToken = async () => 'this-is-a-csrf-token';
     fetch.mockResponse((_req) =>
       Promise.resolve(JSON.stringify({ result: [] })),
     );

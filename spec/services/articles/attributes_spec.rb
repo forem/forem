@@ -68,24 +68,9 @@ RSpec.describe Articles::Attributes, type: :service do
       expect(attrs[:edited_at]).to be_falsey
     end
 
-    it "sets published_at if update_published_at is true" do
-      attrs = described_class.new({ title: "title" }, user).for_update(update_published_at: true)
-      expect(attrs[:published_at]).to be_truthy
-    end
-
-    it "doesn't set published_at if update_published_at is false" do
-      attrs = described_class.new({ title: "title" }, user).for_update(update_published_at: false)
-      expect(attrs[:published_at]).to be_falsey
-    end
-
     it "sets published_at correctly" do
       attrs = described_class.new({ title: "title", published_at: "2022-04-25" }, user).for_update
       expect(attrs[:published_at]).to eq(DateTime.new(2022, 4, 25))
-    end
-
-    it "doesn't set published_at if it's nil and update_published_at is false" do
-      attrs = described_class.new({ title: "title", published_at: nil }, user).for_update
-      expect(attrs[:published_at]).to be_nil
     end
   end
 end

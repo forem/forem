@@ -1,0 +1,57 @@
+<div id="editor-markdown-help">
+  <div class="text-styles">
+    <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
+    </p>
+
+    <h3>Bold & Italic</h3>
+    <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
+    <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
+
+    <h3>Links</h3>
+    <p><a href="<%= app_url %>">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
+    <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
+    <pre>
+      ## Table Of Contents
+        * [Chapter 1](#chapter-1)
+        * [Chapter 2](#chapter-2)
+
+      ### Chapter 1 <%= "<a name=\"chapter-1\"></a>" %>
+    </pre>
+
+    <h3>Inline Images</h3>
+    <p>
+      When adding GIFs to posts and comments, please note that there is a limit of 200 megapixels per frame/page.
+      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
+    </p>
+    <pre>![Image description](put-link-to-image-here)</pre>
+    <figcaption> You can even add a caption using the HTML <code>figcaption</code> tag!</figcaption>
+
+    <h3>Headers</h3>
+    <p>Add a header to your post with this syntax:</p>
+    <pre># One '#' for a h1 header<br>## Two '#'s for a h2 header<br>...<br>###### Six '#'s for a h6 header</pre>
+    <h1>One '#' for a h1 header</h1>
+    <h2>Two '#'s for a h2 header</h2>
+    <h3>Three '#'s for a h3 header</h3>
+    <h4>Four '#'s for a h4 header</h4>
+    <h5>Five '#'s for a h5 header</h5>
+    <h6>Six '#'s for a h6 header</h6>
+
+    <h3>Author Notes/Comments</h3>
+    <p>Add some hidden notes/comments to your article with this syntax:</p>
+    <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
+
+    <h3>Common Gotchas</h3>
+    <p>
+      Lists are written just like any other Markdown editor.
+      If you're adding an image in between numbered list, though, be sure to tab the image,
+      otherwise it'll restart the number of the list.
+      Here's an example of what to do:
+      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--HjVUshkb--/c_limit%2Cf_auto%2Cfl_progressive%2Cq_auto%2Cw_880/https://thepracticaldev.s3.amazonaws.com/i/8l29vxiir8k5d097o9o8.png"
+        alt="example image of writing lists with images in Markdown" loading="lazy" />
+    </p>
+    <p>
+      Here's the <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">Markdown cheatsheet</a> again for reference.
+    </p>
+  </div>
+</div>

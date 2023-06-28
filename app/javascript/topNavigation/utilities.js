@@ -1,3 +1,5 @@
+/* global isTouchDevice */
+
 function closeHeaderMenu(memberMenu, menuNavButton) {
   menuNavButton.setAttribute('aria-expanded', 'false');
   memberMenu.classList.remove('desktop', 'showing');
@@ -29,20 +31,9 @@ function openHeaderMenu(memberMenu, menuNavButton) {
 }
 
 /**
- * Determines whether or not a device is a touch device.
- *
- * @returns true if a touch device, otherwise false.
- */
-export function isTouchDevice() {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
-    navigator.userAgent,
-  );
-}
-
-/**
  * Initializes the member navigation menu events.
  *
- * @param {HTMLElement} memberTopMenu The member menu in the top navigation.
+ * @param {HTMLElement} memberTopMenu The member menu in the top right navigation.
  * @param {HTMLElement} menuNavButton The button to activate the member navigation menu.
  */
 export function initializeMemberMenu(memberTopMenu, menuNavButton) {
@@ -122,11 +113,6 @@ function toggleBurgerMenu() {
     leftNavState === 'open' ? 'closed' : 'open';
 }
 
-function showMoreMenu({ target }) {
-  target.nextElementSibling.classList.remove('hidden');
-  target.classList.add('hidden');
-}
-
 /**
  * Gets a reference to InstantClick
  *
@@ -155,16 +141,12 @@ export async function getInstantClick(waitTime = 2000) {
 /**
  * Initializes the hamburger menu for mobile navigation
  *
- * @param {HTMLElement[]} menuTriggers
- * @param {HTMLElement[]} moreMenus
+ * @param {HTMLElement[]} menuTriggers The menuTriggers include the hamburger to open the menu,
+ * the close icon to close the menu and the overlay to close the menu.
  */
-export function initializeMobileMenu(menuTriggers, moreMenus) {
+export function initializeMobileMenu(menuTriggers) {
   menuTriggers.forEach((trigger) => {
     trigger.onclick = toggleBurgerMenu;
-  });
-
-  moreMenus.forEach((trigger) => {
-    trigger.onclick = showMoreMenu;
   });
 }
 

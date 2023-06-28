@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NotificationCounts", type: :request do
+RSpec.describe "NotificationCounts" do
   let(:user) { create(:user) }
   let(:following_user) { create(:user) }
 

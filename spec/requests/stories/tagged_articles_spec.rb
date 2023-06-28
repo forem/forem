@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # rubocop:disable RSpec/NestedGroups
-RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
+RSpec.describe "Stories::TaggedArticlesIndex" do
   %i[enable disable].each do |method|
     context "when :optimize_article_tag_query is #{method}d" do
       before do
@@ -20,18 +20,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           create(:article, tags: tag.name, score: 5)
         end
 
-        def create_live_sponsor(org, tag)
-          create(
-            :sponsorship,
-            level: :tag,
-            blurb_html: "<p>Oh Yeah!!!</p>",
-            status: "live",
-            organization: org,
-            sponsorable: tag,
-            expires_at: 30.days.from_now,
-          )
-        end
-
         context "with caching headers" do
           it "renders page and sets proper headers", :aggregate_failures do
             get "/t/#{tag.name}"
@@ -42,7 +30,7 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           end
 
           def renders_page
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(:ok)
             expect(response.body).to include(tag.name)
           end
 
@@ -91,6 +79,16 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           expect { get "/t/#{unsupported_tag.name}" }.to raise_error(ActiveRecord::RecordNotFound)
         end
 
+        it "handles non-basic feed strategy" do
+          allow(Settings::UserExperience).to receive(:feed_strategy).and_return("rich")
+          allow(Rails.cache).to receive(:fetch).and_call_original
+
+          get "/t/#{tag.name}"
+          expect(response.body).to include(tag.name)
+          expected_args = ["#{tag.cache_key}/article-cached-tagged-count", { expires_in: 2.hours }]
+          expect(Rails.cache).to have_received(:fetch).with(*expected_args).once
+        end
+
         it "renders normal page if no articles but tag is supported" do
           Article.destroy_all
           expect { get "/t/#{tag.name}" }.not_to raise_error
@@ -114,23 +112,6 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           expect(response).to have_http_status(:moved_permanently)
         end
 
-        it "does not render sponsor if not live" do
-          sponsorship = create(
-            :sponsorship, level: :tag, tagline: "Oh Yeah!!!", status: "pending", organization: org, sponsorable: tag
-          )
-
-          get "/t/#{tag.name}"
-          expect(response.body).not_to include("is sponsored by")
-          expect(response.body).not_to include(sponsorship.tagline)
-        end
-
-        it "renders live sponsor" do
-          sponsorship = create_live_sponsor(org, tag)
-          get "/t/#{tag.name}"
-          expect(response.body).to include("is sponsored by")
-          expect(response.body).to include(sponsorship.blurb_html)
-        end
-
         it "shows meta keywords if set" do
           allow(Settings::General).to receive(:meta_keywords).and_return({ tag: "software engineering, ruby" })
           get "/t/#{tag.name}"
@@ -144,6 +125,36 @@ RSpec.describe "Stories::TaggedArticlesIndex", type: :request do
           expect(response.body).not_to include(
             "<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">",
           )
+        end
+
+        context "when the tag has moderators" do
+          let(:six_badge_mod) { create(:user, badge_achievements_count: 6) }
+          let(:three_badge_mod) { create(:user, badge_achievements_count: 3) }
+          let(:ten_badge_mod) { create(:user, badge_achievements_count: 10) }
+          let(:two_badge_mod) { create(:user, badge_achievements_count: 2) }
+          let(:eight_badge_mod) { create(:user, badge_achievements_count: 8) }
+          let(:mods) { [six_badge_mod, three_badge_mod, ten_badge_mod, two_badge_mod, eight_badge_mod] }
+
+          before do
+            mods.each { |mod| mod.add_role(:tag_moderator, tag) }
+          end
+
+          def nth_avatar(user_position)
+            ".widget-user-pic:nth-child(#{user_position})"
+          end
+
+          it "shows them in the sidebar in descending order of badge achievement count" do
+            get "/t/#{tag.name}"
+
+            page = Capybara.string(response.body)
+            sidebar = page.find("#sidebar-wrapper-left aside.side-bar")
+
+            expect(sidebar.find(nth_avatar(1))).to have_link(nil, href: ten_badge_mod.path)
+            expect(sidebar.find(nth_avatar(2))).to have_link(nil, href: eight_badge_mod.path)
+            expect(sidebar.find(nth_avatar(3))).to have_link(nil, href: six_badge_mod.path)
+            expect(sidebar.find(nth_avatar(4))).to have_link(nil, href: three_badge_mod.path)
+            expect(sidebar.find(nth_avatar(5))).to have_link(nil, href: two_badge_mod.path)
+          end
         end
 
         context "with user signed in" do

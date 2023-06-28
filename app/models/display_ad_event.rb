@@ -3,14 +3,15 @@
 #        destroy callbacks will be called on this object.
 class DisplayAdEvent < ApplicationRecord
   belongs_to :display_ad
-  belongs_to :user
+  belongs_to :user, optional: true
 
   CATEGORY_IMPRESSION = "impression".freeze
   CATEGORY_CLICK = "click".freeze
   VALID_CATEGORIES = [CATEGORY_CLICK, CATEGORY_IMPRESSION].freeze
 
   CONTEXT_TYPE_HOME = "home".freeze
-  VALID_CONTEXT_TYPES = [CONTEXT_TYPE_HOME].freeze
+  CONTEXT_TYPE_ARTICLE = "article".freeze
+  VALID_CONTEXT_TYPES = [CONTEXT_TYPE_HOME, CONTEXT_TYPE_ARTICLE].freeze
 
   validates :category, inclusion: { in: VALID_CATEGORIES }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }

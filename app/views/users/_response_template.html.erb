@@ -4,10 +4,12 @@
       <%= response_template.title %>
     </div>
     <div class="flex">
-      <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('#{t('views.settings.extensions.comment.confirm', template: response_template.title)}');" } do %>
-        <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.comment.remove") %></button>
+      <% if policy(response_template).modify? %>
+        <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('#{t('views.settings.extensions.comment.confirm', template: response_template.title)}');" } do %>
+          <button type="submit" class="crayons-btn crayons-btn--secondary"><%= t("views.settings.extensions.comment.remove") %></button>
+        <% end %>
+        <a class="crayons-btn crayons-btn--secondary ml-2" href="/settings/response-templates/<%= response_template.id %>" role="button"><%= t("views.settings.extensions.comment.edit") %></a>
       <% end %>
-      <a class="crayons-btn crayons-btn--secondary ml-2" href="/settings/response-templates/<%= response_template.id %>" role="button"><%= t("views.settings.extensions.comment.edit") %></a>
     </div>
   </div>
 </div>

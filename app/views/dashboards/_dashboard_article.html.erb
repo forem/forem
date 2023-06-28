@@ -16,7 +16,7 @@
     <div id="ellipsis-menu-dropdown-<%= article.id %>" class="crayons-dropdown top-100 right-0 z-10 align-left js-ellipsis-menu-dropdown">
       <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "p-0 js-archive-toggle" }) do |f| %>
         <%= f.hidden_field :archived, value: !article.archived %>
-
+        <%= f.hidden_field :from_dashboard, value: 1 %>
         <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
           <%= t("views.dashboard.article.#{article.archived ? 'unarchive' : 'archive'}") %>
         </button>
@@ -98,6 +98,7 @@
   </div>
   <% if organization && org_admin %>
     <%= form_for(article) do |f| %>
+      <%= f.hidden_field :from_dashboard, value: 1 %>
       <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
       <%= t("views.dashboard.article.author_is") %><%= f.select(:user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id)) %>
       <%= f.submit t("views.dashboard.article.submit"), class: "crayons-btn crayons-btn--secondary" %>

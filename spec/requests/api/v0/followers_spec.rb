@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::FollowersController", type: :request do
+RSpec.describe "Api::V0::FollowersController" do
   let(:user) { create(:user) }
   let(:api_secret) { create(:api_secret, user: user) }
   let(:headers) { { "api-key" => api_secret.secret } }
@@ -65,7 +65,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         get api_followers_users_path, headers: headers
 
         follows = user.followings.order(id: :desc).last(2).map(&:id)
-        result = response.parsed_body.map { |f| f["id"] }
+        result = response.parsed_body.pluck("id")
         expect(result).to eq(follows)
       end
 
@@ -74,7 +74,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
 
         follows = user.followings.order(id: :asc).last(2).map(&:id)
         get api_followers_users_path, headers: headers, params: { sort: "created_at" }
-        result = response.parsed_body.map { |f| f["id"] }
+        result = response.parsed_body.pluck("id")
         expect(result).to eq(follows)
       end
     end

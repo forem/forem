@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Articles", type: :request do
+RSpec.describe "Api::V1::Articles" do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
@@ -10,10 +10,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
   let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:auth_headers) { headers.merge({ "api-key" => api_secret.secret }) }
 
-  before do
-    stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id })
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-  end
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
     before { article }
@@ -46,13 +43,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
     it "returns correct tag list" do
       get api_articles_path, headers: headers
 
-      expect(response.parsed_body.first["tag_list"]).to be_a_kind_of Array
+      expect(response.parsed_body.first["tag_list"]).to be_a Array
     end
 
     it "returns correct tags" do
       get api_articles_path, headers: headers
 
-      expect(response.parsed_body.first["tags"]).to be_a_kind_of String
+      expect(response.parsed_body.first["tags"]).to be_a String
     end
 
     context "without params" do
@@ -271,7 +268,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       end
 
       it "returns rising articles" do
-        article.update_columns(public_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+        article.update_columns(public_reactions_count: 32, score: 1, published_at: 2.days.ago)
 
         get api_articles_path(state: "rising"), headers: headers
         expect(response.parsed_body.size).to eq(1)
@@ -318,6 +315,16 @@ RSpec.describe "Api::V1::Articles", type: :request do
         get api_articles_path, headers: headers
         expect(response).to have_http_status(:ok)
       end
+
+      it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+        allow(ApplicationConfig).to receive(:[]).and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+        allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+        create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
+        get api_articles_path, params: { per_page: 10 }, headers: headers
+        expect(response.parsed_body.count).to eq(2)
+      end
     end
   end
 
@@ -350,13 +357,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
     it "returns correct tag list" do
       get api_article_path(article.id), headers: headers
 
-      expect(response.parsed_body["tag_list"]).to be_a_kind_of String
+      expect(response.parsed_body["tag_list"]).to be_a String
     end
 
     it "returns correct tags" do
       get api_article_path(article.id), headers: headers
 
-      expect(response.parsed_body["tags"]).to be_a_kind_of Array
+      expect(response.parsed_body["tags"]).to be_a Array
     end
 
     it "returns proper article" do
@@ -538,7 +545,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
         get "/api/articles/me/unpublished", headers: auth_headers
-        expected_order = response.parsed_body.map { |resp| resp["id"] }
+        expected_order = response.parsed_body.pluck("id")
         expect(expected_order).to eq([newer.id, older.id])
       end
 
@@ -546,7 +553,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
         get "/api/articles/me/all", headers: auth_headers
-        expected_order = response.parsed_body.map { |resp| resp["published"] }
+        expected_order = response.parsed_body.pluck("published")
         expect(expected_order).to eq([false, true])
       end
 
@@ -1168,6 +1175,8 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     before { Audit::Subscribe.listen listener }
 
+    after { Audit::Subscribe.forget listener }
+
     context "when unauthorized" do
       it "fails with no api key" do
         put path, headers: headers
@@ -1214,6 +1223,91 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(log.data["action"]).to eq("api_article_unpublish")
         expect(log.data["article_id"]).to eq(published_article.id)
         expect(log.user_id).to eq(user.id)
+      end
+    end
+  end
+
+  describe "GET /api/articles/search" do
+    before { article }
+
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get "/api/articles/search", headers: { origin: origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
+    context "when there is one article returned" do
+      it "has correct keys in the response" do
+        article.update_columns(organization_id: organization.id)
+        get "/api/articles/search"
+
+        index_keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes body_markdown
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array index_keys
+      end
+    end
+
+    context "when there is more than one article returned" do
+      it "has correct keys in the response" do
+        new_article = create(:article)
+        article.update_columns(organization_id: organization.id)
+        new_article.update_columns(organization_id: organization.id)
+
+        get "/api/articles/search"
+
+        keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array keys
+      end
+    end
+
+    it "supports pagination" do
+      create_list(:article, 2)
+      get "/api/articles/search", params: { page: 1, per_page: 2 }
+      expect(response.parsed_body.length).to eq(2)
+      get "/api/articles/search", params: { page: 2, per_page: 2 }
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "returns flare tag in the response" do
+      get "/api/articles/search"
+      response_article = response.parsed_body.first
+      expect(response_article["flare_tag"]).to be_present
+      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+      expect(response_article["flare_tag"]["name"]).to eq("discuss")
+    end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get "/api/articles/search"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+        allow(ApplicationConfig).to receive(:[]).and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+        allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+        create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
+        get "/api/articles/search", params: { per_page: 10 }
+        expect(response.parsed_body.count).to eq(2)
       end
     end
   end

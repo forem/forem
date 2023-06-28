@@ -6,6 +6,7 @@ module Admin
       id supported rules_markdown short_summary pretty_name bg_color_hex
       text_color_hex user_id alias_for badge_id requires_approval
       social_preview_template wiki_body_markdown submission_template
+      suggested
     ].freeze
 
     before_action :set_default_options, only: %i[index]
@@ -23,6 +24,11 @@ module Admin
       @tag = Tag.new
     end
 
+    def edit
+      @tag = Tag.find(params[:id])
+      @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
+    end
+
     def create
       @tag = Tag.new(tag_params)
       @tag.name = params[:tag][:name].downcase
@@ -34,11 +40,6 @@ module Admin
         flash[:danger] = @tag.errors_as_sentence
         render :new
       end
-    end
-
-    def edit
-      @tag = Tag.find(params[:id])
-      @tag_moderators = User.with_role(:tag_moderator, @tag).select(:id, :username)
     end
 
     def update

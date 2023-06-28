@@ -25,6 +25,4 @@ export const Default = () => {
   );
 };
 
-Default.story = {
-  name: 'MarkdownToolbar',
-};
+Default.storyName = 'MarkdownToolbar';

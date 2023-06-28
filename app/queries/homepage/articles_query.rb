@@ -38,6 +38,7 @@ module Homepage
       per_page: DEFAULT_PER_PAGE
     )
       @relation = Article.published.select(*ATTRIBUTES)
+        .includes(:distinct_reaction_categories)
 
       @approved = approved
       @published_at = published_at
@@ -67,6 +68,7 @@ module Homepage
       @relation = @relation.where(user_id: user_id) if user_id.present?
       @relation = @relation.where(organization_id: organization_id) if organization_id.present?
       @relation = @relation.cached_tagged_with_any(tags) if tags.any?
+      @relation = @relation.includes(:distinct_reaction_categories)
 
       relation
     end

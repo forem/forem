@@ -5,34 +5,36 @@ RSpec.describe Moderator::UnpublishAllArticlesWorker, type: :worker do
 
   context "when unpublishing" do
     let!(:user) { create(:user) }
-    let!(:articles) { create_list(:article, 3, user: user) }
+    let!(:admin) { create(:user, :admin) }
 
-    it "unpublishes all articles" do
-      expect { described_class.new.perform(user.id) }.to change { user.articles.published.size }.from(3).to(0)
+    before {  allow(Moderator::UnpublishAllArticles).to receive(:call) }
+
+    it "calls UnpublishAllArticles" do
+      described_class.new.perform(user.id, admin.id)
+      expect(Moderator::UnpublishAllArticles).to have_received(:call).with(target_user_id: user.id,
+                                                                           action_user_id: admin.id,
+                                                                           listener: :admin_api)
     end
 
-    it "applies proper frontmatter", :aggregate_failures do
-      described_class.new.perform(user.id)
-      expect(Article.last.body_markdown).to include("published: false")
-      expect(Article.last.body_markdown).not_to include("published: true")
+    it "calls UnpublishAllArticles with listener" do
+      described_class.new.perform(user.id, admin.id, "moderator")
+      expect(Moderator::UnpublishAllArticles).to have_received(:call).with(target_user_id: user.id,
+                                                                           action_user_id: admin.id,
+                                                                           listener: :moderator)
     end
 
-    it "destroys the pre-existing notifications" do
-      allow(Notification).to receive(:remove_all_by_action_without_delay).and_call_original
-      described_class.new.perform(user.id)
-      articles.map(&:id).each do |id|
-        attrs = { notifiable_ids: id, notifiable_type: "Article", action: "Published" }
-        expect(Notification).to have_received(:remove_all_by_action_without_delay).with(attrs)
-      end
+    it "calls UnpublishAllArticles with the default listener" do
+      described_class.new.perform(user.id, admin.id, "admin_api")
+      expect(Moderator::UnpublishAllArticles).to have_received(:call).with(target_user_id: user.id,
+                                                                           action_user_id: admin.id,
+                                                                           listener: :admin_api)
     end
 
-    it "destroys the pre-existing context notifications" do
-      articles.each do |article|
-        create(:context_notification, context: article, action: "Published")
-      end
-      expect do
-        described_class.new.perform(user.id)
-      end.to change(ContextNotification, :count).by(-3)
+    it "calls UnpublishAllArticles with the default listener if passed invalid listener" do
+      described_class.new.perform(user.id, admin.id, "another_api")
+      expect(Moderator::UnpublishAllArticles).to have_received(:call).with(target_user_id: user.id,
+                                                                           action_user_id: admin.id,
+                                                                           listener: :admin_api)
     end
   end
 end

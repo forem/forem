@@ -88,7 +88,6 @@ module Articles
           reseed_randomizer_on_each_request: config.fetch("reseed_randomizer_on_each_request"),
         )
       end
-      private_class_method :build_with
     end
   end
 end

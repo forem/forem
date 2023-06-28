@@ -10,8 +10,7 @@ class CreatorSettingsForm
   attribute :primary_brand_color_hex, :string
   attribute :public, :boolean
 
-  validates :community_name,
-            :primary_brand_color_hex, presence: true
+  validates :community_name, :primary_brand_color_hex, presence: true
 
   validates :checked_code_of_conduct, inclusion: { in: [true, false] }
   validates :checked_terms_and_conditions, inclusion: { in: [true, false] }
@@ -21,26 +20,20 @@ class CreatorSettingsForm
   attr_accessor :success
 
   def save
-    if valid?
-      begin
-        ::Settings::Community.community_name = community_name
-        ::Settings::UserExperience.primary_brand_color_hex = primary_brand_color_hex
-        ::Settings::Authentication.invite_only_mode = invite_only_mode
-        ::Settings::UserExperience.public = public
+    ::Settings::Community.community_name = community_name
+    ::Settings::UserExperience.primary_brand_color_hex = primary_brand_color_hex
+    ::Settings::Authentication.invite_only_mode = invite_only_mode
+    ::Settings::UserExperience.public = public
 
-        if logo
-          logo_uploader = upload_logo(logo)
-          ::Settings::General.original_logo = logo_uploader.url
-          ::Settings::General.resized_logo = logo_uploader.resized_logo.url
-        end
-        @success = true
-      rescue StandardError => e
-        errors.add(:base, e.message)
-        @success = false
-      end
-    else
-      @success = false
+    if logo
+      logo_uploader = upload_logo(logo)
+      ::Settings::General.original_logo = logo_uploader.url
+      ::Settings::General.resized_logo = logo_uploader.resized_logo.url
     end
+    @success = true
+  rescue StandardError => e
+    errors.add(:base, e.message)
+    @success = false
   end
 
   private

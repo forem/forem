@@ -141,11 +141,19 @@
   --reaction-bg: transparent;
 
   border: none;
-  padding: 0;
   background: transparent;
   display: inline-flex;
   flex-direction: row;
   align-items: center;
+
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    background-color: var(--button-ghost-bg-hover);
+    border-color: transparent;
+    border-radius: 1000px;
+    box-shadow: none;
+    color: var(--button-ghost-color-hover);
+  }
 
   @media (min-width: $breakpoint-m) {
     flex-direction: column;
@@ -178,6 +186,15 @@
     &--active {
       display: none;
     }
+    // This overrides some of the styles for the temporarily feature-flaged
+    &--borderless {
+      padding: var(--su-2);
+      box-shadow: none;
+      background: none;
+      color: var(--reaction-color);
+      border-radius: 0;
+      transition: all var(--transition-props);
+    }
   }
 
   &__count {
@@ -201,10 +218,6 @@
     }
     .crayons-reaction__icon--active {
       display: block;
-    }
-
-    .crayons-reaction__count {
-      color: var(--reaction-color);
     }
   }
 
@@ -231,6 +244,43 @@
       --reaction-bg: var(--reaction-save-bg);
     }
   }
+
+  &--comment {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--reaction-comment-color);
+      --reaction-bg: var(--reaction-comment-bg);
+    }
+  }
+}
+
+// This overrides some of the styles for the temporarily feature-flaged
+.reaction-drawer .crayons-reaction {
+  border: 1px solid var(--card-bg);
+  border-radius: 20px;
+  flex-direction: column;
+
+  &.user-activated {
+    background-color: var(--body-bg);
+    border: 1px solid #d4d4d4;
+    border-radius: 20px;
+
+    .crayons-reaction__icon--active {
+      border: 0;
+      box-shadow: none;
+    }
+  }
+
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+}
+
+.reaction-drawer .crayons-reaction:hover {
+  background-color: var(--body-bg);
+  border-radius: 20px;
 }
 
 .user-animated {
@@ -315,12 +365,18 @@
   }
 }
 
-.crayons-article-sticky {
+.crayons-article-sticky:last-child {
   position: -webkit-sticky;
   position: sticky;
   top: calc(var(--header-height) + var(--layout-padding));
   .static-header & {
     top: var(--layout-padding);
+  }
+}
+
+.crayons-post_sidebar_display_ad {
+  @media screen and (max-width: $breakpoint-l) {
+    display: none;
   }
 }
 
@@ -333,5 +389,132 @@
     font-weight: var(--fw-bold);
     text-transform: uppercase;
     color: var(--card-color-tertiary);
+  }
+}
+
+// TODO: The drawer__outer contains the trigger button and the drawer itself,
+// enabling hover, however this then requires the __outer wrapping div to be
+// styled similarly to the other action buttons in the sidebar, which we can
+// clean up significantly *after* the multiple_reactions feature flag is
+// fully rolled-out.
+.reaction-drawer__outer {
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  // Disables text selection to help "long tap" work on mobile
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  &.open .reaction-drawer {
+    display: block;
+  }
+
+  .hidden {
+    display: none;
+  }
+}
+
+.reaction-drawer {
+  min-width: auto;
+  border-radius: 32px;
+  position: absolute;
+  top: -80px;
+  left: 15px;
+  display: none; // Initially hidden
+
+  // Copying from Dropdown for now
+  padding: var(--su-3);
+  min-width: 250px;
+  margin-top: var(--su-1);
+  z-index: var(--z-dropdown);
+  background: var(--card-bg);
+  color: var(--card-color);
+  box-shadow: var(--shadow-1);
+
+  flex-direction: column;
+
+  @media (min-width: $breakpoint-m) {
+    max-width: 360px;
+    width: max-content;
+    top: -5px;
+    left: 55px;
+  }
+
+  .crayons-reaction__count {
+    min-width: auto;
+    margin-left: 0;
+    display: block;
+  }
+}
+
+.reaction-drawer__outer:hover .reaction-drawer {
+  @media (min-width: $breakpoint-m) {
+    display: block;
+  }
+}
+
+.reaction-drawer__container {
+  display: flex;
+  flex-direction: row;
+  gap: var(--su-3);
+}
+
+.multiple_reactions_engagement {
+  padding: 0.5em 0;
+  cursor: default;
+  display: flex;
+  column-gap: 2.2em;
+  flex-wrap: wrap;
+  min-height: 40px;
+
+  &>span {
+    &.hidden {
+      display: none;
+    }
+    display: flex;
+    column-gap: 0.3em;
+    align-items: center;
+  }
+}
+
+.multiple_reactions_aggregate {
+  display: flex;
+  align-items: center;
+
+  .multiple_reactions_icons_container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+
+  .crayons_icon_container {
+    display: inline-block;
+    background-color: var(--body-bg);
+    border: 2px solid var(--card-bg);
+    border-radius: 15px;
+    margin-right: -0.75em;
+    width: 28px;
+    height: 28px;
+  }
+
+  img {
+    margin-top: -3px;
+    vertical-align: middle;
+  }
+
+  .aggregate_reactions_counter {
+    margin-left: 1em;
   }
 }

@@ -1,10 +1,8 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Analytics", type: :request do
+RSpec.describe "Api::V1::Analytics" do
   let(:api_secret) { create(:api_secret) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json", "api-key" => api_secret.secret } }
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
   describe "GET /api/analytics/totals" do
     include_examples "GET /api/analytics/:endpoint authorization examples", "totals"
@@ -27,7 +25,7 @@ RSpec.describe "Api::V1::Analytics", type: :request do
 
       it "renders the proper error message in JSON" do
         error_message = "Required 'start' parameter is missing"
-        expect(JSON.parse(response.body)["error"]).to eq(error_message)
+        expect(response.parsed_body["error"]).to eq(error_message)
       end
     end
 
@@ -40,7 +38,7 @@ RSpec.describe "Api::V1::Analytics", type: :request do
 
       it "renders the proper error message in JSON" do
         error_message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
-        expect(JSON.parse(response.body)["error"]).to eq(error_message)
+        expect(response.parsed_body["error"]).to eq(error_message)
       end
     end
   end

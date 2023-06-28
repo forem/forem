@@ -2,16 +2,16 @@
   <%= form_with model: [:admin, OrganizationMembership.new], local: true, html: { class: "flex flex-col gap-4" } do |f| %>
     <%= f.hidden_field :user_id %>
     <div class="crayons-field">
-      <%= f.label :organization_id, "Organization ID", class: "crayons-field__label" %>
+      <%= f.label :organization_id, t("views.admin.users.actions.add_org.id"), class: "crayons-field__label" %>
       <%= f.text_field :organization_id, class: "crayons-textfield", size: 8, required: true, inputmode: "numeric", type: "number", placeholder: "1234" %>
     </div>
     <div class="crayons-field">
-      <%= f.label :type_of_user, "Role", class: "crayons-field__label" %>
-          <p id="add-org-permission-description" class="crayons-field__description">You can assign <span class="js-user-name"></span> to be an Admin or a regular member.</p>
-      <%= f.select(:type_of_user, options_for_select(%w[member admin]), {}, class: "crayons-select", aria: { describedby: "add-org-permission-description" }) %>
+      <%= f.label :type_of_user, t("views.admin.users.actions.add_org.role"), class: "crayons-field__label" %>
+          <p id="add-org-permission-description" class="crayons-field__description"><%= t("views.admin.users.actions.add_org.role_desc_html", user: tag.span(class: "js-user-name")) %></p>
+      <%= f.select(:type_of_user, options_for_select({ t("views.admin.users.actions.add_org.member") => "member", t("views.admin.users.actions.add_org.admin") => "admin" }), {}, class: "crayons-select", aria: { describedby: "add-org-permission-description" }) %>
     </div>
     <div>
-      <%= f.submit "Add organization", class: "c-btn c-btn--primary" %>
+      <%= f.submit t("views.admin.users.actions.add_org.submit"), class: "c-btn c-btn--primary" %>
     </div>
   <% end %>
 </div>

@@ -25,7 +25,7 @@ export function SearchFormSync() {
 
     // Server-side rendering of search results means the DOM node is destroyed everytime a search is performed,
     // So we need to get the reference every time and use that for the parent in the portal.
-    const element = document.getElementById('mobile-search-container');
+    const mscElement = document.getElementById('mobile-search-container');
 
     // The DOM element has changed because server-sde rendering returns new
     // search results which destroys the existing search form in mobile view.
@@ -33,17 +33,29 @@ export function SearchFormSync() {
     // i.e. the container for the createPortal call in the render.
     // If we do not unmount, it will result in an unmounting error that will throw as the
     // container element (search form that was wiped out because of the new search results) no longer exists.
-    if (mobileSearchContainer && element !== mobileSearchContainer) {
+    if (mobileSearchContainer && mscElement !== mobileSearchContainer) {
       unmountComponentAtNode(mobileSearchContainer);
     }
 
     // We need to delete the existing server-side rendered form because createPortal only appends to it's container.
-    if (element) {
-      const form = element.querySelector('form');
-      form && element.removeChild(form);
+    if (mscElement) {
+      const form = mscElement.querySelector('form');
+      // We remove the child form expecting that createPortal adds the new form on each re-render
+      form && mscElement.removeChild(form);
     }
 
-    setMobileSearchContainer(element);
+    // Since, passing the reference to same element will not cause the component to re-render
+    // we CLONE & REPLACE the element with the clone & pass the clone's reference, so that useState
+    // will re-render the component.
+    const mscElementClone = mscElement ? mscElement.cloneNode(true) : null;
+
+    if (mscElementClone) {
+      const mscElementParent = mscElement.parentElement;
+      unmountComponentAtNode(mscElement);
+      mscElementParent.prepend(mscElementClone);
+    }
+
+    setMobileSearchContainer(mscElementClone);
     setSearchTerm(updatedSearchTerm);
   }
 

@@ -5,6 +5,8 @@ tests
 powered-test
 
 # asset directories
+docs
+doc
 website
 images
 
@@ -40,3 +42,4 @@ wercker.yml
 
 # misc
 *.md
+!**/yaml/dist/**/doc

@@ -3,17 +3,17 @@
 <%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
   <div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">
     <div>
-      <%= paginate @users, theme: "admin", scope: @users, label: "Paginate users", context: "small" %>
+      <%= paginate @users, theme: "admin", scope: @users, label: t("views.admin.users.aria_paginate"), context: "small" %>
     </div>
     <div class="flex justify-between xl:justify-end m:w-100 xl:w-max">
       <div class="hidden m:block m:w-50 xl:w-max">
-        <%= render "admin/users/controls/search_field", f: f, context: "large", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
+        <%= render "admin/users/controls/search_field", f: f, context: "large", placeholder: t("views.admin.users.search.placeholder"), aria_label: t("views.admin.users.search.aria_field") %>
       </div>
       <div class="flex xl:ml-2">
         <div class="m:hidden">
           <%= render "admin/users/controls/expand_search_button" %>
         </div>
-        <button type="button" aria-label="Filter" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
+        <button type="button" aria-label="<%= t("views.admin.users.filters.aria_label") %>" class="js-open-filter-modal-btn c-btn c-btn--icon-alone"><%= crayons_icon_tag("filter", aria_hidden: true) %></button>
         <%= render "admin/users/controls/export" %>
       </div>
     </div>
@@ -23,7 +23,7 @@
 <%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
   <div class="m:hidden">
     <div id="search-users" class="hidden">
-      <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: "Search member...", aria_label: "Search member by name, username or email" %>
+      <%= render "admin/users/controls/search_field", f: f, context: "small", placeholder: t("views.admin.users.search.placeholder"), aria_label: t("views.admin.users.search.aria_field") %>
     </div>
   </div>
 <% end %>

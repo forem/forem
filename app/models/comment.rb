@@ -9,6 +9,8 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
+  VALID_SORT_OPTIONS = %w[top latest oldest].freeze
+
   URI_REGEXP = %r{
     \A
     (?:https?://)?  # optional scheme
@@ -63,7 +65,6 @@ class Comment < ApplicationRecord
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
-  after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
@@ -87,10 +88,10 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  def self.tree_for(commentable, limit = 0)
+  def self.tree_for(commentable, limit = 0, order = nil)
     commentable.comments
       .includes(user: %i[setting profile])
-      .arrange(order: "score DESC")
+      .arrange(order: build_sort_query(order))
       .to_a[0..limit - 1]
       .to_h
   end
@@ -101,6 +102,25 @@ class Comment < ApplicationRecord
 
   def self.title_hidden
     I18n.t("models.comment.hidden")
+  end
+
+  def self.title_image_only
+    I18n.t("models.comment.image_only")
+  end
+
+  def self.build_comment(params, &blk)
+    includes(user: :profile).new(params, &blk)
+  end
+
+  def self.build_sort_query(order)
+    case order
+    when "latest"
+      "created_at DESC"
+    when "oldest"
+      "created_at ASC"
+    else
+      "score DESC"
+    end
   end
 
   def search_id
@@ -144,6 +164,8 @@ class Comment < ApplicationRecord
     return self.class.title_hidden if hidden_by_commentable_user
 
     text = ActionController::Base.helpers.strip_tags(processed_html).strip
+    return self.class.title_image_only if only_contains_image?(text)
+
     truncated_text = ActionController::Base.helpers.truncate(text, length: length).gsub("&#39;", "'").gsub("&amp;", "&")
     Nokogiri::HTML.fragment(truncated_text).text # unescapes all HTML entities
   end
@@ -172,6 +194,8 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
+  private_class_method :build_sort_query
+
   private
 
   def remove_notifications?
@@ -197,6 +221,25 @@ class Comment < ApplicationRecord
   end
 
   def evaluate_markdown
+    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
+      extracted_evaluate_markdown
+    else
+      original_evaluate_markdown
+    end
+  end
+
+  def extracted_evaluate_markdown
+    return unless user
+
+    renderer = ContentRenderer.new(body_markdown, source: self, user: user)
+    self.processed_html = renderer.process(link_attributes: { rel: "nofollow" }).processed_html
+    wrap_timestamps_if_video_present! if commentable
+    shorten_urls!
+  rescue ContentRenderer::ContentParsingError => e
+    errors.add(:base, ErrorMessages::Clean.call(e.message))
+  end
+
+  def original_evaluate_markdown
     fixed_body_markdown = MarkdownProcessor::Fixer::FixForComment.call(body_markdown)
     parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
@@ -254,10 +297,6 @@ class Comment < ApplicationRecord
     else
       touch
     end
-  end
-
-  def create_first_reaction
-    Comments::CreateFirstReactionWorker.perform_async(id, user_id)
   end
 
   def after_destroy_actions
@@ -327,7 +366,7 @@ class Comment < ApplicationRecord
   def published_article
     return unless commentable_type == "Article" && !commentable.published
 
-    errors.add(:commentable_id, I18n.t("models.comment.is_not_valid"))
+    errors.add(:commentable_id, I18n.t("models.comment.published_article"))
   end
 
   def user_mentions_in_markdown
@@ -355,5 +394,10 @@ class Comment < ApplicationRecord
 
   def parent_exists?
     parent_id && Comment.exists?(id: parent_id)
+  end
+
+  def only_contains_image?(stripped_text)
+    # If stripped text is blank and processed html has <img> tags, then it's an image-only comment
+    stripped_text.blank? && processed_html.include?("<img")
   end
 end

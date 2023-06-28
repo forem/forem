@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Tag, type: :model do
+RSpec.describe Tag do
   let(:tag) { build(:tag) }
 
   describe "#class_name" do
@@ -14,8 +14,6 @@ RSpec.describe Tag, type: :model do
       subject { tag }
 
       it { is_expected.to belong_to(:badge).optional }
-      it { is_expected.to have_one(:sponsorship).inverse_of(:sponsorable).dependent(:destroy) }
-
       it { is_expected.to validate_length_of(:name).is_at_most(30) }
       it { is_expected.to validate_presence_of(:category) }
 
@@ -211,6 +209,31 @@ RSpec.describe Tag, type: :model do
   describe "#points" do
     it "defaults to 0" do
       expect(described_class.new.points).to eq(0)
+    end
+  end
+
+  describe "followed_by and antifollowed_by" do
+    let(:user) { create(:user) }
+    let(:follow_tag) { create(:tag, name: "following") }
+    let(:antifollow_tag) { create(:tag, name: "antifollowing") }
+    let(:unrelated) { create(:tag, name: "unrelated") }
+    let(:other) { create(:user) }
+
+    before do
+      follow = user.follow(follow_tag)
+      follow.update explicit_points: 5
+
+      antifollow = user.follow(antifollow_tag)
+      antifollow.update explicit_points: -5
+
+      other.follow(unrelated)
+    end
+
+    it "works as expected" do
+      results = described_class.followed_by(user)
+      expect(results).to contain_exactly(follow_tag)
+      antiresults = described_class.antifollowed_by(user)
+      expect(antiresults).to contain_exactly(antifollow_tag)
     end
   end
 

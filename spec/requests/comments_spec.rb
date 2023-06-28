@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/comment_hide_or_unhide_request"
 
-RSpec.describe "Comments", type: :request do
+RSpec.describe "Comments" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }
@@ -162,7 +162,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is for a podcast's episode" do
-      it "works" do
+      it "is successful" do
         podcast_comment = create(:comment, commentable: podcast_episode, user: user)
 
         get podcast_comment.path
@@ -254,6 +254,7 @@ RSpec.describe "Comments", type: :request do
 
   describe "PUT /comments/:id" do
     before do
+      allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
       sign_in user
     end
 
@@ -289,9 +290,28 @@ RSpec.describe "Comments", type: :request do
       expect(response).to have_http_status(:unauthorized)
     end
 
-    context "when logged-in" do
+    context "when logged-in and consistent rendering" do
       before do
         sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
+        post "/comments/preview",
+             params: { comment: { body_markdown: "hi" } },
+             headers: { HTTP_ACCEPT: "application/json" }
+      end
+
+      it "returns 200 on good request" do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns json" do
+        expect(response.media_type).to eq("application/json")
+      end
+    end
+
+    context "when logged-in and inconsistent rendering" do
+      before do
+        sign_in user
+        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(false)
         post "/comments/preview",
              params: { comment: { body_markdown: "hi" } },
              headers: { HTTP_ACCEPT: "application/json" }
@@ -317,6 +337,20 @@ RSpec.describe "Comments", type: :request do
           body_markdown: "New comment #{rand(10)}"
         }
       }
+    end
+
+    before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
+
+    context "when a user is comment_suspended" do
+      before do
+        sign_in user
+        user.add_role(:comment_suspended)
+      end
+
+      it "returns not authorized" do
+        post "/comments", params: base_comment_params
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     context "when part of field test" do

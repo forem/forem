@@ -36,7 +36,7 @@ module DataUpdateScripts
           article.save
           # article.index_to_elasticsearch_inline
 
-          articles_to_delete_ids += articles_to_graft.map { |a| a["id"] }
+          articles_to_delete_ids += articles_to_graft.pluck("id")
         end
 
         # we shouldn't need to call Articles::Destroy as all the data has been moved over by now
@@ -60,20 +60,12 @@ module DataUpdateScripts
     # or different collections as it's highly unlikely
     def graft_articles(article_to_keep, articles_to_graft)
       article_id = article_to_keep.id
-      articles_to_graft_ids = articles_to_graft.map { |a| a["id"] }
+      articles_to_graft_ids = articles_to_graft.pluck("id")
 
       # NotificationSubscription, Notification and RatingVote rows will be removed
       # Poll is ignored because it's related to the liquid tag inside the article, also user's can't use polls
       # TagAdjustment is ignored as there's likely no reason for article to have an adjustment moved over
-      models_with_a_direct_relation = [
-        HtmlVariantSuccess,
-        HtmlVariantSuccess,
-        HtmlVariantTrial,
-        PageView,
-      ]
-      models_with_a_direct_relation.each do |model_class|
-        model_class.where(article_id: articles_to_graft_ids).update_all(article_id: article_id)
-      end
+      PageView.where(article_id: articles_to_graft_ids).update_all(article_id: article_id)
 
       Comment
         .where(commentable_type: "Article", commentable_id: articles_to_graft_ids)

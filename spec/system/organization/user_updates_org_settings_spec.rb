@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Organization setting page(/settings/organization)", type: :system, js: true do
+RSpec.describe "Organization setting page(/settings/organization)", js: true do
   def fill_in_org_form
     fill_in "organization[name]", with: "Organization Name"
     fill_in "organization[slug]", with: "Organization"
@@ -46,7 +46,6 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
 
     visit "settings/organization"
     click_button("Make admin")
-    page.driver.browser.switch_to.alert.accept
 
     expect(page).to have_text("#{user2.name} is now an admin.")
   end
@@ -57,7 +56,6 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
 
     visit "settings/organization"
     click_button("Revoke admin status")
-    page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is no longer an admin.")
   end
 
@@ -67,7 +65,6 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
 
     visit "settings/organization"
     click_button("Remove from org")
-    page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is no longer part of your organization.")
   end
 

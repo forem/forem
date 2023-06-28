@@ -1,3 +1,5 @@
+<h1 class="crayons-title mb-3">Display Ads</h1>
+
 <div
   data-controller="confirmation-modal"
   data-confirmation-modal-root-selector-value="#confirmation-modal-root"
@@ -6,10 +8,10 @@
   data-confirmation-modal-size-value="m">
   <nav class="flex mb-4" aria-label="Display Ads navigation">
     <%= form_tag(admin_display_ads_path, method: "get") do %>
-     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search") %>
+     <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
     <% end %>
     <div class="ml-auto">
-      <div class="justify-content-end">
+      <div class="justify-end">
         <%= link_to "Make A New Display Ad", new_admin_display_ad_path, class: "crayons-btn" %>
       </div>
     </div>
@@ -20,20 +22,26 @@
   <table class="crayons-table" width="100%">
     <thead>
       <tr>
-        <th scope="col">ID</th>
+        <th scope="col">Name</th>
         <th scope="col">Placement Area</th>
-        <th scope="col">Published</th>
-        <th scope="col">Approved</th>
+        <th scope="col">Display to User Group</th>
+        <th scope="col">Type</th>
+        <th scope="col">Public?</th>
         <th scope="col">Success Rate</th>
       </tr>
     </thead>
     <tbody class="crayons-card">
       <% @display_ads.each do |display_ad| %>
           <tr data-row-id="<%= display_ad.id %>">
-            <td><%= link_to display_ad.id, edit_admin_display_ad_path(display_ad) %></td>
+            <td><%= link_to display_ad.name, edit_admin_display_ad_path(display_ad) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
-            <td><%= display_ad.published %></td>
-            <td><%= display_ad.approved %></td>
+            <td><%= display_ad.display_to %></td>
+            <td><%= display_ad.type_of.titleize %></td>
+            <% if display_ad.published? && display_ad.approved? %>
+              <td><span class="crayons-icon" role="img" aria-label="Ad is published and approved">✅</span></td>
+            <% else %>
+              <td><span class="crayons-icon" role="img" aria-label="Ad is not published or approved">❌</span></td>
+            <% end %>
             <td><%= display_ad.success_rate %></td>
             <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
             <td>

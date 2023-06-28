@@ -30,7 +30,7 @@ module Admin
       unpublish_all_articles: :unpublish_all_articles?
     }.freeze
 
-    after_action only: %i[update user_status banish full_delete unpublish_all_articles merge] do
+    after_action only: %i[update user_status banish full_delete merge] do
       Audit::Logger.log(:moderator, current_user, params.dup)
     end
 
@@ -63,20 +63,21 @@ module Admin
       @earliest_join_date = User.first.registered_at.to_s
     end
 
+    def show
+      @user = User.find(params[:id])
+      set_current_tab(params[:tab])
+      set_unpublish_all_log
+      set_banishable_user
+      set_feedback_messages
+      set_related_reactions
+      set_user_details
+    end
+
     def edit
       @user = User.find(params[:id])
       @notes = @user.notes.order(created_at: :desc).limit(10).load
       set_feedback_messages
       set_related_reactions
-    end
-
-    def show
-      @user = User.find(params[:id])
-      set_current_tab(params[:tab])
-      set_banishable_user
-      set_feedback_messages
-      set_related_reactions
-      set_user_details
     end
 
     def update
@@ -89,19 +90,23 @@ module Admin
     end
 
     def destroy
-      role = params[:role].to_sym
+      role = Role.find(params[:role_id])
+      authorize(role, :remove_role?)
+
       resource_type = params[:resource_type]
 
       @user = User.find(params[:user_id])
 
-      response = ::Users::RemoveRole.call(user: @user,
-                                          role: role,
-                                          resource_type: resource_type,
-                                          admin: current_user)
+      response = ::Users::RemoveRole.call(
+        user: @user,
+        role: role.name,
+        resource_type: resource_type,
+      )
+
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
-                 role: role.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
+                 role: role.name.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
@@ -151,7 +156,6 @@ module Admin
         end
       end
       Credits::Manage.call(@user, credit_params)
-      add_note if user_params[:new_note]
     end
 
     def export_data
@@ -185,7 +189,7 @@ module Admin
                                  user: @user.username,
                                  email: @user.email.presence || I18n.t("admin.users_controller.no_email"),
                                  id: @user.id,
-                                 the_page: link).html_safe # rubocop:disable Rails/OutputSafety
+                                 the_page: link).html_safe
       rescue StandardError => e
         flash[:danger] = e.message
       end
@@ -193,7 +197,14 @@ module Admin
     end
 
     def unpublish_all_articles
-      Moderator::UnpublishAllArticlesWorker.perform_async(params[:id].to_i)
+      target_user = User.find(params[:id].to_i)
+      Moderator::UnpublishAllArticlesWorker.perform_async(target_user.id, current_user.id, "moderator")
+
+      note_content = params.dig(:note, :content).presence
+      note_content ||= "#{current_user.username} unpublished all articles"
+      Note.create(noteable: target_user, reason: "unpublish_all_articles",
+                  content: note_content, author: current_user)
+
       message = I18n.t("admin.users_controller.unpublished")
       respond_to do |format|
         format.html do
@@ -356,8 +367,11 @@ module Admin
         Reaction.where(reactable_type: "Comment", reactable_id: user_comment_ids, category: "vomit")
           .or(Reaction.where(reactable_type: "Article", reactable_id: user_article_ids, category: "vomit"))
           .or(Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit"))
-          .includes(:reactable)
+          .includes(:user)
           .order(created_at: :desc).limit(15)
+
+      @countable_flags = calculate_countable_flags(@related_vomit_reactions)
+      @score = calculate_score(@related_vomit_reactions)
     end
 
     def user_params
@@ -386,7 +400,7 @@ module Admin
     end
 
     def set_current_tab(current_tab = "overview")
-      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:downcase)
+      @current_tab = if current_tab.in? Constants::UserDetails::TAB_LIST.map(&:underscore)
                        current_tab
                      else
                        "overview"
@@ -396,6 +410,28 @@ module Admin
     def set_banishable_user
       @banishable_user = (@user.comments.where("created_at < ?", 100.days.ago).empty? &&
         @user.created_at < 100.days.ago) || current_user.super_admin? || current_user.support_admin?
+    end
+
+    def set_unpublish_all_log
+      # in theory, there could be multiple "unpublish all" actions
+      # but let's query and display the last one for now, that should be enough for most cases
+      @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
+    end
+
+    def calculate_countable_flags(reactions)
+      countable_flags = 0
+      reactions.each do |reaction|
+        countable_flags += 1 if reaction.status != "invalid"
+      end
+      countable_flags
+    end
+
+    def calculate_score(reactions)
+      score = 0
+      reactions.each do |reaction|
+        score += reaction.points
+      end
+      score
     end
   end
 end

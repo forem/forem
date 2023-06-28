@@ -19,6 +19,4 @@ export const Default = () => {
   return <Select />;
 };
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';

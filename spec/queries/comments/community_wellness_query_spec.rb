@@ -23,49 +23,8 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
     create_comment_time_ago(user4.id, 239.days.ago, commentable: articles.sample)
   end
 
-  # This context spec will likely start to fail when we are ready to remove the
-  # rollout limitation from the query+logic. Read more about this here:
-  #
-  # - https://github.com/forem/forem/issues/17310#issuecomment-1118554640
-  # - https://github.com/forem/forem/blob/main/app/queries/comments/community_wellness_query.rb#L28
-  context "when the current date is less than (precedes) December 19, 2022" do
-    it "uses the date-limited query" do
-      expect(described_class.limit_query_rollout?).to be true
-    end
-
-    it "returns a max number of weeks that matches the diff from rollout date" do
-      user6 = create(:user)
-
-      # Add 2 comments per week (including week 0) for `user6`
-      (0..33).each do |i|
-        num_days_ago = (2 + (i * 7)).days.ago
-        create_comment_time_ago(user6.id, num_days_ago, commentable: articles.sample)
-        create_comment_time_ago(user6.id, num_days_ago, commentable: articles.sample)
-      end
-
-      # Fetch and de-serialize the results for `user6`
-      result = described_class.call
-      index6 = result.index { |hash| hash["user_id"] == user6.id }
-      weeks_ago_array = result[index6]["serialized_weeks_ago"].split(",")
-      comment_counts_array = result[index6]["serialized_comment_counts"].split(",")
-
-      post_rollout_comments = user6.comments.where("created_at > ?", "2022-05-01").order(created_at: :asc)
-      oldest_comment_date_post_rollout = post_rollout_comments.first.created_at
-
-      # If `1.34` weeks have passed we should get no more than 2 weeks in the
-      # result arrays because of the `limit_release_date_sql_query`. That's what
-      # is being calculated here and stored in `expected_weeks`
-      expected_weeks = ((Time.current - oldest_comment_date_post_rollout) / 7.days).ceil
-
-      expect(weeks_ago_array.count).to eq(expected_weeks)
-      expect(comment_counts_array.count).to eq(expected_weeks)
-    end
-  end
-
   context "when multiple users match criteria" do
     before do
-      allow(described_class).to receive(:limit_query_rollout?).and_return(false)
-
       # User 1 - week 0
       create_comment_time_ago(user1.id, 5.days.ago, commentable: articles.sample)
       create_comment_time_ago(user1.id, 6.days.ago, commentable: articles.sample)
@@ -111,7 +70,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
     it "returns users with correct data on their corresponding hash" do
       result = described_class.call
 
-      result_user_ids = result.map { |hash| hash["user_id"] }
+      result_user_ids = result.pluck("user_id")
       expect(result_user_ids).to contain_exactly(user1.id, user2.id, user5.id)
 
       index1 = result.index { |hash| hash["user_id"] == user1.id }
@@ -132,8 +91,6 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
 
   context "when users match criteria but mod reaction reduces their comment counts" do
     before do
-      allow(described_class).to receive(:limit_query_rollout?).and_return(false)
-
       # User 1 - week 0
       create_comment_time_ago(user1.id, 5.days.ago, commentable: articles.sample)
       create_comment_time_ago(user1.id, 6.days.ago, commentable: articles.sample)
@@ -162,7 +119,7 @@ RSpec.describe Comments::CommunityWellnessQuery, type: :query do
     it "matches the correct comment count for each week in result hash" do
       result = described_class.call
 
-      result_user_ids = result.map { |hash| hash["user_id"] }
+      result_user_ids = result.pluck("user_id")
       # Result includes both users because they have > 1 comment per week
       expect(result_user_ids).to contain_exactly(user1.id, user2.id)
 

@@ -53,6 +53,8 @@
   --card-color-secondary: rgb(var(--grey-700));
   --card-color-tertiary: rgb(var(--grey-600));
   --card-secondary-bg: rgb(var(--grey-50));
+  --card-tertiary-bg: rgb(var(--grey-100));
+  --card-tertiary-bg-hover: rgba(var(--grey-200), 0.55);
   --card-secondary-color: rgb(var(--grey-700));
   --card-border: rgba(var(--grey-900), 0.1);
   --card-secondary-border: rgba(var(--grey-900), 0.05);
@@ -142,6 +144,8 @@
   --tag-bg-hover: rgba(var(--grey-900), 0.05);
   --tag-prefix: rgba(var(--grey-900), 0.6);
   --tag-prefix-hover: rgb(var(--grey-900));
+  --tag-onboarding-bg: var(--white);
+  --tag-onboarding-border: var(--grey-200);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-50));
@@ -150,6 +154,9 @@
 
   /* Select icon */
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
+
+  /* Icons */
+  --close-icon: rgb(var(--grey-400));
 
   /* Reactions */
   --reaction-like-color: rgb(var(--red-600));
@@ -160,6 +167,12 @@
   --reaction-save-bg: rgba(var(--indigo-600), 0.1);
   --reaction-comment-color: rgb(var(--yellow-500));
   --reaction-comment-bg: rgba(var(--yellow-500), 0.1);
+
+  /* Code */
+  --code-inline-bg: rgb(var(--black), 0.1);
+
+  /* Onboarding suggested people */
+  --content-row-hover-bg: rgb(var(--grey-100));
 }
 
 :root {
@@ -260,6 +273,10 @@
   --indicator-bg: rgb(var(--grey-300));
   --indicator-color: rgb(var(--grey-700));
 
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-200));
+  --indicator-subtle-color: rgb(var(--grey-600));
+
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-400));
   --indicator-success-color: rgb(var(--green-900));
@@ -281,6 +298,12 @@
   ***********************************************/
 
   --list-item-bg-hover: rgb(var(--grey-50));
+
+  /***********************************************
+  ** Checkbox ************************************
+  ***********************************************/
+
+  --checkbox-default-bg: rgb(var(--grey-50));
 
   /***********************************************
   ** Modals **************************************
@@ -338,7 +361,7 @@
   /***********************************************
   ** Banners *************************************
   ***********************************************/
-  
+
   --banner-bg: rgb(var(--grey-800));
   --banner-color: var(--white);
   --banner-accent: var(--accent-brand);
@@ -358,4 +381,5 @@
     0 4px 6px -2px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.1),
     0 10px 10px -5px rgba(var(--black), 0.05), 0 0 0 1px rgba(var(--black), 0.1);
+  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
 }

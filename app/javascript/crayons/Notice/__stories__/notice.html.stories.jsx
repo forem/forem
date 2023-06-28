@@ -14,9 +14,7 @@ export const Default = () => (
   <div className="crayons-notice">This is Default Notice content.</div>
 );
 
-Default.story = {
-  name: 'default',
-};
+Default.storyName = 'default';
 
 export const Danger = () => (
   <div className="crayons-notice crayons-notice--danger">
@@ -24,9 +22,7 @@ export const Danger = () => (
   </div>
 );
 
-Danger.story = {
-  name: 'danger',
-};
+Danger.storyName = 'danger';
 
 export const Warning = () => (
   <div className="crayons-notice crayons-notice--warning">
@@ -34,9 +30,7 @@ export const Warning = () => (
   </div>
 );
 
-Warning.story = {
-  name: 'warning',
-};
+Warning.storyName = 'warning';
 
 export const Success = () => (
   <div className="crayons-notice crayons-notice--success">
@@ -44,9 +38,7 @@ export const Success = () => (
   </div>
 );
 
-Success.story = {
-  name: 'success',
-};
+Success.storyName = 'success';
 
 export const Info = () => (
   <div className="crayons-notice crayons-notice--info">
@@ -54,6 +46,4 @@ export const Info = () => (
   </div>
 );
 
-Info.story = {
-  name: 'info',
-};
+Info.storyName = 'info';

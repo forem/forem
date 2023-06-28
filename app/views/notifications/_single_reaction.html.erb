@@ -1,29 +1,27 @@
-<div class="flex items-center">
-  <% cache "activity-profile-pic-#{notification.json_data['user']['id']}-#{notification.json_data['user']['profile_image_90']}" do %>
-    <%= render "notifications/shared/profile_pic", json_data: notification.json_data %>
-  <% end %>
-  <div class="notification__content">
-    <% category = notification.json_data["reaction"]["category"] %>
-    <% if notification.json_data["reaction"]["reactable"]["title"].blank? %>
-      <% title_link = link_to(
-           t("views.notifications.reacted.your.#{notification.json_data['reaction']['reactable_type'].downcase}"),
-           notification.json_data["reaction"]["reactable"]["path"],
-           class: "crayons-link fw-bold",
-         ) %>
-    <% else %>
-      <% title_link = link_to(
-           sanitize(notification.json_data["reaction"]["reactable"]["title"]),
-           notification.json_data["reaction"]["reactable"]["path"],
-           class: "crayons-link fw-bold",
-         ) %>
+<div class="crayons-card notification">
+  <div class="flex items-center">
+    <% cache "activity-profile-pic-#{notification.user_id}-#{notification.user_profile_image_90}" do %>
+      <%= render "notifications/shared/profile_pic", json_data: notification.json_data %>
     <% end %>
-    <%= t("views.notifications.reacted.verb_html",
-          count: 1,
-          start: "",
-          actors: link_to(notification.json_data["user"]["name"], notification.json_data["user"]["path"], class: "crayons-link fw-bold"),
-          # title is blank when it's a comment with only an image, for example
-          title: title_link,
-          end: "",
-          reactions: tag.span(crayons_icon_tag(reaction_image(category), class: "reaction-image mx-1 reaction-icon--#{category}", title: t("views.reactions.category.#{category}")))) %>
+    <div class="notification__content">
+      <%# title is blank when it's a comment with only an image, for example %>
+      <% title = if notification.reactable_title.present?
+                   sanitize(notification.reactable_title)
+                 else
+                   t("views.notifications.reacted.your.#{notification.reactable_type.downcase}")
+                 end %>
+
+      <% title_link = link_to(title, notification.reactable_path, class: "crayons-link fw-bold") %>
+
+      <%= t("views.notifications.reacted.verb_html",
+            count: 1,
+            start: "",
+            actors: link_to(notification.user_name, notification.user_path, class: "crayons-link fw-bold"),
+            title: title_link,
+            end: "",
+            reactions: tag.span(image_tag(reaction_image(notification.reaction_category),
+                                          class: "reaction-image mx-1 reaction-icon--#{notification.reaction_category}",
+                                          title: t("views.reactions.category.#{notification.reaction_category}")))) %>
+    </div>
   </div>
 </div>

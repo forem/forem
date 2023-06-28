@@ -5,6 +5,10 @@ import { axe } from 'jest-axe';
 import { GithubRepos } from '../githubRepos';
 
 global.fetch = fetch;
+const csrfToken = 'this-is-a-csrf-token';
+jest.mock('../../utilities/http/csrfToken', () => ({
+  getCSRFToken: jest.fn(() => Promise.resolve(csrfToken)),
+}));
 
 function getRepositories() {
   return [
@@ -201,10 +205,7 @@ function getRepositories() {
 }
 
 describe('<GithubRepos />', () => {
-  const csrfToken = 'this-is-a-csrf-token';
-
   beforeEach(() => {
-    global.getCsrfToken = async () => csrfToken;
     global.Honeybadger = { notify: jest.fn() };
   });
 

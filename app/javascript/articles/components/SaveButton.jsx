@@ -24,8 +24,8 @@ export const SaveButton = ({
       <Button
         id={`article-save-button-${article.id}`}
         variant="default"
-        title="Save to reading list"
-        aria-label="Save to reading list"
+        title={`Save post ${article.title} to reading list`}
+        aria-label={`Save post ${article.title} to reading list`}
         aria-pressed={isBookmarked}
         icon={isBookmarked ? BookmarkFilledSVG : BookmarkSVG}
         data-initial-feed

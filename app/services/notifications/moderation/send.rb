@@ -1,27 +1,31 @@
 # Send notifications from moderation
 module Notifications
   module Moderation
+    MODERATORS_AVAILABILITY_DELAY = 22.hours
     class Send
-      def initialize(moderator, notifiable)
-        @moderator = moderator
-        @notifiable = notifiable
-      end
+      SUPPORTED = [Comment, Article].freeze
 
       def self.call(...)
         new(...).call
       end
 
-      delegate :user_data, :comment_data, to: Notifications
+      def initialize(moderator, notifiable)
+        @moderator = moderator
+        @notifiable = notifiable
+      end
+
+      delegate :user_data, :comment_data, :article_data, to: Notifications
 
       def call
-        # notifiable is currently only comment
         return unless notifiable_supported?(notifiable)
 
-        # do not create the notification if the comment was created by the moderator
+        # do not create the notification if the comment/article was created by the moderator
         return if moderator == notifiable.user
 
         json_data = { user: user_data(User.staff_account) }
-        json_data[notifiable.class.name.downcase] = public_send "#{notifiable.class.name.downcase}_data", notifiable
+        notifiable_name = notifiable.class.name.downcase
+        json_data[notifiable_name] = public_send "#{notifiable_name}_data", notifiable
+        json_data["#{notifiable_name}_user"] = user_data(notifiable.user)
         new_notification = Notification.create!(
           user_id: moderator.id,
           notifiable_id: notifiable.id,

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ImageUploads", type: :request do
+RSpec.describe "ImageUploads" do
   describe "POST/image_uploads" do
     let(:user) { create(:user) }
     let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
@@ -16,7 +16,7 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
-    let(:image_directory_regex) { "\/uploads\/articles\/.+\." }
+    let(:image_directory_regex) { "/uploads/articles/.+." }
 
     context "when not logged-in" do
       it "responds with 401" do

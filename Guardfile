@@ -1,4 +1,3 @@
-
 ignore([%r{^bin/*}, %r{^config/*}, %r{^db/*}, %r{^lib/*}, %r{^log/*}, %r{^public/*}, %r{^tmp/*}, %r{^node_modules/*}])
 
 rspec_options = {

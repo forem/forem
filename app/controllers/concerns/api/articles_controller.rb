@@ -10,6 +10,11 @@ module Api
       updated_at video_thumbnail_url reading_time
     ].freeze
 
+    ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
+      *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown
+    ].freeze
+    private_constant :ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION
+
     SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
       *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
     ].freeze
@@ -81,7 +86,7 @@ module Api
 
     def me
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, per_page_max].min
 
       @articles = case params[:status]
                   when "published"
@@ -118,7 +123,26 @@ module Api
       end
     end
 
+    def search
+      # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
+      # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
+      # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
+      @articles = Articles::ApiSearchQuery.call(params)
+
+      # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
+      # ChatGPT cannot process the long body request.
+      @articles = if @articles.count > 1
+                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  else
+                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  end
+    end
+
     private
+
+    def per_page_max
+      (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    end
 
     def article_params
       allowed_params = [

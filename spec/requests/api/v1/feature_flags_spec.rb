@@ -1,11 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::FeatureFlagsController", type: :request do
+RSpec.describe "Api::V1::FeatureFlagsController" do
   let(:flag) { "test_flag" }
   let(:params) { { flag: flag } }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
-
-  before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
 
   it "is not available in the production environment" do
     # We really need an ActiveSupport::StringInquirer here
@@ -60,7 +58,7 @@ RSpec.describe "Api::V1::FeatureFlagsController", type: :request do
 
       get api_feature_flags_path(flag: flag), headers: headers
 
-      parsed_response = JSON.parse(response.body)
+      parsed_response = response.parsed_body
       expect(parsed_response[flag]).to be true
     end
   end

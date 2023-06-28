@@ -278,49 +278,137 @@
     }
   }
 }
-// Sidebar sponsors
-.sidebar-sponsor {
-  color: var(--card-color-tertiary);
-  img {
-    width: 100%;
-    max-width: 140px;
-    margin-bottom: var(--su-2);
+
+.org-sidebar-widget {
+  position: relative;
+  overflow: hidden;
+  display: block;
+
+  .org-sidebar-widget-body {
+    padding: 16px;
+    overflow-wrap: break-word;
+    &.body-scrollable {
+      height: calc(100vh - 300px);
+      max-height: 390px;
+      overflow-y: scroll;
+    }
+    .org-sidebar-widget-user-pic {
+      display: inline-block;
+      img {
+        height: 48px;
+        width: 48px;
+        margin: 3px;
+        border-radius: 100%;
+      }
+    }
+  }
+  a {
+    width: calc(100% - 40px);
+    justify-content: center;
+    &:hover {
+      opacity: 0.9;
+    }
   }
 }
 
-// Todo: Not really sure what that is.. some sort of sponsorship widget...
-.sidebar-sponsorship-level {
-  text-align: center;
-  font-weight: bold;
-  width: calc(100% - 6px);
-  padding: 26px 0px;
-  border-radius: 3px;
-  margin-bottom: 10px;
-  font-family: $helvetica-condensed;
-  font-stretch: condensed;
-  background: var(--card-secondary-bg);
-}
-
-.crayons-sponsorship-article {
-  margin-bottom: 10px;
-
-  img {
+.org-member-page {
+  .member-item {
     width: 100%;
-    height: auto;
-    border-radius: var(--radius);
-    display: block;
-    vertical-align: top;
-    margin: 10px auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .member-item-top {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      .member-user-pic {
+        img {
+          width: 48px;
+          height: 48px;
+          aspect-ratio: 1/1;
+          margin: 3px;
+          border-radius: 100%;
+        }
+      }
+    }
+
+    .member-item-bottom {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      flex-grow: 0;
+
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+
+      .member-username {
+        font-weight: var(--fw-normal);
+        font-size: var(--fs-s);
+        line-height: var(--lh-base);
+        letter-spacing: -0.02em;
+        color: var(--color-secondary);
+      }
+    }
   }
 }
 
-.crayons-sponsorship-widget {
-  img {
+.crayons-sponsorship {
+  padding: var(--su-3);
+  padding-bottom: var(--su-4);
+
+  &__header {
     width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    color: var(--label-secondary);
+    font-size: var(--fs-s);
+    line-height: var(--lh-base);
+    margin-left: var(--su-1);
+    align-self: center;
+  }
+
+  &__dropdown {
+    margin-left: auto;
+  }
+
+  img {
     height: auto;
     border-radius: var(--radius);
     display: inline-block;
     vertical-align: middle;
-    margin: 10px auto;
+    align-self: center;
+  }
+
+  &__indicator {
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    align-self: center;
+    word-wrap: normal;
+    word-break: keep-all;
+  }
+}
+
+.crayons-article-sticky,
+.sidebar-wrapper {
+  .crayons-card {
+    .text-styles {
+      font-size: var(--fs-base);
+    }
   }
 }

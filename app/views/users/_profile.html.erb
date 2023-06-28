@@ -160,30 +160,16 @@
     <h2><%= t("views.settings.group.Branding") %></h2>
     <div class="crayons-field ">
       <label class="crayons-field__label" for="users_setting[brand_color1]">
-        <%= t("views.logo.color_1.label") %>
+        <%= t("views.profile.color.label") %>
       </label>
-      <p class="crayons-field__description"><%= t("views.logo.color_1.description") %></p>
+      <p class="crayons-field__description"><%= t("views.profile.color.description") %></p>
       <div class="flex items-center w-100 m:w-50">
         <%= f.public_send(:text_field, "users_setting[brand_color1]",
                           value: users_setting.public_send(:brand_color1),
                           placeholder: "#000000",
                           class: "crayons-textfield",
-                          data: { color_picker: "true", label_text: t("views.logo.color_1.label") }) %>
+                          data: { color_picker: "true", label_text: t("views.profile.color.label") }) %>
 
-      </div>
-    </div>
-
-    <div class="crayons-field ">
-      <label class="crayons-field__label" for="users_setting[brand_color2]">
-        <%= t("views.logo.color_2.label") %>
-      </label>
-      <p class="crayons-field__description"><%= t("views.logo.color_2.description_html") %></p>
-      <div class="flex items-center w-100 m:w-50">
-        <%= f.public_send(:text_field, "users_setting[brand_color2]",
-                          value: users_setting.public_send(:brand_color2),
-                          placeholder: "#000000",
-                          class: "crayons-textfield",
-                          data: { color_picker: "true", label_text: t("views.logo.color_2.label") }) %>
       </div>
     </div>
   </div>

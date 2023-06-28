@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Search page title", type: :system do
+RSpec.describe "Search page title" do
   let!(:current_user) { create(:user) }
 
   before do
@@ -12,7 +12,7 @@ RSpec.describe "Search page title", type: :system do
       visit "/search?q=helloworld"
 
       expect(page).to have_title("Search Results for helloworld - DEV(local)")
-      expect(page.find("h1")).to have_content("Search results for helloworld")
+      expect(page.find("h1.crayons-title")).to have_content("Search results for helloworld")
     end
   end
 
@@ -21,7 +21,7 @@ RSpec.describe "Search page title", type: :system do
       visit "/search"
 
       expect(page).to have_title("Search Results - DEV(local)")
-      expect(page.find("h1")).to have_content("Search results")
+      expect(page.find("h1.crayons-title")).to have_content("Search results")
     end
   end
 end

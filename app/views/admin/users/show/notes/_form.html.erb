@@ -1,12 +1,12 @@
 <header>
-  <h2 class="crayons-subtitle-1 mb-1">Write a user note</h2>
+  <h2 class="crayons-subtitle-1 mb-1"><%= t("views.admin.users.notes.write") %></h2>
 </header>
 <%= form_with model: @user, url: admin_user_path(@user), method: :patch, html: { class: "grid gap-4 pt-3 m:sticky top-8" }, local: true  do |f| %>
   <div class="crayons-field">
-    <%= f.label :new_note, "Note", class: "crayons-field__label" %>
-    <%= f.text_area :new_note, class: "crayons-textfield", rows: 5, placeholder: "Add a note...", aria: { describedby: "note-description" }, required: true %>
+    <%= f.label :new_note, t("views.admin.users.notes.note"), class: "crayons-field__label" %>
+    <%= f.text_area :new_note, class: "crayons-textfield", rows: 5, placeholder: t("views.admin.users.notes.note_placeholder"), aria: { describedby: "note-description" }, required: true %>
   </div>
   <div>
-    <%= f.button "Submit", class: "c-btn c-btn--primary", type: "submit" %>
+    <%= f.button t("views.admin.users.notes.submit"), class: "c-btn c-btn--primary", type: "submit" %>
   </div>
 <% end %>

@@ -33,6 +33,7 @@ export function TextInput(props) {
     description,
     label,
     required,
+    maxLength,
   } = field;
 
   return (
@@ -48,6 +49,7 @@ export function TextInput(props) {
         id={attribute_name}
         onChange={onFieldChange}
         required={required ? 'required' : ''}
+        maxLength={maxLength}
       />
       {description && <p class="crayons-field__description">{description}</p>}
     </FormField>
@@ -61,5 +63,6 @@ TextInput.propTypes = {
     description: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     input_type: PropTypes.string.isRequired,
+    maxLength: PropTypes.number,
   }).isRequired,
 };

@@ -1,0 +1,29 @@
+<% title t("core.report_abuse") %>
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/report-abuse") %>" />
+  <meta name="description" content="<%= t("core.report_abuse") %>">
+  <%= meta_keywords_default %>
+
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="<%= app_url("/report-abuse") %>" />
+  <meta property="og:title" content="<%= t("core.report_abuse") %>" />
+  <meta property="og:site_name" content="<%= community_name %>" />
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@<%= Settings::General.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="<%= t("core.report_abuse") %>">
+<% end %>
+
+<div class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0"><%= t("core.report_abuse") %></h1>
+
+    <p>
+      Thank you for reporting any abuse that violates our <a href="/code-of-conduct">code of conduct</a> or
+      <a href="/terms">terms and conditions</a>. We continue to try to make this environment a great one for everybody.
+    </p>
+
+    <div class="crayons-card crayons-card--secondary p-4 m:p-6">
+      <%= render "feedback_messages/form", feedback_message: @feedback_message %>
+    </div>
+  </div>
+</div>

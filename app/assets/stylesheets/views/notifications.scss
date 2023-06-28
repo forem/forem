@@ -40,6 +40,10 @@
     // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
     // widths...
     min-width: 0;
+
+    img {
+      vertical-align: bottom;
+    }
   }
 
   &__mod-controls {

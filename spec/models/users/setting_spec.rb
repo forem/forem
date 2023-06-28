@@ -1,13 +1,18 @@
 require "rails_helper"
 # rubocop:disable Layout/LineLength
-RSpec.describe Users::Setting, type: :model do
+RSpec.describe Users::Setting do
   let(:user) { create(:user) }
   let(:setting) { described_class.find_by(user_id: user.id) }
+
+  before do
+    allow(SegmentedUserRefreshWorker).to receive(:perform_async)
+  end
 
   describe "validations" do
     subject { setting }
 
     it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+    it { is_expected.to validate_numericality_of(:experience_level).is_in(1..10) }
     it { is_expected.to define_enum_for(:inbox_type).with_values(private: 0, open: 1).with_suffix(:inbox) }
     it { is_expected.to define_enum_for(:config_font).with_values(default: 0, comic_sans: 1, monospace: 2, open_dyslexic: 3, sans_serif: 4, serif: 5).with_suffix(:font) }
     it { is_expected.to define_enum_for(:config_navbar).with_values(default: 0, static: 1).with_suffix(:navbar) }
@@ -131,6 +136,21 @@ RSpec.describe Users::Setting, type: :model do
       user_comic_sans.setting.update(config_font: "comic_sans")
       allow(Settings::UserExperience).to receive(:default_font).and_return("open_dyslexic")
       expect(user_comic_sans.setting.resolved_font_name).to eq("comic_sans")
+    end
+  end
+
+  context "when updating a setting" do
+    it "refreshes user segment" do
+      setting.experience_level = setting.experience_level.to_i + 1
+      setting.save!
+      expect(SegmentedUserRefreshWorker).to have_received(:perform_async).with(user.id)
+    end
+  end
+
+  context "when creating from scratch" do
+    it "does not refresh user segment" do
+      create(:user).setting
+      expect(SegmentedUserRefreshWorker).not_to have_received(:perform_async)
     end
   end
 end

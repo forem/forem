@@ -13,7 +13,7 @@ export const Default = () => (
   />
 );
 
-Default.story = { name: 'default' };
+Default.storyName = 'default';
 
 export const Disabled = () => (
   <textarea
@@ -25,4 +25,4 @@ export const Disabled = () => (
   </textarea>
 );
 
-Disabled.story = { name: 'disabled' };
+Disabled.storyName = 'disabled';

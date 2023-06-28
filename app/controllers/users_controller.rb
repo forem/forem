@@ -5,22 +5,10 @@ class UsersController < ApplicationController
                 only: %i[update update_password request_destroy full_delete remove_identity]
   after_action :verify_authorized,
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
-  before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
-  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
-  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
-
   def index
-    @users =
-      case params[:state]
-      when "follow_suggestions"
-        determine_follow_suggestions(current_user)
-      when "sidebar_suggestions"
-        Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
-      else
-        User.none
-      end
+    @users = sidebar_suggestions || User.none
   end
 
   # GET /settings/@tab
@@ -55,16 +43,26 @@ class UsersController < ApplicationController
       end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
+      respond_to do |format|
+        format.json { render json: { success: true, user: @user } }
+        format.html { redirect_to "/settings/#{@tab}" }
+      end
     else
       Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
-      if @tab
-        render :edit, status: :bad_request
-      else
-        flash[:error] = @user.errors.full_messages.join(", ")
-        redirect_to "/settings"
+      error_message = @user.errors.full_messages.join(", ")
+
+      respond_to do |format|
+        format.json { render json: { success: false, error: error_message }, status: :bad_request }
+        format.html do
+          if @tab
+            render :edit, status: :bad_request
+          else
+            flash[:error] = error_message
+            redirect_to "/settings"
+          end
+        end
       end
     end
   end
@@ -255,28 +253,9 @@ class UsersController < ApplicationController
 
   private
 
-  def set_suggested_users
-    @suggested_users = Settings::General.suggested_users
-  end
-
-  def default_suggested_users
-    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
-  end
-
-  def determine_follow_suggestions(current_user)
-    return default_suggested_users if Settings::General.prefer_manual_suggested_users? && default_suggested_users
-
-    recent_suggestions = Users::SuggestRecent.call(
-      current_user,
-      attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-    )
-
-    recent_suggestions.presence || default_suggested_users
-  end
-
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.size.zero?)
+    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
@@ -335,5 +314,11 @@ class UsersController < ApplicationController
 
   def password_params
     params.permit(:current_password, :password, :password_confirmation)
+  end
+
+  def sidebar_suggestions
+    return if params[:state].to_s != "sidebar_suggestions"
+
+    Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
   end
 end

@@ -1,7 +1,2 @@
 <%# missing cache key %>
-<% siblings = notification.json_data["reaction"]["aggregated_siblings"].select { |n| n["created_at"] > 24.hours.ago } %>
-<% if siblings.length == 0 %>
-  <%= render "single_reaction", notification: notification %>
-<% else %>
-  <%= render "aggregated_reactions", notification: notification, siblings: siblings %>
-<% end %>
+<%= notification.inspect %>

@@ -1,7 +1,7 @@
-<h2 class="crayons-title mb-6">Edit broadcast:</h2>
+<h1 class="crayons-title mb-6">Edit broadcast:</h1>
 <div class="crayons-card p-6">
   <%= form_for([:admin, @broadcast], method: :patch) do %>
     <%= render "form" %>
-    <%= submit_tag "Update broadcast", class: "btn btn-primary" %>
+    <%= submit_tag "Update broadcast", class: "crayons-btn mt-4" %>
   <% end %>
 </div>

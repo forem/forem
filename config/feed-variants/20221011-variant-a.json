@@ -1,0 +1,157 @@
+{
+  "max_days_since_published": 15,
+  "description": "An overall simplification based on some varied experimentation. Mostly based on 20221004-variant-b but several changes. Notably more weight on tags, and added 'experience' back in.",
+  "order_by": "final_order_by_random_weighted_to_score",
+  "reseed_randomizer_on_each_request": false,
+  "levers": {
+    "daily_decay": {
+      "cases": [
+        [0, 1],
+        [1, 0.99],
+        [2, 0.905],
+        [3, 0.9],
+        [4, 0.89],
+        [5, 0.85],
+        [6, 0.84],
+        [7, 0.8],
+        [8, 0.69],
+        [9, 0.68],
+        [10, 0.67],
+        [11, 0.66],
+        [12, 0.65],
+        [13, 0.6],
+        [14, 0.55]
+      ],
+      "fallback": 0.25
+    },
+    "comments_count": {
+      "cases": [
+        [0, 0.5],
+        [1, 0.5],
+        [2, 0.66],
+        [3, 0.7],
+        [4, 0.75],
+        [5, 0.8],
+        [6, 0.85],
+        [7, 0.88],
+        [8, 0.9],
+        [9, 0.92],
+        [12, 1.0],
+        [18, 1.0],
+        [22, 1.0],
+        [25, 1.0],
+        [30, 1.0],
+        [35, 1.0],
+        [40, 1.0],
+        [45, 1.0]
+      ],
+      "fallback": 0.99
+    },
+    "featured_article": { "cases": [[1, 1]], "fallback": 0.78 },
+    "matching_negative_tags_intersection_count": {
+      "cases": [
+        [0, 1],
+        [1, 0.3],
+        [2, 0.25],
+        [3, 0.2],
+        [4, 0.1]
+      ],
+      "fallback": 0
+    },
+    "experience": {
+      "cases": [
+        [0, 1],
+        [1, 0.98],
+        [2, 0.96],
+        [3, 0.95],
+        [4, 0.93],
+        [5, 0.88],
+        [6, 0.5],
+        [7, 0.4]
+      ],
+      "default_user_experience_level": 5,
+      "fallback": 0.3
+    },
+    "matching_positive_tags_intersection_count": {
+      "cases": [
+        [0, 0.35],
+        [1, 0.97]
+      ],
+      "fallback": 1
+    },
+    "matching_positive_tags_intersection_points": {
+      "cases": [
+        [0, 0.3],
+        [1, 0.45],
+        [2, 0.5],
+        [3, 0.7],
+        [4, 0.75],
+        [5, 0.8],
+        [6, 0.85],
+        [7, 0.9],
+        [8, 0.93],
+        [9, 0.95]
+      ],
+      "fallback": 1
+    },
+    "privileged_user_reaction": {
+      "cases": [
+        [-1, 0.2],
+        [1, 1]
+      ],
+      "fallback": 0.95,
+      "negative_reaction_threshold": -9,
+      "positive_reaction_threshold": 4
+    },
+    "public_reactions_score": {
+      "cases": [
+        [0, 0.3],
+        [1, 0.4],
+        [2, 0.45],
+        [3, 0.5],
+        [4, 0.55],
+        [5, 0.6],
+        [6, 0.61],
+        [7, 0.62],
+        [8, 0.63],
+        [9, 0.64],
+        [10, 0.65],
+        [11, 0.66],
+        [12, 0.67],
+        [13, 0.68],
+        [14, 0.69],
+        [15, 0.7],
+        [16, 0.71],
+        [17, 0.72],
+        [18, 0.73],
+        [19, 0.74],
+        [20, 0.75],
+        [21, 0.76],
+        [22, 0.77],
+        [23, 0.78],
+        [24, 0.79],
+        [25, 0.8],
+        [26, 0.81],
+        [27, 0.82],
+        [28, 0.83],
+        [29, 0.84],
+        [30, 0.85],
+        [31, 0.86],
+        [32, 0.87],
+        [33, 0.88],
+        [34, 0.89],
+        [35, 0.9],
+        [36, 0.91],
+        [37, 0.92],
+        [38, 0.93],
+        [39, 0.94],
+        [40, 0.95],
+        [41, 0.96],
+        [42, 0.97],
+        [43, 0.98],
+        [44, 0.99]
+      ],
+      "fallback": 1.0
+    }
+  }
+}

@@ -1,25 +1,25 @@
 require "rails_helper"
 
-RSpec.describe "Follows #create", type: :request do
+RSpec.describe "Follows #create" do
+  let(:current_user) { create(:user) }
   let(:user) { create(:user) }
-  let(:user_2) { create(:user) }
   let(:headers) { { "Content-Type": "application/json", Accept: "application/json" } }
   let(:follow_payload) do
     {
       followable_type: "User",
-      followable_id: user_2.id,
+      followable_id: user.id,
       verb: "follow"
     }.to_json
   end
 
   before do
-    sign_in user
+    sign_in current_user
     Settings::RateLimit.clear_cache
   end
 
   context "when rate limit has been hit" do
     before do
-      rate_limit_checker = RateLimitChecker.new(user)
+      rate_limit_checker = RateLimitChecker.new(current_user)
 
       allow(rate_limit_checker)
         .to receive(:user_today_follow_count)
@@ -32,10 +32,26 @@ RSpec.describe "Follows #create", type: :request do
 
     it "returns an error for too many follows in a day" do
       post "/follows", headers: headers, params: follow_payload
-      json_response = JSON.parse(response.body)
+      json_response = response.parsed_body
 
       expect(response).to have_http_status(:too_many_requests)
       expect(json_response["error"]).to eq("Daily account follow limit reached!")
     end
+  end
+
+  it "follows" do
+    post "/follows", headers: headers, params: follow_payload
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body["outcome"]).to eq("followed")
+  end
+
+  it "unfollows" do
+    current_user.follow(user)
+    post "/follows", headers: headers,
+                     params: { followable_type: "User", followable_id: user.id, verb: "unfollow" }.to_json
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body["outcome"]).to eq("unfollowed")
   end
 end

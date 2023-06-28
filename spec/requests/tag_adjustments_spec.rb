@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "TagAdjustments", type: :request do
+RSpec.describe "TagAdjustments" do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:tag) { create(:tag) }
@@ -8,7 +8,6 @@ RSpec.describe "TagAdjustments", type: :request do
     {
       tag_name: tag.name,
       article_id: article.id,
-      reason_for_adjustment: "Test #{rand(100)}",
       adjustment_type: "removal"
     }
   end

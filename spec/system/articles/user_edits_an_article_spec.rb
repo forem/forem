@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Editing with an editor", type: :system, js: true do
+RSpec.describe "Editing with an editor", js: true do
   let(:template) { file_fixture("article_published.txt").read }
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user, body_markdown: template) }
@@ -11,7 +11,6 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     allow(Settings::General).to receive(:logo_png).and_return("https://dummyimage.com/800x600.png")
     allow(Settings::General).to receive(:mascot_image_url).and_return("https://dummyimage.com/800x600.jpg")
     allow(Settings::General).to receive(:suggested_tags).and_return("coding, beginners")
-    allow(Settings::General).to receive(:suggested_users).and_return("romagueramica")
     sign_in user
   end
 

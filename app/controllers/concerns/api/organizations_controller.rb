@@ -29,7 +29,7 @@ module Api
 
     def users
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, per_page_max].min
       page = params[:page] || 1
 
       @users = @organization.users.joins(:profile).select(USERS_FOR_SERIALIZATION).page(page).per(num)
@@ -37,7 +37,7 @@ module Api
 
     def listings
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, per_page_max].min
       page = params[:page] || 1
 
       @listings = @organization.listings.published
@@ -50,7 +50,7 @@ module Api
 
     def articles
       per_page = (params[:per_page] || 30).to_i
-      num = [per_page, 1000].min
+      num = [per_page, per_page_max].min
       page = params[:page] || 1
 
       @articles = @organization.articles.published
@@ -65,6 +65,10 @@ module Api
     end
 
     private
+
+    def per_page_max
+      (ApplicationConfig["API_PER_PAGE_MAX"] || 1000).to_i
+    end
 
     def find_organization
       @organization = Organization.find_by!(username: params[:organization_username])

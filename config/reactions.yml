@@ -1,0 +1,36 @@
+---
+like:
+  position: 1
+  name: Like
+  icon: sparkle-heart
+unicorn:
+  position: 2
+  name: Unicorn
+  icon: multi-unicorn
+exploding_head:
+  position: 3
+  icon: exploding-head
+raised_hands:
+  position: 4
+  icon: raised-hands
+fire:
+  position: 5
+  icon: fire
+readinglist:
+  position: 5
+  icon: save
+  published: false
+thumbsup:
+  privileged: true
+  score: 5.0
+thumbsdown:
+  privileged: true
+  score: -10.0
+vomit:
+  privileged: true
+  name: Vomit
+  score: -50.0
+thinking:
+  published: false
+hands:
+  published: false

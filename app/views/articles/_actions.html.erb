@@ -1,32 +1,8 @@
 <div class="crayons-article-actions print-hidden">
   <div class="crayons-article-actions__inner">
-    <% if @article.published? %>
 
-      <%= render partial: "articles/reaction_button",
-                 locals: {
-                   category: :like,
-                   description: t("views.reactions.like.title"),
-                   image_path: "heart.svg",
-                   image_active_path: "heart-filled.svg",
-                   aria_label: t("views.reactions.like.aria_label")
-                 } %>
-      <%= render partial: "articles/reaction_button",
-                 locals: {
-                   category: :unicorn,
-                   description: t("views.reactions.unicorn.title"),
-                   image_path: "unicorn.svg",
-                   image_active_path: "unicorn-filled.svg",
-                   aria_label: t("views.reactions.unicorn.aria_label")
-                 } %>
-      <%= render partial: "articles/reaction_button",
-                 locals: {
-                   category: :readinglist,
-                   description: t("views.reactions.readingList.title"),
-                   image_path: "save.svg",
-                   image_active_path: "save-filled.svg",
-                   aria_label: t("views.reactions.readingList.aria_label")
-                 } %>
-    <% end %>
+    <%= render partial: "articles/multiple_reactions" if @article.published? %>
+
     <div id="mod-actions-menu-btn-area" class="print-hidden hidden align-center"></div>
     <div class="align-center m:relative">
       <button id="article-show-more-button" aria-controls="article-show-more-dropdown" aria-expanded="false" aria-haspopup="true" class="dropbtn crayons-btn crayons-btn--ghost-dimmed crayons-btn--icon-rounded" aria-label="<%= t("views.actions.more.aria_label") %>">
@@ -83,6 +59,13 @@
             href="https://www.facebook.com/sharer.php?u=<%= u article_url(@article) %>">
             <%= t("views.actions.share.facebook.text") %>
           </a>
+          <a
+            target="_blank"
+            class="crayons-link crayons-link--block"
+            rel="noopener"
+            href="https://toot.kytta.dev/?text=<%= u article_url(@article) %>">
+            <%= t("views.actions.share.mastodon.text") %>
+          </a>
         </div>
 
         <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetitle="<%= @article.title %>" sharetext="<%= @article.description %>" template="web-share-button">
@@ -96,14 +79,3 @@
     </div>
   </div>
 </div>
-
-<% if !user_signed_in? && @article.body_markdown.size > 900 %>
-  <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
-    <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
-    <% if @html_variant %>
-      <div class="html-variant-wrapper" id="html-variant-article-show-below-article" data-variant-id="<%= @html_variant.id %>">
-        <%= @html_variant.html.html_safe %>
-      </div>
-    <% end %>
-  <% end %>
-<% end %>

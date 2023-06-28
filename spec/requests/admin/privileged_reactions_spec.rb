@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/moderations/privileged_reactions", type: :request do
+RSpec.describe "/admin/moderations/privileged_reactions" do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 
@@ -21,7 +21,7 @@ RSpec.describe "/admin/moderations/privileged_reactions", type: :request do
     it "renders with status 200" do
       sign_in single_resource_admin
       get admin_moderator_actions_path
-      expect(response.status).to eq 200
+      expect(response).to have_http_status :ok
     end
   end
 

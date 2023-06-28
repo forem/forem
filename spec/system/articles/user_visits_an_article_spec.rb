@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system do
+RSpec.describe "Views an article" do
   let(:user) { create(:user) }
   let(:article) do
     create(:article, :with_notification_subscription, user: user)
@@ -15,9 +15,16 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true do
-    create_list(:comment, 3, commentable: article)
+  it "shows non-negative comments", js: true do
+    comments = create_list(:comment, 4, commentable: article)
+    admin = create(:user, :admin)
+    create(:thumbsdown_reaction, reactable: comments.last, user: admin)
+    sidekiq_perform_enqueued_jobs
 
+    visit article.path
+    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)
+
+    sign_out user
     visit article.path
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
@@ -152,7 +159,7 @@ RSpec.describe "Views an article", type: :system do
 
     it "doesn't show the article manage link, even for the author", js: true do
       visit scheduled_article_path
-      expect(page).to have_no_link("article-action-space-manage")
+      expect(page).not_to have_link("article-action-space-manage")
     end
 
     it "doesn't show an article edit link for the non-authorized user" do

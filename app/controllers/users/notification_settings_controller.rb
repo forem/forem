@@ -25,25 +25,13 @@ module Users
       authorize current_user, policy_class: UserPolicy
 
       if current_user.notification_setting.update(users_notification_setting_params)
-        flash[:settings_notice] = "Your notification settings have been updated."
+        flash[:settings_notice] = I18n.t("users_controller.notifications_settings_updated")
       else
         Honeycomb.add_field("error", current_user.notification_setting.errors.messages.compact_blank)
         Honeycomb.add_field("errored", true)
         flash[:error] = current_user.notification_setting.errors_as_sentence
       end
       redirect_to user_settings_path(:notifications)
-    end
-
-    def onboarding_notifications_checkbox_update
-      authorize User
-
-      if params[:notifications]
-        current_user.notification_setting.assign_attributes(params[:notifications].permit(ONBOARDING_ALLOWED_PARAMS))
-      end
-
-      current_user.saw_onboarding = true
-      success = current_user.notification_setting.save
-      render_update_response(success, current_user.notification_setting.errors_as_sentence)
     end
 
     private

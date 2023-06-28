@@ -61,14 +61,3 @@
     box-shadow: 0 0 0 4px var(--body-color-inverted);
   }
 }
-
-// modal styles overwrite crayons component WIP
-#user-subscription-confirmation-modal {
-  .crayons-modal__box__header {
-    padding: var(--su-2) var(--su-4);
-  }
-
-  .crayons-modal__box__body {
-    padding: var(--su-6);
-  }
-}

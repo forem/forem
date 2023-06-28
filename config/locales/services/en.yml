@@ -100,8 +100,6 @@ en:
           body: 'Potential spam user! %{url}
 
             '
-        sponsorship:
-          body: "%{user} bought a %{type} sponsorship for %{organization}\n"
     spam:
       article_handler:
         suspended_too_many: User suspended for too many spammy articles, triggered by autovomit.
@@ -112,5 +110,4 @@ en:
     users:
       remove_role:
         remove_self: Admins cannot remove roles from themselves.
-        remove_super: Super Admin roles cannot be removed.
         error: There was an issue removing this role. %{e_message}

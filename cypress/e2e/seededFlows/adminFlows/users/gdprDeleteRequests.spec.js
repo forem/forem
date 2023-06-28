@@ -8,7 +8,7 @@ describe('GDPR Delete Requests', () => {
   });
 
   it('confirms deletion of user', () => {
-    cy.findByRole('heading', { name: 'Members (GDPR Delete Requests)' });
+    cy.findByRole('heading', { name: 'GDPR Actions' });
     cy.findByRole('button', {
       name: 'Confirm user gdpr_delete_user deleted',
     }).click();
@@ -28,7 +28,7 @@ describe('GDPR Delete Requests', () => {
   });
 
   it('displays an empty state when there are no users to be confirmed as deleted', () => {
-    cy.findByRole('heading', { name: 'Members (GDPR Delete Requests)' });
+    cy.findByRole('heading', { name: 'GDPR Actions' });
     cy.findByRole('button', {
       name: 'Confirm user gdpr_delete_user deleted',
     }).click();
@@ -39,13 +39,13 @@ describe('GDPR Delete Requests', () => {
 
     cy.findByRole('button', { name: 'Yes, mark as deleted' }).click();
 
-    cy.findByText(
-      'Awesome! All GDPR delete requests have been completed.',
-    ).should('exist');
+    cy.findByText('Awesome! All GDPR actions have been completed.').should(
+      'exist',
+    );
   });
 
   it('Cancels marking a user as deleted', () => {
-    cy.findByRole('heading', { name: 'Members (GDPR Delete Requests)' });
+    cy.findByRole('heading', { name: 'GDPR Actions' });
     cy.findByRole('button', {
       name: 'Confirm user gdpr_delete_user deleted',
     })

@@ -1,7 +1,7 @@
 # http://localhost:3000/rating_votes
 require "rails_helper"
 
-RSpec.describe "RatingVotes", type: :request do
+RSpec.describe "RatingVotes" do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
 

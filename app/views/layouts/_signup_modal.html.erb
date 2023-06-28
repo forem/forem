@@ -15,7 +15,7 @@
       <a href="<%= sign_up_path %>" class="crayons-btn" aria-label="<%= t("views.main.modal.login.aria_label") %>" data-no-instant>
         <%= t("views.main.modal.login.text") %>
       </a>
-      <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand" aria-label="<%= t("views.main.modal.create_account.aria_label") %>" data-no-instant>
+      <a href="<%= sign_up_path(state: "new-user") %>" class="crayons-btn crayons-btn--ghost-brand js-global-signup-modal__create-account" aria-label="<%= t("views.main.modal.create_account.aria_label") %>" data-no-instant>
         <%= t("views.main.modal.create_account.text") %>
       </a>
     </div>

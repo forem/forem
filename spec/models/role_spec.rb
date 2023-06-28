@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Role, type: :model do
+RSpec.describe Role do
   it { is_expected.to belong_to(:resource).optional }
   it { is_expected.to validate_inclusion_of(:resource_type).in_array(Rolify.resource_types) }
   it { is_expected.to validate_inclusion_of(:name).in_array(described_class::ROLES) }
@@ -13,6 +13,27 @@ RSpec.describe Role, type: :model do
         trusted warned workshop_pass creator super_moderator
       ]
       expect(described_class::ROLES).to match_array(expected_roles)
+    end
+  end
+
+  describe "#super_admin?" do
+    let(:role) { create(:role, name: role_name) }
+    let(:role_name) { "super_admin" }
+
+    it "has a visible method" do
+      expect(role.respond_to?(:super_admin?)).to be true
+    end
+
+    it "returns true" do
+      expect(role.super_admin?).to be true
+    end
+
+    context "with different role" do
+      let(:role_name) { "admin" }
+
+      it "returns false" do
+        expect(role.super_admin?).to be false
+      end
     end
   end
 end

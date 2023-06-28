@@ -1,15 +1,14 @@
 <div id="export-data">
   <div class="flex flex-col gap-4">
     <p>
-      Choose between sending the exported data to either your Admin contact email, <%= ForemInstance.email %>,
-      or to <%= @user.name %>'s <a href="mailto:<%= @user.email %>">user email</a> directly.
+      <%= t("views.admin.users.export.desc1_html", contact: ForemInstance.email, user: @user.name, user_email: mail_to(@user.email, t("views.admin.users.export.user_email"))) %>
     </p>
     <p>
-      Exported data includes a user's posts and comments.
+      <%= t("views.admin.users.export.desc2") %>
     </p>
     <div class="flex gap-2">
-      <%= button_to "Export to Admin", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{ForemInstance.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: true } %>
-      <%= button_to "Export to User", export_data_admin_user_path(@user.id), data: { confirm: "Are you sure you want to export this user's content to #{@user.email}?" }, class: "c-btn c-btn--secondary", params: { send_to_admin: false } %>
+      <%= button_to t("views.admin.users.export.to_admin"), export_data_admin_user_path(@user.id), data: { confirm: t("views.admin.users.export.confirm", email: ForemInstance.email) }, class: "c-btn c-btn--secondary", params: { send_to_admin: true } %>
+      <%= button_to t("views.admin.users.export.to_user"), export_data_admin_user_path(@user.id), data: { confirm: t("views.admin.users.export.confirm", email: @user.email) }, class: "c-btn c-btn--secondary", params: { send_to_admin: false } %>
     </div>
   </div>
 </div>

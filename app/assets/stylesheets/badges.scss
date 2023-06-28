@@ -1,27 +1,35 @@
-.sticker-book {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-
-  a {
-    height: auto;
-    width: 45%;
-    margin-bottom: 45px;
+.badges-page {
+  .description {
+    font-weight: var(--fw-normal);
+    color: var(--color-secondary);
+    margin-top: 0;
+    padding-top: 0;
   }
 
-  .badge-image {
-    max-width: 100%;
-    left: 0;
+  .sticker-book {
+    .badge-container {
+      width: auto;
+      background-color: var(--white);
+      cursor: pointer;
 
-    &.unearned {
-      filter: opacity(20%) contrast(0);
-    }
-  }
+      .badge-image-container {
+        object-fit: contain;
+        width: auto;
+        display: flex;
+        justify-content: center;
+        aspect-ratio: 1 / 1;
+        background-color: var(--body-bg);
 
-  @media screen and (min-width: 650px) {
-    a {
-      min-height: 200px;
-      width: 200px;
+        .badge-image {
+          object-fit: contain;
+          width: 70%;
+          aspect-ratio: 1 / 1;
+        }
+      }
+
+      .title {
+        color: var(--cta-color);
+      }
     }
   }
 }

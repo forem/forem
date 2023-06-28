@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Comments", type: :request do
+RSpec.describe "Api::V0::Comments" do
   let(:article) { create(:article) }
   let!(:root_comment) { create(:comment, commentable: article) }
   let!(:child_comment) do
@@ -53,7 +53,7 @@ RSpec.describe "Api::V0::Comments", type: :request do
       get api_comments_path(a_id: article.id)
 
       expected_ids = article.comments.roots.map(&:id_code_generated)
-      response_ids = response.parsed_body.map { |cm| cm["id_code"] }
+      response_ids = response.parsed_body.pluck("id_code")
       expect(response_ids).to match_array(expected_ids)
     end
 

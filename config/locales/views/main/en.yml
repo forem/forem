@@ -35,11 +35,11 @@ en:
         Code of Conduct: Code of Conduct
         Contact: Contact
         FAQ: FAQ
+        Home: Home
         Listings: Listings
         Podcasts: Podcasts
         Privacy Policy: Privacy Policy
         Reading List: Reading List
-        Sponsors: Sponsors
         Tags: Tags
         Terms of use: Terms of use
         Videos: Videos
@@ -66,6 +66,5 @@ en:
         powered:
           text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
-      home: Home
       create_post: Create Post
       signout: Sign Out

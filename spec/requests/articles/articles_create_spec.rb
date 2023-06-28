@@ -1,12 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesCreate", type: :request do
+RSpec.describe "ArticlesCreate" do
   let(:user) { create(:user, :org_member) }
   let(:template) { file_fixture("article_published.txt").read }
   let(:new_title) { "NEW TITLE #{rand(100)}" }
 
   before do
     sign_in user
+    allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
   end
 
   it "creates ordinary article with proper params" do
@@ -192,7 +193,6 @@ RSpec.describe "ArticlesCreate", type: :request do
       \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"
       post "/articles", params: { article: { body_markdown: body_markdown } }
       a = Article.find_by(title: "super-article")
-      # binding.pry
       expect(a.published_at).to be_within(1.minute).of(published_at)
     end
   end

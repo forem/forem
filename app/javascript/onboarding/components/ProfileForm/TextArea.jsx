@@ -27,7 +27,8 @@ import { FormField } from '@crayons';
 
 export function TextArea(props) {
   const { onFieldChange } = props;
-  const { attribute_name, placeholder_text, description, label } = props.field;
+  const { attribute_name, placeholder_text, description, label, maxLength } =
+    props.field;
 
   return (
     <FormField>
@@ -40,6 +41,7 @@ export function TextArea(props) {
         name={attribute_name}
         id={attribute_name}
         onChange={onFieldChange}
+        maxLength={maxLength}
       />
       {description && <p class="crayons-field__description">{description}</p>}
     </FormField>
@@ -53,5 +55,6 @@ TextArea.propTypes = {
     description: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     input_type: PropTypes.string.isRequired,
+    maxLength: PropTypes.number,
   }).isRequired,
 };

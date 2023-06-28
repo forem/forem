@@ -120,10 +120,7 @@ function generateUtilityClassStories(cssProperty, cssRules) {
       })}\`}</code></pre>
     </div>
 
-    ${sanitizedCssClassName}.story = { name: '${className.replace(
-      /^\./,
-      '',
-    )}' };
+    ${sanitizedCssClassName}.storyName = '${className.replace(/^\./, '')}';
     `);
   }
 

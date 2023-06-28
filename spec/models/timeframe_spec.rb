@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Timeframe, type: :model do
+RSpec.describe Timeframe do
   it "sets timeframe for week to 1 week ago" do
     Timecop.freeze(Time.current) do
       timeframe = described_class.datetime("week")

@@ -84,6 +84,40 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user.roles.count).to eq(0)
   end
 
+  describe "Rack::Attack cache invalidation optimization" do
+    before do
+      cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
+      allow(Rails).to receive(:cache) { cache_db }
+
+      allow(Rails.cache).to receive(:delete)
+      allow(Rails.cache).to receive(:delete)
+        .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
+
+    it "clears Rack::Attack cache if assigned admin role to user" do
+      described_class.handle_user_roles(
+        admin: admin,
+        user: user,
+        user_params: { note_for_current_role: "Upgrading to tech admin", user_status: "Super Admin" },
+      )
+
+      expect(Rails.cache).to have_received(:delete)
+        .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
+
+    it "doesn't Rack::Attack cache if assigned non-admin role to user" do
+      user.add_role(:comment_suspended)
+      described_class.handle_user_roles(
+        admin: admin,
+        user: user,
+        user_params: { note_for_current_role: "Upgrading to trusted user", user_status: "Good standing" },
+      )
+
+      expect(Rails.cache).not_to have_received(:delete)
+        .with(Rack::Attack::ADMIN_API_CACHE_KEY)
+    end
+  end
+
   context "when not super admin" do
     before do
       admin.remove_role(:super_admin)

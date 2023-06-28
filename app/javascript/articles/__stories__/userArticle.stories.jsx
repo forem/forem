@@ -32,4 +32,4 @@ export const UserArticle = () => (
   />
 );
 
-UserArticle.story = { name: 'default' };
+UserArticle.storyName = 'default';

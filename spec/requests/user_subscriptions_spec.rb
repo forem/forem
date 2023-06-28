@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserSubscriptions", type: :request do
+RSpec.describe "UserSubscriptions" do
   let(:user) { create(:user) }
 
   before { sign_in user }
@@ -131,7 +131,7 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     # TODO: [@forem/delightful]: re-enable this once email confirmation is re-enabled
-    xit "returns an error for an email mismatch" do
+    it "returns an error for an email mismatch", pending: "while email confirmation is disabled" do
       article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id,
                                     subscriber_email: "old_email@test.com" }

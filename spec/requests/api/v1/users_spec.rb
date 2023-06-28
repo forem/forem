@@ -1,14 +1,12 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Users", type: :request do
+RSpec.describe "Api::V1::Users" do
   let(:api_secret) { create(:api_secret) }
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:auth_headers) { headers.merge({ "api-key" => api_secret.secret }) }
   let(:listener) { :admin_api }
 
   describe "GET /api/users/:id" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     let!(:user) do
       create(:user,
              profile_image: "",
@@ -65,8 +63,6 @@ RSpec.describe "Api::V1::Users", type: :request do
   end
 
   describe "GET /api/users/me" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true) }
-
     context "when unauthenticated" do
       it "returns unauthorized" do
         get me_api_users_path, headers: headers
@@ -131,10 +127,9 @@ RSpec.describe "Api::V1::Users", type: :request do
     let(:target_user) { create(:user) }
     let(:payload) { { note: "Violated CoC despite multiple warnings" } }
 
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-      Audit::Subscribe.listen listener
-    end
+    before { Audit::Subscribe.listen listener }
+
+    after { Audit::Subscribe.forget listener }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -198,10 +193,9 @@ RSpec.describe "Api::V1::Users", type: :request do
     let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
     let!(:target_comments) { create_list(:comment, 3, user: target_user) }
 
-    before do
-      allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
-      Audit::Subscribe.listen listener
-    end
+    before { Audit::Subscribe.listen listener }
+
+    after { Audit::Subscribe.forget listener }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
@@ -236,11 +230,11 @@ RSpec.describe "Api::V1::Users", type: :request do
         expect(target_articles.map(&:published?)).to match_array([true, true, true])
         expect(target_comments.map(&:deleted)).to match_array([false, false, false])
 
-        put api_user_unpublish_path(id: target_user.id),
-            headers: auth_headers
-        expect(response).to have_http_status(:no_content)
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          put api_user_unpublish_path(id: target_user.id), headers: auth_headers
+        end
 
-        sidekiq_perform_enqueued_jobs
+        expect(response).to have_http_status(:no_content)
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
@@ -256,8 +250,9 @@ RSpec.describe "Api::V1::Users", type: :request do
         create(:article, user: target_user, published: false)
         create(:comment, user: target_user, deleted: true)
 
-        put api_user_unpublish_path(id: target_user.id),
-            headers: auth_headers
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          put api_user_unpublish_path(id: target_user.id), headers: auth_headers
+        end
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
@@ -267,6 +262,28 @@ RSpec.describe "Api::V1::Users", type: :request do
         # These ids match the affected articles/comments and not the ones created above
         expect(log.data["target_article_ids"]).to match_array(target_articles.map(&:id))
         expect(log.data["target_comment_ids"]).to match_array(target_comments.map(&:id))
+      end
+
+      it "creates a note when note text is passed" do
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          expect do
+            put api_user_unpublish_path(id: target_user.id, note: "hehe"), headers: auth_headers
+          end.to change(Note, :count).by(1)
+        end
+        note = target_user.notes.last
+        expect(note.content).to eq("hehe")
+        expect(note.reason).to eq("unpublish_all_articles")
+      end
+
+      it "creates a note with the default text when note text is not passed" do
+        sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
+          expect do
+            put api_user_unpublish_path(id: target_user.id), headers: auth_headers
+          end.to change(Note, :count).by(1)
+        end
+        note = target_user.notes.last
+        expect(note.content).to eq("#{api_secret.user.username} requested unpublish all articles via API")
+        expect(note.reason).to eq("unpublish_all_articles")
       end
     end
   end

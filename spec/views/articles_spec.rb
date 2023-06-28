@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "articles/show", type: :view do
+RSpec.describe "articles/show" do
   let(:user1) { create(:user) }
   let(:article1) { create(:article, user_id: user1.id, show_comments: true) }
   let(:helper) { Class.new { extend CommentsHelper } }
@@ -9,6 +9,7 @@ RSpec.describe "articles/show", type: :view do
     assign(:user, user1)
     assign(:article, article1.decorate)
     assign(:comment, Comment.new)
+    assign(:comments_order, "top")
     without_partial_double_verification do
       allow(view).to receive(:internal_navigation?).and_return(params[:i] == "i")
     end

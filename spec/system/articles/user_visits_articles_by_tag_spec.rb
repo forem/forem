@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits articles by tag", type: :system do
+RSpec.describe "User visits articles by tag" do
   let(:js_tag) { create(:tag, name: "javascript") }
   let(:iot_tag) { create(:tag, name: "IoT") }
   let!(:func_tag) { create(:tag, name: "functional") }
@@ -21,7 +21,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the header", js: true do
-        within("h1") { expect(page).to have_text("javascript") }
+        within("h1.crayons-title") { expect(page).to have_text("javascript") }
       end
 
       it "shows the follow button", js: true do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.xdescribe "Creating Comment", type: :system, js: true do
+RSpec.xdescribe "Creating Comment", js: true do
   include_context "with runkit_tag"
 
   let(:user) { create(:user) }
@@ -172,7 +172,7 @@ RSpec.xdescribe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    expect(page).to have_no_css("div.file-upload-error")
+    expect(page).not_to have_css("div.file-upload-error")
   end
 
   it "User attaches a large image" do

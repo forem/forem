@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserOrganization", type: :request do
+RSpec.describe "UserOrganization" do
   let(:user)          { create(:user) }
   let(:organization)  { create(:organization, secret: SecureRandom.hex(50)) }
 
@@ -52,7 +52,7 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "redirects to the proper org settings page" do
       create_org
-      expect(response.status).to eq 302
+      expect(response).to have_http_status :found
       expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
     end
 

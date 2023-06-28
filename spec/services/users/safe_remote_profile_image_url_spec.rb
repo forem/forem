@@ -7,15 +7,15 @@ RSpec.describe Users::SafeRemoteProfileImageUrl, type: :service do
   end
 
   it "returns fallback image if passed nil" do
-    expect(described_class.call(nil)).to start_with("https://emojipedia-us.s3")
+    expect(described_class.call(nil)).to be_a(File)
   end
 
   it "returns fallback image if passed blank" do
-    expect(described_class.call("")).to start_with("https://emojipedia-us.s3")
+    expect(described_class.call("")).to be_a(File)
   end
 
   it "returns fallback image if passed non-URL" do
-    expect(described_class.call("image")).to start_with("https://emojipedia-us.s3")
+    expect(described_class.call("image")).to be_a(File)
   end
 
   it "returns a secure HTTPS image link if pass a regular HTTP link" do

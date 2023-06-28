@@ -42,16 +42,28 @@ Rails.application.routes.draw do
     end
 
     namespace :api, defaults: { format: "json" } do
-      # API V1 is in pre-release: Available iff api_v1 FeatureFlag is enabled
-      constraints(->(_req) { FeatureFlag.enabled?(:api_v1) }) do
-        scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
-          # V1 only endpoints
-          put "/users/:id/suspend", to: "users#suspend", as: :user_suspend
-          put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
-          put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
+      scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
+        # V1 only endpoints
+        put "/users/:id/suspend", to: "users#suspend", as: :user_suspend
+        put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
+        put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
-          draw :api
+        post "/reactions", to: "reactions#create"
+        post "/reactions/toggle", to: "reactions#toggle"
+
+        resources :display_ads, only: %i[index show create update] do
+          put "unpublish", on: :member
         end
+
+        resources :segments, controller: "audience_segments", only: %i[index show create destroy] do
+          get "users", on: :member
+          put "add_users", on: :member
+          put "remove_users", on: :member
+        end
+
+        resources :pages, only: %i[index show create update destroy]
+
+        draw :api
       end
 
       scope module: :v0, constraints: ApiConstraints.new(version: 0, default: true) do
@@ -108,7 +120,6 @@ Rails.application.routes.draw do
     resources :notifications, only: [:index]
     resources :tags, only: [:index] do
       collection do
-        get "/onboarding", to: "tags#onboarding"
         get "/suggest", to: "tags#suggest", defaults: { format: :json }
         get "/bulk", to: "tags#bulk", defaults: { format: :json }
       end
@@ -122,8 +133,6 @@ Rails.application.routes.draw do
     resources :videos, only: %i[index create new]
     resources :video_states, only: [:create]
     resources :twilio_tokens, only: [:show]
-    resources :html_variant_trials, only: [:create]
-    resources :html_variant_successes, only: [:create]
     resources :tag_adjustments, only: %i[create destroy]
     resources :rating_votes, only: [:create]
     resources :page_views, only: %i[create update]
@@ -146,6 +155,7 @@ Rails.application.routes.draw do
         get "/subscribed", action: "subscribed"
       end
     end
+
     namespace :followings, defaults: { format: :json } do
       get :users
       get :tags
@@ -153,9 +163,13 @@ Rails.application.routes.draw do
       get :podcasts
     end
 
-    scope module: "users" do
-      resource :onboarding, only: %i[show update]
-      patch "/onboarding_checkbox_update", to: "onboardings#onboarding_checkbox_update"
+    resource :onboarding, only: %i[show update] do
+      member do
+        patch :checkbox, defaults: { format: :json }
+        patch :notifications, defaults: { format: :json }
+        get :tags, defaults: { format: :json }
+        get :users_and_organizations, defaults: { format: :json }
+      end
     end
 
     resources :profiles, only: %i[update]
@@ -174,20 +188,20 @@ Rails.application.routes.draw do
     get "/notifications/:filter/:org_id", to: "notifications#index", as: :notifications_filter_org
     get "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#show"
     post "/notification_subscriptions/:notifiable_type/:notifiable_id", to: "notification_subscriptions#upsert"
-    patch "/onboarding_notifications_checkbox_update",
-          to: "users/notification_settings#onboarding_notifications_checkbox_update"
     get "email_subscriptions/unsubscribe"
 
     get "/internal", to: redirect("/admin")
     get "/internal/:path", to: redirect("/admin/%{path}")
 
     get "/social_previews/article/:id", to: "social_previews#article", as: :article_social_preview
-    get "/social_previews/user/:id", to: "social_previews#user", as: :user_social_preview
-    get "/social_previews/organization/:id", to: "social_previews#organization", as: :organization_social_preview
-    get "/social_previews/tag/:id", to: "social_previews#tag", as: :tag_social_preview
-    get "/social_previews/comment/:id", to: "social_previews#comment", as: :comment_social_preview
 
-    get "/async_info/base_data", controller: "async_info#base_data", defaults: { format: :json }
+    get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
+    get "/async_info/navigation_links", to: "async_info#navigation_links"
+
+    # Display ads
+    scope "/:username/:slug" do
+      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+    end
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -220,8 +234,8 @@ Rails.application.routes.draw do
     get "/checkin", to: "pages#checkin"
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-    get "/sponsors", to: "pages#sponsors"
     get "/search", to: "stories/articles_search#index"
+    get "/:slug/members", to: "organizations#members", as: :organization_members
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
 
@@ -271,7 +285,7 @@ Rails.application.routes.draw do
                                      constraints: {
                                        which: /organization/
                                      }
-    get "/dashboard/:username", to: "dashboards#show"
+    get "/dashboard/:username", to: "dashboards#show", as: :dashboard_show_user
 
     # for testing rails mailers
     unless Rails.env.production?
@@ -313,8 +327,6 @@ Rails.application.routes.draw do
     get "/t/:tag/edit", to: "tags#edit", as: :edit_tag
     get "/t/:tag/admin", to: "tags#admin"
     patch "/tag/:id", to: "tags#update"
-
-    get "/badge/:slug", to: "badges#show", as: :badge
 
     get "/top/:timeframe", to: "stories#index"
 

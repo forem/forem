@@ -5,12 +5,15 @@ const unpublishAllPosts = async (event) => {
   event.preventDefault();
   const { userId } = event.target.dataset;
 
+  const noteTextarea = window.parent.document.getElementById('note_content');
+  const params = { id: userId, note: { content: noteTextarea.value } };
+
   try {
     const response = await request(
       `/admin/member_manager/users/${userId}/unpublish_all_articles`,
       {
         method: 'POST',
-        body: JSON.stringify({ id: userId }),
+        body: JSON.stringify(params),
         credentials: 'same-origin',
       },
     );

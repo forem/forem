@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ProfilePreviewCards", type: :request do
+RSpec.describe "ProfilePreviewCards" do
   let(:user) { create(:profile, :with_DEV_info).user }
 
   describe "GET /:id" do

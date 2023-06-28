@@ -39,17 +39,15 @@ class AdminMenu
     scope :moderation, "mod", [
       item(name: "reports"),
       item(name: "mods"),
-      item(name: "moderator actions ads", controller: "moderator_actions"),
+      item(name: "moderator actions", controller: "moderator_actions"),
       item(name: "privileged reactions"),
     ]
 
     scope :advanced, "flashlight-line", [
       item(name: "broadcasts"),
       item(name: "response templates"),
-      item(name: "sponsorships"),
       item(name: "developer tools", controller: "tools", children: [
              item(name: "tools"),
-             item(name: "vault secrets", controller: "secrets"),
              item(name: "data update scripts", visible: -> { FeatureFlag.enabled?(:data_update_scripts) }),
              item(name: "extensions", controller: "extensions"),
            ]),

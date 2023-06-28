@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/customization/config", type: :request do
+RSpec.describe "/admin/customization/config" do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
   let(:super_admin) { create(:user, :super_admin) }
@@ -176,25 +176,6 @@ RSpec.describe "/admin/customization/config", type: :request do
             settings_community: { community_description: description }
           }
           expect(Settings::Community.community_description).to eq(description)
-        end
-
-        it "updates the community_emoji if valid" do
-          allow(Settings::Community).to receive(:community_emoji).and_call_original
-          emoji = "🥐"
-          post admin_settings_communities_path, params: {
-            settings_community: { community_emoji: emoji }
-          }
-          expect(Settings::Community.community_emoji).to eq(emoji)
-        end
-
-        it "does not update the community_emoji if invalid" do
-          Settings::Community.community_emoji = "🥐"
-          not_an_emoji = "i love croissants"
-          expect do
-            post admin_settings_communities_path, params: {
-              settings_community: { community_emoji: not_an_emoji }
-            }
-          end.not_to change(Settings::Community, :community_emoji)
         end
 
         it "updates the community_name" do
@@ -446,40 +427,6 @@ RSpec.describe "/admin/customization/config", type: :request do
           }
           expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
-
-        it "removes space suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "downcases suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "updates prefer_manual_suggested_users to true" do
-          prefer_manual = true
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
-        end
-
-        it "updates prefer_manual_suggested_users to false" do
-          prefer_manual = false
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
-        end
       end
 
       describe "Rate Limits and spam" do
@@ -682,16 +629,6 @@ RSpec.describe "/admin/customization/config", type: :request do
 
           expect(Settings::SMTP.address).to eq(default_address)
           expect(Settings::SMTP.port).to eq(default_port)
-        end
-      end
-
-      describe "Sponsors" do
-        it "updates the sponsor_headline" do
-          headline = "basic"
-          post admin_settings_general_settings_path, params: {
-            settings_general: { sponsor_headline: headline }
-          }
-          expect(Settings::General.sponsor_headline).to eq(headline)
         end
       end
 

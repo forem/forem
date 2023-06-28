@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Reactions", type: :request do
+RSpec.describe "Reactions" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
@@ -28,8 +28,11 @@ RSpec.describe "Reactions", type: :request do
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
+          { "category" => "exploding_head", "count" => 0 },
+          { "category" => "raised_hands", "count" => 0 },
+          { "category" => "fire", "count" => 0 },
         ]
-        expect(result["article_reaction_counts"]).to eq(expected_reactions_counts)
+        expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions_counts)
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: article).to_json)
       end
 
@@ -60,8 +63,11 @@ RSpec.describe "Reactions", type: :request do
           { "category" => "like", "count" => 1 },
           { "category" => "readinglist", "count" => 0 },
           { "category" => "unicorn", "count" => 0 },
+          { "category" => "exploding_head", "count" => 0 },
+          { "category" => "raised_hands", "count" => 0 },
+          { "category" => "fire", "count" => 0 },
         ]
-        expect(result["article_reaction_counts"]).to eq(expected_reactions)
+        expect(result["article_reaction_counts"]).to contain_exactly(*expected_reactions)
         expect(result["reactions"]).to be_empty
       end
 
@@ -183,7 +189,7 @@ RSpec.describe "Reactions", type: :request do
         allow(rate_limiter).to receive(:limit_by_action).and_return(true)
         post "/reactions", params: article_params
 
-        expect(response.status).to eq(429)
+        expect(response).to have_http_status(:too_many_requests)
       end
     end
 
@@ -204,6 +210,11 @@ RSpec.describe "Reactions", type: :request do
           # same route to destroy, so sending POST request again
           post "/reactions", params: article_params
         end.to change(Reaction, :count).by(-1)
+      end
+
+      it "has success http status" do
+        post "/reactions", params: article_params
+        expect(response).to be_successful
       end
     end
 
@@ -247,6 +258,15 @@ RSpec.describe "Reactions", type: :request do
 
         expect(RatingVote).not_to have_received(:create)
       end
+
+      it "has success http status" do
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+        expect(response).to be_successful
+      end
     end
 
     context "when attempting to create thumbsup as regular user" do
@@ -284,6 +304,15 @@ RSpec.describe "Reactions", type: :request do
         expect(Reaction.where(category: "thumbsdown").count).to eq(0)
         expect(Reaction.where(category: "like").count).to eq(1)
       end
+
+      it "has success http status" do
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "thumbsup"
+        }
+        expect(response).to be_successful
+      end
     end
 
     context "when creating thumbsdown" do
@@ -306,6 +335,15 @@ RSpec.describe "Reactions", type: :request do
         expect(Reaction.where(category: "like").size).to be 1
         expect(Reaction.where(category: "vomit").size).to be 1
       end
+
+      it "has success http status" do
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "thumbsdown"
+        }
+        expect(response).to be_successful
+      end
     end
 
     context "when vomiting on a user" do
@@ -324,6 +362,11 @@ RSpec.describe "Reactions", type: :request do
         expect do
           post "/reactions", params: user_params
         end.to change(Reaction, :count).by(-1)
+      end
+
+      it "has success http status" do
+        post "/reactions", params: user_params
+        expect(response).to be_successful
       end
     end
 
@@ -356,6 +399,11 @@ RSpec.describe "Reactions", type: :request do
         reaction = Reaction.find_by(reactable_id: article.id)
         expect(reaction.category).to eq("like")
         expect(reaction.status).to eq("valid")
+      end
+
+      it "has success http status" do
+        post "/reactions", params: article_params
+        expect(response).to be_successful
       end
     end
 

@@ -8,25 +8,25 @@ export const Default = () => (
   <input type="radio" name="n1" className="crayons-radio" />
 );
 
-Default.story = { name: 'default' };
+Default.storyName = 'default';
 
 export const Checked = () => (
   <input type="radio" name="n1" className="crayons-radio" checked />
 );
 
-Checked.story = { name: 'checked' };
+Checked.storyName = 'checked';
 
 export const Disabled = () => (
   <input type="radio" name="n2" className="crayons-radio" disabled />
 );
 
-Disabled.story = { name: 'disabled' };
+Disabled.storyName = 'disabled';
 
 export const CheckedAndDisabled = () => (
   <input type="radio" name="n2" className="crayons-radio" checked disabled />
 );
 
-CheckedAndDisabled.story = { name: 'checked (disabled)' };
+CheckedAndDisabled.storyName = 'checked (disabled)';
 
 export const WithLabel = () => (
   <div className="crayons-field crayons-field--radio">
@@ -37,7 +37,7 @@ export const WithLabel = () => (
   </div>
 );
 
-WithLabel.story = { name: 'with <label />' };
+WithLabel.storyName = 'with <label />';
 
 export const WithLabelAndDescription = () => (
   <div className="crayons-field crayons-field--radio">
@@ -51,7 +51,7 @@ export const WithLabelAndDescription = () => (
   </div>
 );
 
-WithLabelAndDescription.story = { name: 'with <label /> and description' };
+WithLabelAndDescription.storyName = 'with <label /> and description';
 
 export const RadioButtonGroup = () => (
   <Fieldset>
@@ -76,4 +76,4 @@ export const RadioButtonGroup = () => (
   </Fieldset>
 );
 
-RadioButtonGroup.story = { name: 'radio button group' };
+RadioButtonGroup.storyName = 'radio button group';

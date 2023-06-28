@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Podcast Create", type: :request do
+RSpec.describe "Podcast Create" do
   let(:user) { create(:user) }
 
   context "when unauthorized user" do

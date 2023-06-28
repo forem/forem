@@ -57,9 +57,6 @@
           <% end %>
           <p class="mb-3 fs-s color-base-60">
             <%= t("views.tags.published", count: tag.taggings_count) %>
-            <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
-            <%= t("views.tags.sponsor", org: tag.sponsorship.organization.name) %>
-            <% end %>
           </p>
 
           <% if tag %>

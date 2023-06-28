@@ -138,7 +138,7 @@ RSpec.describe "Authenticating with Email" do
   end
 
   def fill_in_user(user)
-    attach_file("user_profile_image", "spec/fixtures/files/podcast.png")
+    attach_file(File.expand_path("./spec/fixtures/files/podcast.png"))
     fill_in("user_name", with: user.name)
     fill_in("user_username", with: user.username)
     fill_in("user_email", with: user.email)

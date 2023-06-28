@@ -10,8 +10,8 @@ RSpec.describe Admin::UsersQuery, type: :query do
   let(:joining_end) { nil }
 
   describe ".find" do
-    let!(:user1) { create :user, username: "user1" }
-    let!(:user2) { create :user, username: "user12" }
+    let!(:user1) { create(:user, username: "user1") }
+    let!(:user2) { create(:user, username: "user12") }
 
     context "when identifier is blank" do
       it "returns nil" do

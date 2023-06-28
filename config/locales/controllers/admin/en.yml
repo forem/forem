@@ -104,11 +104,6 @@ en:
       confirmation: My username is @%{username} and this action is 100% safe and appropriate.
     spaces_controller:
       update_success: Space has been updated.
-    sponsorships_controller:
-      created: Sponsorship has been created!
-      not_destroyed: Sponsorship was not destroyed
-      updated: Sponsorship was successfully updated
-      destroyed: Sponsorship was successfully destroyed
     tags:
       moderators_controller:
         not_found: 'User ID #%{user_id} was not found'

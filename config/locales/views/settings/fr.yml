@@ -57,7 +57,7 @@ fr:
         github: Connect your github account as well to complete your identity.
         twitter: Connect your twitter account as well to complete your identity.
       custom:
-        adjacent: Permit Nearby Sponsors (When publishing)
+        adjacent: Permit Nearby External Sponsors (When publishing)
         announce: Announcements
         announce_desc: Announcements inform you on important site-wide information, like updates and events.
         announce_field: Display Announcements (When browsing)
@@ -73,8 +73,8 @@ fr:
         rich: Rich + markdown
         save: Save
         sponsor: Sponsors
-        sponsor_desc: You have the option to remove sponsor messaging (where it is practical to do so). Our wonderful sponsors help sustain the platform and improve your experience, and we strive to make their presence constructive to the community, but feel free to use this setting if you wish.
-        sponsor_field: Display Sponsors (When browsing)
+        sponsor_desc_html: You have the option to disable billboards from external sponsors. Our wonderful partners help sustain the platform, and we strive to ensure that their presence is constructive and valuable to the community, but you are welcome to make use of this setting if you wish. More details in our <a href="/billboards">billboards FAQ</a>.
+        sponsor_field: Display External Sponsors (When browsing)
         static: Static top of page
         theme: Site Theme
         writing: Writing
@@ -130,6 +130,7 @@ fr:
           remove: Remove
           save: Save template
           saved: Saved templates
+          trusted: Trusted user templates
         github:
           heading: GitHub
           desc1: Pin your GitHub repositories to your profile.
@@ -268,11 +269,11 @@ fr:
         submit: Set New Password
       previous: There is an existing account authorized with that social account.
       tab:
-        profile: Profil
-        customization: Personnalisation
-        notifications: Notifications
-        account: Compte
-        billing: Facturation
-        organization: Organisation
-        extensions: Extensions
+        Profile: Profil
+        Customization: Personnalisation
+        Notifications: Notifications
+        Account: Compte
+        Billing: Facturation
+        Organization: Organisation
+        Extensions: Extensions
       save_profile: Save Profile Information

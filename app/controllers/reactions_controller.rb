@@ -12,16 +12,8 @@ class ReactionsController < ApplicationController
     if params[:article_id]
       id = params[:article_id]
 
-      reactions = if session_current_user_id
-                    Reaction.public_category
-                      .where(
-                        reactable_id: id,
-                        reactable_type: "Article",
-                        user_id: session_current_user_id,
-                      )
-                  else
-                    Reaction.none
-                  end
+      reactions = reactions_by_user_id(session_current_user_id) if session_current_user_id
+      reactions ||= Reaction.none
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
@@ -55,59 +47,17 @@ class ReactionsController < ApplicationController
   def create
     remove_count_cache_key
 
-    if params[:reactable_type] == "Article" && params[:category].in?(Reaction::PRIVILEGED_CATEGORIES)
-      clear_moderator_reactions(
-        params[:reactable_id],
-        params[:reactable_type],
-        current_user,
-        params[:category],
-      )
-    end
+    result = ReactionHandler.toggle(params, current_user: current_user)
 
-    category = params[:category] || "like"
-
-    reaction = Reaction.where(
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category,
-    ).first
-
-    # if the reaction already exists, destroy it
-    if reaction
-      result = handle_existing_reaction(reaction)
+    if result.success?
+      render json: { result: result.action, category: result.category }
     else
-      reaction = build_reaction(category)
-
-      if reaction.save
-        rate_limiter.track_limit_by_action(:reaction_creation)
-        Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
-
-        Notification.send_reaction_notification(reaction, reaction.target_user)
-        if reaction.reaction_on_organization_article?
-          Notification.send_reaction_notification(reaction,
-                                                  reaction.reactable.organization)
-        end
-
-        result = "create"
-
-        if category == "readinglist" && current_user.setting.experience_level
-          rate_article(reaction)
-        end
-
-        if current_user.auditable?
-          Audit::Logger.log(:moderator, current_user, params.dup)
-        end
-      else
-        render json: { error: reaction.errors_as_sentence, status: 422 }, status: :unprocessable_entity
-        return
-      end
+      render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
-    render json: { result: result, category: category }
   end
 
   def cached_user_public_comment_reactions(user, comment_ids)
-    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}",
+    cache = Rails.cache.fetch("#{user.cache_key}/public-comment-reactions-#{user.public_reactions_count}",
                               expires_in: 24.hours) do
       user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
         h[r.reactable_id] = r.attributes
@@ -117,67 +67,6 @@ class ReactionsController < ApplicationController
   end
 
   private
-
-  def build_reaction(category)
-    create_params = {
-      user_id: current_user.id,
-      reactable_id: params[:reactable_id],
-      reactable_type: params[:reactable_type],
-      category: category
-    }
-    if (current_user&.any_admin? || current_user&.super_moderator?) &&
-        Reaction::NEGATIVE_PRIVILEGED_CATEGORIES.include?(category)
-      create_params[:status] = "confirmed"
-    end
-    Reaction.new(create_params)
-  end
-
-  def destroy_reaction(reaction)
-    reaction.destroy
-    Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
-    Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
-    if reaction.reaction_on_organization_article?
-      Notification.send_reaction_notification_without_delay(reaction,
-                                                            reaction.reactable.organization)
-    end
-    "destroy"
-  end
-
-  def rate_article(reaction)
-    user_experience_level = current_user.setting.experience_level
-    return unless user_experience_level
-
-    RatingVote.create(article_id: reaction.reactable_id,
-                      group: "experience_level",
-                      user_id: current_user.id,
-                      context: "readinglist_reaction",
-                      rating: user_experience_level)
-  end
-
-  def clear_moderator_reactions(id, type, mod, category)
-    reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod,
-                                 category: Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                elsif category.in?(Reaction::NEGATIVE_PRIVILEGED_CATEGORIES)
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
-                end
-
-    return if reactions.blank?
-
-    reactions.find_each { |reaction| destroy_reaction(reaction) }
-  end
-
-  def handle_existing_reaction(reaction)
-    result = destroy_reaction(reaction)
-
-    if reaction.negative? && current_user.auditable?
-      updated_params = params.dup
-      updated_params[:action] = "destroy"
-      Audit::Logger.log(:moderator, current_user, updated_params)
-    end
-
-    result
-  end
 
   def check_limit
     rate_limit!(:reaction_creation)
@@ -190,6 +79,24 @@ class ReactionsController < ApplicationController
     authorize(Reaction, policy_query)
   end
 
+  def reactions_by_user_id(user_id = session_current_user_id)
+    id = params[:article_id]
+
+    public_reactions = Reaction.public_category.where(
+      reactable_id: id,
+      reactable_type: "Article",
+      user_id: user_id,
+    )
+    readinglist = Reaction.where(
+      reactable_id: id,
+      reactable_type: "Article",
+      category: "readinglist", user_id: user_id
+    )
+
+    public_reactions + readinglist
+  end
+
+  # TODO: should this move to toggle service? refactor?
   def remove_count_cache_key
     return unless params[:reactable_type] == "Article"
 

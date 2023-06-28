@@ -27,7 +27,7 @@
                            value: Settings::General.main_social_image,
                            placeholder: Constants::Settings::General.details[:main_social_image][:placeholder] %>
           <% if Settings::General.main_social_image.present? %>
-            <img alt="main social image" class="img-fluid" src="<%= Settings::General.main_social_image %>" width="600" height="337" loading="lazy" />
+            <img alt="main social image" class="max-w-100 h-auto" src="<%= Settings::General.main_social_image %>" width="600" height="337" loading="lazy" />
           <% end %>
         </div>
 
@@ -35,7 +35,7 @@
           <%= admin_config_label :favicon_url, "Favicon URL" %>
           <%= admin_config_description Constants::Settings::General.details[:favicon_url][:description] %>
           <%= f.text_field :favicon_url,
-                           class: "form-control",
+                           class: "crayons-textfield",
                            value: Settings::General.favicon_url,
                            placeholder: Constants::Settings::General.details[:favicon_url][:placeholder] %>
           <img alt="favicon" class="preview" src="<%= Images::Optimizer.call(Settings::General.favicon_url, width: 32) %>" width="32" height="32" loading="lazy" />

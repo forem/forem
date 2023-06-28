@@ -15,15 +15,6 @@
         </div>
 
         <div class="crayons-field">
-          <%= admin_config_label :community_emoji, model: Settings::Community %>
-          <%= admin_config_description Constants::Settings::Community.details[:community_emoji][:description] %>
-          <%= f.text_field :community_emoji,
-                           class: "crayons-textfield",
-                           value: Settings::Community.community_emoji,
-                           placeholder: Constants::Settings::Community.details[:community_emoji][:placeholder] %>
-        </div>
-
-        <div class="crayons-field">
           <%= admin_config_label :tagline, model: Settings::Community %>
           <%= admin_config_description Constants::Settings::Community.details[:tagline][:description] %>
           <%= f.text_field :tagline,

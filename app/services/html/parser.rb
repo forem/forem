@@ -32,7 +32,7 @@ module Html
       self
     end
 
-    def prefix_all_images(width = 880, synchronous_detail_detection: false)
+    def prefix_all_images(width: 880, synchronous_detail_detection: false)
       # wrap with Cloudinary or allow if from giphy or githubusercontent.com
       doc = Nokogiri::HTML.fragment(@html)
 
@@ -270,8 +270,7 @@ module Html
     end
 
     def allowed_image_host?(src)
-      # GitHub camo image won't parse but should be safe to host direct
-      src.start_with?("https://camo.githubusercontent.com")
+      ImageUri.new(src).allowed?
     end
 
     def user_link_if_exists(mention)

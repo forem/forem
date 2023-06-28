@@ -1,9 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Comment, type: :model do
+RSpec.describe Comment do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, user: user, commentable: article) }
+
+  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
 
   include_examples "#sync_reactions_count", :article_comment
 
@@ -11,8 +13,10 @@ RSpec.describe Comment, type: :model do
     subject { comment }
 
     describe "builtin validations" do
+      subject { build(:comment, user: user, commentable: article) }
+
       it { is_expected.to belong_to(:user) }
-      it { is_expected.to belong_to(:commentable).optional }
+      # it { is_expected.to belong_to(:commentable).optional }
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:mentions).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -42,6 +46,7 @@ RSpec.describe Comment, type: :model do
         subject.commentable = build(:article, published: false)
 
         expect(subject).not_to be_valid
+        expect(subject.errors.full_messages).to include "Commentable is not a published article"
       end
 
       it "is invalid if commentable is an article and the discussion is locked" do
@@ -322,6 +327,12 @@ RSpec.describe Comment, type: :model do
       expect(comment.title).to eq("[deleted]")
     end
 
+    it "is converted to image text if the comment is image" do
+      comment.body_markdown = "![image](https://myimage.com/image.png)"
+      comment.validate!
+      expect(comment.title).to eq("[image]")
+    end
+
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
 
@@ -365,6 +376,40 @@ RSpec.describe Comment, type: :model do
       comments = described_class.tree_for(article, 1)
       expect(comments).to eq(comment => { child_comment => {} })
     end
+
+    context "with sort order" do
+      let!(:new_comment) { create(:comment, commentable: article, user: user, created_at: Date.tomorrow) }
+      let!(:old_comment) { create(:comment, commentable: article, user: user, created_at: Date.yesterday) }
+
+      before { comment }
+
+      it "returns comments in the right order when order is oldest" do
+        comments = described_class.tree_for(article, 0, "oldest")
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([old_comment.id, other_comment.id, comment.id, new_comment.id])
+      end
+
+      it "returns comments in the right order when order is latest" do
+        comments = described_class.tree_for(article, 0, "latest")
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([new_comment.id, comment.id, other_comment.id, old_comment.id])
+      end
+
+      it "returns comments in the right order when order is top" do
+        comment.update_column(:score, 5)
+        highest_rated_comment = comment
+        new_comment.update_column(:score, 1)
+        lowest_rated_comment = new_comment
+        old_comment.update_column(:score, 3)
+        mid_high_rated_comment = old_comment
+        other_comment.update_column(:score, 2)
+        mid_low_rated_comment = other_comment
+        comments = described_class.tree_for(article, 0)
+
+        comments = comments.map { |key, _| key.id }
+        expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
+      end
+    end
   end
 
   context "when callbacks are triggered after create" do
@@ -374,12 +419,6 @@ RSpec.describe Comment, type: :model do
       comment.save
 
       expect(comment.reload.id_code).to eq(comment.id.to_s(26))
-    end
-
-    it "enqueue a worker to create the first reaction" do
-      expect do
-        comment.save
-      end.to change(Comments::CreateFirstReactionWorker.jobs, :size).by(1)
     end
 
     it "enqueues a worker to calculate comment score" do

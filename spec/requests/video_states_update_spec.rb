@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "VideoStatesUpdate", type: :request do
+RSpec.describe "VideoStatesUpdate" do
   let(:encoder_key) { "TEST_SECRET" }
   let(:article) { create(:article, video_code: "DUMMY_VID_CODE") }
 

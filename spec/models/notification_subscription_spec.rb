@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe NotificationSubscription, type: :model do
+RSpec.describe NotificationSubscription do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:notification_subscription) { create(:notification_subscription, user: user, notifiable: article) }

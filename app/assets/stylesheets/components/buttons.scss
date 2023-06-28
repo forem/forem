@@ -175,6 +175,28 @@ label[class*='crayons-btn']:focus-within // label for input[type="file"] made to
   --color-inverted-hover: var(--base-inverted);
 }
 
+.crayons-btn--success {
+  --bg: var(--accent-success);
+  --bg-hover: var(--accent-success-darker);
+  --color: var(--base-inverted);
+  --color-hover: var(--base-inverted);
+  --bg-inverted: var(--accent-success);
+  --bg-inverted-hover: var(--accent-success-darker);
+  --color-inverted: var(--base-inverted);
+  --color-inverted-hover: var(--base-inverted);
+}
+
+.crayons-btn--warning {
+  --bg: var(--accent-warning);
+  --bg-hover: var(--accent-warning-darker);
+  --color: var(--base-inverted);
+  --color-hover: var(--base-inverted);
+  --bg-inverted: var(--accent-warning);
+  --bg-inverted-hover: var(--accent-warning-darker);
+  --color-inverted: var(--base-inverted);
+  --color-inverted-hover: var(--base-inverted);
+}
+
 .crayons-btn--ghost {
   --bg: var(--button-ghost-bg);
   --bg-hover: var(--button-ghost-bg-hover);

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::ReadingList", type: :request do
+RSpec.describe "Api::V0::ReadingList" do
   let(:api_secret) { create(:api_secret, user: user) }
   let(:headers) { { "api-key" => api_secret.secret } }
 

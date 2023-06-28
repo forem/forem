@@ -102,7 +102,7 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
       const { image } = payload;
       return successCb({ links, image });
     })
-    .catch(failureCb);
+    .catch((message) => failureCb(message));
 }
 
 /**
@@ -114,6 +114,7 @@ export function generateMainImage({ payload, successCb, failureCb, signal }) {
  */
 export function processImageUpload(
   images,
+  handleImageUploading,
   handleImageSuccess,
   handleImageFailure,
 ) {
@@ -121,6 +122,7 @@ export function processImageUpload(
   if (images.length > 0 && validateFileInputs()) {
     const payload = { image: images };
 
+    handleImageUploading();
     generateMainImage({
       payload,
       successCb: handleImageSuccess,

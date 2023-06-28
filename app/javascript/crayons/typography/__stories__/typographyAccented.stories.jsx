@@ -31,6 +31,4 @@ export const SampleTexts = () => (
   </div>
 );
 
-SampleTexts.story = {
-  name: 'sample texts',
-};
+SampleTexts.storyName = 'sample texts';

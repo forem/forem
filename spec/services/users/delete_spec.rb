@@ -21,14 +21,6 @@ RSpec.describe Users::Delete, type: :service do
     expect(cache_bust).to have_received(:call).with("/#{user.username}")
   end
 
-  it "deletes user's sponsorships" do
-    create(:sponsorship, user: user)
-
-    expect do
-      described_class.call(user)
-    end.to change(Sponsorship, :count).by(-1)
-  end
-
   it "deletes user's follows" do
     create(:follow, follower: user)
     create(:follow, followable: user)
@@ -93,6 +85,7 @@ RSpec.describe Users::Delete, type: :service do
         audit_logs
         banished_users
         created_podcasts
+        display_ad_events
         offender_feedback_messages
         page_views
         rating_votes
@@ -143,6 +136,7 @@ RSpec.describe Users::Delete, type: :service do
     end
 
     it "keeps the kept associations" do
+      # NB: each association must have a factory defined!
       expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)

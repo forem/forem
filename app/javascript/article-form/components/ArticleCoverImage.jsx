@@ -78,6 +78,8 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
         successCb: onImageUploadSuccess,
         failureCb: onUploadError,
       });
+    } else {
+      setUploadingImage(false);
     }
   };
 

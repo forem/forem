@@ -1,26 +1,26 @@
-<% default_nav_links = NavigationLink.default_section.ordered.to_a %>
-<% other_nav_links = NavigationLink.other_section.ordered.to_a %>
+<% navigation_links = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
+{
+    default_nav_ids: NavigationLink.default_section.ordered.ids,
+    other_nav_ids: NavigationLink.other_section.ordered.ids,
+  }
+end %>
 
 <nav class="mb-4 <% unless user_signed_in? %>mt-4<% end %>" data-testid="main-nav" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
-    <% default_nav_links.each do |link| %>
-      <%= render "layouts/sidebar_nav_link", link: link %>
-    <% end %>
+    <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:default_nav_ids]).ordered, as: :link, cached: true %>
   </ul>
 </nav>
 
 <%# Reading Note: There's a faulty assumption that all "other_nav_links" are
     visible based on the current state (see
     ApplicationHelper#display_navigation_link? for details).  %>
-<% if other_nav_links.any? %>
+<% if navigation_links[:other_nav_ids].any? %>
   <nav class="mb-4" data-testid="other-nav" aria-labelledby="other-nav-heading-<%= context %>">
     <h2 id="other-nav-heading-<%= context %>" class="crayons-subtitle-3 py-2 pl-3">
       <%= t("views.main.nav.other") %>
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
-      <% other_nav_links.each do |link| %>
-        <%= render "layouts/sidebar_nav_link", link: link %>
-      <% end %>
+      <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:other_nav_ids]).ordered, as: :link, cached: true %>
     </ul>
   </nav>
 <% end %>

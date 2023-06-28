@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin awards badges", type: :system do
+RSpec.describe "Admin awards badges" do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -20,7 +20,7 @@ RSpec.describe "Admin awards badges", type: :system do
   end
 
   before do
-    create_list :badge, 5
+    create_list(:badge, 5)
     sign_in admin
     visit admin_badge_achievements_award_badges_path
   end
@@ -43,7 +43,7 @@ RSpec.describe "Admin awards badges", type: :system do
 
     visit "/#{user.username}/"
 
-    expect(page).to have_link(href: badge_path(Badge.last.slug))
+    expect(page).to have_css("img[src='#{Badge.last.badge_image.url}']")
   end
 
   it "does not award badges if no badge is selected", js: true do

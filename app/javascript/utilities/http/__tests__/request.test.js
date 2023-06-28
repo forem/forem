@@ -1,20 +1,22 @@
 import fetch from 'jest-fetch-mock';
 import { request } from '@utilities/http';
 
+const csrfToken = 'this-is-a-csrf-token';
+jest.mock('../csrfToken', () => ({
+  getCSRFToken: jest.fn(() => Promise.resolve(csrfToken)),
+}));
+
 // NOTE: Everything that native fetch in the browser does, e.g. CREATE, DELETE etc. could be tested here, but that is pointless.
 // The tests below are really just to check the functionality that request offers on top of native fetch.
 
 /* global globalThis */
 describe('request', () => {
-  const csrfToken = 'this-is-a-csrf-token';
-
   beforeAll(() => {
     globalThis.fetch = fetch;
-    globalThis.getCsrfToken = async () => csrfToken;
   });
+
   afterAll(() => {
     delete globalThis.fetch;
-    delete globalThis.getCsrfToken;
   });
 
   afterEach(() => {

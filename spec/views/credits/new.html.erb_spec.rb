@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "credits/new", type: :view do
+RSpec.describe "credits/new" do
   let(:purchaser) { create(:user) }
   let(:credit) { build(:credit) }
 

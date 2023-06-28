@@ -28,7 +28,7 @@ export class IntroSlide extends Component {
     const { next } = this.props;
     const csrfToken = getContentOfToken('csrf-token');
 
-    fetch('/onboarding_checkbox_update', {
+    fetch('/onboarding/checkbox', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -200,7 +200,7 @@ IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
-  currentSlideIndex: PropTypes.func.isRequired,
+  currentSlideIndex: PropTypes.number.isRequired,
   communityConfig: PropTypes.shape({
     communityLogo: PropTypes.string.isRequired,
     communityName: PropTypes.string.isRequired,

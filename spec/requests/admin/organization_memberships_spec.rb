@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/organization_memberships", type: :request do
+RSpec.describe "/admin/organization_memberships" do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }

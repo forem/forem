@@ -12,9 +12,7 @@ describe('Follow user from profile page', () => {
   it('follows and unfollows a user', () => {
     cy.intercept('/follows').as('followsRequest');
 
-    cy.findByRole('button', {
-      name: 'Follow user: Article Editor v1 User',
-    }).as('followButton');
+    cy.get('#user-follow-butt').as('followButton');
     cy.get('@followButton').click();
     cy.wait('@followsRequest');
 
@@ -33,7 +31,7 @@ describe('Follow user from profile page', () => {
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     // Check that the update persists after reload
-    cy.visitAndWaitForUserSideEffects('/article_editor_v1_user');
+    cy.reload();
     cy.get('@followButton').should('have.text', 'Follow');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
   });

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Follows #show", type: :request do
+RSpec.describe "Follows #show" do
   let(:current_user) { create(:user) }
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
@@ -34,5 +34,18 @@ RSpec.describe "Follows #show", type: :request do
   it "return self if current_user try to follow themself" do
     get "/follows/#{current_user.id}", params: { followable_type: "User" }
     expect(response.body).to eq("self")
+  end
+
+  it "returns follow-back when current_user is followed by them" do
+    user.follow(current_user)
+    get "/follows/#{user.id}", params: { followable_type: "User" }
+    expect(response.body).to eq("follow-back")
+  end
+
+  it "returns mutual when current_user is following them and they are following current_user" do
+    current_user.follow(user)
+    user.follow(current_user)
+    get "/follows/#{user.id}", params: { followable_type: "User" }
+    expect(response.body).to eq("mutual")
   end
 end

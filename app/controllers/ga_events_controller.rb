@@ -31,7 +31,7 @@ class GaEventsController < ApplicationController
 
   def scrambled_ip
     crypt = ActiveSupport::MessageEncryptor.new(todays_key)
-    crypt.encrypt_and_sign(request.env["HTTP_X_FORWARDED_FOR"] || request.remote_ip)
+    crypt.encrypt_and_sign(request.env["HTTP_FASTLY_CLIENT_IP"] || request.remote_ip)
   end
 
   def todays_key

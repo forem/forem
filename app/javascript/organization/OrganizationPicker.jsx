@@ -5,7 +5,7 @@ const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {
     if (organizationId === organization.id) {
       return (
-        <option value={organization.id} selected>
+        <option key={organization.id} value={organization.id} selected>
           {organization.name}
         </option>
       );

@@ -1,4 +1,4 @@
-// Shared behavior between the reading list and history pages
+// Used in the reading list
 import { fetchSearch } from '../utilities/search';
 
 // Starts the search when the user types in the search box
