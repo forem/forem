@@ -332,7 +332,7 @@ RSpec.describe "Comments" do
       sign_in user
     end
 
-    it "calls the Toggle service object with the correct parameters" do
+    it "calls the Subscribe service object with the correct parameters" do
       params = { comment: { comment_id: "1", article_id: "2" } }
       permitted_params = ActionController::Parameters.new(params)
         .require(:comment)
@@ -361,7 +361,7 @@ RSpec.describe "Comments" do
       sign_in user
     end
 
-    it "calls the Toggle service object with the correct parameters" do
+    it "calls the Unsubscribe service object with the correct parameters" do
       params = { comment: { subscription_id: "1" } }
       permitted_params = ActionController::Parameters.new(params)
         .require(:comment)
