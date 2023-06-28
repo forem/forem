@@ -4,8 +4,16 @@ export function addButtonSubscribeText(button, config) {
   let label = '';
   let pressed = '';
   let mobileLabel = '';
-  const noun =
-    button.dataset.comment_id && button.dataset.ancestry ? 'thread' : 'comments';
+
+  const { subscribed_to, comment_id, ancestry } = button.dataset;
+  let noun = '';
+  if (subscribed_to) {
+    noun = (subscribed_to == 'comment') ? 'thread' : 'comments';
+  } else if (comment_id && ancestry) {
+    noun = 'thread'
+  } else {
+    noun = 'comments'
+  }
 
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');

@@ -46,10 +46,45 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def subscription_for(user)
-    notifiable = { notifiable_type: "Comment", notifiable_id: comment_ancestry } if comment_ancestry.present?
-    notifiable ||= { notifiable_type: "Comment", notifiable_id: comment_id } if comment_id.present?
-    notifiable ||= { notifiable_type: "Article", notifiable_id: article_id }
+    subscription_to_comment_ancestor_for(user) ||
+      subscription_to_comment_for(user) ||
+      subscription_to_commentable_article_for(user) ||
+      subscription_to_article_for(user)
+  end
 
+  def subscription_to_article_for(user)
+    return unless article_id
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Article",
+                                   notifiable_id: article_id)
+  end
+
+  def subscription_to_comment_for(user)
+    return unless comment_ancestry
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Comment",
+                                   notifiable_id: comment_id)
+  end
+
+  def subscription_to_comment_ancestor_for(user)
+    return unless comment_ancestry
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Comment",
+                                   notifiable_id: comment_ancestry)
+  end
+
+  def subscription_to_commentable_article_for(user)
+    return unless commentable_article_id
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Article",
+                                   notifiable_id: commentable_article_id)
+  end
+
+  def subscription_to_notifiable_for(user, **notifiable)
     user.notification_subscriptions.for_notifiable(**notifiable).first
   end
 
@@ -145,6 +180,13 @@ class NotificationDecorator < ApplicationDecorator
 
   def commentable_id
     @commentable_id ||= json_data.dig "comment", "commentable", "id"
+  end
+
+  def commentable_article_id
+    @commentable_article_id ||= begin
+      commentable = json_data.dig "comment", "commentable"
+      commentable["id"] if commentable&.dig("class", "name") == "Article"
+    end
   end
 
   def commentable_class_name
