@@ -88,11 +88,12 @@ async function handleSubscribeButtonClick({ target }) {
         if (res.destroyed) {
           target.dataset.subscription_id = "";
           target.dataset.subscription_mode = "";
-        } else {
+        } else if (res.subscription) {
           target.dataset.subscription_id = res.subscription.id;
           target.dataset.subscription_mode = res.subscription.config;
+        } else {
+          throw(`Problem (un)subscribing: ${JSON.stringify(res)}`)
         }
-
       }
     });
 }
