@@ -14,7 +14,7 @@ class NotificationSubscription < ApplicationRecord
   validates :user_id, uniqueness: { scope: %i[notifiable_type notifiable_id] }
 
   def self.for_notifiable(notifiable = nil, notifiable_type: nil, notifiable_id: nil)
-    notifiable_type ||= notifiable&.polymorphic_name
+    notifiable_type ||= notifiable&.class&.polymorphic_name
     notifiable_id ||= notifiable&.id
 
     return none if !notifiable_type || !notifiable_id
