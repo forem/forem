@@ -46,11 +46,9 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def subscription_for(user)
-    notifiable = if comment_ancestry.present?
-                   { notifiable_type: "Comment", notifiable_id: comment_ancestry }
-                 else
-                   { notifiable_type: "Article", notifiable_id: commentable_id }
-                 end
+    notifiable = { notifiable_type: "Comment", notifiable_id: comment_ancestry } if comment_ancestry.present?
+    notifiable ||= { notifiable_type: "Comment", notifiable_id: comment_id } if comment_id.present?
+    notifiable ||= { notifiable_type: "Article", notifiable_id: article_id }
 
     user.notification_subscriptions.for_notifiable(**notifiable).first
   end
@@ -89,8 +87,8 @@ class NotificationDecorator < ApplicationDecorator
       (type_inquirer.comment? && action_inquirer.reaction?)
   end
 
-  def any_cached_likes_for_object?(user)
-    Reaction.cached_any_reactions_for?(mocked_object("article"), user, "like")
+  def any_cached_reactions_for_object?(user, object_type = "article", category: "like")
+    Reaction.cached_any_reactions_for?(mocked_object(object_type), user, category)
   end
 
   def article_id
@@ -121,8 +119,36 @@ class NotificationDecorator < ApplicationDecorator
     @comment_id ||= json_data.dig "comment", "id"
   end
 
+  def comment_last_ancestor
+    @comment_last_ancestor ||= (json_data.dig("comment", "ancestors") || []).last || {}
+  end
+
+  def comment_path
+    @comment_path ||= json_data.dig "comment", "path"
+  end
+
+  def comment_depth
+    @comment_depth ||= json_data.dig("comment", "depth") || -1
+  end
+
+  def comment_processed_html
+    @comment_processed_html ||= json_data.dig "comment", "processed_html"
+  end
+
+  def comment_updated_at
+    @comment_updated_at ||= json_data.dig "comment", "updated_at"
+  end
+
+  def commentable
+    @commentable ||= json_data.dig "comment", "commentable"
+  end
+
   def commentable_id
     @commentable_id ||= json_data.dig "comment", "commentable", "id"
+  end
+
+  def commentable_class_name
+    @commentable_class_name ||= json_data.dig "comment", "commentable", "class", "name"
   end
 
   # TODO: This is an odd one - contrast with reactable_type?

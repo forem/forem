@@ -11,7 +11,7 @@
   <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{notification.article_updated_at}-#{notification.article_id}" do %>
     <footer class="comment-actions notification__actions">
       <button
-        class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= notification.any_cached_likes_for_object?(current_user) ? "reacted" : "" %>"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= notification.any_cached_reactions_for_object?(current_user) ? "reacted" : "" %>"
         data-reactable-id="<%= notification.article_id %>"
         data-category="like"
         data-reactable-type="Article">
@@ -21,7 +21,7 @@
       </button>
 
       <button
-        class="crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= notification.any_cached_reactions_for_object?(current_user, category: "readinglist") ? "reacted" : "" %>"
         data-reactable-id="<%= notification.article_id %>"
         data-category="readinglist"
         data-reactable-type="Article">
@@ -32,7 +32,7 @@
 
       <% subscription = notification.subscription_for(current_user) %>
       <button
-        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= @notification.nil? ? "" : "comment-subscribed" %>"
+        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
         data-subscription_id="<%= subscription&.id %>"
         data-subscription_mode="<%= subscription&.config %>"
         data-article_id="<%= notification.article_id %>">
