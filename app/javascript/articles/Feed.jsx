@@ -227,29 +227,31 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     for (const result of results) {
       if (result.status === 'fulfilled') {
         let resolvedValue;
-        if (result.value.headers?.get('content-type')) {
-          if (
-            result.value.headers
-              .get('content-type')
-              .includes('application/json')
-          ) {
-            resolvedValue = await result.value.json();
-          }
-
-          if (result.value.headers.get('content-type').includes('text/html')) {
-            resolvedValue = await result.value.text();
-          }
+        if (isJSON(result)) {
+          resolvedValue = await result.value.json();
         }
 
+        if (isHTML(result)) {
+          resolvedValue = await result.value.text();
+        }
         fullfilledPromises.push(resolvedValue);
       } else {
         Honeybadger.notify(result.reason);
-        // we push an empty string because we want to maintain the placement of the deconstructed array
+        // we push an empty string because we want to maintain the placement of the deconstructed array.
         fullfilledPromises.push('');
       }
     }
-
     return fullfilledPromises;
+  }
+
+  function isJSON(result) {
+    return result.value.headers
+      ?.get('content-type')
+      ?.includes('application/json');
+  }
+
+  function isHTML(result) {
+    return result.value.headers?.get('content-type')?.includes('text/html');
   }
 
   // /**
