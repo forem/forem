@@ -237,7 +237,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
         fullfilledPromises.push(resolvedValue);
       } else {
         Honeybadger.notify(result.reason);
-        // we push an empty string because we want to maintain the placement of the deconstructed array.
+        // we push an undefined item because we want to maintain the placement of the deconstructed array.
         fullfilledPromises.push(undefined);
       }
     }
