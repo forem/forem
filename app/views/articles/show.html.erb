@@ -233,12 +233,10 @@
 <div class="fullscreen-code js-fullscreen-code"></div>
 <%= javascript_packs_with_chunks_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
-<% cache("article-show-scripts", expires_in: 8.hours) do %>
-  <script>
-    <%# we consider these scripts safe for embedding as they come from our code %>
-    <%== PodcastTag.script %>
-    <%== PollTag.script %>
-    <%== RunkitTag.script %>
-    <%== TweetTag.script %>
-  </script>
-<% end %>
+<script>
+  <%# we consider these scripts safe for embedding as they come from our code %>
+  <%== PodcastTag.script %>
+  <%== PollTag.script %>
+  <%== RunkitTag.script %>
+  <%== TweetTag.script %>
+</script>
