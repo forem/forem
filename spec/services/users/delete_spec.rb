@@ -136,6 +136,7 @@ RSpec.describe Users::Delete, type: :service do
     end
 
     it "keeps the kept associations" do
+      # NB: each association must have a factory defined!
       expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)

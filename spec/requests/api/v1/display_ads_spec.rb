@@ -50,7 +50,8 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
-                          "audience_segment_type", "audience_segment_id")
+                          "audience_segment_type", "audience_segment_id",
+                          "priority")
       end
 
       it "returns a malformed response" do
@@ -72,6 +73,7 @@ RSpec.describe "Api::V1::DisplayAds" do
           "id" => ad1.id,
           "published" => true,
           "approved" => true,
+          "priority" => false,
           "type_of" => "in_house",
           "cached_tag_list" => "",
           "clicks_count" => 0,
@@ -97,7 +99,8 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
-                          "audience_segment_type", "audience_segment_id")
+                          "audience_segment_type", "audience_segment_id",
+                          "priority")
       end
     end
 

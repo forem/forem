@@ -15,4 +15,25 @@ RSpec.describe Role do
       expect(described_class::ROLES).to match_array(expected_roles)
     end
   end
+
+  describe "#super_admin?" do
+    let(:role) { create(:role, name: role_name) }
+    let(:role_name) { "super_admin" }
+
+    it "has a visible method" do
+      expect(role.respond_to?(:super_admin?)).to be true
+    end
+
+    it "returns true" do
+      expect(role.super_admin?).to be true
+    end
+
+    context "with different role" do
+      let(:role_name) { "admin" }
+
+      it "returns false" do
+        expect(role.super_admin?).to be false
+      end
+    end
+  end
 end

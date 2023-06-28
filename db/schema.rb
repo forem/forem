@@ -10,10 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_17_132219) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_22_151553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -473,6 +472,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_132219) do
     t.string "name"
     t.bigint "organization_id"
     t.string "placement_area"
+    t.boolean "priority", default: false
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
@@ -704,14 +704,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_17_132219) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
-    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
     t.string "location"
     t.string "name"
-    t.string "nav_image"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"

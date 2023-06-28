@@ -1,73 +1,15 @@
-<blockquote class="ltag__twitter-tweet" data-url="<%= "https://twitter.com/#{tweet.twitter_username}/status/#{id}" %>">
-  <% if tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size == 1 %>
-    <% if tweet.extended_entities_serialized[:media].first[:type] == "animated_gif" || tweet.extended_entities_serialized[:media].first[:type] == "video" %>
-      <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__video-wrapper'>
-        <div class='ltag__twitter-tweet__media--video-preview'>
-          <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
-          <img src="/assets/play-butt.svg" class="ltag__twitter-tweet__play-butt" alt="Play butt">
-        </div>
-        <div class='ltag__twitter-tweet__video'>
-          <video loop controls>
-            <source src="<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:url] %>"
-              type="<%= tweet.extended_entities_serialized[:media].first[:video_info][:variants].last[:content_type] %>">
-          </video>
-        </div>
-      </div>
-    <% else %>
-      <div class='ltag__twitter-tweet__media'>
-        <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
-      </div>
-    <% end %>
-  <% elsif tweet.extended_entities_serialized.present? && tweet.extended_entities_serialized[:media] && tweet.extended_entities_serialized[:media].size > 1 %>
-    <div class='ltag__twitter-tweet__media ltag__twitter-tweet__media__two-pics'>
-      <img src="<%= tweet.extended_entities_serialized[:media].first[:media_url_https] %>" alt="unknown tweet media content">
-    </div>
-  <% end %>
+<% obj_id = "#{id}-#{rand(1_000)}" %>
+<iframe
+  class="tweet-embed"
+  id="tweet-<%= obj_id %>"
+  src="https://platform.twitter.com/embed/Tweet.html?id=<%= id %>">
+</iframe>
+<script>
+  // Detect dark theme
+  var iframe = document.getElementById('tweet-<%= obj_id %>');
+  if (document.body.className.includes('dark-theme')) {
+    iframe.src = "https://platform.twitter.com/embed/Tweet.html?id=<%= id %>&theme=dark"
+  }
 
-  <div class="ltag__twitter-tweet__main" data-url="<%= "https://twitter.com/#{tweet.twitter_username}/status/#{id}" %>">
-    <div class="ltag__twitter-tweet__header">
-      <img class="ltag__twitter-tweet__profile-image"
-        src="<%= tweet.full_fetched_object_serialized[:user][:profile_image_url_https] %>"
-        alt="<%= tweet.twitter_name %> profile image">
-      <div class="ltag__twitter-tweet__full-name">
-        <%= tweet.twitter_name %>
-      </div>
-      <div class="ltag__twitter-tweet__username">
-        @<%= tweet.twitter_username %>
-      </div>
-      <div class="ltag__twitter-tweet__twitter-logo">
-        <img src="<%= twitter_logo %>" alt="twitter logo">
-      </div>
-    </div>
-    <div class="ltag__twitter-tweet__body">
-      <%= tweet.processed_text.html_safe %>
-    </div>
-    <div class="ltag__twitter-tweet__date">
-      <%= tweet.tweeted_at.strftime(t("time.formats.tweet")) %>
-    </div>
+</script>
 
-    <% if tweet.is_quote_status && tweet.full_fetched_object_serialized[:quoted_status] %>
-      <div class='ltag__twitter-tweet__quote'>
-        <div class='ltag__twitter-tweet__quote__header'>
-          <span class='ltag__twitter-tweet__quote__header__name'>
-            <%= tweet.full_fetched_object_serialized[:quoted_status][:user][:name] %>
-          </span>
-          @<%= tweet.full_fetched_object_serialized[:quoted_status][:user][:screen_name] %>
-        </div>
-        <%= tweet.full_fetched_object_serialized[:quoted_status][:full_text] %>
-      </div>
-    <% end %>
-
-    <div class="ltag__twitter-tweet__actions">
-      <a href="https://twitter.com/intent/tweet?in_reply_to=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="<%= ActionController::Base.helpers.asset_path("twitter-reply-action.svg") %>" alt="Twitter reply action">
-      </a>
-      <a href="https://twitter.com/intent/retweet?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="<%= ActionController::Base.helpers.asset_path("twitter-retweet-action.svg") %>" alt="Twitter retweet action">
-      </a>
-      <a href="https://twitter.com/intent/like?tweet_id=<%= id %>" class="ltag__twitter-tweet__actions__button">
-        <img src="<%= ActionController::Base.helpers.asset_path("twitter-like-action.svg") %>" alt="Twitter like action">
-      </a>
-    </div>
-  </div>
-</blockquote>
