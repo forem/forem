@@ -5,7 +5,7 @@ export function addButtonSubscribeText(button, config) {
   let pressed = '';
   let mobileLabel = '';
   const noun =
-    button.dataset.comment && button.dataset.ancestry ? 'thread' : 'comments';
+    button.dataset.comment_id && button.dataset.ancestry ? 'thread' : 'comments';
 
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
@@ -38,27 +38,16 @@ export function addButtonSubscribeText(button, config) {
 }
 
 export function optimisticallyUpdateButtonUI(button) {
-  const buttonInfo = button.dataset.info
-    ? JSON.parse(button.dataset.info)
-    : null;
-  if (buttonInfo) {
-    const { config } = buttonInfo;
-
-    switch (config) {
-      case 'all_comments':
-      case 'top_level_comments':
-      case 'only_author_comments':
-        button.classList.remove('comment-subscribed');
-        addButtonSubscribeText(button, '');
-        break;
-      default:
-        button.classList.add('comment-subscribed');
-        addButtonSubscribeText(button, 'all_comments');
-    }
-  } else {
-    button.classList.add('comment-subscribed');
-    addButtonSubscribeText(button, 'all_comments');
-    return;
+  switch (button.dataset.subscription_mode) {
+    case 'all_comments':
+    case 'top_level_comments':
+    case 'only_author_comments':
+      button.classList.remove('comment-subscribed');
+      addButtonSubscribeText(button, '');
+      break;
+    default:
+      button.classList.add('comment-subscribed');
+      addButtonSubscribeText(button, 'all_comments');
   }
 
   return;
@@ -69,48 +58,41 @@ async function handleSubscribeButtonClick({ target }) {
 
   let payload;
   let endpoint;
-  if (JSON.parse(target.dataset.info)) {
-    const { id } = JSON.parse(target.dataset.info);
-    payload = JSON.stringify({
-      comment: {
-        subscription_id: id,
-      },
-    });
+
+  if (target.dataset.subscription_id != "") {
+    payload = {
+      subscription_id: target.dataset.subscription_id,
+    };
     endpoint = 'comment-unsubscribe';
+  } else if (target.dataset.comment_id && (target.dataset.comment_id != "")){
+    payload = {
+      comment_id: target.dataset.comment_id,
+      article_id: target.dataset.article_id,
+    };
+    endpoint = 'comment-subscribe';
   } else {
-    payload = JSON.stringify({
-      comment: {
-        subscription_id: null,
-        comment_id: Number(target.dataset.comment),
-        article_id: target.dataset.article
-          ? Number(target.dataset.article)
-          : null,
-      },
-    });
+    payload = {
+      article_id: target.dataset.article_id,
+    };
     endpoint = 'comment-subscribe';
   }
+
+  payload = JSON.stringify(payload)
 
   getCsrfToken()
     .then(await sendFetch(endpoint, payload))
     .then(async (response) => {
       if (response.status === 200) {
         const res = await response.json();
-        console.log(res); // eslint-disable-line no-console
-        if (res.notification) {
-          target.dataset.info = res.notification;
-        } else if (res.destroyed) {
-          target.dataset.info = null;
+
+        if (res.destroyed) {
+          target.dataset.subscription_id = "";
+          target.dataset.subscription_mode = "";
         } else {
-          target.dataset.info = null;
+          target.dataset.subscription_id = res.subscription.id;
+          target.dataset.subscription_mode = res.subscription.config;
         }
-      } else {
-        // showModalAfterError({
-        //   response,
-        //   element: 'comment',
-        //   action_ing: 'subscribing',
-        //   action_past: 'subscribed',
-        //   timeframe: 'for a day',
-        // });
+
       }
     });
 }
@@ -126,16 +108,7 @@ export function initializeSubscribeButton() {
     button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
 
-    const buttonInfo = button.dataset.info
-      ? JSON.parse(button.dataset.info)
-      : null;
-
-    if (buttonInfo) {
-      const { config } = buttonInfo;
-      addButtonSubscribeText(button, config);
-    } else {
-      addButtonSubscribeText(button, '');
-    }
+    addButtonSubscribeText(button, button.dataset.subscription_mode);
   });
 }
 
