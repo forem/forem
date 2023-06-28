@@ -17,6 +17,7 @@ esbuild
     logLevel: 'info',
     // splitting: true,
     outdir: 'app/assets/builds',
+    publicPath: 'assets',
     loader: { '.js': 'jsx', '.erb': 'file', '.toml': 'file', '.svg': 'file' },
     external: ['@crayons'],
   })
