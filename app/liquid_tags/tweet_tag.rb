@@ -15,6 +15,7 @@ class TweetTag < LiquidTagBase
                 var data = event.data['twttr.embed'];
                 if (data && data['method'] === 'twttr.private.resize' && data['params'] && data['params']['0']) {
                   iframe.style.height = data['params']['0']['height'] + 0.5 + 'px';
+                  iframe.style.minHeight = data['params']['0']['height'] + 0.5 + 'px';
                   iframe.style.width = data['params']['0']['width'] + 'px';
                 }
                 break;
