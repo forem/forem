@@ -72,7 +72,7 @@
             <span class="hidden m:inline-block"><%= t("views.comments.footer.view.text") %></span>
           </a>
 
-          <% if FeatureFlag.enabled?(:subscribe_to_comments) %>
+          <% if feature_flag_enabled?(:subscribe_to_comments) %>
             <% subscription = notification.subscription_for(current_user) %>
             <button
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"

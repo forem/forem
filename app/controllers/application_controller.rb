@@ -291,6 +291,8 @@ class ApplicationController < ActionController::Base
     FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
   end
 
+  helper_method :feature_flag_enabled?
+
   private
 
   def configure_permitted_parameters
