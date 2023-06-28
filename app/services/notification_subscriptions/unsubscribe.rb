@@ -1,14 +1,14 @@
 module NotificationSubscriptions
   class Unsubscribe
-    attr_reader :current_user, :permitted_params
+    attr_reader :current_user, :subscription_id
 
     def self.call(...)
       new(...).call
     end
 
-    def initialize(current_user, permitted_params)
+    def initialize(current_user, subscription_id)
       @current_user = current_user
-      @permitted_params = permitted_params
+      @subscription_id = subscription_id
     end
 
     def call
@@ -16,7 +16,6 @@ module NotificationSubscriptions
     end
 
     def unsubscribe_subscription
-      subscription_id = permitted_params[:subscription_id]
       return { errors: "Subscription ID is missing" } if subscription_id.nil?
 
       notification = NotificationSubscription.find_by(user_id: current_user.id,

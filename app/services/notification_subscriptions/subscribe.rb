@@ -1,14 +1,15 @@
 module NotificationSubscriptions
   class Subscribe
-    attr_reader :current_user, :permitted_params
+    attr_reader :current_user, :comment_id, :article_id
 
     def self.call(...)
       new(...).call
     end
 
-    def initialize(current_user, permitted_params)
+    def initialize(current_user, comment_id: nil, article_id: nil)
       @current_user = current_user
-      @permitted_params = permitted_params
+      @article_id = article_id
+      @comment_id = comment_id
     end
 
     def call
@@ -22,11 +23,11 @@ module NotificationSubscriptions
     private
 
     def comment
-      @comment ||= Comment.find(permitted_params[:comment_id]) if permitted_params[:comment_id].present?
+      @comment ||= Comment.find(comment_id) if comment_id.present?
     end
 
     def article
-      @article ||= Article.find(permitted_params[:article_id]) if permitted_params[:article_id].present?
+      @article ||= Article.find(article_id) if article_id.present?
     end
 
     def comment_article
@@ -45,7 +46,7 @@ module NotificationSubscriptions
       )
 
       if subscription.save
-        { updated: true, notification: subscription.to_json }
+        { updated: true, subscription: subscription }
       else
         { errors: subscription.errors_as_sentence }
       end
