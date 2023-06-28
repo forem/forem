@@ -246,26 +246,31 @@ body {
     &.twitter-tweet {
       font-family: var(--ff-sans-serif);
       background: var(--body-color-inverted);
-      max-width: 456px;
-      border: 1px solid #e9eef2;
+      max-width: 550px;
+      border: 1px solid #cfd9de;
       font-size: 0.75em;
       line-height: 1.35em;
-      border-radius: 5px;
+      border-radius: 12px;
       margin: 1.6em auto;
-      padding: 60px 10px 18px;
-      color: white;
-      min-height: 60px;
+      padding: 60px 250px 18px 10px;
       padding: 33px 15px 8px;
-
-      a {
-        color: white;
-      }
 
       @media screen and (min-width: $breakpoint-s) {
         padding: 60px 22px 18px;
         min-height: 105px;
       }
     }
+  }
+
+  .tweet-embed {
+    display: block;
+    margin: var(--content-rhythm) auto !important;
+    width: 550px;
+    max-width: 100%;
+    min-height: 350px;
+    border-radius: 13px;
+    box-shadow: var(--shadow-smooth), inset 0px 0px 0px 1px var(--card-border);;
+    overflow: hidden;
   }
 
   kbd {
@@ -346,7 +351,7 @@ body {
   }
 
   .twitter-tweet {
-    margin: 0 0 var(--content-rhythm) 0;
+    margin: 0 auto;
   }
 
   .c-embed {
