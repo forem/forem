@@ -133,6 +133,7 @@
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",
     "freezeframe": "^5.0.2",
+    "glob-all": "^3.3.1",
     "he": "^1.2.0",
     "i18n-js": "^4.2.3",
     "intersection-observer": "^0.12.2",
