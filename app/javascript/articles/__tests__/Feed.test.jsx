@@ -249,7 +249,7 @@ describe('<Feed /> component', () => {
           const pinnedItem = feedPosts.find((o) => o.pinned === true);
           // there is no first billboard
           expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
-          // there is no second bilboard so podcsats get rendered in 3rd place
+          // there is no second bilboard so podcasts get rendered in 3rd place
           expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
           expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
         });
@@ -278,6 +278,21 @@ describe('<Feed /> component', () => {
           const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
           expect(lastCallbackResult.feedItems.length).toEqual(12);
+        });
+      });
+
+      it('should organize the feedItems correctly', async () => {
+        await waitFor(() => {
+          const lastCallbackResult =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+
+          const pinnedItem = feedPosts.find((o) => o.pinned === true);
+          // we will not be rendering the first billboard since it errored
+          expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
+          // we will not be rendering the second billboard since it errored
+          // so podcasts get rendered in 3rd place
+          expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
+          expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
         });
       });
     });
