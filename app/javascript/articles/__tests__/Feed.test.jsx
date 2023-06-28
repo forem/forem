@@ -255,5 +255,31 @@ describe('<Feed /> component', () => {
         });
       });
     });
+
+    describe('when items that we fetch for the feed throw an error', () => {
+      const callback = jest.fn();
+
+      beforeAll(() => {
+        global.Honeybadger = { notify: jest.fn() };
+
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
+        fetch.mockRejectOnce();
+        fetch.mockRejectOnce();
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
+        render(<Feed timeFrame="" renderFeed={callback} />);
+      });
+
+      it('should render and return the other feedItems', async () => {
+        await waitFor(() => {
+          const lastCallbackResult =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+          expect(lastCallbackResult.feedItems.length).toEqual(12);
+        });
+      });
+    });
   });
 });
