@@ -114,3 +114,6 @@ doc/
 # spec reports
 /spec/reports
 /junit.xml
+
+/app/assets/builds/*
+!/app/assets/builds/.keep
