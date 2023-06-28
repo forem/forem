@@ -45,6 +45,16 @@ class NotificationDecorator < ApplicationDecorator
     self
   end
 
+  def subscription_for(user)
+    notifiable = if comment_ancestry.present?
+                   { notifiable_type: "Comment", notifiable_id: comment_ancestry }
+                 else
+                   { notifiable_type: "Article", notifiable_id: commentable_id }
+                 end
+
+    user.notification_subscriptions.for_notifiable(**notifiable).first
+  end
+
   # In many cases, we render a partial specific to a notification's notifiable_type
   # (Milestone, Article, Comment, etc.) However, reacting-to-an-article or
   # reacting-to-a-comment will have a misleading "Article" or "Comment" notifiable_type
@@ -77,6 +87,42 @@ class NotificationDecorator < ApplicationDecorator
     type_inquirer.reaction? ||
       (type_inquirer.article? && action_inquirer.reaction?) ||
       (type_inquirer.comment? && action_inquirer.reaction?)
+  end
+
+  def any_cached_likes_for_object?(user)
+    Reaction.cached_any_reactions_for?(mocked_object("article"), user, "like")
+  end
+
+  def article_id
+    @article_id ||= json_data.dig "article", "id"
+  end
+
+  def article_path
+    @article_path ||= json_data.dig "article", "path"
+  end
+
+  def article_title
+    @article_title ||= json_data.dig "article", "title"
+  end
+
+  def article_tag_list
+    @article_tag_list ||= (json_data.dig "article", "cached_tag_list_array") || []
+  end
+
+  def article_updated_at
+    @article_updated_at ||= json_data.dig "article", "updated_at"
+  end
+
+  def comment_ancestry
+    @comment_ancestry ||= json_data.dig "comment", "ancestry"
+  end
+
+  def comment_id
+    @comment_id ||= json_data.dig "comment", "id"
+  end
+
+  def commentable_id
+    @commentable_id ||= json_data.dig "comment", "commentable", "id"
   end
 
   # TODO: This is an odd one - contrast with reactable_type?
