@@ -223,7 +223,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     ];
 
     const results = await Promise.allSettled(promises);
-    const fullfilledPromises = [];
+    const feedItems = [];
     for (const result of results) {
       if (result.status === 'fulfilled') {
         let resolvedValue;
@@ -234,14 +234,15 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
         if (isHTML(result)) {
           resolvedValue = await result.value.text();
         }
-        fullfilledPromises.push(resolvedValue);
+        feedItems.push(resolvedValue);
       } else {
         Honeybadger.notify(result.reason);
         // we push an undefined item because we want to maintain the placement of the deconstructed array.
-        fullfilledPromises.push(undefined);
+        // it gets removed before display when we further organize.
+        feedItems.push(undefined);
       }
     }
-    return fullfilledPromises;
+    return feedItems;
   }
 
   function isJSON(result) {
