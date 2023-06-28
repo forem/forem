@@ -82,6 +82,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       afterRender();
     }
   }, [feedItems.length]);
+
   // /**
   //  * Retrieves the imagePost which will later appear at the top of the feed,
   //  * with a larger main_image than any of the stories or feed elements.
@@ -206,12 +207,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   //  * @returns {Promise} A promise containing the JSON response for the feed data.
   //  */
   async function fetchFeedItems(timeFrame = '', page = 1) {
-    const [
-      feedPostsResponse,
-      feedFirstBillboardResponse,
-      feedSecondBillboardResponse,
-      feedThirdBillboardResponse,
-    ] = await Promise.all([
+    const promises = [
       fetch(`/stories/feed/${timeFrame}?page=${page}`, {
         method: 'GET',
         headers: {
@@ -224,19 +220,36 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       fetch(`/display_ads/feed_first`),
       fetch(`/display_ads/feed_second`),
       fetch(`/display_ads/feed_third`),
-    ]);
-
-    const feedPosts = await feedPostsResponse.json();
-    const feedFirstBillboard = await feedFirstBillboardResponse.text();
-    const feedSecondBillboard = await feedSecondBillboardResponse.text();
-    const feedThirdBillboard = await feedThirdBillboardResponse.text();
-
-    return [
-      feedPosts,
-      feedFirstBillboard,
-      feedSecondBillboard,
-      feedThirdBillboard,
     ];
+
+    const results = await Promise.allSettled(promises);
+    const fullfilledPromises = [];
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        let resolvedValue;
+        if (result.value.headers?.get('content-type')) {
+          if (
+            result.value.headers
+              .get('content-type')
+              .includes('application/json')
+          ) {
+            resolvedValue = await result.value.json();
+          }
+
+          if (result.value.headers.get('content-type').includes('text/html')) {
+            resolvedValue = await result.value.text();
+          }
+        }
+
+        fullfilledPromises.push(resolvedValue);
+      } else {
+        Honeybadger.notify(result.reason);
+        // we push an empty string because we want to maintain the placement of the deconstructed array
+        fullfilledPromises.push('');
+      }
+    }
+
+    return fullfilledPromises;
   }
 
   // /**

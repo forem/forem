@@ -42,10 +42,18 @@ describe('<Feed /> component', () => {
   describe('feedItem organization', () => {
     let callback;
     beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="" renderFeed={callback} />);
@@ -105,10 +113,17 @@ describe('<Feed /> component', () => {
     beforeAll(() => {
       fetch.mockResponseOnce(
         JSON.stringify(feedPostsWherePinnedAndImagePostsSame),
+        { headers: { 'content-type': 'application/json' } },
       );
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="" renderFeed={callback} />);
@@ -131,10 +146,18 @@ describe('<Feed /> component', () => {
   describe("when the timeframe prop is 'latest'", () => {
     let callback;
     beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="latest" renderFeed={callback} />);
@@ -159,10 +182,16 @@ describe('<Feed /> component', () => {
     describe("when there isn't a feed_second billboard", () => {
       let callback;
       beforeAll(() => {
-        fetch.mockResponseOnce(JSON.stringify(feedPosts));
-        fetch.mockResponseOnce(firstBillboard);
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
+        fetch.mockResponseOnce(firstBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
         fetch.mockResponseOnce(undefined);
-        fetch.mockResponseOnce(thirdBillboard);
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
 
         callback = jest.fn();
         render(<Feed timeFrame="" renderFeed={callback} />);
@@ -191,10 +220,14 @@ describe('<Feed /> component', () => {
     describe("when there isn't a feed_first or feed_second billboard", () => {
       let callback;
       beforeAll(() => {
-        fetch.mockResponseOnce(JSON.stringify(feedPosts));
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
         fetch.mockResponseOnce(undefined);
         fetch.mockResponseOnce(undefined);
-        fetch.mockResponseOnce(thirdBillboard);
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
 
         callback = jest.fn();
         render(<Feed timeFrame="" renderFeed={callback} />);
