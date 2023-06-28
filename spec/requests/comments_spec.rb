@@ -327,57 +327,6 @@ RSpec.describe "Comments" do
     end
   end
 
-  describe "POST /comments/subscribe" do
-    before do
-      sign_in user
-    end
-
-    it "calls the Subscribe service object with the correct parameters" do
-      params = { comment: { comment_id: "1", article_id: "2" } }
-      permitted_params = ActionController::Parameters.new(params)
-        .require(:comment)
-        .permit(:comment_id, :article_id)
-      allow(NotificationSubscriptions::Subscribe).to receive(:call)
-        .with(user, permitted_params)
-        .and_return({})
-
-      post "/comments/subscribe",
-           params: params,
-           headers: { HTTP_ACCEPT: "application/json" }
-    end
-
-    it "renders the JSON response with the correct status" do
-      allow(NotificationSubscriptions::Subscribe).to receive(:call).and_return({ updated: true })
-
-      post "/comments/subscribe", params: { comment: { comment_id: 1, article_id: 2 } }
-
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to eq("{\"updated\":true}")
-    end
-  end
-
-  describe "POST /subscription/unsubscribe" do
-    before do
-      sign_in user
-    end
-
-    it "calls the Unsubscribe service object with the correct parameters" do
-      params = { comment: { subscription_id: "1" } }
-      permitted_params = ActionController::Parameters.new(params)
-        .require(:comment)
-        .permit(:subscription_id)
-      allow(NotificationSubscriptions::Unsubscribe).to receive(:call).with(user, permitted_params).and_return({})
-      post "/subscription/unsubscribe", params: params
-    end
-
-    it "renders the JSON response with the correct status" do
-      allow(NotificationSubscriptions::Unsubscribe).to receive(:call).and_return({ destroyed: true })
-      post "/subscription/unsubscribe", params: { comment: { subscription_id: 1 } }
-      expect(response).to have_http_status(:ok)
-      expect(response.body).to eq("{\"destroyed\":true}")
-    end
-  end
-
   describe "POST /comments" do
     let(:base_comment_params) do
       {

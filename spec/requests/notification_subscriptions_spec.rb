@@ -170,4 +170,41 @@ RSpec.describe "NotificationSubscriptions" do
       end
     end
   end
+
+  describe "POST /comments/subscribe" do
+    before do
+      sign_in user
+
+      allow(NotificationSubscriptions::Subscribe).to receive(:call)
+        .and_return({ updated: true })
+
+      post "/comments/subscribe", params: { comment_id: 1, article_id: 2 }
+    end
+
+    it "calls the Subscribe service object with the correct parameters" do
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq("{\"updated\":true}")
+      expect(NotificationSubscriptions::Subscribe).to \
+        have_received(:call)
+        .with(user, comment_id: "1", article_id: "2")
+    end
+  end
+
+  describe "POST /subscription/unsubscribe" do
+    before do
+      sign_in user
+
+      allow(NotificationSubscriptions::Unsubscribe).to receive(:call)
+        .and_return({ destroyed: true })
+
+      post "/subscription/unsubscribe", params: { subscription_id: 1 }
+    end
+
+    it "calls the Unsubscribe service object with the correct parameters" do
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq("{\"destroyed\":true}")
+      expect(NotificationSubscriptions::Unsubscribe).to \
+        have_received(:call).with(user, "1")
+    end
+  end
 end
