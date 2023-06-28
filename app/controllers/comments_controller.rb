@@ -3,7 +3,6 @@ class CommentsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
-  skip_after_action :verify_authorized, only: %i[subscribe unsubscribe]
   after_action only: %i[moderator_create admin_delete] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
@@ -201,22 +200,6 @@ class CommentsController < ApplicationController
     respond_to do |format|
       format.json { render json: { processed_html: processed_html }, status: :ok }
     end
-  end
-
-  def subscribe
-    authorize :comment, :subscribe?
-    permitted_params = permitted_attributes(Comment)
-    subscriber = NotificationSubscriptions::Subscribe.call(current_user, permitted_params)
-
-    render json: subscriber, status: :ok
-  end
-
-  def unsubscribe
-    authorize :comment, :unsubscribe?
-    permitted_params = permitted_attributes(Comment)
-    unsubscriber = NotificationSubscriptions::Unsubscribe.call(current_user, permitted_params)
-
-    render json: unsubscriber, status: :ok
   end
 
   def settings

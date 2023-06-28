@@ -237,8 +237,8 @@ Rails.application.routes.draw do
     get "/search", to: "stories/articles_search#index"
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
-    post "comments/subscribe", to: "comments#subscribe"
-    post "subscription/unsubscribe", to: "comments#unsubscribe"
+    post "comments/subscribe", to: "notification_subscriptions#create"
+    post "subscription/unsubscribe", to: "notification_subscriptions#destroy"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about", to: "pages#about"
