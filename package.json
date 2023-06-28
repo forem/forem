@@ -128,7 +128,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "3",
-    "esbuild": "^0.17.19",
+    "esbuild": "^0.18.10",
     "file-loader": "^6.2.0",
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",
