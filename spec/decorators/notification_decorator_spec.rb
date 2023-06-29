@@ -154,6 +154,18 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(decorated.article_tag_list).to eq([])
       expect(decorated.article_updated_at).to be_nil
     end
+
+    it "responds to comment and commentable fields (even if blank)" do
+      expect(decorated.comment_id).to be_blank
+      expect(decorated.commentable_article_id).to be_blank
+      expect(decorated.comment_ancestry).to be_blank
+      expect(decorated.comment_last_ancestor).to eq({})
+      expect(decorated.comment_path).to be_blank
+      expect(decorated.comment_depth).to eq(-1)
+      expect(decorated.comment_processed_html).to be_blank
+      expect(decorated.comment_updated_at).to be_blank
+      expect(decorated.commentable_class_name).to be_blank
+    end
   end
 
   describe "reaction to a comment" do
@@ -226,6 +238,18 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(decorated.article_title).to be_nil
       expect(decorated.article_tag_list).to eq([])
       expect(decorated.article_updated_at).to be_nil
+    end
+
+    it "responds to comment and commentable fields (even if blank)" do
+      expect(decorated.comment_id).to be_blank
+      expect(decorated.commentable_article_id).to be_blank
+      expect(decorated.comment_ancestry).to be_blank
+      expect(decorated.comment_last_ancestor).to eq({})
+      expect(decorated.comment_path).to be_blank
+      expect(decorated.comment_depth).to eq(-1)
+      expect(decorated.comment_processed_html).to be_blank
+      expect(decorated.comment_updated_at).to be_blank
+      expect(decorated.commentable_class_name).to be_blank
     end
   end
 
@@ -303,6 +327,216 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.article_title).to eq("Article Here")
         expect(decorated.article_tag_list).to eq([])
         expect(decorated.article_updated_at).to eq("2023-06-02T06:55:53.406Z")
+      end
+
+      it "responds to comment and commentable fields (even if blank)" do
+        expect(decorated.comment_id).to be_blank
+        expect(decorated.commentable_article_id).to be_blank
+        expect(decorated.comment_ancestry).to be_blank
+        expect(decorated.comment_last_ancestor).to eq({})
+        expect(decorated.comment_path).to be_blank
+        expect(decorated.comment_depth).to eq(-1)
+        expect(decorated.comment_processed_html).to be_blank
+        expect(decorated.comment_updated_at).to be_blank
+        expect(decorated.commentable_class_name).to be_blank
+      end
+    end
+  end
+
+  describe "notification relating to a comment without ancestry" do
+    # TODO: refactor notification specs should probably have baseline shared
+    # examples that apply in multiple cases?
+    subject(:decorated) { notification.decorate }
+
+    let(:comment_id) { 2 }
+    let(:article_id) { 3 }
+
+    let!(:notification) do
+      build(:notification,
+            notifiable_id: comment_id,
+            notifiable_type: "Comment",
+            action: nil,
+            json_data: {
+              "user" => {
+                              "id" => 1,
+                            "name" => "A. User",
+                            "path" => "/a_user",
+                           "class" => { "name" => "User" },
+                        "username" => "aleta_macgyver",
+                      "created_at" => "2022-08-08T14:01:55.666Z",
+                  "comments_count" => 5,
+                "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
+              },
+              "comment" => {
+                            "id" => comment_id,
+                          "path" => "/a_user/comment/2",
+                         "class" => { "name" => "Comment" },
+                         "depth" => 0,
+                      "ancestry" => nil,
+                     "ancestors" => [],
+                    "created_at" => "2023-06-09T13:03:21.465Z",
+                    "updated_at" => "2023-06-09T13:03:21.594Z",
+                   "commentable" => {
+                                         "id" => article_id,
+                                       "path" => "/org5997/some-article",
+                                      "class" => { "name" => "Article" },
+                                      "title" => "Some Article"
+                                    },
+                "processed_html" => "<p>Comment here</p>\n\n"
+              }
+            })
+    end
+
+    context "when a user may have a subscription" do
+      let(:subscriber) { build :user }
+      let(:non_subscriber) { build :user }
+      let(:mock_subscriptions) { class_double NotificationSubscription }
+      let(:mock_non_subscriptions) { class_double NotificationSubscription }
+
+      before do
+        allow(mock_subscriptions).to receive(:for_notifiable)
+          .and_return([:found])
+        allow(mock_non_subscriptions).to receive(:for_notifiable)
+          .and_return([])
+        allow(subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_subscriptions)
+        allow(non_subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_non_subscriptions)
+      end
+
+      it "can find the user's article subscription" do
+        expect(decorated.subscription_for(subscriber)).to \
+          eq(:found)
+        expect(mock_subscriptions).to have_received(:for_notifiable)
+          .with(notifiable_type: "Comment", notifiable_id: comment_id)
+          .with(notifiable_type: "Article", notifiable_id: article_id)
+      end
+
+      it "responds to article fields (even if blank)" do
+        expect(decorated.article_id).to be_blank
+        expect(decorated.article_path).to be_blank
+        expect(decorated.article_title).to be_blank
+        expect(decorated.article_tag_list).to eq([])
+        expect(decorated.article_updated_at).to be_blank
+      end
+
+      it "can find comment and commentable's id, path, depth, html, etc" do
+        expect(decorated.comment_id).to eq(comment_id)
+        expect(decorated.commentable_article_id).to eq(article_id)
+        expect(decorated.comment_ancestry).to be_blank
+        expect(decorated.comment_last_ancestor).to eq({})
+        expect(decorated.comment_path).to eq("/a_user/comment/2")
+        expect(decorated.comment_depth).to eq(0)
+        expect(decorated.comment_processed_html).to eq("<p>Comment here</p>\n\n")
+        expect(decorated.comment_updated_at).to eq("2023-06-09T13:03:21.594Z")
+        expect(decorated.commentable_class_name).to eq("Article")
+      end
+    end
+  end
+
+  describe "notification relating to a comment **with** ancestry" do
+    # TODO: refactor notification specs should probably have baseline shared
+    # examples that apply in multiple cases?
+    subject(:decorated) { notification.decorate }
+
+    let(:comment_id) { 2 }
+    let(:ancestor_id) { 4 }
+    let(:article_id) { 3 }
+
+    let!(:notification) do
+      build(:notification,
+            notifiable_id: comment_id,
+            notifiable_type: "Comment",
+            action: nil,
+            json_data: {
+               "user" => {
+                              "id" => 1,
+                            "name" => "A. User",
+                            "path" => "/a_user",
+                           "class" => { "name" => "User" },
+                        "username" => "a_user",
+                      "created_at" => "2022-08-08T14:01:55.666Z",
+                  "comments_count" => 4,
+                "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
+            },
+            "comment" => {
+                            "id" => comment_id,
+                          "path" => "/a_user/comment/#{comment_id}",
+                         "class" => { "name" => "Comment" },
+                         "depth" => 1,
+                      "ancestry" => ancestor_id.to_s,
+                     "ancestors" => [
+                       {
+                         "id" => ancestor_id,
+                         "path" => "/a_differentuser/comment/#{ancestor_id}",
+                         "user" => {
+                           "name" => "A. Differentuser",
+                           "username" => "a_differentuser"
+                         },
+                         "depth" => 0,
+                         "title" => "Top comment",
+                         "ancestry" => nil
+                       }
+                     ],
+                    "created_at" => "2023-06-09T12:56:56.572Z",
+                    "updated_at" => "2023-06-09T12:56:56.572Z",
+                    "commentable" => {
+                      "id" => article_id,
+                      "path" => "/org5997/some-article",
+                    "class" => { "name" => "Article" },
+                    "title" => "Some Article"
+                },
+                "processed_html" => "<p>Not a top comment.</p>\n\n"
+            }
+        })
+    end
+
+    context "when a user may have a subscription" do
+      let(:subscriber) { build :user }
+      let(:non_subscriber) { build :user }
+      let(:mock_subscriptions) { class_double NotificationSubscription }
+      let(:mock_non_subscriptions) { class_double NotificationSubscription }
+
+      before do
+        allow(mock_subscriptions).to receive(:for_notifiable)
+          .and_return([:found])
+        allow(mock_non_subscriptions).to receive(:for_notifiable)
+          .and_return([])
+        allow(subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_subscriptions)
+        allow(non_subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_non_subscriptions)
+      end
+
+      it "can find the user's article subscription" do
+        expect(decorated.subscription_for(subscriber)).to \
+          eq(:found)
+        expect(mock_subscriptions).to have_received(:for_notifiable)
+          .with(notifiable_type: "Comment", notifiable_id: ancestor_id.to_s) # ActiveRecord will work with either, but mock needs to be specific
+      end
+
+      it "responds to article fields (even if blank)" do
+        expect(decorated.article_id).to be_blank
+        expect(decorated.article_path).to be_blank
+        expect(decorated.article_title).to be_blank
+        expect(decorated.article_tag_list).to eq([])
+        expect(decorated.article_updated_at).to be_blank
+      end
+
+      it "can find comment and commentable's id, path, depth, html, etc" do
+        expect(decorated.comment_id).to eq(comment_id)
+        expect(decorated.commentable_article_id).to eq(article_id)
+        expect(decorated.comment_ancestry).to eq(ancestor_id.to_s) # is this always to_s ?
+        expect(decorated.comment_last_ancestor).to match(a_hash_including({
+            "id" => ancestor_id,
+            "path" => "/a_differentuser/comment/#{ancestor_id}",
+            "title" => "Top comment"
+          }))
+        expect(decorated.comment_path).to eq("/a_user/comment/2")
+        expect(decorated.comment_depth).to eq(1)
+        expect(decorated.comment_processed_html).to eq("<p>Not a top comment.</p>\n\n")
+        expect(decorated.comment_updated_at).to eq("2023-06-09T12:56:56.572Z")
+        expect(decorated.commentable_class_name).to eq("Article")
       end
     end
   end
