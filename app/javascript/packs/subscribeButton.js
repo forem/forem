@@ -5,15 +5,12 @@ export function addButtonSubscribeText(button, config) {
   let pressed = '';
   let mobileLabel = '';
 
-
-  const { subscribed_to, comment_id, ancestry } = button.dataset;
+  const { subscribed_to } = button.dataset;
   let noun = '';
   if (subscribed_to) {
-    noun = (subscribed_to == 'comment') ? 'thread' : 'comments';
-  } else if (comment_id && ancestry) {
-    noun = 'thread'
+    noun = subscribed_to == 'comment' ? 'thread' : 'comments';
   } else {
-    noun = 'comments'
+    noun = 'comments';
   }
 
   // Find the <span> element within the button
@@ -68,14 +65,14 @@ async function handleSubscribeButtonClick({ target }) {
   let payload;
   let endpoint;
 
-  if (target.dataset.subscription_id != "") {
+  if (target.dataset.subscription_id != '') {
     payload = {
       subscription_id: target.dataset.subscription_id,
     };
     endpoint = 'comment-unsubscribe';
-  } else if (target.dataset.ancestry && (target.dataset.ancestry != "")){
+  } else if (target.dataset.ancestry && target.dataset.ancestry != '') {
     payload = {
-      comment_id: target.dataset.ancestry
+      comment_id: target.dataset.ancestry,
     };
     endpoint = 'comment-subscribe';
   } else {
@@ -85,7 +82,7 @@ async function handleSubscribeButtonClick({ target }) {
     endpoint = 'comment-subscribe';
   }
 
-  payload = JSON.stringify(payload)
+  payload = JSON.stringify(payload);
 
   getCsrfToken()
     .then(await sendFetch(endpoint, payload))
@@ -94,22 +91,23 @@ async function handleSubscribeButtonClick({ target }) {
         const res = await response.json();
 
         if (res.destroyed) {
-          let matchingButtons = document.querySelectorAll(`button[data-subscription_id='${target.dataset.subscription_id}']`);
+          const matchingButtons = document.querySelectorAll(
+            `button[data-subscription_id='${target.dataset.subscription_id}']`,
+          );
           for (let i = 0; i < matchingButtons.length; i++) {
-            let button = matchingButtons[i];
+            const button = matchingButtons[i];
             // Do this *before* changing subscription_mode
             if (button != target) {
-              optimisticallyUpdateButtonUI(button)
-              addButtonSubscribeText(button)
+              optimisticallyUpdateButtonUI(button);
             }
-            button.dataset.subscription_id = "";
-            button.dataset.subscription_mode = "";
+            button.dataset.subscription_id = '';
+            button.dataset.subscription_mode = '';
           }
         } else if (res.subscription) {
           target.dataset.subscription_id = res.subscription.id;
           target.dataset.subscription_mode = res.subscription.config;
         } else {
-          throw(`Problem (un)subscribing: ${JSON.stringify(res)}`)
+          throw `Problem (un)subscribing: ${JSON.stringify(res)}`;
         }
       }
     });
