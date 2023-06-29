@@ -2,6 +2,8 @@ module NotificationSubscriptions
   class Subscribe
     attr_reader :current_user, :comment_id, :article_id
 
+    # Client-side needs this to be idempotent-ish, return existing subscription instead
+    # of raising uniqueness exception
     def self.call(...)
       new(...).call
     end
@@ -12,9 +14,12 @@ module NotificationSubscriptions
       @comment_id = comment_id
     end
 
+    # Client-side needs this to be idempotent-ish, return existing subscription instead
+    # of raising uniqueness exception
     def call
-      raise ArgumentError.new("missing notifiable") if notifiable.blank?
-      subscription = NotificationSubscription.new(
+      raise ArgumentError, "missing notifiable" if notifiable.blank?
+
+      subscription = NotificationSubscription.find_or_initialize_by(
         user: current_user,
         config: subscription_config,
         notifiable: notifiable,

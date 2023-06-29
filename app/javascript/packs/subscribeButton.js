@@ -5,6 +5,7 @@ export function addButtonSubscribeText(button, config) {
   let pressed = '';
   let mobileLabel = '';
 
+
   const { subscribed_to, comment_id, ancestry } = button.dataset;
   let noun = '';
   if (subscribed_to) {
@@ -18,7 +19,7 @@ export function addButtonSubscribeText(button, config) {
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
-  switch (config) {
+  switch (config || button.dataset.subscription_mode) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
@@ -93,8 +94,17 @@ async function handleSubscribeButtonClick({ target }) {
         const res = await response.json();
 
         if (res.destroyed) {
-          target.dataset.subscription_id = "";
-          target.dataset.subscription_mode = "";
+          let matchingButtons = document.querySelectorAll(`button[data-subscription_id='${target.dataset.subscription_id}']`);
+          for (let i = 0; i < matchingButtons.length; i++) {
+            let button = matchingButtons[i];
+            // Do this *before* changing subscription_mode
+            if (button != target) {
+              optimisticallyUpdateButtonUI(button)
+              addButtonSubscribeText(button)
+            }
+            button.dataset.subscription_id = "";
+            button.dataset.subscription_mode = "";
+          }
         } else if (res.subscription) {
           target.dataset.subscription_id = res.subscription.id;
           target.dataset.subscription_mode = res.subscription.config;
@@ -116,7 +126,7 @@ export function initializeSubscribeButton() {
     button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
 
-    addButtonSubscribeText(button, button.dataset.subscription_mode);
+    addButtonSubscribeText(button);
   });
 }
 

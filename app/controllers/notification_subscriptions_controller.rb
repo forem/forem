@@ -10,8 +10,11 @@ class NotificationSubscriptionsController < ApplicationController
     end
   end
 
+  # Client-side needs this to be idempotent-ish, return existing subscription instead
+  # of raising uniqueness exception
   def create
     authorize :comment, :subscribe?
+
     subscriber = NotificationSubscriptions::Subscribe.call(current_user,
                                                            article_id: params[:article_id].presence,
                                                            comment_id: params[:comment_id].presence)
