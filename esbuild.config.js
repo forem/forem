@@ -3,6 +3,8 @@
 
 const glob = require('glob-all');
 const esbuild = require('esbuild');
+const railsEnv = process.env.RAILS_ENV || 'development';
+const optimize = railsEnv !== 'development';
 
 esbuild
   .build({
@@ -12,6 +14,7 @@ esbuild
     ]),
     bundle: true,
     sourcemap: true,
+    minify: optimize,
     // assetNames: '[name]-[hash].digested',
     // chunkNames: '[name]-[hash].digested',
     logLevel: 'info',
