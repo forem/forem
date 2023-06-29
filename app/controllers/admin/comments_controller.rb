@@ -1,5 +1,7 @@
 module Admin
   class CommentsController < Admin::ApplicationController
+    around_action :skip_bullet, if: -> { defined?(Bullet) }
+
     layout "admin"
 
     def index
@@ -27,6 +29,14 @@ module Admin
 
     def authorize_admin
       authorize Comment, :access?, policy_class: InternalPolicy
+    end
+
+    def skip_bullet
+      previous_value = Bullet.enable?
+      Bullet.enable = false
+      yield
+    ensure
+      Bullet.enable = previous_value
     end
   end
 end
