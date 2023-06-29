@@ -128,28 +128,6 @@ export function initializeSubscribeButton() {
   });
 }
 
-initializeSubscribeButton();
-
 // Some subscribe buttons are added to the DOM dynamically.
-// So we listen for any new additions to be fetched
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      initializeSubscribeButton();
-    }
-  });
-});
-
-// Any element containing the given data-attribute will be monitored for new follow buttons
-document
-  .querySelectorAll('[data-subscribe-button-container]')
-  .forEach((subscribeButtonContainer) => {
-    observer.observe(subscribeButtonContainer, {
-      childList: true,
-      attributes: true,
-    });
-  });
-
-window.addEventListener('beforeunload', () => {
-  observer.disconnect();
-});
+// They will need to call this — see initializeNotifications > initPagination
+initializeSubscribeButton();
