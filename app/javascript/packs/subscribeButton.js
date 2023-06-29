@@ -5,7 +5,7 @@ export function addButtonSubscribeText(button, config) {
   let pressed = '';
   let mobileLabel = '';
 
-  const { subscribed_to } = button.dataset;
+  const { subscribed_to, subscription_mode } = button.dataset;
   let noun = '';
   if (subscribed_to) {
     noun = subscribed_to == 'comment' ? 'thread' : 'comments';
@@ -16,7 +16,7 @@ export function addButtonSubscribeText(button, config) {
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
-  switch (config || button.dataset.subscription_mode) {
+  switch (config || subscription_mode) {
     case 'all_comments':
       label = `Subscribed to ${noun}`;
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
