@@ -18,7 +18,7 @@ esbuild
     // assetNames: '[name]-[hash].digested',
     // chunkNames: '[name]-[hash].digested',
     logLevel: 'info',
-    // splitting: true,
+    splitting: true,
     outdir: 'app/assets/builds',
     publicPath: 'assets',
     loader: { '.js': 'jsx', '.erb': 'file', '.toml': 'file', '.svg': 'file' },
