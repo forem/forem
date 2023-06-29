@@ -2,18 +2,7 @@
 <%= paginate @comments %>
 
 <div class="flex flex-col gap-2">
-  <% @comments.each do |comment| %>
-    <%= render partial: "comment", locals: { comment: comment, is_individual_comment: false } %>
-  <% end %>
+  <%= render partial: "comment", collection: @comments, locals: { is_individual_comment: false } %>
 </div>
 
 <%= paginate @comments %>
-
-<script>
-  window.addEventListener('load', function() {
-    document.querySelector("form").addEventListener("submit", function(e) {
-      this.classList.toggle("hidden");
-      this.classList.toggle("inline");
-    });
-  });
-</script>
