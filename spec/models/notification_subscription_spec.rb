@@ -45,6 +45,28 @@ RSpec.describe NotificationSubscription do
     end
   end
 
+  describe ".for_notifiable" do
+    before do
+      subscription.save!
+    end
+
+    it "can find subscription if given a notifiable object" do
+      results = described_class.for_notifiable(subscription.notifiable)
+      expect(results).to contain_exactly(subscription)
+    end
+
+    it "can find subscription if given id & type" do
+      bad_results1 = described_class.for_notifiable(notifiable_type: "Article")
+      expect(bad_results1).to eq([])
+
+      bad_results2 = described_class.for_notifiable(notifiable_id: article.id)
+      expect(bad_results2).to eq([])
+
+      results = described_class.for_notifiable(notifiable_type: "Article", notifiable_id: article.id)
+      expect(results).to contain_exactly(subscription)
+    end
+  end
+
   it "update_notification_subscriptions calls UpdateWorker later" do
     allow(NotificationSubscriptions::UpdateWorker).to \
       receive(:perform_async)
