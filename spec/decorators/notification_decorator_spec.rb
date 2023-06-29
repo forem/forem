@@ -146,6 +146,14 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(decorated.user_path).to be_nil
       expect(decorated.user_profile_image_90).to be_nil
     end
+
+    it "responds to article fields (even if blank)" do
+      expect(decorated.article_id).to be_nil
+      expect(decorated.article_path).to be_nil
+      expect(decorated.article_title).to be_nil
+      expect(decorated.article_tag_list).to eq([])
+      expect(decorated.article_updated_at).to be_nil
+    end
   end
 
   describe "reaction to a comment" do
@@ -210,6 +218,92 @@ RSpec.describe NotificationDecorator, type: :decorator do
       expect(decorated.user_name).to eq("Commentator")
       expect(decorated.user_path).to eq("path/to/user")
       expect(decorated.user_profile_image_90).to eq("path/to/profile/image")
+    end
+
+    it "responds to article fields (even if blank)" do
+      expect(decorated.article_id).to be_nil
+      expect(decorated.article_path).to be_nil
+      expect(decorated.article_title).to be_nil
+      expect(decorated.article_tag_list).to eq([])
+      expect(decorated.article_updated_at).to be_nil
+    end
+  end
+
+  describe "notification relating to an article" do
+    # TODO: refactor notification specs should probably have baseline shared
+    # examples that apply in multiple cases?
+    subject(:decorated) { notification.decorate }
+
+    let(:article_id) { 2 }
+
+    let!(:notification) do
+      build(:notification,
+            notifiable_id: article_id,
+            notifiable_type: "Article",
+            action: "Moderation",
+            json_data: {
+                "user" => {
+                                    "id" => 1,
+                                  "name" => "A. User",
+                                  "path" => "/a_user",
+                                 "class" => { "name" => "User" },
+                              "username" => "a_user",
+                            "created_at" => "2022-06-03T18:43:50.465Z",
+                        "comments_count" => 1,
+                      "profile_image_90" => "/uploads/user/profile_image/1/e78aa295.png"
+                },
+                "article" => {
+                                         "id" => article_id,
+                                       "path" => "/a_user/article-here",
+                                      "class" => { "name" => "Article" },
+                                      "title" => "Article Here",
+                                 "updated_at" => "2023-06-02T06:55:53.406Z",
+                      "cached_tag_list_array" => [],
+                },
+                "article_user" => {
+                                    "id" => 3,
+                                  "name" => "A. Differentuser",
+                                  "path" => "/a_differentuser",
+                                 "class" => { "name" => "User" },
+                              "username" => "a_differentuser",
+                            "created_at" => "2022-08-08T14:01:55.666Z",
+                        "comments_count" => 3,
+                      "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
+                }
+            })
+    end
+
+    context "when a user may have a subscription" do
+      let(:subscriber) { build :user }
+      let(:non_subscriber) { build :user }
+      let(:mock_subscriptions) { class_double NotificationSubscription }
+      let(:mock_non_subscriptions) { class_double NotificationSubscription }
+
+      before do
+        allow(mock_subscriptions).to receive(:for_notifiable)
+          .and_return([:found])
+        allow(mock_non_subscriptions).to receive(:for_notifiable)
+          .and_return([])
+        allow(subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_subscriptions)
+        allow(non_subscriber).to receive(:notification_subscriptions)
+          .and_return(mock_non_subscriptions)
+      end
+
+      it "can find the user's article subscription" do
+        expect(decorated.subscription_for(subscriber)).to \
+          eq(:found)
+        expect(mock_subscriptions).to have_received(:for_notifiable)
+          .with(notifiable_type: "Article", notifiable_id: article_id)
+      end
+
+      it "can find article's id, path title, tag_list and updated_at" do
+        expect(decorated.article_id).to eq(article_id)
+        expect(decorated.article_path).to eq("/a_user/article-here")
+        expect(decorated.article_title).to eq("Article Here")
+        expect(decorated.article_tag_list).to eq([])
+        expect(decorated.article_updated_at).to eq("2023-06-02T06:55:53.406Z")
+      end
     end
   end
 end
