@@ -79,7 +79,7 @@
               data-subscription_id="<%= subscription&.id %>"
               data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
               data-subscription_mode="<%= subscription&.config %>"
-              data-article_id="<%= notification.article_id %>"
+              data-article_id="<%= notification.article_id || notification.commentable_article_id %>"
               data-comment_id="<%= notification.comment_id %>"
               data-ancestry="<%= notification.comment_ancestry %>">
               <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>

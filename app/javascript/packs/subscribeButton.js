@@ -72,10 +72,9 @@ async function handleSubscribeButtonClick({ target }) {
       subscription_id: target.dataset.subscription_id,
     };
     endpoint = 'comment-unsubscribe';
-  } else if (target.dataset.comment_id && (target.dataset.comment_id != "")){
+  } else if (target.dataset.ancestry && (target.dataset.ancestry != "")){
     payload = {
-      comment_id: target.dataset.comment_id,
-      article_id: target.dataset.article_id,
+      comment_id: target.dataset.ancestry
     };
     endpoint = 'comment-subscribe';
   } else {

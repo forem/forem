@@ -13,6 +13,7 @@ module NotificationSubscriptions
     end
 
     def call
+      raise ArgumentError.new("missing notifiable") if notifiable.blank?
       subscription = NotificationSubscription.new(
         user: current_user,
         config: subscription_config,
