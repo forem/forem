@@ -45,5 +45,16 @@ RSpec.describe NotificationSubscription do
     end
   end
 
-  pending "update_notification_subscriptions calls UpdateWorker later"
+  it "update_notification_subscriptions calls UpdateWorker later" do
+    allow(NotificationSubscriptions::UpdateWorker).to \
+      receive(:perform_async)
+
+    notifiable = build(:article, id: 123)
+
+    described_class.update_notification_subscriptions(notifiable)
+
+    expect(NotificationSubscriptions::UpdateWorker).to \
+      have_received(:perform_async)
+      .with(123, "Article")
+  end
 end
