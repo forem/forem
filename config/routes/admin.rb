@@ -82,7 +82,7 @@ namespace :admin do
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-    resources :comments, only: [:index]
+    resources :comments, only: %i[index show]
     resources :organizations, only: %i[index show] do
       member do
         patch "update_org_credits"
