@@ -1,76 +1,121 @@
-FROM quay.io/forem/ruby:3.0.2 as base
+FROM ghcr.io/forem/ruby:3.0.2@sha256:04c945460e5999c0483b119074597dba62b863f5f5ea3c98bff4169e0d2f990b as base
 
 FROM base as builder
 
+# This is provided by BuildKit
+ARG TARGETARCH
+
 USER root
 
-RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
-    dnf install --setopt install_weak_deps=false -y \
-    ImageMagick iproute jemalloc less libcurl libcurl-devel \
-    libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
-    postgresql postgresql-devel tzdata yarn && \
-    dnf -y clean all && \
-    rm -rf /var/cache/yum
+# pkg-config,
+# libpixman-1-dev,
+# libcairo2-dev,
+# libpango1.0-dev
+#
+# are needed only on arm64: some nodejs dependency doesn't provide
+# pre-built binaries for that arch, and so falls back to building
+# from source, which then requires a few extra packages installed.
+#
+# Since we wipe out node_modules as part of this image after calling
+# the bundler, we don't need these headers (or their sofile counterparts)
+# in any of the other build stages.
+RUN apt update && \
+    apt install -y \
+        build-essential \
+        libcurl4-openssl-dev \
+        libffi-dev \
+        libxml2-dev \
+        libxslt-dev \
+        libpcre3-dev \
+        libpq-dev \
+        pkg-config \
+        libpixman-1-dev \
+        libcairo2-dev \
+        libpango1.0-dev \
+        && \
+    apt clean
 
-ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=true BUNDLE_SILENCE_DEPRECATIONS=true
+ENV BUNDLER_VERSION=2.2.22 \
+    BUNDLE_SILENCE_ROOT_WARNING=true \
+    BUNDLE_SILENCE_DEPRECATIONS=true
+
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
-    LD_PRELOAD=/usr/lib64/libjemalloc.so.2
+    LD_PRELOAD=libjemalloc.so.2
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     groupadd -g "${APP_GID}" "${APP_USER}" && \
-    adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"
+    adduser --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
 
-ENV DOCKERIZE_VERSION=v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
-    && rm dockerize-linux-amd64-"${DOCKERIZE_VERSION}".tar.gz \
+ENV DOCKERIZE_VERSION=v0.7.0
+RUN curl -fsSLO https://github.com/jwilder/dockerize/releases/download/"${DOCKERIZE_VERSION}"/dockerize-linux-${TARGETARCH}-"${DOCKERIZE_VERSION}".tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-${TARGETARCH}-"${DOCKERIZE_VERSION}".tar.gz \
+    && rm dockerize-linux-${TARGETARCH}-"${DOCKERIZE_VERSION}".tar.gz \
     && chown root:root /usr/local/bin/dockerize
 
+USER "${APP_USER}"
 WORKDIR "${APP_HOME}"
 
-COPY ./.ruby-version "${APP_HOME}"/
-COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"/
-COPY ./vendor/cache "${APP_HOME}"/vendor/cache
+COPY --chown=${APP_UID}:${APP_GID} ./.ruby-version "${APP_HOME}"/
+COPY --chown=${APP_UID}:${APP_GID} ./Gemfile ./Gemfile.lock "${APP_HOME}"/
+COPY --chown=${APP_UID}:${APP_GID} ./vendor/cache "${APP_HOME}"/vendor/cache
 
-RUN bundle config --local build.sassc --disable-march-tune-native && \
-    BUNDLE_WITHOUT="development:test" bundle install --deployment --jobs 4 --retry 5 && \
+# Have to reset APP_CONFIG, which appears to be set by upstream images, to
+# avoid permission errors in the development/test images (which run bundle
+# as a user and require write access to the config file for setting things
+# like BUNDLE_WITHOUT (a value that is cached by root here in this builder
+# layer, see https://michaelheap.com/bundler-ignoring-bundle-without/))
+ENV BUNDLE_APP_CONFIG="${APP_HOME}/.bundle"
+RUN mkdir -p "${BUNDLE_APP_CONFIG}" && \
+    touch "${BUNDLE_APP_CONFIG}/config" && \
+    chown -R "${APP_UID}:${APP_GID}" "${BUNDLE_APP_CONFIG}" && \
+    bundle config --local build.sassc --disable-march-tune-native && \
+    bundle config --local without development:test && \
+    BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
-COPY . "${APP_HOME}"
+COPY --chown=${APP_UID}:${APP_GID} . "${APP_HOME}"
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
-RUN NODE_ENV=production yarn install
+# While it's relatively rare for bare metal builds to hit the default
+# timeout, QEMU-based ones (as is the case with Docker BuildX for
+# cross-compiling) quite often can. This increased timeout should help
+# reduce false-negatives when building multiarch images.
+RUN echo 'network-timeout 300000' >> ~/.yarnrc
 
-RUN RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile
+# This is one giant step now because previously, removing node_modules to save
+# layer space was done in a later step, which is invalid in at least some
+# Docker storage drivers (resulting in Directory Not Empty errors).
+RUN NODE_ENV=production yarn install && \
+    RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile && \
+    rm -rf node_modules
+
+# This used to be calculated within the container build, but we then tried
+# to rm -rf the .git that was copied in, which isn't valid (removing
+# directories created in lower layers of an image isn't a thing (at least
+# with the overlayfs drivers). Instead, we'll pass this in over CLI when
+# building images (eg. in CI), but leave a default value for callers who don't
+# override (perhaps docker-compose). This isn't perfect, but it'll do for now.
+ARG VCS_REF=unspecified
 
 RUN echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') >> "${APP_HOME}"/FOREM_BUILD_DATE && \
-    echo $(git rev-parse --short HEAD) >> "${APP_HOME}"/FOREM_BUILD_SHA && \
-    rm -rf "${APP_HOME}"/.git/
-
-RUN rm -rf node_modules vendor/assets spec
+    echo "${VCS_REF}" >> "${APP_HOME}"/FOREM_BUILD_SHA
 
 ## Production
 FROM base as production
 
 USER root
 
-RUN dnf install --setopt install_weak_deps=false -y bash curl ImageMagick \
-                iproute jemalloc less libcurl \
-                postgresql tzdata nodejs libpq \
-                && dnf -y clean all \
-                && rm -rf /var/cache/yum
-
 ENV BUNDLER_VERSION=2.2.22 BUNDLE_SILENCE_ROOT_WARNING=1
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
-    LD_PRELOAD=/usr/lib64/libjemalloc.so.2
+    LD_PRELOAD=libjemalloc.so.2
 RUN mkdir -p ${APP_HOME} && chown "${APP_UID}":"${APP_GID}" "${APP_HOME}" && \
     groupadd -g "${APP_GID}" "${APP_USER}" && \
-    adduser -u "${APP_UID}" -g "${APP_GID}" -d "${APP_HOME}" "${APP_USER}"
+    adduser --uid "${APP_UID}" --gid "${APP_GID}" --home "${APP_HOME}" "${APP_USER}"
 
 COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
 
@@ -86,23 +131,14 @@ CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 ## Testing
 FROM builder AS testing
 
-USER root
-
-RUN dnf install --setopt install_weak_deps=false -y \
-    chromium-headless chromedriver && \
-    yum clean all && \
-    rm -rf /var/cache/yum
+USER "${APP_USER}"
 
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
-RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
-
-USER "${APP_USER}"
-
 RUN bundle config --local build.sassc --disable-march-tune-native && \
     bundle config --delete without && \
-    bundle install --deployment --jobs 4 --retry 5 && \
+    BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
@@ -113,16 +149,14 @@ CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 ## Development
 FROM builder AS development
 
+USER "${APP_USER}"
+
 COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
-RUN chown "${APP_USER}":"${APP_USER}" -R "${APP_HOME}"
-
-USER "${APP_USER}"
-
 RUN bundle config --local build.sassc --disable-march-tune-native && \
     bundle config --delete without && \
-    bundle install --deployment --jobs 4 --retry 5 && \
+    BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
     find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
     find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 

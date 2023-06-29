@@ -38,6 +38,23 @@ RSpec.describe "Api::V1::FollowsController" do
           end
         end.to change(Follow, :count).by(users_hash.size)
       end
+
+      it "can follow users or organizations" do
+        sign_in user
+        user_to_follow = create(:user)
+        org_to_follow = create(:organization)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            post "/api/follows",
+                 params: {
+                   users: [{ id: user_to_follow.id }],
+                   organizations: [{ id: org_to_follow.id }]
+                 },
+                 headers: headers
+          end
+        end.to change(Follow, :count).by(2)
+      end
     end
   end
 
