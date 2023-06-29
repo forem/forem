@@ -172,18 +172,20 @@ RSpec.describe "NotificationSubscriptions" do
   end
 
   describe "POST /comments/subscribe" do
+    let(:subscribe_service_result) { { updated: true } }
+
     before do
       sign_in user
 
       allow(NotificationSubscriptions::Subscribe).to receive(:call)
-        .and_return({ updated: true })
+        .and_return(subscribe_service_result)
 
       post "/comments/subscribe", params: { comment_id: 1, article_id: 2 }
     end
 
     it "calls the Subscribe service object with the correct parameters" do
       expect(response).to have_http_status(:ok)
-      expect(response.body).to eq("{\"updated\":true}")
+      expect(response.body).to eq(subscribe_service_result.to_json)
       expect(NotificationSubscriptions::Subscribe).to \
         have_received(:call)
         .with(user, comment_id: "1", article_id: "2")
