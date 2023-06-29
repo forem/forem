@@ -15,7 +15,7 @@ describe('Subscribe to Comments from notifications', () => {
       'subscribeButton',
     );
     cy.get('@subscribeButton').should('have.attr', 'aria-pressed', 'false');
-    cy.get('@subscribeButton').should('have.attr', 'data-info', 'null');
+    cy.get('@subscribeButton').should('have.attr', 'data-subscription_id', '');
     cy.get('@subscribeButton').click();
 
     cy.findByRole('button', { name: 'Subscribed to thread' }).as(
@@ -34,6 +34,6 @@ describe('Subscribe to Comments from notifications', () => {
     cy.findByRole('button', { name: 'Subscribed to thread' }).as(
       'subscribedButton',
     );
-    cy.get('@subscribeButton').should('have.attr', 'data-info', 'null');
+    cy.get('@subscribeButton').should('have.attr', 'data-subscription_id', '');
   });
 });
