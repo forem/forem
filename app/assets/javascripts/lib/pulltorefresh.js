@@ -81,7 +81,7 @@
         shared.supportsPassive = true;
       },
     });
-  } catch (e) {
+  } catch {
     // do nothing
   }
 
