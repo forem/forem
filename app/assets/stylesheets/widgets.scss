@@ -303,8 +303,64 @@
     }
   }
   a {
+    width: calc(100% - 40px);
+    justify-content: center;
     &:hover {
       opacity: 0.9;
+    }
+  }
+}
+
+.org-member-page {
+  .member-item {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+
+    .member-item-top {
+      display: flex;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      .member-user-pic {
+        img {
+          width: 48px;
+          height: 48px;
+          aspect-ratio: 1/1;
+          margin: 3px;
+          border-radius: 100%;
+        }
+      }
+    }
+
+    .member-item-bottom {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1px;
+      flex-grow: 0;
+
+      .truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+
+      .member-username {
+        font-weight: var(--fw-normal);
+        font-size: var(--fs-s);
+        line-height: var(--lh-base);
+        letter-spacing: -0.02em;
+        color: var(--color-secondary);
+      }
     }
   }
 }

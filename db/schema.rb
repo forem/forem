@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_22_151553) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
@@ -480,6 +480,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_22_151553) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["placement_area"], name: "index_display_ads_on_placement_area"
   end
 
   create_table "email_authorizations", force: :cascade do |t|
