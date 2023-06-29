@@ -162,8 +162,8 @@ fr:
         trusted: Guide de l'utilisateur de confiance
       author: Auteur
       comments:
-        view_comment: View Comment
-        view_details: View Details
+        view_comment: Voir le commentaire
+        view_details: Voir les détails
       date: Date
       notice:
         subtitle: '%{community} Mods'
