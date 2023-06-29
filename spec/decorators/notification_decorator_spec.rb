@@ -1,5 +1,6 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/MultipleExpectations
 RSpec.describe NotificationDecorator, type: :decorator do
   let!(:notification) { build(:notification) }
 
@@ -266,40 +267,40 @@ RSpec.describe NotificationDecorator, type: :decorator do
             notifiable_type: "Article",
             action: "Moderation",
             json_data: {
-                "user" => {
-                                    "id" => 1,
-                                  "name" => "A. User",
-                                  "path" => "/a_user",
-                                 "class" => { "name" => "User" },
-                              "username" => "a_user",
-                            "created_at" => "2022-06-03T18:43:50.465Z",
-                        "comments_count" => 1,
-                      "profile_image_90" => "/uploads/user/profile_image/1/e78aa295.png"
-                },
-                "article" => {
-                                         "id" => article_id,
-                                       "path" => "/a_user/article-here",
-                                      "class" => { "name" => "Article" },
-                                      "title" => "Article Here",
-                                 "updated_at" => "2023-06-02T06:55:53.406Z",
-                      "cached_tag_list_array" => [],
-                },
-                "article_user" => {
-                                    "id" => 3,
-                                  "name" => "A. Differentuser",
-                                  "path" => "/a_differentuser",
-                                 "class" => { "name" => "User" },
-                              "username" => "a_differentuser",
-                            "created_at" => "2022-08-08T14:01:55.666Z",
-                        "comments_count" => 3,
-                      "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
-                }
+              "user" => {
+                "id" => 1,
+                "name" => "A. User",
+                "path" => "/a_user",
+                "class" => { "name" => "User" },
+                "username" => "a_user",
+                "created_at" => "2022-06-03T18:43:50.465Z",
+                "comments_count" => 1,
+                "profile_image_90" => "/uploads/user/profile_image/1/e78aa295.png"
+              },
+              "article" => {
+                "id" => article_id,
+                "path" => "/a_user/article-here",
+                "class" => { "name" => "Article" },
+                "title" => "Article Here",
+                "updated_at" => "2023-06-02T06:55:53.406Z",
+                "cached_tag_list_array" => []
+              },
+              "article_user" => {
+                "id" => 3,
+                "name" => "A. Differentuser",
+                "path" => "/a_differentuser",
+                "class" => { "name" => "User" },
+                "username" => "a_differentuser",
+                "created_at" => "2022-08-08T14:01:55.666Z",
+                "comments_count" => 3,
+                "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
+              }
             })
     end
 
     context "when a user may have a subscription" do
-      let(:subscriber) { build :user }
-      let(:non_subscriber) { build :user }
+      let(:subscriber) { build(:user) }
+      let(:non_subscriber) { build(:user) }
       let(:mock_subscriptions) { class_double NotificationSubscription }
       let(:mock_non_subscriptions) { class_double NotificationSubscription }
 
@@ -358,38 +359,38 @@ RSpec.describe NotificationDecorator, type: :decorator do
             action: nil,
             json_data: {
               "user" => {
-                              "id" => 1,
-                            "name" => "A. User",
-                            "path" => "/a_user",
-                           "class" => { "name" => "User" },
-                        "username" => "aleta_macgyver",
-                      "created_at" => "2022-08-08T14:01:55.666Z",
-                  "comments_count" => 5,
+                "id" => 1,
+                "name" => "A. User",
+                "path" => "/a_user",
+                "class" => { "name" => "User" },
+                "username" => "aleta_macgyver",
+                "created_at" => "2022-08-08T14:01:55.666Z",
+                "comments_count" => 5,
                 "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
               },
               "comment" => {
-                            "id" => comment_id,
-                          "path" => "/a_user/comment/2",
-                         "class" => { "name" => "Comment" },
-                         "depth" => 0,
-                      "ancestry" => nil,
-                     "ancestors" => [],
-                    "created_at" => "2023-06-09T13:03:21.465Z",
-                    "updated_at" => "2023-06-09T13:03:21.594Z",
-                   "commentable" => {
-                                         "id" => article_id,
-                                       "path" => "/org5997/some-article",
-                                      "class" => { "name" => "Article" },
-                                      "title" => "Some Article"
-                                    },
+                "id" => comment_id,
+                "path" => "/a_user/comment/2",
+                "class" => { "name" => "Comment" },
+                "depth" => 0,
+                "ancestry" => nil,
+                "ancestors" => [],
+                "created_at" => "2023-06-09T13:03:21.465Z",
+                "updated_at" => "2023-06-09T13:03:21.594Z",
+                "commentable" => {
+                  "id" => article_id,
+                  "path" => "/org5997/some-article",
+                  "class" => { "name" => "Article" },
+                  "title" => "Some Article"
+                },
                 "processed_html" => "<p>Comment here</p>\n\n"
               }
             })
     end
 
     context "when a user may have a subscription" do
-      let(:subscriber) { build :user }
-      let(:non_subscriber) { build :user }
+      let(:subscriber) { build(:user) }
+      let(:non_subscriber) { build(:user) }
       let(:mock_subscriptions) { class_double NotificationSubscription }
       let(:mock_non_subscriptions) { class_double NotificationSubscription }
 
@@ -449,51 +450,51 @@ RSpec.describe NotificationDecorator, type: :decorator do
             notifiable_type: "Comment",
             action: nil,
             json_data: {
-               "user" => {
-                              "id" => 1,
-                            "name" => "A. User",
-                            "path" => "/a_user",
-                           "class" => { "name" => "User" },
-                        "username" => "a_user",
-                      "created_at" => "2022-08-08T14:01:55.666Z",
-                  "comments_count" => 4,
+              "user" => {
+                "id" => 1,
+                "name" => "A. User",
+                "path" => "/a_user",
+                "class" => { "name" => "User" },
+                "username" => "a_user",
+                "created_at" => "2022-08-08T14:01:55.666Z",
+                "comments_count" => 4,
                 "profile_image_90" => "/uploads/user/profile_image/3/99mvlsfu5tfj9m7ku25d.png"
-            },
-            "comment" => {
-                            "id" => comment_id,
-                          "path" => "/a_user/comment/#{comment_id}",
-                         "class" => { "name" => "Comment" },
-                         "depth" => 1,
-                      "ancestry" => ancestor_id.to_s,
-                     "ancestors" => [
-                       {
-                         "id" => ancestor_id,
-                         "path" => "/a_differentuser/comment/#{ancestor_id}",
-                         "user" => {
-                           "name" => "A. Differentuser",
-                           "username" => "a_differentuser"
-                         },
-                         "depth" => 0,
-                         "title" => "Top comment",
-                         "ancestry" => nil
-                       }
-                     ],
-                    "created_at" => "2023-06-09T12:56:56.572Z",
-                    "updated_at" => "2023-06-09T12:56:56.572Z",
-                    "commentable" => {
-                      "id" => article_id,
-                      "path" => "/org5997/some-article",
-                    "class" => { "name" => "Article" },
-                    "title" => "Some Article"
+              },
+              "comment" => {
+                "id" => comment_id,
+                "path" => "/a_user/comment/#{comment_id}",
+                "class" => { "name" => "Comment" },
+                "depth" => 1,
+                "ancestry" => ancestor_id.to_s,
+                "ancestors" => [
+                  {
+                    "id" => ancestor_id,
+                    "path" => "/a_differentuser/comment/#{ancestor_id}",
+                    "user" => {
+                      "name" => "A. Differentuser",
+                      "username" => "a_differentuser"
+                    },
+                    "depth" => 0,
+                    "title" => "Top comment",
+                    "ancestry" => nil
+                  },
+                ],
+                "created_at" => "2023-06-09T12:56:56.572Z",
+                "updated_at" => "2023-06-09T12:56:56.572Z",
+                "commentable" => {
+                  "id" => article_id,
+                  "path" => "/org5997/some-article",
+                  "class" => { "name" => "Article" },
+                  "title" => "Some Article"
                 },
                 "processed_html" => "<p>Not a top comment.</p>\n\n"
-            }
-        })
+              }
+            })
     end
 
     context "when a user may have a subscription" do
-      let(:subscriber) { build :user }
-      let(:non_subscriber) { build :user }
+      let(:subscriber) { build(:user) }
+      let(:non_subscriber) { build(:user) }
       let(:mock_subscriptions) { class_double NotificationSubscription }
       let(:mock_non_subscriptions) { class_double NotificationSubscription }
 
@@ -512,7 +513,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.subscription_for(subscriber)).to \
           eq(:found)
         expect(mock_subscriptions).to have_received(:for_notifiable)
-          .with(notifiable_type: "Comment", notifiable_id: ancestor_id.to_s) # ActiveRecord will work with either, but mock needs to be specific
+          .with(notifiable_type: "Comment", notifiable_id: ancestor_id.to_s) # ActiveRecord will work with either, but mock needs to be specific # rubocop:disable Layout/LineLength
       end
 
       it "responds to article fields (even if blank)" do
@@ -528,10 +529,10 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.commentable_article_id).to eq(article_id)
         expect(decorated.comment_ancestry).to eq(ancestor_id.to_s) # is this always to_s ?
         expect(decorated.comment_last_ancestor).to match(a_hash_including({
-            "id" => ancestor_id,
-            "path" => "/a_differentuser/comment/#{ancestor_id}",
-            "title" => "Top comment"
-          }))
+                                                                            "id" => ancestor_id,
+                                                                            "path" => "/a_differentuser/comment/#{ancestor_id}", # rubocop:disable Layout/LineLength
+                                                                            "title" => "Top comment"
+                                                                          }))
         expect(decorated.comment_path).to eq("/a_user/comment/2")
         expect(decorated.comment_depth).to eq(1)
         expect(decorated.comment_processed_html).to eq("<p>Not a top comment.</p>\n\n")
@@ -541,3 +542,4 @@ RSpec.describe NotificationDecorator, type: :decorator do
     end
   end
 end
+# rubocop:enable RSpec/MultipleExpectations
