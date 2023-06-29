@@ -11,6 +11,7 @@ esbuild
     entryPoints: glob.sync([
       'app/javascript/packs/**/*.*',
       'app/assets/javascripts/**/*.*',
+      'app/javascript/application.js',
     ]),
     bundle: true,
     minify: optimize,
