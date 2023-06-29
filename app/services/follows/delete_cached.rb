@@ -13,12 +13,15 @@ module Follows
     def call
       return false unless follower
 
-      cache_key = "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
       Rails.cache.delete(cache_key)
     end
 
     private
 
     attr_accessor :follower, :followable_type, :followable_id
+
+    def cache_key
+      "user-#{follower.id}-#{follower.updated_at.rfc3339}/is_following_#{followable_type}_#{followable_id}"
+    end
   end
 end

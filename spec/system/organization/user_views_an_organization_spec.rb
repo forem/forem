@@ -74,7 +74,7 @@ RSpec.describe "Organization index" do
     end
   end
 
-  context "when there are multiple members in the organization" do
+  context "when there are multiple members in the organization within a limit" do
     let(:many_members_org) { create(:organization) }
 
     let(:some_badges_member) { create(:user, badge_achievements_count: 15) }
@@ -99,6 +99,54 @@ RSpec.describe "Organization index" do
         expect(page.find(nth_avatar(2))).to have_link(nil, href: some_badges_member.path)
         expect(page.find(nth_avatar(3))).to have_link(nil, href: few_badges_member.path)
         expect(page.find(nth_avatar(4))).to have_link(nil, href: no_badges_member.path)
+      end
+    end
+
+    it "does not show the 'See all members' link" do
+      within("#sidebar-left") do
+        expect(page).not_to have_content("See All Members")
+      end
+    end
+  end
+
+  context "when there are more than 50 members in the organization" do
+    let(:many_members_org) { create(:organization) }
+
+    before do
+      55.times do
+        user = create(:user, badge_achievements_count: rand(1..100))
+        create(:organization_membership, user: user, organization: many_members_org)
+      end
+      visit "/#{many_members_org.slug}"
+    end
+
+    def nth_avatar(user_position)
+      ".org-sidebar-widget-user-pic:nth-child(#{user_position})"
+    end
+
+    it "shows the sidebar till 50th user only" do
+      within("#sidebar-left") do
+        expect(page).to have_content("Meet the team")
+
+        # This checks that first 50 users are available and 51st item is not.
+        (1..50).each do |i|
+          expect(page).to have_css(nth_avatar(i))
+        end
+
+        expect(page).not_to have_css(nth_avatar(51))
+      end
+    end
+
+    it "shows the 'See All Members' link" do
+      within(".org-sidebar-widget") do
+        expect(page).to have_content("See All Members")
+      end
+    end
+
+    it "displays the members on the '/members' page" do
+      visit "/#{many_members_org.slug}/members"
+      within(".grid-cols-1") do
+        expect(page).to have_selector(".member-item", count: 55)
       end
     end
   end
