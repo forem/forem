@@ -441,7 +441,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
     subject(:decorated) { notification.decorate }
 
     let(:comment_id) { 2 }
-    let(:ancestor_id) { 4 }
+    let(:ancestor_ids) { "5/6/7" }
     let(:article_id) { 3 }
 
     let!(:notification) do
@@ -464,21 +464,30 @@ RSpec.describe NotificationDecorator, type: :decorator do
                 "id" => comment_id,
                 "path" => "/a_user/comment/#{comment_id}",
                 "class" => { "name" => "Comment" },
-                "depth" => 1,
-                "ancestry" => ancestor_id.to_s,
-                "ancestors" => [
-                  {
-                    "id" => ancestor_id,
-                    "path" => "/a_differentuser/comment/#{ancestor_id}",
-                    "user" => {
-                      "name" => "A. Differentuser",
-                      "username" => "a_differentuser"
-                    },
-                    "depth" => 0,
-                    "title" => "Top comment",
-                    "ancestry" => nil
-                  },
-                ],
+                "depth" => 3,
+                "ancestry" => "5/6/7",
+                "ancestors" =>
+                        [
+                          { "id" => 5,
+                           "path" => "/other_user/comment/2m",
+                           "user" => { "name" => "Other User", "username" => "other_user" },
+                           "depth" => 0,
+                           "title" => "Hello, I have commented here. (Thus, presumably having a subscription.)",
+                           "ancestry" => nil },
+                          { "id" => 6,
+                           "path" => "/a_user/comment/2n",
+                           "user" => { "name" => "A. User", "username" => "a_user" },
+                           "depth" => 1,
+                           "title" => "Replying to your comment.",
+                           "ancestry" => "5" },
+                          { "id" => 7,
+                           "path" => "/other_user/comment/2o",
+                           "user" => { "name" => "Other User", "username" => "other_user" },
+                           "depth" => 2,
+                           "title" => "Replying to the reply to the comment.",
+                           "ancestry" => "5/6" }
+                        ],
+                "title" => "Hello I am Comment",
                 "created_at" => "2023-06-09T12:56:56.572Z",
                 "updated_at" => "2023-06-09T12:56:56.572Z",
                 "commentable" => {
@@ -513,7 +522,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.subscription_for(subscriber)).to \
           eq(:found)
         expect(mock_subscriptions).to have_received(:for_notifiable)
-          .with(notifiable_type: "Comment", notifiable_id: ancestor_id.to_s) # ActiveRecord will work with either, but mock needs to be specific # rubocop:disable Layout/LineLength
+          .with(notifiable_type: "Comment", notifiable_id: ancestor_ids.split("/")) # ActiveRecord will work with either, but mock needs to be specific # rubocop:disable Layout/LineLength
       end
 
       it "responds to article fields (even if blank)" do
@@ -527,14 +536,14 @@ RSpec.describe NotificationDecorator, type: :decorator do
       it "can find comment and commentable's id, path, depth, html, etc" do
         expect(decorated.comment_id).to eq(comment_id)
         expect(decorated.commentable_article_id).to eq(article_id)
-        expect(decorated.comment_ancestry).to eq(ancestor_id.to_s) # is this always to_s ?
+        expect(decorated.comment_ancestry).to eq(ancestor_ids)
         expect(decorated.comment_last_ancestor).to match(a_hash_including({
-                                                                            "id" => ancestor_id,
-                                                                            "path" => "/a_differentuser/comment/#{ancestor_id}", # rubocop:disable Layout/LineLength
-                                                                            "title" => "Top comment"
+                                                                            "id" => 7,
+                                                                            "path" => "/other_user/comment/2o", # rubocop:disable Layout/LineLength
+                                                                            "title" => "Replying to the reply to the comment."
                                                                           }))
         expect(decorated.comment_path).to eq("/a_user/comment/2")
-        expect(decorated.comment_depth).to eq(1)
+        expect(decorated.comment_depth).to eq(3)
         expect(decorated.comment_processed_html).to eq("<p>Not a top comment.</p>\n\n")
         expect(decorated.comment_updated_at).to eq("2023-06-09T12:56:56.572Z")
         expect(decorated.commentable_class_name).to eq("Article")

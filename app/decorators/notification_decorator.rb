@@ -46,7 +46,7 @@ class NotificationDecorator < ApplicationDecorator
   end
 
   def subscription_for(user)
-    subscription_to_comment_ancestor_for(user) ||
+    subscription_to_comment_ancestry_for(user) ||
       subscription_to_comment_for(user) ||
       subscription_to_commentable_article_for(user) ||
       subscription_to_article_for(user)
@@ -68,12 +68,12 @@ class NotificationDecorator < ApplicationDecorator
                                    notifiable_id: comment_id)
   end
 
-  def subscription_to_comment_ancestor_for(user)
+  def subscription_to_comment_ancestry_for(user)
     return unless comment_ancestry
 
     subscription_to_notifiable_for(user,
                                    notifiable_type: "Comment",
-                                   notifiable_id: comment_ancestry)
+                                   notifiable_id: comment_ancestry.split("/"))
   end
 
   def subscription_to_commentable_article_for(user)
