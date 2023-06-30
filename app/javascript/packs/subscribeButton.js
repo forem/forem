@@ -1,26 +1,30 @@
 // /* global showModalAfterError*/
 
-export function updateSubscribeButtonText(button, overrideSubscribed, window_size) {
+export function updateSubscribeButtonText(
+  button,
+  overrideSubscribed,
+  window_size,
+) {
   let label = '';
   let mobileLabel = '';
-  if (typeof(window_size) == 'undefined') {
+  if (typeof window_size == 'undefined') {
     window_size = window.innerWidth;
   }
 
   let noun = 'comments';
   const { subscription_id, subscription_config, comment_id } = button.dataset;
 
-  let subscriptionIsActive = (subscription_id != '')
-  if (typeof(overrideSubscribed) != 'undefined') {
-    subscriptionIsActive = overrideSubscribed == "subscribe";
+  let subscriptionIsActive = subscription_id != '';
+  if (typeof overrideSubscribed != 'undefined') {
+    subscriptionIsActive = overrideSubscribed == 'subscribe';
   }
 
-  let pressed = subscriptionIsActive;
-  let verb = subscriptionIsActive ? 'Subscribed' : 'Subscribe';
+  const pressed = subscriptionIsActive;
+  const verb = subscriptionIsActive ? 'Subscribed' : 'Subscribe';
 
   // comment_id should only be present if there's a subscription, so a button
   // that initially renders as 'Subscribed-to-thread' can be a toggle until refreshed
-  if (comment_id && comment_id != "") {
+  if (comment_id && comment_id != '') {
     noun = 'thread';
   }
 
@@ -47,16 +51,16 @@ export function updateSubscribeButtonText(button, overrideSubscribed, window_siz
 }
 
 export function optimisticallyUpdateButtonUI(button, modeChange) {
-  if (typeof(modeChange) == "undefined") {
-    modeChange = (button.dataset.subscription_id) ? "unsubscribe" : "subscribe"
+  if (typeof modeChange == 'undefined') {
+    modeChange = button.dataset.subscription_id ? 'unsubscribe' : 'subscribe';
   }
 
-  if (modeChange == "unsubscribe") {
+  if (modeChange == 'unsubscribe') {
     button.classList.remove('comment-subscribed');
-    updateSubscribeButtonText(button, "unsubscribe");
+    updateSubscribeButtonText(button, 'unsubscribe');
   } else {
     button.classList.add('comment-subscribed');
-    updateSubscribeButtonText(button, "subscribe");
+    updateSubscribeButtonText(button, 'subscribe');
   }
 
   return;
@@ -66,14 +70,15 @@ export function determinePayloadAndEndpoint(button) {
   let payload;
   let endpoint;
 
-  console.log("what is button.dataset", button.dataset)
-
   if (button.dataset.subscription_id != '') {
     payload = {
       subscription_id: button.dataset.subscription_id,
     };
     endpoint = 'comment-unsubscribe';
-  } else if (button.dataset.subscribed_to && button.dataset.subscribed_to == 'comment') {
+  } else if (
+    button.dataset.subscribed_to &&
+    button.dataset.subscribed_to == 'comment'
+  ) {
     payload = {
       comment_id: button.dataset.comment_id,
     };
@@ -85,23 +90,20 @@ export function determinePayloadAndEndpoint(button) {
     endpoint = 'comment-subscribe';
   }
 
-  return({
-    'payload': payload,
-    'endpoint': endpoint,
-  });
+  return {
+    payload,
+    endpoint,
+  };
 }
 
 async function handleSubscribeButtonClick({ target }) {
   optimisticallyUpdateButtonUI(target);
 
-  let { payload, endpoint } = determinePayloadAndEndpoint(button);
-
-  console.log("BUTTON WAS CLICKED!", payload)
-
-  payload = JSON.stringify(payload);
+  const { payload, endpoint } = determinePayloadAndEndpoint(target);
+  const requestJson = JSON.stringify(payload);
 
   getCsrfToken()
-    .then(await sendFetch(endpoint, payload))
+    .then(await sendFetch(endpoint, requestJson))
     .then(async (response) => {
       if (response.status === 200) {
         const res = await response.json();
@@ -114,7 +116,7 @@ async function handleSubscribeButtonClick({ target }) {
             const button = matchingButtons[i];
             button.dataset.subscription_id = '';
             if (button != target) {
-              optimisticallyUpdateButtonUI(button, "unsubscribe");
+              optimisticallyUpdateButtonUI(button, 'unsubscribe');
             }
           }
         } else if (res.subscription) {
