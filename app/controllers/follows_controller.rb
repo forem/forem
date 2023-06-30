@@ -75,6 +75,8 @@ class FollowsController < ApplicationController
                 follow(followable, need_notification: need_notification)
               end
 
+    clear_followed_tag_caches if followable_klass == Tag
+
     render json: { outcome: @result }
   end
 
@@ -108,10 +110,18 @@ class FollowsController < ApplicationController
     I18n.t("follows_controller.already_followed")
   end
 
+  def clear_followed_tag_caches
+    # Clear the followed_tags model cache, which is nested inside the async_info cache
+    Rails.cache.delete("#{current_user.cache_key}-#{current_user.last_followed_at&.rfc3339}/followed_tags")
+    # Clear the async_info cache, which contains the list of tags the user is currently following
+    Rails.cache.delete("#{current_user.cache_key_with_version}/user-info")
+  end
+
   def unfollow(followable, followable_type, need_notification: false)
     user_follow = current_user.stop_following(followable)
     Notification.send_new_follower_notification_without_delay(user_follow, is_read: true) if need_notification
 
+    # Clear the user-follows-user cache async
     Follows::DeleteCached.call(current_user, followable_type, followable.id)
 
     I18n.t("follows_controller.unfollowed")

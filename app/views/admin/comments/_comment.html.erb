@@ -1,0 +1,38 @@
+<div>
+  <article class="crayons-card p-4 pt-3 pb-2 flex flex-col gap-3">
+    <% if comment.commentable %>
+      <header class="flex justify-between gap-4 items-center border-b-1 border-base-10 border-solid border-0 pb-3 -mx-2 px-2">
+        <div class="flex gap-2 items-center">
+          <% if comment.user %>
+            <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="shrink-0 c-link">
+              <img width="32" height="32" class="radius-full block" src="<%= comment.user.profile_image_url_for(length: 64) %>" alt="<%= comment.user.username %> profile" loading="lazy" />
+            </a>
+          <% end %>
+          <p>
+            <a href="<%= comment.user.path %>" target="_blank" rel="noopener" class="c-link c-link--branded fw-bold"><%= comment.user.username %></a>
+            on:
+            <a href="<%= comment.commentable.path %>" class="c-link c-link--branded"><%= comment.commentable.title %></a>
+          </p>
+        </div>
+      </header>
+    <% end %>
+    <div class="text-styles text-styles--tertiary">
+      <%= sanitize comment.processed_html,
+                   tags: %w[strong em p h1 h2 h3 h4 h5 h6 i u b code pre br ul ol li small sup img a span hr blockquote],
+                   attributes: %w[href strong em ref rel src title alt class] %>
+    </div>
+    <footer class="fs-s flex gap-4 border-t-1 border-base-10 border-solid border-0 pt-2 -mx-2 pl-2 justify-between items-center">
+      <span>❤️ <%= pluralize(comment.public_reactions_count, "like") %></span>
+      <div class="ml-auto">
+        <a class="c-link c-link--block" href="<%= comment.path %>" target="_blank" rel="noopener">
+          <%= t("views.moderations.comments.view_comment") %>
+        </a>
+      </div>
+      <% if !defined?(is_individual_comment) || !is_individual_comment %>
+        <a href="/admin/content_manager/comments/<%= comment.id %>" class="c-link c-link--block">
+          <%= t("views.moderations.comments.view_details") %>
+        </a>
+      <% end %>
+    </footer>
+  </article>
+</div>

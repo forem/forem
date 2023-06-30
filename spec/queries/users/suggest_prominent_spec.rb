@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::SuggestRecent, type: :service do
+RSpec.describe Users::SuggestProminent, type: :service do
   let(:user) { create(:user) }
   let(:suggester) { described_class.new(user) }
 
