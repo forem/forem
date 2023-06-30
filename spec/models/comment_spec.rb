@@ -498,26 +498,26 @@ RSpec.describe Comment do
     it "contains correct vomit count" do
       user = create(:user, :trusted)
       create(:reaction, reactable: comment, category: "vomit", user: user)
-      counts = article.privileged_reaction_counts
+      counts = comment.privileged_reaction_counts
       expect(counts["vomit"]).to eq(1)
     end
 
     it "contains correct thumbsup count" do
       user = create(:user, :trusted)
       create(:reaction, reactable: comment, category: "thumbsup", user: user)
-      counts = article.privileged_reaction_counts
+      counts = comment.privileged_reaction_counts
       expect(counts["thumbsup"]).to eq(1)
     end
 
     it "contains correct thumbsdown count" do
       user = create(:user, :trusted)
       create(:reaction, reactable: comment, category: "thumbsdown", user: user)
-      counts = article.privileged_reaction_counts
+      counts = comment.privileged_reaction_counts
       expect(counts["thumbsdown"]).to eq(1)
     end
 
     it "returns an empty hash if there are no privileged reactions" do
-      counts = article.privileged_reaction_counts
+      counts = comment.privileged_reaction_counts
 
       expect(counts).to be_empty
     end
