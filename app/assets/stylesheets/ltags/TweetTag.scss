@@ -1,4 +1,8 @@
 @import '../variables';
+
+// These are legacy styles for the old Twitter embeds.
+// Eventually the old embeds could be replaced.
+
 blockquote.ltag__twitter-tweet {
   font-family: var(--ff-sans-serif);
   background: white;

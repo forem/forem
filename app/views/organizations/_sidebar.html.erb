@@ -10,7 +10,7 @@
         </h3>
       </header>
       <div class="org-sidebar-widget-body">
-        <% @organization_users.find_each_respecting_scope do |user| %>
+        <% @organization_users.limit(@user_limit).find_each_respecting_scope do |user| %>
           <div class="org-sidebar-widget-user-pic">
             <a href="/<%= user.username %>">
               <img src="<%= user.profile_image_url_for(length: 90) %>" alt="<%= user.username %> profile image" loading="lazy" />
@@ -18,6 +18,11 @@
           </div>
         <% end %>
       </div>
+      <% if @organization_users.count > @user_limit %>
+        <a class="c-cta ml-5 mt-1 mr-5 mb-5" onclick="location.href='/<%= @organization.slug %>/members'">
+          <%= t("views.organizations.all_members") %>
+        </a>
+      <% end %>
     </div>
   <% end %>
   <% if @organization.story.present? %>
