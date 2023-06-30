@@ -375,7 +375,6 @@ module Admin
           .includes(:user)
           .order(created_at: :desc)
       @countable_flags = calculate_countable_flags(@user_vomit_reactions)
-      @score = calculate_score(@user_vomit_reactions)
     end
 
     def user_params
@@ -428,14 +427,6 @@ module Admin
         countable_flags += 1 if reaction.status != "invalid"
       end
       countable_flags
-    end
-
-    def calculate_score(reactions)
-      score = 0
-      reactions.each do |reaction|
-        score += reaction.points
-      end
-      score
     end
   end
 end
