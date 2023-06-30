@@ -1,41 +1,41 @@
 // /* global showModalAfterError*/
 
-export function addButtonSubscribeText(button, config) {
+export function updateSubscribeButtonText(button, overrideSubscribed) {
   let label = '';
-  let pressed = '';
   let mobileLabel = '';
 
-  const { subscribed_to, subscription_mode } = button.dataset;
-  let noun = '';
-  if (subscribed_to) {
-    noun = subscribed_to == 'comment' ? 'thread' : 'comments';
-  } else {
-    noun = 'comments';
+  let noun = 'comments';
+  const { subscription_id, subscription_config, comment_id } = button.dataset;
+
+  let subscriptionIsActive = (subscription_id != '')
+  if (typeof(overrideSubscribed) != 'undefined') {
+    subscriptionIsActive = overrideSubscribed == "subscribe";
+  }
+
+  let pressed = subscriptionIsActive;
+  let verb = subscriptionIsActive ? 'Subscribed' : 'Subscribe';
+
+  // comment_id should only be present if there's a subscription, so a button
+  // that initially renders as 'Subscribed-to-thread' can be a toggle until refreshed
+  if (comment_id && comment_id != "") {
+    noun = 'thread';
   }
 
   // Find the <span> element within the button
   const spanElement = button.querySelector('span');
 
-  switch (config || subscription_mode) {
-    case 'all_comments':
-      label = `Subscribed to ${noun}`;
-      mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
-      pressed = 'true';
-      break;
+  switch (subscription_config) {
     case 'top_level_comments':
-      label = `Subscribed to top-level comments`;
+      label = `${verb} to top-level comments`;
       mobileLabel = `Top-level ${noun}`;
-      pressed = 'true';
       break;
     case 'only_author_comments':
-      label = `Subscribed to author comments`;
+      label = `${verb} to author comments`;
       mobileLabel = `Author ${noun}`;
-      pressed = 'true';
       break;
     default:
-      label = `Subscribe to ${noun}`;
+      label = `${verb} to ${noun}`;
       mobileLabel = `${noun}`.charAt(0).toUpperCase() + noun.slice(1);
-      pressed = 'false';
   }
 
   button.setAttribute('aria-label', label);
@@ -43,17 +43,17 @@ export function addButtonSubscribeText(button, config) {
   button.setAttribute('aria-pressed', pressed);
 }
 
-export function optimisticallyUpdateButtonUI(button) {
-  switch (button.dataset.subscription_mode) {
-    case 'all_comments':
-    case 'top_level_comments':
-    case 'only_author_comments':
-      button.classList.remove('comment-subscribed');
-      addButtonSubscribeText(button, '');
-      break;
-    default:
-      button.classList.add('comment-subscribed');
-      addButtonSubscribeText(button, 'all_comments');
+export function optimisticallyUpdateButtonUI(button, modeChange) {
+  if (typeof(modeChange) == "undefined") {
+    modeChange = (button.dataset.subscription_id) ? "unsubscribe" : "subscribe"
+  }
+
+  if (modeChange == "unsubscribe") {
+    button.classList.remove('comment-subscribed');
+    updateSubscribeButtonText(button, "unsubscribe");
+  } else {
+    button.classList.add('comment-subscribed');
+    updateSubscribeButtonText(button, "subscribe");
   }
 
   return;
@@ -70,9 +70,9 @@ async function handleSubscribeButtonClick({ target }) {
       subscription_id: target.dataset.subscription_id,
     };
     endpoint = 'comment-unsubscribe';
-  } else if (target.dataset.ancestry && target.dataset.ancestry != '') {
+  } else if (target.dataset.subscribed_to && target.dataset.subscribed_to == 'comment') {
     payload = {
-      comment_id: target.dataset.ancestry,
+      comment_id: target.dataset.comment_id,
     };
     endpoint = 'comment-subscribe';
   } else {
@@ -96,16 +96,13 @@ async function handleSubscribeButtonClick({ target }) {
           );
           for (let i = 0; i < matchingButtons.length; i++) {
             const button = matchingButtons[i];
-            // Do this *before* changing subscription_mode
-            if (button != target) {
-              optimisticallyUpdateButtonUI(button);
-            }
             button.dataset.subscription_id = '';
-            button.dataset.subscription_mode = '';
+            if (button != target) {
+              optimisticallyUpdateButtonUI(button, "unsubscribe");
+            }
           }
         } else if (res.subscription) {
           target.dataset.subscription_id = res.subscription.id;
-          target.dataset.subscription_mode = res.subscription.config;
         } else {
           throw `Problem (un)subscribing: ${JSON.stringify(res)}`;
         }
@@ -121,10 +118,15 @@ export function initializeSubscribeButton() {
   }
 
   Array.from(buttons, (button) => {
+    if (button.wasInitialized) {
+      return;
+    }
+
     button.removeEventListener('click', handleSubscribeButtonClick); // Remove previous event listener
     button.addEventListener('click', handleSubscribeButtonClick);
 
-    addButtonSubscribeText(button);
+    button.wasInitialized = true;
+    updateSubscribeButtonText(button);
   });
 }
 

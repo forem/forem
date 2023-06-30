@@ -2,7 +2,7 @@
 
 import {
   initializeSubscribeButton,
-  addButtonSubscribeText,
+  updateSubscribeButtonText,
   optimisticallyUpdateButtonUI,
 } from '../../subscribeButton';
 
@@ -50,7 +50,7 @@ describe('subscribeButton', () => {
 
   it('should set label, mobileLabel, and pressed for config "all_comments"', () => {
     button.setAttribute('data-ancestry', null);
-    addButtonSubscribeText(button, 'all_comments');
+    updateSubscribeButtonText(button, 'all_comments');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe(
@@ -61,7 +61,7 @@ describe('subscribeButton', () => {
 
   it('should set label, mobileLabel, and pressed for config "top_level_comments"', () => {
     button.setAttribute('data-ancestry', null);
-    addButtonSubscribeText(button, 'top_level_comments');
+    updateSubscribeButtonText(button, 'top_level_comments');
 
     expect(button.getAttribute('aria-label')).toBe(
       'Subscribed to top-level comments',
@@ -73,7 +73,7 @@ describe('subscribeButton', () => {
   });
 
   it('should set label, mobileLabel, and pressed for config "only_author_comments"', () => {
-    addButtonSubscribeText(button, 'only_author_comments');
+    updateSubscribeButtonText(button, 'only_author_comments');
 
     expect(button.getAttribute('aria-label')).toBe(
       'Subscribed to author comments',
@@ -85,7 +85,7 @@ describe('subscribeButton', () => {
   });
 
   it('should set label, mobileLabel, and pressed for default config', () => {
-    addButtonSubscribeText(button, 'unknown_config');
+    updateSubscribeButtonText(button, 'unknown_config');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
     expect(button.querySelector('span').innerText).toBe(
@@ -96,7 +96,7 @@ describe('subscribeButton', () => {
 
   it('should capitalize the mobileLabel', () => {
     mockDatasetComment('some comment');
-    addButtonSubscribeText(button, 'all_comments');
+    updateSubscribeButtonText(button, 'all_comments');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe(
@@ -114,7 +114,7 @@ describe('subscribeButton', () => {
   //   );
   // });
 
-  // it('should add "comment-subscribed" class and call addButtonSubscribeText for unknown config', () => {
+  // it('should add "comment-subscribed" class and call updateSubscribeButtonText for unknown config', () => {
   //   optimisticallyUpdateButtonUI(button);
   //
   //   expect(button.classList.contains('comment-subscribed')).toBe(false);
@@ -125,7 +125,7 @@ describe('subscribeButton', () => {
   //   expect(button.getAttribute('aria-pressed')).toBe('false');
   // });
 
-  it('should add "comment-subscribed" class and call addButtonSubscribeText when buttonInfo is null', () => {
+  it('should add "comment-subscribed" class and call updateSubscribeButtonText when buttonInfo is null', () => {
     delete button.dataset.info;
     optimisticallyUpdateButtonUI(button);
 
