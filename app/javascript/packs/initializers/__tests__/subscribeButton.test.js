@@ -3,16 +3,12 @@
 import {
   initializeSubscribeButton,
   updateSubscribeButtonText,
-  optimisticallyUpdateButtonUI,
   determinePayloadAndEndpoint,
 } from '../../subscribeButton';
 
 describe('subscribeButton', () => {
   let button;
   let originalFetch;
-  const mockDatasetComment = (comment) => {
-    button.dataset.comment = comment;
-  };
 
   beforeEach(() => {
     button = document.createElement('button');
@@ -23,10 +19,10 @@ describe('subscribeButton', () => {
     button.appendChild(spanElement);
 
     // Baseline scenario starts Subscribed to all comments on an article
-    button.setAttribute('data-subscription_id','1');
-    button.setAttribute('data-subscribed_to','article');
-    button.setAttribute('data-subscription_mode','all_comments');
-    button.setAttribute('data-article_id','123');
+    button.setAttribute('data-subscription_id', '1');
+    button.setAttribute('data-subscribed_to', 'article');
+    button.setAttribute('data-subscription_mode', 'all_comments');
+    button.setAttribute('data-article_id', '123');
 
     // Store the original fetch function
     originalFetch = global.fetch;
@@ -52,7 +48,7 @@ describe('subscribeButton', () => {
   });
 
   it('should update to unsubscribed setting label, and *not* pressed', () => {
-    updateSubscribeButtonText(button, "unsubscribe");
+    updateSubscribeButtonText(button, 'unsubscribe');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
     expect(button.querySelector('span').innerText).toBe(
@@ -62,7 +58,7 @@ describe('subscribeButton', () => {
   });
 
   it('should update without override with blank subscription_id setting label, and *not* pressed', () => {
-    button.setAttribute('data-subscription_id','');
+    button.setAttribute('data-subscription_id', '');
 
     updateSubscribeButtonText(button);
 
@@ -117,49 +113,49 @@ describe('subscribeButton', () => {
     updateSubscribeButtonText(button);
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to thread');
-    expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to thread',
-    );
+    expect(button.querySelector('span').innerText).toBe('Subscribed to thread');
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 
   it('was-subscribed-to-thread scenario', () => {
-    button.setAttribute('data-subscription_id','');
+    button.setAttribute('data-subscription_id', '');
     button.setAttribute('data-subscription_config', 'thread');
     button.setAttribute('data-subscribed_to', 'comment');
     button.setAttribute('data-comment_id', '456');
     updateSubscribeButtonText(button, 'unsubscribe');
 
     expect(button.getAttribute('aria-label')).toBe('Subscribe to thread');
-    expect(button.querySelector('span').innerText).toBe(
-      'Subscribe to thread',
-    );
+    expect(button.querySelector('span').innerText).toBe('Subscribe to thread');
     expect(button.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('should capitalize the mobileLabel', () => {
-    let magicalWindowSize = 700;
-    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
+    const magicalWindowSize = 700;
+    updateSubscribeButtonText(button, 'subscribe', magicalWindowSize);
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe('Comments');
 
-    updateSubscribeButtonText(button, "unsubscribe", magicalWindowSize);
+    updateSubscribeButtonText(button, 'unsubscribe', magicalWindowSize);
     expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
     expect(button.querySelector('span').innerText).toBe('Comments');
 
     button.setAttribute('data-subscription_config', 'top_level_comments');
-    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to top-level comments');
+    updateSubscribeButtonText(button, 'subscribe', magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to top-level comments',
+    );
     expect(button.querySelector('span').innerText).toBe('Top-level comments');
 
     button.setAttribute('data-subscription_config', 'only_author_comments');
-    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to author comments');
+    updateSubscribeButtonText(button, 'subscribe', magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe(
+      'Subscribed to author comments',
+    );
     expect(button.querySelector('span').innerText).toBe('Author comments');
 
     button.setAttribute('data-subscription_config', 'unknown_config');
-    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
+    updateSubscribeButtonText(button, 'subscribe', magicalWindowSize);
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe('Comments');
   });
@@ -168,22 +164,22 @@ describe('subscribeButton', () => {
     let { payload, endpoint } = determinePayloadAndEndpoint(button);
 
     // Baseline case: **is** subscribed
-    expect(payload).toEqual({subscription_id: "1"});
-    expect(endpoint).toEqual("comment-unsubscribe");
+    expect(payload).toEqual({ subscription_id: '1' });
+    expect(endpoint).toEqual('comment-unsubscribe');
 
     // When unsubscribed from an article
-    button.setAttribute('data-subscription_id','');
-    ({payload, endpoint} = determinePayloadAndEndpoint(button));
-    expect(payload).toEqual({article_id: "123"});
-    expect(endpoint).toEqual("comment-subscribe");
+    button.setAttribute('data-subscription_id', '');
+    ({ payload, endpoint } = determinePayloadAndEndpoint(button));
+    expect(payload).toEqual({ article_id: '123' });
+    expect(endpoint).toEqual('comment-subscribe');
 
     // When unsubscribed from a thread
-    button.setAttribute('data-subscription_id','');
+    button.setAttribute('data-subscription_id', '');
     button.setAttribute('data-subscription_config', 'thread');
     button.setAttribute('data-subscribed_to', 'comment');
     button.setAttribute('data-comment_id', '456');
-    ({payload, endpoint} = determinePayloadAndEndpoint(button));
-    expect(payload).toEqual({comment_id: "456"});
-    expect(endpoint).toEqual("comment-subscribe");
+    ({ payload, endpoint } = determinePayloadAndEndpoint(button));
+    expect(payload).toEqual({ comment_id: '456' });
+    expect(endpoint).toEqual('comment-subscribe');
   });
 });
