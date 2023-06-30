@@ -89,3 +89,28 @@ describe('New comment with empty flags and reactions', () => {
     cy.get('.flex .crayons-card:nth-child(4) .fs-s').should('contain', '0');
   });
 });
+
+describe('Comment with flags and reactions', () => {
+  beforeEach(() => {
+    cy.testSetup();
+    cy.fixture('users/adminUser.json').as('user');
+
+    cy.get('@user').then((user) => {
+      cy.loginUser(user).then(() => {
+        cy.visit(`/admin/content_manager/comments`);
+      });
+    });
+  });
+
+  it('should contains positive reaction values', () => {
+    cy.contains('Contains various privileged reactions.')
+      .parents('.crayons-card')
+      .within(() => {
+        // Thumbs-down count
+        cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '1');
+
+        // Vomit/flag count
+        cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
+      });
+  });
+});
