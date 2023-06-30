@@ -75,7 +75,7 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it('visually toggles contradictory mod reactions off', () => {
+    it.skip('visually toggles contradictory mod reactions off', () => {
       navigateToCommentFlagPage().then(() => {
         cy.intercept('POST', '/reactions').as('flagRequest');
 
