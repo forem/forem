@@ -50,7 +50,7 @@ describe('subscribeButton', () => {
     );
   });
 
-  it('should update to unsubscribed setting label, mobileLabel, and *not* pressed', () => {
+  it('should update to unsubscribed setting label, and *not* pressed', () => {
     updateSubscribeButtonText(button, "unsubscribe");
 
     expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
@@ -60,7 +60,7 @@ describe('subscribeButton', () => {
     expect(button.getAttribute('aria-pressed')).toBe('false');
   });
 
-  it('should update without override with blank subscription_id setting label, mobileLabel, and *not* pressed', () => {
+  it('should update without override with blank subscription_id setting label, and *not* pressed', () => {
     button.setAttribute('data-subscription_id','');
 
     updateSubscribeButtonText(button);
