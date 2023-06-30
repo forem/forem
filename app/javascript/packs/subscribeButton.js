@@ -1,8 +1,11 @@
 // /* global showModalAfterError*/
 
-export function updateSubscribeButtonText(button, overrideSubscribed) {
+export function updateSubscribeButtonText(button, overrideSubscribed, window_size) {
   let label = '';
   let mobileLabel = '';
+  if (typeof(window_size) == 'undefined') {
+    window_size = window.innerWidth;
+  }
 
   let noun = 'comments';
   const { subscription_id, subscription_config, comment_id } = button.dataset;
@@ -39,7 +42,7 @@ export function updateSubscribeButtonText(button, overrideSubscribed) {
   }
 
   button.setAttribute('aria-label', label);
-  spanElement.innerText = window.innerWidth <= 760 ? mobileLabel : label;
+  spanElement.innerText = window_size <= 760 ? mobileLabel : label;
   button.setAttribute('aria-pressed', pressed);
 }
 

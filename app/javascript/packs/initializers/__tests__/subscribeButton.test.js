@@ -137,14 +137,30 @@ describe('subscribeButton', () => {
   });
 
   it('should capitalize the mobileLabel', () => {
-    mockDatasetComment('some comment');
-    updateSubscribeButtonText(button, 'all_comments');
+    let magicalWindowSize = 700;
+    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
 
     expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
-    expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to comments',
-    );
-    expect(button.getAttribute('aria-pressed')).toBe('true');
+    expect(button.querySelector('span').innerText).toBe('Comments');
+
+    updateSubscribeButtonText(button, "unsubscribe", magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
+    expect(button.querySelector('span').innerText).toBe('Comments');
+
+    button.setAttribute('data-subscription_config', 'top_level_comments');
+    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to top-level comments');
+    expect(button.querySelector('span').innerText).toBe('Top-level comments');
+
+    button.setAttribute('data-subscription_config', 'only_author_comments');
+    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to author comments');
+    expect(button.querySelector('span').innerText).toBe('Author comments');
+
+    button.setAttribute('data-subscription_config', 'unknown_config');
+    updateSubscribeButtonText(button, "subscribe", magicalWindowSize);
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
+    expect(button.querySelector('span').innerText).toBe('Comments');
   });
 
   // it('should remove "comment-subscribed" class and set inner text for known configs', () => {
