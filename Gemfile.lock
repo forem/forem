@@ -624,8 +624,6 @@ GEM
       rack
     rack-protection (3.0.3)
       rack
-    rack-proxy (0.7.6)
-      rack
     rack-test (2.1.0)
       rack (>= 1.3)
     rack-timeout (0.6.3)
@@ -813,7 +811,6 @@ GEM
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
     sax-machine (1.3.2)
-    semantic_range (3.0.0)
     sexp_processor (4.16.1)
     shellany (0.0.1)
     shoulda-matchers (5.3.0)
@@ -931,11 +928,6 @@ GEM
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.4.4)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     webpush (1.1.0)
       hkdf (~> 0.2)
       jwt (~> 2.0)
@@ -1113,7 +1105,6 @@ DEPENDENCIES
   wcag_color_contrast (~> 0.1)
   web-console (~> 4.2)
   webmock (~> 3.17)
-  webpacker (~> 5.4.3)
   with_model (~> 2.1.6)
   yard (~> 0.9)
   yard-activerecord (~> 0.0)
