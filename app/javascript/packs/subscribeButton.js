@@ -62,28 +62,41 @@ export function optimisticallyUpdateButtonUI(button, modeChange) {
   return;
 }
 
-async function handleSubscribeButtonClick({ target }) {
-  optimisticallyUpdateButtonUI(target);
-
+export function determinePayloadAndEndpoint(button) {
   let payload;
   let endpoint;
 
-  if (target.dataset.subscription_id != '') {
+  console.log("what is button.dataset", button.dataset)
+
+  if (button.dataset.subscription_id != '') {
     payload = {
-      subscription_id: target.dataset.subscription_id,
+      subscription_id: button.dataset.subscription_id,
     };
     endpoint = 'comment-unsubscribe';
-  } else if (target.dataset.subscribed_to && target.dataset.subscribed_to == 'comment') {
+  } else if (button.dataset.subscribed_to && button.dataset.subscribed_to == 'comment') {
     payload = {
-      comment_id: target.dataset.comment_id,
+      comment_id: button.dataset.comment_id,
     };
     endpoint = 'comment-subscribe';
   } else {
     payload = {
-      article_id: target.dataset.article_id,
+      article_id: button.dataset.article_id,
     };
     endpoint = 'comment-subscribe';
   }
+
+  return({
+    'payload': payload,
+    'endpoint': endpoint,
+  });
+}
+
+async function handleSubscribeButtonClick({ target }) {
+  optimisticallyUpdateButtonUI(target);
+
+  let { payload, endpoint } = determinePayloadAndEndpoint(button);
+
+  console.log("BUTTON WAS CLICKED!", payload)
 
   payload = JSON.stringify(payload);
 

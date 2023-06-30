@@ -4,6 +4,7 @@ import {
   initializeSubscribeButton,
   updateSubscribeButtonText,
   optimisticallyUpdateButtonUI,
+  determinePayloadAndEndpoint,
 } from '../../subscribeButton';
 
 describe('subscribeButton', () => {
@@ -163,35 +164,26 @@ describe('subscribeButton', () => {
     expect(button.querySelector('span').innerText).toBe('Comments');
   });
 
-  // it('should remove "comment-subscribed" class and set inner text for known configs', () => {
-  //   optimisticallyUpdateButtonUI(button);
-  //
-  //   expect(button.classList.contains('comment-subscribed')).toBe(false);
-  //   expect(button.querySelector('span').innerText).toBe(
-  //     'Subscribe to comments',
-  //   );
-  // });
+  it('should determine the expected payload', async () => {
+    let { payload, endpoint } = determinePayloadAndEndpoint(button);
 
-  // it('should add "comment-subscribed" class and call updateSubscribeButtonText for unknown config', () => {
-  //   optimisticallyUpdateButtonUI(button);
-  //
-  //   expect(button.classList.contains('comment-subscribed')).toBe(false);
-  //   expect(button.querySelector('span').innerText).toBe(
-  //     'Subscribe to comments',
-  //   );
-  //   expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
-  //   expect(button.getAttribute('aria-pressed')).toBe('false');
-  // });
+    // Baseline case: **is** subscribed
+    expect(payload).toEqual({subscription_id: "1"});
+    expect(endpoint).toEqual("comment-unsubscribe");
 
-  it('should add "comment-subscribed" class and call updateSubscribeButtonText when buttonInfo is null', () => {
-    delete button.dataset.info;
-    optimisticallyUpdateButtonUI(button);
+    // When unsubscribed from an article
+    button.setAttribute('data-subscription_id','');
+    ({payload, endpoint} = determinePayloadAndEndpoint(button));
+    expect(payload).toEqual({article_id: "123"});
+    expect(endpoint).toEqual("comment-subscribe");
 
-    expect(button.classList.contains('comment-subscribed')).toBe(true);
-    expect(button.querySelector('span').innerText).toBe(
-      'Subscribed to comments',
-    );
-    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
-    expect(button.getAttribute('aria-pressed')).toBe('true');
+    // When unsubscribed from a thread
+    button.setAttribute('data-subscription_id','');
+    button.setAttribute('data-subscription_config', 'thread');
+    button.setAttribute('data-subscribed_to', 'comment');
+    button.setAttribute('data-comment_id', '456');
+    ({payload, endpoint} = determinePayloadAndEndpoint(button));
+    expect(payload).toEqual({comment_id: "456"});
+    expect(endpoint).toEqual("comment-subscribe");
   });
 });
