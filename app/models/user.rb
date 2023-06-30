@@ -217,6 +217,7 @@ class User < ApplicationRecord
   before_validation :set_username
   before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
+  after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
   before_destroy :destroy_follows, prepend: true
 
@@ -323,32 +324,22 @@ class User < ApplicationRecord
     true
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: 1..,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.followed_by(self).pluck(:name)
     end
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: ...1,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.antifollowed_by(self).pluck(:name)
     end
+  end
+
+  def refresh_auto_audience_segments
+    SegmentedUserRefreshWorker.perform_async(id)
   end
 
   ##############################################################################
@@ -551,6 +542,10 @@ class User < ApplicationRecord
      last_moderation_notification, last_notification_activity].compact.max
   end
 
+  def currently_following_tags
+    Tag.followed_by(self)
+  end
+
   protected
 
   # Send emails asynchronously
@@ -642,6 +637,7 @@ class User < ApplicationRecord
   def update_user_roles_cache(...)
     authorizer.clear_cache
     Rails.cache.delete("user-#{id}/has_trusted_role")
+    refresh_auto_audience_segments
     trusted?
   end
 end

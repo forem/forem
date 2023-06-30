@@ -18,6 +18,7 @@ module Settings
     }
     setting :home_feed_minimum_score, type: :integer, default: 0
     setting :index_minimum_score, type: :integer, default: 0
+    setting :index_minimum_date, type: :integer, default: 1_500_000_000
     setting :primary_brand_color_hex, type: :string, default: "#3b49df", validates: {
       format: {
         with: HEX_COLOR_REGEX,

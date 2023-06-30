@@ -25,7 +25,6 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <button type="button" class="personal-template-button active" data-target-type="personal" data-form-id="new_comment">Personal</button>
             <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">Trusted User</button>
           </header>
-          <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
           <div class="personal-responses-container"></div>
           <div class="moderator-responses-container hidden"></div>
           <a target="_blank" rel="noopener nofollow" href="/settings/response-templates">Create template</a>

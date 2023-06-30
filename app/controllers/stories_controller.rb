@@ -48,6 +48,10 @@ class StoriesController < ApplicationController
 
   private
 
+  def assign_hero_banner
+    @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
+  end
+
   def assign_hero_html
     return if Campaign.current.hero_html_variant_name.blank?
 
@@ -125,6 +129,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     assign_feed_stories unless user_signed_in? # Feed fetched async for signed-in users
+    assign_hero_banner
     assign_hero_html
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
@@ -160,6 +165,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
+    @organization_users = @organization.users.order(badge_achievements_count: :desc)
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"

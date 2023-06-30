@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   private_constant :PUBLIC_CONTROLLERS
 
   CONTENT_CHANGE_PATHS = [
-    "/tags/onboarding", # Needs to change when suggested_tags is edited.
+    "/onboarding/tags", # Needs to change when suggested_tags is edited.
     "/onboarding", # Page is cached at edge.
     "/", # Page is cached at edge.
   ].freeze
@@ -285,6 +285,10 @@ class ApplicationController < ActionController::Base
   def bust_content_change_caches
     EdgeCache::Bust.call(CONTENT_CHANGE_PATHS)
     Settings::General.admin_action_taken_at = Time.current # Used as cache key
+  end
+
+  def feature_flag_enabled?(flag_name, acting_as: current_user)
+    FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
   end
 
   private

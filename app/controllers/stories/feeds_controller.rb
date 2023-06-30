@@ -43,7 +43,7 @@ module Stories
                  controller: self,
                  page: @page,
                  tag: params[:tag],
-                 number_of_articles: 25,
+                 number_of_articles: 45,
                )
              end
       Datadog::Tracing.trace("feed.query",

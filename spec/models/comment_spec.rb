@@ -327,6 +327,12 @@ RSpec.describe Comment do
       expect(comment.title).to eq("[deleted]")
     end
 
+    it "is converted to image text if the comment is image" do
+      comment.body_markdown = "![image](https://myimage.com/image.png)"
+      comment.validate!
+      expect(comment.title).to eq("[image]")
+    end
+
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
 

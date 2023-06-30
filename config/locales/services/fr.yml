@@ -108,5 +108,4 @@ fr:
     users:
       remove_role:
         remove_self: Les administrateurs ne peuvent pas se retirer des rôles.
-        remove_super: Les rôles de Super Admin ne peuvent pas être supprimés.
         error: Un problème est survenu lors de la suppression de ce rôle. %{e_message}
