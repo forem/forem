@@ -98,14 +98,42 @@ describe('subscribeButton', () => {
     expect(button.getAttribute('aria-pressed')).toBe('true');
   });
 
-  it('should set label, mobileLabel, and pressed for default config', () => {
-    updateSubscribeButtonText(button, 'unknown_config');
+  it('unknown config scenario', () => {
+    button.setAttribute('data-subscription_config', 'unknown_config');
+    updateSubscribeButtonText(button);
 
-    expect(button.getAttribute('aria-label')).toBe('Subscribe to comments');
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to comments');
     expect(button.querySelector('span').innerText).toBe(
-      'Subscribe to comments',
+      'Subscribed to comments',
     );
-    expect(button.hasAttribute('aria-pressed')).toBe(true);
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('subscribed-to-thread scenario', () => {
+    button.setAttribute('data-subscription_config', 'thread');
+    button.setAttribute('data-subscribed_to', 'comment');
+    button.setAttribute('data-comment_id', '456');
+    updateSubscribeButtonText(button);
+
+    expect(button.getAttribute('aria-label')).toBe('Subscribed to thread');
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribed to thread',
+    );
+    expect(button.getAttribute('aria-pressed')).toBe('true');
+  });
+
+  it('was-subscribed-to-thread scenario', () => {
+    button.setAttribute('data-subscription_id','');
+    button.setAttribute('data-subscription_config', 'thread');
+    button.setAttribute('data-subscribed_to', 'comment');
+    button.setAttribute('data-comment_id', '456');
+    updateSubscribeButtonText(button, 'unsubscribe');
+
+    expect(button.getAttribute('aria-label')).toBe('Subscribe to thread');
+    expect(button.querySelector('span').innerText).toBe(
+      'Subscribe to thread',
+    );
+    expect(button.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('should capitalize the mobileLabel', () => {
