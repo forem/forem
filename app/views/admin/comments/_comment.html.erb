@@ -14,6 +14,27 @@
             <a href="<%= comment.commentable.path %>" class="c-link c-link--branded"><%= comment.commentable.title %></a>
           </p>
         </div>
+        <div class="flex items-center gap-1">
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
+            <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsup"] || "0" %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_down") %>">
+            <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsdown"] || "0" %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+            <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= (@countable_vomits&.dig(comment.id) || 0) %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
+            <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.score %></span>
+          </span>
+        </div>
       </header>
     <% end %>
     <div class="text-styles text-styles--tertiary">
