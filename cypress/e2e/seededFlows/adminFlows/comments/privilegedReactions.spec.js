@@ -98,19 +98,27 @@ describe('Comment with flags and reactions', () => {
     cy.get('@user').then((user) => {
       cy.loginUser(user).then(() => {
         cy.visit(`/admin/content_manager/comments`);
+
+        cy.contains('Contains various privileged reactions.')
+          .parents('.crayons-card')
+          .within(() => {
+            cy.contains('View Details').click();
+          });
       });
     });
   });
 
-  it('should contains positive reaction values', () => {
-    cy.contains('Contains various privileged reactions.')
-      .parents('.crayons-card')
-      .within(() => {
-        // Thumbs-down count
-        cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '1');
+  it('should display the correct values for privileged reactions and score', () => {
+    // Thumbs-up count
+    cy.get('.flex .crayons-card:nth-child(1) .fs-s').should('contain', '0');
 
-        // Vomit/flag count
-        cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
-      });
+    // Thumbs-down count
+    cy.get('.flex .crayons-card:nth-child(2) .fs-s').should('contain', '1');
+
+    // Vomit/flag count
+    cy.get('.flex .crayons-card:nth-child(3) .fs-s').should('contain', '1');
+
+    //Score
+    cy.get('.flex .crayons-card:nth-child(4) .fs-s').should('contain', '0');
   });
 });
