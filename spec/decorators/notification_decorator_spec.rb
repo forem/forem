@@ -469,23 +469,23 @@ RSpec.describe NotificationDecorator, type: :decorator do
                 "ancestors" =>
                         [
                           { "id" => 5,
-                           "path" => "/other_user/comment/2m",
-                           "user" => { "name" => "Other User", "username" => "other_user" },
-                           "depth" => 0,
-                           "title" => "Hello, I have commented here. (Thus, presumably having a subscription.)",
-                           "ancestry" => nil },
+                            "path" => "/other_user/comment/2m",
+                            "user" => { "name" => "Other User", "username" => "other_user" },
+                            "depth" => 0,
+                            "title" => "Hello, I have commented here. (Thus, presumably having a subscription.)",
+                            "ancestry" => nil },
                           { "id" => 6,
-                           "path" => "/a_user/comment/2n",
-                           "user" => { "name" => "A. User", "username" => "a_user" },
-                           "depth" => 1,
-                           "title" => "Replying to your comment.",
-                           "ancestry" => "5" },
+                            "path" => "/a_user/comment/2n",
+                            "user" => { "name" => "A. User", "username" => "a_user" },
+                            "depth" => 1,
+                            "title" => "Replying to your comment.",
+                            "ancestry" => "5" },
                           { "id" => 7,
-                           "path" => "/other_user/comment/2o",
-                           "user" => { "name" => "Other User", "username" => "other_user" },
-                           "depth" => 2,
-                           "title" => "Replying to the reply to the comment.",
-                           "ancestry" => "5/6" }
+                            "path" => "/other_user/comment/2o",
+                            "user" => { "name" => "Other User", "username" => "other_user" },
+                            "depth" => 2,
+                            "title" => "Replying to the reply to the comment.",
+                            "ancestry" => "5/6" },
                         ],
                 "title" => "Hello I am Comment",
                 "created_at" => "2023-06-09T12:56:56.572Z",
@@ -522,7 +522,7 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.subscription_for(subscriber)).to \
           eq(:found)
         expect(mock_subscriptions).to have_received(:for_notifiable)
-          .with(notifiable_type: "Comment", notifiable_id: ancestor_ids.split("/")) # ActiveRecord will work with either, but mock needs to be specific # rubocop:disable Layout/LineLength
+          .with(notifiable_type: "Comment", notifiable_id: ancestor_ids.split("/")) # ActiveRecord will work with strings or ids, but mock needs to be specific # rubocop:disable Layout/LineLength
       end
 
       it "responds to article fields (even if blank)" do
@@ -539,8 +539,8 @@ RSpec.describe NotificationDecorator, type: :decorator do
         expect(decorated.comment_ancestry).to eq(ancestor_ids)
         expect(decorated.comment_last_ancestor).to match(a_hash_including({
                                                                             "id" => 7,
-                                                                            "path" => "/other_user/comment/2o", # rubocop:disable Layout/LineLength
-                                                                            "title" => "Replying to the reply to the comment."
+                                                                            "path" => "/other_user/comment/2o",
+                                                                            "title" => "Replying to the reply to the comment." # rubocop:disable Layout/LineLength
                                                                           }))
         expect(decorated.comment_path).to eq("/a_user/comment/2")
         expect(decorated.comment_depth).to eq(3)
