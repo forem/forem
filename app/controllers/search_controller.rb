@@ -76,7 +76,7 @@ class SearchController < ApplicationController
   end
 
   def feed_content
-    search_resources = SearchResources::FeedContent.new(feed_params: feed_params)
+    search_resources = Search::FeedContent.new(feed_params: feed_params)
 
     result =
       if search_resources.class_name.blank?

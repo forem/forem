@@ -1,4 +1,4 @@
-module SearchResources
+module Search
   class FeedContent
     def initialize(feed_params:)
       @feed_params = feed_params

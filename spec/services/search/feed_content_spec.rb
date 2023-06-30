@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SearchResources::FeedContent do
+RSpec.describe Search::FeedContent do
   subject(:requested_resource) do
     described_class.new(feed_params: feed_params)
   end
