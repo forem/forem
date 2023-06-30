@@ -236,7 +236,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
         }
         feedItems.push(resolvedValue);
       } else {
-        Honeybadger.notify(result.reason);
+        Honeybadger.notify(
+          `failed to fetch some items on the home feed: ${result.reason}`,
+        );
         // we push an undefined item because we want to maintain the placement of the deconstructed array.
         // it gets removed before display when we further organize.
         feedItems.push(undefined);
