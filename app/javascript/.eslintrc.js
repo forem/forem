@@ -21,19 +21,15 @@ module.exports = {
       pragma: 'h',
     },
     'import/resolver': {
-      webpack: {
-        config: {
-          resolve: {
-            alias: {
-              '@crayons': path.join(__dirname, './crayons'),
-              '@utilities': path.join(__dirname, './utilities'),
-              '@components': path.join(__dirname, './shared/components'),
-              '@images': path.join(__dirname, '../assets/images'),
-              '@admin': path.join(__dirname, './admin'),
-            },
-            extensions: ['.js', '.jsx'],
-          },
-        },
+      node: {
+        extensions: ['.js', '.jsx'],
+        paths: [
+          path.join(__dirname, './crayons'),
+          path.join(__dirname, './utilities'),
+          path.join(__dirname, './shared/components'),
+          path.join(__dirname, '../assets/images'),
+          path.join(__dirname, './admin'),
+        ],
       },
     },
   },

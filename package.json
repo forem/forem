@@ -108,7 +108,7 @@
     "@etchteam/storybook-addon-css-variables-theme": "^1.4.0",
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^5.4.1",
-    "@hotwired/stimulus": "3.1.0",
+    "@hotwired/stimulus": "^3.2.1",
     "@rails/ujs": "7.0.3",
     "@storybook/addon-backgrounds": "^6.5.16",
     "@storybook/addon-controls": "^6.5.16",
