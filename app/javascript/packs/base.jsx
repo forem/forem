@@ -11,6 +11,7 @@ import { initializeDashboardSort } from './initializers/initializeDashboardSort'
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -57,8 +58,7 @@ window.Forem = {
 
     render(
       <CommentTextArea vanillaTextArea={originalTextArea} />,
-      parentContainer,
-      originalTextArea,
+      createRootFragment(parentContainer, originalTextArea),
     );
   },
   showModal: showWindowModal,

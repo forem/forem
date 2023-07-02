@@ -5,6 +5,7 @@ import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 
 /**
  * Sends analytics about the featured article.
@@ -152,7 +153,6 @@ export const renderFeed = async (timeFrame) => {
         );
       }}
     />,
-    feedContainer,
-    feedContainer.firstElementChild,
+    createRootFragment(feedContainer, feedContainer.firstElementChild),
   );
 };

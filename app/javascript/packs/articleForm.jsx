@@ -2,6 +2,7 @@ import { h, render } from 'preact';
 import { ArticleForm } from '../article-form/articleForm';
 import { Snackbar } from '../Snackbar';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -34,8 +35,7 @@ function loadForm() {
         siteLogo={siteLogo}
         schedulingEnabled={schedulingEnabled == 'true'}
       />,
-      root,
-      root.firstElementChild,
+      createRootFragment(root, root.firstElementChild),
     );
   });
 }

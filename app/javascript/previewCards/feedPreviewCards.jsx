@@ -5,6 +5,7 @@ import {
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
 import { request } from '@utilities/http/request';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 
 const cachedAuthorMetadata = {};
 
@@ -33,7 +34,10 @@ async function populateMissingMetadata(metadataPlaceholder) {
 function renderMetadata(metadata, placeholder) {
   const container = placeholder.parentElement;
 
-  render(<UserMetadata {...metadata} />, container, placeholder);
+  render(
+    <UserMetadata {...metadata} />,
+    createRootFragment(container, placeholder),
+  );
 
   container
     .closest('.profile-preview-card__content')
