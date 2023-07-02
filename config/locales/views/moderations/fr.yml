@@ -161,6 +161,9 @@ fr:
         terms_and_conditions: Conditions générales d'utilisation
         trusted: Guide de l'utilisateur de confiance
       author: Auteur
+      comments:
+        view_comment: Voir le commentaire
+        view_details: Voir les détails
       date: Date
       notice:
         subtitle: '%{community} Mods'

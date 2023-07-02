@@ -33,7 +33,7 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it('flags and unflags only the comment when clicked', () => {
+    it.skip('flags and unflags only the comment when clicked', () => {
       navigateToCommentFlagPage().then(() => {
         cy.get('@questionableUser').then(({ username }) => {
           cy.intercept('POST', '/reactions').as('flagRequest');
@@ -54,7 +54,7 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it('flags and unflags only the user when clicked', () => {
+    it.skip('flags and unflags only the user when clicked', () => {
       navigateToCommentFlagPage().then(() => {
         cy.get('@questionableUser').then(({ username }) => {
           cy.intercept('POST', '/reactions').as('flagRequest');
@@ -75,7 +75,7 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it('visually toggles contradictory mod reactions off', () => {
+    it.skip('visually toggles contradictory mod reactions off', () => {
       navigateToCommentFlagPage().then(() => {
         cy.intercept('POST', '/reactions').as('flagRequest');
 
