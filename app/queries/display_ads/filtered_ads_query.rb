@@ -28,7 +28,7 @@ module DisplayAds
 
       if @article_id.present?
         if @article_tags.any?
-          @filtered_display_ads = tagged_ads(@article_tags)
+          @filtered_display_ads = tagged_ads(@article_tags).or(untagged_ads)
         end
 
         if @article_tags.blank?
@@ -39,7 +39,7 @@ module DisplayAds
       end
 
       if @user_tags.present? && @user_tags.any?
-        @filtered_display_ads = tagged_ads(@user_tags)
+        @filtered_display_ads = tagged_ads(@user_tags).or(untagged_ads)
       end
 
       if @user_tags.blank? && user_tagged_placement_area?(@area)
@@ -73,8 +73,7 @@ module DisplayAds
     end
 
     def tagged_ads(tag_type)
-      display_ads_with_tags = @filtered_display_ads.cached_tagged_with_any(tag_type)
-      untagged_ads.or(display_ads_with_tags)
+      @filtered_display_ads.cached_tagged_with_any(tag_type)
     end
 
     def untagged_ads
