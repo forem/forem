@@ -216,5 +216,5 @@ class DisplayAd < ApplicationRecord
 
   def self.new_and_priority_range_max(placement_area)
     ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || 35
-  end  
+  end
 end
