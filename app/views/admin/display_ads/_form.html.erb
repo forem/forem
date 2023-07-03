@@ -65,7 +65,7 @@
 
     <div class="crayons-field <%= "hidden" if @display_ad.audience_segment.blank? %>">
       <%= label_tag :audience_segment_id, "Users who:", class: "crayons-field__label" %>
-      <% if @display.audience_segment&.manual? %>
+      <% if @display_ad.audience_segment&.manual? %>
         <%= select_tag :audience_segment_id,
                        options_for_select(single_audience_segment_option(@display_ad), selected: @display_ad.audience_segment_id),
                        disabled: true,
