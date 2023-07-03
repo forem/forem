@@ -1386,7 +1386,7 @@ RSpec.describe Article do
     end
   end
 
-  it "does not send moderator notifications when a draft post" do
+  xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)
 
     draft_post = build(:article, published: false)

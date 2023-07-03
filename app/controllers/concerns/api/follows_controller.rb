@@ -3,12 +3,15 @@ module Api
     extend ActiveSupport::Concern
 
     def create
+      # API authentication might set current_user or might just set @user
+      active_user = current_user || @user
+
       user_ids.each do |user_id|
-        Users::FollowWorker.perform_async(current_user.id, user_id, "User")
+        Users::FollowWorker.perform_async(active_user.id, user_id, "User")
       end
 
       org_ids.each do |org_id|
-        Users::FollowWorker.perform_async(current_user.id, org_id, "Organization")
+        Users::FollowWorker.perform_async(active_user.id, org_id, "Organization")
       end
 
       render json: {
@@ -26,16 +29,28 @@ module Api
 
     private
 
+    # The strange params situation here is mostly due to a bug in the way
+    # rswag processes array-type params that appear in a query-string.
+    # Also, Rails' strong parameters does not work well with arrays-of-objects.
+    # So, in order to include this end-point in the swagger/open-api
+    # documentation, while maintaining compatibility with the existing
+    # infrastructure, we need to accept two kinds of inputs here -
+    # in one case, we receive a list of integer IDs,
+    # in the other case, we receive an array of objects, like {id: 123}
     def user_ids
-      return [] if params[:users].blank?
-
-      @user_ids ||= params[:users].pluck("id")
+      @user_ids ||= permitted_params[:user_ids].presence
+      @user_ids ||= params[:users].pluck("id") if params[:users].present?
+      @user_ids ||= []
     end
 
     def org_ids
-      return [] if params[:organizations].blank?
+      @org_ids ||= permitted_params[:organization_ids].presence
+      @org_ids ||= params[:organizations].pluck("id") if params[:organizations].present?
+      @org_ids ||= []
+    end
 
-      @org_ids ||= params[:organizations].pluck("id")
+    def permitted_params
+      params.permit(user_ids: [], organization_ids: [])
     end
   end
 end

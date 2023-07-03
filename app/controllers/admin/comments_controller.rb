@@ -19,6 +19,10 @@ module Admin
                   end
     end
 
+    def show
+      @comment = Comment.includes(:user, :commentable).find(params[:id])
+    end
+
     private
 
     def authorize_admin
