@@ -35,7 +35,7 @@ class DisplayAdsController < ApplicationController
   end
 
   def user_tags
-    return unless user_tagged_placement_area?(placement_area)
+    return unless feed_targeted_tag_placement?(placement_area)
 
     current_user.cached_followed_tag_names
   end
