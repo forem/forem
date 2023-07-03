@@ -82,6 +82,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       afterRender();
     }
   }, [feedItems.length]);
+
   // /**
   //  * Retrieves the imagePost which will later appear at the top of the feed,
   //  * with a larger main_image than any of the stories or feed elements.
@@ -206,12 +207,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   //  * @returns {Promise} A promise containing the JSON response for the feed data.
   //  */
   async function fetchFeedItems(timeFrame = '', page = 1) {
-    const [
-      feedPostsResponse,
-      feedFirstBillboardResponse,
-      feedSecondBillboardResponse,
-      feedThirdBillboardResponse,
-    ] = await Promise.all([
+    const promises = [
       fetch(`/stories/feed/${timeFrame}?page=${page}`, {
         method: 'GET',
         headers: {
@@ -224,19 +220,41 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       fetch(`/display_ads/feed_first`),
       fetch(`/display_ads/feed_second`),
       fetch(`/display_ads/feed_third`),
-    ]);
-
-    const feedPosts = await feedPostsResponse.json();
-    const feedFirstBillboard = await feedFirstBillboardResponse.text();
-    const feedSecondBillboard = await feedSecondBillboardResponse.text();
-    const feedThirdBillboard = await feedThirdBillboardResponse.text();
-
-    return [
-      feedPosts,
-      feedFirstBillboard,
-      feedSecondBillboard,
-      feedThirdBillboard,
     ];
+
+    const results = await Promise.allSettled(promises);
+    const feedItems = [];
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        let resolvedValue;
+        if (isJSON(result)) {
+          resolvedValue = await result.value.json();
+        }
+
+        if (isHTML(result)) {
+          resolvedValue = await result.value.text();
+        }
+        feedItems.push(resolvedValue);
+      } else {
+        Honeybadger.notify(
+          `failed to fetch some items on the home feed: ${result.reason}`,
+        );
+        // we push an undefined item because we want to maintain the placement of the deconstructed array.
+        // it gets removed before display when we further organize.
+        feedItems.push(undefined);
+      }
+    }
+    return feedItems;
+  }
+
+  function isJSON(result) {
+    return result.value.headers
+      ?.get('content-type')
+      ?.includes('application/json');
+  }
+
+  function isHTML(result) {
+    return result.value.headers?.get('content-type')?.includes('text/html');
   }
 
   // /**

@@ -42,10 +42,18 @@ describe('<Feed /> component', () => {
   describe('feedItem organization', () => {
     let callback;
     beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="" renderFeed={callback} />);
@@ -105,10 +113,17 @@ describe('<Feed /> component', () => {
     beforeAll(() => {
       fetch.mockResponseOnce(
         JSON.stringify(feedPostsWherePinnedAndImagePostsSame),
+        { headers: { 'content-type': 'application/json' } },
       );
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="" renderFeed={callback} />);
@@ -131,10 +146,18 @@ describe('<Feed /> component', () => {
   describe("when the timeframe prop is 'latest'", () => {
     let callback;
     beforeAll(() => {
-      fetch.mockResponseOnce(JSON.stringify(feedPosts));
-      fetch.mockResponseOnce(firstBillboard);
-      fetch.mockResponseOnce(secondBillboard);
-      fetch.mockResponseOnce(thirdBillboard);
+      fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+        headers: { 'content-type': 'application/json' },
+      });
+      fetch.mockResponseOnce(firstBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(secondBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
+      fetch.mockResponseOnce(thirdBillboard, {
+        headers: { 'content-type': 'text/html' },
+      });
 
       callback = jest.fn();
       render(<Feed timeFrame="latest" renderFeed={callback} />);
@@ -159,10 +182,16 @@ describe('<Feed /> component', () => {
     describe("when there isn't a feed_second billboard", () => {
       let callback;
       beforeAll(() => {
-        fetch.mockResponseOnce(JSON.stringify(feedPosts));
-        fetch.mockResponseOnce(firstBillboard);
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
+        fetch.mockResponseOnce(firstBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
         fetch.mockResponseOnce(undefined);
-        fetch.mockResponseOnce(thirdBillboard);
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
 
         callback = jest.fn();
         render(<Feed timeFrame="" renderFeed={callback} />);
@@ -191,10 +220,14 @@ describe('<Feed /> component', () => {
     describe("when there isn't a feed_first or feed_second billboard", () => {
       let callback;
       beforeAll(() => {
-        fetch.mockResponseOnce(JSON.stringify(feedPosts));
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
         fetch.mockResponseOnce(undefined);
         fetch.mockResponseOnce(undefined);
-        fetch.mockResponseOnce(thirdBillboard);
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
 
         callback = jest.fn();
         render(<Feed timeFrame="" renderFeed={callback} />);
@@ -216,7 +249,48 @@ describe('<Feed /> component', () => {
           const pinnedItem = feedPosts.find((o) => o.pinned === true);
           // there is no first billboard
           expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
-          // there is no second bilboard so podcsats get rendered in 3rd place
+          // there is no second bilboard so podcasts get rendered in 3rd place
+          expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
+          expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
+        });
+      });
+    });
+
+    describe('when items that we fetch for the feed throw an error', () => {
+      const callback = jest.fn();
+
+      beforeAll(() => {
+        global.Honeybadger = { notify: jest.fn() };
+
+        fetch.mockResponseOnce(JSON.stringify(feedPosts), {
+          headers: { 'content-type': 'application/json' },
+        });
+        fetch.mockRejectOnce();
+        fetch.mockRejectOnce();
+        fetch.mockResponseOnce(thirdBillboard, {
+          headers: { 'content-type': 'text/html' },
+        });
+        render(<Feed timeFrame="" renderFeed={callback} />);
+      });
+
+      it('should render and return the other feedItems', async () => {
+        await waitFor(() => {
+          const lastCallbackResult =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+          expect(lastCallbackResult.feedItems.length).toEqual(12);
+        });
+      });
+
+      it('should organize the feedItems correctly', async () => {
+        await waitFor(() => {
+          const lastCallbackResult =
+            callback.mock.calls[callback.mock.calls.length - 1][0];
+
+          const pinnedItem = feedPosts.find((o) => o.pinned === true);
+          // we will not be rendering the first billboard since it errored
+          expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
+          // we will not be rendering the second billboard since it errored
+          // so podcasts get rendered in 3rd place
           expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
           expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
         });
