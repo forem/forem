@@ -42,7 +42,10 @@ module DisplayAds
         @filtered_display_ads = tagged_ads(@user_tags).or(untagged_ads)
       end
 
-      if @user_tags.blank? && user_tagged_placement_area?(@area)
+      # We apply the condition feed_targeted_tag_placement? because we only want to filter by
+      # untagged ads on the home feed area placements. We do not want to have any side effects happen
+      # on the article page or anywhere else.
+      if @user_tags.blank? && feed_targeted_tag_placement?(@area)
         @filtered_display_ads = untagged_ads
       end
 
