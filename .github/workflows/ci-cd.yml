@@ -420,21 +420,33 @@ jobs:
           mv simplecov-* coverage/simplecov
           mv cypress-* coverage/cypress
           mv jest coverage/jest
-      - uses: codecov/codecov-action@v3
+      - uses: Wandalen/wretry.action@master
         with:
-          flags: ruby
-          directory: coverage/simplecov
-          fail_ci_if_error: true
-      - uses: codecov/codecov-action@v3
+          action: codecov/codecov-action@v3
+          with: |
+            flags: ruby
+            directory: coverage/simplecov
+            fail_ci_if_error: true
+          attempt_limit: 5
+          attempt_delay: 10000
+      - uses: Wandalen/wretry.action@master
         with:
-          flags: jest, javascript
-          directory: coverage/jest
-          fail_ci_if_error: true
-      - uses: codecov/codecov-action@v3
+          action: codecov/codecov-action@v3
+          with: |
+            flags: jest, javascript
+            directory: coverage/jest
+            fail_ci_if_error: true
+          attempt_limit: 5
+          attempt_delay: 10000
+      - uses: Wandalen/wretry.action@master
         with:
-          flags: cypress, javascript
-          directory: coverage/cypress
-          fail_ci_if_error: true
+          action: codecov/codecov-action@v3
+          with: |
+            flags: cypress, javascript
+            directory: coverage/cypress
+            fail_ci_if_error: true
+          attempt_limit: 5
+          attempt_delay: 10000
 
   CI-status-report:
     runs-on: ubuntu-latest
