@@ -141,7 +141,7 @@ function clearExcludeIds() {
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
   const articleSpecificPlacement = ['post_comments', 'post_sidebar'];
-  const targetedTagPlacement = [
+  const targetedTagPlacements = [
     'post_comments',
     'post_sidebar',
     'feed_first',
@@ -149,12 +149,12 @@ document.ready.then(() => {
     'feed_third',
   ];
 
-  if (targetedTagPlacement.includes(select.value)) {
+  if (targetedTagPlacements.includes(select.value)) {
     showTagsField();
   }
 
   select.addEventListener('change', (event) => {
-    if (targetedTagPlacement.includes(event.target.value)) {
+    if (targetedTagPlacements.includes(event.target.value)) {
       showTagsField();
     } else {
       hideTagsField();
