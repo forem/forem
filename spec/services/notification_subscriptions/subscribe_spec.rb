@@ -35,14 +35,14 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
     end
 
     it "can override subscription config (if valid)" do
-      described_class.call(current_user, article_id: article.id, subscribe_to: "top_level_comments")
+      described_class.call(current_user, article_id: article.id, config: "top_level_comments")
 
       subscription = NotificationSubscription.last
       expect(subscription.config).to eq("top_level_comments")
     end
 
     it "cannot override subscription config (if invalid)" do
-      result = described_class.call(current_user, article_id: article.id, subscribe_to: "blerg_blurg")
+      result = described_class.call(current_user, article_id: article.id, config: "blerg_blurg")
 
       expect(result).to eq({ errors: "Config is not included in the list" })
     end
