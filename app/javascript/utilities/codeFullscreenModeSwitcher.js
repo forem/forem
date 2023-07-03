@@ -26,6 +26,14 @@ function listenToKeyboardForEscape(listen) {
   }
 }
 
+function listenToWindowForPopstate(listen) {
+  if (listen) {
+    window.addEventListener('popstate', resetScrollOverflow);
+  } else {
+    window.removeEventListener('popstate', resetScrollOverflow);
+  }
+}
+
 function toggleOverflowForDocument(overflow) {
   if (overflow) {
     body.style.overflow = 'hidden';
@@ -50,6 +58,13 @@ function removeFullScreenModeControl(elements) {
   }
 }
 
+function resetScrollOverflow() {
+  if (!isFullScreenModeCodeOn) return;
+  toggleOverflowForDocument(false);
+  setAfterFullScreenScrollPosition();
+  listenToWindowForPopstate(false);
+}
+
 function fullScreenModeControl(event) {
   const codeBlock = event.currentTarget.closest('.js-code-highlight')
     ? event.currentTarget.closest('.js-code-highlight').cloneNode(true)
@@ -62,6 +77,7 @@ function fullScreenModeControl(event) {
     toggleOverflowForDocument(false);
     setAfterFullScreenScrollPosition();
     listenToKeyboardForEscape(false);
+    listenToWindowForPopstate(false);
     removeFullScreenModeControl(codeBlockControls);
 
     fullScreenWindow.classList.remove('is-open');
@@ -72,6 +88,8 @@ function fullScreenModeControl(event) {
     toggleOverflowForDocument(true);
     getBeforeFullScreenScrollPosition();
     listenToKeyboardForEscape(true);
+    listenToWindowForPopstate(true);
+
     codeBlock.classList.add('is-fullscreen');
     fullScreenWindow.appendChild(codeBlock);
     fullScreenWindow.classList.add('is-open');
