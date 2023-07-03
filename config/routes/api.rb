@@ -1,5 +1,6 @@
 namespace :admin do
   resources :users, only: [:create]
+  resources :organizations, only: %i[create update delete]
 end
 
 resources :articles, only: %i[index show create update] do
@@ -49,6 +50,7 @@ resources :organizations, only: [:show], param: :username do
   resources :users, only: [:index], to: "organizations#users"
   resources :articles, only: [:index], to: "organizations#articles"
 end
+resources :organizations, only: %i[index show]
 resource :instance, only: %i[show]
 
 constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do

@@ -2,6 +2,11 @@ module Api
   module OrganizationsController
     extend ActiveSupport::Concern
 
+    ATTRIBUTES_FOR_SERIALIZATION = %i[
+      id name profile_image slug summary tag_line url
+    ].freeze
+    private_constant ATTRIBUTES_FOR_SERIALIZATION
+
     SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
       id username name summary twitter_username github_username url
       location created_at profile_image tech_stack tag_line story
@@ -21,6 +26,14 @@ module Api
     private_constant :LISTINGS_FOR_SERIALIZATION
 
     ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
+
+    def index
+      per_page = (params[:per_page] || 30).to_i
+      num = [per_page, per_page_max].min
+      page = params[:page] || 1
+
+      @organization = Organization.select(ATTRIBUTES_FOR_SERIALIZATION).page(page).per(num)
+    end
 
     def show
       @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
