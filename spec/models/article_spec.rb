@@ -1386,7 +1386,11 @@ RSpec.describe Article do
     end
   end
 
-  xit "does not send moderator notifications when a draft post" do
+  it "does not send moderator notifications when a draft post" do
+    # This test has a history of being flaky, probably because
+    # expectations on classes are tricky to clear. Try to mitigate
+    # flakiness by ensuring that mocks are reset every time?
+    RSpec::Mocks.space.proxy_for(Notification).reset
     allow(Notification).to receive(:send_moderation_notification)
 
     draft_post = build(:article, published: false)
