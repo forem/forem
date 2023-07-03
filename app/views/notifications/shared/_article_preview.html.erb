@@ -36,7 +36,7 @@
           class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
           data-subscription_id="<%= subscription&.id %>"
           data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
-          data-subscription_mode="<%= subscription&.config %>"
+          data-subscription_config="<%= subscription&.config %>"
           data-article_id="<%= notification.article_id %>">
           <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
           <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>

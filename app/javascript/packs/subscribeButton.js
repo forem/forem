@@ -86,6 +86,7 @@ export function determinePayloadAndEndpoint(button) {
   } else {
     payload = {
       article_id: button.dataset.article_id,
+      subscription_config: button.dataset.subscription_config,
     };
     endpoint = 'comment-subscribe';
   }
