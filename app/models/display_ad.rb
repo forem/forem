@@ -210,7 +210,6 @@ class DisplayAd < ApplicationRecord
   def self.low_impression_count(placement_area)
     ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] || LOW_IMPRESSION_COUNT
   end
-  
   def self.random_range_max(placement_area)
     ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || 5
   end
