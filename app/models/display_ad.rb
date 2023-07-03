@@ -136,6 +136,21 @@ class DisplayAd < ApplicationRecord
     write_attribute :exclude_article_ids, (adjusted_input || [])
   end
 
+  # Temporary ENV configs, to eventually be replaced by permanent configurations
+  # once we determine what the appropriate long-term config approach is.
+
+  def self.low_impression_count(placement_area)
+    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] || LOW_IMPRESSION_COUNT
+  end
+
+  def self.random_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || 5
+  end
+
+  def self.new_and_priority_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || 35
+  end
+
   private
 
   def generate_display_ad_name
@@ -202,19 +217,5 @@ class DisplayAd < ApplicationRecord
     return if audience_segment_type != "manual"
 
     errors.add(:audience_segment_type) if audience_segment.blank?
-  end
-
-  # Temporary ENV configs, to eventually be replaced by permanent configurations
-  # once we determine what the appropriate long-term config approach is.
-
-  def self.low_impression_count(placement_area)
-    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] || LOW_IMPRESSION_COUNT
-  end
-  def self.random_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || 5
-  end
-
-  def self.new_and_priority_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || 35
   end
 end

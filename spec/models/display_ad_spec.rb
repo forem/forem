@@ -363,10 +363,6 @@ RSpec.describe DisplayAd do
       expect(described_class.seldom_seen("sidebar_left")).not_to include(high_impression_ad)
     end
 
-    it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
-      expect(described_class.seldom_seen("sidebar_left")).not_to include(high_impression_ad)
-    end
-
     it "includes both priority to be proper size when two qualifying ads exist" do
       expect(described_class.seldom_seen("sidebar_left").size).to be 2
     end
