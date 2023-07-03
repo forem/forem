@@ -143,15 +143,21 @@ class DisplayAd < ApplicationRecord
   # once we determine what the appropriate long-term config approach is.
 
   def self.low_impression_count(placement_area)
-    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] || LOW_IMPRESSION_COUNT
+    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["LOW_IMPRESSION_COUNT"] ||
+      LOW_IMPRESSION_COUNT
   end
 
   def self.random_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || RANDOM_RANGE_MAX_FALLBACK
+    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["SELDOM_SEEN_MIN"] ||
+      RANDOM_RANGE_MAX_FALLBACK
   end
 
   def self.new_and_priority_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"]||
+      ApplicationConfig["SELDOM_SEEN_MAX"]||
+      NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
   end
 
   private

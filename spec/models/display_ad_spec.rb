@@ -343,19 +343,32 @@ RSpec.describe DisplayAd do
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
     end
 
-    it "does not include ads with impression count more than env override of LOW_IMPRESSION_COUNT" do
+    it "does not include ads with impression count more than env area override of LOW_IMPRESSION_COUNT" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("990")
       expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
     end
 
-    it "includes ads with impression count less than than env override of LOW_IMPRESSION_COUNT" do
+    it "includes ads with impression count less than than env area override of LOW_IMPRESSION_COUNT" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("1010")
+      expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
+    end
+
+    it "does not include ads with impression count more than env GLOBAL override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("990")
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
+      expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
+    end
+
+    it "includes ads with impression count less than than env  GLOBAL override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("1010")
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
     end
 
     it "ignores override of LOW_IMPRESSION_COUNT to a different location" do
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_POST_COMMENTS").and_return("990")
       allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return(nil)
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
     end
 
