@@ -52,7 +52,7 @@ class DisplayAd < ApplicationRecord
                              search: "%#{term}%"
                      }
 
-  scope :seldom_seen, -> (area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
+  scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
