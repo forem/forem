@@ -22,6 +22,9 @@ class DisplayAd < ApplicationRecord
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
   LOW_IMPRESSION_COUNT = 1_000
+  RANDOM_RANGE_MAX_FALLBACK = 5
+  NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
+
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
@@ -144,11 +147,11 @@ class DisplayAd < ApplicationRecord
   end
 
   def self.random_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || 5
+    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] || RANDOM_RANGE_MAX_FALLBACK
   end
 
   def self.new_and_priority_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || 35
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] || NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
   end
 
   private
