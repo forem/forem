@@ -2,7 +2,7 @@ const importModule = () => import('@utilities/codeFullscreenModeSwitcher');
 
 describe('CodeFullScreenModeSwitcher Utility', () => {
   let addFullScreenModeControl, getFullScreenModeStatus;
-  let onPressEscape, resetBodyOverflow;
+  let onPressEscape, onPopstate;
 
   const getFullScreenElements = () =>
     ['.js-fullscreen-code.is-open', '.js-code-highlight.is-fullscreen'].map(
@@ -36,7 +36,7 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
 
     document.body.innerHTML = `
       <div class="js-code-highlight">
-        <button class="js-fullscreen-code-action">Toggle Full Screen</button>
+        <div class="js-fullscreen-code-action"><div>
       </div>
       <div class="js-fullscreen-code"></div>
     `;
@@ -50,7 +50,7 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
 
   beforeAll(async () => {
     // eventListener functions
-    ({ onPressEscape, resetBodyOverflow } = await importModule());
+    ({ onPressEscape, onPopstate } = await importModule());
   });
 
   it('starts in non-fullscreen mode', testNonFullScreen);
@@ -64,22 +64,19 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
 
     testFullScreen();
     expect(spyDoc).toHaveBeenCalledWith('keyup', onPressEscape);
-    expect(spyWindow).toHaveBeenCalledWith('popstate', resetBodyOverflow);
+    expect(spyWindow).toHaveBeenCalledWith('popstate', onPopstate);
   });
 
   it('exits fullscreen mode on Escape key', () => {
-    const goFullScreenButtons = getEnterFullScreenButtons();
     const spyDocRemove = jest.spyOn(document.body, 'removeEventListener');
     const spyWindowRemove = jest.spyOn(window, 'removeEventListener');
 
     testFullScreen();
-    goFullScreenButtons[0].click();
-
     document.body.dispatchEvent(new KeyboardEvent('keyup', { key: 'Escape' }));
-
     testNonFullScreen();
+
     expect(spyDocRemove).toHaveBeenCalledWith('keyup', onPressEscape);
-    expect(spyWindowRemove).toHaveBeenCalledWith('popstate', resetBodyOverflow);
+    expect(spyWindowRemove).toHaveBeenCalledWith('popstate', onPopstate);
   });
 
   it('re-enters fullscreen mode on click', () => {
@@ -89,24 +86,21 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
 
     testNonFullScreen();
     goFullScreenButtons[0].click();
-
     testFullScreen();
+
     expect(spyDoc).toHaveBeenCalledWith('keyup', onPressEscape);
-    expect(spyWindow).toHaveBeenCalledWith('popstate', resetBodyOverflow);
+    expect(spyWindow).toHaveBeenCalledWith('popstate', onPopstate);
   });
 
   it('exits fullscreen mode on popstate event', () => {
-    const goFullScreenButtons = getEnterFullScreenButtons();
     const spyDocRemove = jest.spyOn(document.body, 'removeEventListener');
     const spyWindowRemove = jest.spyOn(window, 'removeEventListener');
 
     testFullScreen();
-    goFullScreenButtons[0].click();
-
     window.dispatchEvent(new PopStateEvent('popstate', { state: { key: '' } }));
-
     testNonFullScreen();
+
     expect(spyDocRemove).toHaveBeenCalledWith('keyup', onPressEscape);
-    expect(spyWindowRemove).toHaveBeenCalledWith('popstate', resetBodyOverflow);
+    expect(spyWindowRemove).toHaveBeenCalledWith('popstate', onPopstate);
   });
 });

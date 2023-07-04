@@ -30,11 +30,15 @@ function listenToKeyboardForEscape(listen) {
   }
 }
 
+export function onPopstate() {
+  fullScreenModeControl();
+}
+
 function listenToWindowForPopstate(listen) {
   if (listen) {
-    window.addEventListener('popstate', resetBodyOverflow);
+    window.addEventListener('popstate', onPopstate);
   } else {
-    window.removeEventListener('popstate', resetBodyOverflow);
+    window.removeEventListener('popstate', onPopstate);
   }
 }
 
@@ -62,15 +66,8 @@ function removeFullScreenModeControl(elements) {
   }
 }
 
-export function resetBodyOverflow() {
-  if (!isFullScreenModeCodeOn) return;
-  toggleOverflowForDocument(false);
-  listenToKeyboardForEscape(false);
-  listenToWindowForPopstate(false);
-}
-
 function fullScreenModeControl(event) {
-  const codeBlock = event.currentTarget.closest('.js-code-highlight')
+  const codeBlock = event?.currentTarget.closest('.js-code-highlight')
     ? event.currentTarget.closest('.js-code-highlight').cloneNode(true)
     : null;
   const codeBlockControls = codeBlock
