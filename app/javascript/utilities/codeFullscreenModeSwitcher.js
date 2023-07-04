@@ -4,6 +4,10 @@ const fullScreenWindow =
   document.getElementsByClassName('js-fullscreen-code')[0];
 const { body } = document;
 
+export function getFullScreenModeStatus() {
+  return isFullScreenModeCodeOn;
+}
+
 function setAfterFullScreenScrollPosition() {
   window.scrollTo(0, screenScroll);
 }
@@ -12,7 +16,7 @@ function getBeforeFullScreenScrollPosition() {
   screenScroll = window.scrollY;
 }
 
-function onPressEscape(event) {
+export function onPressEscape(event) {
   if (event.key == 'Escape') {
     fullScreenModeControl(event);
   }
@@ -28,9 +32,9 @@ function listenToKeyboardForEscape(listen) {
 
 function listenToWindowForPopstate(listen) {
   if (listen) {
-    window.addEventListener('popstate', resetScrollOverflow);
+    window.addEventListener('popstate', resetBodyOverflow);
   } else {
-    window.removeEventListener('popstate', resetScrollOverflow);
+    window.removeEventListener('popstate', resetBodyOverflow);
   }
 }
 
@@ -58,10 +62,10 @@ function removeFullScreenModeControl(elements) {
   }
 }
 
-function resetScrollOverflow() {
+export function resetBodyOverflow() {
   if (!isFullScreenModeCodeOn) return;
   toggleOverflowForDocument(false);
-  setAfterFullScreenScrollPosition();
+  listenToKeyboardForEscape(false);
   listenToWindowForPopstate(false);
 }
 
