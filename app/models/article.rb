@@ -205,7 +205,7 @@ class Article < ApplicationRecord
   after_save :bust_cache
   after_save :collection_cleanup
 
-  after_create_commit :send_to_moderator
+  after_commit :send_to_moderator, on: :create, if: :published?
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -616,8 +616,9 @@ class Article < ApplicationRecord
 
   def send_to_moderator
     # Don't send notifications if this isn't published
-    # Note: `if: :published?` isn't reliable on `after_create_commit`, thus guarding
-    return unless published?
+    # Note: `if: :published?` might be buggy on `after_commit`,
+    # so an extra guard clause, just in case
+    return false unless published?
 
     # using nth_published because it doesn't count draft articles by the new author
     return if nth_published_by_author > 2
