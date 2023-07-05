@@ -388,7 +388,7 @@ en:
           email: Email
           github: GitHub
           twitter: Twitter
-          visit: Visit profile
+          visit: Visit organization
           total_members: "%{count} members"
           options:
             delete: Delete organization
