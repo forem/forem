@@ -194,6 +194,10 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
+  def by_staff_account?
+    user == User.staff_account
+  end
+
   private_class_method :build_sort_query
 
   private
