@@ -880,7 +880,7 @@ class Article < ApplicationRecord
   end
 
   def correct_published_at?
-    return unless changes["published_at"]
+    return false unless changes["published_at"]
 
     # for drafts (that were never published before) or scheduled articles
     # => allow future or current dates, or no published_at
