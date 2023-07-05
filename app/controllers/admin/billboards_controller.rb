@@ -1,5 +1,5 @@
 module Admin
-  class DisplayAdsController < Admin::ApplicationController
+  class BillboardsController < Admin::ApplicationController
     layout "admin"
 
     after_action :bust_ad_caches, only: %i[create update destroy]
@@ -27,7 +27,7 @@ module Admin
 
       if @display_ad.save
         flash[:success] = I18n.t("admin.display_ads_controller.created")
-        redirect_to edit_admin_display_ad_path(@display_ad.id)
+        redirect_to edit_admin_billboard_path(@display_ad.id)
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :new
@@ -39,7 +39,7 @@ module Admin
 
       if @display_ad.update(display_ad_params)
         flash[:success] = I18n.t("admin.display_ads_controller.updated")
-        redirect_to edit_admin_display_ad_path(params[:id])
+        redirect_to edit_admin_billboard_path(params[:id])
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :edit
