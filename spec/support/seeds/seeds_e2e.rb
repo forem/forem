@@ -827,13 +827,15 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
   )
 
   comment_attributes = {
-    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    body_markdown: "Contains various privileged reactions.",
     user_id: questionable_user.id,
     commentable_id: article.id,
     commentable_type: "Article"
   }
 
-  Comment.create!(comment_attributes)
+  comment = Comment.create!(comment_attributes)
+  admin_user.reactions.create!(category: :vomit, reactable: comment, status: :confirmed)
+  admin_user.reactions.create!(category: :thumbsdown, reactable: comment)
 end
 
 ##############################################################################

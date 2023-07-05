@@ -159,7 +159,7 @@ RSpec.describe Comment do
       it "not double wrap an already-linked mention" do
         comment.body_markdown = "Hello <a href='/#{user.username}'>@#{user.username}</a>, you are cool."
         comment.validate!
-        expect(comment.processed_html.scan(/href/).count).to eq(1)
+        expect(comment.processed_html.scan("href").count).to eq(1)
       end
 
       it "does not wrap email mention with username" do
@@ -188,7 +188,6 @@ RSpec.describe Comment do
         expect(comment.processed_html.include?("Hello <a")).to be(true)
       end
 
-      # rubocop:disable RSpec/ExampleLength
       it "shortens long urls without removing formatting", :aggregate_failures do
         long_url = "https://longurl.com/#{'x' * 100}?#{'y' * 100}"
         comment.body_markdown = "Hello #{long_url}"
@@ -395,6 +394,7 @@ RSpec.describe Comment do
         expect(comments).to eq([new_comment.id, comment.id, other_comment.id, old_comment.id])
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "returns comments in the right order when order is top" do
         comment.update_column(:score, 5)
         highest_rated_comment = comment
@@ -409,6 +409,7 @@ RSpec.describe Comment do
         comments = comments.map { |key, _| key.id }
         expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
       end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 
@@ -427,6 +428,7 @@ RSpec.describe Comment do
       end.to change(Comments::CalculateScoreWorker.jobs, :size).by(1)
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "enqueues a worker to send email" do
       comment.save!
       child_comment_user = create(:user)
@@ -436,6 +438,7 @@ RSpec.describe Comment do
         child_comment.save!
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
     end
+    # rubocop:enable RSpec/ExampleLength
 
     it "enqueues a worker to bust comment cache" do
       expect do
@@ -491,6 +494,35 @@ RSpec.describe Comment do
     end
   end
 
+  describe "#privileged_reaction_counts" do
+    it "contains correct vomit count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "vomit", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["vomit"]).to eq(1)
+    end
+
+    it "contains correct thumbsup count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "thumbsup", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["thumbsup"]).to eq(1)
+    end
+
+    it "contains correct thumbsdown count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "thumbsdown", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["thumbsdown"]).to eq(1)
+    end
+
+    it "returns an empty hash if there are no privileged reactions" do
+      counts = comment.privileged_reaction_counts
+
+      expect(counts).to be_empty
+    end
+  end
+
   context "when callbacks are triggered before save" do
     context "when the post is present" do
       it "generates character count before saving" do
@@ -540,6 +572,7 @@ RSpec.describe Comment do
       expect(comment.notifications).to be_empty
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "updates the notifications of the descendants with [deleted]" do
       comment = create(:comment, commentable: article)
       child_comment = create(:comment, parent: comment, commentable: article, user: user)
@@ -550,6 +583,7 @@ RSpec.describe Comment do
       notification = child_comment.notifications.first
       expect(notification.json_data["comment"]["ancestors"][0]["title"]).to eq("[deleted]")
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 
   context "when callbacks are triggered after destroy" do
