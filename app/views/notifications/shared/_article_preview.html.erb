@@ -25,9 +25,9 @@
         data-reactable-id="<%= notification.article_id %>"
         data-category="readinglist"
         data-reactable-type="Article">
-        <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
         <%= crayons_icon_tag("small-save", class: "reaction-icon not-reacted", title: t("views.reactions.readingList.icon")) %>
         <%= crayons_icon_tag("small-save-filled", class: "reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.readingList.icon")) %>
+        <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
       </button>
 
       <% if feature_flag_enabled?(:subscribe_to_comments) %>
