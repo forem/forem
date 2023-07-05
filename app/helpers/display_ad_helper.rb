@@ -10,7 +10,8 @@ module DisplayAdHelper
 
   def single_audience_segment_option(billboard)
     segment = billboard.audience_segment
-    raise if segment.blank?
+    # This should never happen
+    raise ArgumentError, "Billboard must have a target audience segment to build option for" if segment.blank?
 
     [[AudienceSegment.human_readable_description_for(segment.type_of), segment.id]]
   end
