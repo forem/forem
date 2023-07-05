@@ -202,6 +202,7 @@ Rails.application.routes.draw do
     scope "/:username/:slug" do
       get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
     end
+    get "/display_ads/:placement_area", to: "display_ads#show"
 
     # Settings
     post "users/join_org", to: "users#join_org"

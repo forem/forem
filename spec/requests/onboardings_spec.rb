@@ -127,7 +127,7 @@ RSpec.describe "Onboardings" do
       before do
         allow(FeatureFlag).to receive(:enabled?).and_return(true)
         allow(Organizations::SuggestProminent).to receive(:call).and_return(suggested_orgs)
-        allow(Users::SuggestRecent).to receive(:call).and_return(suggested_users)
+        allow(Users::SuggestProminent).to receive(:call).and_return(suggested_users)
       end
 
       it "returns users first, then organizations" do
