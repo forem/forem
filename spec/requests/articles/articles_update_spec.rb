@@ -195,7 +195,7 @@ RSpec.describe "ArticlesUpdate" do
 
     # draft => scheduled
     it "sets published_at according to the timezone when updating draft => scheduled" do
-      draft = create(:article, published: false, user_id: user.id, published_at: nil)
+      draft = create(:unpublished_article, user_id: user.id, published_at: nil)
       attributes[:published] = true
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
