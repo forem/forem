@@ -3,6 +3,39 @@ require "rails_helper"
 RSpec.describe "Api::V1::Organizations" do
   let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
+  describe "GET /api/organizations" do
+    it "retrieves all organizations and renders the collection as json" do
+      get api_organizations_path, headers: headers
+      expect(response).to have_http_status(:success)
+      expect(response.parsed_body.size).to eq(1)
+      expect(response.parsed_body.first.keys).to match_array(*%w[name summary profile_image url slug])
+    end
+  end
+
+  describe "GET /api/organizations/:id" do
+    let(:organization) { create(:organization) }
+
+    it "returns 404 if the organizations id is not found" do
+      get "/api/organizations/0", headers: headers
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns the correct json representation of the organization", :aggregate_failures do
+      get api_organization_path(organization.id), headers: headers
+
+      response_organization = response.parsed_body
+      expect(response_organization).to include(
+        {
+          "name" => organization.name,
+          "summary" => organization.summary,
+          "profile_image" => organization.profile_image_url,
+          "url" => organization.url,
+          "slug" => organization.slug
+        },
+      )
+    end
+  end
+
   describe "GET /api/organizations/:username" do
     let(:organization) { create(:organization) }
 
