@@ -172,7 +172,8 @@ It supports pagination, each page will contain `30` users by default."
               summary: "a newly created test org",
               url: "https://testorg.io",
               profile_image: "cloudinary/path/to/img.jpg",
-              slug: "org10001"
+              slug: "org10001",
+              tag_line: "a test org's tagline"
             }
           end
           add_examples
