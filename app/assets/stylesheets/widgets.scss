@@ -410,5 +410,9 @@
     .text-styles {
       font-size: var(--fs-base);
     }
+    &.billboard {
+      max-height: calc(100vh - var(--header-height) - 2*var(--layout-padding));
+      overflow: auto;
+    }
   }
 }

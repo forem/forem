@@ -22,8 +22,9 @@ class DisplayAd < ApplicationRecord
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
   LOW_IMPRESSION_COUNT = 1_000
-  RARELY = (0...5) # 5 percent chance
-  SELDOM = (5...35) # 30 percent chance
+  RANDOM_RANGE_MAX_FALLBACK = 5
+  NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
+
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
@@ -54,7 +55,7 @@ class DisplayAd < ApplicationRecord
                              search: "%#{term}%"
                      }
 
-  scope :seldom_seen, -> { where("impressions_count < ?", LOW_IMPRESSION_COUNT).or(where(priority: true)) }
+  scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
@@ -70,16 +71,16 @@ class DisplayAd < ApplicationRecord
     )
 
     case rand(99) # output integer from 0-99
-    when RARELY # smallest range, 5%
+    when (0..random_range_max(area)) # smallest range, 5%
       # We are always showing more of the good stuff — but we are also always testing the system to give any a chance to
       # rise to the top. 5 out of every 100 times we show an ad (5%), it is totally random. This gives "not yet
       # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
       # stays in this area.
       ads_for_display.sample
-    when SELDOM # medium range, 30%
+    when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      ads_for_display.seldom_seen.sample || ads_for_display.sample
+      ads_for_display.seldom_seen(area).sample || ads_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -136,6 +137,27 @@ class DisplayAd < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :exclude_article_ids, (adjusted_input || [])
+  end
+
+  # Temporary ENV configs, to eventually be replaced by permanent configurations
+  # once we determine what the appropriate long-term config approach is.
+
+  def self.low_impression_count(placement_area)
+    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["LOW_IMPRESSION_COUNT"] ||
+      LOW_IMPRESSION_COUNT
+  end
+
+  def self.random_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["SELDOM_SEEN_MIN"] ||
+      RANDOM_RANGE_MAX_FALLBACK
+  end
+
+  def self.new_and_priority_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"]||
+      ApplicationConfig["SELDOM_SEEN_MAX"] ||
+      NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
   end
 
   private

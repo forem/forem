@@ -129,7 +129,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:external_ad) { create_display_ad organization_id: organization.id, type_of: :external }
     let!(:other_external) { create_display_ad organization_id: other_org.id, type_of: :external }
 
-    it "always shows :community ad if matching, otherwise shows in_house/external" do
+    it "always shows :community ad if matching, otherwise shows in_house/external", :aggregate_failure do
       filtered = filter_ads organization_id: organization.id
       expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)

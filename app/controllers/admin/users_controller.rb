@@ -370,8 +370,11 @@ module Admin
           .includes(:user)
           .order(created_at: :desc).limit(15)
 
-      @countable_flags = calculate_countable_flags(@related_vomit_reactions)
-      @score = calculate_score(@related_vomit_reactions)
+      @user_vomit_reactions =
+        Reaction.where(reactable_type: "User", reactable_id: @user.id, category: "vomit")
+          .includes(:user)
+          .order(created_at: :desc)
+      @countable_flags = calculate_countable_flags(@user_vomit_reactions)
     end
 
     def user_params
@@ -424,14 +427,6 @@ module Admin
         countable_flags += 1 if reaction.status != "invalid"
       end
       countable_flags
-    end
-
-    def calculate_score(reactions)
-      score = 0
-      reactions.each do |reaction|
-        score += reaction.points
-      end
-      score
     end
   end
 end

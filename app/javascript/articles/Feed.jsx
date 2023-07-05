@@ -3,92 +3,266 @@ import { useEffect, useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { useListNavigation } from '../shared/components/useListNavigation';
 import { useKeyboardShortcuts } from '../shared/components/useKeyboardShortcuts';
+import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
-export const Feed = ({ timeFrame, renderFeed }) => {
+export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
   );
-  const [pinnedArticle, setPinnedArticle] = useState(null);
+  const [pinnedItem, setPinnedItem] = useState(null);
+  const [imageItem, setimageItem] = useState(null);
   const [feedItems, setFeedItems] = useState([]);
-  const [podcastEpisodes, setPodcastEpisodes] = useState([]);
   const [onError, setOnError] = useState(false);
 
   useEffect(() => {
-    setPodcastEpisodes(getPodcastEpisodes());
-  }, []);
-
-  useEffect(() => {
-    const fetchFeedItems = async () => {
+    const organizeFeedItems = async () => {
       try {
         if (onError) setOnError(false);
 
-        let feedItems = await getFeedItems(timeFrame);
+        fetchFeedItems(timeFrame).then(
+          ([
+            feedPosts,
+            feedFirstBillboard,
+            feedSecondBillboard,
+            feedThirdBillboard,
+          ]) => {
+            const imagePost = getImagePost(feedPosts);
+            const pinnedPost = getPinnedPost(feedPosts);
+            const podcastPost = getPodcastEpisodes();
 
-        // Here we extract from the feed two special items: pinned and featured
+            const hasSetPinnedPost = setPinnedPostItem(pinnedPost, imagePost);
+            const hasSetImagePostItem = setImagePostItem(imagePost);
 
-        const pinnedArticle = feedItems.find((story) => story.pinned === true);
+            const updatedFeedPosts = updateFeedPosts(
+              feedPosts,
+              imagePost,
+              pinnedPost,
+            );
 
-        // Ensure first article is one with a main_image
-        // This is important because the featuredStory will
-        // appear at the top of the feed, with a larger
-        // main_image than any of the stories or feed elements.
-        const featuredStory = feedItems.find(
-          (story) => story.main_image !== null,
+            // We implement the following organization for the feed:
+            // 1. Place the pinned post first (if the timeframe is relevant)
+            // 2. Place the image post next
+            // 3. If you follow podcasts, place the podcast episodes that are
+            // published today (this is an array)
+            // 4. Place the rest of the stories for the feed
+            // 5. Insert the billboards in that array accordingly
+            // - feed_first: Before all home page posts
+            // - feed_second: Between 2nd and 3rd posts in the feed
+            // - feed_third: Between 7th and 8th posts in the feed
+
+            const organizedFeedItems = [
+              ...insertInArrayIf(hasSetPinnedPost, pinnedPost),
+              ...insertInArrayIf(hasSetImagePostItem, imagePost),
+              ...insertInArrayIf(podcastPost.length > 0, podcastPost),
+              ...updatedFeedPosts,
+            ];
+
+            const organizedFeedItemsWithBillboards = insertBillboardsInFeed(
+              organizedFeedItems,
+              feedFirstBillboard,
+              feedSecondBillboard,
+              feedThirdBillboard,
+            );
+
+            setFeedItems(organizedFeedItemsWithBillboards);
+          },
         );
-
-        // If pinned and featured article aren't the same,
-        // (either because featuredStory is missing or because they represent two different articles),
-        // we set the pinnedArticle and remove it from feedItems.
-        // If pinned and featured are the same, we just remove it from feedItems without setting it as state.
-        // NB: We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
-        if (pinnedArticle && timeFrame === '') {
-          feedItems = feedItems.filter((item) => item.id !== pinnedArticle.id);
-
-          if (pinnedArticle.id !== featuredStory?.id) {
-            setPinnedArticle(pinnedArticle);
-          }
-        }
-
-        // Remove that first story from the array to
-        // prevent it from rendering twice in the feed.
-        const featuredIndex = feedItems.indexOf(featuredStory);
-        if (featuredStory) {
-          feedItems.splice(featuredIndex, 1);
-        }
-        const organizedFeedItems = [featuredStory, feedItems].flat();
-
-        setFeedItems(organizedFeedItems);
       } catch {
         if (!onError) setOnError(true);
       }
     };
-
-    fetchFeedItems();
+    organizeFeedItems();
   }, [timeFrame, onError]);
 
-  /**
-   * Retrieves feed data.
-   *
-   * @param {number} [page=1] Page of feed data to retrieve
-   *
-   * @returns {Promise} A promise containing the JSON response for the feed data.
-   */
-  async function getFeedItems(timeFrame = '', page = 1) {
-    const response = await fetch(`/stories/feed/${timeFrame}?page=${page}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    });
-    return await response.json();
+  useEffect(() => {
+    if (feedItems.length > 0) {
+      afterRender();
+    }
+  }, [feedItems.length]);
+
+  // /**
+  //  * Retrieves the imagePost which will later appear at the top of the feed,
+  //  * with a larger main_image than any of the stories or feed elements.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  *
+  //  * @returns {Object} The first post with a main_image
+  //  */
+  function getImagePost(feedPosts) {
+    return feedPosts.find((post) => post.main_image !== null);
   }
 
+  // /**
+  //  * Retrieves the pinnedPost which will later appear at the top the feed with a pin.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  *
+  //  * @returns {Object} The first post that has pinned set to true
+  //  */
+  function getPinnedPost(feedPosts) {
+    return feedPosts.find((post) => post.pinned === true);
+  }
+
+  // /**
+  //  * Sets the Pinned Item into state.
+  //  *
+  //  * @param {Object} The pinnedPost
+  //  * @param {Object} The imagePost
+  //  *
+  //  * @returns {boolean} If we set the pinned post we return true else we return false
+  //  */
+  function setPinnedPostItem(pinnedPost, imagePost) {
+    // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
+    if (!pinnedPost || timeFrame !== '') return false;
+
+    // If the pinned and the image post aren't the same, (either because imagePost is missing or
+    // because they represent two different posts), we set the pinnedPost
+    if (pinnedPost.id !== imagePost?.id) {
+      setPinnedItem(pinnedPost);
+      return true;
+    }
+
+    return false;
+  }
+
+  // /**
+  //  * Sets the Image Item into state.
+  //  *
+  //  * @param {Object} The imagePost
+  //  *
+  //  * @returns {boolean} If we set the pinned post we return true
+  //  */
+  function setImagePostItem(imagePost) {
+    if (imagePost) {
+      setimageItem(imagePost);
+      return true;
+    }
+  }
+
+  // /**
+  //  * Updates the feedPosts to remove the relevant items like the pinned
+  //  * post and the image post that will be added to the top of final organized feed
+  //  * items separately. We do not want duplication.
+  //  *
+  //  * @param {Array} The original feed posts that are retrieved from the endpoint.
+  //  * @param {Object} The imagePost
+  //  * @param {Object} The pinnedPost
+  //  *
+  //  * @returns {Array} We return the new array that no longer contains the pinned post or the image post.
+  //  */
+  function updateFeedPosts(feedPosts, imagePost, pinnedPost) {
+    let filteredFeedPost = feedPosts;
+    if (pinnedPost) {
+      filteredFeedPost = feedPosts.filter((item) => item.id !== pinnedPost.id);
+    }
+
+    if (imagePost) {
+      const imagePostIndex = filteredFeedPost.indexOf(imagePost);
+      filteredFeedPost.splice(imagePostIndex, 1);
+    }
+
+    return filteredFeedPost;
+  }
+
+  // /**
+  //  * Inserts the billboards (if they exist) into the feed.
+  //  *
+  //  * @param {organizedFeedItems} The partially organized feed items.
+  //  * @param {String} feedFirstBillboard is the feed_first billboard retrieved from an endpoint.
+  //  * @param {String} feedSecondBillboard is the feed_second billboard retrieved from an endpoint.
+  //  * @param {String} feedThirdBillboard is the feed_third billboard retrieved from an endpoint.
+  //  *
+  //  * @returns {Array} We return the array containing the billboards slotted into the correct positions.
+  //  */
+  function insertBillboardsInFeed(
+    organizedFeedItems,
+    feedFirstBillboard,
+    feedSecondBillboard,
+    feedThirdBillboard,
+  ) {
+    if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
+      organizedFeedItems.splice(7, 0, feedThirdBillboard);
+    }
+
+    if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
+      organizedFeedItems.splice(2, 0, feedSecondBillboard);
+    }
+
+    if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
+      organizedFeedItems.splice(0, 0, feedFirstBillboard);
+    }
+
+    return organizedFeedItems;
+  }
+
+  // /**
+  //  * Retrieves data for the feed. The data will include articles and billboards.
+  //  *
+  //  * @param {number} [page=1] Page of feed data to retrieve
+  //  * @param {string} The time frame of feed data to retrieve
+  //  *
+  //  * @returns {Promise} A promise containing the JSON response for the feed data.
+  //  */
+  async function fetchFeedItems(timeFrame = '', page = 1) {
+    const promises = [
+      fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': window.csrfToken,
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+      }),
+      fetch(`/display_ads/feed_first`),
+      fetch(`/display_ads/feed_second`),
+      fetch(`/display_ads/feed_third`),
+    ];
+
+    const results = await Promise.allSettled(promises);
+    const feedItems = [];
+    for (const result of results) {
+      if (result.status === 'fulfilled') {
+        let resolvedValue;
+        if (isJSON(result)) {
+          resolvedValue = await result.value.json();
+        }
+
+        if (isHTML(result)) {
+          resolvedValue = await result.value.text();
+        }
+        feedItems.push(resolvedValue);
+      } else {
+        Honeybadger.notify(
+          `failed to fetch some items on the home feed: ${result.reason}`,
+        );
+        // we push an undefined item because we want to maintain the placement of the deconstructed array.
+        // it gets removed before display when we further organize.
+        feedItems.push(undefined);
+      }
+    }
+    return feedItems;
+  }
+
+  function isJSON(result) {
+    return result.value.headers
+      ?.get('content-type')
+      ?.includes('application/json');
+  }
+
+  function isHTML(result) {
+    return result.value.headers?.get('content-type')?.includes('text/html');
+  }
+
+  // /**
+  //  * Retrieves the podcasts for the feed from the user data and the `followed-podcasts`
+  //  * div item.
+  //  *
+  //  * @returns {Object} An Object containing today's podcast episodes for the podcasts found in followed_podcast_ids.
+  //  */
   function getPodcastEpisodes() {
     const el = document.getElementById('followed-podcasts');
     const user = userData(); // Global
@@ -109,7 +283,8 @@ export const Feed = ({ timeFrame, renderFeed }) => {
   }
 
   /**
-   * Dispatches a click event to bookmark/unbookmark an article.
+   * Dispatches a click event to bookmark/unbookmark an article and sets the ID's of the
+   * updated bookmark feed items.
    *
    * @param {Event} event
    */
@@ -182,9 +357,9 @@ export const Feed = ({ timeFrame, renderFeed }) => {
         </div>
       ) : (
         renderFeed({
-          pinnedArticle,
+          pinnedItem,
+          imageItem,
           feedItems,
-          podcastEpisodes,
           bookmarkedFeedItems,
           bookmarkClick,
         })
