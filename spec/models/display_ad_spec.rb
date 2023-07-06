@@ -340,19 +340,44 @@ RSpec.describe DisplayAd do
     let!(:priority_ad) { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
 
     it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
-      expect(described_class.seldom_seen).to include(low_impression_ad)
+      expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
+    end
+
+    it "does not include ads with impression count more than env area override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("990")
+      expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
+    end
+
+    it "includes ads with impression count less than than env area override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return("1010")
+      expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
+    end
+
+    it "does not include ads with impression count more than env GLOBAL override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("990")
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
+      expect(described_class.seldom_seen("sidebar_left")).not_to include(low_impression_ad)
+    end
+
+    it "includes ads with impression count less than than env GLOBAL override of LOW_IMPRESSION_COUNT" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return("1010")
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
+      expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
+    end
+
+    it "ignores override of LOW_IMPRESSION_COUNT to a different location" do
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_POST_COMMENTS").and_return("990")
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT_FOR_SIDEBAR_LEFT").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("LOW_IMPRESSION_COUNT").and_return(nil)
+      expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
     end
 
     it "excludes ads with impressions count greater than or equal to LOW_IMPRESSION_COUNT" do
-      expect(described_class.seldom_seen).not_to include(high_impression_ad)
-    end
-
-    it "includes ads with priority set to true" do
-      expect(described_class.seldom_seen).to include(priority_ad)
+      expect(described_class.seldom_seen("sidebar_left")).not_to include(high_impression_ad)
     end
 
     it "includes both priority to be proper size when two qualifying ads exist" do
-      expect(described_class.seldom_seen.size).to be 2
+      expect(described_class.seldom_seen("sidebar_left").size).to be 2
     end
   end
 end

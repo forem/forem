@@ -50,7 +50,6 @@ function feedConstruct(
   bookmarkedFeedItems,
   bookmarkClick,
   currentUserId,
-  timeFrame,
 ) {
   const commonProps = {
     bookmarkClick,
@@ -82,49 +81,20 @@ function feedConstruct(
     }
 
     if (typeof item === 'object') {
-      // For "saveable" props, "!=" is used instead of "!==" to compare user_id
-      // and currentUserId because currentUserId is a String while user_id is an Integer
-
-      if (item.id === pinnedItem?.id && timeFrame === '') {
-        return (
-          <Article
-            {...commonProps}
-            key={item.id}
-            article={pinnedItem}
-            pinned={true}
-            feedStyle={feedStyle}
-            isBookmarked={bookmarkedFeedItems.has(pinnedItem?.id)}
-            saveable={pinnedItem.user_id != currentUserId}
-          />
-        );
-      }
-
-      if (item.id === imageItem?.id) {
-        return (
-          <Article
-            {...commonProps}
-            key={item.id}
-            article={imageItem}
-            isFeatured
-            feedStyle={feedStyle}
-            isBookmarked={bookmarkedFeedItems.has(imageItem.id)}
-            saveable={imageItem.user_id != currentUserId}
-          />
-        );
-      }
-
-      if (item.class_name === 'Article') {
-        return (
-          <Article
-            {...commonProps}
-            key={item.id}
-            article={item}
-            feedStyle={feedStyle}
-            isBookmarked={bookmarkedFeedItems.has(item.id)}
-            saveable={item.user_id != currentUserId}
-          />
-        );
-      }
+      return (
+        <Article
+          {...commonProps}
+          key={item.id}
+          article={item}
+          pinned={item.id === pinnedItem?.id}
+          isFeatured={item.id === imageItem?.id}
+          feedStyle={feedStyle}
+          isBookmarked={bookmarkedFeedItems.has(item.id)}
+          saveable={item.user_id != currentUserId}
+          // For "saveable" props, "!=" is used instead of "!==" to compare user_id
+          // and currentUserId because currentUserId is a String while user_id is an Integer
+        />
+      );
     }
   });
 }
@@ -187,7 +157,6 @@ export const renderFeed = async (timeFrame, afterRender) => {
           bookmarkedFeedItems,
           bookmarkClick,
           currentUserId,
-          timeFrame,
         )}
       </div>
     );

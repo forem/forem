@@ -1,5 +1,6 @@
 module DisplayAds
   class FilteredAdsQuery
+    include DisplayAdHelper
     def self.call(...)
       new(...).call
     end
@@ -9,7 +10,7 @@ module DisplayAds
     # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
                    permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd,
-                   user_id: nil)
+                   user_id: nil, user_tags: nil)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -18,22 +19,34 @@ module DisplayAds
       @article_tags = article_tags
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
+      @user_tags = user_tags
     end
 
     def call
       @filtered_display_ads = approved_and_published_ads
       @filtered_display_ads = placement_area_ads
 
-      if @article_tags.any?
-        @filtered_display_ads = tagged_post_comment_ads
-      end
-
-      if @article_tags.blank?
-        @filtered_display_ads = untagged_post_comment_ads
-      end
-
       if @article_id.present?
+        if @article_tags.any?
+          @filtered_display_ads = tagged_ads(@article_tags).or(untagged_ads)
+        end
+
+        if @article_tags.blank?
+          @filtered_display_ads = untagged_ads
+        end
+
         @filtered_display_ads = unexcluded_article_ads
+      end
+
+      if @user_tags.present? && @user_tags.any?
+        @filtered_display_ads = tagged_ads(@user_tags).or(untagged_ads)
+      end
+
+      # We apply the condition feed_targeted_tag_placement? because we only want to filter by
+      # untagged ads on the home feed area placements. We do not want to have any side effects happen
+      # on the article page or anywhere else.
+      if @user_tags.blank? && feed_targeted_tag_placement?(@area)
+        @filtered_display_ads = untagged_ads
       end
 
       @filtered_display_ads = user_targeting_ads
@@ -62,12 +75,11 @@ module DisplayAds
       @filtered_display_ads.where(placement_area: @area)
     end
 
-    def tagged_post_comment_ads
-      display_ads_with_targeted_article_tags = @filtered_display_ads.cached_tagged_with_any(@article_tags)
-      untagged_post_comment_ads.or(display_ads_with_targeted_article_tags)
+    def tagged_ads(tag_type)
+      @filtered_display_ads.cached_tagged_with_any(tag_type)
     end
 
-    def untagged_post_comment_ads
+    def untagged_ads
       @filtered_display_ads.where(cached_tag_list: "")
     end
 

@@ -198,6 +198,10 @@ class Comment < ApplicationRecord
     user == User.staff_account
   end
 
+  def privileged_reaction_counts
+    @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
+  end
+
   private_class_method :build_sort_query
 
   private
