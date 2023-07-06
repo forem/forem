@@ -102,7 +102,7 @@
   <div id="delete-organization">
     <% if current_user.admin? %>
       <%= form_for(@organization, url: full_delete_admin_user_path(@organization), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
-        <p><%= t("views.admin.organizations.delete.desc2", user: @organization.name) %></p>
+        <p><%= t("views.admin.organizations.delete.desc2", organization: @organization.name) %></p>
         <div>
           <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.users.delete.submit") %></button>
         </div>

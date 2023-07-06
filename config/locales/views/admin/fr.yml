@@ -393,8 +393,8 @@ fr:
         delete:
           heading: Delete %{organization}
           onsubmit: Are you sure? This actions is irreversible.
-          desc2: Once deleted, all data relating to %{user} will be removed from our database.
-          notice: Only Super Admins are allowed to delete users.
+          desc2: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them.
+          notice: Only Admins are allowed to delete organizations.
           submit: Delete now
         options:
           delete: Delete organization
