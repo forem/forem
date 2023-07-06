@@ -18,6 +18,8 @@ class DisplayAd < ApplicationRecord
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
+  HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
+
   MAX_TAG_LIST_SIZE = 10
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
@@ -57,8 +59,9 @@ class DisplayAd < ApplicationRecord
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
+
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
       display_ads: self,
       area: area,
@@ -68,6 +71,7 @@ class DisplayAd < ApplicationRecord
       organization_id: article&.organization_id,
       permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
+      user_tags: user_tags,
     )
 
     case rand(99) # output integer from 0-99
