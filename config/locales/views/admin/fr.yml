@@ -393,9 +393,9 @@ fr:
         delete:
           heading: Delete %{organization}
           onsubmit: Are you sure? This actions is irreversible.
-          desc2: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them.
+          desc2: "Note: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them."
           notice: Only Admins are allowed to delete organizations.
-          submit: Delete now
+          submit: Delete organizion now
         options:
           delete: Delete organization
           icon: Options
