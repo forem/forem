@@ -38,13 +38,13 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     let!(:mismatched) { create_display_ad cached_tag_list: "career" }
 
     it "will show no-tag display ads if the article tags do not contain matching tags" do
-      filtered = filter_ads(article_tags: %w[javascript])
+      filtered = filter_ads(article_id: 11, article_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
     it "will show display ads with no tags set if there are no article tags" do
-      filtered = filter_ads(article_tags: [])
+      filtered = filter_ads(article_id: 11, article_tags: [])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
@@ -53,7 +53,35 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       let!(:matching) { create_display_ad cached_tag_list: "linux, git, go" }
 
       it "will show the display ads that contain tags that match any of the article tags" do
-        filtered = filter_ads article_tags: %w[linux productivity]
+        filtered = filter_ads article_id: 11, article_tags: %w[linux productivity]
+        expect(filtered).not_to include(mismatched)
+        expect(filtered).to include(matching)
+        expect(filtered).to include(no_tags)
+      end
+    end
+  end
+
+  context "when considering user_tags" do
+    let!(:no_tags) { create_display_ad placement_area: "feed_first", cached_tag_list: "" }
+    let!(:mismatched) { create_display_ad placement_area: "feed_first", cached_tag_list: "career" }
+
+    it "will show no-tag display ads if the user tags do not contain matching tags" do
+      filtered = filter_ads(area: "feed_first", user_tags: %w[javascript])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
+    end
+
+    it "will show display ads with no tags set if there are no user tags" do
+      filtered = filter_ads(area: "feed_first", user_tags: [])
+      expect(filtered).not_to include(mismatched)
+      expect(filtered).to include(no_tags)
+    end
+
+    context "when available ads have matching tags" do
+      let!(:matching) { create_display_ad placement_area: "feed_first", cached_tag_list: "linux, git, go" }
+
+      it "will show the display ads that contain tags that match any of the user tags" do
+        filtered = filter_ads area: "feed_first", user_tags: %w[linux productivity]
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
         expect(filtered).to include(no_tags)
