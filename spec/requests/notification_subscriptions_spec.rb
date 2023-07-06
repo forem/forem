@@ -173,6 +173,7 @@ RSpec.describe "NotificationSubscriptions" do
 
   describe "POST /comments/subscribe" do
     let(:subscribe_service_result) { { updated: true } }
+    let(:request_params) { { comment_id: 1, article_id: 2 } }
 
     before do
       sign_in user
@@ -180,7 +181,7 @@ RSpec.describe "NotificationSubscriptions" do
       allow(NotificationSubscriptions::Subscribe).to receive(:call)
         .and_return(subscribe_service_result)
 
-      post "/comments/subscribe", params: { comment_id: 1, article_id: 2 }
+      post "/comments/subscribe", params: request_params
     end
 
     it "calls the Subscribe service object with the correct parameters" do
@@ -188,7 +189,19 @@ RSpec.describe "NotificationSubscriptions" do
       expect(response.body).to eq(subscribe_service_result.to_json)
       expect(NotificationSubscriptions::Subscribe).to \
         have_received(:call)
-        .with(user, comment_id: "1", article_id: "2")
+        .with(user, comment_id: "1", article_id: "2", config: "all_comments")
+    end
+
+    context "when setting subscription config in the request parameters" do
+      let(:request_params) do
+        { article_id: 3, subscription_config: "top_level_comments" }
+      end
+
+      it "calls the Subscribe service object with the correct parameters" do
+        expect(NotificationSubscriptions::Subscribe).to \
+          have_received(:call)
+          .with(user, a_hash_including(article_id: "3", config: "top_level_comments"))
+      end
     end
   end
 
