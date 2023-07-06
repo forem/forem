@@ -8,7 +8,8 @@ Rails.application.routes.draw do
     registrations: "registrations",
     invitations: "invitations",
     passwords: "passwords",
-    confirmations: "confirmations"
+    confirmations: "confirmations",
+    sessions: "sessions"
   }
 
   devise_scope :user do

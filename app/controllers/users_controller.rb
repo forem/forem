@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   after_action :verify_authorized,
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   before_action :initialize_stripe, only: %i[edit]
+  skip_before_action :check_user_has_completed_profile
 
   def index
     @users = sidebar_suggestions || User.none
