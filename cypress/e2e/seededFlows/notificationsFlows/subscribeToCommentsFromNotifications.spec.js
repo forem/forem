@@ -18,6 +18,11 @@ describe('Subscribe to Comments from notifications', () => {
     cy.get('@subscribeButton').should('have.attr', 'data-subscription_id', '');
     cy.get('@subscribeButton').click();
 
+    cy.intercept({ method: 'POST', url: '/comments/subscribe' }).as(
+      'subscribePost',
+    );
+    cy.wait('@subscribePost');
+
     cy.findByRole('button', { name: 'Subscribed to comments' }).as(
       'subscribedButton',
     );
@@ -31,9 +36,20 @@ describe('Subscribe to Comments from notifications', () => {
 
     cy.get('@subscribedButton').click();
 
-    cy.findByRole('button', { name: 'Subscribed to comments' }).as(
-      'subscribedButton',
+    cy.intercept({ method: 'POST', url: '/subscription/unsubscribe' }).as(
+      'unsubscribePost',
     );
-    cy.get('@subscribeButton').should('have.attr', 'data-subscription_id', '');
+
+    // Wait for all the GET requests with path containing /api/customer/ to complete
+    cy.wait('@unsubscribePost');
+
+    cy.findByRole('button', { name: 'Subscribe to comments' }).as(
+      'noLongerSubscribedButton',
+    );
+    cy.get('@noLongerSubscribedButton').should(
+      'have.attr',
+      'data-subscription_id',
+      '',
+    );
   });
 });
