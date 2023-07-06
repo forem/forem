@@ -101,7 +101,7 @@
 <div class="hidden">
   <div id="delete-organization">
     <% if current_user.admin? %>
-      <%= form_for(@organization, url: full_delete_admin_user_path(@organization), html: { class: "flex flex-col gap-6", method: :post, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
+      <%= form_for(@organization, url: admin_organization_path(@organization), html: { class: "flex flex-col gap-6", method: :delete, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
         <%= t("views.admin.organizations.delete.desc2", organization: @organization.name) %>
         <div>
           <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.organizations.delete.submit") %></button>

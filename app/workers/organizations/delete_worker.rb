@@ -5,7 +5,7 @@ module Organizations
     sidekiq_options queue: :high_priority, retry: 10
 
     # operator_id - the user who deletes the organization
-    def perform(organization_id, operator_id)
+    def perform(organization_id, operator_id, notify_user)
       org = Organization.find_by(id: organization_id)
       return unless org
 
@@ -17,8 +17,10 @@ module Organizations
       user.touch(:organization_info_updated_at)
       EdgeCache::BustUser.call(user)
 
-      # notify user that the org was deleted
-      NotifyMailer.with(name: user.name, org_name: org.name, email: user.email).organization_deleted_email.deliver_now
+      if notify_user
+        # notify user that the org was deleted
+        NotifyMailer.with(name: user.name, org_name: org.name, email: user.email).organization_deleted_email.deliver_now
+      end
 
       audit_log(org, user)
     rescue StandardError => e

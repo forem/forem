@@ -76,7 +76,7 @@ class OrganizationsController < ApplicationController
     organization = Organization.find_by(id: params[:id])
     authorize organization
 
-    Organizations::DeleteWorker.perform_async(organization.id, current_user.id)
+    Organizations::DeleteWorker.perform_async(organization.id, current_user.id, true)
     flash[:settings_notice] =
       I18n.t("organizations_controller.deletion_scheduled", organization_name: organization.name)
 
