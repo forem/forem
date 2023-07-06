@@ -1,5 +1,5 @@
+<%= javascript_packs_with_chunks_tag "admin/organizations", defer: true %>
 <header>
-
   <section class="crayons-card flex flex-col l:flex-row gap-2 m:gap-4 l:gap-6 mb-2 m:mb-3 p-3 s:p-4 m:p-7">
     <span class="crayons-logo crayons-logo--3xl">
       <img src="<%= @organization.profile_image %>" width="100%" height="100%" alt="<%= @organization.name %> profile picture">
@@ -13,6 +13,24 @@
         </div>
         <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
           <%= link_to t("views.admin.organizations.profile.visit"), "/#{@organization.slug}", class: "c-cta", target: "_blank", rel: "noopener" %>
+          <div class="dropdown-trigger-container">
+            <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+              <%= crayons_icon_tag("overflow-vertical", title: t("views.admin.users.profile.options.icon")) %>
+            </button>
+            <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown">
+              <ul class="p-0">
+                <li>
+                  <button
+                    type="button" class="c-btn c-btn--destructive w-100 align-left"
+                    data-modal-title="<%= t("views.admin.organizations.delete.heading", organization: @organization.name) %>"
+                    data-modal-size="small"
+                    data-modal-content-selector="#delete-organization">
+                    <%= t("views.admin.organizations.options.delete") %>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
       <div class="fs-s mb-1 color-secondary">
@@ -79,3 +97,18 @@
 </div>
 
 <%= render "activity" %>
+
+<div class="hidden">
+  <div id="delete-organization">
+    <% if current_user.admin? %>
+      <%= form_for(@organization, url: full_delete_admin_user_path(@organization), html: { class: "flex flex-col gap-4", method: :post, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
+        <p><%= t("views.admin.organizations.delete.desc2", user: @organization.name) %></p>
+        <div>
+          <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.users.delete.submit") %></button>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="crayons-notice crayons-notice--danger"><%= t("views.admin.users.delete.notice") %></div>
+    <% end %>
+  </div>
+</div>

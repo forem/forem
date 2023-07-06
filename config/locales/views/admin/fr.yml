@@ -388,14 +388,14 @@ fr:
           email: Email
           github: GitHub
           twitter: Twitter
-          visit: Visit profile
+          visit: Visit organization
           total_members: "%{count} members"
-          options:
-            delete: Delete organization
-          actions:
-            delete:
-              heading: Delete %{organization}
-              onsubmit: Are you sure? This actions is irreversible.
-              desc2: Once deleted, all data relating to %{user} will be removed from our database.
-              notice: Only Super Admins are allowed to delete users.
-              submit: Delete now
+        delete:
+          heading: Delete %{organization}
+          onsubmit: Are you sure? This actions is irreversible.
+          desc2: Once deleted, all data relating to %{user} will be removed from our database.
+          notice: Only Super Admins are allowed to delete users.
+          submit: Delete now
+        options:
+          delete: Delete organization
+          icon: Options
