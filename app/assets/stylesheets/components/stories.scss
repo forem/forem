@@ -107,6 +107,9 @@
       padding-left: calc(var(--su-7) + var(--su-2));
       padding-right: calc(var(--su-7) + var(--su-2));
     }
+    .text-styles {
+      font-size: var(--fs-base);
+    }
   }
 
   &__top {
