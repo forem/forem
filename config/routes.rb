@@ -165,9 +165,10 @@ Rails.application.routes.draw do
 
     resource :onboarding, only: %i[show update] do
       member do
-        patch :checkbox
-        patch :notifications
-        get :tags
+        patch :checkbox, defaults: { format: :json }
+        patch :notifications, defaults: { format: :json }
+        get :tags, defaults: { format: :json }
+        get :users_and_organizations, defaults: { format: :json }
       end
     end
 
@@ -201,6 +202,7 @@ Rails.application.routes.draw do
     scope "/:username/:slug" do
       get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
     end
+    get "/display_ads/:placement_area", to: "display_ads#show"
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -234,6 +236,7 @@ Rails.application.routes.draw do
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/search", to: "stories/articles_search#index"
+    get "/:slug/members", to: "organizations#members", as: :organization_members
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
 

@@ -162,23 +162,10 @@ en:
         terms_and_conditions: Terms & Conditions
         trusted: Trusted User Guide
       author: Author
+      comments:
+        view_comment: View Comment
+        view_details: View Details
       date: Date
-      flags:
-        actions:
-          mark_as_invalid: Mark as Invalid
-          mark_as_valid: Mark as Valid
-        invalid:
-          title: Flag marked as invalid by admin
-          value: Invalid
-        open:
-          title: Open Flag
-          value: Open
-        unidentified:
-          title: Unidentified
-          value: Unidentified
-        valid:
-          title: Flag marked as valid by admin
-          value: Valid
       notice:
         subtitle: '%{community} Mods'
         desc1_html: We periodically award some %{community} members with heightened privileges to help moderate the community.

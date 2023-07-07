@@ -77,7 +77,7 @@ gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
 gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 7.0.4.1" # Ruby on Rails
+gem "rails", "~> 7.0.5.1" # Ruby on Rails
 gem "ransack", "~> 3.2" # Searching and sorting
 gem "recaptcha", "~> 5.10", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
@@ -140,7 +140,7 @@ group :development, :test do
   gem "debug", ">= 1.0.0" # Provide a debug with step capabilities
   gem "dotenv-rails", "~> 2.8.1" # For loading ENV variables locally
   gem "faker", "~> 2.22" # A library for generating fake data such as names, addresses, and phone numbers
-  gem "knapsack_pro", "~> 3.0" # Help parallelize Ruby spec builds
+  gem "knapsack_pro", "~> 5.1" # Help parallelize Ruby spec builds
   gem "pry", "~> 0.14" # An IRB alternative and runtime developer console
   gem "pry-rails", "~> 0.3" # Use Pry as your rails console
   gem "rspec-rails", "~> 6.0" # rspec-rails is a testing framework for Rails 3+
@@ -173,3 +173,5 @@ group :test do
   gem "with_model", "~> 2.1.6" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
+
+gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.

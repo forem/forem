@@ -82,7 +82,7 @@ namespace :admin do
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
     post "/badge_achievements/award_badges", to: "badge_achievements#award_badges"
-    resources :comments, only: [:index]
+    resources :comments, only: %i[index show]
     resources :organizations, only: %i[index show] do
       member do
         patch "update_org_credits"
@@ -102,7 +102,8 @@ namespace :admin do
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
-    resources :display_ads, only: %i[index edit update new create destroy]
+    # resources :display_ads, only: %i[index edit update new create destroy]
+    resources :billboards, only: %i[index edit update new create destroy]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
     resources :pages, only: %i[index new create edit update destroy]

@@ -123,7 +123,7 @@ class Article < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
-  has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
+  has_many :context_notifications_published, -> { where(context_notifications_published: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -387,6 +387,16 @@ class Article < ApplicationRecord
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
+
+  scope :above_average, lambda {
+    order(:score).where("score >= ?", average_score)
+  }
+
+  def self.average_score
+    Rails.cache.fetch("article_average_score", expires_in: 1.day) do
+      unscoped { where(score: 0..).average(:score) } || 0.0
+    end
+  end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
     # Time ago sometimes returns this phrase instead of a date

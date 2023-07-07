@@ -12,14 +12,22 @@ RSpec.describe "Api::V1::FollowsController" do
     context "when user is authorized" do
       let(:user) { create(:user) }
       let(:users_hash) { [{ id: create(:user).id }, { id: create(:user).id }] }
+      let(:orgs_hash) { [{ id: create(:organization).id }, { id: create(:organization).id }] }
 
       before do
         sign_in user
       end
 
       it "returns the number of followed users" do
-        post "/api/follows", params: { users: users_hash }, headers: headers
-        expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
+        post "/api/follows",
+             params: {
+               users: users_hash,
+               organizations: orgs_hash
+             },
+             headers: headers
+
+        expected_outcome = users_hash.size + orgs_hash.size
+        expect(response.parsed_body["outcome"]).to include("#{expected_outcome} users")
       end
 
       it "creates follows" do
@@ -29,6 +37,23 @@ RSpec.describe "Api::V1::FollowsController" do
             post "/api/follows", params: { users: users_hash }, headers: headers
           end
         end.to change(Follow, :count).by(users_hash.size)
+      end
+
+      it "can follow users or organizations" do
+        sign_in user
+        user_to_follow = create(:user)
+        org_to_follow = create(:organization)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            post "/api/follows",
+                 params: {
+                   users: [{ id: user_to_follow.id }],
+                   organizations: [{ id: org_to_follow.id }]
+                 },
+                 headers: headers
+          end
+        end.to change(Follow, :count).by(2)
       end
     end
   end

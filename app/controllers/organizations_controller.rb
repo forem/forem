@@ -1,5 +1,6 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
+  skip_after_action :verify_authorized, only: :members
 
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id
@@ -91,6 +92,11 @@ class OrganizationsController < ApplicationController
     @organization.save
     flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
     redirect_to user_settings_path(:organization)
+  end
+
+  def members
+    @organization = Organization.find_by(slug: params[:slug])
+    @members = @organization.users
   end
 
   private

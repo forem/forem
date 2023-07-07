@@ -97,6 +97,8 @@ class User < ApplicationRecord
   has_many :poll_skips, dependent: :delete_all
   has_many :poll_votes, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :segmented_users, dependent: :destroy
+  has_many :audience_segments, through: :segmented_users
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify
@@ -211,6 +213,13 @@ class User < ApplicationRecord
     order(updated_at: :desc).limit(active_limit)
   }
 
+  scope :above_average, lambda {
+    where(
+      articles_count: average_articles_count..,
+      comments_count: average_comments_count..,
+    )
+  }
+
   before_validation :downcase_email
 
   # make sure usernames are not empty, to be able to use the database unique index
@@ -226,6 +235,18 @@ class User < ApplicationRecord
   after_save :create_conditional_autovomits
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
+
+  def self.average_articles_count
+    Rails.cache.fetch("established_user_article_count", expires_in: 1.day) do
+      unscoped { where(articles_count: 1..).average(:articles_count) || average(:articles_count) } || 0.0
+    end
+  end
+
+  def self.average_comments_count
+    Rails.cache.fetch("established_user_comment_count", expires_in: 1.day) do
+      unscoped { where(comments_count: 1..).average(:comments_count) || average(:comments_count) } || 0.0
+    end
+  end
 
   def self.staff_account
     find_by(id: Settings::Community.staff_user_id)
@@ -324,31 +345,17 @@ class User < ApplicationRecord
     true
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_followed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: 1..,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.followed_by(self).pluck(:name)
     end
   end
 
-  # @todo Move the Query logic into Tag.  It represents User understanding the inner working of Tag.
   def cached_antifollowed_tag_names
     cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/antifollowed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
-      Tag.where(
-        id: Follow.where(
-          follower_id: id,
-          followable_type: "ActsAsTaggableOn::Tag",
-          points: ...1,
-        ).select(:followable_id),
-      ).pluck(:name)
+      Tag.antifollowed_by(self).pluck(:name)
     end
   end
 
@@ -554,6 +561,10 @@ class User < ApplicationRecord
 
     [registered_at, last_comment_at, last_article_at, latest_article_updated_at, last_reacted_at, profile_updated_at,
      last_moderation_notification, last_notification_activity].compact.max
+  end
+
+  def currently_following_tags
+    Tag.followed_by(self)
   end
 
   protected

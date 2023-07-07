@@ -19,6 +19,7 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show]
   before_action :set_cache_control_headers, only: %i[index show]
+  before_action :set_user_limit, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
@@ -47,6 +48,10 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def set_user_limit
+    @user_limit = 50
+  end
 
   def assign_hero_banner
     @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
@@ -165,6 +170,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
+    @organization_users = @organization.users.order(badge_achievements_count: :desc)
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"

@@ -700,8 +700,8 @@ RSpec.describe Article do
 
   describe "#slug" do
     let(:title) { "hey This' is$ a SLUG" }
-    let(:article0) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
-    let(:article1) { build(:article, title: title, published: false) } # rubocop:disable RSpec/IndexedLet
+    let(:article0) { build(:article, title: title, published: false) }
+    let(:article1) { build(:article, title: title, published: false) }
 
     before do
       article0.validate!
@@ -1276,6 +1276,41 @@ RSpec.describe Article do
     end
   end
 
+  describe "#privileged_reaction_counts" do
+    it "contains correct vomit count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "vomit", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to eq(1)
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsup count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsup", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to eq(1)
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsdown count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsdown", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to eq(1)
+    end
+
+    it "returns an empty hash if there are no privileged reactions" do
+      counts = article.privileged_reaction_counts
+
+      expect(counts).to be_empty
+    end
+  end
+
   describe "#followers" do
     it "returns an array of users who follow the article's author" do
       following_user = create(:user)
@@ -1360,7 +1395,33 @@ RSpec.describe Article do
     end
   end
 
-  it "does not send moderator notifications when a draft post" do
+  describe ".above_average and .average_score" do
+    context "when there are not yet any articles with score above 0" do
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(0.0)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(0)
+      end
+    end
+
+    context "when there are articles with score" do
+      before do
+        create(:article, score: 10)
+        create(:article, score: 6)
+        create(:article, score: 4)
+        create(:article, score: 1)
+        # averages 4.2 with article created earlier, see let on line 13
+      end
+
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(4.2)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(10, 6)
+      end
+    end
+  end
+
+  xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)
 
     draft_post = build(:article, published: false)

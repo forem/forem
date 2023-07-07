@@ -106,6 +106,8 @@ RSpec.describe User do
       it { is_expected.to have_many(:reactions).dependent(:destroy) }
       it { is_expected.to have_many(:response_templates).dependent(:delete_all) }
       it { is_expected.to have_many(:source_authored_user_subscriptions).dependent(:destroy) }
+      it { is_expected.to have_many(:segmented_users).dependent(:destroy) }
+      it { is_expected.to have_many(:audience_segments).through(:segmented_users) }
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
@@ -852,6 +854,62 @@ RSpec.describe User do
     it "returns the most recently updated" do
       results = described_class.recently_active(1)
       expect(results).to contain_exactly(later)
+    end
+  end
+
+  describe "#currently_following_tags" do
+    before do
+      allow(Tag).to receive(:followed_by)
+    end
+
+    it "calls Tag.followed_by" do
+      user.currently_following_tags
+      expect(Tag).to have_received(:followed_by).with(user)
+    end
+  end
+
+  describe ".above_average and .average_x_count" do
+    context "when there are not yet any articles with score above 0" do
+      it "works as expected" do
+        expect(described_class.average_articles_count).to be_within(0.1).of(0.0)
+        expect(described_class.average_comments_count).to be_within(0.1).of(0.0)
+        users = described_class.above_average
+        expect(users.pluck(:articles_count)).to eq([])
+        expect(users.pluck(:comments_count)).to eq([])
+      end
+    end
+
+    context "when there are users with articles_count" do
+      before do
+        create(:user, articles_count: 10)
+        create(:user, articles_count: 6)
+        create(:user, articles_count: 4)
+        create(:user, articles_count: 1)
+        # averages 5.25
+      end
+
+      it "works as expected" do
+        expect(described_class.average_articles_count).to be_within(0.1).of(5.25)
+        articles = described_class.above_average
+        expect(articles.pluck(:articles_count)).to contain_exactly(10, 6)
+      end
+    end
+
+    context "when there are users with comments_count" do
+      before do
+        create(:user, comments_count: 5)
+        create(:user, comments_count: 4)
+        create(:user, comments_count: 3)
+        create(:user, comments_count: 2)
+        # averages 3.5
+      end
+
+      it "works as expected" do
+        expect(described_class.average_comments_count).to be_within(0.1).of(3.5)
+        articles = described_class.above_average
+        # average is decimal but gets floored by the query builder
+        expect(articles.pluck(:comments_count)).to contain_exactly(5, 4, 3)
+      end
     end
   end
 end
