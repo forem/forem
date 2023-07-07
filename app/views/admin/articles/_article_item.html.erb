@@ -222,7 +222,7 @@
         <% if params[:tab] == "quality_reactions" %>
           <% if quality_article_reactions.present? %>
             <% quality_article_reactions.each do |quality_reaction| %>
-              <%= render "admin/articles/quality_action_item", quality_reaction: quality_reaction %>
+              <%= render "admin/shared/quality_action_item", quality_reaction: quality_reaction %>
               <hr id="js__reaction__div__hr__<%= quality_reaction.id %>" class="w-100 hr-no-margins">
             <% end %>
           <% else %>
