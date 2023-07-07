@@ -118,7 +118,7 @@
     "@rails/webpacker": "5.4.3",
     "@storybook/addon-backgrounds": "^6.5.16",
     "@storybook/addon-controls": "^6.5.16",
-    "ahoy.js": "^0.4.2",
+    "ahoy.js": "^0.4.3",
     "autoprefixer": "^10.4.14",
     "babel-plugin-inline-react-svg": "^2.0.2",
     "babel-plugin-module-resolver": "^4.1.0",
