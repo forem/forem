@@ -253,7 +253,7 @@ export class FollowUsers extends Component {
                     </div>
                     <label
                       className={`relative user-following-status crayons-btn ${
-                        selected ? 'color-primary' : 'crayons-btn--outlined'
+                        selected ? 'crayons-btn--outlined' : 'color-primary'
                       }`}
                     >
                       <input
