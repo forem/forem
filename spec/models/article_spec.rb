@@ -1420,23 +1420,4 @@ RSpec.describe Article do
       end
     end
   end
-
-  # This test has a history of being flaky, curreent theory is that the
-  # after_create_commit callback is not reliable
-  it "does not send moderator notifications when a draft post" do
-    # Another flakiness theory is that the class expectations aren't fully
-    # reset in some other test, so try to clear them out before setting ours:
-    RSpec::Mocks.space.proxy_for(Notification).reset
-    allow(Notification).to receive(:send_moderation_notification)
-
-    draft_post = build(:unpublished_article, title: "This should not be published")
-    draft_post.save!
-    expect(draft_post).not_to be_published
-    expect(Notification).not_to have_received(:send_moderation_notification)
-
-    published_post = build(:published_article, title: "This should be published")
-    published_post.save!
-    expect(Notification).to have_received(:send_moderation_notification)
-      .with(published_post)
-  end
 end

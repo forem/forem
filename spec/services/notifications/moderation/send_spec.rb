@@ -70,12 +70,6 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       u = create(:user, :trusted, last_reacted_at: 2.days.ago, last_moderation_notification: last_moderation_time)
       u.notification_setting.update(mod_roundrobin_notifications: true)
       allow(User).to receive(:staff_account).and_return(staff_account)
-      # Creating an article calls moderation job which itself calls moderation service
-      Article.skip_callback(:commit, :after, :send_to_moderator)
-    end
-
-    after do
-      Article.set_callback(:commit, :after, :send_to_moderator)
     end
 
     it "calls article_data since parameter is an article" do
