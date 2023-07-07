@@ -141,19 +141,35 @@ function clearExcludeIds() {
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
   const articleSpecificPlacement = ['post_comments', 'post_sidebar'];
-  if (articleSpecificPlacement.includes(select.value)) {
+  const targetedTagPlacements = [
+    'post_comments',
+    'post_sidebar',
+    'feed_first',
+    'feed_second',
+    'feed_third',
+  ];
+
+  if (targetedTagPlacements.includes(select.value)) {
     showTagsField();
+  }
+
+  select.addEventListener('change', (event) => {
+    if (targetedTagPlacements.includes(event.target.value)) {
+      showTagsField();
+    } else {
+      hideTagsField();
+      clearTagList();
+    }
+  });
+
+  if (articleSpecificPlacement.includes(select.value)) {
     showExcludeIds();
   }
 
   select.addEventListener('change', (event) => {
     if (articleSpecificPlacement.includes(event.target.value)) {
-      showTagsField();
       showExcludeIds();
     } else {
-      hideTagsField();
-      clearTagList();
-
       hideExcludeIds();
       clearExcludeIds();
     }

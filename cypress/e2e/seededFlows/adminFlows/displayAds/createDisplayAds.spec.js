@@ -12,40 +12,51 @@ describe('Create Display Ads', () => {
       });
     });
 
-    it('should not show the tags field if the placement is not one of the post page areas', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+    describe('Targeted Tags field', () => {
+      [
         'Sidebar Right (Home)',
-      );
-      cy.findByRole('input', { name: 'Targeted Tag(s)' }).should('not.exist');
-    });
+        'Sidebar Left (First Position)',
+        'Sidebar Left (Second Position)',
+        'Home Hero',
+      ].forEach((area) => {
+        it(`should not show the tags field if the placement is ${area}`, () => {
+          cy.findByRole('combobox', { name: 'Placement Area:' }).select(area);
+          cy.findByRole('input', { name: 'Targeted Tag(s)' }).should(
+            'not.exist',
+          );
+        });
+      });
 
-    it('should show the tags field if the placement is "Below the comment section"', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+      [
         'Below the comment section',
-      );
-      cy.findByLabelText('Targeted Tag(s)').should('exist');
-    });
-
-    it('should show the tags field if the placement is "Sidebar Right (Individual Post)"', () => {
-      cy.findByRole('combobox', { name: 'Placement Area:' }).select(
         'Sidebar Right (Individual Post)',
-      );
-      cy.findByLabelText('Targeted Tag(s)').should('exist');
+        'Sidebar Right (Individual Post)',
+        'Home Feed First',
+        'Home Feed Second',
+        'Home Feed Third',
+      ].forEach((area) => {
+        it(`should show the tags field if the placement is ${area}`, () => {
+          cy.findByRole('combobox', { name: 'Placement Area:' }).select(area);
+          cy.findByLabelText('Targeted Tag(s)').should('exist');
+        });
+      });
     });
 
-    it('should not show the audience segment field if the display to is logged-out users', () => {
-      cy.findByRole('radio', { name: 'Only logged out users' }).click();
-      cy.findByLabelText('Users who:').should('not.be.visible');
-    });
+    describe('Audience Segment field', () => {
+      it('should not show the audience segment field if the display to is logged-out users', () => {
+        cy.findByRole('radio', { name: 'Only logged out users' }).click();
+        cy.findByLabelText('Users who:').should('not.be.visible');
+      });
 
-    it('should not show the audience segment field if the display to is all users', () => {
-      cy.findByRole('radio', { name: 'All users' }).click();
-      cy.findByLabelText('Users who:').should('not.be.visible');
-    });
+      it('should not show the audience segment field if the display to is all users', () => {
+        cy.findByRole('radio', { name: 'All users' }).click();
+        cy.findByLabelText('Users who:').should('not.be.visible');
+      });
 
-    it('should show the audience segment field if the display to is logged-in users', () => {
-      cy.findByRole('radio', { name: 'Only logged in users' }).click();
-      cy.findByLabelText('Users who:').should('be.visible');
+      it('should show the audience segment field if the display to is logged-in users', () => {
+        cy.findByRole('radio', { name: 'Only logged in users' }).click();
+        cy.findByLabelText('Users who:').should('be.visible');
+      });
     });
   });
 });
