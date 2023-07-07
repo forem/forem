@@ -51,11 +51,16 @@ class ProfileValidator < ActiveModel::Validator
 
   def text_area_valid?(record, attribute)
     text = record.public_send(attribute)
+    text = remove_inner_newlines(text)
     text.nil? || text.size <= MAX_TEXT_AREA_LENGTH
   end
 
   def text_field_valid?(record, attribute)
     text = record.public_send(attribute)
     text.nil? || text.size <= MAX_TEXT_FIELD_LENGTH
+  end
+
+  def remove_inner_newlines(text)
+    text.presence && text.tr("\r\n\t", " ").squeeze(" ")
   end
 end
