@@ -6,7 +6,6 @@ module Api
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id name profile_image slug summary tag_line url
       ].freeze
-      private_constant ATTRIBUTES_FOR_SERIALIZATION
 
       before_action :find_organization, only: %i[users listings articles]
 
