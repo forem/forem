@@ -57,7 +57,10 @@ class UsersController < ApplicationController
       respond_to do |format|
         format.json { render json: { success: false, error: error_message }, status: :bad_request }
         format.html do
-          if @tab
+          if @user.errors.include?(:name)
+            flash[:error] = I18n.t("application_controller.please_complete_profile")
+            redirect_to user_settings_path
+          elsif @tab
             render :edit, status: :bad_request
           else
             flash[:error] = error_message
