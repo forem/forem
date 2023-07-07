@@ -1,5 +1,5 @@
 module Admin
-  class DisplayAdsController < Admin::ApplicationController
+  class BillboardsController < Admin::ApplicationController
     layout "admin"
 
     after_action :bust_ad_caches, only: %i[create update destroy]
@@ -26,8 +26,8 @@ module Admin
       @display_ad.creator = current_user
 
       if @display_ad.save
-        flash[:success] = I18n.t("admin.display_ads_controller.created")
-        redirect_to edit_admin_display_ad_path(@display_ad.id)
+        flash[:success] = I18n.t("admin.billboards_controller.created")
+        redirect_to edit_admin_billboard_path(@display_ad.id)
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :new
@@ -38,8 +38,8 @@ module Admin
       @display_ad = DisplayAd.find(params[:id])
 
       if @display_ad.update(display_ad_params)
-        flash[:success] = I18n.t("admin.display_ads_controller.updated")
-        redirect_to edit_admin_display_ad_path(params[:id])
+        flash[:success] = I18n.t("admin.billboards_controller.updated")
+        redirect_to edit_admin_billboard_path(params[:id])
       else
         flash[:danger] = @display_ad.errors_as_sentence
         render :edit
@@ -50,9 +50,9 @@ module Admin
       @display_ad = DisplayAd.find(params[:id])
 
       if @display_ad.destroy
-        render json: { message: I18n.t("admin.display_ads_controller.deleted") }, status: :ok
+        render json: { message: I18n.t("admin.billboards_controller.deleted") }, status: :ok
       else
-        render json: { error: I18n.t("admin.display_ads_controller.wrong") }, status: :unprocessable_entity
+        render json: { error: I18n.t("admin.billboards_controller.wrong") }, status: :unprocessable_entity
       end
     end
 

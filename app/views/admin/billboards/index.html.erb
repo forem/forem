@@ -7,12 +7,12 @@
   data-confirmation-modal-title-value="Confirm changes"
   data-confirmation-modal-size-value="m">
   <nav class="flex mb-4" aria-label="Display Ads navigation">
-    <%= form_tag(admin_display_ads_path, method: "get") do %>
+    <%= form_tag(admin_billboards_path, method: "get") do %>
      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
     <% end %>
     <div class="ml-auto">
       <div class="justify-end">
-        <%= link_to "Make A New Display Ad", new_admin_display_ad_path, class: "crayons-btn" %>
+        <%= link_to "Make A New Display Ad", new_admin_billboard_path, class: "crayons-btn" %>
       </div>
     </div>
   </nav>
@@ -33,7 +33,7 @@
     <tbody class="crayons-card">
       <% @display_ads.each do |display_ad| %>
           <tr data-row-id="<%= display_ad.id %>">
-            <td><%= link_to display_ad.name, edit_admin_display_ad_path(display_ad) %></td>
+            <td><%= link_to display_ad.name, edit_admin_billboard_path(display_ad) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
             <td><%= display_ad.display_to %></td>
             <td><%= display_ad.type_of.titleize %></td>
@@ -43,12 +43,12 @@
               <td><span class="crayons-icon" role="img" aria-label="Ad is not published or approved">❌</span></td>
             <% end %>
             <td><%= display_ad.success_rate %></td>
-            <td><%= link_to "Edit", edit_admin_display_ad_path(display_ad), class: "crayons-btn" %></td>
+            <td><%= link_to "Edit", edit_admin_billboard_path(display_ad), class: "crayons-btn" %></td>
             <td>
               <button
                 class="crayons-btn crayons-btn--danger"
                 data-item-id="<%= display_ad.id %>"
-                data-endpoint="/admin/customization/display_ads"
+                data-endpoint="/admin/customization/billboards"
                 data-username="<%= current_user.username %>"
                 data-action="click->confirmation-modal#openModal">Destroy</button>
             </td>

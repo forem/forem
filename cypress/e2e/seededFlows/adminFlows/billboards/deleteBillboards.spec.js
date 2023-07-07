@@ -4,7 +4,7 @@ describe('Delete Display Ads', () => {
     cy.fixture('users/adminUser.json').as('user');
 
     cy.get('@user').then((user) => {
-      cy.loginAndVisit(user, '/admin/customization/display_ads');
+      cy.loginAndVisit(user, '/admin/customization/billboards');
 
       cy.findByRole('table').within(() => {
         cy.findByRole('button', { name: 'Destroy' }).click({ force: true });
@@ -57,7 +57,7 @@ describe('Delete Display Ads', () => {
     });
 
     it('generates error message when remove action fails', () => {
-      cy.intercept('DELETE', '/admin/customization/display_ads/**', {
+      cy.intercept('DELETE', '/admin/customization/billboards/**', {
         statusCode: 422,
         body: {
           error: 'Something went wrong with deleting the Display Ad.',
