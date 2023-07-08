@@ -280,12 +280,12 @@ RSpec.describe "Articles" do
 
     it "sets canonical url with base" do
       get "/new"
-      expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
+      expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
     end
 
     it "sets canonical url with prefill" do
       get "/new?prefill=dsdweewewew"
-      expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
+      expect(response.body).to include('<link rel="canonical" href="http://forem.test/new" />')
     end
   end
 

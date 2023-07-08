@@ -5,7 +5,7 @@ describe('Create Display Ads', () => {
       cy.fixture('users/adminUser.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin/customization/display_ads');
+        cy.loginAndVisit(user, '/admin/customization/billboards');
         cy.findByRole('link', { name: 'Make A New Display Ad' }).click({
           force: true,
         });
