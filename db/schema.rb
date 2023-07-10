@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_10_181130) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
@@ -468,6 +468,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
     t.integer "creator_id"
     t.integer "display_to", default: 0, null: false
     t.integer "exclude_article_ids", default: [], array: true
+    t.text "geo_array", array: true
+    t.text "geo_text"
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
@@ -480,6 +482,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["geo_array"], name: "index_display_ads_on_geo_array", using: :gin
+    t.index ["geo_text"], name: "index_display_ads_on_geo_text", opclass: :gin_trgm_ops, using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
   end
 
