@@ -10,6 +10,7 @@ module Admin
 
       role = permitted_params[:role]
       usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
+      note = permitted_params[:note_for_current_role].presence || I18n.t("admin.bulk_assign_role_controller.congrats")
 
       begin
         usernames.each do |username|
@@ -19,7 +20,7 @@ module Admin
           Moderator::ManageActivityAndRoles.handle_user_roles(
             admin: current_user,
             user: user,
-            user_params: { user_status: role },
+            user_params: { user_status: role, note_for_current_role: note },
           )
         end
 
