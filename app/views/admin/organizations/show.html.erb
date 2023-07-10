@@ -42,7 +42,7 @@
         <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
           <li>
             <% if @organization.email %>
-              <a href="mailto:<%= @organization.email %>" class="c-link c-link--icon-left inline-block" target="_blank">
+              <a href="mailto:<%= @organization.email %>" class="c-link c-link--icon-left inline-block" target="_blank" rel="noopener">
                 <%= crayons_icon_tag(:email, title: t("views.admin.organizations.profile.email"), class: "c-link__icon") %>
                 <%= @organization.email %>
               </a>
