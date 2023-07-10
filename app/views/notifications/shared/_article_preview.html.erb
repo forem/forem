@@ -1,18 +1,18 @@
 <article class="notification__preview crayons-card">
-  <a href="<%= json_data["article"]["path"] %>" class="crayons-link block notification__preview__inner">
-    <h3 class="notification__preview__title"><%= h(json_data["article"]["title"]) %></h3>
+  <a href="<%= notification.article_path %>" class="crayons-link block notification__preview__inner">
+    <h3 class="notification__preview__title"><%= h(notification.article_title) %></h3>
     <div class="flex flex-wrap fs-s">
-      <% json_data["article"]["cached_tag_list_array"].each do |tag| %>
+      <% notification.article_tag_list.each do |tag| %>
         <span class="mr-2"><span class="opacity-50">#</span><%= tag %></span>
       <% end %>
     </div>
   </a>
 
-  <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{json_data['article']['updated_at']}-#{json_data['article']['id']}" do %>
+  <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{notification.article_updated_at}-#{notification.article_id}" do %>
     <footer class="comment-actions notification__actions">
       <button
-        class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "like") ? "reacted" : "" %>"
-        data-reactable-id="<%= json_data["article"]["id"] %>"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= notification.any_cached_reactions_for_object?(current_user) ? "reacted" : "" %>"
+        data-reactable-id="<%= notification.article_id %>"
         data-category="like"
         data-reactable-type="Article">
         <%= crayons_icon_tag("small-heart", class: "reaction-icon not-reacted", title: t("views.reactions.like.icon")) %>
@@ -21,14 +21,28 @@
       </button>
 
       <button
-        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("article"), current_user, "readinglist") ? "reacted" : "" %>"
-        data-reactable-id="<%= json_data["article"]["id"] %>"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon-right crayons-btn--s reaction-readinglist reaction-button readinglist-button <%= notification.any_cached_reactions_for_object?(current_user, category: "readinglist") ? "reacted" : "" %>"
+        data-reactable-id="<%= notification.article_id %>"
         data-category="readinglist"
         data-reactable-type="Article">
-        <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
         <%= crayons_icon_tag("small-save", class: "reaction-icon not-reacted", title: t("views.reactions.readingList.icon")) %>
         <%= crayons_icon_tag("small-save-filled", class: "reaction-icon--readinglist reaction-icon reacted", title: t("views.reactions.readingList.icon")) %>
+        <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
       </button>
+
+      <% if feature_flag_enabled?(:subscribe_to_comments) %>
+        <% subscription = notification.subscription_for(current_user) %>
+        <button
+          class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
+          data-subscription_id="<%= subscription&.id %>"
+          data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
+          data-subscription_config="<%= subscription&.config %>"
+          data-article_id="<%= notification.article_id %>">
+          <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+          <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+          <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>
+        </button>
+      <% end %>
     </footer>
   <% end %>
 </article>
