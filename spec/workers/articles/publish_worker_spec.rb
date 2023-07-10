@@ -52,6 +52,13 @@ RSpec.describe Articles::PublishWorker, type: :worker do
     expect(Notification).not_to have_received(:send_moderation_notification).with(unpublished)
   end
 
+  it "does not send moderation notification for a scheduled article" do
+    scheduled = create(:article, published: true, published_at: Date.tomorrow)
+    allow(Notification).to receive(:send_moderation_notification)
+    worker.perform
+    expect(Notification).not_to have_received(:send_moderation_notification).with(scheduled)
+  end
+
   it "does not send moderation notification for second published article" do
     second = create(:published_article, title: "This is number two", user: article.user)
     third = create(:published_article, title: "This is number three", user: article.user)
