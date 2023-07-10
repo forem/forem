@@ -130,5 +130,18 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[hide unhide create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm moderate]) }
     it { is_expected.to forbid_actions(%i[moderator_create admin_delete]) }
+
+    context "when comment author is the staff account" do
+      let(:staff_account) { create(:user) }
+      let(:comment) { build_stubbed(:comment, commentable: article, user: staff_account) }
+
+      before do
+        allow(User).to receive(:staff_account).and_return(staff_account)
+      end
+
+      it { is_expected.to permit_actions([:create]) }
+      it { is_expected.to forbid_actions(%i[hide unhide edit update destroy delete_confirm]) }
+      it { is_expected.to forbid_actions(%i[moderate moderator_create admin_delete]) }
+    end
   end
 end

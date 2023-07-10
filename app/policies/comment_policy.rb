@@ -37,7 +37,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def hide?
-    user_commentable_author?
+    user_commentable_author? && !record.by_staff_account?
   end
 
   alias unhide? hide?
