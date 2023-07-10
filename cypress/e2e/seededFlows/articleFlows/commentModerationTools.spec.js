@@ -23,13 +23,17 @@ describe('Moderation Tools for Comments', () => {
 
       cy.get('@trustedUser').then((trustedUser) => {
         cy.loginAndVisit(trustedUser, '/series_user/series-test-article-slug');
+        // Reference: https://filiphric.com/how-to-wait-for-page-to-load-in-cypress
+        cy.intercept('/notifications/counts').as('notificationCount');
+        cy.intercept('/async_info/base_data').as('baseData');
+        cy.intercept('/ahoy/visits').as('ahoy');
         cy.get('#comments').within(() => {
           cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
           cy.findByRole('link', { name: 'Moderate' }).click();
         });
-
-        // Without this wait the tests are becoming flaky.
-        // cy.wait(500)
+        cy.wait(['@notificationCount', '@baseData', '@ahoy'], {
+          timeout: 10000,
+        });
       });
     });
 
