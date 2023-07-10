@@ -5,6 +5,7 @@ require "swagger_helper"
 # rubocop:disable RSpec/VariableName
 
 RSpec.describe "Api::V1::Docs::Organizations" do
+  let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:organization) { create(:organization) }
 
   describe "GET /api/organizations/{username}" do
@@ -100,6 +101,10 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "GET /api/organizations" do
+    before do
+      create(:organization)
+    end
+
     path "/api/organizations" do
       get "Organizations" do
         tags "organizations"
@@ -124,7 +129,7 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "GET /api/organizations/{id}" do
-    path "/api/organizations/{id}" do
+    path "/api/organizations/:id" do
       get "An organization (by id)" do
         tags "organizations"
         security []
@@ -145,8 +150,8 @@ It supports pagination, each page will contain `30` users by default."
 
   describe "POST /api/admin/organizations" do
     before do
-      let(:api_secret) { create(:api_secret) }
-      let(:user) { api_secret.user }
+      api_secret = create(:api_secret)
+      user = api_secret.user
       user.add_role(:super_admin)
     end
 
