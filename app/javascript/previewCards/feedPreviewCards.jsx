@@ -1,11 +1,11 @@
 import { h, render } from 'preact';
 import { UserMetadata } from '../profilePreviewCards/UserMetadata';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
 } from '@utilities/dropdownUtils';
 import { request } from '@utilities/http/request';
-import { createRootFragment } from '../shared/preact/preact-root-fragment';
 
 const cachedAuthorMetadata = {};
 
