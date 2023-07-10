@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "admin/display_ads/new" do
+RSpec.describe "admin/billboards/new" do
   let(:admin) { build(:user, :super_admin) }
 
   before do

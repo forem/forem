@@ -15,4 +15,14 @@ module DisplayAdHelper
 
     [[AudienceSegment.human_readable_description_for(segment.type_of), segment.id]]
   end
+
+  # Determines whether the area provided as a parameter is a targeted tag placement on the feed
+  #
+  # @return [Boolean] true or false on whether the area is a targeted tag placement on the feed.
+  #
+  # @note An area of "sidebar_left_2" will return false as it is not part of DisplayAd::HOME_FEED_PLACEMENTS
+  # whilst an area of "feed_first" will return false.
+  def feed_targeted_tag_placement?(area)
+    DisplayAd::HOME_FEED_PLACEMENTS.include?(area)
+  end
 end

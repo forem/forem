@@ -1,7 +1,7 @@
 FROM gitpod/workspace-postgres
 
 # Install Ruby
-ENV RUBY_VERSION=3.0.2
+ENV RUBY_VERSION=3.0.6
 
 # Install the GitHub CLI
 RUN brew install gh
