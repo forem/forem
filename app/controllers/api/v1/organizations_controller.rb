@@ -14,12 +14,16 @@ module Api
         num = [per_page, per_page_max].min
         page = params[:page] || 1
 
-        @organization = Organization.select(ATTRIBUTES_FOR_SERIALIZATION).page(page).per(num)
+        organizations = Organization.select(ATTRIBUTES_FOR_SERIALIZATION).page(page).per(num)
+
+        render json: organizations
       end
 
       def show
-        @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find_by!(username: params[:username])
+
+        render json: organization
       end
     end
   end

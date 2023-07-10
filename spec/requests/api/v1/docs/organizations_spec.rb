@@ -129,7 +129,7 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "GET /api/organizations/{id}" do
-    path "/api/organizations/:id" do
+    path "/api/organizations/{id}" do
       get "An organization (by id)" do
         tags "organizations"
         security []
@@ -149,8 +149,9 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "POST /api/admin/organizations" do
+    let(:api_secret) { create(:api_secret) }
+
     before do
-      api_secret = create(:api_secret)
       user = api_secret.user
       user.add_role(:super_admin)
     end
@@ -205,9 +206,11 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "PUT /api/admin/organizations/{id}" do
+    let(:api_secret) { create(:api_secret) }
+    let(:org_to_update) { create(:organization) }
+
     before do
-      let(:api_secret) { create(:api_secret) }
-      let(:user) { api_secret.user }
+      user = api_secret.user
       user.add_role(:super_admin)
     end
 
@@ -234,7 +237,7 @@ It supports pagination, each page will contain `30` users by default."
 
         response "200", "An Organization" do
           let(:"api-key") { api_secret.secret }
-          let(:id) { organization.id }
+          let(:id) { org_to_update.id }
           let(:organization) { { organization: { summary: "An updated summary for the organization." } } }
           add_examples
 
@@ -244,7 +247,7 @@ It supports pagination, each page will contain `30` users by default."
         response "404", "organization Not Found" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 1_234_567_890 }
-          let(:organization) { organization.assign_attributes(name: "this won't update due to unfindable id") }
+          let(:organization) { org_to_update.assign_attributes(name: "this won't update due to unfindable id") }
           add_examples
 
           run_test!
@@ -252,8 +255,8 @@ It supports pagination, each page will contain `30` users by default."
 
         response "401", "Unauthorized" do
           let(:"api-key") { nil }
-          let(:id) { organization.id }
-          let(:organization) { organization.assign_attributes(summary: "this won't update due to unauthorized user") }
+          let(:id) { org_to_update.id }
+          let(:organization) { org_to_update.assign_attributes(summary: "this won't update due to unauthorized user") }
           add_examples
 
           run_test!
@@ -261,7 +264,7 @@ It supports pagination, each page will contain `30` users by default."
 
         response "422", "Unprocessable Entity" do
           let(:"api-key") { api_secret.secret }
-          let(:id) { organization.id }
+          let(:id) { org_to_update.id }
           let(:organization) { {} }
           add_examples
 
@@ -272,9 +275,10 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "DELETE /api/admin/organizations/{id}" do
+    let(:api_secret) { create(:api_secret) }
+
     before do
-      let(:api_secret) { create(:api_secret) }
-      let(:user) { api_secret.user }
+      user = api_secret.user
       user.add_role(:super_admin)
     end
 
