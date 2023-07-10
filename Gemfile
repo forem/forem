@@ -21,8 +21,10 @@ gem "blazer", "~> 2.6" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "carrierwave", "~> 2.2" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
+gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
 gem "cloudinary", "~> 1.23" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 3.2" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "countries", "~> 5.5" # All sorts of useful information about every country packaged as pretty little country objects. It includes data from ISO 3166
 gem "ddtrace", "~> 1.3.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.8" # Flexible authentication solution for Rails
 gem "devise_invitable", "~> 2.0.6" # Allows invitations to be sent for joining
@@ -173,5 +175,3 @@ group :test do
   gem "with_model", "~> 2.1.6" # Dynamically build a model within an RSpec context
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
-
-gem "cgi", "~> 0.3.6" # Support for the Common Gateway Interface protocol.
