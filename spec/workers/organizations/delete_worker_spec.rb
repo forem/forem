@@ -26,12 +26,12 @@ RSpec.describe Organizations::DeleteWorker, type: :worker do
 
       it "creates an audit_log record" do
         expect do
-          worker.perform(org.id, user.id)
+          worker.perform(org.id, user.id, update_and_notify_user)
         end.to change(AuditLog, :count).by(1)
       end
 
       it "creates a correct AuditLog record" do
-        worker.perform(org.id, user.id)
+        worker.perform(org.id, user.id, update_and_notify_user)
         audit_log = AuditLog.find_by(category: "user.organization.delete", slug: "organization_delete",
                                      user_id: user.id)
         expect(audit_log).to be_present
