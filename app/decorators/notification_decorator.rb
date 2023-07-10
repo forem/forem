@@ -45,6 +45,49 @@ class NotificationDecorator < ApplicationDecorator
     self
   end
 
+  def subscription_for(user)
+    subscription_to_comment_ancestry_for(user) ||
+      subscription_to_comment_for(user) ||
+      subscription_to_commentable_article_for(user) ||
+      subscription_to_article_for(user)
+  end
+
+  def subscription_to_article_for(user)
+    return unless article_id
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Article",
+                                   notifiable_id: article_id)
+  end
+
+  def subscription_to_comment_for(user)
+    return unless comment_ancestry
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Comment",
+                                   notifiable_id: comment_id)
+  end
+
+  def subscription_to_comment_ancestry_for(user)
+    return unless comment_ancestry
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Comment",
+                                   notifiable_id: comment_ancestry.split("/"))
+  end
+
+  def subscription_to_commentable_article_for(user)
+    return unless commentable_article_id
+
+    subscription_to_notifiable_for(user,
+                                   notifiable_type: "Article",
+                                   notifiable_id: commentable_article_id)
+  end
+
+  def subscription_to_notifiable_for(user, **notifiable)
+    user.notification_subscriptions.for_notifiable(**notifiable).first
+  end
+
   # In many cases, we render a partial specific to a notification's notifiable_type
   # (Milestone, Article, Comment, etc.) However, reacting-to-an-article or
   # reacting-to-a-comment will have a misleading "Article" or "Comment" notifiable_type
@@ -77,6 +120,77 @@ class NotificationDecorator < ApplicationDecorator
     type_inquirer.reaction? ||
       (type_inquirer.article? && action_inquirer.reaction?) ||
       (type_inquirer.comment? && action_inquirer.reaction?)
+  end
+
+  def any_cached_reactions_for_object?(user, object_type = "article", category: "like")
+    Reaction.cached_any_reactions_for?(mocked_object(object_type), user, category)
+  end
+
+  def article_id
+    @article_id ||= json_data.dig "article", "id"
+  end
+
+  def article_path
+    @article_path ||= json_data.dig "article", "path"
+  end
+
+  def article_title
+    @article_title ||= json_data.dig "article", "title"
+  end
+
+  def article_tag_list
+    @article_tag_list ||= (json_data.dig "article", "cached_tag_list_array") || []
+  end
+
+  def article_updated_at
+    @article_updated_at ||= json_data.dig "article", "updated_at"
+  end
+
+  def comment_ancestry
+    @comment_ancestry ||= json_data.dig "comment", "ancestry"
+  end
+
+  def comment_id
+    @comment_id ||= json_data.dig "comment", "id"
+  end
+
+  def comment_last_ancestor
+    @comment_last_ancestor ||= (json_data.dig("comment", "ancestors") || []).last || {}
+  end
+
+  def comment_path
+    @comment_path ||= json_data.dig "comment", "path"
+  end
+
+  def comment_depth
+    @comment_depth ||= json_data.dig("comment", "depth") || -1
+  end
+
+  def comment_processed_html
+    @comment_processed_html ||= json_data.dig "comment", "processed_html"
+  end
+
+  def comment_updated_at
+    @comment_updated_at ||= json_data.dig "comment", "updated_at"
+  end
+
+  def commentable
+    @commentable ||= json_data.dig "comment", "commentable"
+  end
+
+  def commentable_id
+    @commentable_id ||= json_data.dig "comment", "commentable", "id"
+  end
+
+  def commentable_article_id
+    @commentable_article_id ||= begin
+      commentable = json_data.dig "comment", "commentable"
+      commentable["id"] if commentable&.dig("class", "name") == "Article"
+    end
+  end
+
+  def commentable_class_name
+    @commentable_class_name ||= json_data.dig "comment", "commentable", "class", "name"
   end
 
   # TODO: This is an odd one - contrast with reactable_type?
