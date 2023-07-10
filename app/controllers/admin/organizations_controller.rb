@@ -35,6 +35,7 @@ module Admin
 
       flash[:settings_notice] =
         I18n.t("admin.organizations_controller.deletion_scheduled", organization_name: organization.name)
+      redirect_to admin_organization_url(params[:id])
     rescue StandardError => e
       flash[:error] = I18n.t("admin.organizations_controller.error", organization_name: organization.name, error: e)
       redirect_to user_settings_path(:organization, id: organization.id)
