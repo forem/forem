@@ -13,10 +13,6 @@
     background: var(--card-bg);
     color: var(--card-secondary-color);
     box-shadow: 0 0 0 1px var(--card-secondary-border);
-    &.billboard {
-      max-height: calc(100vh - var(--header-height) - 2*var(--layout-padding));
-      overflow: auto;
-    }
   }
 
   &--elevated {

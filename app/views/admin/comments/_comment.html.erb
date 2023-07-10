@@ -14,6 +14,27 @@
             <a href="<%= comment.commentable.path %>" class="c-link c-link--branded"><%= comment.commentable.title %></a>
           </p>
         </div>
+        <div class="flex items-center gap-1">
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
+            <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsup"] || "0" %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_down") %>">
+            <%= crayons_icon_tag("twemoji/thumb-down", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.privileged_reaction_counts["thumbsdown"] || "0" %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
+            <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= (@countable_vomits&.dig(comment.id) || 0) %></span>
+          </span>
+
+          <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">
+            <%= crayons_icon_tag("analytics", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= comment.score %></span>
+          </span>
+        </div>
       </header>
     <% end %>
     <div class="text-styles text-styles--tertiary">
@@ -35,4 +56,47 @@
       <% end %>
     </footer>
   </article>
+
+  <% if defined?(is_individual_comment) && is_individual_comment %>
+    <% privileged_comment_reactions = comment.reactions.privileged_category %>
+    <% vomit_comment_reactions = privileged_comment_reactions.select { |reaction| reaction.category == "vomit" }.reverse %>
+    <% quality_comment_reactions = (privileged_comment_reactions - vomit_comment_reactions).reverse %>
+    <article class="js-individual-article crayons-card py-6 flex flex-col mt-4">
+      <h2 class="crayons-subtitle-2 mx-6"><%= t("views.admin.comments.priviliged_actions.title") %></h2>
+      <p class="crayons-subtitle-3 fw-normal color-secondary mt-1 mx-6"><%= t("views.admin.comments.priviliged_actions.description") %></p>
+
+      <nav class="mt-4 pt-1 pb-2 px-3 member-data-heading" aria-label="Member details">
+        <ul class="crayons-navigation crayons-navigation--horizontal">
+          <li><%= link_to "Flags", admin_comment_path(tab: :flags), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'flags' || params[:tab].blank?}", aria: @current_tab == "flags" ? { current: "" } : {} %></li></li>
+          <li><%= link_to "Quality reactions", admin_comment_path(tab: :quality_reactions), class: "crayons-navigation__item #{'crayons-navigation__item crayons-navigation__item--current' if params[:tab] == 'quality_reactions'}",
+                                                                                            aria: @current_tab == "quality_reactions" ? { current: "" } : {} %></li></li>
+        </ul>
+      </nav>
+
+      <div id="reaction-content" class="flex flex-col gap-3 px-6 mt-6" style="overflow: auto; height: 406px;">
+        <% if params[:tab].blank? || params[:tab] == "flags" %>
+          <%= render "admin/shared/flag_reactions_table",
+                     vomit_reactions: vomit_comment_reactions,
+                     text_section: "comments",
+                     empty_text: t("views.admin.comments.priviliged_actions.no_flags") %>
+        <% end %>
+
+        <% if params[:tab] == "quality_reactions" %>
+          <% if quality_comment_reactions.present? %>
+            <% quality_comment_reactions.each do |quality_reaction| %>
+              <%= render "admin/shared/quality_action_item", quality_reaction: quality_reaction %>
+              <hr id="js__reaction__div__hr__<%= quality_reaction.id %>" class="w-100 hr-no-margins">
+            <% end %>
+          <% else %>
+            <div class="flex flex-col justify-center items-center gap-4 h-100">
+              <div class="flex p-4 gap-2 radius-default" style="background: #EEF2FF;">
+                <%= crayons_icon_tag("quality-reactions", native: true, width: 56, height: 56) %>
+              </div>
+              <p class="crayons-subtitle-3 fw-normal color-secondary"><%= t("views.admin.comments.priviliged_actions.no_quality_reactions") %></p>
+            </div>
+          <% end %>
+        <% end %>
+      <div>
+    </article>
+  <% end %>
 </div>

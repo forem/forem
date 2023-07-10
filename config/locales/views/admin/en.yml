@@ -10,6 +10,14 @@ en:
           no_flags: Article has no flags.
           no_quality_reactions: Article has no quality reactions by trusted users.
           title: Moderator actions
+      comments:
+        flags:
+          score: Score affected by a particular flag
+        priviliged_actions:
+          description: All the moderator actions affect the score. The overall score is a combination of moderator actions and public reactions.
+          no_flags: Comment has no flags.
+          no_quality_reactions: Comment has no quality reactions by trusted users.
+          title: Moderator actions
       shared:
         flags:
           actions:

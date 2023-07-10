@@ -10,6 +10,14 @@ fr:
           no_flags: Article has no flags.
           no_quality_reactions: Article has no quality reactions by trusted users.
           title: Moderator actions
+      comments:
+        flags:
+          score: Score affecté par un drapeau particulier
+        priviliged_actions:
+          description: Toutes les actions du modérateur affectent le score. Le score global est une combinaison des actions des modérateurs et des réactions du public.
+          no_flags: Le commentaire n'a pas de drapeaux.
+          no_quality_reactions: Le commentaire n'a pas de réactions de qualité par des utilisateurs de confiance.
+          title: Actions du modérateur        
       shared:
         flags:
           actions:

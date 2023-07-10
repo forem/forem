@@ -24,7 +24,7 @@ en:
       deleted: '%{app} has been deleted!'
       updated: '%{app} has been updated!'
       wrong: Something went wrong with deleting %{app}.
-    display_ads_controller:
+    billboards_controller:
       created: Display Ad has been created!
       deleted: Display Ad has been deleted!
       updated: Display Ad has been updated!

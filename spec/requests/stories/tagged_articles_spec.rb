@@ -260,7 +260,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           def renders_canonical_url(tag)
-            expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}\" />")
+            expect(response.body).to include("<link rel=\"canonical\" href=\"http://forem.test/t/#{tag.name}\" />")
           end
 
           it "renders proper page 2", :aggregate_failures do
@@ -276,7 +276,7 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           end
 
           def renders_page_2_canonical_url(tag)
-            expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+            expected_tag = "<link rel=\"canonical\" href=\"http://forem.test/t/#{tag.name}/page/2\" />"
             expect(response.body).to include(expected_tag)
           end
         end

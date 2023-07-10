@@ -149,8 +149,8 @@
       color: var(--tag-color);
     }
     .ltag__link__tag {
-      margin-right: calc(0.4vw + 4px);
-      font-size: 0.8em;
+      margin-right: calc(0.02vw + 4px);
+      font-size: 0.9em;
       margin-left: 1px;
     }
     .ltag__link__servicename {
@@ -167,7 +167,7 @@
   }
 }
 
-.crayons-article-sticky {
+.crayons-article-sticky, .crayons-story__indention-display-ad {
   .ltag__link {
     .ltag__link__org__pic {
       width: 60px;
