@@ -40,10 +40,15 @@ RSpec.describe Articles::PublishWorker, type: :worker do
   end
 
   it "sends moderation notification for a published article" do
-    unpublished = create(:unpublished_article, user: article.user)
     allow(Notification).to receive(:send_moderation_notification)
     worker.perform
     expect(Notification).to have_received(:send_moderation_notification).with(article)
+  end
+
+  it "does not send moderation notification for an unpublished article" do
+    unpublished = create(:unpublished_article, user: article.user)
+    allow(Notification).to receive(:send_moderation_notification)
+    worker.perform
     expect(Notification).not_to have_received(:send_moderation_notification).with(unpublished)
   end
 
