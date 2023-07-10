@@ -24,7 +24,7 @@ fr:
       deleted: '%{app} a été supprimé !'
       updated: '%{app} a été mis à jour !'
       wrong: Quelque chose s'est mal passé en supprimant %{app}.
-    display_ads_controller:
+    billboards_controller:
       created: L'annonce publicitaire a été créée !
       deleted: L'annonce a été supprimée !
       updated: L'annonce publicitaire a été mise à jour !

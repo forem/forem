@@ -445,6 +445,27 @@ RSpec.describe "Comments" do
         expect(child_comment.hidden_by_commentable_user).to be false
       end
     end
+
+    context "with comment by staff account" do
+      let(:staff_account) { create(:user) }
+      let(:commentable_author) { create(:user) }
+      let(:article) { create(:article, user: commentable_author) }
+      let(:comment) { create(:comment, commentable: article, user: staff_account) }
+
+      before do
+        allow(User).to receive(:staff_account).and_return(staff_account)
+        sign_in commentable_author
+      end
+
+      it "does not permit hiding the comment" do
+        expect do
+          patch "/comments/#{comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
+        end.to raise_error(Pundit::NotAuthorizedError)
+
+        comment.reload
+        expect(comment.hidden_by_commentable_user).to be false
+      end
+    end
   end
 
   describe "PATCH /comments/:comment_id/unhide" do

@@ -26,7 +26,7 @@ class AdminMenu
     scope :customization, "tools-line", [
       item(name: "config"),
       item(name: "html variants", controller: "html_variants"),
-      item(name: "display ads"),
+      item(name: "display ads", controller: "billboards"),
       item(name: "navigation links"),
       item(name: "pages"),
       item(name: "profile fields"),
