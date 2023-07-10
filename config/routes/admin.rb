@@ -67,6 +67,8 @@ namespace :admin do
     end
 
     resources :gdpr_delete_requests, only: %i[index destroy]
+
+    resources :bulk_assign_roles, only: %i[index award]
   end
 
   scope :content_manager do
