@@ -11,7 +11,7 @@
         <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"], scope: :"datetime.distance_in_words_ago" %></small></p>
       </header>
 
-      <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
+      <%= render "notifications/shared/article_preview", notification: notification, context: "default" %>
     <% elsif notification.action == "Moderation" %>
       <% new_user = mod_article_user(json_data) %>
       <header class="mb-4">
@@ -20,7 +20,7 @@
         <p><%= t("views.notifications.article.published_html", user: link_to(new_user["name"], new_user["path"], class: "crayons-link fw-bold"), title: link_to(h(json_data["article"]["title"]), json_data["article"]["path"], class: "crayons-link fw-bold")) %></p>
       </header>
 
-      <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
+      <%= render "notifications/shared/article_preview", notification: notification, context: "default" %>
 
       <div class="flex justify-between fs-s color-base-60 pt-4">
         <p><%= t("views.notifications.article.mod_opt_out") %></p>

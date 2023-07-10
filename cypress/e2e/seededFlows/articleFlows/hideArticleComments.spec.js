@@ -38,5 +38,16 @@ describe('Hiding/unhiding comments on an article', () => {
 
       cy.findByRole('img', { name: 'Expand' }).should('not.exist');
     });
+
+    context('when the comment was made by the staff account', () => {
+      beforeEach(() => {
+        cy.visit('/admin_mcadmin/staff-commented-article-slug');
+      });
+
+      it('does not allow the user to hide comments made by the staff account', () => {
+        cy.findByRole('button', { name: 'Toggle dropdown menu' }).click();
+        cy.findByRole('button', { name: /Hide/ }).should('not.exist');
+      });
+    });
   });
 });

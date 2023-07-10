@@ -55,6 +55,16 @@ RSpec.describe Profile do
         expect(profile.errors_as_sentence)
           .to include("is too long (maximum is 200 characters)")
       end
+
+      it "is valid if text contains new-lines within 200 characters" do
+        profile.public_send(
+          text_area_set,
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy
+text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy text of the printing and",
+        )
+
+        expect(profile).to be_valid
+      end
     end
 
     describe "validating text fields" do
