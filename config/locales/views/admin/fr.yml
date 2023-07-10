@@ -139,7 +139,7 @@ fr:
           submit_html: Banish %{user}
         delete:
           heading: Delete %{user}'s account
-          onsubmit: Are you sure? This actions is irreversible.
+          onsubmit: Are you sure? This action is irreversible.
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
@@ -392,9 +392,9 @@ fr:
           total_members: "%{count} members"
         delete:
           heading: Delete %{organization}
-          onsubmit: Are you sure? This actions is irreversible.
+          onsubmit: Are you sure? This action is irreversible.
           desc2: "Note: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them."
-          notice: Only Admins are allowed to delete organizations.
+          notice: Only Super Admins are allowed to delete organizations.
           submit: Delete organizion now
         options:
           delete: Delete organization
