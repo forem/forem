@@ -7,9 +7,9 @@ import {
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
 import { initializeVideoPlayback } from '../utilities/videoPlayback';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { initializeDashboardSort } from './initializers/initializeDashboardSort';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
-import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
 import * as Runtime from '@utilities/runtime';
 
