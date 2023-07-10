@@ -2,10 +2,10 @@
   <h1 class="crayons-title">Bulk Assign Role</h1>
 </header>
 <div class="crayons-card p-6">
-  <%= form_with(url: admin_badge_achievements_award_badges_path, local: true, class: "flex flex-col gap-4") do |f| %>
+  <%= form_with(url: admin_bulk_assign_role_assign_role_path, local: true, class: "flex flex-col gap-4") do |f| %>
     <div class="crayons-field">
-      <%= f.label :user_status, t("views.admin.users.actions.assign_role.role"), class: "crayons-field__label" %>
-      <%= f.select(:user_status, grouped_options_for_select(role_options(current_user)), { include_blank: t("views.admin.users.actions.assign_role.select") }, class: "crayons-select") %>
+      <%= f.label :role, t("views.admin.users.actions.assign_role.role"), class: "crayons-field__label" %>
+      <%= f.select("role", grouped_options_for_select(role_options(current_user)), { include_blank: t("views.admin.users.actions.assign_role.select") }, class: "crayons-select") %>
     </div>
     <div class="crayons-field">
       <%= f.label :usernames, "Usernames", class: "crayons-field__label" %>
