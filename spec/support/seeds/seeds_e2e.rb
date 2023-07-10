@@ -207,6 +207,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "staff-account@forem.local") do
+  staff_account = User.create!(
+    name: "Sloan",
+    email: "staff-account@forem.local",
+    username: "sloan",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  Settings::Community.staff_user_id = staff_account.id
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
@@ -582,6 +602,37 @@ seeder.create_if_doesnt_exist(Article, "slug", "test-article-slug") do
   }
 
   Comment.create!(comment_attributes)
+end
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "slug", "staff-commented-article-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Test article with Staff Account Comment
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  article = Article.create!(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+    slug: "staff-commented-article-slug",
+  )
+
+  staff_comment_attributes = {
+    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    user_id: User.staff_account.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  Comment.create!(staff_comment_attributes)
 end
 
 ##############################################################################
