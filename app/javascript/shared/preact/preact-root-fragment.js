@@ -6,16 +6,34 @@
  * Source: https://gist.github.com/developit/f4c67a2ede71dc2fab7f357f39cff28c
  */
 export function createRootFragment(parent, replaceNode) {
-  replaceNode = [].concat(replaceNode);
-  var s = replaceNode[replaceNode.length-1].nextSibling;
-  function insert(c, r) { parent.insertBefore(c, r || s); }
-  return parent.__k = {
+  if (replaceNode) {
+    replaceNode = Array.isArray(replaceNode) ? replaceNode : [replaceNode];
+  } else {
+    replaceNode = [parent];
+    parent = parent.parentNode;
+  }
+
+  const s = replaceNode[replaceNode.length - 1].nextSibling;
+
+  const rootFragment = {
     nodeType: 1,
     parentNode: parent,
     firstChild: replaceNode[0],
     childNodes: replaceNode,
-    insertBefore: insert,
-    appendChild: insert,
-    removeChild: function(c) { parent.removeChild(c); }
+    insertBefore: (c, r) => {
+      parent.insertBefore(c, r || s);
+      return c;
+    },
+    appendChild: (c) => {
+      parent.insertBefore(c, s);
+      return c;
+    },
+    removeChild: function (c) {
+      parent.removeChild(c);
+      return c;
+    },
   };
+
+  parent.__k = rootFragment;
+  return rootFragment;
 }
