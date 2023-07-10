@@ -16,7 +16,8 @@ module Articles
         Notification.send_to_mentioned_users_and_followers(article)
 
         # using nth_published because it doesn't count draft articles by the new author
-        Notification.send_moderation_notification(article) unless article.nth_published_by_author > 2
+        from_newish_author = article.nth_published_by_author < 3
+        Notification.send_moderation_notification(article) if from_newish_author
       end
     end
   end
