@@ -5,7 +5,7 @@ module Admin
     def assign_role
       if permitted_params[:role].blank?
         raise ArgumentError,
-              I18n.t("admin.bulk_assign_role_controller.award")
+              I18n.t("admin.bulk_assign_role_controller.role_blank")
       end
 
       role = permitted_params[:role]
