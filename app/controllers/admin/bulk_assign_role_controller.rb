@@ -52,27 +52,24 @@ module Admin
 
     def user_action_status(user, role)
       if user
-        return "user_already_had_the_role" if role_already_added(user, role)
+        return "user_already_had_the_role" if user_status(user) == role
 
         return "role_was_applied_successfully"
       end
       "user_not_found"
     end
 
-    def role_already_added(user, role)
-      case role
-      when "Suspended"
-        user.suspended?
-      when "Warned"
-        user.warned?
-      when "Comment Suspended"
-        user.comment_suspended?
-      when "Trusted"
-        user.trusted?
-      when "Good standing"
-        false
+    def user_status(user)
+      if user.suspended?
+        I18n.t("views.admin.users.statuses.Suspended")
+      elsif user.warned?
+        I18n.t("views.admin.users.statuses.Warned")
+      elsif user.comment_suspended?
+        I18n.t("views.admin.users.statuses.Comment Suspended")
+      elsif user.trusted?
+        I18n.t("views.admin.users.statuses.Trusted")
       else
-        false
+        "Good standing"
       end
     end
 
