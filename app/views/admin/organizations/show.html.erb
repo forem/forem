@@ -98,9 +98,10 @@
 
 <%= render "activity" %>
 
+<%= error_message = deletion_modal_error_message(@organization) %>
 <div class="hidden">
   <div id="delete-organization">
-    <% if current_user.super_admin? %>
+    <% unless error_message %>
       <%= form_for(@organization, url: admin_organization_path(@organization), html: { class: "flex flex-col gap-6", method: :delete, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
         <%= t("views.admin.organizations.delete.desc2", organization: @organization.name) %>
         <div>
@@ -108,7 +109,8 @@
         </div>
       <% end %>
     <% else %>
-      <div class="crayons-notice crayons-notice--danger"><%= t("views.admin.organizations.delete.notice") %></div>
+
+      <div class="crayons-notice crayons-notice--danger"><%= error_message %></div>
     <% end %>
   </div>
 </div>
