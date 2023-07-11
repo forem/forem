@@ -197,4 +197,66 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(community_ad)
     end
   end
+
+  context "when considering location" do
+    let!(:no_targets) { create_display_ad }
+    let!(:targets_canada) { create_display_ad(geo: ["CA"]) }
+    let!(:targets_newfoundland) { create_display_ad(geo: ["CA-NL"]) }
+    let!(:targets_quebec_and_france) { create_display_ad(geo: %w[CA-QC FR]) }
+    let!(:targets_canada_uk_and_australia) { create_display_ad(geo: %w[CA GB AU]) }
+    let!(:targets_california_and_netherlands) { create_display_ad(geo: %w[US-CA NL]) }
+    let!(:targets_maine_newfoundland_and_greenland) { create_display_ad(geo: %w[US-ME CA-NL GL]) }
+
+    it "shows only billboards with no targeting if no location is provided" do
+      filtered = filter_ads
+      expect(filtered).to include(no_targets)
+      expect(filtered).not_to include(
+        targets_canada,
+        targets_newfoundland,
+        targets_quebec_and_france,
+        targets_canada_uk_and_australia,
+        targets_california_and_netherlands,
+        targets_maine_newfoundland_and_greenland,
+      )
+    end
+
+    it "shows only billboards whose target location includes the specified location" do
+      location = Location.new("CA", "NL") # User is in Newfoundland, Canada
+
+      %i[geo_array geo_text].each do |geo_column|
+        filtered = filter_ads(location: location, geo_column: geo_column)
+
+        expect(filtered).to include(
+          no_targets,
+          targets_canada,
+          targets_newfoundland,
+          targets_canada_uk_and_australia,
+          targets_maine_newfoundland_and_greenland,
+        )
+        expect(filtered).not_to include(
+          targets_quebec_and_france,
+          targets_california_and_netherlands,
+        )
+      end
+    end
+
+    it "shows only billboards targeting the country specifically if no region is provided" do
+      location = Location.new("CA") # User is in "Canada"
+
+      %i[geo_array geo_text].each do |geo_column|
+        filtered = filter_ads(location: location, geo_column: geo_column)
+        expect(filtered).to include(
+          no_targets,
+          targets_canada,
+          targets_canada_uk_and_australia,
+        )
+        expect(filtered).not_to include(
+          targets_newfoundland,
+          targets_quebec_and_france,
+          targets_california_and_netherlands,
+          targets_maine_newfoundland_and_greenland,
+        )
+      end
+    end
+  end
 end

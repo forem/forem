@@ -13,4 +13,33 @@ class Location
     @country_code = country_code
     @subdivision_code = subdivision_code
   end
+
+  def as_geo_query_clause(geo_column)
+    case geo_column
+    when :geo_array
+      "geo_array && #{as_sql_array}"
+    when :geo_text
+      "geo_text SIMILAR TO #{as_sql_regex}"
+    end
+  end
+
+  private
+
+  def as_sql_array
+    patterns = [country_code]
+    patterns << "#{country_code}-#{subdivision_code}" if subdivision_code
+
+    "'{#{patterns.join(',')}}'"
+  end
+
+  def as_sql_regex
+    # Match country at start of text OR after other text ending in a comma
+    pattern = "(%,)?#{country_code}"
+    # Match subdivision if specified
+    pattern += "(-#{subdivision_code})?" if subdivision_code
+    # Match end of text OR a comma followed by more text
+    pattern += "(,%)?"
+
+    "'#{pattern}'"
+  end
 end

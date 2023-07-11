@@ -8,9 +8,10 @@ module DisplayAds
     # @param area [String] the site area where the ad is visible
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
     # @param display_ads [DisplayAd] can be a filtered scope or Arel relationship
+    # @param location [Location] the visitor's geographic location
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
                    permit_adjacent_sponsors: true, article_id: nil, display_ads: DisplayAd,
-                   user_id: nil, user_tags: nil)
+                   user_id: nil, user_tags: nil, location: nil, geo_column: :geo_array)
       @filtered_display_ads = display_ads.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -20,6 +21,8 @@ module DisplayAds
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
       @user_tags = user_tags
+      @location = location
+      @geo_column = geo_column
     end
 
     def call
@@ -56,6 +59,8 @@ module DisplayAds
                               else
                                 authenticated_ads(%w[all logged_out])
                               end
+
+      @filtered_display_ads = geo_targeted_ads
 
       # type_of filter needs to be applied as near to the end as possible
       # as it checks if any type-matching ads exist (this will apply all/any
@@ -121,6 +126,16 @@ module DisplayAds
       end
 
       @filtered_display_ads.where(type_of: DisplayAd.type_ofs.slice(*types_matching).values)
+    end
+
+    def geo_targeted_ads
+      geo_query = "#{@geo_column} IS NULL"
+      if @location&.valid?
+        clause = @location.as_geo_query_clause(@geo_column)
+        geo_query += " OR (#{clause})"
+      end
+
+      @filtered_display_ads.where(geo_query)
     end
   end
 end
