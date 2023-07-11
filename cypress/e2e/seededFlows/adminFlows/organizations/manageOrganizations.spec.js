@@ -23,7 +23,35 @@ describe('Manage Organization Options', () => {
       });
 
       cy.findByRole('table').within(() => {
-        cy.findAllByRole('link').first().click();
+        cy.findAllByRole('link', { name: '@Awesome Org' }).first().click();
+      });
+    });
+
+    it('should show a notice about the scheduled job', () => {
+      openOrganizationOptions(() => {
+        cy.findByRole('button', { name: 'Delete organization' }).click();
+      });
+
+      cy.getModal().within(() => {
+        cy.findByRole('button', { name: 'Delete organizion now' }).click();
+      });
+
+      verifyAndDismissFlashMessage(
+        `Your organization, "Awesome Org", deletion is scheduled.`,
+      );
+    });
+  });
+
+  describe('As an organization that has existing credits', () => {
+    beforeEach(() => {
+      cy.testSetup();
+      cy.fixture('users/adminUser.json').as('user');
+      cy.get('@user').then((user) => {
+        cy.loginAndVisit(user, '/admin/content_manager/organizations');
+      });
+
+      cy.findByRole('table').within(() => {
+        cy.findAllByRole('link', { name: '@Credits Org' }).first().click();
       });
     });
 
@@ -33,10 +61,10 @@ describe('Manage Organization Options', () => {
       });
 
       cy.getModal().within(() => {
-        cy.findByRole('button', { name: 'Delete organizion now' }).click();
+        cy.findByText(
+          'You cannot delete an organization that has existing credits.',
+        ).should('exist');
       });
-
-      verifyAndDismissFlashMessage(`Your organization deletion is scheduled.`);
     });
   });
 });
