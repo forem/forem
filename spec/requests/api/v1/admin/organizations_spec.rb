@@ -6,8 +6,7 @@ RSpec.describe "/api/admin/organizations" do
     {
       name: "Test Org",
       summary: "a test org",
-      url:
-      "https://testorg.io",
+      url: "https://testorg.io",
       profile_image: image,
       slug: "test-org",
       tag_line: "a tagline"
@@ -53,19 +52,30 @@ RSpec.describe "/api/admin/organizations" do
     let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
 
     context "when creating an organization" do
-      it "accepts request and creates the organization" do
+      let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
+
+      it "accepts request and creates the organization with valid params" do
         expect do
           post api_admin_organizations_path params: { organization: org_params }, headers: headers
         end.to change(Organization, :count).by(1)
 
         expect(response).to have_http_status(:ok)
       end
+
+      it "returns a 422 and does not create the organization with invalid params" do
+        expect do
+          post api_admin_organizations_path params: { organization: {} }, headers: headers
+        end.not_to change(Organization, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     context "when updating an organization" do
       let!(:organization) { create(:organization, org_params) }
+      let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
 
-      it "accepts request and updates the organization" do
+      it "accepts request and updates the organization with valid params" do
         expect do
           put api_admin_organization_path(organization.id), headers: headers, params: {
             organization: org_params.merge(summary: "new summary")
@@ -74,17 +84,34 @@ RSpec.describe "/api/admin/organizations" do
 
         expect(response).to have_http_status(:ok)
       end
+
+      it "returns a 422 and does not update the organization with invalid params" do
+        expect do
+          put api_admin_organizations_path params: { organization: org_params.merge(name: nil) }, headers: headers
+        end.not_to change(Organization, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     context "when deleting an organization" do
       let!(:organization) { create(:organization, org_params) }
+      let(:headers) { v1_headers.merge({ "api-key" => api_secret.secret }) }
 
-      it "accepts request and deletes the organization" do
+      it "accepts request and deletes the organization when found" do
         expect do
           delete api_admin_organization_path(organization.id), headers: headers
         end.to change(Organization, :count).by(-1)
 
         expect(response).to have_http_status(:ok)
+      end
+
+      it "errors when no organization is found" do
+        expect do
+          delete api_admin_organization_path(0), headers: headers
+        end.not_to change(Organization, :count)
+
+        expect(response).to have_http_status(:not_found)
       end
     end
   end

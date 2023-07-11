@@ -129,6 +129,8 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "GET /api/organizations/{id}" do
+    let!(:organization) { create(:organization) }
+
     path "/api/organizations/{id}" do
       get "An organization (by id)" do
         tags "organizations"
@@ -136,7 +138,7 @@ It supports pagination, each page will contain `30` users by default."
         description "This endpoint allows the client to retrieve a single organization by their id"
         operationId "getOrganizationById"
         produces "application/json"
-
+        parameter name: :id, in: :path, type: :integer, required: true
         response(200, "An Organization") do
           let(:id) { organization.id }
           schema type: :object,

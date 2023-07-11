@@ -17,9 +17,9 @@ module Api
               summary: organization.summary,
               tag_line: organization.tag_line,
               url: organization.url
-            }, status: :ok
+            }, status: :created
           else
-            render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+            render json: { error: organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
           end
         end
 
@@ -38,7 +38,7 @@ module Api
               url: organization.url
             }, status: :ok
           else
-            render json: { error: result.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+            render json: { error: organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
           end
         end
 
