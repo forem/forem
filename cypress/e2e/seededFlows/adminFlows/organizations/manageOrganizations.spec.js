@@ -62,7 +62,7 @@ describe('Manage Organization Options', () => {
 
       cy.getModal().within(() => {
         cy.findByText(
-          'You cannot delete an organization that has existing credits.',
+          'You cannot delete an organization that has associated credits.',
         ).should('exist');
       });
     });

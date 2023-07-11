@@ -402,7 +402,8 @@ en:
           heading: Delete %{organization}
           onsubmit: Are you sure? This action is irreversible.
           desc2: "Note: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them."
-          notice: Only Super Admins are allowed to delete organizations.
+          role_notice: Only Super Admins are allowed to delete organizations.
+          credits_notice: You cannot delete an organization that has associated credits.
           submit: Delete organizion now
         options:
           delete: Delete organization

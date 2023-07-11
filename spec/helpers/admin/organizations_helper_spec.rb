@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Admin::UsersHelper do
+describe Admin::OrganizationsHelper do
   describe "#deletion_modal_error_message" do
     let(:organization) { create(:organization) }
     let(:super_admin) { create(:user, :super_admin) }
@@ -11,7 +11,7 @@ describe Admin::UsersHelper do
 
       it "returns the appropriate error messsage" do
         error_message = helper.deletion_modal_error_message(organization)
-        expect(error_message).to eq("You need super admin permissions.")
+        expect(error_message).to eq("Only Super Admins are allowed to delete organizations.")
       end
     end
 
@@ -21,7 +21,7 @@ describe Admin::UsersHelper do
       it "returns the appropriate error messsage" do
         Credit.add_to(organization, 10)
         error_message = helper.deletion_modal_error_message(organization)
-        expect(error_message).to eq("You cannot delete an organization that has existing credits.")
+        expect(error_message).to eq("You cannot delete an organization that has associated credits.")
       end
     end
   end
