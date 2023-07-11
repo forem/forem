@@ -12,6 +12,10 @@ module Admin
       options
     end
 
+    def role_statues
+      { "Statuses" => Constants::Role::BASE_ROLES }
+    end
+
     def format_last_activity_timestamp(timestamp)
       return if timestamp.blank?
 
