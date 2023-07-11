@@ -70,7 +70,7 @@ module Admin
       when "Trusted"
         user.trusted?
       when "Good standing"
-        user.good_standing?
+        false
       else
         false
       end
