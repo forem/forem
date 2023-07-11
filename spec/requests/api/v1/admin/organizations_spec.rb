@@ -87,7 +87,9 @@ RSpec.describe "/api/admin/organizations" do
 
       it "returns a 422 and does not update the organization with invalid params" do
         expect do
-          put api_admin_organizations_path params: { organization: org_params.merge(name: nil) }, headers: headers
+          put api_admin_organization_path(organization.id),
+              params: { organization: org_params.merge(name: nil) },
+              headers: headers
         end.not_to change(Organization, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
