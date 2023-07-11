@@ -50,7 +50,7 @@ resources :organizations, only: [:show], param: :username do
   resources :users, only: [:index], to: "organizations#users"
   resources :articles, only: [:index], to: "organizations#articles"
 end
-resources :organizations, only: %i[index show]
+resources :organizations, only: %i[index show], param: :id
 resource :instance, only: %i[show]
 
 constraints(RailsEnvConstraint.new(allowed_envs: %w[test])) do
