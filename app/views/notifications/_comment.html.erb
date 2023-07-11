@@ -20,7 +20,7 @@
         </header>
       <% end %>
 
-      <%= render "notifications/shared/comment_box", json_data: json_data, notification: notification, context: "default" %>
+      <%= render "notifications/shared/comment_box", notification: notification, context: "default" %>
 
     <% elsif notification.action == "Moderation" %>
       <% new_user = mod_comment_user(json_data) %>

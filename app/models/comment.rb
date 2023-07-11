@@ -194,6 +194,10 @@ class Comment < ApplicationRecord
     ancestry && Comment.exists?(id: ancestry)
   end
 
+  def by_staff_account?
+    user == User.staff_account
+  end
+
   def privileged_reaction_counts
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end

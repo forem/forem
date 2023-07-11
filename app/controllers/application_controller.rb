@@ -289,6 +289,8 @@ class ApplicationController < ActionController::Base
   end
 
   def feature_flag_enabled?(flag_name, acting_as: current_user)
+    return true if ENV.fetch("E2E", nil) && flag_name.to_sym == :subscribe_to_comments
+
     FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
   end
 
@@ -299,6 +301,8 @@ class ApplicationController < ActionController::Base
     flash[:error] = I18n.t("application_controller.please_complete_profile")
     redirect_to user_settings_path
   end
+
+  helper_method :feature_flag_enabled?
 
   private
 
