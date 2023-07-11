@@ -22,6 +22,11 @@ module Api
 
     ARTICLES_FOR_SERIALIZATION = Api::V0::ArticlesController::INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
+    def show
+      @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        .find_by!(username: params[:username])
+    end
+
     def users
       per_page = (params[:per_page] || 30).to_i
       num = [per_page, per_page_max].min
