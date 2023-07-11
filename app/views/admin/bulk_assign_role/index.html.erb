@@ -5,7 +5,7 @@
   <%= form_with(url: admin_bulk_assign_role_assign_role_path, local: true, class: "flex flex-col gap-4") do |f| %>
     <div class="crayons-field">
       <%= f.label :role, t("views.admin.users.actions.assign_role.role"), class: "crayons-field__label" %>
-      <%= f.select("role", role_statues, { include_blank: t("views.admin.users.actions.assign_role.select") }, class: "crayons-select") %>
+      <%= f.select("role", role_statuses, { include_blank: t("views.admin.users.actions.assign_role.select") }, class: "crayons-select") %>
     </div>
     <div class="crayons-field">
       <%= f.label :usernames, "Usernames", class: "crayons-field__label" %>

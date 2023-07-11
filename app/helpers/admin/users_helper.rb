@@ -12,7 +12,7 @@ module Admin
       options
     end
 
-    def role_statues
+    def role_statuses
       { "Statuses" => Constants::Role::BASE_ROLES }
     end
 
