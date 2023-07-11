@@ -15,12 +15,25 @@ module Admin
       begin
         usernames.each do |username|
           user = User.find_by(username: username.strip.downcase)
-          next unless user
+          user_action_status = user_action_status(user, role)
+          if user
+            Moderator::ManageActivityAndRoles.handle_user_roles(
+              admin: current_user,
+              user: user,
+              user_params: { user_status: role, note_for_current_role: note },
+            )
+          end
 
-          Moderator::ManageActivityAndRoles.handle_user_roles(
-            admin: current_user,
-            user: user,
-            user_params: { user_status: role, note_for_current_role: note },
+          AuditLog.create(
+            category: "admin.bulk_assign_role.add_role",
+            user: current_user,
+            roles: current_user.roles_name,
+            slug: "bulk_assign_role",
+            data: {
+              role: role,
+              user_name: username,
+              user_action_status: user_action_status
+            },
           )
         end
 
@@ -30,9 +43,38 @@ module Admin
         flash[:danger] = e.message
         redirect_to admin_bulk_assign_role_index_path
       end
+    rescue ArgumentError => e
+      flash[:danger] = e.message
+      redirect_to admin_bulk_assign_role_index_path
     end
 
     private
+
+    def user_action_status(user, role)
+      if user
+        return "user_already_had_the_role" if role_already_added(user, role)
+
+        return "role_was_applied_successfully"
+      end
+      "user_not_found"
+    end
+
+    def role_already_added(user, role)
+      case role
+      when "Suspended"
+        user.suspended?
+      when "Warned"
+        user.warned?
+      when "Comment Suspended"
+        user.comment_suspended?
+      when "Trusted"
+        user.trusted?
+      when "Good standing"
+        user.good_standing?
+      else
+        false
+      end
+    end
 
     def permitted_params
       params.permit(:usernames, :role, :note_for_current_role)
