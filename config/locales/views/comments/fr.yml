@@ -140,6 +140,9 @@ fr:
         view:
           icon: View button
           text: View
+        subscribe:
+          icon: Subscribe button
+          text: Subscribe to comments
       count:
         one: "%{count} comment"
         other: "%{count} comments"

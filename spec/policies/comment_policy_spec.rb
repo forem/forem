@@ -14,6 +14,10 @@ RSpec.describe CommentPolicy, type: :policy do
     %i[body_markdown receive_notifications]
   end
 
+  let(:valid_attributes_for_subscribe) do
+    %i[subscription_id comment_id article_id]
+  end
+
   let(:valid_attributes_for_moderator_create) do
     %i[commentable_id commentable_type parent_id]
   end
@@ -22,6 +26,14 @@ RSpec.describe CommentPolicy, type: :policy do
     let(:user) { nil }
 
     it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
+  end
+
+  context "when user wants to subscribe to a comment" do
+    let(:user) { create(:user) }
+
+    it { is_expected.to permit_actions(%i[subscribe]) }
+
+    it { is_expected.to permit_mass_assignment_of(valid_attributes_for_subscribe).for_action(:subscribe) }
   end
 
   context "when user is not the author" do
@@ -130,5 +142,18 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[hide unhide create]) }
     it { is_expected.to forbid_actions(%i[edit update destroy delete_confirm moderate]) }
     it { is_expected.to forbid_actions(%i[moderator_create admin_delete]) }
+
+    context "when comment author is the staff account" do
+      let(:staff_account) { create(:user) }
+      let(:comment) { build_stubbed(:comment, commentable: article, user: staff_account) }
+
+      before do
+        allow(User).to receive(:staff_account).and_return(staff_account)
+      end
+
+      it { is_expected.to permit_actions([:create]) }
+      it { is_expected.to forbid_actions(%i[hide unhide edit update destroy delete_confirm]) }
+      it { is_expected.to forbid_actions(%i[moderate moderator_create admin_delete]) }
+    end
   end
 end

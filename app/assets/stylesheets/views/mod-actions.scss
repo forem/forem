@@ -94,7 +94,8 @@
     grid-template-columns: 1fr 1fr;
   }
 
-  .reaction-button {
+  .reaction-button,
+  .subscribe-button {
     position: relative;
     background: transparent;
     border-color: transparent;
@@ -624,6 +625,32 @@
     &.approval-removal {
       background: $red;
     }
+  }
+}
+
+.subscribe-button.comment-subscribed {
+  background: rgba(59, 73, 223, 0.1);
+  color: #4338ca;
+}
+
+.subscribe-icon {
+  --not-subscribed-display: inline-block;
+  --subscribed-display: none;
+  width: 16px;
+  filter: grayscale(1);
+  &.not-subscribed {
+    display: var(--not-subscribed-display);
+  }
+  &.subscribed {
+    display: var(--subscribed-display);
+  }
+}
+
+.comment-subscribed {
+  .subscribe-icon {
+    filter: grayscale(0);
+    --not-subscribed-display: none;
+    --subscribed-display: inline-block;
   }
 }
 
