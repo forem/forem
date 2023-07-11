@@ -1,6 +1,6 @@
 require "rails_helper"
 
-Rspec.describe Admin::UsersHelper do
+describe Admin::UsersHelper do
   describe "#deletion_modal_error_message" do
     let(:organization) { create(:organization) }
     let(:super_admin) { create(:user, :super_admin) }
