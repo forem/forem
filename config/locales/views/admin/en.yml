@@ -113,6 +113,7 @@ en:
             select: Select role
             note: "Add a note to this action:"
             submit: Add
+            warning: "Comma Delimited, All Lowercase, No @ Symbol Required In Front Of Usernames Warning: Usernames are case-sensitive and must be all lowercase! This task will fail silently when supplied with incorrect usernames."
           add_org:
             text: Add organization
             heading: Add organization
@@ -136,6 +137,8 @@ en:
             aria_credits: Amount of credits to add or remove
             note: "Add a note to this action:"
             submit: Adjust balance
+          bulk_assign_role:
+            text: Bulk Assign Role
           copy_email: Copy email address
         danger:
           desc1: This action is irreversible.
