@@ -217,9 +217,9 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
         },
         credentials: 'same-origin',
       }),
-      fetch(`/display_ads/feed_first`),
-      fetch(`/display_ads/feed_second`),
-      fetch(`/display_ads/feed_third`),
+      fetch(`/billboards/feed_first`),
+      fetch(`/billboards/feed_second`),
+      fetch(`/billboards/feed_third`),
     ];
 
     const results = await Promise.allSettled(promises);
