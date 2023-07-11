@@ -43,7 +43,7 @@
 
 <% if user_signed_in? %>
   <main id="main-content">
-    <div class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols" id="notifications-container">
+    <div class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols" id="notifications-container" data-subscribe-button-container="true">
       <header class="crayons-page-header">
         <h1 class="crayons-title"><%= t("views.notifications.heading") %></h1>
         <a href="<%= user_settings_path(tab: :notifications) %>" class="crayons-btn crayons-btn--ghost"><%= t("views.notifications.settings") %></a>
@@ -67,7 +67,7 @@
     </div>
     <%= render "articles/fitvids" %>
   </main>
-  <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+  <%= javascript_packs_with_chunks_tag "followButtons", "subscribeButton", defer: true %>
   <script>
     <%== RunkitTag.script %>
   </script>

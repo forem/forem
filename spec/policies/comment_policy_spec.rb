@@ -14,6 +14,10 @@ RSpec.describe CommentPolicy, type: :policy do
     %i[body_markdown receive_notifications]
   end
 
+  let(:valid_attributes_for_subscribe) do
+    %i[subscription_id comment_id article_id]
+  end
+
   let(:valid_attributes_for_moderator_create) do
     %i[commentable_id commentable_type parent_id]
   end
@@ -22,6 +26,14 @@ RSpec.describe CommentPolicy, type: :policy do
     let(:user) { nil }
 
     it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
+  end
+
+  context "when user wants to subscribe to a comment" do
+    let(:user) { create(:user) }
+
+    it { is_expected.to permit_actions(%i[subscribe]) }
+
+    it { is_expected.to permit_mass_assignment_of(valid_attributes_for_subscribe).for_action(:subscribe) }
   end
 
   context "when user is not the author" do

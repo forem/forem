@@ -25,6 +25,14 @@ class CommentPolicy < ApplicationPolicy
     true
   end
 
+  def subscribe?
+    true
+  end
+
+  def unsubscribe?
+    true
+  end
+
   def moderate?
     return true if user.trusted?
 
@@ -52,6 +60,14 @@ class CommentPolicy < ApplicationPolicy
 
   def permitted_attributes_for_preview
     %i[body_markdown]
+  end
+
+  def permitted_attributes_for_subscribe
+    %i[subscription_id comment_id article_id]
+  end
+
+  def permitted_attributes_for_unsubscribe
+    %i[subscription_id]
   end
 
   def permitted_attributes_for_create
