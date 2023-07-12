@@ -128,10 +128,10 @@ It supports pagination, each page will contain `30` users by default."
     end
   end
 
-  describe "GET /api/organizations/{id}" do
+  describe "GET /api/organizations/id/{id}" do
     let!(:organization) { create(:organization) }
 
-    path "/api/organizations/{id}" do
+    path "/api/organizations/id/{id}" do
       get "An organization (by id)" do
         tags "organizations"
         security []

@@ -12,11 +12,11 @@ RSpec.describe "Api::V1::Organizations" do
     end
   end
 
-  describe "GET /api/organizations/:id" do
+  describe "GET /api/organizations/id/:id" do
     let(:organization) { create(:organization) }
 
     it "returns 404 if the organizations id is not found" do
-      get "/api/organizations/0", headers: headers
+      get "/api/organizations/id/0", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
