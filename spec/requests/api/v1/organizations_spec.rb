@@ -21,7 +21,7 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
-      get api_organization_path(organization.id), headers: headers
+      get api_organization_by_id_path(organization.id), headers: headers
 
       response_organization = response.parsed_body
       expect(response_organization).to include(

@@ -25,6 +25,13 @@ module Api
 
         render json: organization
       end
+
+      def show_by_id
+        organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+          .find(params[:id])
+
+        render json: organization
+      end
     end
   end
 end

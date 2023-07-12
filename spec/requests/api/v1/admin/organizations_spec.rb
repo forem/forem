@@ -56,7 +56,7 @@ RSpec.describe "/api/admin/organizations" do
 
       it "accepts request and creates the organization with valid params" do
         expect do
-          post api_admin_organizations_path, params: { organization: org_params }, headers: headers
+          post api_admin_organizations_path, params: org_params, headers: headers
         end.to change(Organization, :count).by(1)
 
         expect(response).to have_http_status(:ok)
@@ -64,7 +64,7 @@ RSpec.describe "/api/admin/organizations" do
 
       it "returns a 422 and does not create the organization with invalid params" do
         expect do
-          post api_admin_organizations_path, params: { organization: {} }, headers: headers
+          post api_admin_organizations_path, params: {}, headers: headers
         end.not_to change(Organization, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
@@ -78,9 +78,9 @@ RSpec.describe "/api/admin/organizations" do
       it "accepts request and updates the organization with valid params" do
         expect do
           put api_admin_organization_path(organization.id), headers: headers, params: {
-            organization: org_params.merge(summary: "new summary")
+            organization: { summary: "new summary" }
           }
-        end.to change(Organization.first, :summary).to("new summary")
+        end.to change(organization, :summary).to("new summary")
 
         expect(response).to have_http_status(:ok)
       end
@@ -88,9 +88,9 @@ RSpec.describe "/api/admin/organizations" do
       it "returns a 422 and does not update the organization with invalid params" do
         expect do
           put api_admin_organization_path(organization.id),
-              params: { organization: org_params.merge(name: nil) },
+              params: { organization: { name: "" } },
               headers: headers
-        end.not_to change(Organization, :count)
+        end.not_to change(organization, :name)
 
         expect(response).to have_http_status(:unprocessable_entity)
       end
