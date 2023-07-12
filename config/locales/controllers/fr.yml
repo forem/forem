@@ -7,7 +7,6 @@ fr:
     bad_request: 'Erreur : mauvaise demande'
     not_authorized: 'Erreur : non autorisé'
     please_sign_in : Veuillez vous connecter
-    please_complete_profile: Merci de compléter votre profil
   articles_controller:
     deleted: L'article a été supprimé avec succès.
   comments_controller:

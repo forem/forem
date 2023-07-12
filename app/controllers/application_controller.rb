@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
   before_action :remember_cookie_sync
   before_action :forward_to_app_config_domain
   before_action :determine_locale
-  before_action :check_user_has_completed_profile
 
   include SessionCurrentUser
   include ValidRequest
@@ -292,14 +291,6 @@ class ApplicationController < ActionController::Base
     return true if ENV.fetch("E2E", nil) && flag_name.to_sym == :subscribe_to_comments
 
     FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
-  end
-
-  def check_user_has_completed_profile
-    return if !user_signed_in? ||
-      current_user&.name&.present?
-
-    flash[:error] = I18n.t("application_controller.please_complete_profile")
-    redirect_to user_settings_path
   end
 
   helper_method :feature_flag_enabled?

@@ -7,7 +7,6 @@ en:
     bad_request: 'Error: Bad Request'
     not_authorized: 'Error: not authorized'
     please_sign_in: Please sign in
-    please_complete_profile: Please complete your profile
   articles_controller:
     deleted: Article was successfully deleted.
   comments_controller:

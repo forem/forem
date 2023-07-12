@@ -1,6 +1,5 @@
 class ProfilesController < ApplicationController
   before_action :authenticate_user!
-  skip_before_action :check_user_has_completed_profile
 
   ALLOWED_USER_PARAMS = %i[name email username profile_image].freeze
   ALLOWED_USERS_SETTING_PARAMS = %i[display_email_on_profile brand_color1].freeze

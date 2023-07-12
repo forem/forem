@@ -2,7 +2,6 @@
 class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
   before_action :set_cache_control_headers, only: %i[navigation_links]
-  skip_before_action :check_user_has_completed_profile
 
   def base_data
     flash.discard(:notice)
