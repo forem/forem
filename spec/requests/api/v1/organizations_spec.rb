@@ -4,6 +4,8 @@ RSpec.describe "Api::V1::Organizations" do
   let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "GET /api/organizations" do
+    before { create(:organization) }
+
     it "retrieves all organizations and renders the collection as json" do
       get api_organizations_path, headers: headers
       expect(response).to have_http_status(:success)
