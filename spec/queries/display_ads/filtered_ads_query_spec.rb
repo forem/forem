@@ -223,7 +223,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     it "shows only billboards whose target location includes the specified location" do
       location = Location.new("CA", "NL") # User is in Newfoundland, Canada
 
-      %i[geo_array geo_text].each do |geo_column|
+      %i[geo_array geo_text geo_ltree].each do |geo_column|
         filtered = filter_ads(location: location, geo_column: geo_column)
 
         expect(filtered).to include(
@@ -243,7 +243,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
     it "shows only billboards targeting the country specifically if no region is provided" do
       location = Location.new("CA") # User is in "Canada"
 
-      %i[geo_array geo_text].each do |geo_column|
+      %i[geo_array geo_text geo_ltree].each do |geo_column|
         filtered = filter_ads(location: location, geo_column: geo_column)
         expect(filtered).to include(
           no_targets,
