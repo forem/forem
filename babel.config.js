@@ -60,12 +60,6 @@ module.exports = function (api) {
         },
       ],
       [
-        '@babel/plugin-proposal-private-methods',
-        {
-          loose: true,
-        },
-      ],
-      [
         '@babel/plugin-transform-react-jsx',
         {
           pragma: 'h',
