@@ -67,12 +67,18 @@ RSpec.describe "NotificationSubscriptions" do
   end
 
   describe "#upsert or POST /notification_subscriptions/:notifiable_type/:notifiable_id" do
+    before do
+      allow(Notifications::BustCaches).to receive(:call)
+    end
+
     it "returns 404 if there is no logged in user" do
       expect do
         post "/notification_subscriptions/Article/#{article.id}",
              headers: headers,
              params: { config: "all_comments" }
       end.to raise_error ActiveRecord::RecordNotFound
+
+      expect(Notifications::BustCaches).not_to have_received(:call)
     end
 
     context "when sent as a JSON request with the correct params" do
@@ -86,6 +92,9 @@ RSpec.describe "NotificationSubscriptions" do
         expect(subscription.user_id).to eq user.id
         expect(subscription.notifiable_id).to eq other_article.id
         expect(subscription.notifiable_type).to eq "Article"
+
+        expect(Notifications::BustCaches).to have_received(:call)
+          .with(a_hash_including(notifiable_id: other_article.id.to_s))
       end
 
       it "removes a previous subscription" do
@@ -95,6 +104,9 @@ RSpec.describe "NotificationSubscriptions" do
              params: { config: "not_subscribed" }
 
         expect { subscription.reload }.to raise_error ActiveRecord::RecordNotFound
+
+        expect(Notifications::BustCaches).to have_received(:call)
+          .with(a_hash_including(notifiable_id: article.id.to_s))
       end
 
       it "updates the article.receive_notifications column correctly if the current_user is the author" do
@@ -124,6 +136,9 @@ RSpec.describe "NotificationSubscriptions" do
         post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
 
         expect(parent_comment_by_og.reload.receive_notifications).to be(false)
+
+        expect(Notifications::BustCaches).to have_received(:call)
+          .with(a_hash_including(notifiable_id: parent_comment_by_og.id.to_s))
       end
 
       it "does not mute the someone else's parent comment" do
@@ -140,6 +155,9 @@ RSpec.describe "NotificationSubscriptions" do
         post "/notification_subscriptions/Comment/#{parent_comment_by_og.id}", headers: headers, params: params
 
         expect(parent_comment_by_og.reload.receive_notifications).to be(true)
+
+        expect(Notifications::BustCaches).to have_received(:call)
+          .with(a_hash_including(notifiable_id: parent_comment_by_og.id.to_s))
       end
     end
 
