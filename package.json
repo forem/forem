@@ -43,7 +43,7 @@
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.19.1",
-    "@babel/plugin-proposal-decorators": "^7.21.0",
+    "@babel/plugin-proposal-decorators": "^7.22.5",
     "@faker-js/faker": "^7.6.0",
     "@knapsack-pro/cypress": "^5.4.0",
     "@storybook/addon-a11y": "^6.5.16",
@@ -100,13 +100,13 @@
     "webpack-dev-server": "^3.11.3"
   },
   "dependencies": {
-    "@babel/core": "^7.21.0",
+    "@babel/core": "^7.22.5",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
-    "@babel/plugin-proposal-export-default-from": "^7.18.10",
+    "@babel/plugin-proposal-export-default-from": "^7.22.5",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-react-jsx": "^7.21.0",
-    "@babel/preset-env": "^7.19.4",
-    "@babel/preset-typescript": "^7.21.4",
+    "@babel/plugin-transform-react-jsx": "^7.22.5",
+    "@babel/preset-env": "^7.22.5",
+    "@babel/preset-typescript": "^7.22.5",
     "@cypress/code-coverage": "^3.10.8",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
     "@github/time-elements": "3.1.2",
