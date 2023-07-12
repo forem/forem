@@ -198,11 +198,15 @@ Rails.application.routes.draw do
     get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", to: "async_info#navigation_links"
 
-    # Display ads
+    # Billboards
     scope "/:username/:slug" do
-      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+      get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard
+      # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+      get "/display_ads/:placement_area", to: "billboards#show"
     end
-    get "/display_ads/:placement_area", to: "display_ads#show"
+    get "/billboards/:placement_area", to: "billboards#show"
+    # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+    get "/display_ads/:placement_area", to: "billboards#show"
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -239,6 +243,8 @@ Rails.application.routes.draw do
     get "/:slug/members", to: "organizations#members", as: :organization_members
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
+    post "comments/subscribe", to: "notification_subscriptions#create"
+    post "subscription/unsubscribe", to: "notification_subscriptions#destroy"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about", to: "pages#about"

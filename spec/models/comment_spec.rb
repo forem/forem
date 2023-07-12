@@ -614,4 +614,23 @@ RSpec.describe Comment do
       expect(comment.reload.root_exists?).to be(false)
     end
   end
+
+  describe "#by_staff_account?" do
+    let(:regular_user) { create(:user) }
+    let(:staff_account) { create(:user) }
+    let(:comment) { build(:comment, user: regular_user) }
+    let(:staff_comment) { build(:comment, user: staff_account) }
+
+    before do
+      allow(User).to receive(:staff_account).and_return(staff_account)
+    end
+
+    it "returns true if comment is by the staff account" do
+      expect(staff_comment.by_staff_account?).to be(true)
+    end
+
+    it "returns false if comment is not by the staff account" do
+      expect(comment.by_staff_account?).to be(false)
+    end
+  end
 end

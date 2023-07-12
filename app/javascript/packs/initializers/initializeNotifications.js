@@ -1,8 +1,10 @@
 import { sendHapticMessage } from '../../utilities/sendHapticMessage';
-import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn'; 
-import { showModalAfterError } from '../../utilities/showUserAlertModal';  
+import { checkUserLoggedIn } from '../../utilities/checkUserLoggedIn';
+import { showModalAfterError } from '../../utilities/showUserAlertModal';
+import { initializeSubscribeButton } from '../../packs/subscribeButton';
 // eslint-disable-next-line no-redeclare
 /* global InstantClick, instantClick */
+
 function markNotificationsAsRead() {
   setTimeout(() => {
     if (document.getElementById('notifications-container')) {
@@ -103,14 +105,14 @@ function initReactions() {
           event.preventDefault();
           const thisButt = this;
           document
-            .getElementById(`comment-form-for-${ thisButt.dataset.reactableId }`)
+            .getElementById(`comment-form-for-${thisButt.dataset.reactableId}`)
             .classList.remove('hidden');
           thisButt.classList.add('hidden');
           thisButt.classList.remove('inline-flex');
           setTimeout(() => {
             document
               .getElementById(
-                `comment-textarea-for-${ thisButt.dataset.reactableId }`,
+                `comment-textarea-for-${thisButt.dataset.reactableId}`,
               )
               .focus();
           }, 30);
@@ -178,6 +180,8 @@ function initPagination() {
                 }
                 paginator.remove();
               }
+
+              initializeSubscribeButton();
             });
           }
         });
