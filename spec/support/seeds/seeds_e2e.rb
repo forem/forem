@@ -1067,6 +1067,14 @@ end
 
 ##############################################################################
 
+seeder.create_if_none(AudienceSegment) do
+  AudienceSegment.type_ofs.each_key do |type|
+    AudienceSegment.create!(type_of: type)
+  end
+end
+
+##############################################################################
+
 seeder.create_if_none(DisplayAd) do
   org_id = Organization.find_by(slug: "bachmanity").id
   DisplayAd.create!(
@@ -1076,5 +1084,15 @@ seeder.create_if_none(DisplayAd) do
     name: "Tests Display Ad",
     published: true,
     approved: true,
+  )
+
+  DisplayAd.create!(
+    organization_id: org_id,
+    body_markdown: "<h1>This is a billboard with a manually managed audience</h1>",
+    placement_area: "sidebar_left",
+    name: "Manual Audience Billboard",
+    published: true,
+    approved: true,
+    audience_segment: AudienceSegment.where(type_of: :manual).first,
   )
 end

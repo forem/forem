@@ -7,7 +7,11 @@ describe('Delete Display Ads', () => {
       cy.loginAndVisit(user, '/admin/customization/billboards');
 
       cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Destroy' }).click({ force: true });
+        cy.contains('Tests Display Ad')
+          .closest('tr')
+          .findByRole('button', { name: 'Destroy' })
+          .as('deleteButton')
+          .click({ force: true });
       });
     });
   });
@@ -29,9 +33,7 @@ describe('Delete Display Ads', () => {
         cy.findByRole('button', { name: 'Close' }).click();
       });
 
-      cy.findByRole('table').within(() => {
-        cy.findByRole('button', { name: 'Destroy' }).should('be.visible');
-      });
+      cy.get('@deleteButton').should('be.visible');
     });
 
     it('should remove display ad if confirmation text matches', () => {
@@ -50,9 +52,7 @@ describe('Delete Display Ads', () => {
           );
         });
 
-        cy.findByRole('table').within(() => {
-          cy.findByRole('button', { name: 'Destroy' }).should('not.exist');
-        });
+        cy.get('@deleteButton').should('not.exist');
       });
     });
 
@@ -78,9 +78,7 @@ describe('Delete Display Ads', () => {
             .should('be.visible');
         });
 
-        cy.findByRole('table').within(() => {
-          cy.findByRole('button', { name: 'Destroy' }).should('be.visible');
-        });
+        cy.get('@deleteButton').should('be.visible');
       });
     });
   });
