@@ -201,8 +201,12 @@ Rails.application.routes.draw do
     # Billboards
     scope "/:username/:slug" do
       get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard
+      # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+      get "/display_ads/:placement_area", to: "billboards#show"
     end
     get "/billboards/:placement_area", to: "billboards#show"
+    # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+    get "/display_ads/:placement_area", to: "billboards#show"
 
     # Settings
     post "users/join_org", to: "users#join_org"
