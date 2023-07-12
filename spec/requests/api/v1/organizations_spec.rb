@@ -17,11 +17,6 @@ RSpec.describe "Api::V1::Organizations" do
   describe "GET /api/organizations/:id" do
     let(:organization) { create(:organization) }
 
-    it "returns 404 if the organizations id is not found" do
-      get "/api/organizations/0", headers: headers
-      expect(response).to have_http_status(:not_found)
-    end
-
     it "returns the correct json representation of the organization", :aggregate_failures do
       get api_organization_path(organization.id), headers: headers
 
@@ -35,6 +30,11 @@ RSpec.describe "Api::V1::Organizations" do
           "slug" => organization.slug
         },
       )
+    end
+
+    it "returns 404 if the organizations id is not found" do
+      get "/api/organizations/0", headers: headers
+      expect(response).to have_http_status(:not_found)
     end
   end
 

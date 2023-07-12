@@ -21,18 +21,12 @@ module Api
 
       def show
         organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find_by(username: params[:username])
+          .find(id: params[:id])
+        # If we can't find the organization by id, we'll use the username
         unless organization&.id
           organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-            .find(id: params[:id])
+            .find_by(username: params[:id])
         end
-
-        render json: organization
-      end
-
-      def show_by_id
-        organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find(params[:id])
 
         render json: organization
       end

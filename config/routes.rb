@@ -63,7 +63,7 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
-        resources :organizations, only: %i[index show]
+        resources :organizations, only: %i[index]
 
         draw :api
       end
