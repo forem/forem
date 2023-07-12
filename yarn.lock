@@ -4347,10 +4347,10 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ahoy.js@^0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.4.2.tgz#52a0a2b56cf382848a10204c632a40402347ac65"
-  integrity sha512-DYrXBIPhlnRmfvLKJ1gkUQyhByCO/6Grmpy/OBXGdM4hDcmrjIY3VKhtWwVdILQF0wYjYYABWSScGYLByoaM2g==
+ahoy.js@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.4.3.tgz#1b8403fd9415b0a54a9e36a3d67cab8534d2221c"
+  integrity sha512-l1WDqy4N+pK1LWWOjFabIeQpsuKIuKY08Mzgh6FHHJC2Ry1OJzOCFhSkuHUShMdaYeeaXo6CW5pfefj2GCsjkw==
 
 airbnb-js-shims@^2.2.1:
   version "2.2.1"
