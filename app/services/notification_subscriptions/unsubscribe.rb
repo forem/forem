@@ -16,7 +16,6 @@ module NotificationSubscriptions
     end
 
     def unsubscribe_subscription
-      return { errors: "Subscription ID is missing" } if subscription_id.nil?
       return { errors: "Notification subscription not found" } if subscription.nil?
 
       subscription.destroy
@@ -40,6 +39,8 @@ module NotificationSubscriptions
     end
 
     def subscription
+      return if subscription_id.nil?
+
       @subscription ||= NotificationSubscription.find_by(user_id: current_user.id,
                                                          id: subscription_id)
     end
