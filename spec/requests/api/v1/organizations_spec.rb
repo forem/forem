@@ -10,20 +10,20 @@ RSpec.describe "Api::V1::Organizations" do
       get api_organizations_path, headers: headers
       expect(response).to have_http_status(:success)
       expect(response.parsed_body.size).to eq(1)
-      expect(response.parsed_body.first.keys).to match_array(*%w[name summary profile_image url slug])
+      expect(response.parsed_body.first.keys).to match_array(%w[id name profile_image slug summary tag_line url])
     end
   end
 
-  describe "GET /api/organizations/id/:id" do
+  describe "GET /api/organizations/:id" do
     let(:organization) { create(:organization) }
 
     it "returns 404 if the organizations id is not found" do
-      get "/api/organizations/id/0", headers: headers
+      get "/api/organizations/0", headers: headers
       expect(response).to have_http_status(:not_found)
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
-      get api_organization_by_id_path(organization.id), headers: headers
+      get api_organization_path(organization.id), headers: headers
 
       response_organization = response.parsed_body
       expect(response_organization).to include(
