@@ -47,7 +47,7 @@ RSpec.describe NotificationSubscriptions::Unsubscribe, type: :service do
         result = described_class.call(current_user, nil)
       end.not_to change(NotificationSubscription, :count)
 
-      expect(result).to eq({ errors: "Subscription ID is missing" })
+      expect(result).to eq({ errors: "Notification subscription not found" })
 
       expect(Notifications::BustCaches).not_to have_received(:call)
     end
