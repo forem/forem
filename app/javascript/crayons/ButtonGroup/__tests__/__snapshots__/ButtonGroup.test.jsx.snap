@@ -1,3 +1,3 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ButtonGroup /> component should render 1`] = `"<div role=\\"group\\" aria-label=\\"Test button group\\" class=\\"crayons-btn-group\\"><button class=\\"crayons-btn\\" type=\\"button\\">Hello World!</button><button class=\\"crayons-btn\\" type=\\"button\\"></button></div>"`;
+exports[`<ButtonGroup /> component should render 1`] = `"<div role=\\"group\\" aria-label=\\"Test button group\\" class=\\"crayons-btn-group\\"><button type=\\"button\\" class=\\"crayons-btn\\">Hello World!</button><button type=\\"button\\" class=\\"crayons-btn\\"></button></div>"`;

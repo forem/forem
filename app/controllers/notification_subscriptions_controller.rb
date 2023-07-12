@@ -50,6 +50,12 @@ class NotificationSubscriptionsController < ApplicationController
       @notification_subscription.save
     end
 
+    if @notification_subscription.destroyed? || @notification_subscription.previous_changes.present?
+      Notifications::BustCaches.call(user: current_user,
+                                     notifiable_id: params[:notifiable_id],
+                                     notifiable_type: params[:notifiable_type].capitalize)
+    end
+
     respond_to do |format|
       format.json { render json: @notification_subscription.persisted? }
       format.html { redirect_to request.referer }
