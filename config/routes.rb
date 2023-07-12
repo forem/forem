@@ -63,9 +63,7 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
-        resources :organizations, only: %i[index]
-        # Clunky action name and path for now to avoid overstepping the existing "by username" path and action
-        get "/organizations/id/:id", to: "organizations#show_by_id", as: "organization_by_id"
+        resources :organizations, only: %i[index show]
 
         draw :api
       end

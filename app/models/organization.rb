@@ -13,6 +13,7 @@ class Organization < ApplicationRecord
   before_validation :downcase_slug
   before_validation :check_for_slug_change
   before_validation :evaluate_markdown
+  # possible step before validation, use backup link for the sake of i.e. creation via api
 
   before_save :remove_at_from_usernames
   before_save :generate_secret
