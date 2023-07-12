@@ -150,63 +150,6 @@ It supports pagination, each page will contain `30` users by default."
     end
   end
 
-  describe "POST /api/admin/organizations" do
-    let(:api_secret) { create(:api_secret) }
-
-    before do
-      user = api_secret.user
-      user.add_role(:super_admin)
-    end
-
-    path "/api/admin/organizations" do
-      post "Create an Organization" do
-        tags "organizations"
-        description "This endpoint allows the client to create an organization with the provided parameters.
-
-        It requires a token from a user with `super_admin` privileges."
-        operationId "postAdminOrganizationsCreate"
-        produces "application/json"
-        consumes "application/json"
-        parameter name: :organization,
-                  in: :body,
-                  description: "Representation of Organization to be created",
-                  schema: { "$ref": "#/components/schemas/Organization" }
-
-        response "201", "An Organization" do
-          let(:"api-key") { api_secret.secret }
-          let(:organization) do
-            {
-              name: "New Test Org",
-              summary: "a newly created test org",
-              url: "https://testorg.io",
-              profile_image: "cloudinary/path/to/img.jpg",
-              slug: "org10001",
-              tag_line: "a test org's tagline"
-            }
-          end
-          add_examples
-          run_test!
-        end
-
-        response "401", "Unauthorized" do
-          let(:regular_user) { create(:user) }
-          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
-          let(:"api-key") { low_security_api_secret.secret }
-          let(:organization) { {} }
-          examples
-          run_test!
-        end
-
-        response "422", "Unprocessable Entity" do
-          let(:"api-key") { api_secret.secret }
-          let(:organization) { {} }
-          add_examples
-          run_test!
-        end
-      end
-    end
-  end
-
   describe "PUT /api/admin/organizations/{id}" do
     let(:api_secret) { create(:api_secret) }
     let(:org_to_update) { create(:organization) }

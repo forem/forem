@@ -1,6 +1,6 @@
 namespace :admin do
   resources :users, only: [:create]
-  resources :organizations, only: %i[create update destroy]
+  resources :organizations, only: %i[update destroy]
 end
 
 resources :articles, only: %i[index show create update] do

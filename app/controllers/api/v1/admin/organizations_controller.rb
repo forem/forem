@@ -5,24 +5,6 @@ module Api
         before_action :authenticate!
         before_action :authorize_super_admin
 
-        def create
-          organization = Organization.new organization_params
-
-          if organization.save
-            render json: {
-              id: organization.id,
-              name: organization.name,
-              profile_image: organization.profile_image,
-              slug: organization.slug,
-              summary: organization.summary,
-              tag_line: organization.tag_line,
-              url: organization.url
-            }, status: :created
-          else
-            render json: { error: organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
-          end
-        end
-
         def update
           organization = Organization.find(params[:id])
           organization.assign_attributes(organization_params)
