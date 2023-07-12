@@ -1,4 +1,4 @@
-class DisplayAdsController < ApplicationController
+class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include DisplayAdHelper
   CACHE_EXPIRY_FOR_DISPLAY_ADS = 15.minutes.to_i.freeze

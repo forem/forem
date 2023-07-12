@@ -1,19 +1,19 @@
 require "rails_helper"
 
-RSpec.describe "DisplayAds" do
+RSpec.describe "Billboards" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
 
   let(:max_age) { 15.minutes.to_i }
   let(:stale_if_error) { 26_400 }
 
-  describe "GET /:username/:slug/display_ads/:placement_area" do
+  describe "GET /:username/:slug/billboards/:placement_area" do
     before do
       create(:display_ad, placement_area: "post_comments", published: true, approved: true)
     end
 
     it "returns the correct response" do
-      get article_display_ad_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+      get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
       display_ad = DisplayAd.find_by(placement_area: "post_comments")
 
       expect(response).to have_http_status(:ok)
@@ -23,7 +23,7 @@ RSpec.describe "DisplayAds" do
     context "when signed in" do
       before do
         sign_in user
-        get article_display_ad_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
       end
 
       it "does not set surrogate key headers" do
@@ -44,7 +44,7 @@ RSpec.describe "DisplayAds" do
 
     context "when signed out" do
       before do
-        get article_display_ad_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
       end
 
       it "sets the surrogate key header equal to params for article" do
