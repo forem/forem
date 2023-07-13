@@ -1439,7 +1439,8 @@ RSpec.describe Article do
       end
 
       it "doesn't update the language if the probability is too low" do
-        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double("LanguageOutcome", probability: 0.4, reliable?: true, language: "en"))
+        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
+"LanguageOutcome", probability: 0.4, reliable?: true, language: "en"))
         article.update(title: "This post is so english you'd think it was eating fish and chips")
         expect(article.language).to eq("en")
       end
