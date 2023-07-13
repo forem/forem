@@ -8,7 +8,6 @@ module Api
         def update
           organization = Organization.find(params[:id])
           organization.assign_attributes(organization_params)
-
           if organization.save
             render json: {
               id: organization.id,

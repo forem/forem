@@ -62,7 +62,7 @@ RSpec.describe "/api/admin/organizations" do
           put api_admin_organization_path(organization.id), headers: headers, params: {
             organization: { summary: "new summary" }
           }
-        end.to change(organization, :summary).to("new summary")
+        end.to change { organization.reload.summary }.to("new summary")
 
         expect(response).to have_http_status(:ok)
       end
