@@ -51,7 +51,7 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority")
+                          "priority", "geo_array", "geo_ltree", "geo_text")
       end
 
       it "returns a malformed response" do
@@ -100,7 +100,7 @@ RSpec.describe "Api::V1::DisplayAds" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority")
+                          "priority", "geo_array", "geo_ltree", "geo_text")
       end
     end
 

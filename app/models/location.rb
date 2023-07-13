@@ -5,9 +5,16 @@ class Location
 
   # TODO: Custom error messages maybe?
   validates :country_code, inclusion: { in: ISO3166::Country.codes }
+  # TODO: Stronger validation to only allow nil if the country has no subdivisions?
   validates :subdivision_code, inclusion: {
     in: ->(location) { ISO3166::Country.new(location.country_code).subdivision_codes }
   }, allow_nil: true
+
+  def self.from_client_geo(client_geo)
+    country, subdivision = client_geo.split("-")
+
+    new(country, subdivision)
+  end
 
   # Method to quickly spin up a bunch of records to test against
   def self.create_test_records(org_id, area: "feed_first", count: 500)
@@ -23,7 +30,7 @@ class Location
       %w[US-ME CA-NL GL],
     ]
 
-    DisplayAd.insert_all(Array.new(count) do |index|
+    result = DisplayAd.insert_all(Array.new(count) do |index|
       geo = geo_targets[index % 5]
       {
         organization_id: org_id,
@@ -38,9 +45,10 @@ class Location
         geo_text: geo&.join(",")
       }
     end)
+    result.rows.flatten
   end
 
-  def self.benchmark_query_methods(area: "feed_first")
+  def self.benchmark_query_methods(area: "feed_first", client_geo: "CA-NL")
     ActiveRecord::Base.logger.silence do
       %i[geo_array geo_ltree geo_text].each do |geo_column|
         callback = lambda do |*args|
@@ -55,7 +63,7 @@ class Location
             DisplayAds::FilteredAdsQuery.call(
               area: area,
               user_signed_in: false,
-              location: Location.new("CA", "NL"),
+              location: Location.from_client_geo(client_geo),
               geo_column: geo_column,
             ).count
           end
