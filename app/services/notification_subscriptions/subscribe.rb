@@ -27,6 +27,7 @@ module NotificationSubscriptions
       )
 
       if subscription.save
+        bust_caches if subscription.previous_changes.present?
         { updated: true, subscription: subscription }
       else
         { errors: subscription.errors_as_sentence }
@@ -34,6 +35,10 @@ module NotificationSubscriptions
     end
 
     private
+
+    def bust_caches
+      Notifications::BustCaches.call(user: current_user, notifiable: notifiable)
+    end
 
     def comment
       @comment ||= Comment.find(comment_id) if comment_id.present?
