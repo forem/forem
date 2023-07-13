@@ -1,6 +1,5 @@
 module Admin
   class OrganizationsController < Admin::ApplicationController
-    include Admin::OrganizationsHelper
     layout "admin"
     PER_PAGE_MAX = 50
 
