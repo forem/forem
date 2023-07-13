@@ -639,7 +639,7 @@ class Article < ApplicationRecord
     return unless title_changed? || body_markdown_changed?
 
     language_outcome = CLD3::NNetLanguageIdentifier.new(0, 1000).find_language("#{title}. #{body_text}")
-    if language_outcome.probability > 0.5 && language_outcome.reliable?
+    return unless language_outcome.probability > 0.5 && language_outcome.reliable?
       self.language = language_outcome.language
     end
   end
