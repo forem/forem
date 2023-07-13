@@ -1435,7 +1435,8 @@ RSpec.describe Article do
 
       it "detects language for new articles" do
         allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-"LanguageOutcome", probability: 0.8, reliable?: true, language: "es"))
+"LanguageOutcome", probability: 0.8, reliable?: true, language: "es"
+))
         expect(create(:article).language).to eq("es")
       end
 
