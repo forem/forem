@@ -1425,7 +1425,7 @@ RSpec.describe Article do
     context "when title or body_markdown has changed" do
       before do
         allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-"LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
+                                                                                                    "LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
       end
 
       it "updates the language" do
