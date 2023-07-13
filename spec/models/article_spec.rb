@@ -1421,6 +1421,38 @@ RSpec.describe Article do
     end
   end
 
+  describe "#detect_language" do
+    context "when title or body_markdown has changed" do
+      before do
+        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double("LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
+      end
+
+      it "updates the language" do
+        article.update(title: "This is a new english article")
+        expect(article.language).to eq("en")
+      end
+
+      it "detects language for new articles" do
+        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double("LanguageOutcome", probability: 0.8, reliable?: true, language: "es"))
+        expect(create(:article).language).to eq("es")
+      end
+
+      it "doesn't update the language if the probability is too low" do
+        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double("LanguageOutcome", probability: 0.4, reliable?: true, language: "en"))
+        article.update(title: "This post is so english you'd think it was eating fish and chips")
+        expect(article.language).to eq("en")
+      end
+    end
+
+    context "when title or body_markdown has not changed" do
+      it "does not update the language" do
+        article.update_column(:language, "es") # Non-callback-triggering update
+        article.update(nth_published_by_author: 5)
+        expect(article.language).not_to eq("en")
+      end
+    end
+  end
+
   xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)
 

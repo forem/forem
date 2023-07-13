@@ -198,6 +198,7 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :detect_language
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -632,6 +633,15 @@ class Article < ApplicationRecord
 
     # Collection is empty
     collection.destroy
+  end
+
+  def detect_language
+    return unless title_changed? || body_markdown_changed?
+
+    language_outcome = CLD3::NNetLanguageIdentifier.new(0, 1000).find_language("#{title}. #{body_text}")
+    if language_outcome.probability > 0.5 && language_outcome.reliable?
+      self.language = language_outcome.language
+    end
   end
 
   def search_score
