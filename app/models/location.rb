@@ -19,7 +19,7 @@ class Location
   end
 
   # Method to quickly spin up a bunch of records to test against
-  def self.create_test_records(org_id, area: "feed_first", count: 500)
+  def self.create_test_records(org_id, area: "sidebar_left", count: 500)
     geo_targets = [
       nil,
       # Quebec (Canada) and France

@@ -54,11 +54,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_hero_banner
-    @hero_display_ad = DisplayAd.for_display(
-      area: "home_hero",
-      user_signed_in: user_signed_in?,
-      client_geo: request.env["HTTP_CLIENT_GEO"],
-    )
+    @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
   end
 
   def assign_hero_html
@@ -148,6 +144,7 @@ class StoriesController < ApplicationController
                               stale_while_revalidate: 30,
                               stale_if_error: 86_400)
 
+    @client_geo = request.env["HTTP_CLIENT_GEO"]
     render template: "articles/index"
   end
 

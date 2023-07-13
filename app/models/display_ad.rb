@@ -143,7 +143,7 @@ class DisplayAd < ApplicationRecord
       "tag_list" => cached_tag_list,
       "exclude_article_ids" => exclude_article_ids.join(",")
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list geo_array geo_text geo_ltree])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
@@ -219,7 +219,10 @@ class DisplayAd < ApplicationRecord
   end
 
   def set_various_geo_columns
-    new_geo = geo&.presence || nil
+    return if geo.nil?
+
+    # optionally convert empty geo to nil
+    new_geo = geo.presence
     self.geo_array = new_geo
     self.geo_ltree = new_geo&.map { |code| code.tr("-", ".") }
     self.geo_text = new_geo&.join(",")
