@@ -1431,7 +1431,7 @@ RSpec.describe Article do
       end
 
       it "updates the language" do
-        article.update(title: "This is a new english article")
+        article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
         expect(article.language).to eq("en")
       end
 
@@ -1443,10 +1443,11 @@ RSpec.describe Article do
       end
 
       it "doesn't update the language if the probability is too low" do
+        article.update_column(:language, "en") # Non-callback-triggering update
         allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-          "LanguageOutcome", probability: 0.4, reliable?: true, language: "en"
+          "LanguageOutcome", probability: 0.4, reliable?: true, language: "es"
         ))
-        article.update(title: "This post is so english you'd think it was eating fish and chips")
+        article.update(title: "Let's pretend this should be spanish")
         expect(article.language).to eq("en")
       end
     end
