@@ -19,7 +19,7 @@ RSpec.describe "Api::V1::Organizations" do
 
     it "returns the correct json representation of the organization", :aggregate_failures do
       get api_organization_path(organization.id), headers: headers
-
+      p api_organization_path(organization.id)
       response_organization = response.parsed_body
       expect(response_organization).to include(
         {
@@ -47,6 +47,7 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
+      p api_organization_path(organization.username)
       get api_organization_path(organization.username), headers: headers
 
       response_organization = response.parsed_body

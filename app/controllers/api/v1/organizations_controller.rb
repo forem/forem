@@ -25,15 +25,16 @@ module Api
         # as well as api/organizations/:id ("new" style)
         # Ultimately it might be best to rename the less restful "by username" lookup to a different
         # route pattern, let our "new" but more traditional behavior hold the conventional restful pattern
+        # binding.pry
         organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find(id: params[:username])
+          .find_by(id: params[:username].to_i)
         # If we can't find the organization by id, we'll use the username
         unless organization&.id
           organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
             .find_by(username: params[:username])
         end
 
-        render json: organization
+        render json: organization, status: organization ? :ok : :not_found
       end
     end
   end
