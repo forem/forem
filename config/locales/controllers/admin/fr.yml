@@ -66,7 +66,7 @@ fr:
       updated: L'utilisateur a été mis à jour avec succès vers %{type}
     organizations_controller:
       credit_updated: Crédits actualisés avec succès
-      deletion_scheduled: 'Your organization, "%{organization_name}", deletion is scheduled.'
+      deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
       error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
     pages_controller:
       updated: La page a été mise à jour avec succès.
