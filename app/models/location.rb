@@ -11,6 +11,8 @@ class Location
   }, allow_nil: true
 
   def self.from_client_geo(client_geo)
+    return if client_geo.nil?
+
     country, subdivision = client_geo.split("-")
 
     new(country, subdivision)

@@ -27,7 +27,6 @@ class DisplayAd < ApplicationRecord
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
 
-
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
   attribute :geo, :string, array: true
@@ -172,7 +171,7 @@ class DisplayAd < ApplicationRecord
   end
 
   def self.new_and_priority_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"]||
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] ||
       ApplicationConfig["SELDOM_SEEN_MAX"] ||
       NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
   end

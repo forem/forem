@@ -54,7 +54,11 @@ class StoriesController < ApplicationController
   end
 
   def assign_hero_banner
-    @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
+    @hero_display_ad = DisplayAd.for_display(
+      area: "home_hero",
+      user_signed_in: user_signed_in?,
+      client_geo: request.env["HTTP_CLIENT_GEO"],
+    )
   end
 
   def assign_hero_html

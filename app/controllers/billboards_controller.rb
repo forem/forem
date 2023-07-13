@@ -18,6 +18,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         user_tags: user_tags,
+        client_geo: request.env["HTTP_CLIENT_GEO"],
       )
 
       if @display_ad && !session_current_user_id
