@@ -1421,11 +1421,13 @@ RSpec.describe Article do
     end
   end
 
+  # rubocop:disable RSpec/AnyInstance
   describe "#detect_language" do
     context "when title or body_markdown has changed" do
       before do
-        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-                                                                                                    "LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
+        allow_any_instance_of(CLD3::NNetLanguageIdentifier)
+          .to receive(:find_language)
+          .and_return(double("LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
       end
 
       it "updates the language" do
@@ -1435,15 +1437,15 @@ RSpec.describe Article do
 
       it "detects language for new articles" do
         allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-"LanguageOutcome", probability: 0.8, reliable?: true, language: "es"
-))
+          "LanguageOutcome", probability: 0.8, reliable?: true, language: "es"
+        ))
         expect(create(:article).language).to eq("es")
       end
 
       it "doesn't update the language if the probability is too low" do
         allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-"LanguageOutcome", probability: 0.4, reliable?: true, language: "en"
-))
+          "LanguageOutcome", probability: 0.4, reliable?: true, language: "en"
+        ))
         article.update(title: "This post is so english you'd think it was eating fish and chips")
         expect(article.language).to eq("en")
       end
@@ -1457,6 +1459,7 @@ RSpec.describe Article do
       end
     end
   end
+  # rubocop:enable RSpec/AnyInstance
 
   xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)

@@ -640,8 +640,8 @@ class Article < ApplicationRecord
 
     language_outcome = CLD3::NNetLanguageIdentifier.new(0, 1000).find_language("#{title}. #{body_text}")
     return unless language_outcome.probability > 0.5 && language_outcome.reliable?
-      self.language = language_outcome.language
-    end
+
+    self.language = language_outcome.language
   end
 
   def search_score
