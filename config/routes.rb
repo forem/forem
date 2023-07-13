@@ -51,7 +51,11 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
-        resources :display_ads, only: %i[index show create update] do
+        resources :billboards, only: %i[index show create update] do
+          put "unpublish", on: :member
+        end
+        # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+        resources :display_ads, only: %i[index show create update], controller: :billboards do
           put "unpublish", on: :member
         end
 
