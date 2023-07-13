@@ -40,9 +40,7 @@ class Location
         cached_tag_list: "",
         published: true,
         approved: true,
-        geo_array: geo,
-        geo_ltree: geo&.map { |code| code.tr("-", ".") },
-        geo_text: geo&.join(",")
+        geo: geo
       }
     end)
     result.rows.flatten

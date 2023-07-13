@@ -30,6 +30,7 @@ class DisplayAd < ApplicationRecord
 
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
+  attribute :geo, :string, array: true
 
   belongs_to :organization, optional: true
   has_many :display_ad_events, dependent: :destroy
@@ -44,9 +45,11 @@ class DisplayAd < ApplicationRecord
   validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
-           :validate_tag
+           :validate_tag,
+           :validate_geo
 
   before_save :process_markdown
+  before_save :set_various_geo_columns
   after_save :generate_display_ad_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
@@ -59,7 +62,7 @@ class DisplayAd < ApplicationRecord
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, client_geo: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
@@ -72,6 +75,7 @@ class DisplayAd < ApplicationRecord
       permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
       user_tags: user_tags,
+      location: Location.from_client_geo(client_geo),
     )
 
     case rand(99) # output integer from 0-99
@@ -106,6 +110,15 @@ class DisplayAd < ApplicationRecord
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     validate_tag_name(tag_list)
+  end
+
+  def validate_geo
+    geo&.each do |code|
+      location = Location.from_client_geo(code)
+      unless location.valid?
+        errors.add(:geo, location.errors_as_sentence)
+      end
+    end
   end
 
   def validate_in_house_hero_ads
@@ -204,6 +217,13 @@ class DisplayAd < ApplicationRecord
 
   def prefix_width
     placement_area.include?("sidebar") ? SIDEBAR_WIDTH : POST_WIDTH
+  end
+
+  def set_various_geo_columns
+    new_geo = geo&.presence || nil
+    self.geo_array = new_geo
+    self.geo_ltree = new_geo&.map { |code| code.tr("-", ".") }
+    self.geo_text = new_geo&.join(",")
   end
 
   def refresh_audience_segment
