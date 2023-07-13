@@ -29,17 +29,17 @@ module Api
         # The reason is that we want people to access both api/organizations/:username (old style)
         # as well as api/organizations/:id ("new" style)
         # Ultimately it might be best to rename the less restful "by username" lookup to a different
-        organization = Organization
+        @organization = Organization
           .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
           .find(params[:username].to_i)
         # If we can't find the organization by id, we'll use the username
-        unless organization&.id
-          organization = Organization
+        unless @organization&.id
+          @organization = Organization
             .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
             .find_by!(username: params[:username])
         end
 
-        render json: organization, status: organization ? :ok : :not_found
+        render :show
       end
     end
   end

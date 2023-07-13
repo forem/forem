@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Organizations" do
         {
           "name" => organization.name,
           "summary" => organization.summary,
-          "profile_image" => organization.profile_image,
+          "profile_image" => organization.profile_image_url,
           "url" => organization.url,
           "username" => organization.slug
         },
@@ -52,7 +52,6 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     it "returns the correct json representation of the organization", :aggregate_failures do
-      p api_organization_path(organization.username)
       get api_organization_path(organization.username), headers: headers
 
       response_organization = response.parsed_body
