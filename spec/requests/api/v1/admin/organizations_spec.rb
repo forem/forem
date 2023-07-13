@@ -15,9 +15,11 @@ RSpec.describe "/api/admin/organizations" do
   let(:v1_headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   context "when unauthorized" do
+    let(:org_id) { create(:organization).id }
+
     it "rejects requests without an authorization token" do
       expect do
-        post api_admin_organizations_path, params: org_params, headers: v1_headers
+        put api_admin_organization_path(org_id), params: org_params, headers: v1_headers
       end.not_to change(User, :count)
 
       expect(response).to have_http_status(:unauthorized)
@@ -28,7 +30,7 @@ RSpec.describe "/api/admin/organizations" do
       headers = v1_headers.merge({ "api-key" => api_secret.secret })
 
       expect do
-        post api_admin_organizations_path, params: org_params, headers: headers
+        put api_admin_organization_path(org_id), params: org_params, headers: headers
       end.not_to change(User, :count)
 
       expect(response).to have_http_status(:unauthorized)
@@ -39,7 +41,7 @@ RSpec.describe "/api/admin/organizations" do
       headers = v1_headers.merge({ "api-key" => api_secret.secret })
 
       expect do
-        post api_admin_organizations_path, params: org_params, headers: headers
+        put api_admin_organization_path(org_id), params: org_params, headers: headers
       end.not_to change(User, :count)
 
       expect(response).to have_http_status(:unauthorized)
