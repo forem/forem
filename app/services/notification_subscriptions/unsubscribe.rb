@@ -16,33 +16,25 @@ module NotificationSubscriptions
     end
 
     def unsubscribe_subscription
-      return { errors: "Notification subscription not found" } if subscription.nil?
+      return { errors: "Subscription ID is missing" } if subscription_id.nil?
 
-      subscription.destroy
+      notification = NotificationSubscription.find_by(user_id: current_user.id,
+                                                      id: subscription_id)
+      return { errors: "Notification subscription not found" } if notification.nil?
 
-      if subscription.destroyed?
-        bust_caches
-        { destroyed: true }
-      else
-        { errors: subscription.errors_as_sentence }
-      end
+      destroy_notification(notification)
     end
 
     private
 
-    def bust_caches
-      Notifications::BustCaches.call(user: current_user, notifiable: notifiable)
-    end
+    def destroy_notification(notification)
+      notification.destroy
 
-    def notifiable
-      subscription&.notifiable
-    end
-
-    def subscription
-      return if subscription_id.nil?
-
-      @subscription ||= NotificationSubscription.find_by(user_id: current_user.id,
-                                                         id: subscription_id)
+      if notification.destroyed?
+        { destroyed: true }
+      else
+        { errors: notification.errors_as_sentence }
+      end
     end
   end
 end
