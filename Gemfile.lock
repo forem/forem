@@ -421,7 +421,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       sass (>= 3.2)
-    js-routes (2.2.5)
+    js-routes (2.2.6)
       railties (>= 4)
     json (2.6.3)
     json-schema (2.8.1)

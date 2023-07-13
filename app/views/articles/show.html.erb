@@ -193,7 +193,7 @@
       </article>
 
       <div class="pb-4 crayons-layout__comments-display-ad">
-        <div class="js-display-ad-container pb-4 crayons-layout__comments-display-ad" data-async-url="<%= article_display_ad_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
+        <div class="js-display-ad-container pb-4 crayons-layout__comments-display-ad" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
       </div>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>

@@ -102,7 +102,6 @@ namespace :admin do
   scope :customization do
     # We renamed the controller but don't want to change the route (yet)
     resource :config, controller: "settings"
-    # resources :display_ads, only: %i[index edit update new create destroy]
     resources :billboards, only: %i[index edit update new create destroy]
     resources :html_variants, only: %i[index edit update new create show destroy]
     resources :navigation_links, only: %i[index update create destroy]
