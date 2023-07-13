@@ -69,7 +69,7 @@ namespace :admin do
     resources :gdpr_delete_requests, only: %i[index destroy]
 
     resources :bulk_assign_role, only: %i[index]
-    post "/bulk_assign_role/assign_role", to: "bulk_assign_role#assign_role"
+    post "/bulk_assign_role", to: "bulk_assign_role#assign_role"
   end
 
   scope :content_manager do
