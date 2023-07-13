@@ -34,7 +34,7 @@ module Api
         private
 
         def organization_params
-          params.permit(:name, :profile_image, :slug, :summary, :tag_line, :url)
+          params.require(:organization).permit(:name, :profile_image, :slug, :summary, :tag_line, :url)
         end
       end
     end

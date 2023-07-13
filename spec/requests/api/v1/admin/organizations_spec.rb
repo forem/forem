@@ -70,7 +70,7 @@ RSpec.describe "/api/admin/organizations" do
       it "returns a 422 and does not update the organization with invalid params" do
         expect do
           put api_admin_organization_path(organization.id),
-              params: { organization: { name: "" } },
+              params: { organization: { slug: "" } },
               headers: headers
         end.not_to change(organization, :name)
 
