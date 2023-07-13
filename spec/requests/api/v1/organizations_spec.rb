@@ -57,7 +57,7 @@ RSpec.describe "Api::V1::Organizations" do
       response_organization = response.parsed_body
       expect(response_organization).to include(
         {
-          "profile_image" => organization.profile_image,
+          "profile_image" => organization.profile_image_url,
           "type_of" => "organization",
           "joined_at" => organization.created_at.utc.iso8601
         },

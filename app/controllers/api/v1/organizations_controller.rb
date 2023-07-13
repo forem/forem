@@ -24,19 +24,18 @@ module Api
         render json: organizations
       end
 
+      # This borrows from the existing "show by username" route to add id lookup as a first step.
+      # The reason is that we want people to access both api/organizations/:username (old style)
+      # as well as api/organizations/:id ("new" style)
+      # Ultimately it might be best to rename the less restful "by username" lookup to a different route.
       def show
-        # This borrows from the existing "show by username" route to add id lookup as a first step.
-        # The reason is that we want people to access both api/organizations/:username (old style)
-        # as well as api/organizations/:id ("new" style)
-        # Ultimately it might be best to rename the less restful "by username" lookup to a different
         @organization = Organization
           .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find(params[:username].to_i)
+          .find_by(id: params[:username].to_i)
+
         # If we can't find the organization by id, we'll use the username
         unless @organization&.id
-          @organization = Organization
-            .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-            .find_by!(username: params[:username])
+          @organization = Organization.find_by!(username: params[:username])
         end
 
         render :show
