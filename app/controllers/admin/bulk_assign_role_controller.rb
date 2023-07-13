@@ -1,6 +1,7 @@
 module Admin
   class BulkAssignRoleController < Admin::ApplicationController
     layout "admin"
+    include Admin::UsersHelper
 
     def assign_role
       if permitted_params[:role].blank?
@@ -10,11 +11,12 @@ module Admin
 
       role = permitted_params[:role]
       usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
-      note = permitted_params[:note_for_current_role].presence || I18n.t("admin.bulk_assign_role_controller.congrats")
+      note = permitted_params[:note_for_current_role].presence
+      note ||= I18n.t("admin.bulk_assign_role_controller.congrats", role: role)
 
       begin
         usernames.each do |username|
-          user = User.find_by(username: username.strip.downcase)
+          user = User.find_by(username: username)
           user_action_status = user_action_status(user, role)
           if user
             Moderator::ManageActivityAndRoles.handle_user_roles(
@@ -31,7 +33,7 @@ module Admin
             slug: "bulk_assign_role",
             data: {
               role: role,
-              user_name: username,
+              username: username,
               user_action_status: user_action_status
             },
           )
@@ -50,27 +52,17 @@ module Admin
 
     private
 
+    # We need to override this method from Admin::ApplicationController since
+    # there is no resource to authorize.
+    def authorization_resource; end
+
     def user_action_status(user, role)
       if user
-        return "user_already_had_the_role" if user_status(user) == role
+        return "user_already_has_the_role" if user_status(user) == role
 
-        return "role_was_applied_successfully"
+        return "role_applied_successfully"
       end
       "user_not_found"
-    end
-
-    def user_status(user)
-      if user.suspended?
-        I18n.t("views.admin.users.statuses.Suspended")
-      elsif user.warned?
-        I18n.t("views.admin.users.statuses.Warned")
-      elsif user.comment_suspended?
-        I18n.t("views.admin.users.statuses.Comment Suspended")
-      elsif user.trusted?
-        I18n.t("views.admin.users.statuses.Trusted")
-      else
-        "Good standing"
-      end
     end
 
     def permitted_params
