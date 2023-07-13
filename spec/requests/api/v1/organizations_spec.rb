@@ -19,17 +19,22 @@ RSpec.describe "Api::V1::Organizations" do
 
     it "returns the correct json representation of the organization", :aggregate_failures do
       get api_organization_path(organization.id), headers: headers
-      p api_organization_path(organization.id)
       response_organization = response.parsed_body
       expect(response_organization).to include(
         {
           "name" => organization.name,
           "summary" => organization.summary,
-          "profile_image" => organization.profile_image_url,
+          "profile_image" => organization.profile_image,
           "url" => organization.url,
-          "slug" => organization.slug
+          "username" => organization.slug
         },
       )
+
+      %w[
+        id username name summary twitter_username github_username url location tech_stack tag_line story
+      ].each do |attr|
+        expect(response_organization[attr]).to eq(organization.public_send(attr))
+      end
     end
 
     it "returns 404 if the organizations id is not found" do
@@ -53,7 +58,7 @@ RSpec.describe "Api::V1::Organizations" do
       response_organization = response.parsed_body
       expect(response_organization).to include(
         {
-          "profile_image" => organization.profile_image_url,
+          "profile_image" => organization.profile_image,
           "type_of" => "organization",
           "joined_at" => organization.created_at.utc.iso8601
         },

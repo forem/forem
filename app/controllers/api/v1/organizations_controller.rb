@@ -3,8 +3,13 @@ module Api
     class OrganizationsController < ApiController
       include Api::OrganizationsController
 
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
+      INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id name profile_image slug summary tag_line url
+      ].freeze
+
+      SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id username name summary twitter_username github_username url
+        location created_at profile_image slug tech_stack tag_line story
       ].freeze
 
       before_action :find_organization, only: %i[users listings articles]
@@ -14,7 +19,7 @@ module Api
         num = [per_page, per_page_max].min
         page = params[:page] || 1
 
-        organizations = Organization.select(ATTRIBUTES_FOR_SERIALIZATION).page(page).per(num)
+        organizations = Organization.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).page(page).per(num)
 
         render json: organizations
       end
@@ -26,12 +31,12 @@ module Api
         # Ultimately it might be best to rename the less restful "by username" lookup to a different
         organization = Organization
           .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-          .find_by(id: params[:username].to_i)
+          .find(params[:username].to_i)
         # If we can't find the organization by id, we'll use the username
         unless organization&.id
           organization = Organization
             .select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-            .find_by(username: params[:username])
+            .find_by!(username: params[:username])
         end
 
         render json: organization, status: organization ? :ok : :not_found
