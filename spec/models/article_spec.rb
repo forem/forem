@@ -1421,11 +1421,10 @@ RSpec.describe Article do
     end
   end
 
-  # rubocop:disable RSpec/AnyInstance
   describe "#detect_language" do
     context "when title or body_markdown has changed" do
       before do
-        allow_any_instance_of(Languages::Detection)
+        allow(Languages::Detection)
           .to receive(:call)
           .and_return(:en)
       end
@@ -1436,7 +1435,7 @@ RSpec.describe Article do
       end
 
       it "detects language for new articles" do
-        allow_any_instance_of(Languages::Detection)
+        allow(Languages::Detection)
           .to receive(:call)
           .and_return(:es)
         expect(create(:article).language).to eq("es")
@@ -1451,5 +1450,4 @@ RSpec.describe Article do
       end
     end
   end
-  # rubocop:enable RSpec/AnyInstance
 end
