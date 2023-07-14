@@ -1437,7 +1437,7 @@ RSpec.describe Article do
       expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
     end
 
-    it "should not call detection when title and body_markdown are unchanged" do
+    it "does not call detection when title and body_markdown are unchanged" do
       article.language = "es"
       article.update(nth_published_by_author: 5)
       expect(Languages::Detection).not_to have_received(:call)
