@@ -64,7 +64,7 @@ RSpec.describe Languages::Detection, type: :service do
           CLD3::NNetLanguageIdentifier::Result,
           language: :es,
           probability: 0.9,
-          reliable?: true
+          reliable?: true,
         )
       end
 
