@@ -638,10 +638,7 @@ class Article < ApplicationRecord
   def detect_language
     return unless title_changed? || body_markdown_changed?
 
-    language_outcome = CLD3::NNetLanguageIdentifier.new(0, 1000).find_language("#{title}. #{body_text}")
-    return unless language_outcome.probability > 0.5 && language_outcome.reliable?
-
-    self.language = language_outcome.language
+    self.language = Languages::Detection.call("#{title}. #{body_text}")
   end
 
   def search_score

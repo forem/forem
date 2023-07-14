@@ -1421,13 +1421,12 @@ RSpec.describe Article do
     end
   end
 
-  # rubocop:disable RSpec/AnyInstance
   describe "#detect_language" do
     context "when title or body_markdown has changed" do
       before do
-        allow_any_instance_of(CLD3::NNetLanguageIdentifier)
-          .to receive(:find_language)
-          .and_return(double("LanguageOutcome", probability: 0.8, reliable?: true, language: "en"))
+        allow_any_instance_of(Languages::Detection)
+          .to receive(:call)
+          .and_return(:en)
       end
 
       it "updates the language" do
@@ -1436,31 +1435,21 @@ RSpec.describe Article do
       end
 
       it "detects language for new articles" do
-        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-          "LanguageOutcome", probability: 0.8, reliable?: true, language: "es"
-        ))
+        allow_any_instance_of(Languages::Detection)
+          .to receive(:call)
+          .and_return(:es)
         expect(create(:article).language).to eq("es")
-      end
-
-      it "doesn't update the language if the probability is too low" do
-        article.update_column(:language, "en") # Non-callback-triggering update
-        allow_any_instance_of(CLD3::NNetLanguageIdentifier).to receive(:find_language).and_return(double(
-          "LanguageOutcome", probability: 0.4, reliable?: true, language: "es"
-        ))
-        article.update(title: "Let's pretend this should be spanish")
-        expect(article.language).to eq("en")
       end
     end
 
     context "when title or body_markdown has not changed" do
       it "does not update the language" do
-        article.update_column(:language, "es") # Non-callback-triggering update
+        article.language = "es"
         article.update(nth_published_by_author: 5)
-        expect(article.language).not_to eq("en")
+        expect(article.language).to eq("es") # As opposed to stubbed value of "en"
       end
     end
   end
-  # rubocop:enable RSpec/AnyInstance
 
   xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)
