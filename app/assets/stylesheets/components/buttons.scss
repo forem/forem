@@ -76,6 +76,19 @@
   box-shadow: var(--shadow);
   color: var(--color);
 
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    background-color: var(--bg-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+  }
+
+  .js-focus-visible &.focus-visible:focus,
+  &:is(label):focus-within {
+    box-shadow: var(--focus-ring);
+    outline: 0;
+  }
+
   &[href]:hover,
   &[href]:focus,
   &:hover:enabled,
@@ -133,17 +146,6 @@
       pointer-events: revert;
     }
   }
-}
-
-.js-focus-visible .crayons-btn.focus-visible:focus,
-.js-focus-visible .crayons-btn.focus-visible:focus-within,
-label[class*='crayons-btn']:focus-within // label for input[type="file"] made to look like a button as the browse... button can't be styled.
-{
-  background-color: var(--bg-hover);
-  border-color: var(--border-hover);
-  box-shadow: var(--shadow-hover);
-  color: var(--color-hover);
-  z-index: var(--z-elevate);
 }
 
 .crayons-btn--secondary {

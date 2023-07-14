@@ -1,4 +1,6 @@
-FROM public.ecr.aws/docker/library/ruby:3.0.2-slim-bullseye AS ruby-upstream
+ARG RUBY_VERSION=3.0.6
+ARG DEBIAN_VERSION=bullseye
+FROM public.ecr.aws/docker/library/ruby:${RUBY_VERSION}-slim-${DEBIAN_VERSION} AS ruby-upstream
 
 RUN apt update && \
     apt install -y \

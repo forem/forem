@@ -80,6 +80,12 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.with(name: user.name, email: user.email).account_deleted_email
   end
 
+  def organization_deleted_email
+    user = User.last
+    org = Organization.last
+    NotifyMailer.with(name: user.name, org_name: org.name, email: user.email).organization_deleted_email
+  end
+
   def export_email
     NotifyMailer.with(user: User.last, attachment: "attachment").export_email
   end
