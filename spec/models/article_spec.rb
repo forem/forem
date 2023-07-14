@@ -1421,6 +1421,7 @@ RSpec.describe Article do
     end
   end
 
+  # rubocop:disable RSpec/AnyInstance
   describe "#detect_language" do
     context "when title or body_markdown has changed" do
       before do
@@ -1450,6 +1451,7 @@ RSpec.describe Article do
       end
     end
   end
+  # rubocop:enable RSpec/AnyInstance
 
   xit "does not send moderator notifications when a draft post" do
     allow(Notification).to receive(:send_moderation_notification)
