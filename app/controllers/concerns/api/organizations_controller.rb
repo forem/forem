@@ -24,7 +24,7 @@ module Api
 
     def show
       @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-        .find_by!(username: params[:username])
+        .find_by!(username: params[:id_or_slug])
     end
 
     def users
