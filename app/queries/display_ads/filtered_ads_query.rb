@@ -1,6 +1,6 @@
 module DisplayAds
   class FilteredAdsQuery
-    include DisplayAdHelper
+    include BillboardHelper
     def self.call(...)
       new(...).call
     end
