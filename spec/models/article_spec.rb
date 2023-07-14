@@ -1420,34 +1420,28 @@ RSpec.describe Article do
       end
     end
   end
-
+  
   describe "#detect_language" do
-    context "when title or body_markdown has changed" do
-      before do
-        allow(Languages::Detection)
-          .to receive(:call)
-          .and_return(:en)
-      end
+    let(:detected_language) { :kl } # kl for Klingon
 
-      it "updates the language" do
-        article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
-        expect(article.language).to eq("en")
-      end
-
-      it "detects language for new articles" do
-        allow(Languages::Detection)
-          .to receive(:call)
-          .and_return(:es)
-        expect(create(:article).language).to eq("es")
-      end
+    before do
+      allow(Languages::Detection).to receive(:call).and_return(detected_language)
     end
 
-    context "when title or body_markdown has not changed" do
-      it "does not update the language" do
-        article.language = "es"
-        article.update(nth_published_by_author: 5)
-        expect(article.language).to eq("es") # As opposed to stubbed value of "en"
-      end
+    it "should detect language using title and body for newly created articles" do
+      article = create(:article)
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "should detect language using title and body for updated articles" do
+      article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "should not call detection when title and body_markdown are unchanged" do
+      article.language = "es"
+      article.update(nth_published_by_author: 5)
+      expect(Languages::Detection).not_to have_received(:call)
     end
   end
 end
