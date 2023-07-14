@@ -1,7 +1,106 @@
 require "rails_helper"
 
 RSpec.describe "Api::V1::Organizations" do
-  let(:headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
+  let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
+
+  describe "admin-only endpoints" do
+    let!(:org_params) do
+      {
+        name: "Test Org",
+        summary: "a test org",
+        url: "https://testorg.io",
+        profile_image: "https://remote.profileimage.jpg",
+        slug: "test-org",
+        tag_line: "a tagline"
+      }
+    end
+
+    context "when unauthorized and requesting from an admin-only endpoint" do
+      let(:organization) { create(:organization) }
+
+      it "rejects requests without an authorization token" do
+        expect do
+          put api_organization_path(organization.id), params: { organization: org_params }, headers: headers
+        end.not_to change(User, :count)
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "rejects requests with a non-admin token" do
+        api_secret = create(:api_secret, user: create(:user))
+        admin_headers = headers.merge({ "api-key" => api_secret.secret })
+
+        expect do
+          put api_organization_path(organization.id),
+              params: { organization: org_params.merge({ summary: "new summary" }) },
+              headers: admin_headers
+        end.not_to change(organization, :summary)
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "rejects delete requests with a regular admin token" do
+        api_secret = create(:api_secret, user: create(:user, :admin))
+        admin_headers = headers.merge({ "api-key" => api_secret.secret })
+
+        expect do
+          delete api_organization_path(organization.id), headers: admin_headers
+        end.not_to change(User, :count)
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "PUT /api/organizations/:id" do
+      let!(:org_admin) { create(:user, :org_admin, :admin) }
+      let(:api_secret) { create(:api_secret, user: org_admin) }
+      let!(:organization) { org_admin.organizations.first }
+      let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+      it "accepts request and updates the organization with valid params" do
+        expect do
+          put api_organization_path(organization.id), headers: admin_headers, params: {
+            organization: { summary: "new summary" }
+          }
+        end.to change { organization.reload.summary }.to("new summary")
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a 422 and does not update the organization with invalid params" do
+        expect do
+          put api_organization_path(organization.id),
+              params: { organization: { slug: "" } },
+              headers: admin_headers
+        end.not_to change(organization, :name)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    describe "DELETE /api/organizations/:id" do
+      let!(:org_admin) { create(:user, :org_admin, :super_admin) }
+      let(:super_api_secret) { create(:api_secret, user: org_admin) }
+      let!(:organization) { org_admin.organizations.first }
+      let(:super_admin_headers) { headers.merge({ "api-key" => super_api_secret.secret }) }
+
+      it "accepts request and deletes the organization when found" do
+        expect do
+          delete api_organization_path(organization.id), headers: super_admin_headers
+        end.to change(Organization, :count).by(-1)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "errors when no organization is found" do
+        expect do
+          delete api_organization_path(0), headers: super_admin_headers
+        end.not_to change(Organization, :count)
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
 
   describe "GET /api/organizations" do
     before { create(:organization) }

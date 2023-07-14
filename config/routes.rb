@@ -63,7 +63,7 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
-        resources :organizations, only: %i[index]
+        resources :organizations, only: %i[index create update destroy]
 
         draw :api
       end
@@ -111,7 +111,7 @@ Rails.application.routes.draw do
     resources :reactions, only: %i[index create]
     resources :response_templates, only: %i[index create edit update destroy]
     resources :feedback_messages, only: %i[index create]
-    resources :organizations, only: %i[update create destroy]
+
     resources :follows, only: %i[show create] do
       collection do
         get "/bulk_show", to: "follows#bulk_show"

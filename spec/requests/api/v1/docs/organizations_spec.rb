@@ -150,16 +150,12 @@ It supports pagination, each page will contain `30` users by default."
     end
   end
 
-  describe "PUT /api/admin/organizations/{id}" do
-    let(:api_secret) { create(:api_secret) }
-    let(:org_to_update) { create(:organization) }
+  describe "PUT /api/organizations/{id}" do
+    let!(:org_admin) { create(:user, :org_admin, :admin) }
+    let(:api_secret) { create(:api_secret, user: org_admin) }
+    let!(:org_to_update) { org_admin.organizations.first }
 
-    before do
-      user = api_secret.user
-      user.add_role(:super_admin)
-    end
-
-    path "/api/admin/organizations/{id}" do
+    path "/api/organizations/{id}" do
       put "Update an organization by id" do
         tags "organizations"
         description "This endpoint allows the client to update an existing organization."
@@ -219,15 +215,12 @@ It supports pagination, each page will contain `30` users by default."
     end
   end
 
-  describe "DELETE /api/admin/organizations/{id}" do
-    let(:api_secret) { create(:api_secret) }
+  describe "DELETE /api/organizations/{id}" do
+    let!(:org_admin) { create(:user, :org_admin, :super_admin) }
+    let(:api_secret) { create(:api_secret, user: org_admin) }
+    let!(:org_to_delete) { org_admin.organizations.first }
 
-    before do
-      user = api_secret.user
-      user.add_role(:super_admin)
-    end
-
-    path "/api/admin/organizations/{id}" do
+    path "/api/organizations/{id}" do
       delete "Delete an Organization by id" do
         tags "organizations"
         description "This endpoint allows the client to delete a single organization, specified by id"
@@ -242,7 +235,7 @@ It supports pagination, each page will contain `30` users by default."
                   },
                   example: 1
 
-        let(:id) { organization.id }
+        let(:id) { org_to_delete.id }
 
         response(200, "successful") do
           let(:"api-key") { api_secret.secret }
