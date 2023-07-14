@@ -61,7 +61,7 @@ RSpec.describe Languages::Detection, type: :service do
     context "when probability and reliability are high" do
       let(:language_outcome) do
         instance_double(
-          'CLD3::NNetLanguageIdentifier::Result',
+          CLD3::NNetLanguageIdentifier::Result,
           language: :es,
           probability: 0.9,
           reliable?: true
