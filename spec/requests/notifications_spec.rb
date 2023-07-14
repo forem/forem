@@ -496,18 +496,12 @@ RSpec.describe "NotificationsIndex" do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        # Avoid notifying the mod on the article
-        Article.skip_callback(:commit, :after, :send_to_moderator)
         moderator.add_role(:trusted)
         sign_in moderator
         sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
-      end
-
-      after do
-        Article.set_callback(:commit, :after, :send_to_moderator)
       end
 
       it "renders a round robin notification with the option to opt out", :aggregate_failures do
