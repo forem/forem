@@ -1420,7 +1420,6 @@ RSpec.describe Article do
       end
     end
   end
-  
   describe "#detect_language" do
     let(:detected_language) { :kl } # kl for Klingon
 
