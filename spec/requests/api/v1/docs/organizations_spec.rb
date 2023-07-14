@@ -159,6 +159,60 @@ It supports pagination, each page will contain `30` users by default."
     end
   end
 
+  describe "POST /api/organizations" do
+    let(:api_secret) { create(:api_secret, user: create(:user, :super_admin)) }
+
+    path "/api/organizations" do
+      post "Create an Organization" do
+        tags "organizations"
+        description "This endpoint allows the client to create an organization with the provided parameters.
+
+        It requires a token from a user with `admin` privileges."
+        operationId "createOrganization"
+        produces "application/json"
+        consumes "application/json"
+        parameter name: :organization,
+                  in: :body,
+                  description: "Representation of Organization to be created",
+                  schema: { "$ref": "#/components/schemas/Organization" }
+
+        response "201", "Successful" do
+          let(:"api-key") { api_secret.secret }
+          let(:organization) do
+            {
+              organization: {
+                name: "New Test Org",
+                summary: "a newly created test org",
+                url: "https://testorg.io",
+                profile_image: "https://imgur.com/gallery/WENJcFL",
+                slug: "org10001",
+                tag_line: "a test org's tagline"
+              }
+            }
+          end
+          add_examples
+          run_test!
+        end
+
+        response "401", "Unauthorized" do
+          let(:regular_user) { create(:user) }
+          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+          let(:"api-key") { low_security_api_secret.secret }
+          let(:organization) { {} }
+          examples
+          run_test!
+        end
+
+        response "422", "Unprocessable Entity" do
+          let(:"api-key") { api_secret.secret }
+          let(:organization) { {} }
+          add_examples
+          run_test!
+        end
+      end
+    end
+  end
+
   describe "PUT /api/organizations/{id}" do
     let!(:org_admin) { create(:user, :org_admin, :admin) }
     let(:api_secret) { create(:api_secret, user: org_admin) }
@@ -167,7 +221,8 @@ It supports pagination, each page will contain `30` users by default."
     path "/api/organizations/{id}" do
       put "Update an organization by id" do
         tags "organizations"
-        description "This endpoint allows the client to update an existing organization."
+        description "This endpoint allows an admin user to update an existing organization."
+        operationId "updateOrganization"
         produces "application/json"
         consumes "application/json"
         parameter name: :id,
@@ -234,8 +289,8 @@ It supports pagination, each page will contain `30` users by default."
     path "/api/organizations/{id}" do
       delete "Delete an Organization by id" do
         tags "organizations"
-        description "This endpoint allows the client to delete a single organization, specified by id"
-
+        description "This endpoint allows an admin user to schedule deletion of an organization"
+        operationId "deleteOrganization"
         produces "application/json"
         parameter name: :id, in: :path, required: true,
                   description: "The ID of the organization.",

@@ -51,6 +51,27 @@ RSpec.describe "Api::V1::Organizations" do
       end
     end
 
+    describe "POST /api/organizations" do
+      let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
+      let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+      it "accepts request and creates the organization with valid params" do
+        expect do
+          post api_organizations_path, params: { organization: org_params }, headers: headers
+        end.to change(Organization, :count).by(1)
+
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a 422 and does not create the organization with invalid params" do
+        expect do
+          post api_admin_organizations_path, params: {}, headers: headers
+        end.not_to change(Organization, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
     describe "PUT /api/organizations/:id" do
       let!(:org_admin) { create(:user, :org_admin, :admin) }
       let(:api_secret) { create(:api_secret, user: org_admin) }
