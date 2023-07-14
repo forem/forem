@@ -1432,7 +1432,7 @@ RSpec.describe Article do
       expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
     end
 
-    it "should detect language using title and body for updated articles" do
+    it "detects language using title and body for updated articles" do
       article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
       expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
     end
