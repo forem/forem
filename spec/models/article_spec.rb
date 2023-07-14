@@ -1427,7 +1427,7 @@ RSpec.describe Article do
       allow(Languages::Detection).to receive(:call).and_return(detected_language)
     end
 
-    it "should detect language using title and body for newly created articles" do
+    it "detects language using title and body for newly created articles" do
       article = create(:article)
       expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
     end
