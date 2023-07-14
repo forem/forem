@@ -139,10 +139,19 @@ It supports pagination, each page will contain `30` users by default."
         operationId "getOrganizationById"
         produces "application/json"
         parameter name: :id, in: :path, type: :integer, required: true
-        response(200, "An Organization") do
+
+        response "200", "An Organization" do
           let(:id) { organization.id }
           schema type: :object,
                  items: { "$ref": "#/components/schemas/Organization" }
+          add_examples
+
+          run_test!
+        end
+
+        response "404", "Not Found" do
+          let(:id) { 0 }
+          add_examples
 
           run_test!
         end
@@ -188,16 +197,18 @@ It supports pagination, each page will contain `30` users by default."
         response "404", "organization Not Found" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 1_234_567_890 }
-          let(:organization) { org_to_update.assign_attributes(name: "this won't update due to unfindable id") }
+          let(:organization) { org_to_update.assign_attributes(name: "this won't update, unfindable id") }
           add_examples
 
           run_test!
         end
 
         response "401", "Unauthorized" do
-          let(:"api-key") { nil }
+          let!(:org_admin) { create(:user, :org_member) }
+          let(:"api-key") { api_secret.secret }
           let(:id) { org_to_update.id }
-          let(:organization) { org_to_update.assign_attributes(summary: "this won't update due to unauthorized user") }
+          let(:organization) { org_to_update.assign_attributes(summary: "won't update, non-admin user privileges") }
+
           add_examples
 
           run_test!

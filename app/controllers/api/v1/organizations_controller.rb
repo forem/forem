@@ -2,11 +2,11 @@ module Api
   module V1
     class OrganizationsController < ApiController
       include Api::OrganizationsController
+      before_action :find_organization, only: %i[users listings articles]
       before_action :authenticate!, only: %i[create update destroy]
       before_action :authorize_admin, only: %i[create update]
       before_action :authorize_super_admin, only: %i[destroy]
       after_action :verify_authorized, only: %i[create update destroy]
-      before_action :find_organization, only: %i[users listings articles]
 
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id name profile_image slug summary tag_line url
@@ -32,13 +32,9 @@ module Api
         # unless given e.g. a query parameter specifying a different lookup key.
         # The by-username lookup is the current default behavior, this approach
         # keeps it intact. Conventionally, the lookup would default to id-based if we keep both.
-        lookup_key = params[:id_or_slug]
-        @organization =
-          if numbery?(lookup_key)
-            Organization.find(params[:id_or_slug].to_i)
-          else
-            Organization.find_by!(username: params[:id_or_slug])
-          end
+        finder = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+        @organization = finder.find_by(id: params[:id_or_slug]) || finder.find_by(slug: params[:id_or_slug])
+        raise ActiveRecord::RecordNotFound unless @organization
 
         render :show
       rescue ArgumentError => e
@@ -46,7 +42,6 @@ module Api
       end
 
       def update
-        @user = current_user
         set_organization
         @organization.assign_attributes(organization_params)
         if @organization.save
@@ -58,7 +53,7 @@ module Api
             summary: @organization.summary,
             tag_line: @organization.tag_line,
             url: @organization.url
-          }, status: :ok
+          }
         else
           render json: { error: @organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
         end
@@ -67,11 +62,12 @@ module Api
       end
 
       def destroy
-        organization = Organization.find(params[:id])
-        authorize organization
-        organization.destroy
+        set_organization
+        Organizations::DeleteWorker.perform_async(@organization.id, @user.id)
 
-        render json: {}, status: :ok
+        # A notification email will trigger once the async deletion is completed.
+        # We do not appear to currently notify on a failed deletion but it is logged internally.
+        render json: { message: "deletion scheduled" }
       rescue ArgumentError => e
         render json: { error: e }, status: :unprocessable_entity
       end
@@ -84,10 +80,6 @@ module Api
 
       def organization_params
         params.require(:organization).permit(:id, :name, :profile_image, :slug, :summary, :tag_line, :url)
-      end
-
-      def numbery?(value)
-        (value.is_a? Integer) || (value.to_i.to_s == value.to_s)
       end
 
       def set_organization

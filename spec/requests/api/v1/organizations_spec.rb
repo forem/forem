@@ -84,12 +84,13 @@ RSpec.describe "Api::V1::Organizations" do
       let!(:organization) { org_admin.organizations.first }
       let(:super_admin_headers) { headers.merge({ "api-key" => super_api_secret.secret }) }
 
-      it "accepts request and deletes the organization when found" do
+      it "accepts request and schedules the organization for deletion when found" do
         expect do
           delete api_organization_path(organization.id), headers: super_admin_headers
-        end.to change(Organization, :count).by(-1)
+        end.not_to change(Organization, :count)
 
         expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["message"]).to eq "deletion scheduled"
       end
 
       it "errors when no organization is found" do
