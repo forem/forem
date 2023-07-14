@@ -1,13 +1,13 @@
 require "rails_helper"
 
 RSpec.describe Languages::Detection, type: :service do
-  subject { described_class.call(text) }
+  subject(:language_detection) { described_class.call(text) }
 
   context "when the text is clearly identifiable as English" do
     let(:text) { "This is clearly English text." }
 
     it "returns en" do
-      expect(subject).to eq(:en)
+      expect(language_detection).to eq(:en)
     end
   end
 
@@ -15,7 +15,7 @@ RSpec.describe Languages::Detection, type: :service do
     let(:text) { "Esto es claramente un texto en español." }
 
     it "returns es" do
-      expect(subject).to eq(:es)
+      expect(language_detection).to eq(:es)
     end
   end
 end
