@@ -54,7 +54,7 @@ RSpec.describe Languages::Detection, type: :service do
       end
 
       it "returns nil" do
-        expect(described_class.call(text)).to eq(nil)
+        expect(described_class.call(text)).to be(nil)
       end
     end
 
