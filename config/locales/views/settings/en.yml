@@ -4,9 +4,6 @@ en:
     settings:
       meta:
         title: Settings
-      profile: 
-        name_missing_error_with_path: The action couldn't be completed because of an error in %{href}. Please update the settings for profile and try again.
-        profile_settings: profile settings
       account:
         connect: Connect %{provider} Account
         emails: Account emails

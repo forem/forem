@@ -13,13 +13,6 @@
     </div>
   <% end %>
 
-  <% if @user.errors.include?(:name) && @tab != "profile" %>
-    <div class="crayons-banner crayons-banner--error" role="alert">
-      <%= t("views.settings.profile.name_missing_error_with_path",
-            href: link_to(t("views.settings.profile.profile_settings"), user_settings_path)).html_safe %>
-    </div>
-  <% end %>
-
   <% if params[:state] == "previous-registration" %>
     <div class="crayons-banner crayons-banner--error" role="alert">
       <%= t("views.settings.previous", email: contact_link) %>
