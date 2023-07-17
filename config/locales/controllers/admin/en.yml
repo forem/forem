@@ -66,6 +66,8 @@ en:
       updated: User was successfully updated to %{type}
     organizations_controller:
       credit_updated: Successfully updated credits
+      deletion_scheduled: 'Organization, "%{organization_name}", deletion is scheduled.'
+      error: 'Your organization, %{organization_name}, could not be deleted: %{error}.'
     pages_controller:
       updated: Page has been successfully updated.
       created: Page has been successfully created.

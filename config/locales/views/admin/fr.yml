@@ -17,7 +17,7 @@ fr:
           description: Toutes les actions du modérateur affectent le score. Le score global est une combinaison des actions des modérateurs et des réactions du public.
           no_flags: Le commentaire n'a pas de drapeaux.
           no_quality_reactions: Le commentaire n'a pas de réactions de qualité par des utilisateurs de confiance.
-          title: Actions du modérateur        
+          title: Actions du modérateur
       shared:
         flags:
           actions:
@@ -147,7 +147,7 @@ fr:
           submit_html: Banish %{user}
         delete:
           heading: Delete %{user}'s account
-          onsubmit: Are you sure? This actions is irreversible.
+          onsubmit: Are you sure? This action is irreversible.
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
@@ -389,3 +389,22 @@ fr:
           facebook: Facebook
           github: GitHub
           twitter: Twitter
+      organizations:
+        profile:
+          id: ID %{organizationid}
+          since_html: Organization since %{time}
+          email: Email
+          github: GitHub
+          twitter: Twitter
+          visit: Visit organization
+          total_members: "%{count} members"
+        delete:
+          heading: Delete %{organization}
+          onsubmit: Are you sure? This action is irreversible.
+          desc2: "Note: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them."
+          role_notice: Only Super Admins are allowed to delete organizations.
+          credits_notice: You cannot delete an organization that has associated credits.
+          submit: Delete organizion now
+        options:
+          delete: Delete organization
+          icon: Options

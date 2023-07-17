@@ -1,39 +1,77 @@
-<header class="flex items-center mb-6">
-  <div>
-    <h1 class="crayons-title"><%= @organization.name %></h1>
-    <p class="color-base-60">Created <%= @organization.created_at.strftime("%b %e '%y") %></p>
-  </div>
-
-  <div class="ml-auto">
-    <%= link_to "View @#{@organization.name}", "/#{@organization.slug}", class: "crayons-btn", target: "_blank", rel: "noopener" %>
-  </div>
+<%= javascript_packs_with_chunks_tag "admin/organizations", defer: true %>
+<header>
+  <section class="crayons-card flex flex-col l:flex-row gap-2 m:gap-4 l:gap-6 mb-2 m:mb-3 p-3 s:p-4 m:p-7">
+    <span class="crayons-logo crayons-logo--3xl">
+      <img src="<%= @organization.profile_image %>" width="100%" height="100%" alt="<%= @organization.name %> profile picture">
+    </span>
+    <div class="grid gap-2 flex-1">
+      <div class="s:flex items-center gap-5">
+        <div class="flex flex-1 items-center">
+          <h1 class="crayons-title lh-tight">
+            <%= @organization.name %>
+          </h1>
+        </div>
+        <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
+          <%= link_to t("views.admin.organizations.profile.visit"), "/#{@organization.slug}", class: "c-cta", target: "_blank", rel: "noopener" %>
+          <div class="dropdown-trigger-container">
+            <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+              <%= crayons_icon_tag("overflow-vertical", title: t("views.admin.users.profile.options.icon")) %>
+            </button>
+            <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown">
+              <ul class="p-0">
+                <li>
+                  <button
+                    type="button" class="c-btn c-btn--destructive w-100 align-left"
+                    data-modal-title="<%= t("views.admin.organizations.delete.heading", organization: @organization.name) %>"
+                    data-modal-size="small"
+                    data-modal-content-selector="#delete-organization">
+                    <%= t("views.admin.organizations.options.delete") %>
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fs-s mb-1 color-secondary">
+        <%= @organization.slug %> <span class="opacity-50">&bull;</span> <%= t("views.admin.organizations.profile.id", organizationid: @organization.id) %> <span class="opacity-50">&bull;</span>
+        <%= t("views.admin.organizations.profile.since_html", time: tag.time(l(@organization.created_at, format: :short_with_yy), datetime: @organization.created_at.strftime("%Y-%m-%dT%H:%M:%S%z"), title: l(@organization.created_at, format: :admin_user))) %>
+        <span class="opacity-50">&bull;</span> <%= t("views.admin.organizations.profile.total_members", count: @organization.organization_memberships.size) %>
+      </div>
+      <div>
+        <ul class="flex flex-col s:flex-row gap-3 s:gap-6 flex-wrap">
+          <li>
+            <% if @organization.email %>
+              <a href="mailto:<%= @organization.email %>" class="c-link c-link--icon-left inline-block" target="_blank" rel="noopener">
+                <%= crayons_icon_tag(:email, title: t("views.admin.organizations.profile.email"), class: "c-link__icon") %>
+                <%= @organization.email %>
+              </a>
+            <% else %>
+              <%= crayons_icon_tag(:email, title: t("views.admin.organizations.profile.email"), class: "c-link__icon") %>
+              N/A
+            <% end %>
+          </li>
+          <% if @organization.github_username %>
+            <li>
+              <a href="https://github.com/<%= @organization.github_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
+                <%= crayons_icon_tag(:github, title: t("views.admin.users.profile.github")) %>
+                <%= @organization.github_username %>
+              </a>
+            </li>
+          <% end %>
+          <% if @organization.twitter_username %>
+            <li>
+              <a href="https://twitter.com/<%= @organization.twitter_username %>" class="c-link c-link--icon-left inline-block" target="_blank">
+                <%= crayons_icon_tag(:twitter, title: t("views.admin.users.profile.twitter")) %>
+                <%= @organization.twitter_username %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </section>
 </header>
-
-<div class="crayons-card p-6 mb-6">
-  <h3 class="crayons-subtitle-2 mb-4">General Info</h3>
-  <dl>
-    <dt>ID:</dt>
-    <dd><%= @organization.id %></dd>
-    <dt>Name:</dt>
-    <dd><%= @organization.name %></dd>
-    <dt>Membership Count:</dt>
-    <dd><%= @organization.organization_memberships.size %></dd>
-    <dt>Email:</dt>
-    <dd><%= @organization.email || "N/A" %></dd>
-    <dt>Twitter:</dt>
-    <% if @organization.twitter_username %>
-      <dd><%= link_to @organization.twitter_username, "https://twitter.com/#{@organization.twitter_username}" %></dd>
-    <% else %>
-      <dd>N/A</dd>
-    <% end %>
-    <dt>GitHub:</dt>
-    <% if @organization.github_username %>
-      <dd><%= link_to @organization.github_username, "https://github.com/#{@organization.github_username}" %></dd>
-    <% else %>
-      <dd>N/A</dd>
-    <% end %>
-  </dl>
-</div>
 
 <div class="crayons-card p-6 mb-6">
   <% current_credits = @organization.unspent_credits_count %>
@@ -41,8 +79,8 @@
   <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>
     <div>
       <%= hidden_field_tag :credit_action, :add %>
-      <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" } %>
-      <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" } %>
+      <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" }, autocomplete: "off" %>
+      <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" }, autocomplete: "off" %>
     </div>
     <%= submit_tag "Add Org Credits", class: "crayons-btn" %>
   <% end %>
@@ -50,8 +88,8 @@
     <%= form_tag update_org_credits_admin_organization_path(@organization), method: :patch, class: "flex justify-between mb-2" do %>
       <div>
         <%= hidden_field_tag :credit_action, :remove %>
-        <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" } %>
-        <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" } %>
+        <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "crayons-textfield w-auto mr-3", size: 5, aria: { label: "Credits" }, autocomplete: "off" %>
+        <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "crayons-textfield w-auto mr-3", aria: { label: "Reason" }, autocomplete: "off" %>
       </div>
       <%= submit_tag "Remove Org Credits", class: "crayons-btn crayons-btn--danger" %>
     <% end %>
@@ -59,3 +97,19 @@
 </div>
 
 <%= render "activity" %>
+
+<% error_message = deletion_modal_error_message(@organization) %>
+<div class="hidden">
+  <div id="delete-organization">
+    <% if error_message %>
+      <div class="crayons-notice crayons-notice--danger"><%= error_message %></div>
+    <% else %>
+      <%= form_for(@organization, url: admin_organization_path(@organization), html: { class: "flex flex-col gap-6", method: :delete, onsubmit: "return confirm('#{j t('views.admin.organizations.delete.onsubmit')}')", id: nil }) do |f| %>
+        <%= t("views.admin.organizations.delete.desc2", organization: @organization.name) %>
+        <div>
+          <button class="c-btn c-btn--primary c-btn--destructive"><%= t("views.admin.organizations.delete.submit") %></button>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

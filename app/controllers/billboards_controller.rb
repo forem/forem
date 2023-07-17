@@ -37,6 +37,6 @@ class BillboardsController < ApplicationController
   def user_tags
     return unless feed_targeted_tag_placement?(placement_area)
 
-    current_user.cached_followed_tag_names
+    current_user&.cached_followed_tag_names
   end
 end
