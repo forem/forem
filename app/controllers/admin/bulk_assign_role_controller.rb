@@ -38,13 +38,11 @@ module Admin
             },
           )
         end
-
         flash[:success] = I18n.t("admin.bulk_assign_role_controller.success_message")
-        redirect_to admin_bulk_assign_role_index_path
       rescue StandardError => e
         flash[:danger] = e.message
-        redirect_to admin_bulk_assign_role_index_path
       end
+      redirect_to admin_bulk_assign_role_index_path
     rescue ArgumentError => e
       flash[:danger] = e.message
       redirect_to admin_bulk_assign_role_index_path
