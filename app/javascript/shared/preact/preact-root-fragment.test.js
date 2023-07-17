@@ -6,7 +6,7 @@ import { createRootFragment } from './preact-root-fragment';
 describe('createRootFragment', () => {
   it('has a child element as replace node', () => {
     const fragment = createRootFragment(
-      <div className="parent"></div>,
+      <div className="parent" />,
       <article>text</article>,
     );
 
@@ -14,9 +14,9 @@ describe('createRootFragment', () => {
   });
 
   it('handle multiple nodes', () => {
-    const fragment = createRootFragment(<div className="parent"></div>, [
-      <div id="app1"></div>,
-      <div id="app2"></div>,
+    const fragment = createRootFragment(<div className="parent" />, [
+      <div id="app1" key="1" />,
+      <div id="app2" key="2" />,
     ]);
 
     expect(fragment.firstChild.props.id).toBe('app1');
@@ -24,8 +24,8 @@ describe('createRootFragment', () => {
   });
 
   it('adds fragment to parent context', () => {
-    const parent = <div className="parent"></div>;
-    const placeholder = <div className="appXYZ"></div>;
+    const parent = <div className="parent" />;
+    const placeholder = <div className="appXYZ" />;
 
     const fragment = createRootFragment(parent, placeholder);
 
