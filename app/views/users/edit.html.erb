@@ -82,7 +82,7 @@
       <% end %>
 
       <% if @user.errors.any? %>
-        <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: t("views.settings.errors.profile.other", count: pluralize(@user.errors.size, "error")) } %>
+        <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: t("views.settings.errors.profile", count: @user.errors.size) } %>
       <% end %>
 
       <% if @organization&.errors&.any? %>

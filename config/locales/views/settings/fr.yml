@@ -101,7 +101,8 @@ fr:
           one: '1 error prohibited your organization profile from being saved:'
           other: "%{count} errors prohibited your organization profile from being saved:"
         profile:
-          other: "%{count} prohibited your profile from being saved:"
+          one: '1 error prohibited your profile from being saved:'
+          other: "%{count} errors prohibited your profile from being saved:"
       extensions:
         api:
           heading: "%{community} API Keys"
