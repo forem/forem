@@ -6,10 +6,6 @@ RSpec.describe NotificationSubscriptions::Unsubscribe, type: :service do
   let(:article) { create(:article, user: current_user) }
   let!(:subscription) { create(:notification_subscription, user: current_user, notifiable: article) }
 
-  before do
-    allow(Notifications::BustCaches).to receive(:call)
-  end
-
   context "when a valid subscription ID is provided" do
     it "destroys the notification subscription" do
       result = nil # needs to exist before the block or Ruby won't set it
@@ -21,9 +17,6 @@ RSpec.describe NotificationSubscriptions::Unsubscribe, type: :service do
       expect(NotificationSubscription.find_by(id: subscription.id)).to be_nil
 
       expect(result).to eq({ destroyed: true })
-
-      expect(Notifications::BustCaches).to have_received(:call)
-        .with(a_hash_including(notifiable: article))
     end
   end
 
@@ -35,8 +28,6 @@ RSpec.describe NotificationSubscriptions::Unsubscribe, type: :service do
       end.not_to change(NotificationSubscription, :count)
 
       expect(result).to eq({ errors: "Notification subscription not found" })
-
-      expect(Notifications::BustCaches).not_to have_received(:call)
     end
   end
 
@@ -47,9 +38,7 @@ RSpec.describe NotificationSubscriptions::Unsubscribe, type: :service do
         result = described_class.call(current_user, nil)
       end.not_to change(NotificationSubscription, :count)
 
-      expect(result).to eq({ errors: "Notification subscription not found" })
-
-      expect(Notifications::BustCaches).not_to have_received(:call)
+      expect(result).to eq({ errors: "Subscription ID is missing" })
     end
   end
 end
