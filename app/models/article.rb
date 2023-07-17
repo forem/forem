@@ -123,7 +123,7 @@ class Article < ApplicationRecord
   has_many :mentions, as: :mentionable, inverse_of: :mentionable, dependent: :delete_all
   has_many :comments, as: :commentable, inverse_of: :commentable, dependent: :nullify
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
-  has_many :context_notifications_published, -> { where(context_notifications: { action: "Published" }) },
+  has_many :context_notifications_published, -> { where(context_notifications_published: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -204,8 +204,6 @@ class Article < ApplicationRecord
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
-
-  after_create_commit :send_to_moderator, if: :published?
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -614,13 +612,6 @@ class Article < ApplicationRecord
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end
 
-  def send_to_moderator
-    # using nth_published because it doesn't count draft articles by the new author
-    return if nth_published_by_author > 2
-
-    Notification.send_moderation_notification(self)
-  end
-
   private
 
   def collection_cleanup
@@ -876,7 +867,7 @@ class Article < ApplicationRecord
   end
 
   def correct_published_at?
-    return unless changes["published_at"]
+    return true unless changes["published_at"]
 
     # for drafts (that were never published before) or scheduled articles
     # => allow future or current dates, or no published_at

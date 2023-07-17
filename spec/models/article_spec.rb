@@ -1276,6 +1276,41 @@ RSpec.describe Article do
     end
   end
 
+  describe "#privileged_reaction_counts" do
+    it "contains correct vomit count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "vomit", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to eq(1)
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsup count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsup", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to eq(1)
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsdown count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsdown", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to eq(1)
+    end
+
+    it "returns an empty hash if there are no privileged reactions" do
+      counts = article.privileged_reaction_counts
+
+      expect(counts).to be_empty
+    end
+  end
+
   describe "#followers" do
     it "returns an array of users who follow the article's author" do
       following_user = create(:user)
@@ -1384,18 +1419,5 @@ RSpec.describe Article do
         expect(articles.pluck(:score)).to contain_exactly(10, 6)
       end
     end
-  end
-
-  it "does not send moderator notifications when a draft post" do
-    allow(Notification).to receive(:send_moderation_notification)
-
-    draft_post = build(:article, published: false)
-    draft_post.save!
-    expect(draft_post).not_to be_published
-    expect(Notification).not_to have_received(:send_moderation_notification)
-
-    published_post = build(:article, published: true)
-    published_post.save!
-    expect(Notification).to have_received(:send_moderation_notification)
   end
 end

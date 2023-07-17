@@ -162,6 +162,9 @@ en:
         terms_and_conditions: Terms & Conditions
         trusted: Trusted User Guide
       author: Author
+      comments:
+        view_comment: View Comment
+        view_details: View Details
       date: Date
       notice:
         subtitle: '%{community} Mods'

@@ -16,8 +16,7 @@ class OnboardingsController < ApplicationController
   end
 
   def users_and_organizations
-    suggested_follows = suggested_user_follows
-    suggested_follows += suggested_organization_follows if feature_flag_enabled?(:suggest_organizations)
+    suggested_follows = suggested_user_follows + suggested_organization_follows
     @suggestions = ApplicationDecorator.decorate_collection(suggested_follows)
   end
 
@@ -108,7 +107,7 @@ class OnboardingsController < ApplicationController
   end
 
   def suggested_user_follows
-    Users::SuggestRecent.call(current_user,
-                              attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
+    Users::SuggestProminent.call(current_user,
+                                 attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
   end
 end

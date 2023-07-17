@@ -51,7 +51,11 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
-        resources :display_ads, only: %i[index show create update] do
+        resources :billboards, only: %i[index show create update] do
+          put "unpublish", on: :member
+        end
+        # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+        resources :display_ads, only: %i[index show create update], controller: :billboards do
           put "unpublish", on: :member
         end
 
@@ -198,10 +202,15 @@ Rails.application.routes.draw do
     get "/async_info/base_data", to: "async_info#base_data", defaults: { format: :json }
     get "/async_info/navigation_links", to: "async_info#navigation_links"
 
-    # Display ads
+    # Billboards
     scope "/:username/:slug" do
-      get "/display_ads/:placement_area", to: "display_ads#show", as: :article_display_ad
+      get "/billboards/:placement_area", to: "billboards#show", as: :article_billboard
+      # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+      get "/display_ads/:placement_area", to: "billboards#show"
     end
+    get "/billboards/:placement_area", to: "billboards#show"
+    # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+    get "/display_ads/:placement_area", to: "billboards#show"
 
     # Settings
     post "users/join_org", to: "users#join_org"
@@ -235,8 +244,11 @@ Rails.application.routes.draw do
     get "/💸", to: redirect("t/hiring")
     get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
     get "/search", to: "stories/articles_search#index"
+    get "/:slug/members", to: "organizations#members", as: :organization_members
     post "articles/preview", to: "articles#preview"
     post "comments/preview", to: "comments#preview"
+    post "comments/subscribe", to: "notification_subscriptions#create"
+    post "subscription/unsubscribe", to: "notification_subscriptions#destroy"
 
     # These routes are required by links in the sites and will most likely to be replaced by a db page
     get "/about", to: "pages#about"

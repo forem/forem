@@ -38,5 +38,11 @@ describe('Notification initialization', () => {
       cy.get('.reaction-button').should('exist');
       cy.get('.reacted').should('exist');
     });
+
+    it('initializes comment subscriptions', () => {
+      // FeatureFlag makes this tricky to test with Cypress
+      // TODO: Uncomment this as part of cleanup for FeatureFlag :subscribe_to_comments
+      // cy.get('.subscribe-button').should('exist');
+    });
   });
 });

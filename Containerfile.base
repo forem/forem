@@ -1,0 +1,26 @@
+ARG RUBY_VERSION=3.0.6
+ARG DEBIAN_VERSION=bullseye
+FROM public.ecr.aws/docker/library/ruby:${RUBY_VERSION}-slim-${DEBIAN_VERSION} AS ruby-upstream
+
+RUN apt update && \
+    apt install -y \
+        curl \
+        gnupg2 \
+        && \
+    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt update && \
+    apt install -y \
+        imagemagick \
+        iproute2 \
+        libjemalloc2 \
+        less \
+        postgresql-client \
+        tzdata \
+        nodejs \
+        yarn \
+        && \
+    apt clean
+
+CMD [ "/usr/local/bin/irb" ]

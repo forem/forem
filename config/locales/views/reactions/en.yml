@@ -35,3 +35,8 @@ en:
         aria_label: Add to reading list
         icon: Save button
         text: Save
+      subscribe:
+        title: Subscribe to Comments
+        aria_label: Subscribe to Comments
+        icon: Save button
+        text: Subscribe to Comments

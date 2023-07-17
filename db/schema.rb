@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_08_154310) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
@@ -480,6 +480,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_154310) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["placement_area"], name: "index_display_ads_on_placement_area"
   end
 
   create_table "email_authorizations", force: :cascade do |t|
@@ -704,14 +705,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_154310) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
-    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
     t.string "location"
     t.string "name"
-    t.string "nav_image"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"

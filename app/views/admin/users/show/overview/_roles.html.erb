@@ -19,7 +19,7 @@
   <ul class="flex flex-wrap gap-2">
     <% @user.roles.reject(&:tag_moderator?).each do |role| %>
       <li>
-        <% if !policy(role).remove_role? || @user.id == current_user.id %>
+        <% if !policy(role).remove_role? %>
           <button
             class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
             type="button"

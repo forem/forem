@@ -52,10 +52,8 @@ class AudienceSegment < ApplicationRecord
     QUERIES[segment_type.to_sym]
   end
 
-  def self.human_readable_segments
-    AudienceSegment.pluck(:id, :type_of)
-      .sort_by { |(id, str)| [(str == "manual" ? 1 : 0), id] } # move manual to end of list
-      .map { |(id, type)| [I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}"), id] }
+  def self.human_readable_description_for(type)
+    I18n.t("models.#{model_name.i18n_key}.type_ofs.#{type}")
   end
 
   def self.including_user_counts

@@ -43,16 +43,26 @@ class UsersController < ApplicationController
       end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
+      respond_to do |format|
+        format.json { render json: { success: true, user: @user } }
+        format.html { redirect_to "/settings/#{@tab}" }
+      end
     else
       Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
-      if @tab
-        render :edit, status: :bad_request
-      else
-        flash[:error] = @user.errors.full_messages.join(", ")
-        redirect_to "/settings"
+      error_message = @user.errors.full_messages.join(", ")
+
+      respond_to do |format|
+        format.json { render json: { success: false, error: error_message }, status: :bad_request }
+        format.html do
+          if @tab
+            render :edit, status: :bad_request
+          else
+            flash[:error] = error_message
+            redirect_to "/settings"
+          end
+        end
       end
     end
   end

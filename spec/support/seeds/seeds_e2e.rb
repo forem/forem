@@ -207,6 +207,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "staff-account@forem.local") do
+  staff_account = User.create!(
+    name: "Sloan",
+    email: "staff-account@forem.local",
+    username: "sloan",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  Settings::Community.staff_user_id = staff_account.id
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Organization, "slug", "bachmanity") do
   organization = Organization.create!(
     name: "Bachmanity",
@@ -586,6 +606,37 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(Article, "slug", "staff-commented-article-slug") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Test article with Staff Account Comment
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  article = Article.create!(
+    body_markdown: markdown,
+    featured: true,
+    show_comments: true,
+    user_id: admin_user.id,
+    slug: "staff-commented-article-slug",
+  )
+
+  staff_comment_attributes = {
+    body_markdown: Faker::Hipster.paragraph(sentence_count: 1),
+    user_id: User.staff_account.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  Comment.create!(staff_comment_attributes)
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "slug", "unfeatured-article-slug") do
   markdown = <<~MARKDOWN
     ---
@@ -764,6 +815,48 @@ end
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "questionable-user@forem.local") do
+  User.create!(
+    name: "Questionable User",
+    email: "questionable-user@forem.local",
+    username: "questionable_user",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+end
+
+questionable_user = User.find_by(email: "questionable-user@forem.local")
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(Article, "title", "Questionable article") do
+  markdown = <<~MARKDOWN
+    ---
+    title:  Questionable article
+    published: true
+    cover_image: #{Faker::Company.logo}
+    ---
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+    #{Faker::Markdown.random}
+    #{Faker::Hipster.paragraph(sentence_count: 2)}
+  MARKDOWN
+  Article.create(
+    body_markdown: markdown,
+    featured: false,
+    show_comments: true,
+    slug: "questionable-test-article-slug",
+    user_id: questionable_user.id,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
   markdown = <<~MARKDOWN
     ---
@@ -776,13 +869,24 @@ seeder.create_if_doesnt_exist(Article, "title", "Series test article") do
     #{Faker::Markdown.random}
     #{Faker::Hipster.paragraph(sentence_count: 2)}
   MARKDOWN
-  Article.create(
+  article = Article.create(
     body_markdown: markdown,
     featured: true,
     show_comments: true,
     slug: "series-test-article-slug",
     user_id: User.find_by(email: "series-user@forem.local").id,
   )
+
+  comment_attributes = {
+    body_markdown: "Contains various privileged reactions.",
+    user_id: questionable_user.id,
+    commentable_id: article.id,
+    commentable_type: "Article"
+  }
+
+  comment = Comment.create!(comment_attributes)
+  admin_user.reactions.create!(category: :vomit, reactable: comment, status: :confirmed)
+  admin_user.reactions.create!(category: :thumbsdown, reactable: comment)
 end
 
 ##############################################################################
@@ -963,6 +1067,14 @@ end
 
 ##############################################################################
 
+seeder.create_if_none(AudienceSegment) do
+  AudienceSegment.type_ofs.each_key do |type|
+    AudienceSegment.create!(type_of: type)
+  end
+end
+
+##############################################################################
+
 seeder.create_if_none(DisplayAd) do
   org_id = Organization.find_by(slug: "bachmanity").id
   DisplayAd.create!(
@@ -972,5 +1084,15 @@ seeder.create_if_none(DisplayAd) do
     name: "Tests Display Ad",
     published: true,
     approved: true,
+  )
+
+  DisplayAd.create!(
+    organization_id: org_id,
+    body_markdown: "<h1>This is a billboard with a manually managed audience</h1>",
+    placement_area: "sidebar_left",
+    name: "Manual Audience Billboard",
+    published: true,
+    approved: true,
+    audience_segment: AudienceSegment.where(type_of: :manual).first,
   )
 end
