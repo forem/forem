@@ -24,7 +24,7 @@ FactoryBot.define do
     end
 
     co_author_ids { [] }
-    association :user, factory: :user, strategy: :create
+    user factory: %i[user], strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    do
       if with_main_image
@@ -67,6 +67,7 @@ FactoryBot.define do
       past_published_at { 3.days.ago }
     end
 
+    user
     title { generate(:title) }
     published { true }
     tag_list { "javascript, html, discuss" }
@@ -75,6 +76,7 @@ FactoryBot.define do
   end
 
   factory :unpublished_article, class: "Article" do
+    user
     title { generate(:title) }
     published { false }
     published_at { nil }
