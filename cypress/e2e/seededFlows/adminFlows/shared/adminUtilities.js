@@ -3,8 +3,8 @@
  *
  * @param {string} [message] The expected flash message text
  */
-export function verifyAndDismissFlashMessage(message) {
-  cy.findByTestId('flash-settings_notice')
+export function verifyAndDismissFlashMessage(message, flashTypeId) {
+  cy.findByTestId(flashTypeId)
     .as('notice')
     .then((element) => {
       expect(element.text().trim()).equal(message);
@@ -16,5 +16,5 @@ export function verifyAndDismissFlashMessage(message) {
       .click();
   });
 
-  cy.findByTestId('flash-settings_notice').should('not.exist');
+  cy.findByTestId(flashTypeId).should('not.exist');
 }

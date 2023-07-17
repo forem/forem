@@ -38,6 +38,7 @@ describe('Manage Organization Options', () => {
 
       verifyAndDismissFlashMessage(
         `Organization, "Awesome Org", deletion is scheduled.`,
+        'flash-settings_notice',
       );
     });
   });
