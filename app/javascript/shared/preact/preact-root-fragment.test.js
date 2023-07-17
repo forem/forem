@@ -32,4 +32,28 @@ describe('createRootFragment', () => {
     expect(parent.__k.firstChild).toBe(fragment.firstChild);
     expect(parent.__k.childNodes.length).toBeGreaterThan(0);
   });
+
+  it('insertBefore on parent fragment', () => {
+    const parent = document.createElement('div');
+    parent.className = '#app';
+    const child = document.createElement('main');
+
+    const fragment = createRootFragment(parent, child);
+
+    const span = document.createElement('span');
+
+    fragment.insertBefore(span, child.parentNode);
+
+    expect(parent.children[0].tagName.toLowerCase()).toBe('span');
+  });
+
+  it('appendChild on parent fragment', () => {
+    const parent = document.createElement('div');
+    const fragment = createRootFragment(parent, <main id="#main" />);
+    const p = document.createElement('p');
+
+    fragment.appendChild(p);
+
+    expect(parent.childNodes[0].nodeName.toLowerCase()).toBe('p');
+  });
 });

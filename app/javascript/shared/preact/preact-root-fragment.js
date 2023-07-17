@@ -28,7 +28,7 @@ export function createRootFragment(parent, replaceNode) {
       parent.insertBefore(c, s);
       return c;
     },
-    removeChild: function (c) {
+    removeChild: (c) => {
       parent.removeChild(c);
       return c;
     },
