@@ -1,4 +1,4 @@
-import { verifyAndDismissFlashMessage } from '../shared/adminUtilities';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openOrganizationOptions(callback) {
   cy.findByRole('button', { name: 'Options' })

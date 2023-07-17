@@ -1,4 +1,4 @@
-import { verifyAndDismissFlashMessage } from '../shared/adminUtilities';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openOrgModal(ctaText = 'Add organization') {

@@ -1,4 +1,4 @@
-import { verifyAndDismissFlashMessage } from '../shared/adminUtilities';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openUserOptions(callback) {
   cy.findByRole('button', { name: 'Options' })
