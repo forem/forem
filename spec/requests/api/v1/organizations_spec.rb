@@ -9,7 +9,7 @@ RSpec.describe "Api::V1::Organizations" do
         name: "Test Org",
         summary: "a test org",
         url: "https://testorg.io",
-        profile_image: "https://remote.profileimage.jpg",
+        profile_image: "https://dummyimage.com/400x400.jpg",
         slug: "test-org",
         tag_line: "a tagline"
       }
@@ -52,6 +52,13 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     describe "POST /api/organizations" do
+      before do
+        uploaded_image_mock = Rails.root.join("app/assets/images/2.png").open
+        organization = Organization.new(org_params)
+        allow(Organization).to receive(:new).and_return(organization)
+        allow(organization).to receive(:profile_image).and_return(uploaded_image_mock)
+      end
+
       let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
       let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
 

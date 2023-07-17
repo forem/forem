@@ -161,6 +161,27 @@ It supports pagination, each page will contain `30` users by default."
 
   describe "POST /api/organizations" do
     let(:api_secret) { create(:api_secret, user: create(:user, :super_admin)) }
+    let(:image_url) { "https://dummyimage.com/400x400.jpg" }
+    let(:org_params) do
+      {
+        name: "New Test Org",
+        summary: "a newly created test org",
+        url: "https://testorg.io",
+        profile_image: image_url,
+        slug: "org10001",
+        tag_line: "a test org's tagline"
+      }
+    end
+
+    before do
+      # mocking out the process where carrierwave takes the image at the url and uploads
+      stub_request(:get, "https://dummyimage.com").to_return(body: "", status: 200)
+      organization = Organization.new(org_params)
+      allow(Organization).to receive(:new).and_return(organization)
+      allow(organization).to receive(:profile_image_url).and_return("uploads/organization/profile_image/1/400x400.jpg")
+      uploaded_image_mock = Rails.root.join("app/assets/images/2.png").open
+      allow(organization).to receive(:profile_image).and_return(uploaded_image_mock)
+    end
 
     path "/api/organizations" do
       post "Create an Organization" do
@@ -184,7 +205,7 @@ It supports pagination, each page will contain `30` users by default."
                 name: "New Test Org",
                 summary: "a newly created test org",
                 url: "https://testorg.io",
-                profile_image: "https://imgur.com/gallery/WENJcFL",
+                profile_image: image_url,
                 slug: "org10001",
                 tag_line: "a test org's tagline"
               }
