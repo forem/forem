@@ -18,6 +18,77 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   const [onError, setOnError] = useState(false);
 
   useEffect(() => {
+    // /**
+    //  * Retrieves data for the feed. The data will include articles and billboards.
+    //  *
+    //  * @param {number} [page=1] Page of feed data to retrieve
+    //  * @param {string} The time frame of feed data to retrieve
+    //  *
+    //  * @returns {Promise} A promise containing the JSON response for the feed data.
+    //  */
+    async function fetchFeedItems(timeFrame = '', page = 1) {
+      const promises = [
+        fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+          method: 'GET',
+          headers: {
+            Accept: 'application/json',
+            'X-CSRF-Token': window.csrfToken,
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+        }),
+        fetch(`/billboards/feed_first`),
+        fetch(`/billboards/feed_second`),
+        fetch(`/billboards/feed_third`),
+      ];
+
+      const results = await Promise.allSettled(promises);
+      const feedItems = [];
+      for (const result of results) {
+        if (result.status === 'fulfilled') {
+          let resolvedValue;
+          if (isJSON(result)) {
+            resolvedValue = await result.value.json();
+          }
+
+          if (isHTML(result)) {
+            resolvedValue = await result.value.text();
+          }
+          feedItems.push(resolvedValue);
+        } else {
+          Honeybadger.notify(
+            `failed to fetch some items on the home feed: ${result.reason}`,
+          );
+          // we push an undefined item because we want to maintain the placement of the deconstructed array.
+          // it gets removed before display when we further organize.
+          feedItems.push(undefined);
+        }
+      }
+      return feedItems;
+    }
+
+    // /**
+    //  * Sets the Pinned Item into state.
+    //  *
+    //  * @param {Object} The pinnedPost
+    //  * @param {Object} The imagePost
+    //  *
+    //  * @returns {boolean} If we set the pinned post we return true else we return false
+    //  */
+    function setPinnedPostItem(pinnedPost, imagePost) {
+      // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
+      if (!pinnedPost || timeFrame !== '') return false;
+
+      // If the pinned and the image post aren't the same, (either because imagePost is missing or
+      // because they represent two different posts), we set the pinnedPost
+      if (pinnedPost.id !== imagePost?.id) {
+        setPinnedItem(pinnedPost);
+        return true;
+      }
+
+      return false;
+    }
+
     const organizeFeedItems = async () => {
       try {
         if (onError) setOnError(false);
@@ -81,7 +152,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     if (feedItems.length > 0) {
       afterRender();
     }
-  }, [feedItems.length]);
+  }, [afterRender, feedItems.length]);
 
   // /**
   //  * Retrieves the imagePost which will later appear at the top of the feed,
@@ -104,28 +175,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
   //  */
   function getPinnedPost(feedPosts) {
     return feedPosts.find((post) => post.pinned === true);
-  }
-
-  // /**
-  //  * Sets the Pinned Item into state.
-  //  *
-  //  * @param {Object} The pinnedPost
-  //  * @param {Object} The imagePost
-  //  *
-  //  * @returns {boolean} If we set the pinned post we return true else we return false
-  //  */
-  function setPinnedPostItem(pinnedPost, imagePost) {
-    // We only show the pinned post on the "Relevant" feed (when there is no 'timeFrame' selected)
-    if (!pinnedPost || timeFrame !== '') return false;
-
-    // If the pinned and the image post aren't the same, (either because imagePost is missing or
-    // because they represent two different posts), we set the pinnedPost
-    if (pinnedPost.id !== imagePost?.id) {
-      setPinnedItem(pinnedPost);
-      return true;
-    }
-
-    return false;
   }
 
   // /**
@@ -196,55 +245,6 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     }
 
     return organizedFeedItems;
-  }
-
-  // /**
-  //  * Retrieves data for the feed. The data will include articles and billboards.
-  //  *
-  //  * @param {number} [page=1] Page of feed data to retrieve
-  //  * @param {string} The time frame of feed data to retrieve
-  //  *
-  //  * @returns {Promise} A promise containing the JSON response for the feed data.
-  //  */
-  async function fetchFeedItems(timeFrame = '', page = 1) {
-    const promises = [
-      fetch(`/stories/feed/${timeFrame}?page=${page}`, {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'X-CSRF-Token': window.csrfToken,
-          'Content-Type': 'application/json',
-        },
-        credentials: 'same-origin',
-      }),
-      fetch(`/billboards/feed_first`),
-      fetch(`/billboards/feed_second`),
-      fetch(`/billboards/feed_third`),
-    ];
-
-    const results = await Promise.allSettled(promises);
-    const feedItems = [];
-    for (const result of results) {
-      if (result.status === 'fulfilled') {
-        let resolvedValue;
-        if (isJSON(result)) {
-          resolvedValue = await result.value.json();
-        }
-
-        if (isHTML(result)) {
-          resolvedValue = await result.value.text();
-        }
-        feedItems.push(resolvedValue);
-      } else {
-        Honeybadger.notify(
-          `failed to fetch some items on the home feed: ${result.reason}`,
-        );
-        // we push an undefined item because we want to maintain the placement of the deconstructed array.
-        // it gets removed before display when we further organize.
-        feedItems.push(undefined);
-      }
-    }
-    return feedItems;
   }
 
   function isJSON(result) {

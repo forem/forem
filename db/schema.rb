@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_13_150940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_trgm"
@@ -105,6 +105,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
     t.boolean "featured", default: false
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
+    t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at", precision: nil
     t.string "main_image"
@@ -160,6 +161,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_27_154435) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["language"], name: "index_articles_on_language"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"

@@ -158,6 +158,7 @@ GEM
       fastimage
     cgi (0.3.6)
     chartkick (4.2.1)
+    cld3 (3.5.3)
     cloudinary (1.26.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
@@ -982,6 +983,7 @@ DEPENDENCIES
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
   cgi (~> 0.3.6)
+  cld3 (~> 3.5)
   cloudinary (~> 1.23)
   counter_culture (~> 3.2)
   cuprite (~> 0.13)
