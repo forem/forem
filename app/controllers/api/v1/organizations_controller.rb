@@ -43,8 +43,7 @@ module Api
 
       def create
         organization = Organization.new params_for_create
-
-        if organization.save
+        if organization.save!
           render json: {
             id: organization.id,
             name: organization.name,
@@ -64,7 +63,7 @@ module Api
       def update
         set_organization
         @organization.assign_attributes(organization_params)
-        if @organization.save
+        if @organization.save!
           render json: {
             id: @organization.id,
             name: @organization.name,

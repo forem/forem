@@ -39,7 +39,7 @@ seeder.create_if_none(Organization) do
     Organization.create!(
       name: Faker::Company.name,
       summary: Faker::Company.bs,
-      profile_image: logo = Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+      profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
       url: Faker::Internet.url,
       slug: "org#{rand(10_000)}",
       github_username: "org#{rand(10_000)}",

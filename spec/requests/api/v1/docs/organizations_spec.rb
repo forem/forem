@@ -160,8 +160,8 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "POST /api/organizations" do
-    let(:api_secret) { create(:api_secret, user: create(:user, :super_admin)) }
-    let(:image_url) { "https://dummyimage.com/400x400.jpg" }
+    let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
+    let(:image_url) { "https://dummyimage.com/800x600.jpg" }
     let(:org_params) do
       {
         name: "New Test Org",
@@ -178,9 +178,10 @@ It supports pagination, each page will contain `30` users by default."
       stub_request(:get, "https://dummyimage.com").to_return(body: "", status: 200)
       organization = Organization.new(org_params)
       allow(Organization).to receive(:new).and_return(organization)
+      profile_image = Organizations::ProfileImageGenerator.call
+      allow(organization).to receive(:profile_image).and_return(profile_image)
+      # presence of the image file allows save, skipping upload in specs means the raw file object won't respond to :url
       allow(organization).to receive(:profile_image_url).and_return("uploads/organization/profile_image/1/400x400.jpg")
-      uploaded_image_mock = Rails.root.join("app/assets/images/2.png").open
-      allow(organization).to receive(:profile_image).and_return(uploaded_image_mock)
     end
 
     path "/api/organizations" do

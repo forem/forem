@@ -53,13 +53,16 @@ RSpec.describe "Api::V1::Organizations" do
 
     describe "POST /api/organizations" do
       before do
-        uploaded_image_mock = Rails.root.join("app/assets/images/2.png").open
-        organization = Organization.new(org_params)
+        # mock around the remote image url retreival and upload
+        profile_image = Organizations::ProfileImageGenerator.call
+        organization = Organization.new(profile_image: profile_image)
+        profile_image_url = org_params[:profile_image]
         allow(Organization).to receive(:new).and_return(organization)
-        allow(organization).to receive(:profile_image).and_return(uploaded_image_mock)
+        allow(organization).to receive(:profile_image_url).and_return(profile_image_url)
       end
 
-      let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
+      let!(:user) { create(:user, :admin) }
+      let(:api_secret) { create(:api_secret, user: user) }
       let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
 
       it "accepts request and creates the organization with valid params" do
