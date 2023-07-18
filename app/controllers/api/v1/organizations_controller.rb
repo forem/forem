@@ -48,7 +48,7 @@ module Api
           render json: {
             id: @organization.id,
             name: @organization.name,
-            profile_image: @organization.profile_image,
+            profile_image: @organization.profile_image_url,
             slug: @organization.slug,
             summary: @organization.summary,
             tag_line: @organization.tag_line,
