@@ -24,13 +24,13 @@ RSpec.describe "Admin::BulkAssignRole" do
       expect(flash[:success]).to eq(I18n.t("admin.bulk_assign_role_controller.success_message"))
 
       expect(user1.roles.count).to eq(1)
-      expect(user1.roles.last.name).to eq("trusted")
+      expect(user1.roles.last.name).to eq(role.downcase)
 
       expect(user2.roles.count).to eq(1)
-      expect(user2.roles.last.name).to eq("trusted")
+      expect(user2.roles.last.name).to eq(role.downcase)
 
       expect(user3.roles.count).to eq(1)
-      expect(user3.roles.last.name).to eq("trusted")
+      expect(user3.roles.last.name).to eq(role.downcase)
     end
 
     it "adds role with extra whitespace in usernames" do
@@ -38,13 +38,13 @@ RSpec.describe "Admin::BulkAssignRole" do
       post admin_bulk_assign_role_path, params: params
 
       expect(user1.roles.count).to eq(1)
-      expect(user1.roles.last.name).to eq("trusted")
+      expect(user1.roles.last.name).to eq(role.downcase)
 
       expect(user2.roles.count).to eq(1)
-      expect(user2.roles.last.name).to eq("trusted")
+      expect(user2.roles.last.name).to eq(role.downcase)
 
       expect(user3.roles.count).to eq(1)
-      expect(user3.roles.last.name).to eq("trusted")
+      expect(user3.roles.last.name).to eq(role.downcase)
     end
 
     it "shows error if role is blank" do
@@ -63,7 +63,7 @@ RSpec.describe "Admin::BulkAssignRole" do
       params = { usernames: usernames_string, role: role }
       post admin_bulk_assign_role_path, params: params
 
-      expect(user1.notes.last.content).to eq(I18n.t("admin.bulk_assign_role_controller.congrats", role: role))
+      expect(user1.notes.last.content).to eq(I18n.t("admin.bulk_assign_role_controller.role_assigment", role: role))
     end
 
     it "adds role to valid usernames only and creates user_not_found AuditLog" do
@@ -73,10 +73,10 @@ RSpec.describe "Admin::BulkAssignRole" do
       post admin_bulk_assign_role_path, params: params
 
       expect(user1.roles.count).to eq(1)
-      expect(user1.roles.last.name).to eq("trusted")
+      expect(user1.roles.last.name).to eq(role.downcase)
 
       expect(user2.roles.count).to eq(1)
-      expect(user2.roles.last.name).to eq("trusted")
+      expect(user2.roles.last.name).to eq(role.downcase)
 
       log = AuditLog.last
       expect(log.data["role"]).to eq(role)

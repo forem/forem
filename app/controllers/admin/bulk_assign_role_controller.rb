@@ -12,7 +12,7 @@ module Admin
       role = permitted_params[:role]
       usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
       note = permitted_params[:note_for_current_role].presence
-      note ||= I18n.t("admin.bulk_assign_role_controller.congrats", role: role)
+      note ||= I18n.t("admin.bulk_assign_role_controller.role_assigment", role: role)
 
       begin
         usernames.each do |username|
