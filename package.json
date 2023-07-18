@@ -132,7 +132,7 @@
     "focus-visible": "^5.2.0",
     "freezeframe": "^5.0.2",
     "he": "^1.2.0",
-    "i18n-js": "^4.2.3",
+    "i18n-js": "^4.3.0",
     "intersection-observer": "^0.12.2",
     "isomorphic-fetch": "^3.0.0",
     "jest-junit": "^14.0.1",
