@@ -114,7 +114,7 @@ module Api
         image = params.dig(:organization, :profile_image)
 
         # If the user has given a url for the profile image, place it where it should be handled
-        unless image.is_a? File
+        if image.is_a? String
           permitted_params = organization_params.to_h
           permitted_params.delete(:profile_image)
           permitted_params[:remote_profile_image_url] = Organizations::SafeRemoteProfileImageUrl.call(image)
