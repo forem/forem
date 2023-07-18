@@ -1,5 +1,5 @@
-describe('Create Display Ads', () => {
-  context('when creating a new display ad', () => {
+describe('Billboards Form', () => {
+  context('when creating a new billboard', () => {
     beforeEach(() => {
       cy.testSetup();
       cy.fixture('users/adminUser.json').as('user');
@@ -56,6 +56,50 @@ describe('Create Display Ads', () => {
       it('should show the audience segment field if the display to is logged-in users', () => {
         cy.findByRole('radio', { name: 'Only logged in users' }).click();
         cy.findByLabelText('Users who:').should('be.visible');
+      });
+
+      it('should not include manual segments in the audience segment field', () => {
+        cy.findByRole('radio', { name: 'Only logged in users' }).click();
+        cy.findByLabelText('Users who:')
+          .as('audienceSegments')
+          .should('be.visible');
+
+        cy.get('@audienceSegments').select('Are trusted').should('exist');
+        cy.get('@audienceSegments').select('Have not posted yet').should('exist');
+        cy.get('@audienceSegments')
+          .select('Have not set an experience level')
+          .should('exist');
+
+        cy.get('@audienceSegments')
+          .contains('Managed elsewhere')
+          .should('not.exist');
+      });
+
+      context('when editing a display ad with a manually managed audience', () => {
+        beforeEach(() => {
+          cy.visit('/admin/customization/billboards');
+          cy.findByRole('link', { name: 'Manual Audience Billboard' }).click({
+            force: true,
+          });
+        });
+
+        it('shows the audience segment field but disabled', () => {
+          cy.findByLabelText('Users who:')
+            .as('audienceSegments')
+            .should('be.disabled');
+
+          cy.get('@audienceSegments')
+            .find(':selected')
+            .should('have.text', 'Managed elsewhere');
+
+          cy.get('@audienceSegments').contains('Are trusted').should('not.exist');
+          cy.get('@audienceSegments')
+            .contains('Have not posted yet')
+            .should('not.exist');
+          cy.get('@audienceSegments')
+            .contains('Have not set an experience level')
+            .should('not.exist');
+        });
       });
     });
   });
