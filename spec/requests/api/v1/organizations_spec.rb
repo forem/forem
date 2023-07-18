@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# rubocop:disable RSpec/NestedGroups
+
 RSpec.describe "Api::V1::Organizations" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
@@ -79,26 +81,45 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     describe "DELETE /api/organizations/:id" do
-      let!(:org_admin) { create(:user, :org_admin, :super_admin) }
-      let(:super_api_secret) { create(:api_secret, user: org_admin) }
-      let!(:organization) { org_admin.organizations.first }
-      let(:super_admin_headers) { headers.merge({ "api-key" => super_api_secret.secret }) }
+      context "when the user is a super admin" do
+        let!(:super_admin) { create(:user, :org_admin, :super_admin) }
+        let(:super_api_secret) { create(:api_secret, user: super_admin) }
+        let!(:organization) { super_admin.organizations.first }
+        let(:super_admin_headers) { headers.merge({ "api-key" => super_api_secret.secret }) }
 
-      it "accepts request and schedules the organization for deletion when found" do
-        expect do
-          delete api_organization_path(organization.id), headers: super_admin_headers
-        end.not_to change(Organization, :count)
+        it "accepts request and schedules the organization for deletion when found" do
+          expect do
+            delete api_organization_path(organization.id), headers: super_admin_headers
+          end.not_to change(Organization, :count)
 
-        expect(response).to have_http_status(:ok)
-        expect(response.parsed_body["message"]).to eq "deletion scheduled"
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body["message"]).to eq(
+            "deletion scheduled for organization with ID #{organization.id}",
+          )
+        end
+
+        it "errors if no organization is found" do
+          expect do
+            delete api_organization_path(0), headers: super_admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:not_found)
+        end
       end
 
-      it "errors when no organization is found" do
-        expect do
-          delete api_organization_path(0), headers: super_admin_headers
-        end.not_to change(Organization, :count)
+      context "when the user is not a super admin" do
+        let!(:org_admin) { create(:user, :org_admin, :admin) }
+        let(:api_secret) { create(:api_secret, user: org_admin) }
+        let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+        let!(:organization) { org_admin.organizations.first }
 
-        expect(response).to have_http_status(:not_found)
+        it "responds with an error" do
+          expect do
+            delete api_organization_path(organization.id), headers: admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:unauthorized)
+        end
       end
     end
   end
@@ -355,3 +376,5 @@ RSpec.describe "Api::V1::Organizations" do
     end
   end
 end
+
+# rubocop:enable RSpec/NestedGroups

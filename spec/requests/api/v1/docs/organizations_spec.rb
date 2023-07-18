@@ -227,9 +227,9 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "DELETE /api/organizations/{id}" do
-    let!(:org_admin) { create(:user, :org_admin, :super_admin) }
-    let(:api_secret) { create(:api_secret, user: org_admin) }
-    let!(:org_to_delete) { org_admin.organizations.first }
+    let!(:super_admin) { create(:user, :org_admin, :super_admin) }
+    let(:super_api_secret) { create(:api_secret, user: super_admin) }
+    let!(:org_to_delete) { super_admin.organizations.first }
 
     path "/api/organizations/{id}" do
       delete "Delete an Organization by id" do
@@ -249,8 +249,7 @@ It supports pagination, each page will contain `30` users by default."
         let(:id) { org_to_delete.id }
 
         response(200, "successful") do
-          let(:"api-key") { api_secret.secret }
-          schema "$ref": "#/components/schemas/Organization"
+          let(:"api-key") { super_api_secret.secret }
           add_examples
 
           run_test!
