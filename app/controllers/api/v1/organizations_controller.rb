@@ -85,8 +85,6 @@ module Api
         set_organization
         Organizations::DeleteWorker.perform_async(@organization.id, @user.id, false)
 
-        # A notification email will trigger once the async deletion is completed.
-        # We do not currently appear to notify on a failed deletion but it is logged internally.
         render json: { message: "deletion scheduled for organization with ID #{@organization.id}", status: 200 }
       rescue ArgumentError => e
         render json: { error: e }, status: :unprocessable_entity
