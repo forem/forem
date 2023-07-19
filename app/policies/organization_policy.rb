@@ -8,7 +8,7 @@ class OrganizationPolicy < ApplicationPolicy
   end
 
   def destroy?
-    user.org_admin?(record) && record.destroyable?
+    user.super_admin? || (user.org_admin?(record) && record.destroyable?)
   end
 
   def leave_org?
