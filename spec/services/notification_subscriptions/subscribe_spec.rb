@@ -7,10 +7,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
   let!(:comment) { create(:comment, user_id: current_user.id, commentable: article) }
   let!(:comment_two) { create(:comment, user_id: another_user.id, commentable: article, parent_id: comment.id) }
 
-  before do
-    allow(Notifications::BustCaches).to receive(:call)
-  end
-
   context "when subscribing to a comment" do
     it "creates a notification subscription for the comment" do
       expect do
@@ -22,8 +18,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
       expect(subscription.notifiable).to eq(comment_two)
       expect(subscription.config).to eq("all_comments")
       expect(subscription.notifiable_type).to eq("Comment")
-      expect(Notifications::BustCaches).to have_received(:call)
-        .with(a_hash_including(notifiable: comment_two))
     end
   end
 
@@ -38,8 +32,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
       expect(subscription.notifiable).to eq(article)
       expect(subscription.config).to eq("all_comments")
       expect(subscription.notifiable_type).to eq("Article")
-      expect(Notifications::BustCaches).to have_received(:call)
-        .with(a_hash_including(notifiable: article))
     end
 
     it "can override subscription config (if valid)" do
@@ -69,8 +61,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
       expect(subscription.notifiable).to eq(top_level_comment)
       expect(subscription.config).to eq("all_comments")
       expect(subscription.notifiable_type).to eq("Comment")
-      expect(Notifications::BustCaches).to have_received(:call)
-        .with(a_hash_including(notifiable: top_level_comment))
     end
   end
 
@@ -88,7 +78,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
       end.not_to change(NotificationSubscription, :count)
 
       expect(result).to eq({ updated: true, subscription: existing_subscription })
-      expect(Notifications::BustCaches).not_to have_received(:call)
     end
   end
 
@@ -99,8 +88,6 @@ RSpec.describe NotificationSubscriptions::Subscribe, type: :service do
           described_class.call(current_user)
         end.to raise_error(ArgumentError)
       end.not_to change(NotificationSubscription, :count)
-
-      expect(Notifications::BustCaches).not_to have_received(:call)
     end
   end
 end

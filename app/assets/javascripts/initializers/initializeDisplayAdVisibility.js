@@ -37,7 +37,7 @@ function trackAdImpression(adBox) {
   };
 
   window
-    .fetch('/display_ad_events', {
+    .fetch('/billboard_events', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -70,7 +70,7 @@ function trackAdClick(adBox) {
       category: adBox.dataset.categoryClick,
     },
   };
-  window.fetch('/display_ad_events', {
+  window.fetch('/billboard_events', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,

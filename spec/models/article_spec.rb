@@ -1420,4 +1420,27 @@ RSpec.describe Article do
       end
     end
   end
+  describe "#detect_language" do
+    let(:detected_language) { :kl } # kl for Klingon
+
+    before do
+      allow(Languages::Detection).to receive(:call).and_return(detected_language)
+    end
+
+    it "detects language using title and body for newly created articles" do
+      article = create(:article)
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "detects language using title and body for updated articles" do
+      article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "does not call detection when title and body_markdown are unchanged" do
+      article.language = "es"
+      article.update(nth_published_by_author: 5)
+      expect(Languages::Detection).not_to have_received(:call)
+    end
+  end
 end

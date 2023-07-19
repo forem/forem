@@ -198,6 +198,7 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :detect_language
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -623,6 +624,12 @@ class Article < ApplicationRecord
 
     # Collection is empty
     collection.destroy
+  end
+
+  def detect_language
+    return unless title_changed? || body_markdown_changed?
+
+    self.language = Languages::Detection.call("#{title}. #{body_text}")
   end
 
   def search_score

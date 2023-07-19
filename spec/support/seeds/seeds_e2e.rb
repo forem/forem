@@ -303,6 +303,24 @@ seeder.create_if_doesnt_exist(Organization, "slug", "org4") do
   )
 end
 
+seeder.create_if_doesnt_exist(Organization, "slug", "creditsorg") do
+  organization = Organization.create!(
+    name: "Credits Org",
+    summary: Faker::Company.bs,
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    url: Faker::Internet.url,
+    slug: "creditsorg",
+  )
+
+  OrganizationMembership.create!(
+    user_id: many_orgs_user.id,
+    organization_id: organization.id,
+    type_of_user: "member",
+  )
+
+  Credit.add_to(organization, 100)
+end
+
 ##############################################################################
 
 seeder.create_if_doesnt_exist(User, "email", "change-password-user@forem.com") do
