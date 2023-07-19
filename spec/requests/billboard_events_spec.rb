@@ -1,18 +1,18 @@
 require "rails_helper"
 
-RSpec.describe "DisplayAdEvents" do
+RSpec.describe "BillboardEvents" do
   let(:user) { create(:user, :trusted) }
   let(:organization) { create(:organization) }
   let(:display_ad) { create(:display_ad, organization_id: organization.id) }
 
-  describe "POST /display_ad_events", throttled_call: true do
+  describe "POST /billboard_events", throttled_call: true do
     context "when user signed in" do
       before do
         sign_in user
       end
 
       it "creates a display ad click event" do
-        post "/display_ad_events", params: {
+        post "/billboard_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
@@ -23,7 +23,7 @@ RSpec.describe "DisplayAdEvents" do
       end
 
       it "creates a display ad impression event" do
-        post "/display_ad_events", params: {
+        post "/billboard_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
@@ -39,7 +39,7 @@ RSpec.describe "DisplayAdEvents" do
         create_list(:display_ad_event, 4, impression_params)
 
         post(
-          "/display_ad_events",
+          "/billboard_events",
           params: { display_ad_event: ad_event_params.merge(category: DisplayAdEvent::CATEGORY_CLICK) },
         )
 
@@ -47,7 +47,7 @@ RSpec.describe "DisplayAdEvents" do
       end
 
       it "assigns event to current user" do
-        post "/display_ad_events", params: {
+        post "/billboard_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
@@ -58,7 +58,7 @@ RSpec.describe "DisplayAdEvents" do
       end
 
       it "uses a ThrottledCall for data updates" do
-        post "/display_ad_events", params: {
+        post "/billboard_events", params: {
           display_ad_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
