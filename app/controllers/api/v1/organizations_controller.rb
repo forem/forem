@@ -4,8 +4,8 @@ module Api
       include Api::OrganizationsController
       before_action :find_organization, only: %i[users listings articles]
       before_action :authenticate!, only: %i[create update destroy]
-      before_action :authorize_admin, only: %i[create update]
-      before_action :authorize_super_admin, only: %i[destroy]
+      before_action :authorize_admin, only: %i[update]
+      before_action :authorize_super_admin, only: %i[create destroy]
       after_action :verify_authorized, only: %i[create update destroy]
 
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
@@ -43,6 +43,7 @@ module Api
 
       def create
         organization = Organization.new params_for_create
+        authorize organization
         if organization.save!
           render json: {
             id: organization.id,

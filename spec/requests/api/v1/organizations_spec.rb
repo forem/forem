@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Organizations" do
         name: "Test Org",
         summary: "a test org",
         url: "https://testorg.io",
-        profile_image: "https://remote.profileimage.jpg",
+        profile_image: "https://dummyimage.com/400x400.png",
         slug: "test-org",
         tag_line: "a tagline"
       }
@@ -54,11 +54,11 @@ RSpec.describe "Api::V1::Organizations" do
     end
 
     describe "POST /api/organizations" do
-      let!(:user) { create(:user, :admin) }
+      let!(:user) { create(:user, :super_admin) }
       let(:api_secret) { create(:api_secret, user: user) }
       let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
 
-      context "when params are valid" do
+      context "when user has site admin privileges and params are valid" do
         before do
           # mock around the remote image url retreival and upload
           profile_image = Organizations::ProfileImageGenerator.call
@@ -77,6 +77,20 @@ RSpec.describe "Api::V1::Organizations" do
           end.to change(Organization, :count).by(1)
 
           expect(response).to have_http_status(:created)
+        end
+      end
+
+      context "when user does not have site-admin-level privileges" do
+        let!(:user) { create(:user, :admin) }
+        let(:api_secret) { create(:api_secret, user: user) }
+        let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+        it "returns a 401 and does not create the organization" do
+          expect do
+            post api_organizations_path, params: { organization: org_params }, headers: admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:unauthorized)
         end
       end
 

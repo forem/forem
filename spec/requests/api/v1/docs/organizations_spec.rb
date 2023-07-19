@@ -160,7 +160,7 @@ It supports pagination, each page will contain `30` users by default."
   end
 
   describe "POST /api/organizations" do
-    let(:api_secret) { create(:api_secret, user: create(:user, :admin)) }
+    let(:api_secret) { create(:api_secret, user: create(:user, :super_admin)) }
     let(:image_url) { "https://dummyimage.com/800x600.jpg" }
     let(:org_params) do
       {
@@ -171,17 +171,6 @@ It supports pagination, each page will contain `30` users by default."
         slug: "org10001",
         tag_line: "a test org's tagline"
       }
-    end
-
-    before do
-      # mocking out the process where carrierwave takes the image at the url and uploads
-      stub_request(:get, "https://dummyimage.com").to_return(body: "", status: 200)
-      organization = Organization.new(org_params)
-      allow(Organization).to receive(:new).and_return(organization)
-      profile_image = Organizations::ProfileImageGenerator.call
-      allow(organization).to receive(:profile_image).and_return(profile_image)
-      # presence of the image file allows save, skipping upload in specs means the raw file object won't respond to :url
-      allow(organization).to receive(:profile_image_url).and_return("uploads/organization/profile_image/1/400x400.jpg")
     end
 
     path "/api/organizations" do
@@ -198,6 +187,19 @@ It supports pagination, each page will contain `30` users by default."
                   schema: { "$ref": "#/components/schemas/Organization" }
 
         response "201", "Successful" do
+          before do
+            # mocking out the process where carrierwave takes the image at the url and uploads
+            stub_request(:get, "https://dummyimage.com").to_return(body: "", status: 200)
+            organization = Organization.new(org_params)
+            allow(Organization).to receive(:new).and_return(organization)
+            profile_image = Organizations::ProfileImageGenerator.call
+            allow(organization).to receive(:profile_image).and_return(profile_image)
+            # presence of image file allows save, mocking the upload in specs means file won't respond to :url
+            allow(organization).to receive(:profile_image_url).and_return(
+              "uploads/organization/profile_image/1/400x400.jpg",
+            )
+          end
+
           let(:"api-key") { api_secret.secret }
           let(:organization) do
             {
@@ -216,9 +218,10 @@ It supports pagination, each page will contain `30` users by default."
         end
 
         response "401", "Unauthorized" do
-          let(:regular_user) { create(:user) }
-          let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
-          let(:"api-key") { low_security_api_secret.secret }
+          # Only site admins can create organizations through the v1 api
+          let(:reg_admin_user) { create(:user, :admin) }
+          let(:api_secret) { create(:api_secret, user: reg_admin_user) }
+          let(:"api-key") { api_secret.secret }
           let(:organization) { {} }
           examples
           run_test!
