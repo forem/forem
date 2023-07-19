@@ -53,6 +53,44 @@ RSpec.describe "Api::V1::Organizations" do
       end
     end
 
+    describe "POST /api/organizations" do
+      let!(:user) { create(:user, :admin) }
+      let(:api_secret) { create(:api_secret, user: user) }
+      let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+      context "when params are valid" do
+        before do
+          # mock around the remote image url retreival and upload
+          profile_image = Organizations::ProfileImageGenerator.call
+          organization = Organization.new(org_params.merge(profile_image: profile_image))
+          # Organizations#create controller takes the image param as "profile_image".. if it's not a file,
+          # the controller sets the remote_profile_image_url instead
+          profile_image_url = org_params[:profile_image]
+          allow(Organization).to receive(:new).and_return(organization)
+          allow(organization).to receive(:profile_image).and_return(profile_image)
+          allow(organization).to receive(:profile_image_url).and_return(profile_image_url)
+        end
+
+        it "accepts request and creates the organization" do
+          expect do
+            post api_organizations_path, params: { organization: org_params }, headers: admin_headers
+          end.to change(Organization, :count).by(1)
+
+          expect(response).to have_http_status(:created)
+        end
+      end
+
+      context "when params are invalid" do
+        it "returns a 422 and does not create the organization" do
+          expect do
+            post api_organizations_path, params: {}, headers: admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+      end
+    end
+
     describe "PUT /api/organizations/:id" do
       let!(:org_admin) { create(:user, :org_admin, :admin) }
       let(:api_secret) { create(:api_secret, user: org_admin) }

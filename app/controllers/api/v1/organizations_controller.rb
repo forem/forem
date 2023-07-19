@@ -41,6 +41,25 @@ module Api
         render json: { error: e }, status: :unprocessable_entity
       end
 
+      def create
+        organization = Organization.new params_for_create
+        if organization.save!
+          render json: {
+            id: organization.id,
+            name: organization.name,
+            profile_image: organization.profile_image_url,
+            slug: organization.slug,
+            summary: organization.summary,
+            tag_line: organization.tag_line,
+            url: organization.url
+          }, status: :created
+        else
+          render json: { error: organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+        end
+      rescue ArgumentError => e
+        render json: { error: e }, status: :unprocessable_entity
+      end
+
       def update
         set_organization
         @organization.assign_attributes(organization_params)
@@ -80,6 +99,19 @@ module Api
 
       def organization_params
         params.require(:organization).permit(:id, :name, :profile_image, :slug, :summary, :tag_line, :url)
+      end
+
+      # Accepts either an image file or a remote url for an image in the :profile_image attribute
+      def params_for_create
+        image = params.dig(:organization, :profile_image)
+
+        # If the user has given a url for the profile image, place it where it should be handled
+        if image.is_a? String
+          permitted_params = organization_params.to_h
+          permitted_params.delete(:profile_image)
+          permitted_params[:remote_profile_image_url] = Organizations::SafeRemoteProfileImageUrl.call(image)
+        end
+        permitted_params
       end
 
       def set_organization
