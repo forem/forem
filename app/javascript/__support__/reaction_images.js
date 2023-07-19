@@ -13,13 +13,10 @@ const publicReactionIcons = Object.keys(yamlData)
   .map((slug) => {
     const { name, icon, position } = yamlData[slug];
 
-    return `<img data-name="${
-      name || slug
-    }" data-position="${position}" data-slug="${slug}" src="/assets/${icon}.svg" width="18" height="18" />`;
-  });
+    return `<img data-name="${name}" data-position="${position}" data-slug="${slug}" src="/assets/${icon}.svg" width="18" height="18" />`;
+  })
+  .join('');
 
 export function reactionImagesSupport() {
-  document.body.innerHTML += `<div id="reaction-category-resources" class="hidden" aria-hidden="true">${publicReactionIcons.join(
-    '',
-  )}</div>`;
+  document.body.innerHTML += `<div id="reaction-category-resources" class="hidden" aria-hidden="true">${publicReactionIcons}</div>`;
 }
