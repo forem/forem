@@ -101,7 +101,7 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install]
+    needs: [bundle_install, yarn_install]
 
     steps:
       - uses: actions/checkout@v3
