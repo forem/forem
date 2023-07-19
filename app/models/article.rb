@@ -198,14 +198,13 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :detect_language
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
-
-  after_create_commit :send_to_moderator, if: :published?
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -614,13 +613,6 @@ class Article < ApplicationRecord
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end
 
-  def send_to_moderator
-    # using nth_published because it doesn't count draft articles by the new author
-    return if nth_published_by_author > 2
-
-    Notification.send_moderation_notification(self)
-  end
-
   private
 
   def collection_cleanup
@@ -632,6 +624,12 @@ class Article < ApplicationRecord
 
     # Collection is empty
     collection.destroy
+  end
+
+  def detect_language
+    return unless title_changed? || body_markdown_changed?
+
+    self.language = Languages::Detection.call("#{title}. #{body_text}")
   end
 
   def search_score
@@ -876,7 +874,7 @@ class Article < ApplicationRecord
   end
 
   def correct_published_at?
-    return unless changes["published_at"]
+    return true unless changes["published_at"]
 
     # for drafts (that were never published before) or scheduled articles
     # => allow future or current dates, or no published_at

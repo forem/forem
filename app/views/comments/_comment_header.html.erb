@@ -31,23 +31,24 @@
       <ul class="m-0">
         <li><a href="<%= contextual_comment_url(comment, article: @article) %>" class="crayons-link crayons-link--block permalink-copybtn" aria-label="<%= t("views.comments.menu.copy.aria_label", user: comment.user.name) %>" data-no-instant><%= t("views.comments.menu.copy.text") %></a></li>
         <li class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= URL.comment(comment) %>/settings" aria-label="<%= t("views.comments.menu.settings.aria_label", user: comment.user.name) %>"></li>
-        <% action = comment.hidden_by_commentable_user ? "unhide" : "hide" %>
-        <li class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable&.user_id %>" data-user-id="<%= comment.user_id %>">
-          <% if comment.hidden_by_commentable_user %>
-            <a href="#" class="crayons-link crayons-link--block unhide-comment" data-hide-type="unhide" data-comment-id="<%= comment.id %>" aria-label="<%= t("views.comments.menu.action.aria_label", action: t("views.comments.menu.action.unhide"), user: comment.user.name) %>">
-              <%= t("views.comments.menu.action.unhide_text") %>
-            </a>
-          <% else %>
-            <button
-              class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0 hide-comment"
-              data-hide-type="hide"
-              data-comment-id="<%= comment.id %>"
-              data-comment-url="<%= URL.url(comment.path) %>"
-              aria-label="<%= t("views.comments.menu.action.aria_label", action: t("views.comments.menu.action.hide"), user: comment.user.name) %>">
-              <%= t("views.comments.menu.action.hide_text") %>
-            </button>
-          <% end %>
-        </li>
+        <% unless comment.by_staff_account? %>
+          <li class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable&.user_id %>" data-user-id="<%= comment.user_id %>">
+            <% if comment.hidden_by_commentable_user %>
+              <a href="#" class="crayons-link crayons-link--block unhide-comment" data-hide-type="unhide" data-comment-id="<%= comment.id %>" aria-label="<%= t("views.comments.menu.action.aria_label", action: t("views.comments.menu.action.unhide"), user: comment.user.name) %>">
+                <%= t("views.comments.menu.action.unhide_text") %>
+              </a>
+            <% else %>
+              <button
+                class="flex justify-between crayons-link crayons-link--block w-100 bg-transparent border-0 hide-comment"
+                data-hide-type="hide"
+                data-comment-id="<%= comment.id %>"
+                data-comment-url="<%= URL.url(comment.path) %>"
+                aria-label="<%= t("views.comments.menu.action.aria_label", action: t("views.comments.menu.action.hide"), user: comment.user.name) %>">
+                <%= t("views.comments.menu.action.hide_text") %>
+              </button>
+            <% end %>
+          </li>
+        <% end %>
         <li class="mod-actions hidden mod-actions-comment-button" data-path="<%= URL.comment(comment) %>/mod" aria-label="<%= t("views.comments.menu.moderate.aria_label", user: comment.user.name) %>"></li>
         <li class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= URL.comment(comment) %>" aria-label="<%= t("views.comments.menu.report.aria_label", user: comment.user.name) %>"></li>
         <li class="current-user-actions"></li>

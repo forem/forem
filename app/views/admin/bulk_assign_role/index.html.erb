@@ -1,0 +1,25 @@
+<header class="flex justify-between items-center mb-4">
+  <h1 class="crayons-title"><%= t("views.admin.users.actions.bulk_assign_role.text") %></h1>
+</header>
+<div class="crayons-card p-6">
+  <%= form_with(url: admin_bulk_assign_role_path, local: true, class: "flex flex-col gap-4") do |f| %>
+    <div class="crayons-field">
+      <%= f.label :role, t("views.admin.users.actions.assign_role.role"), class: "crayons-field__label" %>
+      <%= f.select("role", role_options(current_user)["Statuses"], { include_blank: t("views.admin.users.actions.assign_role.select") }, class: "crayons-select") %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :usernames, "Usernames", class: "crayons-field__label" %>
+      <p class="crayons-field__description">
+        <%= t("views.admin.users.actions.assign_role.warning") %>
+      </p>
+      <%= f.text_area :usernames, placeholder: "username1, username2, username3", required: true, size: "40x3", class: "crayons-textfield" %>
+    </div>
+     <div class="crayons-field">
+      <%= f.label :note_for_current_role, t("views.admin.users.actions.assign_role.note"), class: "crayons-field__label" %>
+      <%= f.text_area :note_for_current_role, required: true, class: "crayons-textfield", placeholder: "" %>
+    </div>
+    <div>
+      <%= f.submit t("views.admin.users.actions.assign_role.text"), class: "c-btn c-btn--primary" %>
+    </div>
+  <% end %>
+</div>

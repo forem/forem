@@ -416,9 +416,9 @@ function updateItemSummaryHtml(item) {
   }
   var itemUsername = usernames[0].textContent + number
   if (item.open) {
-    itemSummaryContent.innerHTML = "";
+    itemSummaryContent.textContent = "";
   } else {
-    itemSummaryContent.innerHTML = itemUsername;
+    itemSummaryContent.textContent = itemUsername;
   }
 }
 
