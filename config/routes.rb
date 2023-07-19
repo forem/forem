@@ -147,7 +147,9 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :display_ad_events, only: [:create]
+    # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+    resources :display_ad_events, only: [:create], controller: :billboard_events
+    resources :billboard_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
