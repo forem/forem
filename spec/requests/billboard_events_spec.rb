@@ -13,7 +13,7 @@ RSpec.describe "BillboardEvents" do
 
       it "creates a display ad click event" do
         post "/billboard_events", params: {
-          display_ad_event: {
+          billboard_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
             category: DisplayAdEvent::CATEGORY_CLICK
@@ -24,7 +24,7 @@ RSpec.describe "BillboardEvents" do
 
       it "creates a display ad impression event" do
         post "/billboard_events", params: {
-          display_ad_event: {
+          billboard_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
             category: DisplayAdEvent::CATEGORY_IMPRESSION
@@ -40,7 +40,7 @@ RSpec.describe "BillboardEvents" do
 
         post(
           "/billboard_events",
-          params: { display_ad_event: ad_event_params.merge(category: DisplayAdEvent::CATEGORY_CLICK) },
+          params: { billboard_event: ad_event_params.merge(category: DisplayAdEvent::CATEGORY_CLICK) },
         )
 
         expect(display_ad.reload.success_rate).to eq(0.25)
@@ -48,7 +48,7 @@ RSpec.describe "BillboardEvents" do
 
       it "assigns event to current user" do
         post "/billboard_events", params: {
-          display_ad_event: {
+          billboard_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
             category: DisplayAdEvent::CATEGORY_IMPRESSION
@@ -59,7 +59,7 @@ RSpec.describe "BillboardEvents" do
 
       it "uses a ThrottledCall for data updates" do
         post "/billboard_events", params: {
-          display_ad_event: {
+          billboard_event: {
             display_ad_id: display_ad.id,
             context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
             category: DisplayAdEvent::CATEGORY_IMPRESSION
@@ -67,7 +67,7 @@ RSpec.describe "BillboardEvents" do
         }
 
         expect(ThrottledCall).to have_received(:perform)
-          .with("display_ads_data_update-#{display_ad.id}", throttle_for: instance_of(ActiveSupport::Duration))
+          .with("billboards_data_update-#{display_ad.id}", throttle_for: instance_of(ActiveSupport::Duration))
       end
     end
   end
