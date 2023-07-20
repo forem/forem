@@ -4,7 +4,7 @@ RSpec.describe "UserProfiles" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
 
-  describe "GET /user" do
+  describe "GET /:username" do
     it "renders to appropriate page" do
       get "/#{user.username}"
       expect(response.body).to include CGI.escapeHTML(user.name)
