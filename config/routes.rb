@@ -212,9 +212,9 @@ Rails.application.routes.draw do
       # temporary keeping both routes while transitioning (renaming) display_ads => billboards
       get "/display_ads/:placement_area", to: "billboards#show"
     end
-    get "/billboards/:placement_area", to: "billboards#show"
+    get "/billboards/:placement_area", to: "billboards#show", as: :billboard
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
-    get "/display_ads/:placement_area", to: "billboards#show"
+    get "/display_ads/:placement_area", to: "billboards#show", as: :display_ad
 
     # Settings
     post "users/join_org", to: "users#join_org"
