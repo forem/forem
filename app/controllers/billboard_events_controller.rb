@@ -1,4 +1,4 @@
-class DisplayAdEventsController < ApplicationMetalController
+class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
   # No policy needed. All views are for all users
 
