@@ -8,7 +8,7 @@
     </div>
   </a>
 
-  <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{notification.article_updated_at}-#{notification.article_id}" do %>
+  <% cache "activity-published-article-reactions-#{@last_user_reaction}-#{subscription_status_indicator}-#{notification.article_updated_at}-#{notification.article_id}" do %>
     <footer class="comment-actions notification__actions">
       <button
         class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s reaction-like reaction-button <%= notification.any_cached_reactions_for_object?(current_user) ? "reacted" : "" %>"

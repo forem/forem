@@ -2,4 +2,4 @@
 
 exports[`<FormField /> component should render 1`] = `"<div class=\\"crayons-field\\"></div>"`;
 
-exports[`<FormField /> component should render with content 1`] = `"<div class=\\"crayons-field\\"><input id=\\"some-id\\" name=\\"some-name\\" class=\\"crayons-radio\\" type=\\"radio\\" value=\\"some-value\\"><label for=\\"some-id\\">Some Label</label></div>"`;
+exports[`<FormField /> component should render with content 1`] = `"<div class=\\"crayons-field\\"><input id=\\"some-id\\" name=\\"some-name\\" type=\\"radio\\" class=\\"crayons-radio\\" value=\\"some-value\\"><label for=\\"some-id\\">Some Label</label></div>"`;

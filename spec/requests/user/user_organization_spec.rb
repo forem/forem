@@ -180,7 +180,7 @@ RSpec.describe "UserOrganization" do
       end
 
       it "deletes the organization" do
-        sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id]) do
+        sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id, true]) do
           delete organization_path(org_id)
         end
       end

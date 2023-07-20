@@ -1420,17 +1420,27 @@ RSpec.describe Article do
       end
     end
   end
+  describe "#detect_language" do
+    let(:detected_language) { :kl } # kl for Klingon
 
-  xit "does not send moderator notifications when a draft post" do
-    allow(Notification).to receive(:send_moderation_notification)
+    before do
+      allow(Languages::Detection).to receive(:call).and_return(detected_language)
+    end
 
-    draft_post = build(:article, published: false)
-    draft_post.save!
-    expect(draft_post).not_to be_published
-    expect(Notification).not_to have_received(:send_moderation_notification)
+    it "detects language using title and body for newly created articles" do
+      article = create(:article)
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
 
-    published_post = build(:article, published: true)
-    published_post.save!
-    expect(Notification).to have_received(:send_moderation_notification)
+    it "detects language using title and body for updated articles" do
+      article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "does not call detection when title and body_markdown are unchanged" do
+      article.language = "es"
+      article.update(nth_published_by_author: 5)
+      expect(Languages::Detection).not_to have_received(:call)
+    end
   end
 end
