@@ -24,7 +24,7 @@ RSpec.describe "Editing with an editor", js: true do
   it "user updates their post" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("Save changes")
+    click_button "Save changes"
     expect(page).to have_text("Yooo")
   end
 
