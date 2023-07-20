@@ -61,7 +61,7 @@ RSpec.describe "Api::V1::Organizations" do
       context "when user has site admin privileges and params are valid" do
         before do
           # mock around the remote image url retreival and upload
-          profile_image = Organizations::ProfileImageGenerator.call
+          profile_image = Images::ProfileImageGenerator.call
           organization = Organization.new(org_params.merge(profile_image: profile_image))
           # Organizations#create controller takes the image param as "profile_image".. if it's not a file,
           # the controller sets the remote_profile_image_url instead

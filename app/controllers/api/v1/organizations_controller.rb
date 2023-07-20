@@ -108,7 +108,7 @@ module Api
         if image.is_a? String
           permitted_params = organization_params.to_h
           permitted_params.delete(:profile_image)
-          permitted_params[:remote_profile_image_url] = Organizations::SafeRemoteProfileImageUrl.call(image)
+          permitted_params[:remote_profile_image_url] = Images::SafeRemoteProfileImageUrl.call(image)
         end
         permitted_params
       end

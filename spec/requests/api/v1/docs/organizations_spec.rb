@@ -192,7 +192,7 @@ It supports pagination, each page will contain `30` users by default."
             stub_request(:get, "https://dummyimage.com").to_return(body: "", status: 200)
             organization = Organization.new(org_params)
             allow(Organization).to receive(:new).and_return(organization)
-            profile_image = Organizations::ProfileImageGenerator.call
+            profile_image = Images::ProfileImageGenerator.call
             allow(organization).to receive(:profile_image).and_return(profile_image)
             # presence of image file allows save, mocking the upload in specs means file won't respond to :url
             allow(organization).to receive(:profile_image_url).and_return(

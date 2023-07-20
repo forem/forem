@@ -77,7 +77,7 @@ class RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
     resource.registered_at = Time.current
     resource.build_setting(editor_version: "v2")
-    resource.profile_image = Users::ProfileImageGenerator.call if resource.profile_image.blank?
+    resource.profile_image = Images::ProfileImageGenerator.call if resource.profile_image.blank?
     if Settings::General.waiting_on_first_user
       resource.password_confirmation = resource.password
     end
