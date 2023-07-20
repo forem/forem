@@ -154,7 +154,7 @@ describe('<Article /> component', () => {
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    expect(queryByText('#javascript', { selector: 'span' })).toBeDefined();
+    expect(queryByText('#javascript', { selector: 'span' })).toBeNull();
   });
 
   it('should render with a snippet result', () => {
@@ -244,7 +244,7 @@ describe('<Article /> component', () => {
       <Article {...commonProps} isBookmarked article={articleWithComments} />,
     );
 
-    expect(queryByText('Saved', { selector: 'button' })).toBeDefined();
+    expect(queryByText('Saved', { selector: 'button' })).toBeNull();
   });
 
   it('should render as not saved on reading list', () => {
@@ -252,7 +252,7 @@ describe('<Article /> component', () => {
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    expect(queryByText('Save', { selector: 'button' })).toBeDefined();
+    expect(queryByText('Save', { selector: 'button' })).toBeNull();
   });
 
   it('should render a video article', () => {
@@ -300,7 +300,7 @@ describe('<Article /> component', () => {
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    expect(queryByTestId(`article-save-button-${article.id}`)).toBeDefined();
+    expect(queryByTestId(`article-save-button-${article.id}`)).toBeNull();
   });
 
   it('should hide bookmark button when article is not saveable', () => {

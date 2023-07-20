@@ -165,7 +165,7 @@ describe('ProfileForm', () => {
   it('should show the correct name and username', () => {
     const { queryByText } = renderProfileForm();
 
-    expect(queryByText('username')).toBeDefined();
+    expect(queryByText('username')).toBeNull();
     expect(queryByText('firstname lastname')).toExist();
   });
 

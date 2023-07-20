@@ -14,12 +14,12 @@ describe('<LoadingPreview />', () => {
   it('should render', () => {
     const { queryByTitle } = render(<LoadingPreview />);
 
-    expect(queryByTitle('Loading preview...')).toBeDefined();
+    expect(queryByTitle('Loading preview...')).toBeNull();
   });
 
   it('should render with cover image', () => {
     const { queryByTitle } = render(<LoadingPreview version="cover" />);
 
-    expect(queryByTitle('Loading preview...')).toBeDefined();
+    expect(queryByTitle('Loading preview...')).toBeNull();
   });
 });

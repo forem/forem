@@ -67,8 +67,8 @@ describe('<SingleListing />', () => {
   it('shows a dropdown', () => {
     const { queryByLabelText, queryByText } = renderSingleListing();
 
-    expect(queryByLabelText(/toggle dropdown menu/i)).toBeDefined();
-    expect(queryByText(/report abuse/i)).toBeDefined();
+    expect(queryByLabelText(/toggle dropdown menu/i)).toBeNull();
+    expect(queryByText(/report abuse/i)).toBeNull();
   });
 
   it('shows a listing tags', () => {

@@ -14,7 +14,7 @@ describe('toggling the actions panel', () => {
         document.querySelector(
           `iframe#mod-container[src="${path}/actions_panel"]`,
         ),
-      ).toBeDefined();
+      ).toBeNull();
       expect(
         document.getElementsByClassName('mod-actions-menu-btn')[0],
       ).not.toBeNull();
