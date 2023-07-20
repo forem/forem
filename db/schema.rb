@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_13_150940) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_20_211851) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "ltree"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -478,11 +479,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_13_150940) do
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
+    t.ltree "target_geolocations", default: [], array: true
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
+    t.index ["target_geolocations"], name: "index_display_ads_on_target_geolocations"
   end
 
   create_table "email_authorizations", force: :cascade do |t|
