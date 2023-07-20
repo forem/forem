@@ -14,13 +14,13 @@ describe DataUpdateScripts::BackfillUserBlankName do
     end
   end
 
-  it "replaces the blank name with the titleized username" do
-    titleized_username = invalid_user_with_blank_name.username.titleize
+  it "replaces the blank name with the username" do
+    username = invalid_user_with_blank_name.username
 
     expect { described_class.new.run }
       .to change { invalid_user_with_blank_name.reload.name }
       .from(" ")
-      .to(titleized_username)
+      .to(username)
   end
 
   it "does not modify the name if it has trailing whitespaces" do
