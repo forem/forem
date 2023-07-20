@@ -23,7 +23,7 @@ describe('<SelectedTags />', () => {
     const { queryByText } = renderSelectedTags();
 
     tags.forEach((tag) => {
-      expect(queryByText(tag)).toBeDefined();
+      expect(queryByText(tag)).toExist();
     });
   });
 

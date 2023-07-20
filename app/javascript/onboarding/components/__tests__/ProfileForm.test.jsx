@@ -166,7 +166,7 @@ describe('ProfileForm', () => {
     const { queryByText } = renderProfileForm();
 
     expect(queryByText('username')).toBeDefined();
-    expect(queryByText('firstname lastname')).toBeDefined();
+    expect(queryByText('firstname lastname')).toExist();
   });
 
   it('should show the correct profile picture', () => {
@@ -206,13 +206,13 @@ describe('ProfileForm', () => {
   it('should render a stepper', () => {
     const { queryByTestId } = renderProfileForm();
 
-    expect(queryByTestId('stepper')).toBeDefined();
+    expect(queryByTestId('stepper')).toExist();
   });
 
   it('should show the back button', () => {
     const { queryByTestId } = renderProfileForm();
 
-    expect(queryByTestId('back-button')).toBeDefined();
+    expect(queryByTestId('back-button')).toExist();
   });
 
   it('should not be skippable', async () => {

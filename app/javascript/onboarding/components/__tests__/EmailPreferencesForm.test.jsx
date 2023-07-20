@@ -49,11 +49,11 @@ describe('EmailPreferencesForm', () => {
   it('should load the appropriate text', () => {
     const { queryByText } = renderEmailPreferencesForm();
 
-    expect(queryByText(/almost there!/i)).toBeDefined();
+    expect(queryByText(/almost there!/i)).toExist();
     expect(
       queryByText(/review your email preferences before we continue./i),
-    ).toBeDefined();
-    expect(queryByText('Email preferences')).toBeDefined();
+    ).toExist();
+    expect(queryByText('Email preferences')).toExist();
   });
 
   it('should show the two checkboxes unchecked', () => {
@@ -66,18 +66,18 @@ describe('EmailPreferencesForm', () => {
   it('should render a stepper', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
 
-    expect(queryByTestId('stepper')).toBeDefined();
+    expect(queryByTestId('stepper')).toExist();
   });
 
   it('should render a back button', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
 
-    expect(queryByTestId('back-button')).toBeDefined();
+    expect(queryByTestId('back-button')).toExist();
   });
 
   it('should render a button that says Finish', () => {
     const { queryByText } = renderEmailPreferencesForm();
 
-    expect(queryByText('Finish')).toBeDefined();
+    expect(queryByText('Finish')).toExist();
   });
 });

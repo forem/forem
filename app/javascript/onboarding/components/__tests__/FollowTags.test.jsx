@@ -85,7 +85,7 @@ describe('FollowTags', () => {
     fetch.mockResponseOnce(fakeTagsResponse);
     const { getByText } = renderFollowTags();
 
-    expect(getByText(/skip for now/i)).toBeDefined();
+    expect(getByText(/skip for now/i)).toExist();
   });
 
   it('should update the status and count when you follow a tag', async () => {
@@ -105,13 +105,13 @@ describe('FollowTags', () => {
   it('should render a stepper', () => {
     const { queryByTestId } = renderFollowTags();
 
-    expect(queryByTestId('stepper')).toBeDefined();
+    expect(queryByTestId('stepper')).toExist();
   });
 
   it('should render a back button', () => {
     const { queryByTestId } = renderFollowTags();
 
-    expect(queryByTestId('back-button')).toBeDefined();
+    expect(queryByTestId('back-button')).toExist();
   });
 
   it('should call handleClick when enter key is pressed', async () => {

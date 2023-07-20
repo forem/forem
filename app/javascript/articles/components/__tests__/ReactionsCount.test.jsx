@@ -30,7 +30,7 @@ describe('<ReactionsCount /> component', () => {
       <ReactionsCount article={articleWithReactions} />,
     );
 
-    expect(findByText('232 reactions')).toBeDefined();
+    expect(findByText('232 reactions')).toExist();
   });
 
   it('should display multiple reactions when there are reactions', async () => {
@@ -42,6 +42,6 @@ describe('<ReactionsCount /> component', () => {
       findByText(
         '<span class="multiple_reactions_icons_container" dir="rtl"><span class="crayons_icon_container"><img src="/assets/like.svg" alt="Like" width="18" height="18"></span>',
       ),
-    ).toBeDefined();
+    ).toExist();
   });
 });

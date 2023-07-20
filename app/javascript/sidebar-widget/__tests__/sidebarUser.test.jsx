@@ -83,7 +83,7 @@ describe('<SidebarUser />', () => {
         />,
       );
 
-      expect(queryByText(/Following/i)).toBeDefined();
+      expect(queryByText(/Following/i)).toExist();
     });
 
     it('shows if the user can be followed', () => {
@@ -99,7 +99,7 @@ describe('<SidebarUser />', () => {
         />,
       );
 
-      expect(queryByText(/follow/i)).toBeDefined();
+      expect(queryByText(/follow/i)).toExist();
     });
   });
 });
