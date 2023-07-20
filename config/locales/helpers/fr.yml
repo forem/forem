@@ -63,7 +63,7 @@ fr:
         mobile_comment_notifications: Envoyez-moi une notification push lorsque quelqu'un me répond dans un fil de commentaires
         welcome_notifications: Envoyez-moi de temps en temps des conseils pour améliorer mon expérience sur %{community}
         reaction_notifications: Envoyer des notifications lorsque quelqu'un réagit à mon contenu, comme des commentaires ou des messages
-        mod_roundrobin_notifications: Envoyez-moi des notifications occasionnelles sur le succès de la communauté
+        mod_roundrobin_notifications: Envoyez-moi des notifications sur l'activité des nouveaux membres
       users_setting:
         feed_url: URL du flux RSS
     placeholder:

@@ -67,6 +67,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :organizations, only: %i[index create update destroy]
+
         draw :api
       end
 
