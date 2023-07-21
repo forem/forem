@@ -25,7 +25,7 @@ module Admin
       username = "#{email.split('@').first.gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
       User.invite!(email: email,
                    username: username,
-                   profile_image: ::Users::ProfileImageGenerator.call,
+                   profile_image: ::Images::ProfileImageGenerator.call,
                    registered: false)
       flash[:success] = I18n.t("admin.invitations_controller.create_success")
       redirect_to admin_invitations_path

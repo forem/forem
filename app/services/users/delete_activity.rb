@@ -10,7 +10,7 @@ module Users
       user.blocker_blocks.delete_all
       user.blocked_blocks.delete_all
       user.authored_notes.delete_all
-      user.display_ad_events.delete_all
+      user.billboard_events.delete_all
       user.email_messages.delete_all
       user.html_variants.delete_all
       user.poll_skips.delete_all

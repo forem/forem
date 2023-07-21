@@ -2,7 +2,7 @@
 #        :delete for the relationship.  That means no before/after
 #        destroy callbacks will be called on this object.
 class DisplayAdEvent < ApplicationRecord
-  belongs_to :display_ad
+  belongs_to :billboard, class_name: "DisplayAd", foreign_key: "display_ad_id", inverse_of: :billboard_events
   belongs_to :user, optional: true
 
   CATEGORY_IMPRESSION = "impression".freeze
