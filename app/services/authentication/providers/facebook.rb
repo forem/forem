@@ -25,7 +25,7 @@ module Authentication
         {
           name: @info.name,
           email: @info.email || "",
-          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(image_url),
+          remote_profile_image_url: Images::SafeRemoteProfileImageUrl.call(image_url),
           facebook_username: user_nickname
         }
       end

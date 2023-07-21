@@ -25,7 +25,7 @@ module Authentication
         {
           email: info.email.to_s,
           name: name,
-          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(remote_profile_image_url),
+          remote_profile_image_url: Images::SafeRemoteProfileImageUrl.call(remote_profile_image_url),
           twitter_username: info.nickname
         }
       end
