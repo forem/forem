@@ -22,6 +22,17 @@ RSpec.describe "BillboardEvents" do
         expect(display_ad.reload.clicks_count).to eq(1)
       end
 
+      it "creates a display ad click event with old params" do
+        post "/billboard_events", params: {
+          display_ad_event: {
+            display_ad_id: display_ad.id,
+            context_type: DisplayAdEvent::CONTEXT_TYPE_HOME,
+            category: DisplayAdEvent::CATEGORY_CLICK
+          }
+        }
+        expect(display_ad.reload.clicks_count).to eq(1)
+      end
+
       it "creates a display ad impression event" do
         post "/billboard_events", params: {
           billboard_event: {
