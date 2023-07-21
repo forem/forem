@@ -2932,21 +2932,21 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@knapsack-pro/core@^4.0.0":
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-4.0.0.tgz#3b00ef9bde572ab46618a0fd76b42bbad1b64b8a"
-  integrity sha512-I7bMzDA9i517BPAObrTUTPLiA0IhXjkHvsy6hBMJ2dwv1Fl6wZG62/KUiXScYq3Vms1kRTKKXW9rU1KQWEkNpg==
+"@knapsack-pro/core@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-4.1.0.tgz#8bee9abdd355af09fe2eb7f29e416b8553415132"
+  integrity sha512-5DKJUXD/mDJowC7zaWjjmVBhYFpIJZ6yORVtEirO4ioToFQPUA0q3fHohkQbbmlJ7N1gQfFK01y2YXkaACbq/A==
   dependencies:
     axios "^0.27.2"
     axios-retry "^3.2.5"
     winston "^3.7.2"
 
-"@knapsack-pro/cypress@^5.4.0":
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.4.0.tgz#1353fa7d73605bf6f1b0c6b4940289cfb26f8ac0"
-  integrity sha512-x8fkOkDiaFMhEkVD3MRDPHZ0+/wxBiGP99drsX2m63YQbM4QXiiBlaO3anVtp8hnq4HO8iAcXeW5Vii2iUsjVw==
+"@knapsack-pro/cypress@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.6.0.tgz#b3e4a8acd616ca1f33c6c7e6c704814bc1f44cf1"
+  integrity sha512-czyiB5Ew90T9NqmrsYWQCBcXUDnFT2mcwdbNx1iz8cmgBoqDiBEhpoPYfKBEfGJ97OxiHDh8ddoFaJdxNWSgPw==
   dependencies:
-    "@knapsack-pro/core" "^4.0.0"
+    "@knapsack-pro/core" "^4.1.0"
     glob "^8.1.0"
     minimatch "^5.1.4"
     minimist "^1.2.6"

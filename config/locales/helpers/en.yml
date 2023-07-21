@@ -63,7 +63,7 @@ en:
         mobile_comment_notifications: Send me a push notification when someone replies to me in a comment thread
         welcome_notifications: Send me occasional tips on how to enhance my %{community} experience
         reaction_notifications: Send notifications when someone reacts to my content, such as comments or posts
-        mod_roundrobin_notifications: Send me occasional community-success mod notifications
+        mod_roundrobin_notifications: Send me notifications about new member activity
       users_setting:
         feed_url: RSS Feed URL
     placeholder:

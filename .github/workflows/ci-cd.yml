@@ -101,7 +101,7 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install]
+    needs: [bundle_install, yarn_install]
 
     steps:
       - uses: actions/checkout@v3
@@ -451,7 +451,7 @@ jobs:
 
   CI-status-report:
     runs-on: ubuntu-latest
-    needs: [rspec, jest, cypress, build_test]
+    needs: [rspec, jest, cypress, build_test, audit, storybook]
     if: always()
 
     steps:
