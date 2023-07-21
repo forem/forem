@@ -33,6 +33,7 @@ class BillboardEventsController < ApplicationMetalController
   end
 
   def billboard_event_params
-    params[:billboard_event].slice(:context_type, :category, :display_ad_id)
+    event_params = params[:billboard_event] || params[:display_ad_event]
+    event_params.slice(:context_type, :category, :display_ad_id)
   end
 end
