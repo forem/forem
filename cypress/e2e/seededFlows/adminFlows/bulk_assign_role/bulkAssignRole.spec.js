@@ -1,7 +1,4 @@
-import {
-  verifyAndDismissUserUpdatedMessage,
-  verifyAndDismissDangerMessage,
-} from '../users/userAdminUtilitites';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 describe('Bulk Assign Role', () => {
   beforeEach(() => {
     cy.testSetup();
@@ -23,8 +20,9 @@ describe('Bulk Assign Role', () => {
 
     cy.findByText('Assign role').click();
 
-    verifyAndDismissUserUpdatedMessage(
+    verifyAndDismissFlashMessage(
       'Roles are being added. The task will finish shortly.',
+      'flash-success',
     );
   });
 
@@ -37,6 +35,9 @@ describe('Bulk Assign Role', () => {
 
     cy.findByText('Assign role').click();
 
-    verifyAndDismissDangerMessage('Please choose a role to add.');
+    verifyAndDismissFlashMessage(
+      'Please choose a role to add.',
+      'flash-danger',
+    );
   });
 });
