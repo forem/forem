@@ -567,7 +567,7 @@ class User < ApplicationRecord
     Tag.followed_by(self)
   end
 
-  def has_no_content?
+  def has_no_accessible_content?
     articles.published.empty? && comments_count.zero?
   end
 
