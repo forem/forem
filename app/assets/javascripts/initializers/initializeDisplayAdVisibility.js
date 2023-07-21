@@ -83,7 +83,7 @@ function trackAdClick(adBox) {
   adBox.dataset.clickRecorded = true;
 }
 
-export function observeDisplayAds() {
+function observeDisplayAds() {
   let observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
