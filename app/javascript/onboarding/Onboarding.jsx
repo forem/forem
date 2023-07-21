@@ -74,9 +74,9 @@ export class Onboarding extends Component {
       <main
         className="onboarding-body"
         style={
-          communityConfig.communityBackground
+          communityConfig.communityBackgroundColor
             ? {
-                backgroundImage: `url(${communityConfig.communityBackground})`,
+                background: `linear-gradient(${communityConfig.communityBackgroundColor}, '#000')`,
               }
             : null
         }
@@ -95,7 +95,7 @@ export class Onboarding extends Component {
 Onboarding.propTypes = {
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
-    communityBackground: PropTypes.string.isRequired,
+    communityBackgroundColor: PropTypes.string.isRequired,
     communityLogo: PropTypes.string.isRequired,
     communityDescription: PropTypes.string.isRequired,
   }).isRequired,
