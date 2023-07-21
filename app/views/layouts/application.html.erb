@@ -108,6 +108,9 @@
   <script>
     function toggleFooterVisibility() {
       const footer = document.querySelector("#footer");
+      if (!footer) {
+        return;
+      }
       if (window.location.pathname === "/") {
         footer.style.display = "none";
       } else {
