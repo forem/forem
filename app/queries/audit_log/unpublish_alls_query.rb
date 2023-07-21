@@ -15,7 +15,6 @@ class AuditLog
     def call
       audit_log = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
         .where("data @> '{\"target_user_id\": ?}'", user_id)
-        .includes(:user)
         .order("created_at DESC")
         .first
       if audit_log
