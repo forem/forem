@@ -1,4 +1,4 @@
-import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openRolesModal() {
@@ -42,7 +42,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
           'exist',
@@ -71,7 +71,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
 
         cy.findByRole('button', {
           name: "Suspended You can't remove this role.",
@@ -132,7 +132,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
@@ -150,7 +150,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(

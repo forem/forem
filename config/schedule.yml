@@ -146,10 +146,10 @@ notify_about_published_articles:
   description: "Sends notifications about the new published articles (runs every minute)"
   cron: "*/5 * * * *"
   class: "Articles::PublishWorker"
-display_ad_event_rollup:
+billboard_event_rollup:
   description: "Compact rows in the display_ad_events table"
   cron: "5 3 * * *"
-  class: "DisplayAdEventRollupWorker"
+  class: "BillboardEventRollupWorker"
 audience_segment_refresh:
   description: "Refresh audience segmentation for all segments"
   cron: "10 3 * * *"

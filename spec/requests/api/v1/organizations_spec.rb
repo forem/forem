@@ -11,7 +11,7 @@ RSpec.describe "Api::V1::Organizations" do
         name: "Test Org",
         summary: "a test org",
         url: "https://testorg.io",
-        profile_image: "https://remote.profileimage.jpg",
+        profile_image: "https://dummyimage.com/400x400.png",
         slug: "test-org",
         tag_line: "a tagline"
       }
@@ -50,6 +50,58 @@ RSpec.describe "Api::V1::Organizations" do
         end.not_to change(User, :count)
 
         expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    describe "POST /api/organizations" do
+      let!(:user) { create(:user, :super_admin) }
+      let(:api_secret) { create(:api_secret, user: user) }
+      let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+      context "when user has site admin privileges and params are valid" do
+        before do
+          # mock around the remote image url retreival and upload
+          profile_image = Images::ProfileImageGenerator.call
+          organization = Organization.new(org_params.merge(profile_image: profile_image))
+          # Organizations#create controller takes the image param as "profile_image".. if it's not a file,
+          # the controller sets the remote_profile_image_url instead
+          profile_image_url = org_params[:profile_image]
+          allow(Organization).to receive(:new).and_return(organization)
+          allow(organization).to receive(:profile_image).and_return(profile_image)
+          allow(organization).to receive(:profile_image_url).and_return(profile_image_url)
+        end
+
+        it "accepts request and creates the organization" do
+          expect do
+            post api_organizations_path, params: { organization: org_params }, headers: admin_headers
+          end.to change(Organization, :count).by(1)
+
+          expect(response).to have_http_status(:created)
+        end
+      end
+
+      context "when user does not have site-admin-level privileges" do
+        let!(:user) { create(:user, :admin) }
+        let(:api_secret) { create(:api_secret, user: user) }
+        let(:admin_headers) { headers.merge({ "api-key" => api_secret.secret }) }
+
+        it "returns a 401 and does not create the organization" do
+          expect do
+            post api_organizations_path, params: { organization: org_params }, headers: admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
+
+      context "when params are invalid" do
+        it "returns a 422 and does not create the organization" do
+          expect do
+            post api_organizations_path, params: {}, headers: admin_headers
+          end.not_to change(Organization, :count)
+
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
       end
     end
 
