@@ -37,7 +37,7 @@ describe('User index view', () => {
           cy.findAllByText('Good standing').should('exist');
           cy.findByText('Last activity').should('exist');
           cy.findByText('Joined on').should('exist');
-          cy.findByRole('figure').findByText('+ 1').should('exist');
+          cy.findByRole('figure').findByText('+ 2').should('exist');
         });
     });
 
@@ -160,7 +160,7 @@ describe('User index view', () => {
           );
           cy.findByAltText('Many orgs user').should('exist');
           cy.findAllByText('Good standing').should('exist');
-          cy.findByRole('figure').findByText('+ 1').should('exist');
+          cy.findByRole('figure').findByText('+ 2').should('exist');
         });
     });
 

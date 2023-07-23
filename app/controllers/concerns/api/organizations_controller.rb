@@ -24,7 +24,7 @@ module Api
 
     def show
       @organization = Organization.select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-        .find_by!(username: params[:username])
+        .find_by!(username: params[:id_or_slug])
     end
 
     def users
@@ -71,7 +71,9 @@ module Api
     end
 
     def find_organization
-      @organization = Organization.find_by!(username: params[:organization_username])
+      # Looking up via id_or_slug parameter since both types of lookup are handled in
+      # the v1 show route
+      @organization = Organization.find_by!(username: params[:organization_id_or_slug])
     end
   end
 end

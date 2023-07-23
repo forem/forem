@@ -158,6 +158,7 @@ GEM
       fastimage
     cgi (0.3.6)
     chartkick (4.2.1)
+    cld3 (3.5.3)
     cloudinary (1.26.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
@@ -171,7 +172,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
-    counter_culture (3.3.1)
+    counter_culture (3.4.0)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
     crack (0.4.5)
@@ -421,7 +422,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       sass (>= 3.2)
-    js-routes (2.2.5)
+    js-routes (2.2.6)
       railties (>= 4)
     json (2.6.3)
     json-schema (2.8.1)
@@ -982,6 +983,7 @@ DEPENDENCIES
   carrierwave (~> 2.2)
   carrierwave-bombshelter (~> 0.2)
   cgi (~> 0.3.6)
+  cld3 (~> 3.5)
   cloudinary (~> 1.23)
   counter_culture (~> 3.2)
   cuprite (~> 0.13)

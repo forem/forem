@@ -49,18 +49,15 @@ function buildArticleHTML(article, currentUserId = null) {
   }
 
   if (article && article.class_name === 'Organization') {
-    return `<article class="crayons-story">
+    const html = `
+      <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
           <a href="${article.slug}" class="crayons-podcast-episode__cover">
-            <img src="${article.profile_image.url}" alt="${
-      article.name
-    }" loading="lazy" />
+            <img src="${article.profile_image.url}" alt="" loading="lazy" />
           </a>
           <div>
             <h3 class="crayons-subtitle-2 lh-tight py-1">
-              <a href="${article.slug}" class="c-link">
-                ${article.name}
-              </a>
+              <a href="${article.slug}" class="c-link"> ${article.name} </a>
             </h3>
             <p class="crayons-story__slug-segment">@${article.slug}</p>
             ${
@@ -70,14 +67,23 @@ function buildArticleHTML(article, currentUserId = null) {
             }
           </div>
           <div class="print-hidden" style="margin-left: auto">
-            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info='{"id": "${
-              article.id
-            }", "className": "Organization", "style": "full", "name": "${
-      article.name
-    }"}'>Follow</button>
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info=''>Follow</button>
           </div>
         </div>
-      </article>`;
+      </article>
+    `;
+
+    const parser = new DOMParser();
+    const parsedDocument = parser.parseFromString(html, 'text/html');
+    parsedDocument.querySelector('img').alt = article.name;
+    parsedDocument.querySelector('button').dataset.info = JSON.stringify({
+      id: article.id,
+      name: article.name,
+      className: 'Organization',
+      style: 'full',
+    });
+
+    return parsedDocument.body.innerHTML;
   }
 
   if (article) {

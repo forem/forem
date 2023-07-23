@@ -1,4 +1,4 @@
-import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openUserOptions(callback) {
   cy.findByRole('button', { name: 'Options' })
@@ -32,8 +32,9 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Export to Admin' }).click();
       });
 
-      verifyAndDismissUserUpdatedMessage(
+      verifyAndDismissFlashMessage(
         'Data exported to the admin. The job will complete momentarily.',
+        'flash-success',
       );
     });
 
@@ -46,8 +47,9 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Export to User' }).click();
       });
 
-      verifyAndDismissUserUpdatedMessage(
+      verifyAndDismissFlashMessage(
         'Data exported to the user. The job will complete momentarily.',
+        'flash-success',
       );
     });
 
@@ -71,8 +73,9 @@ describe('Manage User Options', () => {
         cy.findByRole('button', { name: 'Banish Trusted User 1 \\:/' }).click();
       });
 
-      verifyAndDismissUserUpdatedMessage(
+      verifyAndDismissFlashMessage(
         'This user is being banished in the background. The job will complete soon.',
+        'flash-success',
       );
     });
 
@@ -87,8 +90,9 @@ describe('Manage User Options', () => {
         }).click();
       });
 
-      verifyAndDismissUserUpdatedMessage(
+      verifyAndDismissFlashMessage(
         '@trusted_user_1 (email: trusted-user-1@forem.local, user_id: 2) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on the page.',
+        'flash-success',
       );
     });
 

@@ -565,9 +565,19 @@ seeder.create_if_none(DisplayAd) do
       body_markdown: Faker::Lorem.sentence,
       published: true,
       approved: true,
-      placement_area: placement_area
+      placement_area: placement_area,
     )
   end
+
+  segment = AudienceSegment.create!(type_of: :manual)
+  DisplayAd.create!(
+    name: "#{Faker::Lorem.word} (Manually Managed Audience)",
+    body_markdown: Faker::Lorem.sentence,
+    published: true,
+    approved: true,
+    placement_area: DisplayAd::ALLOWED_PLACEMENT_AREAS.sample,
+    audience_segment: segment,
+  )
 end
 
 ##############################################################################

@@ -1,6 +1,6 @@
 module Api
   module V1
-    class DisplayAdsController < ApiController
+    class BillboardsController < ApiController
       before_action :authenticate_with_api_key!
       before_action :require_admin
 

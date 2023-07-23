@@ -8,6 +8,7 @@ class AdminMenu
       item(name: "members", controller: "users"),
       item(name: "invited members", controller: "invitations"),
       item(name: "gdpr actions", controller: "gdpr_delete_requests"),
+      item(name: "bulk assign role", controller: "bulk_assign_role"),
     ]
 
     scope :content_manager, "dashboard-line", [

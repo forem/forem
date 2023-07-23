@@ -29,7 +29,7 @@ function trackAdImpression(adBox) {
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   var dataBody = {
-    display_ad_event: {
+    billboard_event: {
       display_ad_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
@@ -37,7 +37,7 @@ function trackAdImpression(adBox) {
   };
 
   window
-    .fetch('/display_ad_events', {
+    .fetch('/billboard_events', {
       method: 'POST',
       headers: {
         'X-CSRF-Token': csrfToken,
@@ -64,13 +64,13 @@ function trackAdClick(adBox) {
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   var dataBody = {
-    display_ad_event: {
+    billboard_event: {
       display_ad_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
     },
   };
-  window.fetch('/display_ad_events', {
+  window.fetch('/billboard_events', {
     method: 'POST',
     headers: {
       'X-CSRF-Token': csrfToken,
