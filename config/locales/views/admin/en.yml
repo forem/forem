@@ -286,6 +286,7 @@ en:
               super_moderator: Super Moderator
               podcast_admin: Podcast Admin
               restricted_liquid_tag: Restricted Liquid Tag
+              single_resource_admin: Single Resource Admin
               resource_admin_article: Article Admin
               resource_admin_badge: Badge Admin
               resource_admin_badge_achievement: Badge Achievement Admin
