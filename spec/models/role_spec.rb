@@ -36,4 +36,18 @@ RSpec.describe Role do
       end
     end
   end
+
+  describe "#name_labelize" do
+    subject { user.roles.last.name_labelize }
+
+    let(:user) { create(:user, :admin) }
+
+    it { is_expected.to eq "admin" }
+
+    context "when role is single_resource_admin" do
+      let(:user) { create(:user, :single_resource_admin, resource: Badge) }
+
+      it { is_expected.to eq "Resource Admin: Badge" }
+    end
+  end
 end

@@ -106,7 +106,9 @@ module Admin
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
-                 role: role.name.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
+                 role: I18n.t("views.admin.users.overview.roles.name.#{
+                   role.name_labelize.underscore.parameterize(separator: '_')
+                 }", default: role.name.to_s.humanize.titlecase)) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
