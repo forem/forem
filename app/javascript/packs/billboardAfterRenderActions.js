@@ -61,7 +61,7 @@ function trackAdImpression(adBox) {
 
   const dataBody = {
     billboard_event: {
-      display_ad_id: adBox.dataset.id,
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
     },
@@ -97,7 +97,7 @@ function trackAdClick(adBox) {
 
   const dataBody = {
     billboard_event: {
-      display_ad_id: adBox.dataset.id,
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
     },
