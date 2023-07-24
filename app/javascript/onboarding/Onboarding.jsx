@@ -74,11 +74,13 @@ export class Onboarding extends Component {
       <main
         className="onboarding-body"
         style={
-          communityConfig.communityBackgroundColor
+          communityConfig.communityBackgroundColor &&
+          communityConfig.communityBackgroundColor2
             ? {
-                background: `linear-gradient(${communityConfig.communityBackgroundColor}, '#000')`,
+                background: `linear-gradient(${communityConfig.communityBackgroundColor}, 
+                                             ${communityConfig.communityBackgroundColor2})`,
               }
-            : null
+            : { top: 777 }
         }
       >
         <FocusTrap
