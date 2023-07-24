@@ -1,9 +1,10 @@
 module ColorHelper
-  def gradient_from(_hex = "#000000")
-    brand_color = Settings::UserExperience.primary_brand_color_hex
-    {
-      light: Color::CompareHex.new([brand_color]).brightness(0.9),
-      dark: Color::CompareHex.new([brand_color]).brightness(0.6)
+  def gradient_from_hex(hex = "#4F46E5")
+    return { light: "#4f46e5", dark: "#312c8f" } unless hex.is_a? String
+
+    @gradient_from_hex ||= {
+      light: Color::CompareHex.new([hex]).brightness(1),
+      dark: Color::CompareHex.new([hex]).brightness(0.625)
     }
   end
 end
