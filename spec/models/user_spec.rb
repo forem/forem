@@ -79,7 +79,7 @@ RSpec.describe User do
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:discussion_locks).dependent(:delete_all) }
-      it { is_expected.to have_many(:display_ad_events).dependent(:nullify) }
+      it { is_expected.to have_many(:billboard_events).dependent(:nullify) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
@@ -192,6 +192,8 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
+
+      it { is_expected.not_to allow_value("  ").for(:name) }
 
       it { is_expected.to validate_presence_of(:articles_count) }
       it { is_expected.to validate_presence_of(:badge_achievements_count) }
