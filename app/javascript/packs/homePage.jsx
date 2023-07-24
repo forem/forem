@@ -100,6 +100,7 @@ if (!document.getElementById('featured-story-marker')) {
         const callback = () => {
           initializeDisplayAdVisibility();
           observeDisplayAds();
+          setupDisplayAdDropdown();
         };
 
         renderFeed(feedTimeFrame, callback);
@@ -121,6 +122,7 @@ if (!document.getElementById('featured-story-marker')) {
           const callback = () => {
             initializeDisplayAdVisibility();
             observeDisplayAds();
+            setupDisplayAdDropdown();
           };
 
           renderFeed(changedFeedTimeFrame, callback);
@@ -144,5 +146,4 @@ InstantClick.on('change', () => {
 });
 InstantClick.init();
 
-setupDisplayAdDropdown();
 trackCreateAccountClicks('sidebar-wrapper-left');

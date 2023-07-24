@@ -179,3 +179,10 @@ document.ready.then(() => {
 trackCreateAccountClicks('authentication-hamburger-actions');
 trackCreateAccountClicks('authentication-top-nav-actions');
 trackCreateAccountClicks('comments-locked-cta');
+
+// Our infinite scroll pattern causes problems with the browser's back button:
+// specifically, if you've scrolled into page 2+, click into a post, then back
+// to the feed, the browser scroll position will not be where you had previously
+// scrolled. This seems to fix it, even though it seems like it should have
+// the opposite effect.
+history.scrollRestoration = 'manual';
