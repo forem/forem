@@ -14,7 +14,6 @@ module Images
         @resource = resource
         @logo_url = Settings::General.logo_png
     end
-  
       def call
         if @resource.is_a?(Article)
           @user = @resource.user
