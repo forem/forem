@@ -237,6 +237,9 @@ en:
           note: Note
           note_placeholder: Add a note...
           submit: Submit
+          unknown_user: Unknown user
+          unknown_user_html: |
+            <em>Unknown user</em>
         overview:
           comments: Comments
           posts: Posts
