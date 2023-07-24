@@ -26,6 +26,11 @@ class Geolocation
 
   ISO3166_SEPARATOR = "-".freeze
   LTREE_SEPARATOR = ".".freeze
+  # Maybe this should be a config of some kind...?
+  PERMITTED_COUNTRIES = [
+    ISO3166::Country.code_from_name("United States"),
+    ISO3166::Country.code_from_name("Canada"),
+  ].freeze
 
   attr_reader :country_code, :region_code
 
@@ -51,10 +56,15 @@ class Geolocation
     @region_code = region_code
   end
 
-  validates :country_code, inclusion: { in: ISO3166::Country.codes }
+  # validates :country_code, inclusion: { in: ISO3166::Country.codes }
+  validates :country_code, inclusion: { in: PERMITTED_COUNTRIES }
   validates :region_code, inclusion: {
-    in: ->(geolocation) { ISO3166::Country.new(geolocation.country_code).region_codes }
+    in: ->(geolocation) { ISO3166::Country.region_codes_if_exists(geolocation.country_code) }
   }, allow_nil: true
+
+  def ==(other)
+    country_code == other.country_code && region_code == other.region_code
+  end
 
   def to_iso3166
     [country_code, region_code].compact.join("-")
