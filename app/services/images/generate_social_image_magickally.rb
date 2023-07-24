@@ -9,7 +9,6 @@ module Images
       def self.call(resource = nil)
         new(resource).call
       end
-  
       def initialize(resource)
         @resource = resource
         @logo_url = Settings::General.logo_png
