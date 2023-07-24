@@ -13,7 +13,7 @@ module Images
       def initialize(resource)
         @resource = resource
         @logo_url = Settings::General.logo_png
-    end
+      end
       def call
         if @resource.is_a?(Article)
           @user = @resource.user
