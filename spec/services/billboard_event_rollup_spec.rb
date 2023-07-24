@@ -45,7 +45,7 @@ RSpec.describe BillboardEventRollup, type: :service do
         [ad2.id, nil, 1],
       ]
       results_mapped = DisplayAdEvent.where(created_at: days_ago_as_range(2)).map do |event|
-        [event.display_ad_id, event.user_id, event.counts_for]
+        [event.billboard_id, event.user_id, event.counts_for]
       end
       expect(results_mapped).to match_array(expectations)
     end
@@ -66,8 +66,8 @@ RSpec.describe BillboardEventRollup, type: :service do
     expect(by_category["click"]["counts_for"]).to eq(2)
   end
 
-  # separate display_ad_id
-  it "groups by display_ad_id" do
+  # separate billboard_id
+  it "groups by billboard_id" do
     create(:display_ad_event, billboard: ad1, user_id: nil)
     create(:display_ad_event, billboard: ad1, user_id: nil)
     create(:display_ad_event, billboard: ad1, user_id: nil)
@@ -76,7 +76,7 @@ RSpec.describe BillboardEventRollup, type: :service do
 
     described_class.rollup(Date.current)
     results = DisplayAdEvent.where(created_at: Date.current.all_day)
-    by_ad = results.index_by { |r| r["display_ad_id"] }
+    by_ad = results.index_by { |r| r["billboard_id"] }
     expect(by_ad[ad1.id]["counts_for"]).to eq(3)
     expect(by_ad[ad2.id]["counts_for"]).to eq(2)
   end
