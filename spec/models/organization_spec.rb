@@ -390,4 +390,35 @@ RSpec.describe Organization do
       expect(results.size).to eq(3)
     end
   end
+
+  describe "#generate_social_images" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+      create(:article, organization: organization)
+    end
+
+    context "when the name or profile_image has changed and the organization has articles" do
+      it "calls SocialImageWorker.perform_async" do
+        organization.name = "New name for this org!"
+        organization.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async)
+      end
+    end
+
+    context "when the name or profile_image has not changed or the organization has no articles" do
+      it "does not call SocialImageWorker.perform_async" do
+        expect(Images::SocialImageWorker).not_to receive(:perform_async)
+        organization.save
+      end
+    end
+
+    context "when the name or profile_image has changed and the organization has no articles" do
+      it "does not call SocialImageWorker.perform_async" do
+        organization.articles.destroy_all
+        organization.name = "New name for this org!!"
+        organization.save
+        expect(Images::SocialImageWorker).not_to receive(:perform_async)
+      end
+    end
+  end
 end

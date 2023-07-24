@@ -578,6 +578,13 @@ class User < ApplicationRecord
 
   private
 
+  def generate_social_images
+    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+    return unless change && articles.published.size.positive?
+
+    Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
+
   def create_users_settings_and_notification_settings_records
     self.setting = Users::Setting.create
     self.notification_setting = Users::NotificationSetting.create
