@@ -233,6 +233,7 @@ class User < ApplicationRecord
   after_create_commit :send_welcome_notification
 
   after_save :create_conditional_autovomits
+  after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
