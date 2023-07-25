@@ -35,7 +35,7 @@ module Authentication
         user_data[:profile_image] = if Rails.env.test?
                                       Settings::General.mascot_image_url
                                     else
-                                      Users::ProfileImageGenerator.call
+                                      Images::ProfileImageGenerator.call
                                     end
 
         user_data
