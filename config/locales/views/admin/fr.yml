@@ -287,6 +287,17 @@ fr:
               podcast_admin: Podcast Admin
               restricted_liquid_tag: Restricted Liquid Tag
               single_resource_admin: Single Resource Admin
+              resource_admin_article: Article Admin
+              resource_admin_badge: Badge Admin
+              resource_admin_badge_achievement: Badge Achievement Admin
+              resource_admin_broadcast: Broadcast Admin
+              resource_admin_comment: Comment Admin
+              resource_admin_config: Config Admin
+              resource_admin_display_ad: Display Ad Admin
+              resource_admin_data_update_script: Data Update Script Admin
+              resource_admin_feedback_message: Feedback Message Admin
+              resource_admin_html_variant: HTML Variant Admin
+              resource_admin_listing_category: Listing Category Admin
               super_admin: Super Admin
               support_admin: Support Admin
               suspended: Suspended
