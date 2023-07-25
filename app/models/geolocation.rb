@@ -74,7 +74,7 @@ class Geolocation
     [country_code, region_code].compact.join(".")
   end
 
-  def to_sql_query(column_name = :target_geolocations)
+  def to_sql_query_clause(column_name = :target_geolocations)
     return unless valid?
 
     lquery = country_code

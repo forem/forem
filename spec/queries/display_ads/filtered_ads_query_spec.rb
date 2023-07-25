@@ -197,4 +197,67 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(community_ad)
     end
   end
+
+  context "when considering location" do
+    let!(:no_targets) { create_display_ad }
+    let!(:targets_canada) { create_display_ad(target_geolocations: "CA") }
+    let!(:targets_new_york_and_canada) { create_display_ad(target_geolocations: "US-NY, CA") }
+    let!(:targets_california_and_texas) { create_display_ad(target_geolocations: "US-CA, US-TX") }
+    let!(:targets_quebec_and_newfoundland) { create_display_ad(target_geolocations: "CA-QC, CA-NL") }
+    let!(:targets_maine_alberta_and_ontario) { create_display_ad(target_geolocations: "US-ME, CA-AB, CA-ON") }
+
+    it "shows only billboards with no targeting if no location is provided" do
+      filtered = filter_ads
+      expect(filtered).to include(no_targets)
+      expect(filtered).not_to include(
+        targets_canada,
+        targets_new_york_and_canada,
+        targets_california_and_texas,
+        targets_quebec_and_newfoundland,
+        targets_maine_alberta_and_ontario,
+      )
+    end
+
+    it "shows only billboards whose target location includes the specified location" do
+      filtered = filter_ads(location: "CA-NL") # User is in Newfoundland, Canada
+
+      expect(filtered).to include(
+        no_targets,
+        targets_canada,
+        targets_new_york_and_canada,
+        targets_quebec_and_newfoundland,
+      )
+      expect(filtered).not_to include(
+        targets_california_and_texas,
+        targets_maine_alberta_and_ontario,
+      )
+
+      filtered = filter_ads(location: "US-CA") # User is in California, USA
+      expect(filtered).to include(
+        no_targets,
+        targets_california_and_texas,
+      )
+      expect(filtered).not_to include(
+        targets_canada,
+        targets_new_york_and_canada,
+        targets_quebec_and_newfoundland,
+        targets_maine_alberta_and_ontario,
+      )
+    end
+
+    it "shows only billboards targeting the country specifically if no region is provided" do
+      filtered = filter_ads(location: "CA") # User is in "Canada"
+
+      expect(filtered).to include(
+        no_targets,
+        targets_canada,
+        targets_new_york_and_canada,
+      )
+      expect(filtered).not_to include(
+        targets_california_and_texas,
+        targets_quebec_and_newfoundland,
+        targets_maine_alberta_and_ontario,
+      )
+    end
+  end
 end
