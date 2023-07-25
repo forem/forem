@@ -1,11 +1,11 @@
 <% navigation_links = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
-  {
-    default_nav_ids: NavigationLink.default_section.ordered.ids,
-    other_nav_ids: NavigationLink.other_section.ordered.ids
-  }
-end %>
+     {
+       default_nav_ids: NavigationLink.default_section.ordered.ids,
+       other_nav_ids: NavigationLink.other_section.ordered.ids
+     }
+   end %>
 
-<footer class="crayons-footer print-hidden">
+<footer id="footer" class="crayons-footer print-hidden hidden">
   <div id="footer-container" class="crayons-footer__container">
     <p class="fs-s crayons-footer__description">
       <%= t("views.main.footer.desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>
