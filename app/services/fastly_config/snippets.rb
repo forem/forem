@@ -1,3 +1,14 @@
+# In general this service should be considered deprecated, as it duplicates
+# infrastructure management that is better left to the Fastly Terraform
+# provider. It solely exists to support the not-yet-Terraformed DEV.to
+# deployment, and should be removed whenever that instance has been migrated
+# to Terraform control (and, presumably, the relevant bits of Terraform open-
+# sourced and documented to replace this).
+#
+# As such, if VCL snippets are added to the snippets directory, a Forem employee
+# should replicate them in the appropriate infrastructure repository and roll
+# them out to other non-DEV Forems.
+
 module FastlyConfig
   class Snippets < Base
     FASTLY_FILES = Rails.root.join("config/fastly/snippets/*.vcl").freeze
