@@ -418,7 +418,12 @@ module Admin
     def set_unpublish_all_log
       # in theory, there could be multiple "unpublish all" actions
       # but let's query and display the last one for now, that should be enough for most cases
-      @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
+      @unpublish_all_data = if @current_tab == "unpublish_logs"
+                              AuditLog::UnpublishAllsQuery.call(@user.id)
+                            else
+                              # only find if the data exists for most tabs
+                              AuditLog::UnpublishAllsQuery.new(@user.id).exists?
+                            end
     end
 
     def calculate_countable_flags(reactions)
