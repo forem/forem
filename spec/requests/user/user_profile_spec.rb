@@ -200,7 +200,7 @@ RSpec.describe "UserProfiles" do
       end
 
       context "when a user is not signed in" do
-        it "raises not found for suspended users who do not have accessible" do
+        it "raises not found for suspended users who do not have published content" do
           suspended_user = create(:user)
           suspended_user.add_role(:suspended)
           create(:article, user_id: user.id, published: false, published_at: Date.tomorrow)
@@ -209,7 +209,7 @@ RSpec.describe "UserProfiles" do
         end
       end
 
-      it "renders noindex meta if suspended (and has accessible content)" do
+      it "renders noindex meta if suspended (and has published content)" do
         user.add_role(:suspended)
 
         create(:article, user_id: user.id)
