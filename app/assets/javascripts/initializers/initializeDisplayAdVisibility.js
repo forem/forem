@@ -121,3 +121,5 @@ window.addEventListener(
   },
   false,
 );
+
+export { observeDisplayAds };
