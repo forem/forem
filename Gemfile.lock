@@ -158,7 +158,7 @@ GEM
       fastimage
     cgi (0.3.6)
     chartkick (4.2.1)
-    cld3 (3.5.3)
+    cld3 (3.6.0)
     cloudinary (1.26.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
