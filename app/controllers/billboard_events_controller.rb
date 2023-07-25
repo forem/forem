@@ -15,7 +15,7 @@ class BillboardEventsController < ApplicationMetalController
   private
 
   def update_billboards_data
-    billboard_event_id = billboard_event_params[:display_ad_id]
+    billboard_event_id = billboard_event_params[:billboard_id]
 
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 15.minutes) do
       @billboard = DisplayAd.find(billboard_event_id)
@@ -33,6 +33,10 @@ class BillboardEventsController < ApplicationMetalController
   end
 
   def billboard_event_params
-    params[:billboard_event].slice(:context_type, :category, :display_ad_id)
+    event_params = params[:billboard_event] || params[:display_ad_event]
+    # keeping while we may receive data in the "old" format from cached js
+    display_ad_id = event_params.delete(:display_ad_id)
+    event_params[:billboard_id] ||= display_ad_id
+    event_params.slice(:context_type, :category, :billboard_id)
   end
 end

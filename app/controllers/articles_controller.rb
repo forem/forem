@@ -156,11 +156,11 @@ class ArticlesController < ApplicationController
     @user = current_user
     article = Articles::Creator.call(@user, article_params_json)
 
-    render json: if article.persisted?
-                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
-                 else
-                   article.errors.to_json
-                 end
+    if article.persisted?
+      render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+    else
+      render json: article.errors.to_json, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -188,11 +188,11 @@ class ArticlesController < ApplicationController
       end
 
       format.json do
-        render json: if updated.success
-                       @article.to_json(only: [:id], methods: [:current_state_path])
-                     else
-                       @article.errors.to_json
-                     end
+        if updated.success
+          render json: @article.to_json(only: [:id], methods: [:current_state_path]), status: :ok
+        else
+          render json: @article.errors.to_json, status: :unprocessable_entity
+        end
       end
     end
   end

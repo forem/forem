@@ -193,6 +193,8 @@ RSpec.describe User do
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
 
+      it { is_expected.not_to allow_value("  ").for(:name) }
+
       it { is_expected.to validate_presence_of(:articles_count) }
       it { is_expected.to validate_presence_of(:badge_achievements_count) }
       it { is_expected.to validate_presence_of(:blocked_by_count) }

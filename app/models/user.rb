@@ -131,7 +131,7 @@ class User < ApplicationRecord
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :name, length: { in: 1..100 }
+  validates :name, length: { in: 1..100 }, presence: true
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
   validates :rating_votes_count, presence: true
