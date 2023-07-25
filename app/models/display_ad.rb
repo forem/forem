@@ -111,7 +111,9 @@ class DisplayAd < ApplicationRecord
 
   def validate_geolocations
     target_geolocations.each do |geo|
-      errors.add(:target_geolocations, "\"#{geo.to_iso3166}\": #{geo.errors_as_sentence}") unless geo.valid?
+      unless geo.valid?
+        errors.add(:target_geolocations, I18n.t("models.billboard.invalid_location", location: geo.to_iso3166))
+      end
     end
   end
 

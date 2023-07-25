@@ -24,6 +24,7 @@ class Geolocation
 
   include ActiveModel::Validations
 
+  FEATURE_FLAG = :billboard_location_targeting
   ISO3166_SEPARATOR = "-".freeze
   LTREE_SEPARATOR = ".".freeze
   # Maybe this should be a config of some kind...?

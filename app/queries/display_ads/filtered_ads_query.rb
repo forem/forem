@@ -59,7 +59,9 @@ module DisplayAds
                                 authenticated_ads(%w[all logged_out])
                               end
 
-      @filtered_display_ads = location_targeted_ads
+      if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
+        @filtered_display_ads = location_targeted_ads
+      end
 
       # type_of filter needs to be applied as near to the end as possible
       # as it checks if any type-matching ads exist (this will apply all/any

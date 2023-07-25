@@ -341,7 +341,7 @@ RSpec.describe DisplayAd do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("Country code is not included in the list")
+        expect(billboard.errors_as_sentence).to include("NOT-REAL is not a supported ISO 3166-2 code")
       end
     end
 
@@ -350,7 +350,7 @@ RSpec.describe DisplayAd do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("Region code is not included in the list")
+        expect(billboard.errors_as_sentence).to include("CA-FAKE is not a supported ISO 3166-2 code")
       end
     end
   end
