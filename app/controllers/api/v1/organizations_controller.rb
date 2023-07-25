@@ -4,8 +4,8 @@ module Api
       include Api::OrganizationsController
       before_action :find_organization, only: %i[users listings articles]
       before_action :authenticate!, only: %i[create update destroy]
-      before_action :authorize_admin, only: %i[create update]
-      before_action :authorize_super_admin, only: %i[destroy]
+      before_action :authorize_admin, only: %i[update]
+      before_action :authorize_super_admin, only: %i[create destroy]
       after_action :verify_authorized, only: %i[create update destroy]
 
       INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[
@@ -41,6 +41,26 @@ module Api
         render json: { error: e }, status: :unprocessable_entity
       end
 
+      def create
+        organization = Organization.new params_for_create
+        authorize organization
+        if organization.save!
+          render json: {
+            id: organization.id,
+            name: organization.name,
+            profile_image: organization.profile_image_url,
+            slug: organization.slug,
+            summary: organization.summary,
+            tag_line: organization.tag_line,
+            url: organization.url
+          }, status: :created
+        else
+          render json: { error: organization.errors_as_sentence, status: 422 }, status: :unprocessable_entity
+        end
+      rescue ArgumentError => e
+        render json: { error: e }, status: :unprocessable_entity
+      end
+
       def update
         set_organization
         @organization.assign_attributes(organization_params)
@@ -65,8 +85,6 @@ module Api
         set_organization
         Organizations::DeleteWorker.perform_async(@organization.id, @user.id, false)
 
-        # A notification email will trigger once the async deletion is completed.
-        # We do not currently appear to notify on a failed deletion but it is logged internally.
         render json: { message: "deletion scheduled for organization with ID #{@organization.id}", status: 200 }
       rescue ArgumentError => e
         render json: { error: e }, status: :unprocessable_entity
@@ -80,6 +98,19 @@ module Api
 
       def organization_params
         params.require(:organization).permit(:id, :name, :profile_image, :slug, :summary, :tag_line, :url)
+      end
+
+      # Accepts either an image file or a remote url for an image in the :profile_image attribute
+      def params_for_create
+        image = params.dig(:organization, :profile_image)
+
+        # If the user has given a url for the profile image, place it where it should be handled
+        if image.is_a? String
+          permitted_params = organization_params.to_h
+          permitted_params.delete(:profile_image)
+          permitted_params[:remote_profile_image_url] = Images::SafeRemoteProfileImageUrl.call(image)
+        end
+        permitted_params
       end
 
       def set_organization

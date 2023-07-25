@@ -4,27 +4,27 @@ class BillboardEventsController < ApplicationMetalController
 
   def create
     # Only tracking for logged in users at the moment
-    display_ad_event_create_params = display_ad_event_params.merge(user_id: session_current_user_id)
-    @display_ad_event = DisplayAdEvent.create(display_ad_event_create_params)
+    billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
+    @billboard_event = DisplayAdEvent.create(billboard_event_create_params)
 
-    update_display_ads_data
+    update_billboards_data
 
     head :ok
   end
 
   private
 
-  def update_display_ads_data
-    display_ad_event_id = display_ad_event_params[:display_ad_id]
+  def update_billboards_data
+    billboard_event_id = billboard_event_params[:display_ad_id]
 
-    ThrottledCall.perform("display_ads_data_update-#{display_ad_event_id}", throttle_for: 15.minutes) do
-      @display_ad = DisplayAd.find(display_ad_event_id)
+    ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 15.minutes) do
+      @billboard = DisplayAd.find(billboard_event_id)
 
-      num_impressions = @display_ad.display_ad_events.impressions.sum(:counts_for)
-      num_clicks = @display_ad.display_ad_events.clicks.sum(:counts_for)
+      num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
+      num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
       rate = num_clicks.to_f / num_impressions
 
-      @display_ad.update_columns(
+      @billboard.update_columns(
         success_rate: rate,
         clicks_count: num_clicks,
         impressions_count: num_impressions,
@@ -32,7 +32,7 @@ class BillboardEventsController < ApplicationMetalController
     end
   end
 
-  def display_ad_event_params
-    params[:display_ad_event].slice(:context_type, :category, :display_ad_id)
+  def billboard_event_params
+    params[:billboard_event].slice(:context_type, :category, :display_ad_id)
   end
 end

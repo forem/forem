@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::SafeRemoteProfileImageUrl, type: :service do
+RSpec.describe Images::SafeRemoteProfileImageUrl, type: :service do
   it "returns the url if passed for proper URLs" do
     url = "https://image.com/image.png"
     expect(described_class.call(url)).to eq(url)
