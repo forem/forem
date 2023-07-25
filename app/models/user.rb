@@ -70,7 +70,7 @@ class User < ApplicationRecord
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
   has_many :credits, dependent: :destroy
   has_many :discussion_locks, dependent: :delete_all, inverse_of: :locking_user, foreign_key: :locking_user_id
-  has_many :display_ad_events, dependent: :nullify
+  has_many :billboard_events, class_name: "DisplayAdEvent", dependent: :nullify
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
@@ -131,7 +131,7 @@ class User < ApplicationRecord
   validates :following_orgs_count, presence: true
   validates :following_tags_count, presence: true
   validates :following_users_count, presence: true
-  validates :name, length: { in: 1..100 }
+  validates :name, length: { in: 1..100 }, presence: true
   validates :password, length: { in: 8..100 }, allow_nil: true
   validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
   validates :rating_votes_count, presence: true

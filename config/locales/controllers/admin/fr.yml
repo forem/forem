@@ -19,6 +19,10 @@ fr:
       deleted: Le Broadcast a été supprimée !
       updated: Le Broadcast a été mise à jour !
       wrong: Quelque chose s'est mal passé avec la suppression du Broadcast.
+    bulk_assign_role_controller:
+      role_assigment: Role %{role} assigned to user.
+      role_blank: Please choose a role to add.
+      success_message: Roles are being added. The task will finish shortly.
     consumer_apps_controller:
       created: '%{app} a été créé !'
       deleted: '%{app} a été supprimé !'

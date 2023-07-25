@@ -1,4 +1,4 @@
-module Users
+module Images
   module SafeRemoteProfileImageUrl
     # Basic check for nil and blank URLs, alongside likely incomplete URLs, such as just "image.jpg".
     def self.call(url)
@@ -6,7 +6,7 @@ module Users
         url.sub!("http://", "https://")
         url
       else
-        Users::ProfileImageGenerator.call
+        Images::ProfileImageGenerator.call
       end
     end
   end

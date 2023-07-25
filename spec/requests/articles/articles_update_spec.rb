@@ -26,6 +26,15 @@ RSpec.describe "ArticlesUpdate" do
     expect(article.reload.title).to eq(new_title)
   end
 
+  it "returns an unprocessable status with invalid params" do
+    put "/articles/#{article.id}", params: {
+      article: { title: "", body_markdown: "Hello World" },
+      format: :json
+    }
+
+    expect(response).to have_http_status(:unprocessable_entity)
+  end
+
   it "updates article with front matter params" do
     put "/articles/#{article.id}", params: {
       article: {

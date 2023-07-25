@@ -14,7 +14,7 @@ RSpec.describe DisplayAd do
       subject { display_ad }
 
       it { is_expected.to belong_to(:organization).optional }
-      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:billboard_events).dependent(:destroy) }
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
@@ -337,7 +337,8 @@ RSpec.describe DisplayAd do
     let(:low_impression_count) { DisplayAd::LOW_IMPRESSION_COUNT }
     let!(:low_impression_ad) { create(:display_ad, impressions_count: low_impression_count - 1) }
     let!(:high_impression_ad) { create(:display_ad, impressions_count: low_impression_count + 1) }
-    let!(:priority_ad) { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
+
+    before { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
 
     it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)
