@@ -5,7 +5,7 @@ class BillboardEventsController < ApplicationMetalController
   def create
     # Only tracking for logged in users at the moment
     billboard_event_create_params = billboard_event_params.merge(user_id: session_current_user_id)
-    @billboard_event = DisplayAdEvent.create(billboard_event_create_params)
+    @billboard_event = BillboardEvent.create(billboard_event_create_params)
 
     update_billboards_data
 
