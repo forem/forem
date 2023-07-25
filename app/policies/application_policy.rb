@@ -201,12 +201,6 @@ class ApplicationPolicy
 
   delegate :super_moderator?, :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
 
-  alias minimal_admin? user_any_admin?
-  deprecate minimal_admin?: "Deprecating #{self}#minimal_admin?, use #{self}#user_any_admin?"
-
-  alias user_admin? user_super_admin?
-  deprecate minimal_admin?: "Deprecating #{self}#user_admin?, use #{self}#user_super_admin?"
-
   def user_trusted?
     user.has_trusted_role?
   end
