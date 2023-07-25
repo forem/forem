@@ -7,6 +7,7 @@ import {
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { initializePodcastPlayback } from '../utilities/podcastPlayback';
 import { initializeVideoPlayback } from '../utilities/videoPlayback';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { initializeDashboardSort } from './initializers/initializeDashboardSort';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 import { showWindowModal, closeWindowModal } from '@utilities/showModal';
@@ -57,8 +58,7 @@ window.Forem = {
 
     render(
       <CommentTextArea vanillaTextArea={originalTextArea} />,
-      parentContainer,
-      originalTextArea,
+      createRootFragment(parentContainer, originalTextArea),
     );
   },
   showModal: showWindowModal,
