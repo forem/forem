@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { ColorPicker } from '@crayons';
 
 /**
@@ -31,8 +32,7 @@ export function replaceTextInputWithColorPicker({
       buttonLabelText={labelText}
       onChange={onChange}
     />,
-    input.parentElement,
-    input,
+    createRootFragment(input.parentElement, input),
   );
   input.remove();
 }
