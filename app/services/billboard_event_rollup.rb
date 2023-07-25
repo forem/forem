@@ -3,7 +3,7 @@ class BillboardEventRollup
   ATTRIBUTES_DESTROYED = %i[id counts_for updated_at].freeze
 
   class EventAggregator
-    Compact = Struct.new(:events, :user_id, :display_ad_id, :category, :context_type) do
+    Compact = Struct.new(:events, :user_id, :billboard_id, :category, :context_type) do
       def to_h
         super.except(:events).merge({ counts_for: events.sum(&:counts_for) })
       end
@@ -11,8 +11,8 @@ class BillboardEventRollup
 
     def initialize
       @aggregator = Hash.new do |level1, user_id|
-        level1[user_id] = Hash.new do |level2, display_ad_id|
-          level2[display_ad_id] = Hash.new do |level3, category|
+        level1[user_id] = Hash.new do |level2, billboard_id|
+          level2[billboard_id] = Hash.new do |level3, category|
             level3[category] = Hash.new do |level4, context_type|
               level4[context_type] = []
             end
@@ -22,17 +22,17 @@ class BillboardEventRollup
     end
 
     def <<(event)
-      @aggregator[event.user_id][event.display_ad_id][event.category][event.context_type] << event
+      @aggregator[event.user_id][event.billboard_id][event.category][event.context_type] << event
     end
 
     def each
       @aggregator.each_pair do |user_id, grouped_by_user_id|
-        grouped_by_user_id.each_pair do |display_ad_id, grouped_by_display_ad_id|
-          grouped_by_display_ad_id.each_pair do |category, grouped_by_category|
+        grouped_by_user_id.each_pair do |billboard_id, grouped_by_billboard_id|
+          grouped_by_billboard_id.each_pair do |category, grouped_by_category|
             grouped_by_category.each_pair do |context_type, events|
               next unless events.size > 1
 
-              yield Compact.new(events, user_id, display_ad_id, category, context_type)
+              yield Compact.new(events, user_id, billboard_id, category, context_type)
             end
           end
         end
