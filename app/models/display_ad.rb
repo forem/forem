@@ -31,7 +31,7 @@ class DisplayAd < ApplicationRecord
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
-  has_many :billboard_events, class_name: "DisplayAdEvent", dependent: :destroy
+  has_many :billboard_events, dependent: :destroy
 
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
