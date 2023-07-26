@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Html::Parser, type: :service do
   it "has the correct raw tag delimiters" do
-    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
+    expect(described_class::RAW_TAG_DELIMITERS).to contain_exactly("{", "}", "raw", "endraw", "----")
   end
 
   describe "#remove_nested_linebreak_in_list" do

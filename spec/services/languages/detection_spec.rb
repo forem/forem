@@ -34,27 +34,27 @@ RSpec.describe Languages::Detection, type: :service do
           CLD3::NNetLanguageIdentifier::Result,
           language: :es,
           probability: 0.4,
-          reliable?: true
+          reliable?: true,
         )
       end
 
       it "returns nil" do
-        expect(described_class.call(text)).to eq(nil)
+        expect(described_class.call(text)).to be_nil
       end
     end
 
     context "when reliability is low" do
       let(:language_outcome) do
         instance_double(
-          'CLD3::NNetLanguageIdentifier::Result',
+          CLD3::NNetLanguageIdentifier::Result,
           language: :es,
           probability: 0.9,
-          reliable?: false
+          reliable?: false,
         )
       end
 
       it "returns nil" do
-        expect(described_class.call(text)).to be(nil)
+        expect(described_class.call(text)).to be_nil
       end
     end
 
