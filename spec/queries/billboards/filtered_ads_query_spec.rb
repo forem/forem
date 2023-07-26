@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
+RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   let(:placement_area) { "post_sidebar" }
 
   def create_display_ad(**options)
@@ -15,7 +15,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
   def filter_ads(**options)
     defaults = {
-      display_ads: DisplayAd, area: placement_area, user_signed_in: false
+      billboards: DisplayAd, area: placement_area, user_signed_in: false
     }
     described_class.call(**options.reverse_merge(defaults))
   end
