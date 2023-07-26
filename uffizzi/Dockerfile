@@ -36,7 +36,7 @@ RUN apt update && \
         && \
     apt clean
 
-ENV BUNDLER_VERSION=2.2.22 \
+ENV BUNDLER_VERSION=2.4.17 \
     BUNDLE_SILENCE_ROOT_WARNING=true \
     BUNDLE_SILENCE_DEPRECATIONS=true
 

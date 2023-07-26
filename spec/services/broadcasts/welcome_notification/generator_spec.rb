@@ -48,7 +48,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.not_to change(user.notifications, :count)
     end
 
-    # rubocop:disable RSpec/ExampleLength
     # rubocop:disable RSpec/MultipleExpectations
     it "sends only 1 notification at a time, in the correct order" do
       user.update!(created_at: 1.day.ago)

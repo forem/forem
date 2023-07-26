@@ -153,7 +153,7 @@ RSpec.describe Search::Username, type: :service do
 
     it "ranks author higher than commenter" do
       results = search("Per", context: article)
-      expect(results.pluck(:username)).to contain_exactly(*%w[author commentator])
+      expect(results.pluck(:username)).to match_array(%w[author commentator])
     end
 
     it "ranks unrelated user lower" do
@@ -161,7 +161,7 @@ RSpec.describe Search::Username, type: :service do
 
       results = search("Per", context: article)
 
-      expect(results.pluck(:username)).to contain_exactly(*%w[author commentator unrelated])
+      expect(results.pluck(:username)).to match_array(%w[author commentator unrelated])
     end
 
     it "does not have authorship ranking for PodcastEpisode (yet)" do
