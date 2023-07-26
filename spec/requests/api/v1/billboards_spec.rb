@@ -4,7 +4,7 @@ RSpec.describe "Api::V1::Billboards" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   let(:organization) { create(:organization) }
-  let(:display_ad_params) do
+  let(:billboard_params) do
     {
       name: "This is new",
       organization_id: organization.id,
@@ -13,7 +13,8 @@ RSpec.describe "Api::V1::Billboards" do
       body_markdown: "## This ad is a new ad.\n\nYay!",
       type_of: "community",
       published: true,
-      approved: true
+      approved: true,
+      target_geolocations: "US-WA, CA-BC"
     }
   end
   let!(:ad1) { create(:display_ad, published: true, approved: true, type_of: "in_house") }
@@ -39,7 +40,7 @@ RSpec.describe "Api::V1::Billboards" do
 
     describe "POST /api/billboards" do
       it "creates a new display_ad" do
-        post api_billboards_path, params: display_ad_params.to_json, headers: auth_header
+        post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
@@ -52,10 +53,11 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
                           "priority", "target_geolocations")
+        expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
       it "returns a malformed response" do
-        post api_billboards_path, params: display_ad_params.merge(display_to: "steve").to_json, headers: auth_header
+        post api_billboards_path, params: billboard_params.merge(display_to: "steve").to_json, headers: auth_header
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
@@ -84,7 +86,7 @@ RSpec.describe "Api::V1::Billboards" do
     describe "PUT /api/billboards/:id" do
       it "updates an existing display_ad" do
         put api_billboard_path(ad1.id),
-            params: display_ad_params.merge(name: "Updated!", type_of: "external").to_json,
+            params: billboard_params.merge(name: "Updated!", type_of: "external").to_json,
             headers: auth_header
 
         expect(response).to have_http_status(:success)

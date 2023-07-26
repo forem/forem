@@ -159,9 +159,10 @@ class DisplayAd < ApplicationRecord
     overrides = {
       "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
-      "exclude_article_ids" => exclude_article_ids.join(",")
+      "exclude_article_ids" => exclude_article_ids.join(","),
+      "target_geolocations" => target_geolocations.map(&:to_iso3166)
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list target_geolocations])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
