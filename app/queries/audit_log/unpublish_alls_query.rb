@@ -12,6 +12,12 @@ class AuditLog
       @target_comments = []
     end
 
+    def exists?
+      exists = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
+        .where("data @> '{\"target_user_id\": ?}'", user_id).present?
+      Result.new(exists?: exists)
+    end
+
     def call
       audit_log = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
         .where("data @> '{\"target_user_id\": ?}'", user_id)

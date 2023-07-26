@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
 import { UserMetadata } from '../profilePreviewCards/UserMetadata';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
@@ -33,7 +34,10 @@ async function populateMissingMetadata(metadataPlaceholder) {
 function renderMetadata(metadata, placeholder) {
   const container = placeholder.parentElement;
 
-  render(<UserMetadata {...metadata} />, container, placeholder);
+  render(
+    <UserMetadata {...metadata} />,
+    createRootFragment(container, placeholder),
+  );
 
   container
     .closest('.profile-preview-card__content')

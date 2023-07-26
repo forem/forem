@@ -27,12 +27,11 @@ class DisplayAd < ApplicationRecord
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
 
-
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
-  has_many :display_ad_events, dependent: :destroy
+  has_many :billboard_events, class_name: "DisplayAdEvent", dependent: :destroy
 
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
@@ -97,6 +96,27 @@ class DisplayAd < ApplicationRecord
     end
   end
 
+  # Temporary ENV configs, to eventually be replaced by permanent configurations
+  # once we determine what the appropriate long-term config approach is.
+
+  def self.low_impression_count(placement_area)
+    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["LOW_IMPRESSION_COUNT"] ||
+      LOW_IMPRESSION_COUNT
+  end
+
+  def self.random_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["SELDOM_SEEN_MIN"] ||
+      RANDOM_RANGE_MAX_FALLBACK
+  end
+
+  def self.new_and_priority_range_max(placement_area)
+    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["SELDOM_SEEN_MAX"] ||
+      NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
+  end
+
   def human_readable_placement_area
     ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE[ALLOWED_PLACEMENT_AREAS.find_index(placement_area)]
   end
@@ -141,27 +161,6 @@ class DisplayAd < ApplicationRecord
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :exclude_article_ids, (adjusted_input || [])
-  end
-
-  # Temporary ENV configs, to eventually be replaced by permanent configurations
-  # once we determine what the appropriate long-term config approach is.
-
-  def self.low_impression_count(placement_area)
-    ApplicationConfig["LOW_IMPRESSION_COUNT_FOR_#{placement_area.upcase}"] ||
-      ApplicationConfig["LOW_IMPRESSION_COUNT"] ||
-      LOW_IMPRESSION_COUNT
-  end
-
-  def self.random_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] ||
-      ApplicationConfig["SELDOM_SEEN_MIN"] ||
-      RANDOM_RANGE_MAX_FALLBACK
-  end
-
-  def self.new_and_priority_range_max(placement_area)
-    ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"]||
-      ApplicationConfig["SELDOM_SEEN_MAX"] ||
-      NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
   end
 
   private

@@ -50,4 +50,11 @@ module NotificationsHelper
     article_username = data["article"]["path"].split("/")[1]
     { "name" => article_username, "path" => "/#{article_username}" }
   end
+
+  # This is used in the notification view's cache key, so that cached
+  # notification fragments can quickly be burst whenever a user
+  # adjusts their subscriptions to comment notifications
+  def subscription_status_indicator
+    @subscription_status_indicator ||= current_user.notification_subscriptions.sum(:id)
+  end
 end

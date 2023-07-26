@@ -101,7 +101,7 @@ jobs:
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install]
+    needs: [bundle_install, yarn_install]
 
     steps:
       - uses: actions/checkout@v3
@@ -427,31 +427,31 @@ jobs:
           with: |
             flags: ruby
             directory: coverage/simplecov
-            fail_ci_if_error: true
+            fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 10000
+          attempt_delay: 30000
       - uses: Wandalen/wretry.action@master
         with:
           action: codecov/codecov-action@v3
           with: |
             flags: jest, javascript
             directory: coverage/jest
-            fail_ci_if_error: true
+            fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 10000
+          attempt_delay: 30000
       - uses: Wandalen/wretry.action@master
         with:
           action: codecov/codecov-action@v3
           with: |
             flags: cypress, javascript
             directory: coverage/cypress
-            fail_ci_if_error: true
+            fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 10000
+          attempt_delay: 30000
 
   CI-status-report:
     runs-on: ubuntu-latest
-    needs: [rspec, jest, cypress, build_test]
+    needs: [rspec, jest, cypress, build_test, audit, storybook]
     if: always()
 
     steps:

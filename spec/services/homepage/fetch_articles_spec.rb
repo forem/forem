@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe Homepage::FetchArticles, type: :service do
   describe ".call" do
-    # rubocop:disable RSpec/ExampleLength
     it "returns results in the correct format", :aggregate_failures do
       tag = create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc")
       article = create(:article, video_thumbnail_url: "https://example.com", tags: tag.name)
@@ -17,7 +16,7 @@ RSpec.describe Homepage::FetchArticles, type: :service do
         published_at_int readable_publish_date reading_time tag_list title
         user user_id video_duration_string
       ]
-      expect(result.keys.sort).to contain_exactly(*keys)
+      expect(result.keys.sort).to match_array(keys)
 
       expect(result[:class_name]).to eq("Article")
       expect(result[:cloudinary_video_url]).to eq(article.cloudinary_video_url)
@@ -36,7 +35,6 @@ RSpec.describe Homepage::FetchArticles, type: :service do
       expect(result[:user_id]).to eq(article.user_id)
       expect(result[:video_duration_string]).to eq(article.video_duration_in_minutes)
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it "returns the user object in the correct format", :aggregate_failures do
       article = create(:article)

@@ -17,7 +17,7 @@ fr:
           description: Toutes les actions du modérateur affectent le score. Le score global est une combinaison des actions des modérateurs et des réactions du public.
           no_flags: Le commentaire n'a pas de drapeaux.
           no_quality_reactions: Le commentaire n'a pas de réactions de qualité par des utilisateurs de confiance.
-          title: Actions du modérateur        
+          title: Actions du modérateur
       shared:
         flags:
           actions:
@@ -113,6 +113,7 @@ fr:
             select: Select role
             note: "Add a note to this action:"
             submit: Add
+            warning: "Comma Delimited, All Lowercase, No @ Symbol Required In Front Of Usernames Warning: Usernames are case-sensitive and must be all lowercase! This task will fail silently when supplied with incorrect usernames."
           add_org:
             text: Add organization
             heading: Add organization
@@ -136,6 +137,8 @@ fr:
             aria_credits: Amount of credits to add or remove
             note: "Add a note to this action:"
             submit: Adjust balance
+          bulk_assign_role:
+            text: Bulk Assign Role
           copy_email: Copy email address
         danger:
           desc1: This action is irreversible.
@@ -147,7 +150,7 @@ fr:
           submit_html: Banish %{user}
         delete:
           heading: Delete %{user}'s account
-          onsubmit: Are you sure? This actions is irreversible.
+          onsubmit: Are you sure? This action is irreversible.
           desc2: Once deleted, all data relating to %{user} will be removed from our database.
           notice: Only Super Admins are allowed to delete users.
           submit: Delete now
@@ -234,6 +237,9 @@ fr:
           note: Note
           note_placeholder: Add a note...
           submit: Submit
+          unknown_user: Unknown user
+          unknown_user_html: |
+            <em>Unknown user</em>
         overview:
           comments: Comments
           posts: Posts
@@ -284,6 +290,17 @@ fr:
               podcast_admin: Podcast Admin
               restricted_liquid_tag: Restricted Liquid Tag
               single_resource_admin: Single Resource Admin
+              resource_admin_article: Article Admin
+              resource_admin_badge: Badge Admin
+              resource_admin_badge_achievement: Badge Achievement Admin
+              resource_admin_broadcast: Broadcast Admin
+              resource_admin_comment: Comment Admin
+              resource_admin_config: Config Admin
+              resource_admin_display_ad: Display Ad Admin
+              resource_admin_data_update_script: Data Update Script Admin
+              resource_admin_feedback_message: Feedback Message Admin
+              resource_admin_html_variant: HTML Variant Admin
+              resource_admin_listing_category: Listing Category Admin
               super_admin: Super Admin
               support_admin: Support Admin
               suspended: Suspended
@@ -389,3 +406,22 @@ fr:
           facebook: Facebook
           github: GitHub
           twitter: Twitter
+      organizations:
+        profile:
+          id: ID %{organizationid}
+          since_html: Organization since %{time}
+          email: Email
+          github: GitHub
+          twitter: Twitter
+          visit: Visit organization
+          total_members: "%{count} members"
+        delete:
+          heading: Delete %{organization}
+          onsubmit: Are you sure? This action is irreversible.
+          desc2: "Note: Deleting organization, %{organization}, will dissasociate the existing members and articles from the organization but will not delete them."
+          role_notice: Only Super Admins are allowed to delete organizations.
+          credits_notice: You cannot delete an organization that has associated credits.
+          submit: Delete organizion now
+        options:
+          delete: Delete organization
+          icon: Options

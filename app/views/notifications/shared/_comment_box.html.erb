@@ -1,4 +1,4 @@
-<% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
+<% cache "comment-box-#{@last_user_reaction}-#{@last_user_comment}-#{subscription_status_indicator}-#{notification.comment_updated_at}-#{notification.comment_id}" do %>
   <% if notification.commentable %>
     <% if notification.comment_depth > 0 %>
       <h3>
@@ -78,7 +78,7 @@
               class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
               data-subscription_id="<%= subscription&.id %>"
               data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
-              data-subscription_config="<%= (subscription&.notifiable_type == "Comment") ? "thread" : (subscription&.config || "all_comments") %>"
+              data-subscription_config="<%= subscription&.notifiable_type == "Comment" ? "thread" : (subscription&.config || "all_comments") %>"
               data-article_id="<%= notification.article_id || notification.commentable_article_id %>"
               data-comment_id="<%= subscription&.notifiable_id if subscription&.notifiable_type == "Comment" %>"
               data-ancestry="<%= notification.comment_ancestry %>">

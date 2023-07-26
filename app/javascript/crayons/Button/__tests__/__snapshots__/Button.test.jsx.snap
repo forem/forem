@@ -1,27 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Button /> component should render a button as a specific button type (HTML type attribute) when buttonType is set. 1`] = `"<button class=\\"crayons-btn\\" type=\\"submit\\">Hello world!</button>"`;
+exports[`<Button /> component should render a button as a specific button type (HTML type attribute) when buttonType is set. 1`] = `"<button type=\\"submit\\" class=\\"crayons-btn\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render a button as an anchor element if "tagName" is set to "a" 1`] = `"<a class=\\"crayons-btn\\" href=\\"https://dev.to\\">Hello world!</a>"`;
+exports[`<Button /> component should render a button as an anchor element if "tagName" is set to "a" 1`] = `"<a href=\\"https://dev.to\\" class=\\"crayons-btn\\">Hello world!</a>"`;
 
-exports[`<Button /> component should render a button with additional CSS classes when className is set 1`] = `"<button class=\\"crayons-btn some-additional-class-name\\" type=\\"button\\" disabled=\\"\\">Hello world!</button>"`;
+exports[`<Button /> component should render a button with additional CSS classes when className is set 1`] = `"<button type=\\"button\\" disabled=\\"\\" class=\\"crayons-btn some-additional-class-name\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render a button with with an icon when an icon is set and there is button text 1`] = `"<button class=\\"crayons-btn crayons-btn--icon-left\\" type=\\"button\\"><svg width=\\"24\\" height=\\"24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon\\"><path d=\\"M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z\\"></path></svg>Hello world!</button>"`;
+exports[`<Button /> component should render a button with with an icon when an icon is set and there is button text 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-btn--icon-left\\"><svg width=\\"24\\" height=\\"24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon\\"><path d=\\"M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z\\"></path></svg>Hello world!</button>"`;
 
-exports[`<Button /> component should render a button with with an icon when an icon is set and there is no button text 1`] = `"<button class=\\"crayons-btn crayons-btn--icon\\" type=\\"button\\"><svg width=\\"24\\" height=\\"24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon\\"><path d=\\"M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z\\"></path></svg></button>"`;
+exports[`<Button /> component should render a button with with an icon when an icon is set and there is no button text 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-btn--icon\\"><svg width=\\"24\\" height=\\"24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon\\"><path d=\\"M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z\\"></path></svg></button>"`;
 
-exports[`<Button /> component should render a danger button when using the variant "danger" 1`] = `"<button class=\\"crayons-btn crayons-btn--danger\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render a danger button when using the variant "danger" 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-btn--danger\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render a disabled button when disabled is true 1`] = `"<button class=\\"crayons-btn\\" type=\\"button\\" disabled=\\"\\">Hello world!</button>"`;
+exports[`<Button /> component should render a disabled button when disabled is true 1`] = `"<button type=\\"button\\" disabled=\\"\\" class=\\"crayons-btn\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render a primary button when using default values 1`] = `"<button class=\\"crayons-btn\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render a primary button when using default values 1`] = `"<button type=\\"button\\" class=\\"crayons-btn\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render a secondary button when using the variant "secondary" 1`] = `"<button class=\\"crayons-btn crayons-btn--secondary\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render a secondary button when using the variant "secondary" 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-btn--secondary\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render an enabled button when using default values 1`] = `"<button class=\\"crayons-btn\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render an enabled button when using default values 1`] = `"<button type=\\"button\\" class=\\"crayons-btn\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render an outlined button when using the variant "outlined" 1`] = `"<button class=\\"crayons-btn crayons-btn--outlined\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render an outlined button when using the variant "outlined" 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-btn--outlined\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render with a tabIndex 1`] = `"<button class=\\"crayons-btn\\" tabindex=\\"0\\" type=\\"button\\">Hello world!</button>"`;
+exports[`<Button /> component should render with a tabIndex 1`] = `"<button tabindex=\\"0\\" type=\\"button\\" class=\\"crayons-btn\\">Hello world!</button>"`;
 
-exports[`<Button /> component should render with a tooltip 1`] = `"<button class=\\"crayons-btn crayons-tooltip__activator\\" type=\\"button\\">Hello world!<span class=\\"crayons-tooltip__content \\">tooltip text</span></button>"`;
+exports[`<Button /> component should render with a tooltip 1`] = `"<button type=\\"button\\" class=\\"crayons-btn crayons-tooltip__activator\\">Hello world!<span class=\\"crayons-tooltip__content \\">tooltip text</span></button>"`;
