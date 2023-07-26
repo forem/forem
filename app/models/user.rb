@@ -567,6 +567,10 @@ class User < ApplicationRecord
     Tag.followed_by(self)
   end
 
+  def has_no_published_content?
+    articles.published.empty? && comments_count.zero?
+  end
+
   protected
 
   # Send emails asynchronously
