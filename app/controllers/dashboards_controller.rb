@@ -17,6 +17,7 @@ class DashboardsController < ApplicationController
 
   LIMIT_PER_PAGE_DEFAULT = 80
   LIMIT_PER_PAGE_MAX = 1000
+
   def show
     fetch_and_authorize_user
     target = @user
@@ -95,6 +96,12 @@ class DashboardsController < ApplicationController
     authorize @source
     @subscriptions = @source.user_subscriptions
       .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
+  end
+
+  def hidden_tags
+    fetch_and_authorize_user
+    @hidden_tags = 1
+    @collections_count = collections_count(@user)
   end
 
   private

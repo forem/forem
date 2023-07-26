@@ -11,6 +11,8 @@
 
     <option value="<%= dashboard_analytics_path %>"><%= t("views.dashboard.actions.analytics") %></option>
 
+    <option value="/dashboard/hidden_tags" <%= "selected" if params[:action] == "hidden_tags" %>><%= t("views.dashboard.actions.mobile.hidden_tags", num: 2) %></option>
+
     <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
       <% @organizations.each do |org| %>
         <option value="<%= dashboard_analytics_org_path(org.id) %>"><%= t("views.dashboard.actions.for_org", org: org.name) %></option>

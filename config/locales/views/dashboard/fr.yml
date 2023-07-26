@@ -13,6 +13,7 @@ fr:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
+          hidden_tags: Hidden tags (%{num})
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -20,6 +21,7 @@ fr:
         following_users: Following users
         following_orgs: Following organizations
         following_pods: Following podcasts
+        hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
         for_org: Analytics for %{org}

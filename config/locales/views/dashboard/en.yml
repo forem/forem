@@ -13,6 +13,7 @@ en:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
+          hidden_tags: Hidden tags (%{num})
         posts: Posts
         series: Series
         followers: Followers
@@ -20,6 +21,7 @@ en:
         following_users: Following users
         following_orgs: Following organizations
         following_pods: Following podcasts
+        hidden_tags: Hidden tags
         listings: Listings
         analytics: Analytics
         for_org: Analytics for %{org}
@@ -118,6 +120,9 @@ en:
       following_users:
         heading: Dashboard » Following users
         empty: You don't follow any users...
+      hidden_tags:
+        heading: Dashboard » Hidden tags
+        empty: You don't have any hidden tags...
       listings:
         meta:
           title: Listings Dashboard
