@@ -1,11 +1,11 @@
 ---
-name: '[Core Team Only]: New Approved Feature'
-about:
-  This template is for Core Team only. For feature requests, please use GitHub
+name: "[Core Team Only]: New Approved Feature"
+about: This template is for Core Team only. For feature requests, please use GitHub
   Discussions.
 title: ''
 labels: ''
 assignees: ''
+
 ---
 
 <!-- ⚠️⚠️⚠️ This issue template is for Core Team only to outline approved features.  For new Feature Requests, please use GitHub Discussions: https://github.com/forem/forem/discussions -->

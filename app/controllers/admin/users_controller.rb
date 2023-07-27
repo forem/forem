@@ -106,7 +106,9 @@ module Admin
       if response.success
         flash[:success] =
           I18n.t("admin.users_controller.role_removed",
-                 role: role.name.to_s.humanize.titlecase) # TODO: [@yheuhtozr] need better role i18n
+                 role: I18n.t("views.admin.users.overview.roles.name.#{
+                   role.name_labelize.underscore.parameterize(separator: '_')
+                 }", default: role.name.to_s.humanize.titlecase)) # TODO: [@yheuhtozr] need better role i18n
       else
         flash[:danger] = response.error_message
       end
@@ -418,7 +420,12 @@ module Admin
     def set_unpublish_all_log
       # in theory, there could be multiple "unpublish all" actions
       # but let's query and display the last one for now, that should be enough for most cases
-      @unpublish_all_data = AuditLog::UnpublishAllsQuery.call(@user.id)
+      @unpublish_all_data = if @current_tab == "unpublish_logs"
+                              AuditLog::UnpublishAllsQuery.call(@user.id)
+                            else
+                              # only find if the data exists for most tabs
+                              AuditLog::UnpublishAllsQuery.new(@user.id).exists?
+                            end
     end
 
     def calculate_countable_flags(reactions)

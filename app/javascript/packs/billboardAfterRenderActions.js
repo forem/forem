@@ -60,8 +60,8 @@ function trackAdImpression(adBox) {
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   const dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
     },
@@ -96,8 +96,8 @@ function trackAdClick(adBox) {
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   const dataBody = {
-    display_ad_event: {
-      display_ad_id: adBox.dataset.id,
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
     },
