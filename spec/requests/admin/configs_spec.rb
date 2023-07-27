@@ -405,15 +405,6 @@ RSpec.describe "/admin/customization/config" do
       end
 
       describe "Onboarding" do
-        it "updates onboarding_background_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post admin_settings_general_settings_path, params: {
-            settings_general:
-            { onboarding_background_image: expected_image_url }
-          }
-          expect(Settings::General.onboarding_background_image).to eq(expected_image_url)
-        end
-
         it "removes space suggested_tags" do
           post admin_settings_general_settings_path, params: {
             settings_general: { suggested_tags: "hey, haha,hoho, bobo fofo" }
