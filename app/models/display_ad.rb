@@ -27,6 +27,7 @@ class DisplayAd < ApplicationRecord
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
 
+  attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
@@ -43,7 +44,8 @@ class DisplayAd < ApplicationRecord
   validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
-           :validate_tag
+           :validate_tag,
+           :validate_geolocations
 
   before_save :process_markdown
   after_save :generate_display_ad_name
@@ -126,6 +128,14 @@ class DisplayAd < ApplicationRecord
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     validate_tag_name(tag_list)
+  end
+
+  def validate_geolocations
+    target_geolocations.each do |geo|
+      unless geo.valid?
+        errors.add(:target_geolocations, I18n.t("models.billboard.invalid_location", location: geo.to_iso3166))
+      end
+    end
   end
 
   def validate_in_house_hero_ads
