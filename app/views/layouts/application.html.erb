@@ -110,6 +110,7 @@
     <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
+  <%= render "articles/reaction_category_resources" %>
   </body>
   </html>
 <% end %>
