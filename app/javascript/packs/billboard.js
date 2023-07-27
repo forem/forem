@@ -1,5 +1,5 @@
 import { setupDisplayAdDropdown } from '../utilities/displayAdDropdown';
-import { observeDisplayAds } from '../../assets/javascripts/initializers/initializeDisplayAdVisibility';
+import { observeDisplayAds } from './billboardAfterRenderActions';
 
 // the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
