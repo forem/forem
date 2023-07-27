@@ -59,7 +59,8 @@ RSpec.describe "api/v1/display_ads" do
             display_to: "all",
             approved: true,
             published: true,
-            placement_area: placement_area
+            placement_area: placement_area,
+            target_geolocations: "US-WA, CA-BC"
           }
         end
 
