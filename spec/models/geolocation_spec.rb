@@ -22,24 +22,24 @@ RSpec.describe Geolocation do
       end
     end
 
-    describe "subdivision validation" do
-      it "allows an empty subdivision" do
-        without_subdivision = described_class.new("US")
-        expect(without_subdivision).to be_valid
+    describe "region validation" do
+      it "allows an empty region" do
+        without_region = described_class.new("US")
+        expect(without_region).to be_valid
       end
 
-      it "allows only subdivisions that are a part of the country" do
+      it "allows only regions that are a part of the country" do
         # WA: State of Washington (within the US)
         # QC: Province of Québec (within Canada)
-        us_with_us_sub = described_class.new("US", "WA")
-        canada_with_canada_sub = described_class.new("CA", "QC")
-        us_with_canada_sub = described_class.new("US", "QC")
-        canada_with_us_sub = described_class.new("CA", "WA")
+        us_with_us_region = described_class.new("US", "WA")
+        canada_with_canada_region = described_class.new("CA", "QC")
+        us_with_canada_region = described_class.new("US", "QC")
+        canada_with_us_region = described_class.new("CA", "WA")
 
-        expect(us_with_us_sub).to be_valid
-        expect(canada_with_canada_sub).to be_valid
-        expect(us_with_canada_sub).not_to be_valid
-        expect(canada_with_us_sub).not_to be_valid
+        expect(us_with_us_region).to be_valid
+        expect(canada_with_canada_region).to be_valid
+        expect(us_with_canada_region).not_to be_valid
+        expect(canada_with_us_region).not_to be_valid
       end
     end
   end

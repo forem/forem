@@ -47,9 +47,9 @@ class Geolocation
     return if code.blank?
     return code if code.is_a?(Geolocation)
 
-    country, subdivision = code.split(separator)
+    country, region = code.split(separator)
 
-    new(country, subdivision)
+    new(country, region)
   end
 
   def initialize(country_code, region_code = nil)

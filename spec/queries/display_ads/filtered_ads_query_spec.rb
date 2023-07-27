@@ -208,7 +208,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
     context "when location targeting feature is not enabled" do
       before do
-        allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(false)
+        allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(false)
       end
 
       it "ignores the target geolocations" do
