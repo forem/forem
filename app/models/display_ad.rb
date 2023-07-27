@@ -173,6 +173,10 @@ class DisplayAd < ApplicationRecord
     write_attribute :exclude_article_ids, (adjusted_input || [])
   end
 
+  def comma_separated_geolocations
+    target_geolocations.map { |g| "#{g.to_iso3166}, " }.join.chomp(", ")
+  end
+
   private
 
   def generate_display_ad_name
