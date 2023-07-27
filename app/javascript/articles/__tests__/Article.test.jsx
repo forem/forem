@@ -4,6 +4,7 @@ import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import '@testing-library/jest-dom';
 import { Article } from '..';
+import { reactionImagesSupport } from '../../__support__/reaction_images';
 import { locale } from '../../utilities/locale';
 import {
   article,
@@ -27,6 +28,10 @@ const commonProps = {
 };
 
 describe('<Article /> component', () => {
+  beforeAll(() => {
+    reactionImagesSupport();
+  });
+
   it('should have no a11y violations for a standard article', async () => {
     const { container } = render(
       <Article
