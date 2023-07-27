@@ -152,6 +152,9 @@ describe('Billboards Form', () => {
           expect($flashMessage).to.contain(
             'MX-CMX is not a supported ISO 3166-2 code',
           );
+          expect($flashMessage).to.not.contain(
+            'US-NY is not a supported ISO 3166-2 code',
+          );
         });
       });
     });
