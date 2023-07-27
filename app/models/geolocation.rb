@@ -1,7 +1,10 @@
-require Rails.root.join("lib/ISO3166/country")
+require Rails.root.join("lib/ISO3166/country") # so the class definition has access to extensions
 
 class Geolocation
   class ArrayType < ActiveRecord::Type::Value
+    # Since an array can be modified directly, this module flags any field using this type as internally
+    # mutable (and provides different implementations of methods used internally by ActiveRecord to mark
+    # fields as changed/unchanged)
     include ActiveModel::Type::Helpers::Mutable
 
     def cast(codes)
@@ -14,7 +17,7 @@ class Geolocation
     end
 
     def serialize(geo_locations)
-      PG::TextEncoder::Array.new.encode(geo_locations.map(&:to_ltree))
+      PG::TextEncoder::Array.new.encode(cast(geo_locations).map(&:to_ltree))
     end
 
     def deserialize(geo_ltrees)

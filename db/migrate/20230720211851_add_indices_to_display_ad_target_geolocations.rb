@@ -2,9 +2,6 @@ class AddIndicesToDisplayAdTargetGeolocations < ActiveRecord::Migration[7.0]
   disable_ddl_transaction!
 
   def change
-    # Regular btree index
-    add_index :display_ads, :target_geolocations, algorithm: :concurrently
-
     # GiST index enables custom ltree operators
     add_index :display_ads,
               :target_geolocations,
