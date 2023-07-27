@@ -85,7 +85,7 @@ class DisplayAd < ApplicationRecord
     when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      billboards_for_display.seldom_seen(area).sample || ads_for_display.sample
+      billboards_for_display.seldom_seen(area).sample || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
