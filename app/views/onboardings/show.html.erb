@@ -15,7 +15,8 @@
   data-community-name="<%= j(community_name) %>"
   data-community-description="<%= j(Settings::Community.community_description) %>"
   data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"
-  data-community-background="<%= optimized_image_url(Settings::General.onboarding_background_image, width: 1680, quality: 75, random_fallback: false) %>">
+  data-community-background-color="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:light] %>"
+  data-community-background-color2="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:dark] %>">
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 
