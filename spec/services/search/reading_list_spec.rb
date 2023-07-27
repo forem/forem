@@ -173,7 +173,7 @@ RSpec.describe Search::ReadingList, type: :service do
         create(:reaction, reactable: article_1, user: user, category: :readinglist)
 
         result = described_class.search_documents(user, tags: [:beginners])
-        expect(extract_from_results(result, :path)).to match_array([article_1.path])
+        expect(extract_from_results(result, :path)).to contain_exactly(article_1.path)
       end
 
       it "selects items belonging to an article with all the requested tags", :aggregate_failures do

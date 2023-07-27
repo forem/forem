@@ -29,7 +29,8 @@ RSpec.describe Admin::ChartsData, type: :service do
       Timecop.return
     end
 
-    xit "returns proper number of items" do
+    it "returns proper number of items" do
+      skip "flaky spec"
       create(:article, published_at: Time.zone.today)
       create_list(:article, 3, published_at: 4.days.ago)
       create_list(:article, 2, published_at: 7.days.ago)
@@ -43,7 +44,9 @@ RSpec.describe Admin::ChartsData, type: :service do
       expect(described_class.new.call.first.second).to eq(0)
     end
 
-    xit "goes back seven days by default" do
+    it "goes back seven days by default" do
+      skip "flaky spec"
+
       create(:article, published_at: 7.days.ago)
       create(:article, published_at: 8.days.ago)
 

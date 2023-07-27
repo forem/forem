@@ -19,7 +19,7 @@ describe('IntroSlide', () => {
         communityConfig={{
           communityName: 'Community Name',
           communityLogo: '/x.png',
-          communityBackground: '/y.jpg',
+          communityBackgroundColor: '#FFF000',
           communityDescription: 'Some community description',
         }}
         previousLocation={null}
