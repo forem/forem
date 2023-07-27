@@ -44,7 +44,7 @@ class BillboardEventRollup
     attr_reader :aggregator
   end
 
-  def self.rollup(date, relation: DisplayAdEvent)
+  def self.rollup(date, relation: BillboardEvent)
     new(relation: relation).rollup(date)
   end
 

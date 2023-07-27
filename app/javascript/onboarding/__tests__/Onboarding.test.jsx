@@ -16,7 +16,8 @@ describe('<Onboarding />', () => {
         communityConfig={{
           communityName: 'Community Name',
           communityLogo: '/x.png',
-          communityBackground: '/y.jpg',
+          communityBackgroundColor: '#e6d800',
+          communityBackgroundColor2: '#999000',
           communityDescription: 'Some community description',
         }}
       />,

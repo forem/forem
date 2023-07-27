@@ -8,13 +8,13 @@
   <% else %>
     <div class="pt-3">
       <% @notes.each do |note| %>
-        <% author = User.find(note.author_id).username %>
+        <% author = User.find_by(id: note.author_id)&.username %>
         <article class="c-list-item flex justify-between gap-4">
-          <h3 class="screen-reader-only"><%= t("views.admin.users.notes.note_by", author: author, time: l(note.created_at, format: :short_with_yy)) %></h3>
+          <h3 class="screen-reader-only"><%= t("views.admin.users.notes.note_by", author: author || t("views.admin.users.notes.unknown_user"), time: l(note.created_at, format: :short_with_yy)) %></h3>
           <div>
             <p><%= note.content %></p>
             <p class="fs-s color-secondary">
-              <%= t("views.admin.users.notes.reason_by_html", reason: note.reason.presence, by: note.author_id.present? ? t("views.admin.users.notes.by_html", author: tag.span(author, class: "fw-medium")) : "") %>
+              <%= t("views.admin.users.notes.reason_by_html", reason: note.reason.presence, by: t("views.admin.users.notes.by_html", author: tag.span(author || t("views.admin.users.notes.unknown_user_html"), class: "fw-medium"))) %>
             </p>
           </div>
           <time datetime="<%= note.created_at.strftime("%Y-%m-%dT%H:%M:%S%z") %>" class="color-secondary fs-s shrink-0" title="<%= l(note.created_at, format: :admin_user) %>">
