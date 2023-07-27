@@ -34,7 +34,7 @@
     <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
       <div class="crayons-field">
         <%= label_tag :target_geolocations, "Target Geolocations:", class: "crayons-field__label" %>
-        <%= text_field_tag :target_geolocations, @display_ad.target_geolocations.map(&:to_iso3166).join(", "), class: "crayons-textfield", placeholder: "US-NY, CA-ON", autocomplete: "off" %>
+        <%= text_field_tag :target_geolocations, @billboard.target_geolocations.map(&:to_iso3166).join(", "), class: "crayons-textfield", placeholder: "US-NY, CA-ON", autocomplete: "off" %>
       </div>
     <% end %>
 
