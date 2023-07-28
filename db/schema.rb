@@ -486,7 +486,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_211851) do
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
-    t.index ["target_geolocations"], name: "index_display_ads_on_target_geolocations"
   end
 
   create_table "email_authorizations", force: :cascade do |t|

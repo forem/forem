@@ -151,6 +151,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
     let(:organization) { create(:organization) }
     let(:other_org) { create(:organization) }
+    let(:no_ads_org) { create(:organization) }
     let!(:community_ad) { create_display_ad organization_id: organization.id, type_of: :community }
     let!(:other_community) { create_display_ad organization_id: other_org.id, type_of: :community }
 
@@ -162,7 +163,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
-      filtered = filter_ads organization_id: 123
+      filtered = filter_ads organization_id: no_ads_org.id
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
 
