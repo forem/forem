@@ -4,7 +4,7 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
 import { axe } from 'jest-axe';
-import { i18nSupport } from '../../../utilities/i18n_support';
+import { i18nSupport } from '../../../__support__/i18n';
 import { FollowUsers } from '../FollowUsers';
 
 global.fetch = fetch;
