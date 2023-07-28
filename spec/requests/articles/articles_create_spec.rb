@@ -196,4 +196,11 @@ RSpec.describe "ArticlesCreate" do
       expect(a.published_at).to be_within(1.minute).of(published_at)
     end
   end
+
+  context "when validation error" do
+    it "returns 422 status code" do
+      post "/articles", params: { article: { body_markdown: nil } }
+      expect(response).to have_http_status(:unprocessable_entity)
+    end
+  end
 end

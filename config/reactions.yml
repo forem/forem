@@ -9,12 +9,15 @@ unicorn:
   icon: multi-unicorn
 exploding_head:
   position: 3
+  name: Exploding Head
   icon: exploding-head
 raised_hands:
   position: 4
+  name: Raised Hands
   icon: raised-hands
 fire:
   position: 5
+  name: Fire
   icon: fire
 readinglist:
   position: 5

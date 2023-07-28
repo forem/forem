@@ -263,6 +263,98 @@ RSpec.describe DisplayAd do
     end
   end
 
+  describe ".validate_geolocations" do
+    subject(:billboard) do
+      build(
+        :display_ad,
+        name: "This is an Ad",
+        body_markdown: "Ad Body",
+        placement_area: "post_comments",
+        target_geolocations: geo_input,
+      )
+    end
+
+    let(:target_geolocations) do
+      [
+        Geolocation.new("US", "CA"),
+        Geolocation.new("CA", "ON"),
+        Geolocation.new("CA", "BC"),
+      ]
+    end
+
+    context "with nil" do
+      let(:geo_input) { nil }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with empty string" do
+      let(:geo_input) { "" }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with empty array" do
+      let(:geo_input) { [] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with comma-separated list of ISO 3166-2" do
+      let(:geo_input) { "US-CA, CA-ON, CA-BC" }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with array of ISO 3166-2" do
+      let(:geo_input) { %w[US-CA CA-ON CA-BC] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with array of geolocations" do
+      let(:geo_input) { [Geolocation.new("US", "CA"), Geolocation.new("CA", "ON"), Geolocation.new("CA", "BC")] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with invalid comma-separated ISO 3166-2 codes" do
+      let(:geo_input) { "US-CA, NOT-REAL" }
+
+      it "does not permit them" do
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("NOT-REAL is not a supported ISO 3166-2 code")
+      end
+    end
+
+    context "with invalid array of ISO 3166-2 codes" do
+      let(:geo_input) { %w[CA-QC CA-FAKE] }
+
+      it "does not permit them" do
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("CA-FAKE is not a supported ISO 3166-2 code")
+      end
+    end
+  end
+
   describe "#exclude_articles_ids" do
     it "processes array of integer ids as expected" do
       display_ad.exclude_article_ids = ["11"]

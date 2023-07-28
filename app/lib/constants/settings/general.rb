@@ -86,10 +86,6 @@ module Constants
             description: "",
             placeholder: I18n.t("lib.constants.settings.general.meta_keywords.description")
           },
-          onboarding_background_image: {
-            description: I18n.t("lib.constants.settings.general.onboarding.description"),
-            placeholder: IMAGE_PLACEHOLDER
-          },
           payment_pointer: {
             description: I18n.t("lib.constants.settings.general.payment.description"),
             placeholder: "$pay.somethinglikethis.co/value"
