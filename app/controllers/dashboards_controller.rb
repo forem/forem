@@ -100,7 +100,7 @@ class DashboardsController < ApplicationController
 
   def hidden_tags
     fetch_and_authorize_user
-    @hidden_tags = 1
+    @hidden_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").where("points < ?", 0).includes(:followable)
     @collections_count = collections_count(@user)
   end
 
