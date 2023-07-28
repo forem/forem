@@ -60,7 +60,7 @@ module Billboards
                              end
 
       if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
-        @filtered_display_ads = location_targeted_ads
+        @filtered_billboards = location_targeted_ads
       end
 
       # type_of filter needs to be applied as near to the end as possible
@@ -112,7 +112,7 @@ module Billboards
         geo_query += " OR (#{@location.to_sql_query_clause})"
       end
 
-      @filtered_display_ads.where(geo_query)
+      @filtered_billboards.where(geo_query)
     end
 
     def type_of_ads
