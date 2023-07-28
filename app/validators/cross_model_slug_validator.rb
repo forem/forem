@@ -14,7 +14,7 @@ class CrossModelSlugValidator < ActiveModel::EachValidator
   private
 
   def not_on_reserved_list?(record, attribute, value)
-    return false unless record.class.name != "Page" && ReservedWords.all.include?(value)
+    return false if record.instance_of?(::Page) || ReservedWords.all.exclude?(value)
 
     record.errors.add(attribute, I18n.t("validators.cross_model_slug_validator.is_reserved"))
   end
