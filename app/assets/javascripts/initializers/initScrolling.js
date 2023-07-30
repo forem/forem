@@ -1,7 +1,13 @@
 /* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick */
 
 var client;
-
+/**
+ *
+ * @param {String} el is an HTML element that contains the container that we want to append items to. It contains id: indexContainer.
+ * @param {String} endpoint is the relative URL of the endpoint to call to get the data
+ * @param {Function} insertCallback is a function from the return of the callback function (insertNext). The function is passed the data as an argument to build the HTML.
+ * @returns nil but calls the insertCallback function with the data as an argument to update the HTML. It also handles the loading spinner.
+ */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams)
@@ -42,6 +48,15 @@ function fetchNext(el, endpoint, insertCallback) {
     });
 }
 
+/**
+ *
+ * @param {*} params are the dataset params on an wrapping container like 'index-container'. It contains the action and the elID.
+ * The elID is the id of the element that we are appending to.
+ * The action like 'following_tags' is the action that we are taking.
+ * @param {*} buildCallback is the callback function that will be called after the data is fetched.
+ * It will be passed the data as an argument, and insert the HTML into the DOM.
+ * @returns a function that will be called after the data is fetched from the caller.
+ */
 function insertNext(params, buildCallback) {
   return function insertEntries(entries = []) {
     var indexContainer = document.getElementById('index-container');
@@ -414,12 +429,15 @@ function checkIfNearBottomOfPage() {
   } else if (loadingElement) {
     loadingElement.style.display = 'block';
   }
+
   fetchNextPageIfNearBottom();
   setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
-  }, 210);
+  }, 1000);
 }
 
+// A function that gets called when a usre starts scrolling
+//
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
