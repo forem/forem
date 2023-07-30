@@ -86,6 +86,12 @@ function insertNext(params, buildCallback) {
   };
 }
 
+/**
+ * Constructs the HTML for a follows entry using the data from the follows entries object.
+ *
+ * @param {*} follows is the entries for the follows that we are building HTML for.
+ * @returns an HTML block for the follows.
+ */
 function buildFollowsHTML(follows) {
   return (
     '<div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-' +
@@ -121,6 +127,12 @@ function buildFollowsHTML(follows) {
   );
 }
 
+/**
+ * Constructs the HTML for a tag entry using the data from the tag object.
+ *
+ * @param {*} tag is the entry for which we are building HTML for.
+ * @returns an HTML block for a tag follow.
+ */
 function buildTagsHTML(tag) {
   var antifollow = '';
   if (tag.points < 0) {
@@ -141,6 +153,12 @@ function buildTagsHTML(tag) {
   </div>`;
 }
 
+/**
+ * Fetches the next page for the given element.
+ *
+ * @param {*} el is the element that we are fetching the next page for.
+ * @returns nil but carries out actions to fetch, build and insert the HTML into the DOM for the next page
+ */
 function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
@@ -415,6 +433,10 @@ function fetchNextPageIfNearBottom() {
   }
 }
 
+/**
+ * Checks if the user is near the bottom of the page and if so, fetches the next page.
+ * It also sets up an interval to check if the user is near the bottom of the page.
+ */
 function checkIfNearBottomOfPage() {
   const loadingElement = document.getElementById('loading-articles');
   if (
@@ -436,8 +458,9 @@ function checkIfNearBottomOfPage() {
   }, 1000);
 }
 
-// A function that gets called when a usre starts scrolling
-//
+/**
+ * Initializes the scrolling for the page. It looks for the index-container element and if it exists, it sets up the scrolling.
+ */
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
