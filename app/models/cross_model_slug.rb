@@ -25,8 +25,6 @@ class CrossModelSlug
 
       value = value.downcase
 
-      # Reserved check may be redundant, but allows this to be used outside of Validator
-      return true if ReservedWords.all.include?(value)
       return true if value.include?("sitemap-") # https://github.com/forem/forem/pull/6704
 
       MODELS.detect do |class_name, attribute|
