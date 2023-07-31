@@ -56,7 +56,7 @@
             <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
           <% end %>
           <p class="mb-3 fs-s color-base-60">
-            <%= t("views.tags.published", count: tag.taggings_count) %>
+            <%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %>
           </p>
 
           <% if tag %>
