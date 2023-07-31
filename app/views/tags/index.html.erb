@@ -60,17 +60,16 @@
           </p>
 
           <% if tag %>
-            <div class="mt-auto">
+            <div class="mt-auto flex justify-between">
               <button
                 class="crayons-btn crayons-btn--secondary follow-action-button"
                 data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "secondary") %>'>
                 <%= t("views.tags.follow") %>
               </button>
+              <% if tag.badge_id && tag.badge %>
+                <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 48px; height: 48px;" alt="" loading="lazy" />
+              <% end %>
             </div>
-          <% end %>
-
-          <% if tag.badge_id && tag.badge %>
-            <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px;" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
           <% end %>
         </div>
       <% end %>
