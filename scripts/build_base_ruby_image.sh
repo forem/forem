@@ -9,7 +9,7 @@ if [ "$(pwd)" != "$(git rev-parse --show-toplevel)" ]; then
 fi
 
 BUILD_PLATFORMS="${BUILD_PLATFORMS:-linux/amd64,linux/arm64}"
-RUBY_VERSION="${RUBY_VERSION:-$(cat .ruby-version)}"
+RUBY_VERSION="${RUBY_VERSION:-$(cat .ruby-version-next)}"
 IMAGE="ghcr.io/forem/ruby:${RUBY_VERSION}"
 
 if [ -z "${SKIP_PUSH:-}" ]; then
