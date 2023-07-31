@@ -11,8 +11,6 @@
     <%= link_to t("views.series.list.back", user: @user.name), user_series_path(@user.username) %>
   </header>
 
-  <%= render "articles/reaction_category_resources" %>
-
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">
       <% if @articles.present? %>
