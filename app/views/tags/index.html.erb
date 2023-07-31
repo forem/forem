@@ -57,7 +57,7 @@
               <div class="fs-s color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
             </div>
             <% if tag.short_summary.present? %>
-              <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
+              <p class="mb-6 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
             <% end %>
           </div>
           <% if tag %>
