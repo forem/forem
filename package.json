@@ -107,7 +107,7 @@
     "@babel/plugin-transform-react-jsx": "^7.22.5",
     "@babel/preset-env": "^7.22.9",
     "@babel/preset-typescript": "^7.22.5",
-    "@cypress/code-coverage": "^3.10.8",
+    "@cypress/code-coverage": "^3.11.0",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^5.4.1",
