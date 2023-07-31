@@ -6,6 +6,7 @@ class BillboardsController < ApplicationController
   def show
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS) unless session_current_user_id
+    client_geolocation = request.env["HTTP_CLIENT_GEO"] if user_signed_in?
 
     if placement_area
       if params[:username].present? && params[:slug].present?
@@ -18,7 +19,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         user_tags: user_tags,
-        client_geolocation: request.env["HTTP_CLIENT_GEO"],
+        location: client_geolocation,
       )
 
       if @display_ad && !session_current_user_id

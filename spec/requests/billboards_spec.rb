@@ -26,35 +26,70 @@ RSpec.describe "Billboards" do
       expect(response.parsed_body).to include(billboard.processed_html)
     end
 
+    # rubocop:disable RSpec/NestedGroups
     context "when client geolocation is present" do
-      let!(:canada_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "CA") }
-      let!(:us_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "US") }
-      let(:client_in_newfoundland_canada) { { "HTTP_CLIENT_GEO" => "CA-NL" } }
+      let(:client_in_alberta_canada) { { "HTTP_CLIENT_GEO" => "CA-AB" } }
       let(:client_in_california_usa) { { "HTTP_CLIENT_GEO" => "US-CA" } }
 
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
       end
 
-      it "returns only billboards targeting their location" do
-        # DisplayAd.for_display uses random sampling, so we run this a few times for confidence
-        5.times do
-          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
-              headers: client_in_newfoundland_canada
+      context "with signed-in user" do
+        let!(:canada_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "CA") }
+        let!(:us_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "US") }
 
-          expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(canada_billboard.processed_html)
-          expect(response.parsed_body).not_to include(us_billboard.processed_html)
+        before do
+          sign_in user
+        end
 
-          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
-              headers: client_in_california_usa
+        it "returns only billboards targeting their location" do
+          # DisplayAd.for_display uses random sampling, so we collect a few for confidence
+          5.times do
+            get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+                headers: client_in_alberta_canada
 
-          expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(us_billboard.processed_html)
-          expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+            expect(response).to have_http_status(:ok)
+            expect(response.parsed_body).to include(canada_billboard.processed_html)
+            expect(response.parsed_body).not_to include(us_billboard.processed_html)
+
+            get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+                headers: client_in_california_usa
+
+            expect(response).to have_http_status(:ok)
+            expect(response.parsed_body).to include(us_billboard.processed_html)
+            expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+          end
+        end
+      end
+
+      context "without signed-in user" do
+        let!(:canada_billboard) { create_billboard(placement_area: "feed_first", target_geolocations: "CA") }
+        let!(:us_billboard) { create_billboard(placement_area: "feed_first", target_geolocations: "US") }
+        let!(:non_targeted_billboard) { create_billboard(placement_area: "feed_first") }
+
+        it "does not return any billboards targeting their location" do
+          5.times do
+            get article_billboard_path(username: article.username, slug: article.slug, placement_area: "feed_first"),
+                headers: client_in_alberta_canada
+
+            expect(response).to have_http_status(:ok)
+            expect(response.parsed_body).to include(non_targeted_billboard.processed_html)
+            expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+            expect(response.parsed_body).not_to include(us_billboard.processed_html)
+
+            get article_billboard_path(username: article.username, slug: article.slug, placement_area: "feed_first"),
+                headers: client_in_california_usa
+
+            expect(response).to have_http_status(:ok)
+            expect(response.parsed_body).to include(non_targeted_billboard.processed_html)
+            expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+            expect(response.parsed_body).not_to include(us_billboard.processed_html)
+          end
         end
       end
     end
+    # rubocop:enable RSpec/NestedGroups
 
     context "when signed in" do
       before do

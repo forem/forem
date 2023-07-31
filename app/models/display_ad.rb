@@ -60,7 +60,7 @@ class DisplayAd < ApplicationRecord
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, client_geolocation: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     ads_for_display = DisplayAds::FilteredAdsQuery.call(
@@ -73,7 +73,7 @@ class DisplayAd < ApplicationRecord
       permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
       user_tags: user_tags,
-      location: client_geolocation,
+      location: location,
     )
 
     case rand(99) # output integer from 0-99
