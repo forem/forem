@@ -66,6 +66,11 @@ RSpec.describe Page do
       expect(page).not_to be_valid
       expect(page.errors[:slug].to_s.include?("taken")).to be true
     end
+
+    it "circumnavigates ReservedWords check" do
+      page = build(:page, slug: "code-of-conduct")
+      expect(page).to be_valid
+    end
   end
 
   context "when callbacks are triggered before save" do
