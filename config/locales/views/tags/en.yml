@@ -44,8 +44,8 @@ en:
         code: 123
         placeholder: "comma separated, space is optional. Example: 1,2,3"
       published:
-        one: 1 post published
-        other: "%{count} posts published"
+        one: 1 post
+        other: "%{count} posts"
       sidebar:
         about: 'about #%{tag}'
         admin: Admin
