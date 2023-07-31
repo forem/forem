@@ -6,7 +6,7 @@ var client;
  * @param {String} el is an HTML element that contains the container that we want to append items to. It contains id: indexContainer.
  * @param {String} endpoint is the relative URL of the endpoint to call to get the data
  * @param {Function} insertCallback is a function from the return of the callback function (insertNext). The function is passed the data as an argument to build the HTML.
- * @returns nil but calls the insertCallback function with the data as an argument to update the HTML. It also handles the loading spinner.
+ * @returns nil but calls the insertCallback (i.e. the insertEntries function) with the data as an argument to update the HTML. It also handles the loading spinner.
  */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
@@ -53,7 +53,7 @@ function fetchNext(el, endpoint, insertCallback) {
  * @param {*} params are the dataset params on an wrapping container like 'index-container'. It contains the action and the elID.
  * The elID is the id of the element that we are appending to.
  * The action like 'following_tags' is the action that we are taking.
- * @param {*} buildCallback is the callback function that will be called after the data is fetched.
+ * @param {*} buildCallback is the callback function (the buildFollowsHTML function) that will be called after the data is fetched.
  * It will be passed the data as an argument, and insert the HTML into the DOM.
  * @returns a function that will be called after the data is fetched from the caller.
  */
