@@ -38,7 +38,7 @@ class Tag < ActsAsTaggableOn::Tag
   belongs_to :badge, optional: true
 
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
-  has_many :display_ads, through: :taggings, source: :taggable, source_type: "DisplayAd"
+  has_many :billboards, class_name: "DisplayAd", through: :taggings, source: :taggable, source_type: "DisplayAd"
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader

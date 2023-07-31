@@ -1,30 +1,30 @@
 <div class="grid l:grid-cols-2 gap-6 mb-4">
   <div class="flex flex-col gap-4">
-    <% if @display_ad.creator.present? %>
+    <% if @billboard.creator.present? %>
       <div class="crayons-field">
         <%= label_tag :creator, "Created by:", class: "crayons-field__label" %>
-        <%= text_field_tag :creator, @display_ad.creator.name, class: "crayons-textfield", disabled: true, autocomplete: "off" %>
+        <%= text_field_tag :creator, @billboard.creator.name, class: "crayons-textfield", disabled: true, autocomplete: "off" %>
       </div>
     <% end %>
 
     <div class="crayons-field">
       <%= label_tag :name, "Name:", class: "crayons-field__label" %>
-      <%= text_field_tag :name, @display_ad.name, class: "crayons-textfield", autocomplete: "off" %>
+      <%= text_field_tag :name, @billboard.name, class: "crayons-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :organization_id, "Organization ID:", class: "crayons-field__label" %>
-      <%= text_field_tag :organization_id, @display_ad.organization_id, class: "crayons-textfield", placeholder: "1234", autocomplete: "off" %>
+      <%= text_field_tag :organization_id, @billboard.organization_id, class: "crayons-textfield", placeholder: "1234", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :body_markdown, "Body Markdown:", class: "crayons-field__label" %>
-      <%= text_area_tag :body_markdown, @display_ad.body_markdown, size: "100x5", class: "crayons-textfield" %>
+      <%= text_area_tag :body_markdown, @billboard.body_markdown, size: "100x5", class: "crayons-textfield" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :placement_area, "Placement Area:", class: "crayons-field__label" %>
-      <%= select_tag :placement_area, options_for_select(billboards_placement_area_options_array, selected: @display_ad.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
+      <%= select_tag :placement_area, options_for_select(billboards_placement_area_options_array, selected: @billboard.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
     </div>
 
     <div class="crayons-field">
@@ -33,12 +33,12 @@
 
     <div class="crayons-field hidden">
       <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
-      <%= text_field_tag :tag_list, @display_ad.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
+      <%= text_field_tag :tag_list, @billboard.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field hidden">
       <%= label_tag :exclude_article_ids, "Exclude Article IDs:", class: "crayons-field__label" %>
-      <%= text_field_tag :exclude_article_ids, @display_ad.exclude_article_ids.join(", "), class: "crayons-textfield js-exclude-ids-textfield", autocomplete: "off" %>
+      <%= text_field_tag :exclude_article_ids, @billboard.exclude_article_ids.join(", "), class: "crayons-textfield js-exclude-ids-textfield", autocomplete: "off" %>
     </div>
 
     <div class="crayons-field">
@@ -47,32 +47,32 @@
         <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Display Ad</p>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :display_to, "all", @display_ad.display_to_all?, class: "crayons-radio" %>
+          <%= radio_button_tag :display_to, "all", @billboard.display_to_all?, class: "crayons-radio" %>
           <div class="crayons-field__label">All users</div>
         </label>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :display_to, "logged_in", @display_ad.display_to_logged_in?, class: "crayons-radio" %>
+          <%= radio_button_tag :display_to, "logged_in", @billboard.display_to_logged_in?, class: "crayons-radio" %>
           <div class="crayons-field__label">Only logged in users</div>
         </label>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :display_to, "logged_out", @display_ad.display_to_logged_out?, class: "crayons-radio" %>
+          <%= radio_button_tag :display_to, "logged_out", @billboard.display_to_logged_out?, class: "crayons-radio" %>
           <div class="crayons-field__label">Only logged out users</div>
         </label>
       </fieldset>
     </div>
 
-    <div class="crayons-field <%= "hidden" if @display_ad.audience_segment.blank? %>">
+    <div class="crayons-field <%= "hidden" if @billboard.audience_segment.blank? %>">
       <%= label_tag :audience_segment_id, "Users who:", class: "crayons-field__label" %>
-      <% if @display_ad.audience_segment&.manual? %>
+      <% if @billboard.audience_segment&.manual? %>
         <%= select_tag :audience_segment_id,
-                       options_for_select(single_audience_segment_option(@display_ad), selected: @display_ad.audience_segment_id),
+                       options_for_select(single_audience_segment_option(@billboard), selected: @billboard.audience_segment_id),
                        disabled: true,
                        class: "crayons-select js-audience-segment" %>
       <% else %>
         <%= select_tag :audience_segment_id,
-                       options_for_select(automatic_audience_segments_options_array, selected: @display_ad.audience_segment_id),
+                       options_for_select(automatic_audience_segments_options_array, selected: @billboard.audience_segment_id),
                        include_blank: "All users",
                        class: "crayons-select js-audience-segment" %>
       <% end %>
@@ -83,17 +83,17 @@
         <legend class="crayons-field crayons-field__label pl-0">Type</legend>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :type_of, "in_house", @display_ad.in_house?, class: "crayons-radio" %>
+          <%= radio_button_tag :type_of, "in_house", @billboard.in_house?, class: "crayons-radio" %>
           <div class="crayons-field__label">In-House Ad</div>
         </label>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :type_of, "community", @display_ad.community?, class: "crayons-radio" %>
+          <%= radio_button_tag :type_of, "community", @billboard.community?, class: "crayons-radio" %>
           <div class="crayons-field__label">Community</div>
         </label>
 
         <label class="crayons-field crayons-field--radio mb-2">
-          <%= radio_button_tag :type_of, "external", @display_ad.external?, class: "crayons-radio" %>
+          <%= radio_button_tag :type_of, "external", @billboard.external?, class: "crayons-radio" %>
           <div class="crayons-field__label">External</div>
         </label>
       </fieldset>
@@ -101,23 +101,23 @@
 
     <div class="crayons-field">
       <%= label_tag :published, "Published:", class: "crayons-field__label" %>
-      <%= select_tag :published, options_for_select([false, true], selected: @display_ad.published), class: "crayons-select" %>
+      <%= select_tag :published, options_for_select([false, true], selected: @billboard.published), class: "crayons-select" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :approved, "Approved:", class: "crayons-field__label" %>
-      <%= select_tag :approved, options_for_select([false, true], selected: @display_ad.approved), class: "crayons-select" %>
+      <%= select_tag :approved, options_for_select([false, true], selected: @billboard.approved), class: "crayons-select" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :priority, "Prioritized:", class: "crayons-field__label" %>
-      <%= select_tag :priority, options_for_select([false, true], selected: @display_ad.priority), class: "crayons-select" %>
+      <%= select_tag :priority, options_for_select([false, true], selected: @billboard.priority), class: "crayons-select" %>
     </div>
   </div>
   <div>
     <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--display-ad">
-      <% if @display_ad.persisted? %>
-        <%= @display_ad.processed_html.html_safe %>
+      <% if @billboard.persisted? %>
+        <%= @billboard.processed_html.html_safe %>
       <% else %>
         <div class="flex flex-col gap-3">
           <p>
