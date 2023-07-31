@@ -8,7 +8,7 @@ en:
         og:
           description: "%{community} is great!"
       heading:
-        default: Top tags
+        default: Tags
         search_results: Search results for %{q}
       search:
         aria_labels:
