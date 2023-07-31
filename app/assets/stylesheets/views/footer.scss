@@ -30,6 +30,10 @@
   }
 }
 
+.sidebar-footer {
+  color: var(--color-secondary);
+}
+
 .dot {
   height: var(--su-1);
   width: var(--su-1);
@@ -42,6 +46,6 @@
   list-style-type: none;
 
   li:last-child .dot {
-    display:none
+    display: none;
   }
 }
