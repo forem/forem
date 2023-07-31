@@ -48,17 +48,18 @@
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
       <% @tags.includes([:badge]).each do |tag| %>
-        <div class="tag-card crayons-card p-3 pt-2 m:p-6 m:pt-4 relative">
-          <h3 class="mb-1 -ml-2">
-            <%= render_tag_link(tag.accessible_name) %>
-          </h3>
-          <% if tag.short_summary.present? %>
-            <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
-          <% end %>
-          <p class="mb-3 fs-s color-base-60">
-            <%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %>
-          </p>
-
+        <div class="tag-card crayons-card p-3 pt-2 m:p-6 m:pt-4 relative flex flex-col">
+          <div>
+            <h3 class="mb-1 -ml-2">
+              <%= render_tag_link(tag.accessible_name) %>
+            </h3>
+            <% if tag.short_summary.present? %>
+              <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
+            <% end %>
+            <p class="mb-3 fs-s color-base-60">
+              <%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %>
+            </p>
+          </div>
           <% if tag %>
             <div class="mt-auto flex justify-between">
               <button
