@@ -390,4 +390,18 @@ RSpec.describe Organization do
       expect(results.size).to eq(3)
     end
   end
+
+  describe "#bust_cache" do
+    context "when a new user is added to the organization" do
+      let(:user) { create(:user) }
+
+      it "triggers cache busting" do
+        org_membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+
+        sidekiq_assert_enqueued_with(job: Organizations::BustCacheWorker, args: [organization.id, organization.slug]) do
+          org_membership.save
+        end
+      end
+    end
+  end
 end
