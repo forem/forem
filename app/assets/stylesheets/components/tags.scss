@@ -40,3 +40,10 @@
     }
   }
 }
+
+.tag-card {
+  &__badge {
+    width: 48px;
+    height: 48px;
+  }
+}

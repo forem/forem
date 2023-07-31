@@ -68,7 +68,7 @@
                 <%= t("views.tags.follow") %>
               </button>
               <% if tag.badge_id && tag.badge %>
-                <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 48px; height: 48px;" alt="" loading="lazy" />
+                <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
               <% end %>
             </div>
           <% end %>
