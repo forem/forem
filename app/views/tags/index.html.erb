@@ -62,8 +62,8 @@
           <% if tag %>
             <div class="mt-auto flex justify-between">
               <button
-                class="crayons-btn crayons-btn--secondary follow-action-button"
-                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "secondary") %>'>
+                class="crayons-btn crayons-btn--primary follow-action-button"
+                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
                 <%= t("views.tags.follow") %>
               </button>
               <% if tag.badge_id && tag.badge %>
