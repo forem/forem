@@ -47,7 +47,7 @@
     </div>
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
-      <% @tags.each do |tag| %>
+      <% @tags.includes([:badge]).each do |tag| %>
         <div class="tag-card crayons-card p-3 pt-2 m:p-6 m:pt-4 relative">
           <h3 class="mb-1 -ml-2">
             <%= render_tag_link(tag.accessible_name) %>
@@ -70,7 +70,7 @@
           <% end %>
 
           <% if tag.badge_id && tag.badge %>
-            <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
+            <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px;" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
           <% end %>
         </div>
       <% end %>
