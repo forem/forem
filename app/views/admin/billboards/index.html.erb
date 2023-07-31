@@ -17,7 +17,7 @@
     </div>
   </nav>
 
-  <%= paginate @display_ads %>
+  <%= paginate @billboards %>
 
   <table class="crayons-table" width="100%">
     <thead>
@@ -31,7 +31,7 @@
       </tr>
     </thead>
     <tbody class="crayons-card">
-      <% @display_ads.each do |display_ad| %>
+      <% @billboards.each do |display_ad| %>
           <tr data-row-id="<%= display_ad.id %>">
             <td><%= link_to display_ad.name, edit_admin_billboard_path(display_ad) %></td>
             <td><%= display_ad.human_readable_placement_area %></td>
@@ -57,5 +57,5 @@
     </tbody>
   </table>
   <%= render partial: "admin/shared/destroy_confirmation_modal" %>
-  <%= paginate @display_ads %>
+  <%= paginate @billboards %>
 </div>

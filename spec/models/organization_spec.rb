@@ -10,7 +10,7 @@ RSpec.describe Organization do
       it { is_expected.to have_many(:articles).dependent(:nullify) }
       it { is_expected.to have_many(:collections).dependent(:nullify) }
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
-      it { is_expected.to have_many(:display_ads).dependent(:destroy) }
+      it { is_expected.to have_many(:billboards).dependent(:destroy) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
