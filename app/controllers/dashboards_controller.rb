@@ -51,7 +51,7 @@ class DashboardsController < ApplicationController
 
   def following_tags
     fetch_and_authorize_user
-    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points)
+    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points).where("points > ?", 0)
     @collections_count = collections_count(@user)
   end
 

@@ -10,9 +10,19 @@ var client;
  */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
-  var urlParams = Object.keys(indexParams)
+  // I swap the name of the key "action" to "controller_action" before we do the fetch becasue we can never use this
+  // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
+  // I thought it would be safe to do the swap for now until we can refactor this file.
+  const updatedIndexParams = {};
+  delete Object.assign(updatedIndexParams, indexParams, {
+    ['controller_action']: indexParams['action'],
+  })['action'];
+
+  var urlParams = Object.keys(updatedIndexParams)
     .map(function handleMap(k) {
-      return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k]);
+      return (
+        encodeURIComponent(k) + '=' + encodeURIComponent(updatedIndexParams[k])
+      );
     })
     .join('&');
   if (urlParams.indexOf('q=') > -1) {

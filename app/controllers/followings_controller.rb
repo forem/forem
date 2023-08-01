@@ -15,7 +15,9 @@ class FollowingsController < ApplicationController
   def tags
     relation = current_user.follows_by_type("ActsAsTaggableOn::Tag")
       .select(TAGS_ATTRIBUTES_FOR_SERIALIZATION)
-      .order(points: :desc)
+    relation =
+      params[:controller_action] == "hidden_tags" ? relation.where("points < ?", 0) : relation.where("points > ?", 0)
+    relation.order(points: :desc)
     @followed_tags = load_follows_and_paginate(relation)
   end
 
