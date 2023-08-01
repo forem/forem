@@ -2,7 +2,7 @@
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
-  initializeSettings, initializeRuntimeBanner,
+  initializeRuntimeBanner,
   initializeCreditsPage,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
@@ -13,7 +13,6 @@
 function callInitializers() {
   initializePaymentPointers();
   initializeCommentsPage();
-  initializeSettings();
   initializeCreditsPage();
   initializeOnboardingTaskCard();
 }
