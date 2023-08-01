@@ -31,23 +31,23 @@
       </tr>
     </thead>
     <tbody class="crayons-card">
-      <% @billboards.each do |display_ad| %>
-          <tr data-row-id="<%= display_ad.id %>">
-            <td><%= link_to display_ad.name, edit_admin_billboard_path(display_ad) %></td>
-            <td><%= display_ad.human_readable_placement_area %></td>
-            <td><%= display_ad.display_to %></td>
-            <td><%= display_ad.type_of.titleize %></td>
-            <% if display_ad.published? && display_ad.approved? %>
+      <% @billboards.each do |billboard| %>
+          <tr data-row-id="<%= billboard.id %>">
+            <td><%= link_to billboard.name, edit_admin_billboard_path(billboard) %></td>
+            <td><%= billboard.human_readable_placement_area %></td>
+            <td><%= billboard.display_to %></td>
+            <td><%= billboard.type_of.titleize %></td>
+            <% if billboard.published? && billboard.approved? %>
               <td><span class="crayons-icon" role="img" aria-label="Ad is published and approved">✅</span></td>
             <% else %>
               <td><span class="crayons-icon" role="img" aria-label="Ad is not published or approved">❌</span></td>
             <% end %>
-            <td><%= display_ad.success_rate %></td>
-            <td><%= link_to "Edit", edit_admin_billboard_path(display_ad), class: "crayons-btn" %></td>
+            <td><%= billboard.success_rate %></td>
+            <td><%= link_to "Edit", edit_admin_billboard_path(billboard), class: "crayons-btn" %></td>
             <td>
               <button
                 class="crayons-btn crayons-btn--danger"
-                data-item-id="<%= display_ad.id %>"
+                data-item-id="<%= billboard.id %>"
                 data-endpoint="/admin/customization/billboards"
                 data-username="<%= current_user.username %>"
                 data-action="click->confirmation-modal#openModal">Destroy</button>
