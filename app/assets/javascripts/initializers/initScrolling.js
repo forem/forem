@@ -10,7 +10,7 @@ var client;
  */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
-  // I swap the name of the key "action" to "controller_action" before we do the fetch becasue we can never use this
+  // I swap the name of the key "action" to "controller_action" before we do the fetch because we can never use this
   // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
   // I thought it would be safe to do the swap for now until we can refactor this file.
   const updatedIndexParams = {};
@@ -462,7 +462,7 @@ function checkIfNearBottomOfPage() {
   fetchNextPageIfNearBottom();
   setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
-  }, 1000);
+  }, 210);
 }
 
 /**
