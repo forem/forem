@@ -18,7 +18,12 @@ function fetchNext(el, endpoint, insertCallback) {
   if (urlParams.indexOf('q=') > -1) {
     return;
   }
-  var fetchUrl = (`endpoint?page=${nextPage}&${urlParams}&signature=${parseInt(Date.now() / 400000, 10)}`).replace('&&', '&');
+
+  var fetchUrl =
+    `${endpoint}?page=${nextPage}&${urlParams}&signature=${parseInt(
+      Date.now() / 400000,
+      10,
+    )}`.replace('&&', '&');
   window
     .fetch(fetchUrl)
     .then(function handleResponse(response) {
