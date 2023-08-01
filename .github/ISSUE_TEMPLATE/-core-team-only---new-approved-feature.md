@@ -1,5 +1,5 @@
 ---
-name: '[Core Team Only]: New Approved Feature'
+name: "[Core Team Only]: New Approved Feature"
 about:
   This template is for Core Team only. For feature requests, please use GitHub
   Discussions.
