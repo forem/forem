@@ -1,6 +1,6 @@
 ---
 name: "[Core Team Only]: New Approved Feature"
-about: This template is for Core Team only. For feature requests, please use GitHub Discussions.
+about: This template is for Core Team only. For feature requests, please use GitHub 
   Discussions.
 title: ''
 labels: ''
