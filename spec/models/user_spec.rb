@@ -870,6 +870,18 @@ RSpec.describe User do
     end
   end
 
+  describe "#has_no_published_content?" do
+    it "returns true if the user has no published articles or comments" do
+      create(:article, user_id: user.id, published: false, published_at: Date.tomorrow)
+      expect(user.has_no_published_content?).to be(true)
+    end
+
+    it "returns false if the user has any published articles or comments" do
+      create(:article, user_id: user.id, published: true)
+      expect(user.has_no_published_content?).to be(false)
+    end
+  end
+
   describe ".above_average and .average_x_count" do
     context "when there are not yet any articles with score above 0" do
       it "works as expected" do
