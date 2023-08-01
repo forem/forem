@@ -105,27 +105,6 @@
   </div>
 </div>
 <% unless internal_navigation? %>
-  <script>
-    function toggleFooterVisibility() {
-      const footer = document.querySelector("#footer");
-      const pathsToHideFooter = ['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'];
-      if (!footer) {
-        return;
-      }
-      if (pathsToHideFooter.some(path => window.location.pathname === path)) {
-        footer.classList.add('hidden');
-      } else {
-        footer.classList.remove('hidden');
-      }
-    }
-    // To ensure correct footer visibility even when opening a child page in a new tab,
-    // we add a DOMContentLoaded event listener, which calls toggleFooterVisibility
-    // after the entire page, including the footer, is fully loaded.
-    document.addEventListener("DOMContentLoaded", function () {
-      toggleFooterVisibility();
-    });
-    toggleFooterVisibility();
-  </script>
   <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
