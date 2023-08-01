@@ -6,6 +6,7 @@ about:
 title: ''
 labels: ''
 assignees: ''
+
 ---
 
 <!-- ⚠️⚠️⚠️ This issue template is for Core Team only to outline approved features.  For new Feature Requests, please use GitHub Discussions: https://github.com/forem/forem/discussions -->
