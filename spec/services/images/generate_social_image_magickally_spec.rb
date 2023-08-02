@@ -67,7 +67,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
             title: second_article.title,
             date: second_article.readable_publish_date,
             author_name: organization.name,
-            color: organization.bg_color_hex
+            color: organization.bg_color_hex,
           )
         described_class.call(organization)
       end
