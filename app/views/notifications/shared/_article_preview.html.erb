@@ -30,19 +30,17 @@
         <span class="reaction-button-text hidden m:inline-block"><%= t("views.reactions.readingList.text") %></span>
       </button>
 
-      <% if feature_flag_enabled?(:subscribe_to_comments) %>
-        <% subscription = notification.subscription_for(current_user) %>
-        <button
-          class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
-          data-subscription_id="<%= subscription&.id %>"
-          data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
-          data-subscription_config="<%= subscription&.config %>"
-          data-article_id="<%= notification.article_id %>">
-          <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
-          <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
-          <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>
-        </button>
-      <% end %>
+      <% subscription = notification.subscription_for(current_user) %>
+      <button
+        class="ml-auto crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-btn--s subscribe-button <%= subscription ? "comment-subscribed" : "" %>"
+        data-subscription_id="<%= subscription&.id %>"
+        data-subscribed_to="<%= subscription&.notifiable_type&.downcase %>"
+        data-subscription_config="<%= subscription&.config %>"
+        data-article_id="<%= notification.article_id %>">
+        <%= crayons_icon_tag("bell-active", class: "subscribe-icon subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+        <%= crayons_icon_tag("bell", class: "subscribe-icon not-subscribed", aria_hidden: true, title: t("views.comments.footer.subscribe.icon")) %>
+        <span class="m:inline-block subscribe-button-title"><%= t("views.comments.footer.subscribe.text") %></span>
+      </button>
     </footer>
   <% end %>
 </article>

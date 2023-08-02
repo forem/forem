@@ -67,6 +67,8 @@ Rails.application.routes.draw do
 
         resources :pages, only: %i[index show create update destroy]
 
+        resources :organizations, only: %i[index create update destroy]
+
         draw :api
       end
 
@@ -147,7 +149,9 @@ Rails.application.routes.draw do
     resources :poll_votes, only: %i[show create]
     resources :poll_skips, only: [:create]
     resources :profile_pins, only: %i[create update]
-    resources :display_ad_events, only: [:create]
+    # temporary keeping both routes while transitioning (renaming) display_ads => billboards
+    resources :display_ad_events, only: [:create], controller: :billboard_events
+    resources :billboard_events, only: [:create]
     resources :badges, only: [:index]
     resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
     resources :podcasts, only: %i[new create]
@@ -208,7 +212,7 @@ Rails.application.routes.draw do
       # temporary keeping both routes while transitioning (renaming) display_ads => billboards
       get "/display_ads/:placement_area", to: "billboards#show"
     end
-    get "/billboards/:placement_area", to: "billboards#show"
+    get "/billboards/:placement_area", to: "billboards#show", as: :billboard
     # temporary keeping both routes while transitioning (renaming) display_ads => billboards
     get "/display_ads/:placement_area", to: "billboards#show"
 

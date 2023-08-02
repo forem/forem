@@ -27,6 +27,9 @@ expect.extend({
    * `undefined`, which makes it unsuitable for testing if a value exists as the
    * value might be `null` (which would pass a `toBeDefined` check).
    *
+   * Additionally this matcher will fail if its subject is a Promise, to remind
+   * the caller to await their Promises.
+   *
    * @param {any} subject The subject of the matcher
    * @returns
    */
@@ -35,6 +38,18 @@ expect.extend({
       return {
         pass: false,
         message: () => `Expected ${this.utils.printReceived(subject)} to exist`,
+      };
+    }
+
+    // This only works with JS native Promises, but that's what Jest and Testing
+    // Library produce, so that's a reasonable tradeoff
+    if (subject instanceof Promise) {
+      return {
+        pass: false,
+        message: () =>
+          `Received a Promise (${this.utils.printReceived(
+            subject,
+          )}) instead of a value`,
       };
     }
 

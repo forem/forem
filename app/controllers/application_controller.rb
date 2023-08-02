@@ -288,8 +288,6 @@ class ApplicationController < ActionController::Base
   end
 
   def feature_flag_enabled?(flag_name, acting_as: current_user)
-    return true if ENV.fetch("E2E", nil) && flag_name.to_sym == :subscribe_to_comments
-
     FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
   end
 

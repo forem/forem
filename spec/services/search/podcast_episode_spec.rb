@@ -1,6 +1,5 @@
 require "rails_helper"
 
-# rubocop:disable RSpec/ExampleLength
 RSpec.describe Search::PodcastEpisode, type: :service do
   let(:podcast_episode) { create(:podcast_episode) }
 

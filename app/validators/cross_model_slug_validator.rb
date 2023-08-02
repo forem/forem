@@ -14,21 +14,21 @@ class CrossModelSlugValidator < ActiveModel::EachValidator
   private
 
   def not_on_reserved_list?(record, attribute, value)
-    return unless ReservedWords.all.include?(value)
+    return false if record.instance_of?(::Page) || ReservedWords.all.exclude?(value)
 
     record.errors.add(attribute, I18n.t("validators.cross_model_slug_validator.is_reserved"))
   end
 
   def correct_format?(record, attribute, value)
-    return if value.match?(FORMAT_REGEX)
+    return false if value.match?(FORMAT_REGEX)
 
     record.errors.add(attribute, I18n.t("validators.cross_model_slug_validator.is_invalid"))
   end
 
   def unique_across_models?(record, attribute, value)
     # attribute_changed? is likely redundant, but is much cheaper than the cross-model exists check
-    return unless record.public_send("#{attribute}_changed?")
-    return unless already_exists?(value)
+    return false unless record.public_send("#{attribute}_changed?")
+    return false unless already_exists?(value)
 
     record.errors.add(attribute, I18n.t("validators.cross_model_slug_validator.is_taken"))
   end

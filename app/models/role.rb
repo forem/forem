@@ -47,4 +47,14 @@ class Role < ApplicationRecord
 
     Tag.find(resource_id).name
   end
+
+  def name_labelize
+    if single_resource_admin?
+      Constants::Role::SPECIAL_ROLES_LABELS_TO_WHERE_CLAUSE.detect do |_k, v|
+        v[:name] == "single_resource_admin" && v[:resource_type] == resource_type
+      end&.first || name
+    else
+      name
+    end
+  end
 end
