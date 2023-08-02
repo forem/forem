@@ -132,7 +132,7 @@ module Images
       @rounded_mask.resize profile_image_size
 
       result.composite(@rounded_mask) do |c|
-        c.compose "Over" 
+        c.compose "Over"
         c.gravity "Southwest"
         c.geometry profile_image_location # 
       end
