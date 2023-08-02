@@ -52,7 +52,7 @@ module Images
 
     private
 
-    def generate_magickally(title: nil, date: nil, author_name: nil, color: nil)      
+    def generate_magickally(title: nil, date: nil, author_name: nil, color: nil)
       result = draw_stripe(color)
       result = add_logo(result)
       result = add_text(result, title, date, author_name)
@@ -63,29 +63,28 @@ module Images
     def draw_stripe(color)
       @background_image.combine_options do |c|
         c.fill color
-        c.draw "rectangle 0,0 1000,24"  # adjust width according to your image width
+        c.draw "rectangle 0,0 1000,24"
       end
     end
 
     def add_logo(result)
-      if @logo_image
-        # Add white stroke to the overlay image
-        @logo_image.combine_options do |c|
-          c.stroke "white"
-          c.strokewidth "4"
-          c.fill "none"
-          c.draw "rectangle 0,0 1000,1000"  # adjust as needed based on image size
-        end
+      return result unless @logo_image
 
-        # Resize the overlay image
-        @logo_image.resize "64x64"
-
-        result = @background_image.composite(@logo_image) do |c|
-          c.compose "Over" # OverCompositeOp
-          c.geometry "+850+372" # move the overlay to the top left
-        end
+      # Add white stroke to the overlay image
+      @logo_image.combine_options do |c|
+        c.stroke "white"
+        c.strokewidth "4"
+        c.fill "none"
+        c.draw "rectangle 0,0 1000,1000"
       end
-      result
+
+      # Resize the overlay image
+      @logo_image.resize "64x64"
+
+      result.composite(@logo_image) do |c|
+        c.compose "Over" # OverCompositeOp
+        c.geometry "+850+372"
+      end
     end
 
     def add_text(result, title, date, author_name)
@@ -93,94 +92,10 @@ module Images
       font_size = calculate_font_size(title)
 
       result.combine_options do |c|
-        c.gravity "West" # Set the origin for the text at the top left corner
+        c.gravity "West"
         c.pointsize font_size.to_s
-        c.draw "text 80,-39 '#{title}'" # Start drawing text 90 from the left and slightly north
-        c.fill "black"
-        c.font BOLD_FONT_PATH.to_s
+        c.draw "..."
       end
-
-      result.combine_options do |c|
-        c.gravity "Southwest"
-        c.pointsize "32"
-        c.draw "text 156,88 '#{author_name}'" # adjust coordinates as needed
-        c.fill "black"
-        c.font MEDIUM_FONT_PATH.to_s
-      end
-
-      result.combine_options do |c|
-        c.gravity "Southwest"
-        c.pointsize "26"
-        c.draw "text 156,60 '#{date}'" # adjust coordinates as needed
-        c.fill "#525252"
-      end
-
-      result
-    end
-
-    def add_profile_image(result)
-      profile_image_size = "64x64"
-      profile_image_location = "+80+63"
-      # Add subtext and author image
-      @author_image.resize profile_image_size
-      result = result.composite(@author_image) do |c|
-        c.compose "Over"
-        c.gravity "Southwest"
-        c.geometry profile_image_location
-      end
-
-      @rounded_mask.resize profile_image_size
-
-      result.composite(@rounded_mask) do |c|
-        c.compose "Over"
-        c.gravity "Southwest"
-        c.geometry profile_image_location
-      end
-
-      result
-    end
-
-    def upload_result(result)
-      tempfile = Tempfile.new(["output", ".png"])
-      result.write tempfile.path
-      uploader = ArticleImageUploader.new.tap do |uploader|
-        uploader.store!(tempfile)
-      end
-      # Don't forget to close and unlink (delete) the tempfile after you're done with it.
-      tempfile.close
-      tempfile.unlink
-
-      # Return the uploaded url
-      uploader.url
-    end
-
-    attr_reader :resource
-
-    def calculate_font_size(text)
-      text_length = text.length
-
-      if text_length < 18
-        return 88
-      elsif text_length < 40
-          return 77
-      elsif text_length < 70
-        return 60
-      else
-        return 50
-      end
-    end
-
-    def wrap_text(text)
-      line_width = if text.length < 40
-                      20
-                    elsif text.length < 70
-                      27
-                    else
-                      35
-                    end
-      text.split("\n").collect do |line|
-        line.length > line_width ? line.gsub(/(.{1,#{line_width}})(\s+|$)/, "\\1\n").strip : line
-      end * "\n"
     end
 
     def read_files
@@ -190,6 +105,6 @@ module Images
       author_image_url = @user.profile_image_90.start_with?("http") ? @user.profile_image_90 : Images::Profile::BACKUP_LINK
       @author_image = MiniMagick::Image.open(author_image_url)
       @rounded_mask = MiniMagick::Image.open(ActionController::Base.helpers.asset_path(ROUNDED_MASK_PATH))
-    end
+    end  
   end
 end
