@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { Tags } from '../../display-ad/tags';
+import { Tags } from '../../billboard/tags';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
@@ -25,7 +25,7 @@ function saveTags(selectionString) {
  */
 function showTagsField() {
   const displayAdsTargetedTags = document.getElementById(
-    'display-ad-targeted-tags',
+    'billboard-targeted-tags',
   );
 
   if (displayAdsTargetedTags) {
@@ -42,7 +42,7 @@ function showTagsField() {
  */
 function hideTagsField() {
   const displayAdsTargetedTags = document.getElementById(
-    'display-ad-targeted-tags',
+    'billboard-targeted-tags',
   );
 
   displayAdsTargetedTags?.classList.add('hidden');

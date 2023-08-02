@@ -4,7 +4,7 @@ import { observeDisplayAds } from './billboardAfterRenderActions';
 // the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
-    'js-display-ad-container',
+    'js-billboard-container',
   );
 
   const promises = [...placeholderElements].map(generateDisplayAd);
