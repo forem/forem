@@ -1,4 +1,5 @@
 module ColorHelper
+  # default shade is based on converting our `indigo-600` (rgb 79,70,229) to hex
   def gradient_from_hex(hex = "#4F46E5")
     return { light: "#4f46e5", dark: "#312c8f" } unless hex.is_a? String
 
