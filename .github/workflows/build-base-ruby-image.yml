@@ -31,7 +31,7 @@ jobs:
         with:
           files: Containerfile.base
       - name: Do not push to GHCR if this commit does not target the main branch
-        if: ${{ github.event_name != 'push' }}
+        if: ${{ github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
         run: echo "SKIP_PUSH=1" >> $GITHUB_ENV
       - name: Set up QEMU for cross-compiling to ARM64
         uses: docker/setup-qemu-action@v2
