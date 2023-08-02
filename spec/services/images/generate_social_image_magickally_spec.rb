@@ -5,7 +5,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let!(:article) { create(:article, user_id: user.id, with_main_image: false) }
   let(:organization) { create(:organization) }
   let!(:second_article) { create(:article, user_id: user.id, organization_id: organization.id, with_main_image: false) }
-  let(:background_image) { double('MiniMagick::Image') }
+  let(:background_image) { double("MiniMagick::Image") }
 
   describe ".call" do
     
