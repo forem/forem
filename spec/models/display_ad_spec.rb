@@ -355,20 +355,6 @@ RSpec.describe DisplayAd do
     end
   end
 
-  describe "#comma_separated_geolocations" do
-    let(:geolocations) { [Geolocation.new("US", "CA"), Geolocation.new("CA", "ON")] }
-    let(:billboard) { create(:display_ad, target_geolocations: geolocations) }
-    let(:untargeted_billboard) { create(:display_ad) }
-
-    it "provides the billboard's geolocations in comma separated iso3166 format" do
-      expect(billboard.comma_separated_geolocations).to eq("US-CA, CA-ON")
-    end
-
-    it "returns an empty string when there are no geolocations" do
-      expect(untargeted_billboard.comma_separated_geolocations).to eq("")
-    end
-  end
-
   describe "#exclude_articles_ids" do
     it "processes array of integer ids as expected" do
       display_ad.exclude_article_ids = ["11"]
