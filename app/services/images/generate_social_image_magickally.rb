@@ -119,7 +119,6 @@ module Images
     end
 
     def add_profile_image(result)
-            
       profile_image_size = "64x64"
       profile_image_location = "+80+63"
       # Add subtext and author image
