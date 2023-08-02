@@ -16,7 +16,8 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:read_files) do
           allow(background_image).to receive(:combine_options).and_return(background_image)
           allow(background_image).to receive(:composite) do |&block|
-            block.call(background_image); background_image 
+            block.call(background_image)
+ background_image 
           end
           generator.instance_variable_set("@background_image", background_image)
         end
