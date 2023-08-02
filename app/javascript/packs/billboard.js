@@ -1,4 +1,5 @@
 import { setupDisplayAdDropdown } from '../utilities/displayAdDropdown';
+import { observeDisplayAds } from './billboardAfterRenderActions';
 
 // the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
@@ -38,3 +39,5 @@ async function generateDisplayAd(element) {
 }
 
 getBillboard();
+
+export { getBillboard };
