@@ -187,7 +187,16 @@ function fetchNextFollowingPage(el) {
       '/followings/organizations',
       insertNext({ elId: 'follows', action }, buildFollowsHTML),
     );
+  } else if (action.includes('hidden_tags')) {
+    fetchNext(
+      el,
+      '/followings/tags',
+      insertNext({ elId: 'follows', action }, buildTagsHTML),
+    );
   } else {
+    // This accounts for `followings_tags`, it would make more sense to explicitly check for
+    // the condition rather than have a catch-all else. Hence, We need to double check
+    // what cases the catch-all cover and then move it inot an explicit condition.
     fetchNext(
       el,
       '/followings/tags',
