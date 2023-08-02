@@ -1,9 +1,9 @@
 module Images
 
-  MEDIUM_FONT_PATH = Rails.root.join('app', 'assets', 'fonts', 'Roboto-Medium.ttf').freeze
-  BOLD_FONT_PATH = Rails.root.join('app', 'assets', 'fonts', 'Roboto-Bold.ttf').freeze
-  TEMPLATE_PATH = Rails.root.join('app', 'assets', 'images', 'social_template.png').freeze
-  ROUNDED_MASK_PATH = Rails.root.join('app', 'assets', 'images', 'rounded_mask.png').freeze
+  MEDIUM_FONT_PATH = Rails.root.join("app", "assets", "fonts", "Roboto-Medium.ttf").freeze
+  BOLD_FONT_PATH = Rails.root.join("app", "assets", "fonts", "Roboto-Bold.ttf").freeze
+  TEMPLATE_PATH = Rails.root.join("app", "assets", "images", "social_template.png").freeze
+  ROUNDED_MASK_PATH = Rails.root.join("app", "assets", "images", "rounded_mask.png").freeze
 
   class GenerateSocialImageMagickally
     def self.call(resource = nil)
@@ -64,7 +64,7 @@ module Images
     def draw_stripe(color)
       @background_image.combine_options do |c|
         c.fill color
-        c.draw 'rectangle 0,0 1000,24'  # adjust width according to your image width
+        c.draw "rectangle 0,0 1000,24"  # adjust width according to your image width
       end
     end
 
@@ -72,18 +72,18 @@ module Images
       if @logo_image
         # Add white stroke to the overlay image
         @logo_image.combine_options do |c|
-          c.stroke 'white'
-          c.strokewidth '4'
-          c.fill 'none'
-          c.draw 'rectangle 0,0 1000,1000'  # adjust as needed based on image size
+          c.stroke "white"
+          c.strokewidth "4"
+          c.fill "none"
+          c.draw "rectangle 0,0 1000,1000"  # adjust as needed based on image size
         end
-        
+
         # Resize the overlay image
         @logo_image.resize "64x64"
-      
+
         result = @background_image.composite(@logo_image) do |c|
-          c.compose 'Over' # OverCompositeOp
-          c.geometry '+850+372' # move the overlay to the top left
+          c.compose "Over" # OverCompositeOp
+          c.geometry "+850+372" # move the overlay to the top left
         end
       end
       result
@@ -92,51 +92,51 @@ module Images
     def add_text(result, title, date, author_name)
       title = wrap_text(title)
       font_size = calculate_font_size(title)
-      
+
       result.combine_options do |c|
-        c.gravity 'West' # Set the origin for the text at the top left corner
+        c.gravity "West" # Set the origin for the text at the top left corner
         c.pointsize font_size.to_s
         c.draw "text 80,-39 '#{title}'" # Start drawing text 90 from the left and slightly north
-        c.fill 'black'
+        c.fill "black"
         c.font BOLD_FONT_PATH.to_s
       end
 
       result.combine_options do |c|
-        c.gravity 'Southwest'
-        c.pointsize '33'
+        c.gravity "Southwest"
+        c.pointsize "32"
         c.draw "text 156,88 '#{author_name}'" # adjust coordinates as needed
-        c.fill 'black'
+        c.fill "black"
         c.font MEDIUM_FONT_PATH.to_s
       end
 
       result.combine_options do |c|
-        c.gravity 'Southwest'
-        c.pointsize '27'
+        c.gravity "Southwest"
+        c.pointsize "26"
         c.draw "text 156,60 '#{date}'" # adjust coordinates as needed
-        c.fill '#525252'
+        c.fill "#525252"
       end
 
       result
     end
 
     def add_profile_image(result)
-                      
+            
       profile_image_size = "64x64"
       profile_image_location = "+80+63"
       # Add subtext and author image
       @author_image.resize profile_image_size
       
       result = result.composite(@author_image) do |c|
-        c.compose 'Over' 
-        c.gravity 'Southwest'
+        c.compose "Over" 
+        c.gravity "Southwest"
         c.geometry profile_image_location # 
       end
 
       @rounded_mask.resize profile_image_size
 
       result = result.composite(@rounded_mask) do |c|
-        c.compose 'Over' 
-        c.gravity 'Southwest'
+        c.compose "Over" 
+        c.gravity "Southwest"
         c.geometry profile_image_location # 
       end
 
@@ -144,7 +144,7 @@ module Images
     end
 
     def upload_result(result)
-      tempfile = Tempfile.new(['output', '.png'])
+      tempfile = Tempfile.new(["output", ".png"])
       result.write tempfile.path
       uploader = ArticleImageUploader.new.tap do |uploader|
         uploader.store!(tempfile)
@@ -161,18 +161,18 @@ module Images
 
     def calculate_font_size(text)
       text_length = text.length
-    
+
       if text_length < 18
-        return 90
+        return 88
       elsif text_length < 40
-          return 80
+          return 77
       elsif text_length < 70
-        return 62
+        return 60
       else
-        return 53
+        return 50
       end
     end
-    
+
     def wrap_text(text)
       line_width = if text.length < 40
                       20
