@@ -29,6 +29,6 @@ class OrganizationMembership < ApplicationRecord
   private
 
   def bust_cache
-    Organizations::BustCacheWorker.perform_async(organization.id, organization.slug)
+    BustCachePathWorker.perform_async(organization.path.to_s)
   end
 end

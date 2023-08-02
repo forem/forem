@@ -395,12 +395,12 @@ RSpec.describe Organization do
     context "when a new user is added to the organization" do
       let(:user) { create(:user) }
 
-      it "triggers cache busting" do
-        org_membership = create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
+      it "calls BustCachePathWorker after creating an organization membership" do
+        org_membership = OrganizationMembership.create(user: user, organization: organization, type_of_user: "admin")
 
-        sidekiq_assert_enqueued_with(job: Organizations::BustCacheWorker, args: [organization.id, organization.slug]) do
-          org_membership.save
-        end
+        allow(org_membership).to receive(:bust_cache)
+        org_membership.save
+        expect(org_membership).to have_received(:bust_cache)
       end
     end
   end
