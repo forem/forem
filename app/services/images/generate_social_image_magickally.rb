@@ -123,7 +123,6 @@ module Images
       profile_image_location = "+80+63"
       # Add subtext and author image
       @author_image.resize profile_image_size
-      
       result = result.composite(@author_image) do |c|
         c.compose "Over"
         c.gravity "Southwest"
