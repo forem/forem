@@ -43,7 +43,6 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
           block.call(command)
           expect(command.args.join(" ")).to include("fill '#111212'")
         end
-  
         described_class.call(article)
       end
     end
