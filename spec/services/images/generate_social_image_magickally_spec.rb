@@ -19,7 +19,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
             block.call(background_image)
  background_image 
           end
-          generator.instance_variable_set("@background_image", background_image)
+          generator.instance_variable_set(:@background_image, background_image)
         end
         allow(generator).to receive(:add_logo)
         allow(generator).to receive(:add_text)
