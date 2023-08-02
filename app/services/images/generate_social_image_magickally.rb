@@ -57,6 +57,7 @@ module Images
     end
 
     def draw_stripe(color)
+      color = "#111212" if color == "#000000" # pure black has minimagick side effects
       @background_image.combine_options do |c|
         c.fill color
         c.draw "rectangle 0,0 1000,24" # adjust width according to your image width
