@@ -2,18 +2,20 @@
 name: Build ghcr.io/forem/ruby Container Image
 on:
   workflow_call:
+  # Allow manual runs through GitHub GUI in case of emergency.
+  workflow_dispatch:
   push:
     branches:
       - 'main'
     paths:
       - 'Containerfile.base'
-      - '.ruby-version'
+      - '.ruby-version-next'
   pull_request:
     branches:
       - 'main'
     paths:
       - 'Containerfile.base'
-      - '.ruby-version'
+      - '.ruby-version-next'
 
 jobs:
   build-image:
