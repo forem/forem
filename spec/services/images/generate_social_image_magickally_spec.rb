@@ -8,7 +8,6 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   let(:background_image) { double("MiniMagick::Image") }
 
   describe ".call" do
-    
     context "when resource is an Article" do
       let(:generator) { described_class.new(article) }
 
