@@ -26,7 +26,6 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(generator).to receive(:add_profile_image)
         allow(generator).to receive(:upload_result).and_return("image_url")
       end
-      
       it "calls the class methods" do
         expect(generator).to receive(:generate_magickally).once
         described_class.call(article)
