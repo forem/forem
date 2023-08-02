@@ -127,7 +127,7 @@ module Images
       @author_image.resize profile_image_size
       
       result = result.composite(@author_image) do |c|
-        c.compose "Over" 
+        c.compose "Over"
         c.gravity "Southwest"
         c.geometry profile_image_location # 
       end
