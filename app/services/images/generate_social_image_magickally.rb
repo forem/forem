@@ -134,7 +134,7 @@ module Images
       result.composite(@rounded_mask) do |c|
         c.compose "Over"
         c.gravity "Southwest"
-        c.geometry profile_image_location # 
+        c.geometry profile_image_location
       end
 
       result
