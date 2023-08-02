@@ -1,6 +1,6 @@
 module Images
   MEDIUM_FONT_PATH = Rails.root.join("app/assets/fonts/Roboto-Medium.ttf", "assets", "fonts", "Roboto-Medium.ttf").freeze
-  BOLD_FONT_PATH = Rails.root.join("app", "assets", "fonts", "Roboto-Bold.ttf").freeze
+  BOLD_FONT_PATH = Rails.root.join("app/assets/fonts/Roboto-Bold.ttf", "assets", "fonts", "Roboto-Bold.ttf").freeze
   TEMPLATE_PATH = Rails.root.join("app", "assets", "images", "social_template.png").freeze
   ROUNDED_MASK_PATH = Rails.root.join("app", "assets", "images", "rounded_mask.png").freeze
 
