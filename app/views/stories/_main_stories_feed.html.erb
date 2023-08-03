@@ -8,50 +8,50 @@
 <% end %>
 
 <% if !user_signed_in? %>
-  <% @sidebar_ad_first = DisplayAd.for_display(area: "feed_first", user_signed_in: user_signed_in?) %>
-  <% if @sidebar_ad_first %>
-    <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_first, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+  <% @sidebar_billboard_first = DisplayAd.for_display(area: "feed_first", user_signed_in: user_signed_in?) %>
+  <% if @sidebar_billboard_first %>
+    <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_first, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
 <% end %>
 
-<%# This second-display-ad should be shown between 2nd and 3rd article. %>
-<% second_display_ad_position = 2 %>
+<%# This second-billboard should be shown between 2nd and 3rd article. %>
+<% second_billboard_position = 2 %>
 
 <% if @pinned_article %>
-  <% second_display_ad_position -= 1 %>
+  <% second_billboard_position -= 1 %>
   <%= render partial: "articles/single_story", locals: { story: @pinned_article, pinned: true, featured: @pinned_article.id == @featured_story.id } %>
 <% end %>
 
 <% if @featured_story.id && @pinned_article&.id != @featured_story.id %>
-  <% second_display_ad_position -= 1 %>
+  <% second_billboard_position -= 1 %>
   <%= render partial: "articles/single_story", locals: { story: @featured_story, featured: true, pinned: false } %>
 <% end %>
 
 <div id="article-index-podcast-div"></div>
 
-<%# This third-display-ad should be shown between 7th and 8th article. %>
-<% third_display_ad_position = second_display_ad_position + 5 %>
+<%# This third-billboard should be shown between 7th and 8th article. %>
+<% third_billboard_position = second_billboard_position + 5 %>
 
 <div class="substories" id="substories">
   <% if @stories.any? %>
     <% @stories.each_with_index do |story, i| %>
-      <% if !user_signed_in? && i == second_display_ad_position %>
-        <% @sidebar_ad_second = DisplayAd.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
-        <% if @sidebar_ad_second %>
-          <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+      <% if !user_signed_in? && i == second_billboard_position %>
+        <% @sidebar_billboard_second = DisplayAd.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
+        <% if @sidebar_billboard_second %>
+          <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
 
-      <% if !user_signed_in? && i == third_display_ad_position %>
-        <% @sidebar_ad_third = DisplayAd.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
-        <% if @sidebar_ad_third %>
-          <%= render partial: "shared/display_ad", locals: { display_ad: @sidebar_ad_third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+      <% if !user_signed_in? && i == third_billboard_position %>
+        <% @sidebar_billboard_third = DisplayAd.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
+        <% if @sidebar_billboard_third %>
+          <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
       <% if story.id != @featured_story.id && story.id != @pinned_article&.id %>
         <%= render partial: "articles/single_story", locals: { story: story, featured: false, pinned: false } %>
       <% else %>
-        <% third_display_ad_position += 1 %>
+        <% third_billboard_position += 1 %>
       <% end %>
     <% end %>
     <% if @stories.size > 1 %>
