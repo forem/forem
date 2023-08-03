@@ -15,9 +15,11 @@ function fetchNext(el, endpoint, insertCallback) {
   // I thought it would be safe to do the param name update for now until we can refactor this file and change the coupled architecture.
   // "action" renamed to "controller_action" is the name of the action from the originating server side request e.g. hidden_tags in the dashboard_controller.
   const updatedIndexParams = {};
-  delete Object.assign(updatedIndexParams, indexParams, {
-    ['controller_action']: indexParams['action'],
-  })['action'];
+  if (indexParams['action']) {
+    delete Object.assign(updatedIndexParams, indexParams, {
+      ['controller_action']: indexParams['action'],
+    })['action'];
+  }
 
   var urlParams = Object.keys(updatedIndexParams)
     .map(function handleMap(k) {
