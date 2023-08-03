@@ -51,7 +51,7 @@ class DashboardsController < ApplicationController
 
   def following_tags
     fetch_and_authorize_user
-    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points).where("points > ?", 0)
+    @followed_tags = follows_for_tag(user: @user, order_by: :points, points_range: 0..)
     @collections_count = collections_count(@user)
   end
 
@@ -100,7 +100,7 @@ class DashboardsController < ApplicationController
 
   def hidden_tags
     fetch_and_authorize_user
-    @hidden_tags = @user.follows_by_type("ActsAsTaggableOn::Tag").where("points < ?", 0).includes(:followable)
+    @hidden_tags = follows_for_tag(user: @user, order_by: :points, points_range: ..0)
     @collections_count = collections_count(@user)
   end
 
@@ -108,6 +108,13 @@ class DashboardsController < ApplicationController
 
   def follows_for(user:, type:, order_by: :created_at)
     user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
+  end
+
+  def follows_for_tag(user:, order_by: :created_at, points_range: 0..)
+    user.follows_by_type("ActsAsTaggableOn::Tag").order(order_by => :desc)
+      .where(explicit_points: points_range)
+      .includes(:followable)
+      .limit(follows_limit)
   end
 
   def set_source
