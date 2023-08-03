@@ -6,7 +6,7 @@ module Images
 
     def perform(id, class_name)
       object = class_name.constantize.find(id)
-      Images::GenerateSocialImage.call(object)
+      Images::GenerateSocialImageMagickally.call(object)
     end
   end
 end
