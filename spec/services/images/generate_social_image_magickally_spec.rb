@@ -114,7 +114,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         expect(generator.send(:calculate_font_size, medium_text)).to eq(77)
       end
 
-      it "returns the correct font size for medium text" do
+      it "returns the correct font size for medium-to-long text" do
         medium_long_text = "This is a slightly longer text. Slightly longer than the last."
         expect(generator.send(:calculate_font_size, medium_long_text)).to eq(60)
       end
