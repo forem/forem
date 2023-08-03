@@ -183,7 +183,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
         generator.instance_variable_set(:@background_image, result_image)
         generator.instance_variable_set(:@author_image, author_image)
-        generator.instance_variable_set("@rounded_mask", rounded_mask)
+        generator.instance_variable_set(:@rounded_mask, rounded_mask)
       end
 
       it "adds the profile image and rounded mask to the image" do
