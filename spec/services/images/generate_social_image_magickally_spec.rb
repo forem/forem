@@ -244,7 +244,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       context "upload_result" do
         let(:generator) { described_class.new(article) }
         let(:result_image) { double("MiniMagick::Tool::Convert") }
-        let(:tempfile) { instance_double("Tempfile", path: "/tmp/output.png") }
+        let(:tempfile) { instance_double(Tempfile, path: "/tmp/output.png") }
         let(:uploader) { instance_double("ArticleImageUploader") }
 
         before do
