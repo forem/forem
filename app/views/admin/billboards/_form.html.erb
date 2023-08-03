@@ -31,6 +31,13 @@
       <div id="display-ad-targeted-tags"></div>
     </div>
 
+    <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+      <div class="crayons-field">
+        <%= label_tag :target_geolocations, "Target Geolocations:", class: "crayons-field__label" %>
+        <%= text_field_tag :target_geolocations, @billboard.target_geolocations.map(&:to_iso3166).join(", "), class: "crayons-textfield", placeholder: "US-NY, CA-ON", autocomplete: "off" %>
+      </div>
+    <% end %>
+
     <div class="crayons-field hidden">
       <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
       <%= text_field_tag :tag_list, @billboard.tag_list.to_s, class: "crayons-textfield js-tags-textfield", autocomplete: "off" %>
