@@ -210,7 +210,7 @@ describe('<Feed /> component', () => {
           const lastCallbackResult =
             callback.mock.calls[callback.mock.calls.length - 1][0];
           expect(lastCallbackResult.feedItems[0]).toEqual(firstBillboard);
-          // there is no second bilboard so podcasts get rendered in 4th place
+          // there is no second billboard so podcasts get rendered in 4th place
           expect(lastCallbackResult.feedItems[3]).toEqual(podcastEpisodes);
           expect(lastCallbackResult.feedItems[8]).toEqual(thirdBillboard);
         });
@@ -249,7 +249,7 @@ describe('<Feed /> component', () => {
           const pinnedItem = feedPosts.find((o) => o.pinned === true);
           // there is no first billboard
           expect(lastCallbackResult.feedItems[0]).toEqual(pinnedItem);
-          // there is no second bilboard so podcasts get rendered in 3rd place
+          // there is no second billboard so podcasts get rendered in 3rd place
           expect(lastCallbackResult.feedItems[2]).toEqual(podcastEpisodes);
           expect(lastCallbackResult.feedItems[7]).toEqual(thirdBillboard);
         });

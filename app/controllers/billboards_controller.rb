@@ -1,11 +1,11 @@
 class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
-  CACHE_EXPIRY_FOR_DISPLAY_ADS = 15.minutes.to_i.freeze
+  CACHE_EXPIRY_FOR_BILLBOARDS = 15.minutes.to_i.freeze
 
   def show
     skip_authorization
-    set_cache_control_headers(CACHE_EXPIRY_FOR_DISPLAY_ADS) unless session_current_user_id
+    set_cache_control_headers(CACHE_EXPIRY_FOR_BILLBOARDS) unless session_current_user_id
     client_geolocation = request.env["HTTP_CLIENT_GEO"] if user_signed_in?
 
     if placement_area
@@ -13,7 +13,7 @@ class BillboardsController < ApplicationController
         @article = Article.find_by(slug: params[:slug])
       end
 
-      @display_ad = DisplayAd.for_display(
+      @billboard = DisplayAd.for_display(
         area: placement_area,
         user_signed_in: user_signed_in?,
         user_id: current_user&.id,
@@ -22,8 +22,8 @@ class BillboardsController < ApplicationController
         location: client_geolocation,
       )
 
-      if @display_ad && !session_current_user_id
-        set_surrogate_key_header @display_ad.record_key
+      if @billboard && !session_current_user_id
+        set_surrogate_key_header @billboard.record_key
       end
     end
 
