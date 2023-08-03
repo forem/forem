@@ -240,6 +240,38 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
           generator.send(:add_logo, result_image)
         end
       end
+
+      context "upload_result" do
+        let(:generator) { described_class.new(article) }
+        let(:result_image) { double("MiniMagick::Tool::Convert") }
+        let(:tempfile) { instance_double("Tempfile", path: "/tmp/output.png") }
+        let(:uploader) { instance_double("ArticleImageUploader") }
+
+        before do
+          allow(Tempfile).to receive(:new).and_return(tempfile)
+          allow(tempfile).to receive(:close)
+          allow(tempfile).to receive(:unlink)
+          allow(result_image).to receive(:write)
+
+          allow(ArticleImageUploader).to receive(:new).and_return(uploader)
+          allow(uploader).to receive(:store!)
+          allow(uploader).to receive(:url).and_return("http://example.com/social_image.png")
+
+          generator.instance_variable_set(:@background_image, result_image)
+        end
+
+        it "creates a tempfile, writes the image, uploads the image, then cleans up the tempfile" do
+          expect(Tempfile).to receive(:new).with(["output", ".png"]).and_return(tempfile)
+          expect(result_image).to receive(:write).with(tempfile.path)
+          expect(ArticleImageUploader).to receive(:new).and_return(uploader)
+          expect(uploader).to receive(:store!).with(tempfile)
+          expect(tempfile).to receive(:close)
+          expect(tempfile).to receive(:unlink)
+          expect(uploader).to receive(:url).and_return("http://example.com/social_image.png")
+
+          expect(generator.send(:upload_result, result_image)).to eq "http://example.com/social_image.png"
+        end
+      end
     end
   end
 end
