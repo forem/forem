@@ -181,7 +181,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(author_image).to receive(:resize)
         allow(rounded_mask).to receive(:resize)
 
-        generator.instance_variable_set("@background_image", result_image)
+        generator.instance_variable_set(:@background_image, result_image)
         generator.instance_variable_set("@author_image", author_image)
         generator.instance_variable_set("@rounded_mask", rounded_mask)
       end
