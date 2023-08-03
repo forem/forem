@@ -82,8 +82,6 @@ en:
       reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
-    podcast:
-      slug_is_reserved: slug is reserved
     podcast_episode_appearance:
       provided_role_is_not_valid: provided role is not valid
     poll_skip:
@@ -128,9 +126,7 @@ en:
       could_not_send: confirmation could not be sent. %{e_message}
       password_not_matched: doesn't match password confirmation
       has_been_banished: has been banished.
-      is_taken: '%{username} is taken.'
       user_could_not_be_saved: User could not be saved. %{e_message}
-      username_is_reserved: username is reserved
     user_block:
       cant_be_the_same: can't be the same as the blocked_id
     user_subscription:
