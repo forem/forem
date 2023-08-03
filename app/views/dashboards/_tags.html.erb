@@ -7,9 +7,6 @@
       <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center" style="border-top-color: <%= tag.bg_color_hex %>;" id="follows-<%= follow.id %>">
         <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
           <%= render_tag_link(tag.name) %>
-          <% if follow.explicit_points < 0 %>
-            <span class="c-indicator c-indicator--danger" title="<%= t("views.dashboard.following_tags.anti.title") %>"><%= t("views.dashboard.following_tags.anti.text") %></span>
-          <% end %>
         </h3>
 
         <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
