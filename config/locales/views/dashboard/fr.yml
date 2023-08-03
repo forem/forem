@@ -108,7 +108,7 @@ fr:
         empty: You don't follow any podcasts yet...
       following_tags:
         heading: Dashboard » Following tags
-        adjust: Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
+        adjust: Adjust the tag weight to modify your home feed. Higher values mean more appearances for that tag.
         anti:
           title: This tag has negative follow weight
           text: Anti-follow
@@ -120,6 +120,10 @@ fr:
       following_users:
         heading: Tableau de bord » Utilisateurs suivis
         empty: Vous ne suivez aucun utilisateur...
+      hidden_tags:
+        heading: Dashboard » Hidden tags
+        adjust: Adjust the tag weight to modify your home feed. Lower values mean less appearances for that tag.
+        empty_html: "<span>You don't have any hidden tags...</span>"
       listings:
         meta:
           title: Listings Dashboard
