@@ -231,7 +231,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
       context "when logo image is not present" do
         before do
-          generator.instance_variable_set("@logo_image", nil)
+          generator.instance_variable_set(:@logo_image, nil)
         end
 
         it "does not attempt to add the logo to the image" do
