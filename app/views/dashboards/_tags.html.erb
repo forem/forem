@@ -32,7 +32,7 @@
     <% end %>
   </div>
 
-  <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-inverted pt-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
+  <%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-inverted mt-3 pt-3 pl-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
     <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit"><%= t("views.dashboard.following_tags.update") %></button>
   <% end %>
 <% else %>
