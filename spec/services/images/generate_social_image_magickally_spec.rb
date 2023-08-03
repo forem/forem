@@ -173,7 +173,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:article) { create(:article, user_id: user.id, with_main_image: false) }
       let(:generator) { described_class.new(article) }
       let(:result_image) { double('MiniMagick::Tool::Convert') }
-      let(:author_image) { double('MiniMagick::Tool::Convert') }
+      let(:author_image) { double("MiniMagick::Tool::Convert") }
       let(:rounded_mask) { double('MiniMagick::Tool::Convert') }
 
       before do
