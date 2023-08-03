@@ -47,7 +47,7 @@
     </div>
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
-      <% @tags.each do |tag| %>
+      <% @tags.includes([:badge]).each do |tag| %>
         <div class="tag-card crayons-card branded-4 p-3 pt-2 m:p-6 m:pt-4 relative" style="border-top-color: <%= tag.bg_color_hex %>; ">
           <h3 class="mb-1 -ml-2">
             <%= render_tag_link(tag.accessible_name) %>
