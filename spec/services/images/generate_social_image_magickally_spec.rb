@@ -174,7 +174,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:generator) { described_class.new(article) }
       let(:result_image) { double('MiniMagick::Tool::Convert') }
       let(:author_image) { double("MiniMagick::Tool::Convert") }
-      let(:rounded_mask) { double('MiniMagick::Tool::Convert') }
+      let(:rounded_mask) { double("MiniMagick::Tool::Convert") }
 
       before do
         allow(result_image).to receive(:composite).and_return(result_image)
