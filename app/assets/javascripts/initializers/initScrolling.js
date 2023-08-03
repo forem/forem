@@ -13,6 +13,7 @@ function fetchNext(el, endpoint, insertCallback) {
   // I change the name of the param from "action" to "controller_action" prior to the fetch because Rails ignores the
   // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
   // I thought it would be safe to do the param name update for now until we can refactor this file and change the coupled architecture.
+  // "action" renamed to "controller_action" is the name of the action from the originating server side request e.g. hidden_tags in the dashboard_controller.
   const updatedIndexParams = {};
   delete Object.assign(updatedIndexParams, indexParams, {
     ['controller_action']: indexParams['action'],
