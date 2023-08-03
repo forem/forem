@@ -37,15 +37,13 @@ RSpec.describe CommentCreator, type: :service do
       creator.save
     end
 
-    it "notifies subscribers" do
-      skip "flaky spec"
+    it "notifies subscribers", skip: "flakey spec" do
       expect(NotificationSubscription).to have_received(:create)
       expect(Notification).to have_received(:send_new_comment_notifications_without_delay)
       expect(Mention).to have_received(:create_all)
     end
 
-    it "creates a new reaction" do
-      skip "flaky spec"
+    it "creates a new reaction", skip: "flakey spec" do
       expect(Reaction).to have_received(:create)
     end
   end
