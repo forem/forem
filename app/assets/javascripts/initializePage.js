@@ -30,7 +30,7 @@ function initializePage() {
       }
       initializeBroadcast();
       initializeReadingListIcons();
-      initializeDisplayAdVisibility();
+      initializeBillboardVisibility();
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
