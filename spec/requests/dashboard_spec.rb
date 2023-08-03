@@ -226,21 +226,64 @@ RSpec.describe "Dashboards" do
     end
 
     describe "followed tags section" do
-      let(:tag) { create(:tag) }
+      let(:follow_tag) { create(:tag, name: "tagone") }
+      let(:antifollow_tag) { create(:tag, name: "tagtwo") }
+      let(:unrelated_tag) { create(:tag, name: "tagthree") }
 
       before do
         sign_in user
-        user.follow tag
+        follow = user.follow(follow_tag)
+        follow.update explicit_points: 5
+
+        antifollow = user.follow(antifollow_tag)
+        antifollow.update explicit_points: -5
+
+        user.follow(unrelated_tag)
+
         user.reload
         get "/dashboard/following_tags"
       end
 
       it "renders followed tags count" do
-        expect(response.body).to include "Following tags (1)"
+        expect(response.body).to include "Following tags (2)"
       end
 
       it "lists followed tags" do
-        expect(response.body).to include tag.name
+        expect(response.body).to include follow_tag.name
+        expect(response.body).to include unrelated_tag.name
+
+        expect(response.body).not_to include antifollow_tag.name
+      end
+    end
+
+    describe "hidden tags section" do
+      let(:follow_tag) { create(:tag, name: "tagone") }
+      let(:antifollow_tag) { create(:tag, name: "tagtwo") }
+      let(:unrelated_tag) { create(:tag, name: "tagthree") }
+
+      before do
+        sign_in user
+        follow = user.follow(follow_tag)
+        follow.update explicit_points: 5
+
+        antifollow = user.follow(antifollow_tag)
+        antifollow.update explicit_points: -5
+
+        user.follow(unrelated_tag)
+
+        user.reload
+        get "/dashboard/hidden_tags"
+      end
+
+      it "renders hidden tags count" do
+        expect(response.body).to include "Hidden tags (1)"
+      end
+
+      it "lists hidden tags" do
+        expect(response.body).not_to include follow_tag.name
+        expect(response.body).not_to include unrelated_tag.name
+
+        expect(response.body).to include antifollow_tag.name
       end
     end
 
