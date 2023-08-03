@@ -1,11 +1,6 @@
 <%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
 
-<div class="crayons-notice crayons-notice--info p-4 mx-3 s:mx-0 mb-3" aria-live="polite">
-    <%= t("views.dashboard.following_tags.adjust") %>
-    <span class="c-indicator c-indicator--warning ml-3"><%= t("views.dashboard.following_tags.default") %></span>
-</div>
 <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-3 m:px-0">
-  <% negative_follow_shown_once = false %>
   <% tags.each do |follow| %>
     <% tag = follow.followable %>
     <% if tag %>
