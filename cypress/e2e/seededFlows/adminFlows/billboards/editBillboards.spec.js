@@ -65,7 +65,9 @@ describe('Billboards Form', () => {
           .should('be.visible');
 
         cy.get('@audienceSegments').select('Are trusted').should('exist');
-        cy.get('@audienceSegments').select('Have not posted yet').should('exist');
+        cy.get('@audienceSegments')
+          .select('Have not posted yet')
+          .should('exist');
         cy.get('@audienceSegments')
           .select('Have not set an experience level')
           .should('exist');
@@ -75,30 +77,85 @@ describe('Billboards Form', () => {
           .should('not.exist');
       });
 
-      context('when editing a display ad with a manually managed audience', () => {
-        beforeEach(() => {
-          cy.visit('/admin/customization/billboards');
-          cy.findByRole('link', { name: 'Manual Audience Billboard' }).click({
+      context(
+        'when editing a display ad with a manually managed audience',
+        () => {
+          beforeEach(() => {
+            cy.visit('/admin/customization/billboards');
+            cy.findByRole('link', { name: 'Manual Audience Billboard' }).click({
+              force: true,
+            });
+          });
+
+          it('shows the audience segment field but disabled', () => {
+            cy.findByLabelText('Users who:')
+              .as('audienceSegments')
+              .should('be.disabled');
+
+            cy.get('@audienceSegments')
+              .find(':selected')
+              .should('have.text', 'Managed elsewhere');
+
+            cy.get('@audienceSegments')
+              .contains('Are trusted')
+              .should('not.exist');
+            cy.get('@audienceSegments')
+              .contains('Have not posted yet')
+              .should('not.exist');
+            cy.get('@audienceSegments')
+              .contains('Have not set an experience level')
+              .should('not.exist');
+          });
+        },
+      );
+    });
+
+    describe('Target Geolocations Field', () => {
+      beforeEach(() => {
+        cy.enableFeatureFlag('billboard_location_targeting');
+        cy.get('@user').then((user) => {
+          cy.loginAndVisit(user, '/admin/customization/billboards');
+          cy.findByRole('link', { name: 'Make A New Display Ad' }).click({
             force: true,
           });
         });
+      });
+      afterEach(() => {
+        cy.disableFeatureFlag('billboard_location_targeting');
+      });
 
-        it('shows the audience segment field but disabled', () => {
-          cy.findByLabelText('Users who:')
-            .as('audienceSegments')
-            .should('be.disabled');
+      it('should show a placeholder with valid geolocation codes', () => {
+        cy.findByLabelText('Target Geolocations:')
+          .as('targetGeolocations')
+          .should('exist');
+        cy.get('input[placeholder="US-NY, CA-ON"]').should('exist');
+      });
 
-          cy.get('@audienceSegments')
-            .find(':selected')
-            .should('have.text', 'Managed elsewhere');
+      it('should not return iso3166 errors if given valid geolocation code inputs', () => {
+        cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
+          'CA-ON, US-OH, US-MI',
+        );
+        cy.findByRole('button', { name: 'Save Display Ad' }).click();
+        cy.get('#flash-0').should(($flashMessage) => {
+          expect($flashMessage).to.not.contain(
+            'is not a supported ISO 3166-2 code',
+          );
+        });
+      });
 
-          cy.get('@audienceSegments').contains('Are trusted').should('not.exist');
-          cy.get('@audienceSegments')
-            .contains('Have not posted yet')
-            .should('not.exist');
-          cy.get('@audienceSegments')
-            .contains('Have not set an experience level')
-            .should('not.exist');
+      it('should generate errors if some or all of the input is invalid', () => {
+        cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
+          'US-NY, MX-CMX',
+        );
+        cy.findByRole('button', { name: 'Save Display Ad' }).click();
+        cy.get('#flash-0').should(($flashMessage) => {
+          // We currently support only the US and CA
+          expect($flashMessage).to.contain(
+            'MX-CMX is not a supported ISO 3166-2 code',
+          );
+          expect($flashMessage).to.not.contain(
+            'US-NY is not a supported ISO 3166-2 code',
+          );
         });
       });
     });
