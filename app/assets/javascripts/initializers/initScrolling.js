@@ -1,5 +1,8 @@
 /* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick */
 
+// The purpose of initScrolling is to start paginating the page once you reach the bottom of the page.
+// It does this for majority of the views on the dashboard page as well as the home feed.
+
 var client;
 /**
  *
