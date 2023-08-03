@@ -617,7 +617,7 @@ GEM
       rspec-rails (>= 3.0.0)
     raabro (1.4.0)
     racc (1.7.1)
-    rack (2.2.8)
+    rack (2.2.7)
     rack-attack (6.6.1)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)
@@ -956,7 +956,7 @@ GEM
       yard (>= 0.8.3)
     yard-activesupport-concern (0.0.1)
       yard (>= 0.8)
-    zeitwerk (2.6.11)
+    zeitwerk (2.6.8)
     zlib (2.1.1)
     zonebie (0.6.1)
 
