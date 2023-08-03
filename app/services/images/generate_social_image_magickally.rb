@@ -44,6 +44,8 @@ module Images
           article.update_column(:social_image, url)
         end
       end
+    rescue StandardError => e
+      Honeybadger.notify(e)
     end
 
     private
