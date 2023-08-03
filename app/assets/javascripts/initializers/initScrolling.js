@@ -10,9 +10,9 @@ var client;
  */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
-  // I swap the name of the key "action" to "controller_action" before we do the fetch because we can never use this
+  // I change the name of the param from "action" to "controller_action" prior to the fetch because Rails ignores the
   // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
-  // I thought it would be safe to do the swap for now until we can refactor this file.
+  // I thought it would be safe to do the param name update for now until we can refactor this file and change the coupled architecture.
   const updatedIndexParams = {};
   delete Object.assign(updatedIndexParams, indexParams, {
     ['controller_action']: indexParams['action'],
@@ -194,9 +194,9 @@ function fetchNextFollowingPage(el) {
       insertNext({ elId: 'follows', action }, buildTagsHTML),
     );
   } else {
-    // This accounts for `followings_tags`, it would make more sense to explicitly check for
-    // the condition rather than have a catch-all else. Hence, We need to double check
-    // what cases the catch-all cover and then move it inot an explicit condition.
+    // This "else" accounts for `followings_tags`, it would make more sense to explicitly check for
+    // the condition rather than have a catch-all else statement. Hence, we need to double check
+    // what cases the catch-all cover and then move it into an explicit condition.
     fetchNext(
       el,
       '/followings/tags',
