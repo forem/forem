@@ -32,7 +32,7 @@
               <div class="flex flex-1 items-center">
                 <%= feedback_message.reporter.name %>
                 <a href="<%= feedback_message.reporter.path %>">@<%= feedback_message.reporter.username %></a>
-                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.reporter} %>
+                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.reporter } %>
               </div>
             <% else %>
               Anonymous
@@ -47,7 +47,7 @@
               <div class="flex flex-1 items-center">
                 <%= feedback_message.offender.name %>
                 <a href="<%= feedback_message.offender.path %>">@<%= feedback_message.offender.username %></a>
-                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.offender} %>
+                <%= render partial: "admin/users/show/profile/status", locals: { user: feedback_message.offender } %>
               </div>
             </h3>
           <% else %>
@@ -112,7 +112,7 @@
         <div class="w-100 max-w-100 px-4">
           <h3 class="crayons-subtitle-2">Email Form:</h3>
           <ul class="crayons-navigation crayons-navigation--horizontal" role="tablist">
-            <li role="presentation" >
+            <li role="presentation">
               <a id="tab-reporter-<%= feedback_message.id %>" class="crayons-navigation__item crayons-navigation__item--current" href="#reporter-<%= feedback_message.id %>" aria-controls="reporter-<%= feedback_message.id %>" role="tab">Reporter</a>
             </li>
             <li role="presentation">
@@ -123,29 +123,29 @@
             </li>
           </ul>
           <div class="my-3">
-            <div role="tabcard" class="" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
+            <div role="tabcard" class="tab-pane" data-id="<%= feedback_message.id %>" data-userType="reporter" id="reporter-<%= feedback_message.id %>">
               <div class="crayons-notice crayons-notice--info" aria-live="polite">Please note that all users who report abuse receive an automatic confirmation email. You can send an additional, follow-up email to this user by using the form below.</div>
               <br>
               <h3 class="crayons-subtitle-2">Send To:</h3>
-              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "crayons-textfield my-1", id: "reporter__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :reporter_email_to, feedback_message.reporter&.email, class: "crayons-textfield my-1", id: "reporter__emailto__#{feedback_message.id}", required: true, autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Subject:</h3>
-              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "crayons-textfield my-1", id: "reporter__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :reporter_email_subject, reporter_email_details[:subject], class: "crayons-textfield my-1", id: "reporter__subject__#{feedback_message.id}", autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Body:</h3>
               <%= text_area_tag :reporter_email_body, reporter_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "reporter__body__#{feedback_message.id}" %>
             </div>
             <div role="tabcard" class="hidden" data-id="<%= feedback_message.id %>" data-userType="offender" id="offender-<%= feedback_message.id %>">
               <h3 class="crayons-subtitle-2">Send To:</h3>
-              <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "crayons-textfield my-1", id: "offender__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :offender_email_to, feedback_message.offender&.email, class: "crayons-textfield my-1", id: "offender__emailto__#{feedback_message.id}", required: true, autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Subject:</h3>
-              <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "crayons-textfield my-1", id: "offender__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :offender_email_subject, offender_email_details[:subject], class: "crayons-textfield my-1", id: "offender__subject__#{feedback_message.id}", autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Body:</h3>
               <%= text_area_tag :offender_email_body, offender_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "offender__body__#{feedback_message.id}" %>
             </div>
             <div role="tabcard" class="hidden" data-id="<%= feedback_message.id %>" data-userType="affected" id="affected-<%= feedback_message.id %>">
               <h3 class="crayons-subtitle-2">Send To:</h3>
-              <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "crayons-textfield my-1", id: "affected__emailto__#{feedback_message.id}", required: true %>
+              <%= email_field_tag :affected_email_to, feedback_message.affected&.email, class: "crayons-textfield my-1", id: "affected__emailto__#{feedback_message.id}", required: true, autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Subject:</h3>
-              <%= text_field_tag :affected_email_subject, affected_email_details[:subject], class: "crayons-textfield my-1", id: "affected__subject__#{feedback_message.id}" %>
+              <%= text_field_tag :affected_email_subject, affected_email_details[:subject], class: "crayons-textfield my-1", id: "affected__subject__#{feedback_message.id}", autocomplete: "off" %>
               <h3 class="crayons-subtitle-2">Body:</h3>
               <%= text_area_tag :affected_email_body, affected_email_details[:body], class: "crayons-textfield my-1", style: "height: 300px;", id: "affected__body__#{feedback_message.id}" %>
             </div>
@@ -237,12 +237,12 @@
    document.getElementById(`reporter-${reportId}`).classList.add("hidden");
    document.getElementById(`offender-${reportId}`).classList.add("hidden");
    document.getElementById(`affected-${reportId}`).classList.add("hidden");
-   
+
    // Remove tab-pane class from all tab contents
    document.getElementById(`reporter-${reportId}`).classList.remove("tab-pane");
    document.getElementById(`offender-${reportId}`).classList.remove("tab-pane");
    document.getElementById(`affected-${reportId}`).classList.remove("tab-pane");
-   
+
    // Finally, make the tab active and its related content visible
    document.getElementById(`${tabName}-${reportId}`).classList.remove("hidden");
    document.getElementById(`${tabName}-${reportId}`).classList.add("tab-pane");
