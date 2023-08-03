@@ -1,9 +1,11 @@
 #  @note When we destroy the related user, it's using dependent:
 #        :delete for the relationship.  That means no before/after
 #        destroy callbacks will be called on this object.
-class DisplayAdEvent < ApplicationRecord
+class BillboardEvent < ApplicationRecord
   belongs_to :billboard, class_name: "DisplayAd", foreign_key: :display_ad_id, inverse_of: :billboard_events
   belongs_to :user, optional: true
+
+  self.table_name = "display_ad_events"
 
   alias_attribute :billboard_id, :display_ad_id
 

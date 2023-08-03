@@ -66,5 +66,6 @@ en:
         powered:
           text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
+        sidebar_desc_html: "%{community}\n%{desc}"
       create_post: Create Post
       signout: Sign Out

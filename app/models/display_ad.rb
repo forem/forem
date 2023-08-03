@@ -27,11 +27,12 @@ class DisplayAd < ApplicationRecord
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
 
+  attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
-  has_many :billboard_events, class_name: "DisplayAdEvent", dependent: :destroy
+  has_many :billboard_events, dependent: :destroy
 
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
@@ -43,10 +44,11 @@ class DisplayAd < ApplicationRecord
   validate :valid_audience_segment_match,
            :validate_in_house_hero_ads,
            :valid_manual_audience_segment,
-           :validate_tag
+           :validate_tag,
+           :validate_geolocations
 
   before_save :process_markdown
-  after_save :generate_display_ad_name
+  after_save :generate_billboard_name
   after_save :refresh_audience_segment, if: :should_refresh_audience_segment?
 
   scope :approved_and_published, -> { where(approved: true, published: true) }
@@ -61,8 +63,8 @@ class DisplayAd < ApplicationRecord
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
-    ads_for_display = DisplayAds::FilteredAdsQuery.call(
-      display_ads: self,
+    billboards_for_display = Billboards::FilteredAdsQuery.call(
+      billboards: self,
       area: area,
       user_signed_in: user_signed_in,
       article_id: article&.id,
@@ -79,11 +81,11 @@ class DisplayAd < ApplicationRecord
       # rise to the top. 5 out of every 100 times we show an ad (5%), it is totally random. This gives "not yet
       # evaluated" stuff a chance to get some engagement and start showing up more. If it doesn't get engagement, it
       # stays in this area.
-      ads_for_display.sample
+      billboards_for_display.sample
     when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      ads_for_display.seldom_seen(area).sample || ads_for_display.sample
+      billboards_for_display.seldom_seen(area).sample || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -92,7 +94,7 @@ class DisplayAd < ApplicationRecord
       # pick one randomly", it is actually "Let's cut off the query at a random limit between 1 and 15 and sample from
       # that". So basically the "limit" logic will result in 15 sets, and then we sample randomly from there. The
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
-      ads_for_display.limit(rand(1..15)).sample
+      billboards_for_display.limit(rand(1..15)).sample
     end
   end
 
@@ -126,6 +128,14 @@ class DisplayAd < ApplicationRecord
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
 
     validate_tag_name(tag_list)
+  end
+
+  def validate_geolocations
+    target_geolocations.each do |geo|
+      unless geo.valid?
+        errors.add(:target_geolocations, I18n.t("models.billboard.invalid_location", location: geo.to_iso3166))
+      end
+    end
   end
 
   def validate_in_house_hero_ads
@@ -165,7 +175,7 @@ class DisplayAd < ApplicationRecord
 
   private
 
-  def generate_display_ad_name
+  def generate_billboard_name
     return unless name.nil?
 
     self.name = "Display Ad #{id}"
@@ -194,8 +204,8 @@ class DisplayAd < ApplicationRecord
     markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
     initial_html = markdown.render(body_markdown)
     stripped_html = ActionController::Base.helpers.sanitize initial_html,
-                                                            tags: MarkdownProcessor::AllowedTags::DISPLAY_AD,
-                                                            attributes: MarkdownProcessor::AllowedAttributes::DISPLAY_AD
+                                                            tags: MarkdownProcessor::AllowedTags::BILLBOARD,
+                                                            attributes: MarkdownProcessor::AllowedAttributes::BILLBOARD
     html = stripped_html.delete("\n")
     self.processed_html = Html::Parser.new(html)
       .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
+RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   let(:placement_area) { "post_sidebar" }
 
   def create_display_ad(**options)
@@ -15,7 +15,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
   def filter_ads(**options)
     defaults = {
-      display_ads: DisplayAd, area: placement_area, user_signed_in: false
+      billboards: DisplayAd, area: placement_area, user_signed_in: false
     }
     described_class.call(**options.reverse_merge(defaults))
   end
@@ -151,6 +151,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
 
     let(:organization) { create(:organization) }
     let(:other_org) { create(:organization) }
+    let(:no_ads_org) { create(:organization) }
     let!(:community_ad) { create_display_ad organization_id: organization.id, type_of: :community }
     let!(:other_community) { create_display_ad organization_id: other_org.id, type_of: :community }
 
@@ -162,7 +163,7 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).to contain_exactly(community_ad)
       expect(filtered).not_to include(other_community)
 
-      filtered = filter_ads organization_id: 123
+      filtered = filter_ads organization_id: no_ads_org.id
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
 
@@ -195,6 +196,94 @@ RSpec.describe DisplayAds::FilteredAdsQuery, type: :query do
       expect(filtered).to contain_exactly(in_house_ad)
       expect(filtered).not_to include(other_community)
       expect(filtered).not_to include(community_ad)
+    end
+  end
+
+  context "with target geolocations" do
+    let!(:no_targets) { create_display_ad }
+    let!(:targets_canada) { create_display_ad(target_geolocations: "CA") }
+    let!(:targets_new_york_and_canada) { create_display_ad(target_geolocations: "US-NY, CA") }
+    let!(:targets_california_and_texas) { create_display_ad(target_geolocations: "US-CA, US-TX") }
+    let!(:targets_quebec_and_newfoundland) { create_display_ad(target_geolocations: "CA-QC, CA-NL") }
+    let!(:targets_maine_alberta_and_ontario) { create_display_ad(target_geolocations: "US-ME, CA-AB, CA-ON") }
+
+    context "when location targeting feature is not enabled" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(false)
+      end
+
+      it "ignores the target geolocations" do
+        filtered = filter_ads(location: "CA-NL") # User is in Newfoundland, Canada
+
+        expect(filtered).to include(
+          no_targets,
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_california_and_texas,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
+    end
+
+    context "when location targeting feature is enabled" do
+      before do
+        allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
+      end
+
+      it "shows only billboards with no targeting if no location is provided" do
+        filtered = filter_ads
+        expect(filtered).to include(no_targets)
+        expect(filtered).not_to include(
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_california_and_texas,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
+
+      it "shows only billboards whose target location includes the specified location" do
+        filtered = filter_ads(location: "CA-NL") # User is in Newfoundland, Canada
+
+        expect(filtered).to include(
+          no_targets,
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_quebec_and_newfoundland,
+        )
+        expect(filtered).not_to include(
+          targets_california_and_texas,
+          targets_maine_alberta_and_ontario,
+        )
+
+        filtered = filter_ads(location: "US-CA") # User is in California, USA
+        expect(filtered).to include(
+          no_targets,
+          targets_california_and_texas,
+        )
+        expect(filtered).not_to include(
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
+
+      it "shows only billboards targeting the country specifically if no region is provided" do
+        filtered = filter_ads(location: "CA") # User is in "Canada"
+
+        expect(filtered).to include(
+          no_targets,
+          targets_canada,
+          targets_new_york_and_canada,
+        )
+        expect(filtered).not_to include(
+          targets_california_and_texas,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
     end
   end
 end

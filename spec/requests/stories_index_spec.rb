@@ -13,6 +13,7 @@ RSpec.describe "StoriesIndex" do
 
   describe "GET stories index" do
     let(:user) { create(:user) }
+    let(:org) { create(:organization) }
 
     it "renders page with article list and proper attributes", :aggregate_failures do
       article = create(:article, featured: true)
@@ -66,41 +67,38 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders all display_ads of different placements when published and approved" do
-      org = create(:organization)
-      ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left")
-      second_left_ad = create(:display_ad, published: true, approved: true, organization: org,
-                                           placement_area: "sidebar_left_2")
-      right_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
-                                     organization: org)
+    it "renders display_ads when published and approved" do
+      ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
+                               organization: org)
 
       get "/"
       expect(response.body).to include(ad.processed_html)
-      expect(response.body).to include(second_left_ad.processed_html)
-      expect(response.body).to include(right_ad.processed_html)
     end
 
     it "does not render display_ads when not approved" do
-      org = create(:organization)
-      ad = create(:display_ad, published: true, approved: false, organization: org)
-      right_ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right",
-                                     organization: org)
+      ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right",
+                               organization: org)
 
       get "/"
       expect(response.body).not_to include(ad.processed_html)
-      expect(response.body).not_to include(right_ad.processed_html)
     end
 
-    it "renders only one display ad of placement" do
-      org = create(:organization)
-      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
-      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
-                                           organization: org)
+    it "renders only one display ad per placement" do
+      ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right", organization: org)
+      second_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
+                                      organization: org)
 
       get "/"
-      expect(response.body).to include(left_ad.processed_html).or(include(second_left_ad.processed_html))
+      expect(response.body).to include(ad.processed_html).or(include(second_ad.processed_html))
       expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
+    end
+
+    it "renders a hero display ad" do
+      allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
+      billboard = create(:display_ad, published: true, approved: true, placement_area: "home_hero", organization: org)
+      get "/"
+      expect(response.body).to include(billboard.processed_html)
     end
 
     it "shows listings" do

@@ -4,6 +4,7 @@ import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../common-prop-types';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /**
@@ -168,7 +169,6 @@ export const renderFeed = async (timeFrame, afterRender) => {
       renderFeed={callback}
       afterRender={afterRender}
     />,
-    feedContainer,
-    feedContainer.firstElementChild,
+    createRootFragment(feedContainer, feedContainer.firstElementChild),
   );
 };

@@ -54,7 +54,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_hero_banner
-    @hero_display_ad = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
+    @hero_billboard = DisplayAd.for_display(area: "home_hero", user_signed_in: user_signed_in?)
   end
 
   def assign_hero_html
@@ -184,6 +184,9 @@ class StoriesController < ApplicationController
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
+    if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
+      not_found
+    end
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
