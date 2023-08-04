@@ -2,10 +2,10 @@ import { h, render } from 'preact';
 import ahoy from 'ahoy.js';
 import { TagsFollowed } from '../leftSidebar/TagsFollowed';
 import {
-  observeDisplayAds,
-  initializeDisplayAdVisibility,
+  observeBillboards,
+  initializeBillboardVisibility,
 } from '../packs/billboardAfterRenderActions';
-import { setupDisplayAdDropdown } from '@utilities/displayAdDropdown';
+import { setupBillboardDropdown } from '@utilities/billboardDropdown';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
@@ -77,7 +77,7 @@ function renderSidebar() {
       .then((res) => res.text())
       .then((response) => {
         sidebarContainer.innerHTML = response;
-        setupDisplayAdDropdown();
+        setupBillboardDropdown();
       });
   }
 }
@@ -98,9 +98,9 @@ if (!document.getElementById('featured-story-marker')) {
       }
       import('./homePageFeed').then(({ renderFeed }) => {
         const callback = () => {
-          initializeDisplayAdVisibility();
-          observeDisplayAds();
-          setupDisplayAdDropdown();
+          initializeBillboardVisibility();
+          observeBillboards();
+          setupBillboardDropdown();
         };
 
         renderFeed(feedTimeFrame, callback);
@@ -120,9 +120,9 @@ if (!document.getElementById('featured-story-marker')) {
           }
 
           const callback = () => {
-            initializeDisplayAdVisibility();
-            observeDisplayAds();
-            setupDisplayAdDropdown();
+            initializeBillboardVisibility();
+            observeBillboards();
+            setupBillboardDropdown();
           };
 
           renderFeed(changedFeedTimeFrame, callback);
