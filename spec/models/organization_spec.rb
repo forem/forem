@@ -10,7 +10,7 @@ RSpec.describe Organization do
       it { is_expected.to have_many(:articles).dependent(:nullify) }
       it { is_expected.to have_many(:collections).dependent(:nullify) }
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
-      it { is_expected.to have_many(:display_ads).dependent(:destroy) }
+      it { is_expected.to have_many(:billboards).dependent(:destroy) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
@@ -388,6 +388,20 @@ RSpec.describe Organization do
       query = "        "
       results = described_class.simple_name_match(query)
       expect(results.size).to eq(3)
+    end
+  end
+
+  describe "#bust_cache" do
+    context "when a new user is added to the organization" do
+      let(:user) { create(:user) }
+
+      it "calls BustCachePathWorker after creating an organization membership" do
+        org_membership = OrganizationMembership.create(user: user, organization: organization, type_of_user: "admin")
+
+        allow(org_membership).to receive(:bust_cache)
+        org_membership.save
+        expect(org_membership).to have_received(:bust_cache)
+      end
     end
   end
 end
