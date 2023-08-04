@@ -7,6 +7,7 @@ RSpec.describe NotifyMailer do
   let(:organization) { create(:organization) }
   let(:organization_membership) { create(:organization_membership, user: user, organization: organization) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
+  let(:token) { "secret" }
 
   describe "#new_reply_email" do
     let(:email) { described_class.with(comment: comment).new_reply_email }
@@ -331,6 +332,22 @@ RSpec.describe NotifyMailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
+    end
+  end
+
+  describe "#account_deletion_requested_email" do
+    let(:email) do
+      described_class.with(user: user, token: token).account_deletion_requested_email
+    end
+
+    include_examples "#renders_proper_email_headers"
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
+    end
   end
 
   describe "#organization_deleted_email" do
@@ -346,6 +363,10 @@ RSpec.describe NotifyMailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
+    end
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
     end
   end
 

@@ -4,8 +4,10 @@ require "requests/shared_examples/internal_policy_dependant_request"
 RSpec.describe "/admin/customization/billboards" do
   let(:get_resource) { get admin_billboards_path }
   let(:org) { create(:organization) }
+  let(:geolocations) { "US-NY, US-ME, CA-ON" }
   let(:params) do
-    { organization_id: org.id, body_markdown: "[Click here!](https://example.com)", placement_area: "sidebar_left",
+    { organization_id: org.id, body_markdown: "[Click here!](https://example.com)",
+      target_geolocations: geolocations, placement_area: "sidebar_left",
       approved: true, published: true, priority: true }
   end
   let(:post_resource) { post admin_billboards_path, params: params }
@@ -60,6 +62,18 @@ RSpec.describe "/admin/customization/billboards" do
       it "sets creator to current_user" do
         post_resource
         expect(DisplayAd.last.creator_id).to eq(super_admin.id)
+      end
+
+      it "fails to create a new billboard with invalid target geolocations" do
+        expect do
+          post admin_billboards_path, params: params.merge(target_geolocations: "US-UM, CA-UH")
+        end.not_to change { DisplayAd.all.count }
+      end
+
+      it "creates a new billboard with no target geolocations" do
+        expect do
+          post admin_billboards_path, params: params.merge(target_geolocations: nil)
+        end.to change { DisplayAd.all.count }.by(1)
       end
     end
 

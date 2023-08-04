@@ -5,7 +5,7 @@
   }
 end %>
 
-<footer class="crayons-footer print-hidden">
+<footer id="footer" class="crayons-footer print-hidden">
   <div id="footer-container" class="crayons-footer__container">
     <p class="fs-s crayons-footer__description">
       <%= t("views.main.footer.desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>

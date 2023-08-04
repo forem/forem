@@ -1,0 +1,15 @@
+<footer class="mt-6 fs-s sidebar-footer">
+  <p>
+    <%= t("views.main.footer.sidebar_desc_html", community: link_to(community_name, root_path, class: "c-link c-link--branded fw-medium", "aria-label": t("views.main.aria_home", community: community_name)), desc: Settings::Community.community_description) %>
+  </p>
+
+  <%# The following copy is necessary for compatibility with the Forem AGPL licence which requires instances to link back to the source. %>
+  <p class="mt-4"><%= t("views.main.footer.built.text_html",
+                        forem: link_to(t("views.main.footer.built.forem"), "https://www.forem.com", class: "c-link c-link--branded", target: "_blank", rel: "noopener"),
+                        opensource: link_to(t("views.main.footer.built.opensource"), "https://dev.to/t/opensource", target: "_blank", rel: "noopener", class: "c-link c-link--branded"),
+                        dev: link_to(t("views.main.footer.built.dev"), "https://dev.to", target: "_blank", rel: "noopener", class: "c-link c-link--branded")) %></p>
+  <p class="mt-4"><%= t("views.main.footer.powered.text_html",
+                        rails: link_to(t("views.main.footer.powered.rails"), "https://dev.to/t/rails", target: "_blank", rel: "noopener", class: "c-link c-link--branded"),
+                        community: community_name,
+                        copyright: copyright_notice) %></p>
+</footer>

@@ -39,10 +39,6 @@ function initializePage() {
 
   callInitializers();
 
-  function freezeScrolling(event) {
-    event.preventDefault();
-  }
-
   nextPage = 0;
   fetching = false;
   done = false;
