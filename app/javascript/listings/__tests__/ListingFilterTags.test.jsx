@@ -29,13 +29,13 @@ describe('<ListingFilterTags />', () => {
     it('should have "search" as placeholder', () => {
       const { queryByPlaceholderText } = renderListingFilterTags();
 
-      expect(queryByPlaceholderText(/search/i)).toBeDefined();
+      expect(queryByPlaceholderText(/search/i)).toExist();
     });
 
     it(`should have "${getProps().message}" as default value`, () => {
       const { queryByDisplayValue } = renderListingFilterTags();
 
-      expect(queryByDisplayValue(getProps().message)).toBeDefined();
+      expect(queryByDisplayValue(getProps().message)).toExist();
     });
 
     it('should have auto-complete as off', () => {
@@ -50,7 +50,7 @@ describe('<ListingFilterTags />', () => {
     it('should render the clear query button', () => {
       const { queryByTestId } = renderListingFilterTags();
 
-      expect(queryByTestId('clear-query-button')).toBeDefined();
+      expect(queryByTestId('clear-query-button')).toExist();
     });
 
     it('should not render the clear query button', () => {
@@ -65,7 +65,7 @@ describe('<ListingFilterTags />', () => {
       const { queryByText } = renderListingFilterTags();
 
       getTags().forEach((tag) => {
-        expect(queryByText(`${tag}`)).toBeDefined();
+        expect(queryByText(`${tag}`)).toExist();
       });
     });
   });
