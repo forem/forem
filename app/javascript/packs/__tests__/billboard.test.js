@@ -5,8 +5,8 @@ describe('getBillboard', () => {
     global.Honeybadger = { notify: jest.fn() };
     document.body.innerHTML = `
       <div>
-        <div class="js-display-ad-container" data-async-url="/billboards/sidebar_left"></div>
-        <div class="js-display-ad-container" data-async-url="/billboards/sidebar_left_2"></div>
+        <div class="js-billboard-container" data-async-url="/billboards/sidebar_left"></div>
+        <div class="js-billboard-container" data-async-url="/billboards/sidebar_left_2"></div>
       </div>
     `;
   });
