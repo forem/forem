@@ -1,8 +1,9 @@
 class CloudCoverUrl
   include ActionView::Helpers::AssetUrlHelper
 
-  def initialize(url)
+  def initialize(url, height)
     @url = url
+    @height = height
   end
 
   def call
@@ -12,7 +13,7 @@ class CloudCoverUrl
     width = 1000
     img_src = url_without_prefix_nesting(url, width)
 
-    Images::Optimizer.call(img_src, width: width, height: 420, crop: "imagga_scale")
+    Images::Optimizer.call(img_src, width: width, height: height, crop: "imagga_scale")
   end
 
   private
@@ -24,5 +25,5 @@ class CloudCoverUrl
     url.split("w_#{width}/").last
   end
 
-  attr_reader :url
+  attr_reader :url, :height
 end

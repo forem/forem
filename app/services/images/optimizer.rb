@@ -18,7 +18,7 @@ module Images
       type: "fetch",
       height: nil,
       width: nil,
-      crop: "limit",
+      crop: "imagga_scale",
       quality: "auto",
       flags: "progressive",
       fetch_format: "auto",
@@ -55,7 +55,8 @@ module Images
       width: nil,
       max_bytes: 500_000, # Keep everything under half of one MB.
       auto_rotate: true,
-      resizing_type: nil
+      gravity: "sm",
+      resizing_type: "fill-down"
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
@@ -66,8 +67,8 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "fill"
-        options[:resizing_type] = "fill"
+      if options[:crop] == "fill-down"
+        options[:resizing_type] = "fill-down"
       end
 
       options[:crop] = nil

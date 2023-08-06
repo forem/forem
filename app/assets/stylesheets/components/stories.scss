@@ -76,9 +76,6 @@
     display: block;
     width: 100%;
     height: auto;
-    padding-bottom: 42%;
-    background-size: cover;
-    background-position: center center;
 
     @media (min-width: $breakpoint-s) {
       border-radius: var(--radius) var(--radius) 0 0;

@@ -17,10 +17,11 @@ module Articles
 
     def self.call(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
+      main_image_height = 420
 
       # we ignore images contained in liquid tags as they are not animated
       images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
-      return unless images.any?
+      return unless images.any? || article.main_image
 
       images.each do |img|
         src = img.attr("src")
@@ -39,7 +40,13 @@ module Articles
         img["data-animated"] = true if img_properties.type == :gif
       end
 
-      article.update_columns(processed_html: parsed_html.to_html)
+      if article.main_image
+        p article.main_image
+        main_image_size = FastImage.size(article.main_image, timeout: 10)
+        main_image_height = (main_image_size[1].to_f / main_image_size[0].to_f)*1000 if main_image_size
+      end
+
+      article.update_columns(processed_html: parsed_html.to_html, main_image_height: main_image_height)
     end
 
     def self.retrieve_image_from_uploader_store(src)

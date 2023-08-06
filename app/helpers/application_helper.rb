@@ -145,8 +145,8 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, height = 420)
+    CloudCoverUrl.new(url, height).call
   end
 
   def tag_colors(tag)
