@@ -3,6 +3,7 @@ import { initializeCommentPreview } from './initializers/initializeCommentPrevie
 import { initializeTimeFixer } from './initializers/initializeTimeFixer';
 import { initializeNotifications } from './initializers/initializeNotifications';
 import { initializeDateHelpers } from './initializers/initializeDateTimeHelpers';
+import { initializeSettings } from './initializers/initializeSettings';
 import {
   showUserAlertModal,
   showModalAfterError,
@@ -10,6 +11,7 @@ import {
 
 initializeCommentDate();
 initializeCommentPreview();
+initializeSettings();
 initializeNotifications();
 initializeTimeFixer();
 initializeDateHelpers();
@@ -17,6 +19,7 @@ initializeDateHelpers();
 InstantClick.on('change', () => {
   initializeCommentDate();
   initializeCommentPreview();
+  initializeSettings();
   initializeNotifications();
 });
 

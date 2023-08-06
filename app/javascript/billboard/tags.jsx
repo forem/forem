@@ -8,7 +8,7 @@ import { TagAutocompleteSelection } from '@crayons/MultiSelectAutocomplete/TagAu
 import { MultiSelectAutocomplete } from '@crayons';
 
 /**
- * Tags for the display ads admin form. Allows users to search and select up to 10 tags.
+ * Tags for the billboards admin form. Allows users to search and select up to 10 tags.
  *
  * @param {Function} onInput Callback to sync selections to article form state
  * @param {string} defaultValue Comma separated list of any currently selected tags
@@ -44,7 +44,7 @@ export const Tags = ({ onInput, defaultValue, switchHelpContext }) => {
       SelectionTemplate={TagAutocompleteSelection}
       onSelectionsChanged={syncSelections}
       onFocus={switchHelpContext}
-      inputId="display-ad-targeted-tags"
+      inputId="billboard-targeted-tags"
       allowUserDefinedSelections={true}
     />
   );

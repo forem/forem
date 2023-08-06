@@ -1,0 +1,43 @@
+<% if billboard.placement_area.start_with?("feed_") %>
+  <div class="crayons-story crayons-story__billboard billboard"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= billboard.type_of %>">
+    <div class="crayons-story__body">
+      <div class="crayons-story__top">
+        <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+      </div>
+      <div class="crayons-story__indention-billboard">
+        <div class="text-styles text-styles--billboard">
+          <%= billboard.processed_html.html_safe %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% elsif billboard.placement_area == "home_hero" %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship crayons-story__billboard hero-billboard"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= billboard.type_of %>">
+    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+    <div class="p-1 text-styles text-styles--billboard">
+      <%= billboard.processed_html.html_safe %>
+    </div>
+  </div>
+<% else %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= billboard.type_of %>">
+    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+    <div class="p-1 pt-3 text-styles text-styles--billboard">
+      <%= billboard.processed_html.html_safe %>
+    </div>
+  </div>
+<% end %>

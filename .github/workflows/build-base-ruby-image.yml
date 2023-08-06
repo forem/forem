@@ -2,18 +2,20 @@
 name: Build ghcr.io/forem/ruby Container Image
 on:
   workflow_call:
+  # Allow manual runs through GitHub GUI in case of emergency.
+  workflow_dispatch:
   push:
     branches:
       - 'main'
     paths:
       - 'Containerfile.base'
-      - '.ruby-version'
+      - '.ruby-version-next'
   pull_request:
     branches:
       - 'main'
     paths:
       - 'Containerfile.base'
-      - '.ruby-version'
+      - '.ruby-version-next'
 
 jobs:
   build-image:
@@ -29,7 +31,7 @@ jobs:
         with:
           files: Containerfile.base
       - name: Do not push to GHCR if this commit does not target the main branch
-        if: ${{ github.event_name != 'push' }}
+        if: ${{ github.event_name != 'push' && github.event_name != 'workflow_dispatch' }}
         run: echo "SKIP_PUSH=1" >> $GITHUB_ENV
       - name: Set up QEMU for cross-compiling to ARM64
         uses: docker/setup-qemu-action@v2
@@ -37,7 +39,7 @@ jobs:
         id: buildx
         uses: docker/setup-buildx-action@v2
       - name: Login to GitHub Container Registry
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
