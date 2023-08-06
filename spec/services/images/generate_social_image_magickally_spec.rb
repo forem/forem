@@ -48,6 +48,11 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
   
         described_class.call(article)
       end
+
+      it "busts article cache" do
+        expect(EdgeCache::BustArticle).to receive(:call).with(article)
+        described_class.call(article)
+      end
     end
 
     context "when resource is a User" do
