@@ -5,6 +5,7 @@ import {
   initializeHeight,
   addReactionButtonListeners,
   handleAddTagButtonListeners,
+  handleRemoveTagButtonsListeners,
 } from '../actionsPanel';
 
 describe('addCloseListener()', () => {
@@ -215,6 +216,63 @@ describe('addAdjustTagListeners()', () => {
 
     //   expect(document.getElementById('add-tag-container').classList).toContain('hidden');
     // });
+  });
+
+  describe('article has 1 tag', () => {
+    const discussTag = 'discuss';
+    beforeEach(() => {
+      document.body.innerHTML = `
+      <button id="remove-tag-button-${discussTag}" class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="${discussTag}" data-article-id="32">
+        <span class="num-sign">#</span>${discussTag}
+        <div id="remove-tag-icon-${discussTag}" class="circle centered-icon adjustment-icon subtract color-base-inverted hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" role="img"><title id="random">Remove tag</title>
+            <path d="M19 11H5v2h14v-2Z"></path>
+          </svg>
+        </div>
+      </button>
+      <div id="remove-tag-container-${discussTag}" class="hidden">
+        <form id="adjustment-reason-container" class="reason-container">
+          <textarea class="crayons-textfield" placeholder="Reason to remove tag (optional)" id="tag-adjustment-reason"></textarea>
+          <div class="flex gap-3">
+            <button class="crayons-btn" id="remove-tag-submit-${discussTag}" type="submit">Submit</button>
+            <button class="c-btn" id="cancel-remove-tag-button-${discussTag}" type="button">Cancel</button>
+          </div>
+        </form>
+      </div>
+      `;
+      handleRemoveTagButtonsListeners();
+    });
+
+    it('remove tag container is hidden', () => {
+      expect(
+        document.getElementById(`remove-tag-container-${discussTag}`).classList,
+      ).toContain('hidden');
+    });
+
+    it('hides remove icon on button click', () => {
+      document.getElementById(`remove-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`remove-tag-icon-${discussTag}`).style.display,
+      ).toEqual('none');
+    });
+
+    it('shows tag container on button click', () => {
+      document.getElementById(`remove-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`remove-tag-container-${discussTag}`).classList,
+      ).not.toContain('hidden');
+    });
+
+    it('click on cancel button hides the container', () => {
+      document.getElementById(`remove-tag-button-${discussTag}`).click();
+      document.getElementById(`cancel-remove-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`remove-tag-container-${discussTag}`).classList,
+      ).toContain('hidden');
+    });
   });
 });
 

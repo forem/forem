@@ -300,13 +300,13 @@ export function handleRemoveTagButton(btn) {
     `remove-tag-container-${tagName}`,
   );
 
-  const containerIsSelected = removeIcon.style.display === 'none';
-  if (containerIsSelected) {
-    removeIcon.style.display = 'flex';
-    removeTagContainer.classList.add('hidden');
-  } else {
+  const containerIsVisible = removeTagContainer.classList.contains('hidden');
+  if (containerIsVisible) {
     removeIcon.style.display = 'none';
     removeTagContainer.classList.remove('hidden');
+  } else {
+    removeIcon.style.display = 'flex';
+    removeTagContainer.classList.add('hidden');
   }
 
   const cancelRemoveTagButton = document.getElementById(

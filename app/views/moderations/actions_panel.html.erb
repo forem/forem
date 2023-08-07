@@ -121,7 +121,7 @@
               <form id="adjustment-reason-container" class="reason-container">
                 <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.remove_tag") %>" id="tag-removal-reason-<%= tag.name %>"></textarea>
                 <div class="flex gap-3">
-                  <button class="crayons-btn" id="remove-tag-submit-<%= tag.name %>" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
+                  <button class="crayons-btn" id="remove-tag-submit-<%= tag.name %>" type="submit"><%= t("views.moderations.actions.adjust.remove") %></button>
                   <button class="c-btn" id="cancel-remove-tag-button-<%= tag.name %>" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
                 </div>
               </form>
@@ -139,7 +139,7 @@
                 <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
                 <textarea id="tag-add-reason" class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
                 <div class="flex gap-3">
-                  <button class="c-btn c-btn--primary" id="tag-add-submit" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
+                  <button class="c-btn c-btn--primary" id="tag-add-submit" type="submit"><%= t("views.moderations.actions.adjust.add") %></button>
                   <button class="c-btn" id="cancel-add-tag-button" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
                 </div>
               </form>
