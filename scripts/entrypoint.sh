@@ -39,6 +39,7 @@ case "$@" in
 
   bootstrap)
     echo "Running rake app_initializer:setup..."
+    gem install bundler
     bundle exec rake app_initializer:setup
     ;;
 
