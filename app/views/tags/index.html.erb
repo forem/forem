@@ -62,11 +62,18 @@
           </div>
           <% if tag %>
             <div class="mt-auto flex items-end justify-between">
-              <button
-                class="crayons-btn crayons-btn--primary follow-action-button"
-                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
-                <%= t("views.tags.follow") %>
-              </button>
+              <div>
+                <button
+                  class="crayons-btn crayons-btn--primary follow-action-button"
+                  data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
+                  <%= t("views.tags.follow") %>
+                </button>
+                <button
+                  class="crayons-btn crayons-btn--ghost hide-action-button"
+                  data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "ghost") %>'>
+                  <%= t("views.tags.hide") %>
+                </button>
+              </div>
               <% if tag.badge_id && tag.badge %>
                 <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
               <% end %>
@@ -78,3 +85,10 @@
   <% end %>
 </main>
 <%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+
+<%# We want to show a follow button %>
+<%# We want to show a hide button %>
+<%# When we click follow its should set the weight of a tag to positive through an endpoint (http://localhost:3000/follows POST) %>
+<%# It should change 'follows' to 'following' %>
+<%# When we click hide its should set the weight of a tag to positive through an endpoint (http://localhost:3000/follows POST) %>
+<%# It should change 'hide' to 'unhide' and remove the follows/following button %>

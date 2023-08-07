@@ -38,6 +38,7 @@ en:
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
       follow: Follow
+      hide: Hide
       following_tags: Following tags
       moderator:
         text_html: "comma separated, space is optional. Example: %{code}"
