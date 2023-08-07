@@ -24,13 +24,7 @@ function fetchNext(el, endpoint, insertCallback) {
     })['action'];
   }
 
-  var urlParams = Object.keys(updatedIndexParams)
-    .map(function handleMap(k) {
-      return (
-        encodeURIComponent(k) + '=' + encodeURIComponent(updatedIndexParams[k])
-      );
-    })
-    .join('&');
+  var urlParams = new URLSearchParams(updatedIndexParams).toString();
   if (urlParams.indexOf('q=') > -1) {
     return;
   }
