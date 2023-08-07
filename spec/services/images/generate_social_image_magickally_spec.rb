@@ -61,6 +61,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         allow(described_class).to receive(:new).and_return(generator)
         allow(generator).to receive(:read_files)
         allow(generator).to receive(:generate_magickally)
+        allow(user).to receive(:profile_image_90).and_return("https://www.example.com/image.png")
       end
 
       it "calls the class methods for each published article" do
@@ -116,8 +117,13 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       end
 
       it "returns the correct font size for medium-to-long text" do
-        medium_long_text = "This is a slightly longer text. Slightly longer than the last."
-        expect(generator.send(:calculate_font_size, medium_long_text)).to eq(60)
+        medium_long_text = "This is a slightly longer text. Slightly longer."
+        expect(generator.send(:calculate_font_size, medium_long_text)).to eq(65)
+      end
+
+      it "returns the correct font size for medium-to-long text" do
+        almost_long_text = "This is a slightly longer text. Slightly longer than the last."
+        expect(generator.send(:calculate_font_size, almost_long_text)).to eq(60)
       end
 
       it "returns the correct font size for long text" do

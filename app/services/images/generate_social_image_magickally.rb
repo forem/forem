@@ -161,6 +161,8 @@ module Images
         88
       elsif text_length < 40
         77
+      elsif text_length < 55
+        65
       elsif text_length < 70
         60
       else
