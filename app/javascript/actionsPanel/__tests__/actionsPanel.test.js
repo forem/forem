@@ -4,7 +4,7 @@ import {
   addCloseListener,
   initializeHeight,
   addReactionButtonListeners,
-  addAdjustTagListeners,
+  handleAddTagButtonListeners,
 } from '../actionsPanel';
 
 describe('addCloseListener()', () => {
@@ -152,73 +152,69 @@ describe('addReactionButtonListeners()', () => {
 });
 
 describe('addAdjustTagListeners()', () => {
-  describe('when the user is tag moderator of #discuss', () => {
+  describe('when an article has no tags', () => {
     beforeEach(() => {
-      const tagName = 'discuss';
       document.body.innerHTML = `
-      <a href="/t/${tagName}" class="tag">${tagName}</a>
-      <button class="adjustable-tag" data-adjustment-type="subtract" data-tag-name="${tagName}">
-        #${tagName}
+      <button id="add-tag-button" class="add-tag" type="button">
+        Add new tag
       </button>
-      <form id="adjustment-reason-container" class="adjustment-reason-container">
-        <textarea class="crayons-textfield" placeholder="Reason for tag adjustment (required)" id="tag-adjustment-reason" required></textarea>
-        <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
-      </form>
-    `;
-
-      addAdjustTagListeners();
-    });
-    describe('when an article is tagged with #discuss', () => {
-      it('toggles the tag button and the form', () => {
-        const tagBtn = document.getElementsByClassName('adjustable-tag')[0];
-        tagBtn.click();
-        expect(tagBtn.classList).toContain('active');
-      });
-    });
-  });
-
-  describe('when the user is an admin and the article has room for tags', () => {
-    describe('tag adjustment interactions', () => {
-      beforeEach(() => {
-        const tagName = 'discuss';
-        document.body.innerHTML = `
-          <div class="add-tag-container">
-            <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="Add a tag" data-article-id="1" data-adjustment-type="plus">
+      <div id="add-tag-container" class="hidden">
+        <form id="add-reason-container" class="reason-container">
+          <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="Add a tag" data-article-id="32" data-adjustment-type="plus">
+          <textarea class="crayons-textfield" placeholder="Reason to add tag (optional)" id="tag-add-reason"></textarea>
+          <div class="flex gap-3">
+            <button class="c-btn c-btn--primary" id="tag-add-submit" type="submit">Submit</button>
+            <button class="c-btn" id="cancel-add-tag-button" type="button">Cancel</button>
           </div>
-          <a href="/t/${tagName}" class="tag">${tagName}</a>
-          <button class="adjustable-tag" data-adjustment-type="subtract" data-tag-name="${tagName}">
-            #${tagName}
-          </button>
-          <button class="adjustable-tag" data-adjustment-type="subtract" data-tag-name="ruby">
-            #ruby
-          </button>
-          <form id="adjustment-reason-container" class="adjustment-reason-container">
-            <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
-            <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
-          </form>
-        `;
-        addAdjustTagListeners();
-      });
-      it('shows the adjustment container when admin input is focused', () => {
-        document.getElementById('admin-add-tag').focus();
-        expect(
-          document.getElementById('adjustment-reason-container').classList,
-        ).not.toContain('hidden');
-      });
-      it('triggers a confirmation if the admin add tag input was filled in', () => {
-        window.confirm = jest.fn();
-        document.getElementById('admin-add-tag').value = 'pizza';
-        document.querySelector('.adjustable-tag[data-tag-name="ruby"]').click();
-        expect(window.confirm).toHaveBeenCalled();
-      });
-      it('does not the hide reason container when going from one tag to another tag', () => {
-        document.getElementsByClassName('adjustable-tag')[0].click();
-        document.querySelector('.adjustable-tag[data-tag-name="ruby"]').click();
-        expect(
-          document.getElementById('adjustment-reason-container').classList,
-        ).not.toContain('hidden');
-      });
+        </form>
+      </div>
+      `;
+      handleAddTagButtonListeners();
     });
+
+    it('shows the add tag button', () => {
+      expect(document.getElementById('add-tag-button').classList).not.toContain(
+        'hidden',
+      );
+
+      expect(document.getElementById('add-tag-container').classList).toContain(
+        'hidden',
+      );
+    });
+
+    it('click on add tag button shows the container and hides the button', () => {
+      document.getElementById('add-tag-button').click();
+      expect(document.getElementById('add-tag-button').classList).toContain(
+        'hidden',
+      );
+
+      expect(
+        document.getElementById('add-tag-container').classList,
+      ).not.toContain('hidden');
+    });
+
+    it('click on cancel button hides the container and shows add-tag button', () => {
+      document.getElementById('add-tag-button').click();
+      document.getElementById('cancel-add-tag-button').click();
+      expect(document.getElementById('add-tag-button').classList).not.toContain(
+        'hidden',
+      );
+
+      expect(document.getElementById('add-tag-container').classList).toContain(
+        'hidden',
+      );
+    });
+
+    // it('click on add-tag button hides the container and shows add-tag button', () => {
+    //   document.getElementById('add-tag-button').click();
+    //   document.getElementById('admin-add-tag').value = 'pizza';
+    //   document.getElementById('tag-add-reason').value = 'Adding a new tag';
+    //   document.getElementById('tag-add-submit').click();
+
+    //   expect(document.getElementById('add-tag-button').classList).not.toContain('hidden');
+
+    //   expect(document.getElementById('add-tag-container').classList).toContain('hidden');
+    // });
   });
 });
 

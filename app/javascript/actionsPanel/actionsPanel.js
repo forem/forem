@@ -182,8 +182,8 @@ const adminFeatureArticle = async (id, featured) => {
   }
 };
 
-function clearAdjustmentReason() {
-  document.getElementById('tag-adjustment-reason').value = '';
+function clearReason(reasonElement) {
+  reasonElement.value = '';
 }
 
 function renderTagOnArticle(tagName, colors) {
@@ -197,6 +197,13 @@ function renderTagOnArticle(tagName, colors) {
   newTag.style = `--tag-bg: ${colors.bg}1a; --tag-prefix: ${colors.bg}; --tag-bg-hover: ${colors.bg}1a; --tag-prefix-hover: ${colors.bg};`;
 
   articleTagsContainer.appendChild(newTag);
+
+  // This code refreshes the entire window if maximum number of tags (i.e. 4) have been added.
+  // This is needed because we want to hide the `Add Tag` button after the 4th tag.
+  const tags = articleTagsContainer.getElementsByClassName('crayons-tag');
+  if (tags.length == 4) {
+    window.location.reload(true);
+  }
 }
 
 function getArticleContainer() {
@@ -208,18 +215,16 @@ function getArticleContainer() {
     : window.parent.document.getElementById('main-content');
 }
 
-async function adjustTag(el) {
-  const reasonForAdjustment = document.getElementById(
-    'tag-adjustment-reason',
-  ).value;
+async function adjustTag(el, reasonElement) {
+  const tagName = el.dataset.tagName || el.value;
   const body = {
     tag_adjustment: {
       // TODO: change to tag ID
-      tag_name: el.dataset.tagName || el.value,
+      tag_name: tagName,
       article_id: el.dataset.articleId,
       adjustment_type:
         el.dataset.adjustmentType === 'subtract' ? 'removal' : 'addition',
-      reason_for_adjustment: reasonForAdjustment,
+      reason_for_adjustment: reasonElement.value,
     },
   };
 
@@ -236,16 +241,21 @@ async function adjustTag(el) {
       if (el.tagName === 'BUTTON') {
         adjustedTagName = el.dataset.tagName;
         el.remove();
+        const removedTagContainer = document.getElementById(
+          `remove-tag-container-${tagName}`,
+        );
+        removedTagContainer.remove();
       } else {
         adjustedTagName = el.value;
         // eslint-disable-next-line no-param-reassign, require-atomic-updates
         el.value = '';
       }
 
-      clearAdjustmentReason();
+      clearReason(reasonElement);
 
       if (outcome.result === 'addition') {
         renderTagOnArticle(adjustedTagName, outcome.colors);
+        resetAddTagButtonUI();
       } else {
         getArticleContainer()
           .querySelector(`.crayons-tag[href="/t/${adjustedTagName}"]`)
@@ -272,81 +282,171 @@ async function adjustTag(el) {
   }
 }
 
-export function handleAdjustTagBtn(btn) {
-  const currentActiveTags = document.querySelectorAll(
-    'button.adjustable-tag.active',
+function resetAddTagButtonUI() {
+  const addTagButton = document.getElementById('add-tag-button');
+  const addTagContainer = document.getElementById('add-tag-container');
+
+  addTagContainer.classList.add('hidden');
+
+  if (document.querySelectorAll('.adjustable-tag').length < 4) {
+    addTagButton.classList.remove('hidden');
+  }
+}
+
+export function handleRemoveTagButton(btn) {
+  const { tagName } = btn.dataset;
+  const removeIcon = document.getElementById(`remove-tag-icon-${tagName}`);
+  const removeTagContainer = document.getElementById(
+    `remove-tag-container-${tagName}`,
   );
-  const adminTagInput = document.getElementById('admin-add-tag');
-  /* eslint-disable no-restricted-globals */
-  /* eslint-disable no-alert */
-  if (
-    adminTagInput &&
-    adminTagInput.value !== '' &&
-    confirm(
-      'This will clear your current "Add a tag" input. Do you want to continue?',
-    )
-  ) {
-    /* eslint-enable no-restricted-globals */
-    /* eslint-enable no-alert */
-    adminTagInput.value = '';
-  } else if (currentActiveTags.length > 0) {
-    currentActiveTags.forEach((tag) => {
-      if (tag !== btn) {
-        tag.classList.remove('active');
-      }
-      btn.classList.toggle('active');
-    });
+
+  const containerIsSelected = removeIcon.style.display === 'none';
+  if (containerIsSelected) {
+    removeIcon.style.display = 'flex';
+    removeTagContainer.classList.add('hidden');
   } else {
-    btn.classList.toggle('active');
+    removeIcon.style.display = 'none';
+    removeTagContainer.classList.remove('hidden');
   }
-}
 
-function handleAdminInput() {
-  const addTagInput = document.getElementById('admin-add-tag');
-
-  if (addTagInput) {
-    addTagInput.addEventListener('focus', () => {
-      const activeTagBtns = Array.from(
-        document.querySelectorAll('button.adjustable-tag.active'),
-      );
-      activeTagBtns.forEach((btn) => {
-        btn.classList.remove('active');
-      });
-    });
-    addTagInput.addEventListener('focusout', () => {
-      if (addTagInput.value === '') {
-      }
-    });
-  }
-}
-
-export function addAdjustTagListeners() {
-  Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
-    (btn) => {
-      btn.addEventListener('click', () => {
-        handleAdjustTagBtn(btn);
-      });
-    },
+  const cancelRemoveTagButton = document.getElementById(
+    `cancel-remove-tag-button-${tagName}`,
   );
+  cancelRemoveTagButton.addEventListener('click', () => {
+    handleRemoveTagButton(btn);
+  });
 
-  const form = document.getElementById('tag-adjust-submit')?.form;
+  const form = document.getElementById(`remove-tag-submit-${tagName}`)?.form;
   if (form) {
     form.addEventListener('submit', (e) => {
       e.preventDefault();
 
-      const dataSource =
-        document.querySelector('button.adjustable-tag.active') ??
-        document.getElementById('admin-add-tag');
-
-      adjustTag(dataSource);
+      const dataSource = document.getElementById(
+        `remove-tag-button-${tagName}`,
+      );
+      const reasonFoRemoval = document.getElementById(
+        `tag-removal-reason-${tagName}`,
+      );
+      adjustTag(dataSource, reasonFoRemoval);
     });
-
-    handleAdminInput();
   }
 }
 
+// export function handleAdjustTagBtn(btn) {
+//   const currentActiveTags = document.querySelectorAll(
+//     'button.adjustable-tag.active',
+//   );
+//   const adminTagInput = document.getElementById('admin-add-tag');
+//   /* eslint-disable no-restricted-globals */
+//   /* eslint-disable no-alert */
+//   if (
+//     adminTagInput &&
+//     adminTagInput.value !== '' &&
+//     confirm(
+//       'This will clear your current "Add a tag" input. Do you want to continue?',
+//     )
+//   ) {
+//     /* eslint-enable no-restricted-globals */
+//     /* eslint-enable no-alert */
+//     adminTagInput.value = '';
+//   } else if (currentActiveTags.length > 0) {
+//     currentActiveTags.forEach((tag) => {
+//       if (tag !== btn) {
+//         tag.classList.remove('active');
+//       }
+//       btn.classList.toggle('active');
+//     });
+//   } else {
+//     btn.classList.toggle('active');
+//   }
+// }
+
+// function handleAdminInput() {
+//   const addTagInput = document.getElementById('admin-add-tag');
+
+//   if (addTagInput) {
+//     addTagInput.addEventListener('focus', () => {
+//       const activeTagBtns = Array.from(
+//         document.querySelectorAll('button.adjustable-tag.active'),
+//       );
+//       activeTagBtns.forEach((btn) => {
+//         btn.classList.remove('active');
+//       });
+//     });
+//     addTagInput.addEventListener('focusout', () => {
+//       if (addTagInput.value === '') {
+//       }
+//     });
+//   }
+// }
+
+export function handleAddTagButtonListeners() {
+  const addTagButton = document.getElementById('add-tag-button');
+
+  if (addTagButton) {
+    addTagButton.addEventListener('click', () => {
+      const addTagContainer = document.getElementById('add-tag-container');
+      addTagContainer.classList.remove('hidden');
+      addTagButton.classList.add('hidden');
+    });
+
+    const cancelAddTagButton = document.getElementById('cancel-add-tag-button');
+
+    if (cancelAddTagButton) {
+      cancelAddTagButton.addEventListener('click', () => {
+        const addTagContainer = document.getElementById('add-tag-container');
+        addTagContainer.classList.add('hidden');
+        addTagButton.classList.remove('hidden');
+      });
+    }
+
+    const form = document.getElementById('tag-add-submit')?.form;
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const dataSource = document.getElementById('admin-add-tag');
+
+        const reasonFoAddition = document.getElementById('tag-add-reason');
+
+        adjustTag(dataSource, reasonFoAddition);
+      });
+    }
+  }
+}
+
+export function handleRemoveTagButtonsListeners() {
+  Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        handleRemoveTagButton(btn);
+      });
+    },
+  );
+
+  // const form = document.getElementById('tag-adjust-submit')?.form;
+  // if (form) {
+  //   form.addEventListener('submit', (e) => {
+  //     e.preventDefault();
+
+  //     const dataSource =
+  //       document.querySelector('button.adjustable-tag.active') ??
+  //       document.getElementById('admin-add-tag');
+
+  //     const reasonFoAddition = document.getElementById(
+  //       `tag-add-reason`,
+  //     ).value;
+
+  //     adjustTag(dataSource, reasonFoAddition);
+  //   });
+
+  //   handleAdminInput();
+  // }
+}
+
 export function addModActionsListeners() {
-  addAdjustTagListeners();
+  handleAddTagButtonListeners();
+  handleRemoveTagButtonsListeners();
   Array.from(document.getElementsByClassName('other-things-btn')).forEach(
     (btn) => {
       btn.addEventListener('click', () => {

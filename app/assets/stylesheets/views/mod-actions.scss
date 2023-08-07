@@ -412,7 +412,44 @@
         }
         // &.selected {}
       }
-      .adjustment-reason-container {
+      button.add-tag {
+        background: inherit;
+        border: none;
+        padding: var(--su-2) 2px;
+        font-size: var(--fs-base);
+        text-align: left;
+        color: var(--base-80);
+        font-family: var(--ff-monospace);
+        .num-sign {
+          color: var(--base-40);
+          padding-left: 2px;
+        }
+        .adjustment-icon {
+          width: 24px;
+          height: 24px;
+          float: right;
+          margin-right: 2px;
+          &.subtract {
+            background: var(--accent-danger);
+          }
+          &.plus {
+            background: var(--accent-success-darker);
+          }
+          svg > path {
+            fill: var(--base-inverted);
+          }
+        }
+        &:hover {
+          background: var(--base-10);
+          border-radius: 8px;
+        }
+        &.active {
+          background: var(--base-10);
+          border-radius: 8px;
+        }
+        // &.selected {}
+      }
+      .reason-container {
         display: flex;
         flex-direction: column;
         padding: var(--su-1);
