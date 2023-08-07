@@ -110,7 +110,7 @@ class DashboardsController < ApplicationController
     user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
   end
 
-  def follows_for_tag(user:, order_by: :created_at, points_query: "explicit_points > 0")
+  def follows_for_tag(user:, order_by: :created_at, points_query: "explicit_points >= 0")
     user.follows_by_type("ActsAsTaggableOn::Tag").order(order_by => :desc)
       .where(points_query)
       .includes(:followable)

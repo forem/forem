@@ -225,66 +225,59 @@ RSpec.describe "Dashboards" do
       end
     end
 
-    describe "followed tags section" do
-      let(:follow_tag) { create(:tag, name: "tagone") }
-      let(:antifollow_tag) { create(:tag, name: "tagtwo") }
-      let(:unrelated_tag) { create(:tag, name: "tagthree") }
+    context "when dealing with tags" do
+      let(:first_followed_tag) { create(:tag, name: "tagone") }
+      let(:antifollowed_tag) { create(:tag, name: "tagtwo") }
+      let(:second_followed_tag) { create(:tag, name: "tagthree") }
 
       before do
         sign_in user
-        follow = user.follow(follow_tag)
-        follow.update explicit_points: 5
+        first_followed = user.follow(first_followed_tag)
+        first_followed.update explicit_points: 5
 
-        antifollow = user.follow(antifollow_tag)
-        antifollow.update explicit_points: -5
+        antifollowed = user.follow(antifollowed_tag)
+        antifollowed.update explicit_points: -5
 
-        user.follow(unrelated_tag)
-
+        second_followed = user.follow(second_followed_tag)
+        second_followed.update explicit_points: 0
         user.reload
-        get "/dashboard/following_tags"
       end
 
-      it "renders followed tags count" do
-        expect(response.body).to include "Following tags (2)"
+      # rubocop:disable RSpec/NestedGroups
+      describe "followed tags section" do
+        before do
+          get "/dashboard/following_tags"
+        end
+
+        it "renders followed tags count" do
+          expect(response.body).to include "Following tags (2)"
+        end
+
+        it "lists followed tags" do
+          expect(response.body).to include first_followed_tag.name
+          expect(response.body).to include second_followed_tag.name
+
+          expect(response.body).not_to include antifollowed_tag.name
+        end
       end
 
-      it "lists followed tags" do
-        expect(response.body).to include follow_tag.name
-        expect(response.body).to include unrelated_tag.name
+      describe "hidden tags section" do
+        before do
+          get "/dashboard/hidden_tags"
+        end
 
-        expect(response.body).not_to include antifollow_tag.name
+        it "renders hidden tags count" do
+          expect(response.body).to include "Hidden tags (1)"
+        end
+
+        it "lists hidden tags" do
+          expect(response.body).not_to include first_followed_tag.name
+          expect(response.body).not_to include second_followed_tag.name
+
+          expect(response.body).to include antifollowed_tag.name
+        end
       end
-    end
-
-    describe "hidden tags section" do
-      let(:follow_tag) { create(:tag, name: "tagone") }
-      let(:antifollow_tag) { create(:tag, name: "tagtwo") }
-      let(:unrelated_tag) { create(:tag, name: "tagthree") }
-
-      before do
-        sign_in user
-        follow = user.follow(follow_tag)
-        follow.update explicit_points: 5
-
-        antifollow = user.follow(antifollow_tag)
-        antifollow.update explicit_points: -5
-
-        user.follow(unrelated_tag)
-
-        user.reload
-        get "/dashboard/hidden_tags"
-      end
-
-      it "renders hidden tags count" do
-        expect(response.body).to include "Hidden tags (1)"
-      end
-
-      it "lists hidden tags" do
-        expect(response.body).not_to include follow_tag.name
-        expect(response.body).not_to include unrelated_tag.name
-
-        expect(response.body).to include antifollow_tag.name
-      end
+      # rubocop:enable RSpec/NestedGroups
     end
 
     describe "followed organizations section" do
