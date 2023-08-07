@@ -23,7 +23,7 @@ module Images
                                   author_name: @user.name,
                                   color: @user.setting.brand_color1)
         @resource.update_column(:social_image, url)
-         ## We only need to bust article. All else can fade naturally
+        ## We only need to bust article. All else can fade naturally
         EdgeCache::BustArticle.call(@resource)
       elsif @resource.is_a?(User)
         @user = @resource
