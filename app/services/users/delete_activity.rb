@@ -41,7 +41,7 @@ module Users
       user.badge_achievements.delete_all
       user.collections.delete_all
       user.credits.delete_all
-      user.organization_memberships.destroy_all
+      user.organization_memberships.delete_all
       user.profile_pins.delete_all
       user.profile.update(summary: "", location: "", website_url: "", data: {})
       user.github_username = ""
