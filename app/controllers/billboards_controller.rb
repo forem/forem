@@ -6,7 +6,7 @@ class BillboardsController < ApplicationController
   def show
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_BILLBOARDS) unless session_current_user_id
-    client_geolocation = request.headers["Http-Client-X"] if user_signed_in?
+    client_geolocation = request.headers["X-Client-Geo"] if user_signed_in?
 
     if placement_area
       if params[:username].present? && params[:slug].present?
