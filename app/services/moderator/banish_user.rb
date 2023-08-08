@@ -18,13 +18,13 @@ module Moderator
       user.remove_from_mailchimp_newsletters if user.email?
       remove_profile_info
       handle_user_status("Suspended", I18n.t("services.moderator.banish_user.spam_account"))
+      delete_organization
       delete_user_activity
       delete_comments
       delete_articles
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
-      delete_organization
     end
 
     private
@@ -52,7 +52,7 @@ module Moderator
 
     def delete_organization
       user.organizations.each do |organization|
-        organization.destroy if organization.users.count == 1
+        organization.destroy! if organization.users.count == 1
       end
     end
   end

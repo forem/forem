@@ -44,5 +44,6 @@ RSpec.describe Moderator::BanishUser, type: :service do
       .and change { user.organizations.count }.by(-1)
       .and change { Reaction.where(reactable: user).count }.by(-1)
       .and change { user.offender_feedback_messages.first.status }.from("Open").to("Resolved")
+      .and change(Organization, :count).by(-1)
   end
 end
