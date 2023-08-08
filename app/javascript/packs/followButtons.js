@@ -403,8 +403,10 @@ function fetchFollowButtonStatus(button, buttonInfo) {
 }
 
 /**
- * Makes sure the initial state of follow buttons is fetched and presented in the UI.
- * User follow buttons are initialized separately via bulk request
+ * We get Followed Tags from the user's data on the body attribute and based on that we
+ * update the UI of the initial state for the follow buttons for tags.
+ * This applies only to non-user (tag) follow buttons, user follow buttons are initialized separately
+ * via a bulk request.
  */
 function initializeNonUserFollowButtons() {
   const nonUserFollowButtons = document.querySelectorAll(
@@ -446,8 +448,11 @@ initializeAllUserFollowButtons();
 initializeNonUserFollowButtons();
 listenForFollowButtonClicks();
 
-// Some follow buttons are added to the DOM dynamically, e.g. search results,
-// So we listen for any new additions to be fetched
+/**
+ * Creates a MutationObserver. The argument passed into the constructor is a callback function that will
+ * be called on each DOM change that qualifies. Some follow buttons are added to the DOM dynamically, e.g. search results.
+ * hence we listen for any new additions to be fetched.
+ *  */
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
@@ -457,7 +462,11 @@ const observer = new MutationObserver((mutationsList) => {
   });
 });
 
-// Any element containing the given data-attribute will be monitored for new follow buttons
+/**
+ * A way to determine what qualifies for observation. In this case the target Node is where
+ * data-follow-button-container is true. Our observer options are set to observe the target and all
+ * of its children. We start observing the DOM for changes below.
+ */
 document
   .querySelectorAll('[data-follow-button-container]')
   .forEach((followButtonContainer) => {
@@ -467,6 +476,9 @@ document
     });
   });
 
+/**
+ * Using InstantClick, we remove the MutationObserver when the page changes.
+ */
 getInstantClick().then((ic) => {
   ic.on('change', () => {
     observer.disconnect();
