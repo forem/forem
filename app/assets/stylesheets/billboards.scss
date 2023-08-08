@@ -2,7 +2,7 @@
 @import 'variables';
 @import '_mixins';
 
-.crayons-layout__comments-display-ad {
+.crayons-layout__comments-billboard {
   .crayons-sponsorship {
     .c-indicator.crayons-sponsorship__indicator {
       line-height: 15px;
@@ -85,7 +85,7 @@
 // these are inline CTA's
 //refers to the below the comments billboard on the article page
 //refers to the feed/stories where we use story
-.crayons-layout__comments-display-ad .crayons-card.billboard .ltag_cta,
+.crayons-layout__comments-billboard .crayons-card.billboard .ltag_cta,
 .crayons-story.billboard .ltag_cta {
   padding-right: var(--su-7);
   padding-left: var(--su-7);

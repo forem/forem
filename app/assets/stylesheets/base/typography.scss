@@ -72,7 +72,7 @@ body {
   font-family: var(--content-font-family);
   overflow-wrap: break-word;
 
-  &--display-ad {
+  &--billboard {
     h1,
     h2,
     h3,
@@ -269,7 +269,7 @@ body {
     max-width: 100%;
     min-height: 350px;
     border-radius: 13px;
-    box-shadow: var(--shadow-smooth), inset 0px 0px 0px 1px var(--card-border);;
+    box-shadow: var(--shadow-smooth), inset 0px 0px 0px 1px var(--card-border);
     overflow: hidden;
   }
 
