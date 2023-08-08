@@ -6,7 +6,6 @@ class BillboardsController < ApplicationController
   def show
     skip_authorization
     set_cache_control_headers(CACHE_EXPIRY_FOR_BILLBOARDS) unless session_current_user_id
-    client_geolocation = request.headers["X-Client-Geo"] if user_signed_in?
 
     if placement_area
       if params[:username].present? && params[:slug].present?
@@ -24,6 +23,7 @@ class BillboardsController < ApplicationController
 
       if @billboard && !session_current_user_id
         set_surrogate_key_header @billboard.record_key
+        add_vary_header("X-Cacheable-Client-Geo") if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG)
       end
     end
 
@@ -40,5 +40,13 @@ class BillboardsController < ApplicationController
     return unless feed_targeted_tag_placement?(placement_area)
 
     current_user&.cached_followed_tag_names
+  end
+
+  def client_geolocation
+    if session_current_user_id
+      request.headers["X-Client-Geo"]
+    else
+      request.headers["X-Cacheable-Client-Geo"]
+    end
   end
 end

@@ -28,17 +28,17 @@ RSpec.describe "Billboards" do
 
     # rubocop:disable RSpec/NestedGroups
     context "when client geolocation is present" do
-      let(:client_in_alberta_canada) { { "X-Client-Geo" => "CA-AB" } }
-      let(:client_in_california_usa) { { "X-Client-Geo" => "US-CA" } }
+      let(:client_in_alberta_canada) { { "X-Client-Geo" => "CA-AB", "X-Cacheable-Client-Geo" => "CA" } }
+      let(:client_in_california_usa) { { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US" } }
+
+      let!(:canada_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "CA") }
+      let!(:california_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "US-CA") }
 
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
       end
 
       context "with signed-in user" do
-        let!(:canada_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "CA") }
-        let!(:us_billboard) { create_billboard(placement_area: "sidebar_left", target_geolocations: "US") }
-
         before do
           sign_in user
         end
@@ -49,34 +49,46 @@ RSpec.describe "Billboards" do
 
           expect(response).to have_http_status(:ok)
           expect(response.parsed_body).to include(canada_billboard.processed_html)
-          expect(response.parsed_body).not_to include(us_billboard.processed_html)
+          expect(response.parsed_body).not_to include(california_billboard.processed_html)
         end
 
-        it "is accurate for different locations" do
+        it "is accurate for more precise locations" do
           get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
               headers: client_in_california_usa
 
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(us_billboard.processed_html)
+          expect(response.parsed_body).to include(california_billboard.processed_html)
           expect(response.parsed_body).not_to include(canada_billboard.processed_html)
         end
       end
 
       context "without signed-in user" do
-        let!(:canada_billboard) { create_billboard(placement_area: "feed_first", target_geolocations: "CA") }
-        let!(:us_billboard) { create_billboard(placement_area: "feed_first", target_geolocations: "US") }
-        let!(:non_targeted_billboard) { create_billboard(placement_area: "feed_first") }
+        it "does not return billboards targeted more accurately than the specified cacheable level" do
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+              headers: client_in_california_usa
 
-        it "does not return any billboards targeting their location" do
-          [client_in_alberta_canada, client_in_california_usa].each do |client_headers|
-            get article_billboard_path(username: article.username, slug: article.slug, placement_area: "feed_first"),
-                headers: client_headers
+          expect(response).to have_http_status(:ok)
+          # X-Cacheable-Client-Geo is set to all of the US, so billboards targeted at a single state are filtered out
+          expect(response.parsed_body).to be_empty
+        end
 
-            expect(response).to have_http_status(:ok)
-            expect(response.parsed_body).to include(non_targeted_billboard.processed_html)
-            expect(response.parsed_body).not_to include(canada_billboard.processed_html)
-            expect(response.parsed_body).not_to include(us_billboard.processed_html)
-          end
+        it "is accurate for more precise locations" do
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+              headers: { "X-Client-Geo" => "US-CA", "X-Cacheable-Client-Geo" => "US-CA" }
+
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body).to include(california_billboard.processed_html)
+          expect(response.parsed_body).not_to include(canada_billboard.processed_html)
+        end
+
+        it "sets Vary header if a billboard is returned" do
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+              headers: client_in_alberta_canada
+
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body).to include(canada_billboard.processed_html)
+          expect(response.parsed_body).not_to include(california_billboard.processed_html)
+          expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
         end
       end
     end
