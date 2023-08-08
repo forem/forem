@@ -13,6 +13,6 @@ sub vcl_recv {
       set var.code = var.code + "-" + client.geo.region;
     }
 
-    set req.http.HTTP_CLIENT_GEO = var.code;
+    set req.http.X-Client-Geo = var.code;
   }
 }

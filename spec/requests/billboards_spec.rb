@@ -28,8 +28,8 @@ RSpec.describe "Billboards" do
 
     # rubocop:disable RSpec/NestedGroups
     context "when client geolocation is present" do
-      let(:client_in_alberta_canada) { { "HTTP_CLIENT_GEO" => "CA-AB" } }
-      let(:client_in_california_usa) { { "HTTP_CLIENT_GEO" => "US-CA" } }
+      let(:client_in_alberta_canada) { { "X-Client-Geo" => "CA-AB" } }
+      let(:client_in_california_usa) { { "X-Client-Geo" => "US-CA" } }
 
       before do
         allow(FeatureFlag).to receive(:enabled?).with(:billboard_location_targeting).and_return(true)
