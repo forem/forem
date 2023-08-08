@@ -116,7 +116,7 @@ fr:
         empty: Vous ne suivez aucun utilisateur...
       hidden_tags:
         heading: Dashboard » Hidden tags
-        adjust: Adjust the tag weight to modify your home feed. Lower values mean less appearances for that tag.
+        adjust: Adjust the tag weight to modify your home feed. Lower values mean fewer appearances for that tag.
         empty_html: "<span>You don't have any hidden tags...</span>"
       tags:
         number:
