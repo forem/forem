@@ -314,7 +314,15 @@ class CommentsController < ApplicationController
   def user_blocked?
     return false if current_user.blocked_by_count.zero?
 
-    UserBlock.blocking?(@comment.commentable.user_id, current_user.id) ||
-      UserBlock.blocking?(@comment.parent&.user_id, current_user.id)
+    blocked_by_commentable_author = UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
+    blocked_by_comment_author = @comment.parent && UserBlock.blocking?(@comment.parent.user_id, current_user.id)
+
+    blocked_by_commentable_author || blocked_by_comment_author || blocker_upthread?(@comment.parent)
+  end
+
+  def blocker_upthread?(comment)
+    return false unless comment&.parent
+
+    UserBlock.blocking?(comment.parent.user_id, current_user.id) || blocker_upthread?(comment.parent)
   end
 end
