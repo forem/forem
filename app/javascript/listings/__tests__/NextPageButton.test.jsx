@@ -20,7 +20,7 @@ describe('<NextPageButton />', () => {
   it('should show a button', () => {
     const { queryByText } = render(<NextPageButton {...defaultProps} />);
 
-    expect(queryByText(/load more/i)).toBeDefined();
+    expect(queryByText(/load more/i)).toExist();
   });
 
   it('should call the onclick handler', () => {
