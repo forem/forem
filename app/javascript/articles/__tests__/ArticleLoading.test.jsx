@@ -14,6 +14,6 @@ describe('<LoadingArticle />', () => {
   it('should render', () => {
     const { queryByTitle } = render(<LoadingArticle />);
 
-    expect(queryByTitle('Loading posts...')).toBeDefined();
+    expect(queryByTitle('Loading posts...')).toExist();
   });
 });

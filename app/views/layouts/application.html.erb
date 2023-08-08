@@ -89,7 +89,7 @@
   <div id="page-content-inner">
     <div id="page-route-change" class="screen-reader-only" aria-live="polite" aria-atomic="true"></div>
 
-    <% if @hero_html && @hero_display_ad.blank? %>
+    <% if @hero_html && @hero_billboard.blank? %>
       <aside id="hero-html-wrapper" aria-label="Campaign banner" class="overflow-x-hidden" data-name="<%= @hero_area.name %>">
         <script>
           // Make sure html variant element has id hero-html-wrapper and data-name as its name
@@ -110,6 +110,7 @@
     <%= render "layouts/signup_modal" unless user_signed_in? %>
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
+  <%= render "articles/reaction_category_resources" %>
   </body>
   </html>
 <% end %>

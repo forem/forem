@@ -41,6 +41,8 @@ en:
         experience3: Have experience level three
         experience4: Have experience level four
         experience5: Have experience level five
+    billboard:
+      invalid_location: '%{location} is not a supported ISO 3166-2 code'
     broadcast:
       single_active: You can only have one active announcement broadcast
     comment:

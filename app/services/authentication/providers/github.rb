@@ -27,7 +27,7 @@ module Authentication
           email: info.email.to_s,
           github_username: info.nickname,
           name: name,
-          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(info.image.to_s)
+          remote_profile_image_url: Images::SafeRemoteProfileImageUrl.call(info.image.to_s)
         }
       end
 

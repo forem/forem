@@ -66,6 +66,6 @@ describe('<OrganizationPicker />', () => {
       />,
     );
 
-    expect(queryByText('None')).toBeDefined();
+    expect(queryByText('None')).toExist();
   });
 });

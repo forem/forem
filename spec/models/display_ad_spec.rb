@@ -14,7 +14,7 @@ RSpec.describe DisplayAd do
       subject { display_ad }
 
       it { is_expected.to belong_to(:organization).optional }
-      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:billboard_events).dependent(:destroy) }
 
       it { is_expected.to validate_presence_of(:placement_area) }
       it { is_expected.to validate_presence_of(:body_markdown) }
@@ -263,6 +263,98 @@ RSpec.describe DisplayAd do
     end
   end
 
+  describe ".validate_geolocations" do
+    subject(:billboard) do
+      build(
+        :display_ad,
+        name: "This is an Ad",
+        body_markdown: "Ad Body",
+        placement_area: "post_comments",
+        target_geolocations: geo_input,
+      )
+    end
+
+    let(:target_geolocations) do
+      [
+        Geolocation.new("US", "CA"),
+        Geolocation.new("CA", "ON"),
+        Geolocation.new("CA", "BC"),
+      ]
+    end
+
+    context "with nil" do
+      let(:geo_input) { nil }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with empty string" do
+      let(:geo_input) { "" }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with empty array" do
+      let(:geo_input) { [] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to be_empty
+      end
+    end
+
+    context "with comma-separated list of ISO 3166-2" do
+      let(:geo_input) { "US-CA, CA-ON, CA-BC" }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with array of ISO 3166-2" do
+      let(:geo_input) { %w[US-CA CA-ON CA-BC] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with array of geolocations" do
+      let(:geo_input) { [Geolocation.new("US", "CA"), Geolocation.new("CA", "ON"), Geolocation.new("CA", "BC")] }
+
+      it "permits them" do
+        expect(billboard).to be_valid
+        expect(billboard.target_geolocations).to match_array(target_geolocations)
+      end
+    end
+
+    context "with invalid comma-separated ISO 3166-2 codes" do
+      let(:geo_input) { "US-CA, NOT-REAL" }
+
+      it "does not permit them" do
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("NOT-REAL is not a supported ISO 3166-2 code")
+      end
+    end
+
+    context "with invalid array of ISO 3166-2 codes" do
+      let(:geo_input) { %w[CA-QC CA-FAKE] }
+
+      it "does not permit them" do
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("CA-FAKE is not a supported ISO 3166-2 code")
+      end
+    end
+  end
+
   describe "#exclude_articles_ids" do
     it "processes array of integer ids as expected" do
       display_ad.exclude_article_ids = ["11"]
@@ -337,7 +429,8 @@ RSpec.describe DisplayAd do
     let(:low_impression_count) { DisplayAd::LOW_IMPRESSION_COUNT }
     let!(:low_impression_ad) { create(:display_ad, impressions_count: low_impression_count - 1) }
     let!(:high_impression_ad) { create(:display_ad, impressions_count: low_impression_count + 1) }
-    let!(:priority_ad) { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
+
+    before { create(:display_ad, priority: true, impressions_count: low_impression_count + 1) }
 
     it "includes ads with impressions count less than LOW_IMPRESSION_COUNT" do
       expect(described_class.seldom_seen("sidebar_left")).to include(low_impression_ad)

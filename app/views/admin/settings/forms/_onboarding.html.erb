@@ -5,19 +5,6 @@
     <summary class="crayons-subtitle-2 p-6">Onboarding</summary>
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
-        <div class="crayons-field">
-          <%= admin_config_label :onboarding_background_image %>
-          <%= admin_config_description Constants::Settings::General.details[:onboarding_background_image][:description] %>
-          <%= f.text_field :onboarding_background_image,
-                           class: "crayons-textfield",
-                           value: Settings::General.onboarding_background_image,
-                           placeholder: Constants::Settings::General.details[:onboarding_background_image][:placeholder] %>
-          <div class="flex flex-wrap flex-row -mx-4 mt-2">
-            <div class="w-100 max-w-100 px-4">
-              <img alt="onboarding background image" class="max-w-100 h-auto" src="<%= Settings::General.onboarding_background_image %>" loading="lazy" />
-            </div>
-          </div>
-        </div>
 
         <div class="crayons-field">
           <%= admin_config_label :suggested_tags %>
