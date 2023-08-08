@@ -414,6 +414,7 @@
       max-height: calc(
         100vh - var(--header-height) - 2 * var(--layout-padding)
       );
+      overflow-y: auto;
     }
   }
 }
