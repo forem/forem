@@ -30,13 +30,13 @@
     </h1>
     <form accept-charset="UTF-8" method="get" action="<%= tags_path %>" role="search">
       <div class="crayons-fields crayons-fields--horizontal">
+        <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
         <div class="crayons-field flex-1 relative">
           <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" aria-label="<%= t("views.tags.search.aria_labels.search_input") %>" name="q" placeholder="<%= t("views.tags.search.placeholder") %>" autocomplete="off" />
           <button type="submit" aria-label="<%= t("views.tags.search.aria_labels.submit") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
             <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
           </button>
         </div>
-          <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
       </div>
     </form>
   </header>
@@ -46,31 +46,31 @@
       <div class="substories search-results-loaded" id="substories"><div class="p-9 align-center crayons-card">No results match that query</div></div>
     </div>
   <% else %>
-    <div class="grid gap-3 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-3 m:px-0 pb-3" data-follow-button-container="true">
-      <% @tags.each do |tag| %>
-        <div class="tag-card crayons-card branded-4 p-3 pt-2 m:p-6 m:pt-4 relative" style="border-top-color: <%= tag.bg_color_hex %>; ">
-          <h3 class="mb-1 -ml-2">
-            <%= render_tag_link(tag.accessible_name) %>
-          </h3>
-          <% if tag.short_summary.present? %>
-            <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
-          <% end %>
-          <p class="mb-3 fs-s color-base-60">
-            <%= t("views.tags.published", count: tag.taggings_count) %>
-          </p>
-
+    <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-4 px-3 m:px-0 pb-3" data-follow-button-container="true">
+      <% @tags.includes([:badge]).each do |tag| %>
+        <div class="tag-card crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
+          <div>
+            <div class="mb-1 flex items-center justify-between">
+              <h4 class="-ml-2">
+                <%= render_tag_link(tag.accessible_name) %>
+              </h4>
+              <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
+            </div>
+            <% if tag.short_summary.present? %>
+              <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
+            <% end %>
+          </div>
           <% if tag %>
-            <div class="mt-auto">
+            <div class="mt-auto flex items-end justify-between">
               <button
-                class="crayons-btn crayons-btn--secondary follow-action-button"
-                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "secondary") %>'>
+                class="crayons-btn crayons-btn--primary follow-action-button"
+                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
                 <%= t("views.tags.follow") %>
               </button>
+              <% if tag.badge_id && tag.badge %>
+                <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
+              <% end %>
             </div>
-          <% end %>
-
-          <% if tag.badge_id && tag.badge %>
-            <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg);" class="right-1 bottom-1 absolute" alt="" loading="lazy" />
           <% end %>
         </div>
       <% end %>

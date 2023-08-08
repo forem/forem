@@ -151,6 +151,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :reactions)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Reaction", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Tag", association: :badge)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?

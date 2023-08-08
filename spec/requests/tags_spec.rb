@@ -7,7 +7,7 @@ RSpec.describe "Tags", proper_status: true do
       create(:tag, name: "javascript", alias_for: "")
 
       get tags_path
-      expect(response.body).to include("Top tags", "ruby", "javascript")
+      expect(response.body).to include("Tags", "ruby", "javascript")
     end
 
     it "does not include tags with alias" do
