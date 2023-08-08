@@ -24,6 +24,7 @@ module Moderator
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
+      delete_organization
     end
 
     private
@@ -47,6 +48,12 @@ module Moderator
 
     def delete_vomit_reactions
       Reaction.where(reactable: user, category: "vomit").delete_all
+    end
+
+    def delete_organization
+      user.organizations.each do |organization|
+        organization.destroy if organization.users.count == 1
+      end
     end
   end
 end
