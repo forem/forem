@@ -430,6 +430,7 @@ function initializeNonUserFollowButtons() {
       const buttonInfo = JSON.parse(info);
       const { className, name } = buttonInfo;
       addAriaLabelToButton({ button, followType: className, followName: name });
+
       if (className === 'Tag' && user) {
         // We don't need to make a network request to 'fetch' the status of tag buttons
         button.dataset.fetched = true;
