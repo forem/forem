@@ -141,7 +141,7 @@ class DisplayAd < ApplicationRecord
   def validate_in_house_hero_ads
     return unless placement_area == "home_hero" && type_of != "in_house"
 
-    errors.add(:type_of, "must be in_house if display ad is a Home Hero")
+    errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
   def audience_segment_type
@@ -178,7 +178,7 @@ class DisplayAd < ApplicationRecord
   def generate_billboard_name
     return unless name.nil?
 
-    self.name = "Display Ad #{id}"
+    self.name = "Billboard #{id}"
     save!
   end
 

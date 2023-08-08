@@ -6,7 +6,7 @@
         <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= billboard.organization.name %></div>
       </a>
       <% if billboard.type_of == "external" %>
-        <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-2xs fw-medium ml-2 py-1 px-2"><%= I18n.t("display_ad.promoted") %></span>
+        <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-2xs fw-medium ml-2 py-1 px-2"><%= I18n.t("billboard.promoted") %></span>
       <% end %>
     </div>
   <% else %>
@@ -15,8 +15,8 @@
 
   <button id="sponsorship-dropdown-trigger-<%= billboard.id %>" aria-controls="sponsorship-dropdown-<%= billboard.id %>" aria-expanded="false" aria-haspopup="true"
     class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
-    aria-label="<%= t("display_ad.menu.aria_label") %>">
-      <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", title: t("display_ad.menu.icon")) %>
+    aria-label="<%= t("billboard.menu.aria_label") %>">
+      <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", title: t("billboard.menu.icon")) %>
   </button>
 
   <div id="sponsorship-dropdown-<%= billboard.id %>" class="crayons-dropdown sponsorship-dropdown right-0">
@@ -24,20 +24,20 @@
         <li>
           <a class="crayons-link crayons-link--block" href='/billboards'>
             <%= crayons_icon_tag("info", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
-            <%= I18n.t("display_ad.menu.what_is_a_billboard") %>
+            <%= I18n.t("billboard.menu.what_is_a_billboard") %>
           </a>
         </li>
       <li>
         <a class="crayons-link crayons-link--block" href='/settings/customization#sponsors'>
           <%= crayons_icon_tag("setting", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
-          <%= I18n.t("display_ad.menu.manage_preferences") %>
+          <%= I18n.t("billboard.menu.manage_preferences") %>
         </a>
       </li>
       <hr />
       <li>
         <a class="crayons-link crayons-link--block" href="/report-abuse?billboard=<%= billboard.id %>">
           <%= crayons_icon_tag("flag", width: 16, height: 16, aria_hidden: true, class: "c-btn__icon") %>
-          <%= I18n.t("display_ad.menu.report_billboard") %>
+          <%= I18n.t("billboard.menu.report_billboard") %>
         </a>
       </li>
     </ul>
