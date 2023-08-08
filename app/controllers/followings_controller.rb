@@ -3,7 +3,7 @@ class FollowingsController < ApplicationController
   before_action -> { limit_per_page(default: 80, max: 1000) }
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id followable_id followable_type].freeze
-  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
+  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points, :explicit_points].freeze
 
   def users
     relation = current_user.follows_by_type("User")

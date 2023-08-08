@@ -101,6 +101,7 @@ RSpec.describe "FollowingsController" do
         expect(followed_object_response["id"]).to eq(followed_object.id)
         expect(followed_object_response["name"]).to eq(first_followed_tag.name)
         expect(followed_object_response["points"]).to eq(followed_object.points)
+        expect(followed_object_response["explicit_points"]).to eq(followed_object.explicit_points)
         expect(followed_object_response["token"]).to be_present
         expect(followed_object_response["color"]).to eq("#000000")
       end
