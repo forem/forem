@@ -60,6 +60,14 @@ RSpec.describe "Billboards" do
           expect(response.parsed_body).to include(california_billboard.processed_html)
           expect(response.parsed_body).not_to include(canada_billboard.processed_html)
         end
+
+        it "does not set Vary header" do
+          get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
+              headers: client_in_alberta_canada
+
+          expect(response).to have_http_status(:ok)
+          expect(response.headers["Vary"]).not_to include("X-Client-Geo", "X-Cacheable-Client-Geo")
+        end
       end
 
       context "without signed-in user" do
@@ -81,13 +89,12 @@ RSpec.describe "Billboards" do
           expect(response.parsed_body).not_to include(canada_billboard.processed_html)
         end
 
-        it "sets Vary header if a billboard is returned" do
+        it "sets Vary header" do
           get article_billboard_path(username: article.username, slug: article.slug, placement_area: "sidebar_left"),
               headers: client_in_alberta_canada
 
           expect(response).to have_http_status(:ok)
-          expect(response.parsed_body).to include(canada_billboard.processed_html)
-          expect(response.parsed_body).not_to include(california_billboard.processed_html)
+          expect(response.headers["Vary"]).not_to include("X-Client-Geo")
           expect(response.headers["Vary"]).to include("X-Cacheable-Client-Geo")
         end
       end

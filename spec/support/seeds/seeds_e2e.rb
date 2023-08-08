@@ -1116,11 +1116,12 @@ seeder.create_if_none(DisplayAd) do
 
   DisplayAd.create!(
     organization_id: org_id,
-    body_markdown: "<h1>This is a billboard shown to people in Canada</h1>",
+    body_markdown: "<h1>This is a billboard shown to people in Ontario</h1>",
     placement_area: "feed_first",
-    name: "Canada-targeted Billboard",
+    name: "Ontario-targeted Billboard",
     published: true,
     approved: true,
+    target_geolocations: "CA-ON",
   )
 
   DisplayAd.create!(
@@ -1130,5 +1131,6 @@ seeder.create_if_none(DisplayAd) do
     name: "US-targeted Billboard",
     published: true,
     approved: true,
+    target_geolocations: "US",
   )
 end

@@ -2,32 +2,58 @@ describe('Home page billboards', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
-
-    cy.get('@user').then((user) => {
-      cy.loginUser(user);
-    });
   });
 
   context('with location targeting', () => {
     beforeEach(() => {
       cy.intercept(`/**`, (req) => {
-        req.headers['HTTP_CLIENT_GEO'] = 'US-CA'; // User in California
+        // User in Ontario, Canada
+        req.headers['X-Client-Geo'] = 'CA-ON';
+        req.headers['X-Cacheable-Client-Geo'] = 'CA';
       });
       cy.enableFeatureFlag('billboard_location_targeting');
-      cy.visitAndWaitForUserSideEffects('/');
     });
 
-    it("shows billboards targeting a signed-in user's location", () => {
-      cy.findByRole('main').within(() => {
-        cy.get('.billboard')
-          .should('contain', 'This is a billboard shown to people in Canada')
-          .and('not.contain', 'This is a billboard shown to people in the US');
+    context('when a user is signed in', () => {
+      beforeEach(() => {
+        cy.get('@user').then((user) => {
+          cy.loginAndVisit(user, '/');
+        });
+      });
+
+      it('shows billboards targeting their location', () => {
+        cy.findByRole('main').within(() => {
+          cy.get('.billboard')
+            .should('contain', 'This is a billboard shown to people in Ontario')
+            .and(
+              'not.contain',
+              'This is a billboard shown to people in the US',
+            );
+        });
+      });
+
+      it('shows billboards that do not target any location', () => {
+        cy.findByLabelText('Primary sidebar').within(() => {
+          cy.get('.billboard').should('contain', 'This is a regular billboard');
+        });
       });
     });
 
-    it('shows billboards that do not target any location', () => {
-      cy.findByLabelText('Primary sidebar').within(() => {
-        cy.get('.billboard').should('contain', 'This is a regular billboard');
+    context('when a user is not signed in', () => {
+      beforeEach(() => {
+        cy.visit('/');
+      });
+
+      it('only shows billboards with a cacheable target geolocation', () => {
+        cy.findByRole('main').within(() => {
+          cy.get('.billboard').should('not.exist');
+        });
+      });
+
+      it('shows billboards that do not target any location', () => {
+        cy.findByLabelText('Primary sidebar').within(() => {
+          cy.get('.billboard').should('contain', 'This is a regular billboard');
+        });
       });
     });
   });
