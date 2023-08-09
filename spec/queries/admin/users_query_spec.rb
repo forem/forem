@@ -122,7 +122,7 @@ RSpec.describe Admin::UsersQuery, type: :query do
     end
 
     context "when given multiple single_resource_admin roles" do
-      let(:roles) { ["Admin", "Super Admin", "Resource Admin: DataUpdateScript", "Resource Admin: Billboard"] }
+      let(:roles) { ["Admin", "Super Admin", "Resource Admin: DataUpdateScript", "Resource Admin: DisplayAd"] }
       let!(:user8) { create(:user).tap { |u| u.add_role(:single_resource_admin, DisplayAd) } }
       # This user is provided to ensure our test looks for unique users even if they have duplicate roles
       let!(:user9) { create(:user, :super_admin).tap { |u| u.add_role(:single_resource_admin, DisplayAd) } }
