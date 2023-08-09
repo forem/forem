@@ -92,7 +92,7 @@ RSpec.describe "CommentsCreate" do
     before do
       create(:user_block, blocker: blocker, blocked: user, config: "default")
       # Manually manage the blocked_by_count attribute that counter_culture manages in prod
-      user.update(blocked_by_count: 1)
+      user.update_column(:blocked_by_count, 1)
     end
 
     let!(:third_party_article) { create(:article, user_id: create(:user).id) }

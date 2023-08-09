@@ -323,6 +323,7 @@ class CommentsController < ApplicationController
   def blocker_upthread?(comment)
     return false unless comment&.parent
 
-    UserBlock.blocking?(comment.parent.user_id, current_user.id) || blocker_upthread?(comment.parent)
+    thread_authors_ids = comment.ancestors.pluck(:user_id)
+    UserBlock.exists?(blocker_id: thread_authors_ids, blocked_id: current_user.id)
   end
 end
