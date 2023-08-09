@@ -153,7 +153,7 @@ module Settings
 
     # get the setting's value, YAML decoded
     def value
-      YAML.load(self[:value]) if self[:value].present? # rubocop:disable Security/YAMLLoad
+      YAML.unsafe_load(self[:value]) if self[:value].present?
     end
 
     # set the settings's value, YAML encoded
