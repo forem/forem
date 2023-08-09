@@ -1,15 +1,13 @@
-sub vcl_init {
-  table active_geofencing_regions {
-    // This table can be managed independently of the deployed configuration as an edge dictionary.
+table active_geofencing_regions {
+  // This table can be managed independently of the deployed configuration as an edge dictionary.
 
-    // This accomplishes a couple of things:
-    // 1. It greatly reduces the number of variants that need to be cached
-    // 2. It lets us enable more granular caching (for big campaigns and/or customers)
-    //    without having to redeploy the app.
-    // 3. It lets us turn off geofenced caching entirely fairly easily (by emptying the table)
-    "CA": "CA",
-    "US": "US"
-  }
+  // This accomplishes a couple of things:
+  // 1. It greatly reduces the number of variants that need to be cached
+  // 2. It lets us enable more granular caching (for big campaigns and/or customers)
+  //    without having to redeploy the app.
+  // 3. It lets us turn off geofenced caching entirely fairly easily (by emptying the table)
+  "CA": "CA",
+  "US": "US"
 }
 
 sub vcl_recv {
