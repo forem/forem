@@ -13,10 +13,7 @@ RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
     && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
 
 
-ENV BUNDLER_VERSION=2.4.17 \
-    BUNDLE_SILENCE_ROOT_WARNING=true \
-    BUNDLE_SILENCE_DEPRECATIONS=true
-RUN gem install -N bundler:"${BUNDLER_VERSION}"
+RUN gem install bundler
 
 
 # Install Node and Yarn
