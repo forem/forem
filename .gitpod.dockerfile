@@ -4,7 +4,7 @@ FROM gitpod/workspace-postgres
 RUN brew install gh
 
 # Install Ruby
-ENV RUBY_VERSION=3.0.6
+ENV RUBY_VERSION=3.1.4
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
     && bash -lc "rvm pkg install openssl && \
                  rvm reinstall $RUBY_VERSION --with-openssl-dir=$HOME/.rvm/usr && \
