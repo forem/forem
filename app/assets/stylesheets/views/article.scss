@@ -374,7 +374,7 @@
   }
 }
 
-.crayons-post_sidebar_display_ad {
+.crayons-post_sidebar_billboard {
   @media screen and (max-width: $breakpoint-l) {
     display: none;
   }
@@ -479,7 +479,7 @@
   flex-wrap: wrap;
   min-height: 40px;
 
-  &>span {
+  & > span {
     &.hidden {
       display: none;
     }

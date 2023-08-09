@@ -79,7 +79,7 @@ describe('Show log in modal', () => {
 
   it('should show login modal for tag follow button click', () => {
     cy.visit('/tags');
-    cy.findByRole('heading', { name: 'Top tags' });
+    cy.findByRole('heading', { name: 'Tags' });
     cy.get('[data-follow-clicks-initialized]');
 
     verifyLoginModalBehavior(() =>

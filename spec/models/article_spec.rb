@@ -776,7 +776,7 @@ RSpec.describe Article do
     end
 
     it "returns true if parser raises a Psych::DisallowedClass error" do
-      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg", Date))
       expect(article.has_frontmatter?).to be(true)
     end
 

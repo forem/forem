@@ -28,7 +28,7 @@
     </div>
 
     <div class="crayons-field">
-      <div id="display-ad-targeted-tags"></div>
+      <div id="billboard-targeted-tags"></div>
     </div>
 
     <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
@@ -122,7 +122,7 @@
     </div>
   </div>
   <div>
-    <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--display-ad">
+    <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--billboard">
       <% if @billboard.persisted? %>
         <%= @billboard.processed_html.html_safe %>
       <% else %>
@@ -142,4 +142,4 @@
   </div>
 </div>
 
-<%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/billboards", defer: true %>
