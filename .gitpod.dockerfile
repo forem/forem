@@ -6,10 +6,18 @@ ENV RUBY_VERSION=3.0.6
 # Install the GitHub CLI
 RUN brew install gh
 
-# Taken from https://www.gitpod.io/docs/languages/ruby
-RUN echo "rvm_gems_path=/home/gitpod/.rvm" > ~/.rvmrc
-RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
-RUN echo "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc
+RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
+    && bash -lc "rvm reinstall ruby-$RUBY_VERSION && \
+                 rvm use ruby-$RUBY_VERSION --default" \
+    && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
+    && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
+
+
+ENV BUNDLER_VERSION=2.4.17 \
+    BUNDLE_SILENCE_ROOT_WARNING=true \
+    BUNDLE_SILENCE_DEPRECATIONS=true
+RUN gem install -N bundler:"${BUNDLER_VERSION}"
+
 
 # Install Node and Yarn
 ENV NODE_VERSION=16.13.1
