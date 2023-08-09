@@ -12,10 +12,6 @@ RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
     && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
     && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
 
-
-RUN gem install bundler
-
-
 # Install Node and Yarn
 ENV NODE_VERSION=16.13.1
 RUN bash -c ". .nvm/nvm.sh && \
