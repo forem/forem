@@ -9,7 +9,7 @@ RUN brew install gh
 RUN brew install openssl
 
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
-    && bash -lc "rvm autolibs homebrew && rvm reinstall $RUBY_VERSION && \
+    && bash -lc "rvm pkg install openssl && rvm reinstall $RUBY_VERSION --with-openssl-dir=$HOME/.rvm/usr&& \
                  rvm use $RUBY_VERSION" \
     && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
     && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
