@@ -6,7 +6,7 @@ describe('Billboards Form', () => {
 
       cy.get('@user').then((user) => {
         cy.loginAndVisit(user, '/admin/customization/billboards');
-        cy.findByRole('link', { name: 'Make A New Display Ad' }).click({
+        cy.findByRole('link', { name: 'Make A New Billboard' }).click({
           force: true,
         });
       });
@@ -115,7 +115,7 @@ describe('Billboards Form', () => {
         cy.enableFeatureFlag('billboard_location_targeting');
         cy.get('@user').then((user) => {
           cy.loginAndVisit(user, '/admin/customization/billboards');
-          cy.findByRole('link', { name: 'Make A New Display Ad' }).click({
+          cy.findByRole('link', { name: 'Make A New Billboard' }).click({
             force: true,
           });
         });
@@ -135,7 +135,7 @@ describe('Billboards Form', () => {
         cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
           'CA-ON, US-OH, US-MI',
         );
-        cy.findByRole('button', { name: 'Save Display Ad' }).click();
+        cy.findByRole('button', { name: 'Save Billboard' }).click();
         cy.get('#flash-0').should(($flashMessage) => {
           expect($flashMessage).to.not.contain(
             'is not a supported ISO 3166-2 code',
@@ -147,7 +147,7 @@ describe('Billboards Form', () => {
         cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
           'US-NY, MX-CMX',
         );
-        cy.findByRole('button', { name: 'Save Display Ad' }).click();
+        cy.findByRole('button', { name: 'Save Billboard' }).click();
         cy.get('#flash-0').should(($flashMessage) => {
           // We currently support only the US and CA
           expect($flashMessage).to.contain(

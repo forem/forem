@@ -13,6 +13,7 @@ fr:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
+          hidden_tags: Hidden tags (%{num})
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -20,6 +21,7 @@ fr:
         following_users: Following users
         following_orgs: Following organizations
         following_pods: Following podcasts
+        hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
         for_org: Analytics for %{org}
@@ -106,18 +108,20 @@ fr:
         empty: You don't follow any podcasts yet...
       following_tags:
         heading: Dashboard » Following tags
-        adjust: Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
-        anti:
-          title: This tag has negative follow weight
-          text: Anti-follow
+        adjust: Adjust the tag weight to modify your home feed. Higher values mean more appearances for that tag.
         default: Default 1.0
         empty_html: "<span>Follow tags to personalize your feed. You can explore popular tags <a href=%{link}>here</a></span>."
-        number:
-          aria_label: "%{name} tag weight"
-        update: Update Weights
       following_users:
         heading: Tableau de bord » Utilisateurs suivis
         empty: Vous ne suivez aucun utilisateur...
+      hidden_tags:
+        heading: Dashboard » Hidden tags
+        adjust: Adjust the tag weight to modify your home feed. Lower values mean fewer appearances for that tag.
+        empty_html: "<span>You don't have any hidden tags...</span>"
+      tags:
+        number:
+          aria_label: "%{name} tag weight"
+        update: Update Weights
       listings:
         meta:
           title: Listings Dashboard

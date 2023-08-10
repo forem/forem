@@ -144,7 +144,7 @@ en:
       x_years:
         one: Expires in 1 year
         other: Expires in %{count} years
-  display_ad:
+  billboard:
     promoted: Promoted
     menu:
       aria_label: Toggle dropdown menu

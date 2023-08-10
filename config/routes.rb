@@ -294,6 +294,7 @@ Rails.application.routes.draw do
     get "dashboard/following_users", to: "dashboards#following_users"
     get "dashboard/following_organizations", to: "dashboards#following_organizations"
     get "dashboard/following_podcasts", to: "dashboards#following_podcasts"
+    get "dashboard/hidden_tags", to: "dashboards#hidden_tags"
     get "/dashboard/subscriptions", to: "dashboards#subscriptions"
     get "/dashboard/:which", to: "dashboards#followers", constraints: { which: /user_followers/ }
     get "/dashboard/:which/:org_id", to: "dashboards#show",

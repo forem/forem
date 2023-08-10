@@ -1,4 +1,4 @@
-<h1 class="crayons-title mb-3">Display Ads</h1>
+<h1 class="crayons-title mb-3">Billboards</h1>
 
 <div
   data-controller="confirmation-modal"
@@ -6,13 +6,13 @@
   data-confirmation-modal-content-selector-value="#confirmation-modal"
   data-confirmation-modal-title-value="Confirm changes"
   data-confirmation-modal-size-value="m">
-  <nav class="flex mb-4" aria-label="Display Ads navigation">
+  <nav class="flex mb-4" aria-label="Billboards navigation">
     <%= form_tag(admin_billboards_path, method: "get") do %>
      <%= text_field_tag(:search, params[:search], aria: { label: "Search" }, class: "crayons-header--search-input crayons-textfield", placeholder: "Search", autocomplete: "off") %>
     <% end %>
     <div class="ml-auto">
       <div class="justify-end">
-        <%= link_to "Make A New Display Ad", new_admin_billboard_path, class: "crayons-btn" %>
+        <%= link_to "Make A New Billboard", new_admin_billboard_path, class: "crayons-btn" %>
       </div>
     </div>
   </nav>
