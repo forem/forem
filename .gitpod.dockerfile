@@ -6,7 +6,7 @@ RUN brew install gh
 # Install Ruby
 ENV RUBY_VERSION=3.1.4
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
-    && bash -lc "rvm autolibs openssl && \
+    && bash -lc "rvm autolibs enable && \
                  rvm reinstall $RUBY_VERSION && \
                  rvm use $RUBY_VERSION" \
     && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
