@@ -48,7 +48,7 @@ describe('Delete Display Ads', () => {
         cy.findByTestId('snackbar').within(() => {
           cy.findByRole('alert').should(
             'have.text',
-            'Display Ad has been deleted!',
+            'Billboard has been deleted!',
           );
         });
 
@@ -60,7 +60,7 @@ describe('Delete Display Ads', () => {
       cy.intercept('DELETE', '/admin/customization/billboards/**', {
         statusCode: 422,
         body: {
-          error: 'Something went wrong with deleting the Display Ad.',
+          error: 'Something went wrong with deleting the Billboard.',
         },
       });
 
@@ -74,7 +74,7 @@ describe('Delete Display Ads', () => {
 
         cy.findByTestId('alertzone').within(() => {
           cy.findByRole('alert')
-            .contains('Something went wrong with deleting the Display Ad.')
+            .contains('Something went wrong with deleting the Billboard.')
             .should('be.visible');
         });
 

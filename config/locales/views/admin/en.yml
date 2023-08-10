@@ -296,7 +296,7 @@ en:
               resource_admin_broadcast: Broadcast Admin
               resource_admin_comment: Comment Admin
               resource_admin_config: Config Admin
-              resource_admin_display_ad: Display Ad Admin
+              resource_admin_billboard: Billboard Admin
               resource_admin_data_update_script: Data Update Script Admin
               resource_admin_feedback_message: Feedback Message Admin
               resource_admin_html_variant: HTML Variant Admin

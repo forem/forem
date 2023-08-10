@@ -44,6 +44,11 @@ module CachingHeaders
     response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
   end
 
+  def add_vary_header(*vary_keys)
+    existing = response.headers["Vary"]
+    response.headers["Vary"] = [existing, *vary_keys].compact.join(", ")
+  end
+
   private
 
   def build_surrogate_control(max_age, stale_while_revalidate: nil, stale_if_error: 26_400)
