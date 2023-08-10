@@ -15,10 +15,9 @@ describe('Mascot Section', () => {
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
-        cy.get('@mascotSectionForm')
-          .findByLabelText('Mascot Image URL')
-          .clear()
-          .type('notanimage');
+        cy.get('@mascotSectionForm').findByLabelText('Mascot Image URL');
+        cy.get('@mascotSectionForm').clear();
+        cy.get('@mascotSectionForm').type('notanimage');
 
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 
@@ -39,10 +38,9 @@ describe('Mascot Section', () => {
         cy.findByTestId('mascotSectionForm').as('mascotSectionForm');
 
         cy.get('@mascotSectionForm').findByText('Mascot').click();
-        cy.get('@mascotSectionForm')
-          .findByLabelText('Mascot Image URL')
-          .clear()
-          .type('https://example.com/image.png');
+        cy.get('@mascotSectionForm').findByLabelText('Mascot Image URL');
+        cy.get('@mascotSectionForm').clear();
+        cy.get('@mascotSectionForm').type('https://example.com/image.png');
 
         cy.get('@mascotSectionForm').findByText('Update Settings').click();
 

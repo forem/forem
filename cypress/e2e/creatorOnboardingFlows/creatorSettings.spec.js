@@ -45,9 +45,8 @@ describe('Creator Settings Page', () => {
       .should('be.visible');
 
     cy.get('@joinCommunity').within(() => {
-      cy.findByRole('radio', { name: /everyone/i })
-        .check()
-        .should('be.checked');
+      cy.findByRole('radio', { name: /everyone/i }).check();
+      cy.findByRole('radio', { name: /everyone/i }).should('be.checked');
 
       cy.findByRole('radio', { name: /invite only/i }).should('not.be.checked');
     });
@@ -60,9 +59,8 @@ describe('Creator Settings Page', () => {
       .should('be.visible');
 
     cy.get('@viewCommunity').within(() => {
-      cy.findByRole('radio', { name: /members only/i })
-        .check()
-        .should('be.checked');
+      cy.findByRole('radio', { name: /members only/i }).check();
+      cy.findByRole('radio', { name: /members only/i }).should('be.checked');
 
       cy.findByRole('radio', { name: /everyone/i }).should('not.be.checked');
     });
@@ -164,10 +162,17 @@ describe('Creator Settings Page', () => {
         rgbColor,
       );
 
-      cy.findAllByRole('radio', { name: /members only/i })
-        .check()
-        .should('have.css', 'background-color', rgbColor)
-        .should('have.css', 'border-color', rgbColor);
+      cy.findAllByRole('radio', { name: /members only/i }).check();
+      cy.findAllByRole('radio', { name: /members only/i }).should(
+        'have.css',
+        'background-color',
+        rgbColor,
+      );
+      cy.findAllByRole('radio', { name: /members only/i }).should(
+        'have.css',
+        'border-color',
+        rgbColor,
+      );
 
       cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
         'have.css',
@@ -175,11 +180,16 @@ describe('Creator Settings Page', () => {
         rgbColor,
       );
 
-      cy.findByRole('textbox', { name: /community name/i })
-        .clear()
-        .focus()
-        .type('Climbing Life')
-        .should('have.css', 'border-color', rgbColor);
+      cy.findByRole('textbox', { name: /community name/i }).clear();
+      cy.findByRole('textbox', { name: /community name/i }).focus();
+      cy.findByRole('textbox', { name: /community name/i }).type(
+        'Climbing Life',
+      );
+      cy.findByRole('textbox', { name: /community name/i }).should(
+        'have.css',
+        'border-color',
+        rgbColor,
+      );
     });
   });
 });

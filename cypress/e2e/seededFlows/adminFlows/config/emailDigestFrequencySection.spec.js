@@ -14,7 +14,8 @@ describe('Emails Section', () => {
 
       cy.get('@emailForm').within(() => {
         cy.findByText('Emails').click();
-        cy.findByLabelText('Contact email').clear().type('yo@dev.to');
+        cy.findByLabelText('Contact email').clear();
+        cy.findByLabelText('Contact email').type('yo@dev.to');
         cy.findByText('Update Settings').click();
       });
 
@@ -32,7 +33,8 @@ describe('Emails Section', () => {
 
       cy.get('@emailForm').within(() => {
         cy.findByText('Emails').click();
-        cy.findByLabelText('Periodic email digest').clear().type('42');
+        cy.findByLabelText('Periodic email digest').clear();
+        cy.findByLabelText('Periodic email digest').type('42');
         cy.findByText('Update Settings').click();
       });
 

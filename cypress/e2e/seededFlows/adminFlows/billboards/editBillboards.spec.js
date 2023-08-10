@@ -64,13 +64,12 @@ describe('Billboards Form', () => {
           .as('audienceSegments')
           .should('be.visible');
 
-        cy.get('@audienceSegments').select('Are trusted').should('exist');
-        cy.get('@audienceSegments')
-          .select('Have not posted yet')
-          .should('exist');
-        cy.get('@audienceSegments')
-          .select('Have not set an experience level')
-          .should('exist');
+        cy.get('@audienceSegments').select('Are trusted');
+        cy.get('@audienceSegments').should('exist');
+        cy.get('@audienceSegments').select('Have not posted yet');
+        cy.get('@audienceSegments').should('exist');
+        cy.get('@audienceSegments').select('Have not set an experience level');
+        cy.get('@audienceSegments').should('exist');
 
         cy.get('@audienceSegments')
           .contains('Managed elsewhere')

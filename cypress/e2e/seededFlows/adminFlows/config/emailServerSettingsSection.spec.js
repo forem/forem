@@ -14,10 +14,14 @@ describe('Email Server Settings Section', () => {
 
       cy.get('@emailServerSettings').within(() => {
         cy.findByText('Email Server Settings (SMTP)').click();
-        cy.findByLabelText('User name').clear().type('jane_doe');
-        cy.findByLabelText('Password').clear().type('abc123456');
-        cy.findByLabelText('Address').clear().type('smtp.gmail.com');
-        cy.findByLabelText('Authentication').clear().type('plain');
+        cy.findByLabelText('User name').clear();
+        cy.findByLabelText('User name').type('jane_doe');
+        cy.findByLabelText('Password').clear();
+        cy.findByLabelText('Password').type('abc123456');
+        cy.findByLabelText('Address').clear();
+        cy.findByLabelText('Address').type('smtp.gmail.com');
+        cy.findByLabelText('Authentication').clear();
+        cy.findByLabelText('Authentication').type('plain');
         cy.findByText('Update Settings').click();
       });
 

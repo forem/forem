@@ -18,10 +18,11 @@ describe('Campaign Section', () => {
           .findByText('Rate limits and anti-spam')
           .click();
 
-        cy.get('@rateLimitSectionForm')
-          .get('#settings_rate_limit_user_considered_new_days')
-          .clear()
-          .type('42');
+        cy.get('@rateLimitSectionForm').get(
+          '#settings_rate_limit_user_considered_new_days',
+        );
+        cy.get('#settings_rate_limit_user_considered_new_days').clear();
+        cy.get('#settings_rate_limit_user_considered_new_days').type('42');
 
         cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
 
@@ -53,10 +54,11 @@ describe('Campaign Section', () => {
           .findByText('Rate limits and anti-spam')
           .click();
 
-        cy.get('@rateLimitSectionForm')
-          .get('#settings_rate_limit_user_considered_new_days')
-          .clear()
-          .type('42');
+        cy.get('@rateLimitSectionForm').get(
+          '#settings_rate_limit_user_considered_new_days',
+        );
+        cy.get('#settings_rate_limit_user_considered_new_days').clear();
+        cy.get('#settings_rate_limit_user_considered_new_days').type('42');
 
         cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
 
