@@ -8,7 +8,7 @@ ENV RUBY_VERSION=3.1.4
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
     && bash -lc "rvm autolibs enable && \
                  rvm reinstall $RUBY_VERSION && \
-                 rvm use $RUBY_VERSION" \
+                 rvm use $RUBY_VERSION --default" \
     && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
     && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
 
