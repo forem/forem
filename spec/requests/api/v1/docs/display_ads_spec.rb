@@ -13,11 +13,11 @@ RSpec.describe "api/v1/display_ads" do
   before { user.add_role(:admin) }
 
   path "/api/display_ads" do
-    describe "get all display ads" do
-      get("display ads") do
+    describe "GET /display_ads" do
+      get("Billboards") do
         tags "display ads"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a list of all display ads.
+        This endpoint allows the client to retrieve a list of all billboards.
         DESCRIBE
 
         produces "application/json"
@@ -40,11 +40,11 @@ RSpec.describe "api/v1/display_ads" do
       end
     end
 
-    describe "create a new display ad" do
-      post("display ads") do
+    describe "POST /display_ads" do
+      post "Create a billboard" do
         tags "display ads"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to create a new display ad.
+        This endpoint allows the client to create a new billboard.
         DESCRIBE
 
         produces "application/json"
@@ -59,13 +59,14 @@ RSpec.describe "api/v1/display_ads" do
             display_to: "all",
             approved: true,
             published: true,
-            placement_area: placement_area
+            placement_area: placement_area,
+            target_geolocations: "US-WA, CA-BC"
           }
         end
 
         let(:placement_area) { "post_comments" }
 
-        response(200, "successful") do
+        response "201", "A billboard" do
           schema  type: :object,
                   items: { "$ref": "#/components/schemas/DisplayAd" }
           let(:"api-key") { api_secret.secret }
@@ -93,18 +94,18 @@ RSpec.describe "api/v1/display_ads" do
   end
 
   path "/api/display_ads/{id}" do
-    describe "GET a single display ad" do
-      get("display ad") do
+    describe "GET /display_ads/:id" do
+      get "A billboard (by id)" do
         tags "display ads"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to retrieve a single display ad, via its id.
+        This endpoint allows the client to retrieve a single billboard, via its id.
         DESCRIBE
 
         produces "application/json"
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the display ad.",
+                  description: "The ID of the billboard.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -128,7 +129,7 @@ RSpec.describe "api/v1/display_ads" do
           run_test!
         end
 
-        response "404", "Unknown DisplayAd ID" do
+        response "404", "Unknown Billboard ID" do
           let(:"api-key") { api_secret.secret }
           let(:id) { 10_000 }
           add_examples
@@ -138,11 +139,11 @@ RSpec.describe "api/v1/display_ads" do
       end
     end
 
-    describe "PUT update an ad" do
-      put("display ads") do
+    describe "PUT /display_ads/:id" do
+      put "Update a billboard by ID" do
         tags "display ads"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to update the attributes of a single display ad, via its id.
+        This endpoint allows the client to update the attributes of a single billboard, via its id.
         DESCRIBE
 
         produces "application/json"
@@ -151,7 +152,7 @@ RSpec.describe "api/v1/display_ads" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the display ad.",
+                  description: "The ID of the billboard.",
                   schema: {
                     type: :integer,
                     format: :int32,
@@ -194,11 +195,11 @@ RSpec.describe "api/v1/display_ads" do
   end
 
   path "/api/display_ads/{id}/unpublish" do
-    describe "PUT to unpublish an ad" do
-      put("unpublish") do
+    describe "PUT /display_ads/:id/unpublish" do
+      put "Unpublish a billboard" do
         tags "display ads"
         description(<<-DESCRIBE.strip)
-        This endpoint allows the client to remove a display ad from rotation by un-publishing it.
+        This endpoint allows the client to remove a billboard from rotation by un-publishing it.
         DESCRIBE
 
         produces "application/json"
@@ -206,7 +207,7 @@ RSpec.describe "api/v1/display_ads" do
         parameter name: :id,
                   in: :path,
                   required: true,
-                  description: "The ID of the display ad to unpublish.",
+                  description: "The ID of the billboard to unpublish.",
                   schema: {
                     type: :integer,
                     format: :int32,

@@ -412,7 +412,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
                                 description: "Identifies which area of site layout the ad can appear in" },
               tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
-              article_exclude_ids: { type: :string,
+              exclude_article_ids: { type: :string,
                                      nullable: true,
                                      description: "Articles this ad should *not* appear on (blank means no articles are disallowed, and this ad can appear next to any/all articles). Comma-separated list of integer Article IDs" }, # rubocop:disable Layout/LineLength
               audience_segment_id: { type: :integer,
@@ -420,6 +420,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               audience_segment_type: { type: :string,
                                        enum: AudienceSegment.type_ofs.keys,
                                        description: "Specifies a group of users who will see this billboard (must match audience_segment_id if both provided)" },
+              target_geolocations: { type: :array,
+                                     items: { type: :string },
+                                     description: "Locations to show this billboard in (blank means it will be shown in all locations). Specified as a comma-separated list or array of ISO 3166-2 country and optionally region codes)" },
               display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
                             description: "Potentially limits visitors to whom the ad is visible" },
               type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
