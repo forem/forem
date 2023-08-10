@@ -42,7 +42,7 @@ RSpec.describe DisplayAd do
       display_ad.type_of = "community"
       expect(display_ad).not_to be_valid
       expect(display_ad.errors[:type_of])
-        .to include("must be in_house if display ad is a Home Hero")
+        .to include("must be in_house if billboard is a Home Hero")
     end
 
     it "disallows unacceptable placement_area" do
@@ -182,7 +182,7 @@ RSpec.describe DisplayAd do
     it "keeps the same processed_html if markdown was not changed" do
       display_ad = create(:display_ad)
       html = display_ad.processed_html
-      display_ad.update(name: "Sample display ad")
+      display_ad.update(name: "Sample billboard")
       display_ad.reload
       expect(display_ad.processed_html).to eq(html)
     end
@@ -194,7 +194,7 @@ RSpec.describe DisplayAd do
     it "generates a name when one does not exist" do
       display_ad_with_name = create(:display_ad, name: "Test")
 
-      expect(display_ad.name).to eq("Display Ad #{display_ad.id}")
+      expect(display_ad.name).to eq("Billboard #{display_ad.id}")
       expect(display_ad_with_name.name).to eq("Test")
     end
   end
