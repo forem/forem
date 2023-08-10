@@ -22,13 +22,17 @@ RSpec.describe Moderator::BanishUser, type: :service do
     expect(BanishedUser.exists?(username: original_username)).to be true
   end
 
-  it "removes all their articles, comments, podcasts, abuse_reports, and vomit reactions", :aggregate_failures do
+  it "removes everything", :aggregate_failures do
+    # should remove:
+    #   articles, comments, podcasts, organizations, abuse_reports, and vomit reactions
+
     article = create(:article, user: user, published: true)
     podcast = create(:podcast, creator: user)
     create(:podcast_ownership, owner: user, podcast: podcast)
     create(:comment, user: user, commentable: article)
     create(:reaction, category: "vomit", reactable: user, user: moderator)
     create(:feedback_message, :abuse_report, reporter_id: moderator.id, offender_id: user.id)
+    create(:organization_membership, user: user, type_of_user: "admin")
 
     expect do
       sidekiq_perform_enqueued_jobs do
@@ -37,7 +41,9 @@ RSpec.describe Moderator::BanishUser, type: :service do
     end.to change { user.comments.count }.by(-1)
       .and change { user.articles.count }.by(-1)
       .and change { user.created_podcasts.count }.by(-1)
+      .and change { user.organizations.count }.by(-1)
       .and change { Reaction.where(reactable: user).count }.by(-1)
       .and change { user.offender_feedback_messages.first.status }.from("Open").to("Resolved")
+      .and change(Organization, :count).by(-1)
   end
 end
