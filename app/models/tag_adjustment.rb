@@ -1,6 +1,5 @@
 class TagAdjustment < ApplicationRecord
-  validates :tag_name, presence: true,
-                       uniqueness: { scope: :article_id, message: I18n.t("models.tag_adjustment.unique") }
+  validates :tag_name, presence: true
   validates :adjustment_type, inclusion: { in: %w[removal addition] }, presence: true
   validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -19,11 +18,11 @@ class TagAdjustment < ApplicationRecord
   end
 
   def admin_adjusted
-    return if elevated_user?
+    return unless user && !elevated_user?
 
     # Honestly I would like a better way of doing this that doesn't perform N+1
     # queries to check for admins, but that's something I can revisit
-    possible_admins = User.joins(:tag_adjustments).where(
+    possible_admins = User.joins("INNER JOIN tag_adjustments ON tag_adjustments.user_id = users.id").where(
       tag_adjustments: {
         # There's probably a case sensitivity tripwire here
         tag_name: tag_name, article_id: article_id

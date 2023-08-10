@@ -118,7 +118,6 @@ en:
       too_many_tags: 4 tags max per article.
       unpermitted: does not have privilege to adjust these tags
       not_live: selected for removal is not a current live tag.
-      unique: can't be an already adjusted tag
       removal_conflicts_with_admin: Tag has been added by Admin. You can't remove it now. If you feel that's a mistake, please contact us at %{support_email}
       addition_conflicts_with_admin: Tag has been removed by Admin. You can't add it now. If you feel that's a mistake, please contact us at %{support_email}
     tweet:
