@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :organization_membership do
-    association :user, factory: :user, strategy: :create
-    association :organization, factory: :organization, strategy: :create
+    user
+    organization
     type_of_user { "member" }
 
     after(:build) do |organization_membership|

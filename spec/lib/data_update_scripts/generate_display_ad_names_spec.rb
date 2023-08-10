@@ -9,7 +9,7 @@ describe DataUpdateScripts::GenerateDisplayAdNames do
       display_ad = create(:display_ad, name: nil)
 
       described_class.new.run
-      expect(display_ad.reload.name).to eq("Display Ad #{display_ad.id}")
+      expect(display_ad.reload.name).to eq("Billboard #{display_ad.id}")
     end
   end
 

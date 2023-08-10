@@ -51,7 +51,7 @@
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
         <legend class="crayons-field crayons-field__label pl-0">Display to user group</legend>
-        <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Display Ad</p>
+        <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Billboard</p>
 
         <label class="crayons-field crayons-field--radio mb-2">
           <%= radio_button_tag :display_to, "all", @billboard.display_to_all?, class: "crayons-radio" %>
@@ -128,13 +128,13 @@
       <% else %>
         <div class="flex flex-col gap-3">
           <p>
-            Display ads will show up in the designated placement area <strong>once published and approved</strong>. You can safely preview them here before publishing.
+            Billboards will show up in the designated placement area <strong>once published and approved</strong>. You can safely preview them here before publishing.
           </p>
           <p>
-            Multiple ads that share the same placement area will be swapped every few minutes. <strong>The units with the most engagement will show up the most often</strong>.
+            Multiple billboards that share the same placement area will be swapped every few minutes. <strong>The units with the most engagement will show up the most often</strong>.
           </p>
           <p>
-            Organization ID is optional. Use it if you want to attribute an ad to a specific organization.
+            Organization ID is optional. Use it if you want to attribute a billboard to a specific organization.
           </p>
         </div>
       <% end %>
