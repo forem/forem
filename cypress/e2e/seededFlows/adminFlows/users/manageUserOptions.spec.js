@@ -1,16 +1,14 @@
 import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openUserOptions(callback) {
-  cy.findByRole('button', { name: 'Options' })
-    .should('have.attr', 'aria-haspopup', 'true')
-    .should('have.attr', 'aria-expanded', 'false')
-    .click()
-    .then(([button]) => {
-      expect(button.getAttribute('aria-expanded')).to.equal('true');
-      const dropdownId = button.getAttribute('aria-controls');
-
-      cy.get(`#${dropdownId}`).within(callback);
-    });
+  cy.findByRole('button', { name: 'Options' }).as('options');
+  cy.get('@options').should('have.attr', 'aria-haspopup', 'true');
+  cy.get('@options').should('have.attr', 'aria-expanded', 'false');
+  cy.get('@options').click();
+  cy.get('@options')
+    .getAttribute('aria-expanded')
+    .should('haveAttr', 'aria-expanded', 'true');
+  cy.get('@options').getAttribute('aria-controls').within(callback);
 }
 
 describe('Manage User Options', () => {
