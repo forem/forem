@@ -2,8 +2,6 @@ FROM gitpod/workspace-postgres
 
 # Install the GitHub CLI
 RUN brew install gh
-RUN brew install hivemind
-
 
 # Install Ruby
 ENV RUBY_VERSION=3.1.4
