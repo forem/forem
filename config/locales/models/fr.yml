@@ -118,6 +118,8 @@ fr:
       unpermitted: n'a pas le privilège d'ajuster ces balises
       not_live: la balise sélectionnée pour la suppression n'est pas une balise active.
       unique: ne peut pas être un tag déjà ajusté.
+      added_by_admin: La balise aurait ajoutée par l'Admin. Vous pouvez pas la supprimer maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}
+      removed_by_admin: La balise aurait supprimée par l'Admin. Vous pouvez pas l'ajouter maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}
     tweet:
       tweet_not_found: Tweet non trouvé
       authentication_error: Erreur d'authentification ; veuillez contacter votre administrateur Forem au sujet d'éventuelles clés Twitter manquantes.

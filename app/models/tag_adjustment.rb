@@ -5,6 +5,7 @@ class TagAdjustment < ApplicationRecord
   validates :status, inclusion: { in: %w[committed pending committed_and_resolvable resolved] }, presence: true
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   validate :user_permissions
+  validate :admin_adjusted
   validate :article_tag_list
 
   belongs_to :user
@@ -15,6 +16,22 @@ class TagAdjustment < ApplicationRecord
 
   def user_permissions
     errors.add(:user_id, I18n.t("models.tag_adjustment.unpermitted")) unless has_privilege_to_adjust?
+  end
+
+  def admin_adjusted
+    return if elevated_user?
+
+    # Honestly I would like a better way of doing this that doesn't perform N+1
+    # queries to check for admins, but that's something I can revisit
+    possible_admins = User.joins(:tag_adjustments).where(
+      tag_adjustments: {
+        # There's probably a case sensitivity tripwire here
+        tag_name: tag_name, article_id: article_id
+      },
+    )
+    return unless possible_admins.any? { |user| user.any_admin? || user.super_moderator? }
+
+    errors.add(:tag_id, I18n.t("models.tag_adjustment.#{adjustment_type}_conflicts_with_admin"))
   end
 
   def elevated_user?

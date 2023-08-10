@@ -112,6 +112,7 @@ class User < ApplicationRecord
   has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
                                               foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
+  has_many :tag_adjustments, dependent: :delete_all
   has_many :tweets, dependent: :nullify
   has_many :devices, dependent: :delete_all
 
