@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe Moderator::BanishUserWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "high_priority", 1
 
+  # TODO: Remove this test because BanihedUser already covers it
   describe "#perform" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
