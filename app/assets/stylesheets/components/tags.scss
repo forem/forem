@@ -40,3 +40,17 @@
     }
   }
 }
+
+.tag-card {
+  height: 195px;
+
+  .crayons-tag {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  &__badge {
+    width: 48px;
+    height: 48px;
+  }
+}

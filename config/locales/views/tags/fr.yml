@@ -8,7 +8,7 @@ fr:
         og:
           description: "%{community} est super"
       heading:
-        default: Sujets les plus utilisées
+        default: Tags
         search_results: Search results for %{q}
       search:
         aria_labels:
@@ -45,8 +45,8 @@ fr:
         code: 123
         placeholder: "comma separated, space is optional. Example: 1,2,3"
       published:
-        one: 1 post published
-        other: "%{count} posts published"
+        one: 1 post
+        other: "%{count} posts"
       sidebar:
         about: 'about #%{tag}'
         admin: Admin

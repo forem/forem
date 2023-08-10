@@ -214,26 +214,34 @@ RSpec.describe Tag do
 
   describe "followed_by and antifollowed_by" do
     let(:user) { create(:user) }
-    let(:follow_tag) { create(:tag, name: "following") }
-    let(:antifollow_tag) { create(:tag, name: "antifollowing") }
-    let(:unrelated) { create(:tag, name: "unrelated") }
+    let(:first_followed_tag) { create(:tag, name: "tagone") }
+    let(:antifollowed_tag) { create(:tag, name: "tagtwo") }
+    let(:second_followed_tag) { create(:tag, name: "tagthree") }
+    let(:other_followed_tag) { create(:tag, name: "tagfour") }
     let(:other) { create(:user) }
 
     before do
-      follow = user.follow(follow_tag)
-      follow.update explicit_points: 5
+      first_followed = user.follow(first_followed_tag)
+      first_followed.update explicit_points: 5
 
-      antifollow = user.follow(antifollow_tag)
-      antifollow.update explicit_points: -5
+      second_followed = user.follow(second_followed_tag)
+      second_followed.update explicit_points: 0
 
-      other.follow(unrelated)
+      antifollowed = user.follow(antifollowed_tag)
+      antifollowed.update explicit_points: -5
+
+      other.follow(other_followed_tag)
     end
 
     it "works as expected" do
       results = described_class.followed_by(user)
-      expect(results).to contain_exactly(follow_tag)
+      expect(results).to contain_exactly(first_followed_tag, second_followed_tag)
+
       antiresults = described_class.antifollowed_by(user)
-      expect(antiresults).to contain_exactly(antifollow_tag)
+      expect(antiresults).to contain_exactly(antifollowed_tag)
+
+      other_results = described_class.followed_by(other)
+      expect(other_results).to contain_exactly(other_followed_tag)
     end
   end
 

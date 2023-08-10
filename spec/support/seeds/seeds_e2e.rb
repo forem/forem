@@ -1097,7 +1097,7 @@ seeder.create_if_none(DisplayAd) do
   org_id = Organization.find_by(slug: "bachmanity").id
   DisplayAd.create!(
     organization_id: org_id,
-    body_markdown: "<h1>This is an add</h1>",
+    body_markdown: "<h1>This is a regular billboard</h1>",
     placement_area: "sidebar_left",
     name: "Tests Display Ad",
     published: true,
@@ -1112,5 +1112,25 @@ seeder.create_if_none(DisplayAd) do
     published: true,
     approved: true,
     audience_segment: AudienceSegment.where(type_of: :manual).first,
+  )
+
+  DisplayAd.create!(
+    organization_id: org_id,
+    body_markdown: "<h1>This is a billboard shown to people in Ontario</h1>",
+    placement_area: "feed_first",
+    name: "Ontario-targeted Billboard",
+    published: true,
+    approved: true,
+    target_geolocations: "CA-ON",
+  )
+
+  DisplayAd.create!(
+    organization_id: org_id,
+    body_markdown: "<h1>This is a billboard shown to people in the US</h1>",
+    placement_area: "feed_first",
+    name: "US-targeted Billboard",
+    published: true,
+    approved: true,
+    target_geolocations: "US",
   )
 end

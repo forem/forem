@@ -1,26 +1,39 @@
 /* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable, InstantClick */
 
-var client;
+// The purpose of initScrolling is to start paginating the page once you reach the bottom of the page.
+// It does this for majority of the views on the dashboard page as well as the home feed.
 
+var client;
+/**
+ *
+ * @param {String} el is an HTML element that contains the container that we want to append items to. It contains id: indexContainer.
+ * @param {String} endpoint is the relative URL of the endpoint to call to get the data
+ * @param {Function} insertCallback is a function from the return of the callback function (insertNext). The function is passed the data as an argument to build the HTML.
+ * @returns nil but calls the insertCallback (i.e. the insertEntries function) with the data as an argument to update the HTML. It also handles the loading spinner.
+ */
 function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
-  var urlParams = Object.keys(indexParams)
-    .map(function handleMap(k) {
-      return encodeURIComponent(k) + '=' + encodeURIComponent(indexParams[k]);
-    })
-    .join('&');
+  // I change the name of the param from "action" to "controller_action" prior to the fetch because Rails ignores the
+  // "action" param in the corresponding endpoint controller because it is a reserved word in Rails. Based on the above
+  // I thought it would be safe to do the param name update for now until we can refactor this file and change the coupled architecture.
+  // "action" renamed to "controller_action" is the name of the action from the originating server side request e.g. hidden_tags in the dashboard_controller.
+  const updatedIndexParams = {};
+  if (indexParams['action']) {
+    delete Object.assign(updatedIndexParams, indexParams, {
+      ['controller_action']: indexParams['action'],
+    })['action'];
+  }
+
+  var urlParams = new URLSearchParams(updatedIndexParams).toString();
   if (urlParams.indexOf('q=') > -1) {
     return;
   }
-  var fetchUrl = (
-    endpoint +
-    '?page=' +
-    nextPage +
-    '&' +
-    urlParams +
-    '&signature=' +
-    parseInt(Date.now() / 400000, 10)
-  ).replace('&&', '&');
+
+  var fetchUrl =
+    `${endpoint}?page=${nextPage}&${urlParams}&signature=${parseInt(
+      Date.now() / 400000,
+      10,
+    )}`.replace('&&', '&');
   window
     .fetch(fetchUrl)
     .then(function handleResponse(response) {
@@ -42,6 +55,15 @@ function fetchNext(el, endpoint, insertCallback) {
     });
 }
 
+/**
+ *
+ * @param {*} params are the dataset params on an wrapping container like 'index-container'. It contains the action and the elID.
+ * The elID is the id of the element that we are appending to.
+ * The action like 'following_tags' is the action that we are taking.
+ * @param {*} buildCallback is the callback function (the buildFollowsHTML function) that will be called after the data is fetched.
+ * It will be passed the data as an argument, and insert the HTML into the DOM.
+ * @returns a function that will be called after the data is fetched from the caller.
+ */
 function insertNext(params, buildCallback) {
   return function insertEntries(entries = []) {
     var indexContainer = document.getElementById('index-container');
@@ -71,6 +93,12 @@ function insertNext(params, buildCallback) {
   };
 }
 
+/**
+ * Constructs the HTML for a follows entry using the data from the follows entries object.
+ *
+ * @param {*} follows is the entries for the follows that we are building HTML for.
+ * @returns an HTML block for the follows.
+ */
 function buildFollowsHTML(follows) {
   return (
     '<div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-' +
@@ -106,6 +134,11 @@ function buildFollowsHTML(follows) {
   );
 }
 
+/**
+ * Constructs the HTML for a tag entry using the data from the tag object.
+ * @param {*} tag is the entry for which we are building HTML for.
+ * @returns an HTML block for a tag follow.
+ */
 function buildTagsHTML(tag) {
   var antifollow = '';
   if (tag.points < 0) {
@@ -113,19 +146,23 @@ function buildTagsHTML(tag) {
       '<span class="c-indicator c-indicator--danger" title="This tag has negative follow weight">Anti-follow</span>';
   }
 
-  return `<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-${tag.id}" style="border: 1px solid ${tag.color}; box-shadow: 3px 3px 0 ${tag.color}">
-    <h3 class="s:mb-1 p-0 fw-medium">
+  return `<div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center" style="border-top-color: ${tag.color};" id="follows-${tag.id}">
+    <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
       <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
         <span class="crayons-tag__prefix">#</span>${tag.name}
       </a>
-      ${antifollow}
     </h3>
-    <p class="grid-cell__summary truncate-at-3"></p>
     <input name="follows[][id]" id="follow_id_${tag.name}" type="hidden" form="follows_update_form" value="${tag.id}">
-    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${tag.points}" name="follows[][explicit_points]" id="follow_points_${tag.name}" aria-label="${tag.name} tag weight">
+    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${tag.explicit_points}" name="follows[][explicit_points]" id="follow_points_${tag.name}" aria-label="${tag.name} tag weight">
   </div>`;
 }
 
+/**
+ * Fetches the next page for the given element.
+ *
+ * @param {*} el is the element that we are fetching the next page for.
+ * @returns nil but carries out actions to fetch, build and insert the HTML into the DOM for the next page
+ */
 function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
@@ -147,7 +184,16 @@ function fetchNextFollowingPage(el) {
       '/followings/organizations',
       insertNext({ elId: 'follows', action }, buildFollowsHTML),
     );
+  } else if (action.includes('hidden_tags')) {
+    fetchNext(
+      el,
+      '/followings/tags',
+      insertNext({ elId: 'follows', action }, buildTagsHTML),
+    );
   } else {
+    // This "else" accounts for `followings_tags`, it would make more sense to explicitly check for
+    // the condition rather than have a catch-all else statement. Hence, we need to double check
+    // what cases the catch-all cover and then move it into an explicit condition.
     fetchNext(
       el,
       '/followings/tags',
@@ -400,6 +446,10 @@ function fetchNextPageIfNearBottom() {
   }
 }
 
+/**
+ * Checks if the user is near the bottom of the page and if so, fetches the next page.
+ * It also sets up an interval to check if the user is near the bottom of the page.
+ */
 function checkIfNearBottomOfPage() {
   const loadingElement = document.getElementById('loading-articles');
   if (
@@ -414,12 +464,16 @@ function checkIfNearBottomOfPage() {
   } else if (loadingElement) {
     loadingElement.style.display = 'block';
   }
+
   fetchNextPageIfNearBottom();
   setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
   }, 210);
 }
 
+/**
+ * Initializes the scrolling for the page. It looks for the index-container element and if it exists, it sets up the scrolling.
+ */
 function initScrolling() {
   var elCheck = document.getElementById('index-container');
 

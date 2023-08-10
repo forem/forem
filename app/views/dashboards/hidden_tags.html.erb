@@ -5,21 +5,20 @@
   data-which="following">
   <main id="main-content" class="crayons-layout crayons-layout--header-inside crayons-layout--2-cols">
     <header class="crayons-page-header block">
-      <h1 class="crayons-title"><%= t("views.dashboard.following_tags.heading") %></h1>
+      <h1 class="crayons-title"><%= t("views.dashboard.hidden_tags.heading") %></h1>
       <%= render "actions_mobile" %>
     </header>
     <div class="crayons-layout__sidebar-left">
       <%= render "actions" %>
     </div>
     <div class="crayons-layout__content mb-5" id="user-dashboard">
-      <% if @followed_tags.any? %>
+      <% if @hidden_tags.any? %>
         <div class="crayons-notice crayons-notice--info p-4 mx-3 s:mx-0 mb-3" aria-live="polite">
-            <%= t("views.dashboard.following_tags.adjust") %>
-            <span class="c-indicator c-indicator--warning ml-3"><%= t("views.dashboard.following_tags.default") %></span>
+          <%= t("views.dashboard.hidden_tags.adjust") %>
         </div>
-        <%= render "tags", tags: @followed_tags %>
+        <%= render "tags", tags: @hidden_tags %>
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.following_tags.empty_html", link: tags_path) %></div>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.hidden_tags.empty_html", link: tags_path) %></div>
       <% end %>
       <%= render "sublist" %>
     </div>
