@@ -6,8 +6,8 @@ RUN brew install gh
 # Install Ruby
 ENV RUBY_VERSION=3.1.4
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
-    && bash -lc "rvm reinstall ruby-$RUBY_VERSION && \
-                 rvm use ruby-$RUBY_VERSION --default" \
+    && bash -lc "rvm reinstall $RUBY_VERSION && \
+                 rvm use $RUBY_VERSION --default" \
     && printf "rvm_gems_path=/workspace/.rvm" > ~/.rvmrc \
     && printf "{ rvm use \$(rvm current); } >/dev/null 2>&1\n" >> "$HOME/.bashrc.d/70-ruby"
 
