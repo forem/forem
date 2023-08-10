@@ -27,7 +27,7 @@ class Organization < ApplicationRecord
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
-  has_many :display_ads, dependent: :destroy
+  has_many :billboards, class_name: "DisplayAd", dependent: :destroy
   has_many :listings, dependent: :destroy
   has_many :notifications, dependent: :delete_all
   has_many :organization_memberships, dependent: :delete_all

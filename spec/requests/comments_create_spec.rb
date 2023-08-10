@@ -88,6 +88,25 @@ RSpec.describe "CommentsCreate" do
     end
   end
 
+  context "when user is commenting on a comment by an author who has blocked the user" do
+    let(:third_party_article) { create(:article, user_id: create(:user).id) }
+
+    it "raises a ModerationUnauthorizedError to prevent the comment from saving" do
+      create(:user_block, blocker: blocker, blocked: user, config: "default")
+      # Manually manage the blocked_by_count attribute that counter_culture manages in prod
+      user.update(blocked_by_count: 1)
+      blocker_comment = create(:comment, user_id: blocker.id,
+                                         commentable_id: third_party_article.id,
+                                         commentable_type: "Article")
+      expect do
+        post comments_path, params: comment_params(body_markdown: "trolling attempted!",
+                                                   parent_id: blocker_comment.id)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to eq("Not allowed due to moderation action")
+      end.not_to change(Comment, :count)
+    end
+  end
+
   context "when an error is raised before authorization is performed" do
     before do
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)

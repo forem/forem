@@ -2,7 +2,7 @@
   global initializeLocalStorageRender, initializeBodyData,
   initializeAllTagEditButtons, initializeUserFollowButts,
   initializeCommentsPage,
-  initializeSettings, initializeRuntimeBanner,
+  initializeRuntimeBanner,
   initializeCreditsPage,
   initializeOnboardingTaskCard,
   initScrolling, nextPage:writable,
@@ -13,7 +13,6 @@
 function callInitializers() {
   initializePaymentPointers();
   initializeCommentsPage();
-  initializeSettings();
   initializeCreditsPage();
   initializeOnboardingTaskCard();
 }
@@ -31,7 +30,7 @@ function initializePage() {
       }
       initializeBroadcast();
       initializeReadingListIcons();
-      initializeDisplayAdVisibility();
+      initializeBillboardVisibility();
       if (document.getElementById('sidebar-additional')) {
         document.getElementById('sidebar-additional').classList.add('showing');
       }
@@ -39,10 +38,6 @@ function initializePage() {
   }, 1);
 
   callInitializers();
-
-  function freezeScrolling(event) {
-    event.preventDefault();
-  }
 
   nextPage = 0;
   fetching = false;

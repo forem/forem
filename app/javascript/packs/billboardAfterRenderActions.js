@@ -1,15 +1,15 @@
 /* global userData */
-// This is currently a duplicate of app/assets/javascript/initializers/initializeDisplayAdVisibility.
-export function initializeDisplayAdVisibility() {
-  const displayAds = document.querySelectorAll('[data-display-unit]');
+// This is currently a duplicate of app/assets/javascript/initializers/initializeBillboardVisibility.
+export function initializeBillboardVisibility() {
+  const billboards = document.querySelectorAll('[data-display-unit]');
 
-  if (displayAds && displayAds.length == 0) {
+  if (billboards && billboards.length == 0) {
     return;
   }
 
   const user = userData();
 
-  displayAds.forEach((ad) => {
+  billboards.forEach((ad) => {
     if (user && !user.display_sponsors && ad.dataset['typeOf'] == 'external') {
       ad.classList.add('hidden');
     } else {
@@ -18,7 +18,7 @@ export function initializeDisplayAdVisibility() {
   });
 }
 
-export function observeDisplayAds() {
+export function observeBillboards() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {

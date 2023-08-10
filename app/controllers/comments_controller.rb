@@ -314,6 +314,7 @@ class CommentsController < ApplicationController
   def user_blocked?
     return false if current_user.blocked_by_count.zero?
 
-    UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
+    UserBlock.blocking?(@comment.commentable.user_id, current_user.id) ||
+      UserBlock.blocking?(@comment.parent&.user_id, current_user.id)
   end
 end
