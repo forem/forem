@@ -3,7 +3,7 @@ class FollowingsController < ApplicationController
   before_action -> { limit_per_page(default: 80, max: 1000) }
 
   ATTRIBUTES_FOR_SERIALIZATION = %i[id followable_id followable_type].freeze
-  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
+  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points, :explicit_points].freeze
 
   def users
     relation = current_user.follows_by_type("User")
@@ -13,9 +13,13 @@ class FollowingsController < ApplicationController
   end
 
   def tags
-    relation = current_user.follows_by_type("ActsAsTaggableOn::Tag")
-      .select(TAGS_ATTRIBUTES_FOR_SERIALIZATION)
-      .order(points: :desc)
+    relation = current_user.follows_by_type("ActsAsTaggableOn::Tag").select(TAGS_ATTRIBUTES_FOR_SERIALIZATION)
+    relation = if params[:controller_action] == "hidden_tags"
+                 relation.where(explicit_points: (...0))
+               else
+                 relation.where(explicit_points: (0...))
+               end
+    relation = relation.order(explicit_points: :desc)
     @followed_tags = load_follows_and_paginate(relation)
   end
 
