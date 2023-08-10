@@ -14,13 +14,13 @@ describe('Comment notifications', () => {
       cy.findByRole('button', { name: 'Like' }).as('like');
 
       // User can like a comment
-      cy.get('@like')
-        .should('have.attr', 'aria-pressed', 'false')
-        .click()
-        .should('have.attr', 'aria-pressed', 'true');
+      cy.get('@like').should('have.attr', 'aria-pressed', 'false');
+      cy.get('@like').click();
+      cy.get('@like').should('have.attr', 'aria-pressed', 'true');
 
       // User can unlike a comment
-      cy.get('@like').click().should('have.attr', 'aria-pressed', 'false');
+      cy.get('@like').click();
+      cy.get('@like').should('have.attr', 'aria-pressed', 'false');
     });
   });
 

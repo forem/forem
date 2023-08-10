@@ -1,16 +1,23 @@
 import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openOrganizationOptions(callback) {
+  cy.findByRole('button', { name: 'Options' }).should(
+    'have.attr',
+    'aria-haspopup',
+    'true',
+  );
+  cy.findByRole('button', { name: 'Options' }).should(
+    'have.attr',
+    'aria-expanded',
+    'false',
+  );
+  cy.findByRole('button', { name: 'Options' }).click();
+  expect(
+    cy.findByRole('button', { name: 'Options' }).getAttribute('aria-expanded'),
+  ).to.equal('true');
   cy.findByRole('button', { name: 'Options' })
-    .should('have.attr', 'aria-haspopup', 'true')
-    .should('have.attr', 'aria-expanded', 'false')
-    .click()
-    .then(([button]) => {
-      expect(button.getAttribute('aria-expanded')).to.equal('true');
-      const dropdownId = button.getAttribute('aria-controls');
-
-      cy.get(`#${dropdownId}`).within(callback);
-    });
+    .getAttribute('aria-controls')
+    .within(callback);
 }
 
 describe('Manage Organization Options', () => {

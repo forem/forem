@@ -195,26 +195,31 @@ describe('Post Editor', () => {
 
           cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-          // Update the title, tags, and content for an post.
+          // Update the title, tags, and content for a post.
           cy.get('@articleForm')
             .findByLabelText(/^Post Title$/i)
-            .as('postTitle')
-            .should('have.value', 'Test Post') // checking for original value first
-            .clear()
-            .type('This is some title that should be reverted', {
+            .as('postTitle');
+          cy.get('@postTitle').should('have.value', 'Test Post'); // checking for original value first
+          cy.get('@postTitle').clear();
+          cy.get('@postTitle').type(
+            'This is some title that should be reverted',
+            {
               force: true,
-            });
+            },
+          );
 
           // Check original tag selections are present, and remove them
-          cy.findByRole('button', { name: 'Remove beginner' })
-            .click()
-            .should('not.exist');
-          cy.findByRole('button', { name: 'Remove ruby' })
-            .click()
-            .should('not.exist');
-          cy.findByRole('button', { name: 'Remove go' })
-            .click()
-            .should('not.exist');
+          cy.findByRole('button', { name: 'Remove beginner' }).as(
+            'removeBeginner',
+          );
+          cy.get('@removeBeginner').click();
+          cy.get('@removeBeginner').should('not.exist');
+          cy.findByRole('button', { name: 'Remove ruby' }).as('removeRuby');
+          cy.get('@removeRuby').click();
+          cy.get('@removeRuby').should('not.exist');
+          cy.findByRole('button', { name: 'Remove go' }).as('removeGo');
+          cy.get('@removeGo').click();
+          cy.get('@removeGo').should('not.exist');
 
           // Add the new tags
           cy.get('@articleForm')

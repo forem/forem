@@ -92,12 +92,9 @@ describe('Post sidebar actions', () => {
       const originalScroll = comments.scrollIntoView.bind(comments);
       cy.stub(comments, 'scrollIntoView').callsFake(() => originalScroll());
 
-      cy.findByRole('button', { name: 'Jump to Comments' })
-        .click()
-        .then(() => {
-          cy.get('@commentsSortDropdown').should('be.within_viewport');
-          cy.get('@articleHeader').should('not.be.within_viewport');
-        });
+      cy.findByRole('button', { name: 'Jump to Comments' }).click();
+      cy.get('@commentsSortDropdown').should('be.within_viewport');
+      cy.get('@articleHeader').should('not.be.within_viewport');
     });
   });
 });

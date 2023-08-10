@@ -50,18 +50,18 @@ describe('play or pause animated images', () => {
         .should('have.attr', 'aria-pressed', 'false');
 
       // Pressing the button should toggle only the state of the individual image
+      cy.get('@pauseButtons').first().click();
       cy.get('@pauseButtons')
         .first()
-        .click()
         .should('have.attr', 'aria-pressed', 'true');
       cy.get('@pauseButtons')
         .last()
         .should('have.attr', 'aria-pressed', 'false');
 
       // It should also toggle back to playing
+      cy.get('@pauseButtons').first().click();
       cy.get('@pauseButtons')
         .first()
-        .click()
         .should('have.attr', 'aria-pressed', 'false');
     });
   });
@@ -92,18 +92,18 @@ describe('play or pause animated images', () => {
         .should('have.attr', 'aria-pressed', 'true');
 
       // Pressing the button should toggle only the state of the individual image
+      cy.get('@pauseButtons').first().click();
       cy.get('@pauseButtons')
         .first()
-        .click()
         .should('have.attr', 'aria-pressed', 'false');
       cy.get('@pauseButtons')
         .last()
         .should('have.attr', 'aria-pressed', 'true');
 
       // It should also toggle back to paused
+      cy.get('@pauseButtons').first().click();
       cy.get('@pauseButtons')
         .first()
-        .click()
         .should('have.attr', 'aria-pressed', 'true');
     });
   });
