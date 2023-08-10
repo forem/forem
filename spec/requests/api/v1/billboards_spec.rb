@@ -42,7 +42,7 @@ RSpec.describe "Api::V1::Billboards" do
       it "creates a new display_ad" do
         post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
-        expect(response).to have_http_status(:success)
+        expect(response).to have_http_status(:created)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to \
           contain_exactly("approved", "body_markdown", "cached_tag_list",
@@ -56,12 +56,45 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
-      it "returns a malformed response" do
+      it "also accepts target geolocations as an array" do
+        post api_billboards_path,
+             params: billboard_params.merge(target_geolocations: %w[US-WA CA-BC]).to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:created)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to \
+          contain_exactly("approved", "body_markdown", "cached_tag_list",
+                          "clicks_count", "created_at", "display_to", "id",
+                          "impressions_count", "name", "organization_id",
+                          "placement_area", "processed_html", "published",
+                          "success_rate", "tag_list", "type_of", "updated_at",
+                          "creator_id", "exclude_article_ids",
+                          "audience_segment_type", "audience_segment_id",
+                          "priority", "target_geolocations")
+        expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
+      end
+
+      it "returns a malformed response with invalid display_to" do
         post api_billboards_path, params: billboard_params.merge(display_to: "steve").to_json, headers: auth_header
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
-        expect(response.parsed_body.keys).to contain_exactly("error")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("'steve' is not a valid display_to")
+      end
+
+      it "returns a malformed response with invalid geolocation" do
+        expect do
+          post api_billboards_path,
+               params: billboard_params.merge(target_geolocations: "US-FAKE").to_json,
+               headers: auth_header
+        end.not_to change(DisplayAd, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
       end
     end
 
@@ -103,6 +136,27 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
                           "priority", "target_geolocations")
+      end
+
+      it "also accepts target geolocations as an array" do
+        put api_billboard_path(ad1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq("application/json")
+        ad1.reload
+        expect(ad1.target_geolocations).to contain_exactly(
+          Geolocation.from_iso3166("US-FL"),
+          Geolocation.from_iso3166("US-GA"),
+        )
+      end
+
+      it "returns a malformed response with invalid geolocation" do
+        put api_billboard_path(ad1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
       end
     end
 
