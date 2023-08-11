@@ -205,6 +205,7 @@ class Article < ApplicationRecord
   after_save :create_conditional_autovomits
   after_save :bust_cache
   after_save :collection_cleanup
+  after_save :generate_social_image
 
   after_update_commit :update_notifications, if: proc { |article|
                                                    article.notifications.any? && !article.saved_changes.empty?
@@ -982,6 +983,17 @@ class Article < ApplicationRecord
     cache_bust.call("#{path}?preview=#{password}")
     async_bust
     touch_actor_latest_article_updated_at(destroying: destroying)
+  end
+
+  def generate_social_image
+    return unless FeatureFlag.enabled?(:minimagick_social_images)
+
+    return if main_image.present?
+
+    change = saved_change_to_attribute?(:title) || saved_change_to_attribute?(:published_at)
+    return unless (change || social_image.blank?) && published
+
+    Images::SocialImageWorker.perform_async(id, self.class.name)
   end
 
   def calculate_base_scores

@@ -19,7 +19,16 @@
   }
 }
 
-.sponsorship-dropdown {
+.billboard .crayons-dropdown.sponsorship-dropdown {
+  @media (min-width: $breakpoint-m) {
+    max-width: 200px;
+    min-width: auto;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    max-width: 250px;
+  }
+
   hr {
     border: 0.5px solid var(--divider);
     margin: 8px;

@@ -215,6 +215,18 @@ RSpec.describe "StoriesShow" do
       get article.path
       expect(response.body).not_to include("noindex")
     end
+
+    it "renders og:image with main image if present ahead of social" do
+      article = create(:article, with_main_image: true, social_image: "https://example.com/image.jpg")
+      get article.path
+      expect(response.body).to include(%(property="og:image" content="#{article.main_image}"))
+    end
+
+    it "renders og:image with social if present and main image not so much" do
+      article = create(:article, with_main_image: false, social_image: "https://example.com/image.jpg")
+      get article.path
+      expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
+    end
   end
 
   describe "GET /:username (org)" do
