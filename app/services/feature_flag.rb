@@ -15,11 +15,11 @@ module FeatureFlag
   class << self
     delegate :add, :disable, :enable, :enabled?, :exist?, :remove, to: Flipper
 
-    def enabled_for_user?(_feature_flag_name, user)
+    def enabled_for_user?(flag_name, user)
       enabled?(flag_name, FeatureFlag::Actor[user])
     end
 
-    def enabled_for_user_id?(_feature_flag_name, user_id)
+    def enabled_for_user_id?(flag_name, user_id)
       enabled?(flag_name, FeatureFlag::Actor[user_id])
     end
 
