@@ -1,4 +1,4 @@
-describe('Delete Display Ads', () => {
+describe('Delete Billboards', () => {
   beforeEach(() => {
     cy.testSetup();
     cy.fixture('users/adminUser.json').as('user');
@@ -7,7 +7,7 @@ describe('Delete Display Ads', () => {
       cy.loginAndVisit(user, '/admin/customization/billboards');
 
       cy.findByRole('table').within(() => {
-        cy.contains('Tests Display Ad')
+        cy.contains('Tests Billboard')
           .closest('tr')
           .findByRole('button', { name: 'Destroy' })
           .as('deleteButton')
@@ -16,7 +16,7 @@ describe('Delete Display Ads', () => {
     });
   });
 
-  describe('delete a display ad', () => {
+  describe('delete a billboard', () => {
     it('should display confirmation modal', () => {
       cy.findByRole('dialog').contains('Confirm changes').should('be.visible');
     });
@@ -36,7 +36,7 @@ describe('Delete Display Ads', () => {
       cy.get('@deleteButton').should('be.visible');
     });
 
-    it('should remove display ad if confirmation text matches', () => {
+    it('should remove billboard if confirmation text matches', () => {
       cy.get('@user').then((user) => {
         cy.findByRole('dialog').within(() => {
           cy.get('input').type(
