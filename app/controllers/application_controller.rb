@@ -288,7 +288,7 @@ class ApplicationController < ActionController::Base
   end
 
   def feature_flag_enabled?(flag_name, acting_as: current_user)
-    FeatureFlag.enabled?(flag_name, FeatureFlag::Actor[acting_as])
+    FeatureFlag.enabled_for_user?(flag_name, acting_as)
   end
 
   helper_method :feature_flag_enabled?
