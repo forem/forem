@@ -78,7 +78,7 @@ describe('Billboards Form', () => {
       });
 
       context(
-        'when editing a display ad with a manually managed audience',
+        'when editing a billboard with a manually managed audience',
         () => {
           beforeEach(() => {
             cy.visit('/admin/customization/billboards');

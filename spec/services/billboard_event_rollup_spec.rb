@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe BillboardEventRollup, type: :service do
-  let(:ad1) { create(:display_ad) }
-  let(:ad2) { create(:display_ad) }
+  let(:billboard1) { create(:billboard) }
+  let(:billboard2) { create(:billboard) }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 
@@ -24,13 +24,17 @@ RSpec.describe BillboardEventRollup, type: :service do
   context "when compacting many rows" do
     before do
       override_timestamps do
-        create(:billboard_event, created_at: Date.current - 2, billboard: ad1, user_id: nil, updated_at: Date.current)
-        create(:billboard_event, created_at: Date.current - 2, billboard: ad1, user_id: nil, updated_at: Date.current)
-        create(:billboard_event, created_at: Date.current - 2, billboard: ad1, user_id: nil, updated_at: Date.current)
-
-        create(:billboard_event, created_at: Date.current - 2, billboard: ad1, user_id: user1.id,
+        create(:billboard_event, created_at: Date.current - 2, billboard: billboard1, user_id: nil,
                                  updated_at: Date.current)
-        create(:billboard_event, created_at: Date.current - 2, billboard: ad2, user_id: nil, updated_at: Date.current)
+        create(:billboard_event, created_at: Date.current - 2, billboard: billboard1, user_id: nil,
+                                 updated_at: Date.current)
+        create(:billboard_event, created_at: Date.current - 2, billboard: billboard1, user_id: nil,
+                                 updated_at: Date.current)
+
+        create(:billboard_event, created_at: Date.current - 2, billboard: billboard1, user_id: user1.id,
+                                 updated_at: Date.current)
+        create(:billboard_event, created_at: Date.current - 2, billboard: billboard2, user_id: nil,
+                                 updated_at: Date.current)
       end
     end
 
@@ -40,9 +44,9 @@ RSpec.describe BillboardEventRollup, type: :service do
       described_class.rollup(Date.current - 2)
 
       expectations = [
-        [ad1.id, nil, 3],
-        [ad1.id, user1.id, 1],
-        [ad2.id, nil, 1],
+        [billboard1.id, nil, 3],
+        [billboard1.id, user1.id, 1],
+        [billboard2.id, nil, 1],
       ]
       results_mapped = BillboardEvent.where(created_at: days_ago_as_range(2)).map do |event|
         [event.billboard_id, event.user_id, event.counts_for]
@@ -53,11 +57,11 @@ RSpec.describe BillboardEventRollup, type: :service do
 
   # separate category
   it "groups by category" do
-    create(:billboard_event, category: "impression", billboard: ad1, user_id: nil)
-    create(:billboard_event, category: "impression", billboard: ad1, user_id: nil)
-    create(:billboard_event, category: "impression", billboard: ad1, user_id: nil)
-    create(:billboard_event, category: "click", billboard: ad1, user_id: nil)
-    create(:billboard_event, category: "click", billboard: ad1, user_id: nil)
+    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
+    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
+    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
+    create(:billboard_event, category: "click", billboard: billboard1, user_id: nil)
+    create(:billboard_event, category: "click", billboard: billboard1, user_id: nil)
 
     described_class.rollup(Date.current)
     results = BillboardEvent.where(created_at: Date.current.all_day)
@@ -68,29 +72,29 @@ RSpec.describe BillboardEventRollup, type: :service do
 
   # separate billboard_id
   it "groups by billboard_id" do
-    create(:billboard_event, billboard: ad1, user_id: nil)
-    create(:billboard_event, billboard: ad1, user_id: nil)
-    create(:billboard_event, billboard: ad1, user_id: nil)
-    create(:billboard_event, billboard: ad2, user_id: nil)
-    create(:billboard_event, billboard: ad2, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
+    create(:billboard_event, billboard: billboard2, user_id: nil)
+    create(:billboard_event, billboard: billboard2, user_id: nil)
 
     described_class.rollup(Date.current)
     results = BillboardEvent.where(created_at: Date.current.all_day)
     by_ad = results.index_by { |r| r["billboard_id"] }
-    expect(by_ad[ad1.id]["counts_for"]).to eq(3)
-    expect(by_ad[ad2.id]["counts_for"]).to eq(2)
+    expect(by_ad[billboard1.id]["counts_for"]).to eq(3)
+    expect(by_ad[billboard2.id]["counts_for"]).to eq(2)
   end
 
   # separate user_id / null
   it "groups by user_id (including null / logged-out user)" do
-    create(:billboard_event, billboard: ad1, user: user1)
-    create(:billboard_event, billboard: ad1, user: user2)
-    create(:billboard_event, billboard: ad1, user: user2)
-    create(:billboard_event, billboard: ad1, user: nil)
-    create(:billboard_event, billboard: ad1, user: nil)
-    create(:billboard_event, billboard: ad1, user: nil)
-    create(:billboard_event, billboard: ad1, user: nil)
-    create(:billboard_event, billboard: ad1, user: nil)
+    create(:billboard_event, billboard: billboard1, user: user1)
+    create(:billboard_event, billboard: billboard1, user: user2)
+    create(:billboard_event, billboard: billboard1, user: user2)
+    create(:billboard_event, billboard: billboard1, user: nil)
+    create(:billboard_event, billboard: billboard1, user: nil)
+    create(:billboard_event, billboard: billboard1, user: nil)
+    create(:billboard_event, billboard: billboard1, user: nil)
+    create(:billboard_event, billboard: billboard1, user: nil)
 
     described_class.rollup(Date.current)
     results = BillboardEvent.where(created_at: Date.current.all_day)
@@ -102,11 +106,11 @@ RSpec.describe BillboardEventRollup, type: :service do
 
   # sums counts_for > 1
   it "counts previously crunched" do
-    create(:billboard_event, billboard: ad1, counts_for: 10, user_id: nil)
-    create(:billboard_event, billboard: ad1, counts_for: 15, user_id: nil)
-    create(:billboard_event, billboard: ad1, user_id: nil)
-    create(:billboard_event, billboard: ad1, user_id: nil)
-    create(:billboard_event, billboard: ad1, user_id: nil)
+    create(:billboard_event, billboard: billboard1, counts_for: 10, user_id: nil)
+    create(:billboard_event, billboard: billboard1, counts_for: 15, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
+    create(:billboard_event, billboard: billboard1, user_id: nil)
 
     described_class.rollup(Date.current)
     results = BillboardEvent.where(created_at: Date.current.all_day)
