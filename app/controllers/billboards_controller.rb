@@ -2,6 +2,8 @@ class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
   CACHE_EXPIRY_FOR_BILLBOARDS = 15.minutes.to_i.freeze
+  RANDOM_USER_TAG_RANGE_MIN = 5
+  RANDOM_USER_TAG_RANGE_MAX = 32
 
   def show
     skip_authorization
@@ -43,7 +45,11 @@ class BillboardsController < ApplicationController
   def user_tags
     return unless feed_targeted_tag_placement?(placement_area)
 
-    current_user&.cached_followed_tag_names
+    # We limit the tags considered for this location to a max of 32
+    # cached_followed_tag_names is ordered by points
+    # So we randomaly take from the top of the list in order to return
+    # higher-point tags more often for that user.
+    current_user&.cached_followed_tag_names&.first(rand(RANDOM_USER_TAG_RANGE_MIN..RANDOM_USER_TAG_RANGE_MAX))
   end
 
   def client_geolocation

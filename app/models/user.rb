@@ -347,7 +347,7 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}-x/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.followed_by(self).pluck(:name)
     end
