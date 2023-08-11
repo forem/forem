@@ -139,19 +139,20 @@ RSpec.describe "Api::V1::Billboards" do
       end
 
       it "also accepts target geolocations as an array" do
-        put api_billboard_path(ad1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json, headers: auth_header
+        put api_billboard_path(billboard1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json,
+                                               headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
-        ad1.reload
-        expect(ad1.target_geolocations).to contain_exactly(
+        billboard1.reload
+        expect(billboard1.target_geolocations).to contain_exactly(
           Geolocation.from_iso3166("US-FL"),
           Geolocation.from_iso3166("US-GA"),
         )
       end
 
       it "returns a malformed response with invalid geolocation" do
-        put api_billboard_path(ad1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
+        put api_billboard_path(billboard1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")

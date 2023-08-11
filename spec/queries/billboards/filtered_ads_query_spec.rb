@@ -23,8 +23,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
   context "when ads are not approved or published" do
     let!(:unapproved) { create_billboard approved: false }
     let!(:unpublished) { create_billboard published: false }
-
-    before { create_billboard }
+    let!(:billboard) { create_billboard }
 
     it "does not display unapproved or unpublished ads" do
       filtered = filter_billboards
