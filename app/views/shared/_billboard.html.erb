@@ -1,5 +1,5 @@
 <% if billboard.placement_area.start_with?("feed_") %>
-  <div class="crayons-story crayons-story__billboard billboard"
+  <div class="crayons-story crayons-story__billboard billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -17,7 +17,7 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "home_hero" %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship crayons-story__billboard hero-billboard"
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship crayons-story__billboard hero-billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -29,7 +29,7 @@
     </div>
   </div>
 <% else %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard"
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
