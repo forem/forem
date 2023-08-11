@@ -176,8 +176,8 @@ class Tag < ActsAsTaggableOn::Tag
   # @return [ActiveRecord::Relation<Tag>] the tags followed by the user
   def self.followed_by(user, points = (0...))
     joins("INNER JOIN follows ON tags.id = follows.followable_id")
-    .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag", points: points })
-    .order("follows.points DESC")
+      .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag", points: points })
+      .order("follows.points DESC")
   end
 
   # returns the tags that are anti-followed (hidden) by the user. It uses the followed_by method
