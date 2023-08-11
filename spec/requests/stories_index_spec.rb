@@ -67,36 +67,37 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders display_ads when published and approved" do
-      ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
-                               organization: org)
+    it "renders billboards when published and approved" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
 
       get "/"
       expect(response.body).to include(ad.processed_html)
     end
 
-    it "does not render display_ads when not approved" do
-      ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right",
-                               organization: org)
+    it "does not render billboards when not approved" do
+      ad = create(:billboard, published: true, approved: false, placement_area: "sidebar_right",
+                              organization: org)
 
       get "/"
       expect(response.body).not_to include(ad.processed_html)
     end
 
-    it "renders only one display ad per placement" do
-      ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right", organization: org)
-      second_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
-                                      organization: org)
+    it "renders only one billboard per placement" do
+      billboard = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                                     organization: org)
+      second_billboard = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                                            organization: org)
 
       get "/"
-      expect(response.body).to include(ad.processed_html).or(include(second_ad.processed_html))
+      expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
       expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
     end
 
-    it "renders a hero display ad" do
+    it "renders a hero billboard" do
       allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
-      billboard = create(:display_ad, published: true, approved: true, placement_area: "home_hero", organization: org)
+      billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
       get "/"
       expect(response.body).to include(billboard.processed_html)
     end

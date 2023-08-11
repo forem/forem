@@ -4,7 +4,7 @@ RSpec.describe "admin/billboards/new" do
   let(:admin) { build(:user, :super_admin) }
 
   before do
-    assign(:billboard, build(:display_ad))
+    assign(:billboard, build(:billboard))
   end
 
   context "when signed-in" do

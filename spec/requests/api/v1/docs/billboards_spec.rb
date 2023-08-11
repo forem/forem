@@ -4,18 +4,18 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "api/v1/display_ads" do
+RSpec.describe "api/v1/billboards" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
-  let(:display_ad) { create(:display_ad) }
+  let(:billboard) { create(:billboard) }
   let(:user) { api_secret.user }
 
   before { user.add_role(:admin) }
 
-  path "/api/display_ads" do
-    describe "GET /display_ads" do
+  path "/api/billboards" do
+    describe "GET /billboards" do
       get("Billboards") do
-        tags "display ads"
+        tags "billboards"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a list of all billboards.
         DESCRIBE
@@ -40,22 +40,22 @@ RSpec.describe "api/v1/display_ads" do
       end
     end
 
-    describe "POST /display_ads" do
+    describe "POST /billboards" do
       post "Create a billboard" do
-        tags "display ads"
+        tags "billboards"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to create a new billboard.
         DESCRIBE
 
         produces "application/json"
         consumes "application/json"
-        parameter name: :display_ad, in: :body, schema: { type: :object,
-                                                          items: { "$ref": "#/components/schemas/DisplayAd" } }
+        parameter name: :billboard, in: :body, schema: { type: :object,
+                                                         items: { "$ref": "#/components/schemas/DisplayAd" } }
 
-        let(:display_ad) do
+        let(:billboard) do
           {
             body_markdown: "# Hi, this is ad\nYep, it's an ad",
-            name: "Example Ad",
+            name: "Example Billboard",
             display_to: "all",
             approved: true,
             published: true,
@@ -93,10 +93,10 @@ RSpec.describe "api/v1/display_ads" do
     end
   end
 
-  path "/api/display_ads/{id}" do
-    describe "GET /display_ads/:id" do
+  path "/api/billboards/{id}" do
+    describe "GET /billboards/:id" do
       get "A billboard (by id)" do
-        tags "display ads"
+        tags "billboards"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to retrieve a single billboard, via its id.
         DESCRIBE
@@ -114,7 +114,7 @@ RSpec.describe "api/v1/display_ads" do
                   example: 123
 
         response(200, "successful") do
-          let(:id) { display_ad.id }
+          let(:id) { billboard.id }
           let(:"api-key") { api_secret.secret }
           add_examples
 
@@ -139,9 +139,9 @@ RSpec.describe "api/v1/display_ads" do
       end
     end
 
-    describe "PUT /display_ads/:id" do
+    describe "PUT /billboards/:id" do
       put "Update a billboard by ID" do
-        tags "display ads"
+        tags "billboards"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to update the attributes of a single billboard, via its id.
         DESCRIBE
@@ -160,8 +160,8 @@ RSpec.describe "api/v1/display_ads" do
                   },
                   example: 123
 
-        parameter name: :display_ad, in: :body, schema: { type: :object,
-                                                          items: { "$ref": "#/components/schemas/DisplayAd" } }
+        parameter name: :billboard, in: :body, schema: { type: :object,
+                                                         items: { "$ref": "#/components/schemas/DisplayAd" } }
 
         let(:placement_area) { "post_comments" }
 
@@ -169,7 +169,7 @@ RSpec.describe "api/v1/display_ads" do
           schema  type: :object,
                   items: { "$ref": "#/components/schemas/DisplayAd" }
           let(:"api-key") { api_secret.secret }
-          let(:id) { display_ad.id }
+          let(:id) { billboard.id }
           add_examples
 
           run_test!
@@ -185,7 +185,7 @@ RSpec.describe "api/v1/display_ads" do
 
         response "401", "unauthorized" do
           let(:"api-key") { "invalid" }
-          let(:id) { display_ad.id }
+          let(:id) { billboard.id }
           add_examples
 
           run_test!
@@ -194,10 +194,10 @@ RSpec.describe "api/v1/display_ads" do
     end
   end
 
-  path "/api/display_ads/{id}/unpublish" do
-    describe "PUT /display_ads/:id/unpublish" do
+  path "/api/billboards/{id}/unpublish" do
+    describe "PUT /billboards/:id/unpublish" do
       put "Unpublish a billboard" do
-        tags "display ads"
+        tags "billboards"
         description(<<-DESCRIBE.strip)
         This endpoint allows the client to remove a billboard from rotation by un-publishing it.
         DESCRIBE
@@ -217,7 +217,7 @@ RSpec.describe "api/v1/display_ads" do
 
         response(204, "no content") do
           let(:"api-key") { api_secret.secret }
-          let(:id) { display_ad.id }
+          let(:id) { billboard.id }
           add_examples
 
           run_test!
@@ -233,7 +233,7 @@ RSpec.describe "api/v1/display_ads" do
 
         response "401", "unauthorized" do
           let(:"api-key") { "invalid" }
-          let(:id) { display_ad.id }
+          let(:id) { billboard.id }
           add_examples
 
           run_test!
