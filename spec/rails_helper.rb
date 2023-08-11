@@ -146,6 +146,7 @@ RSpec.configure do |config|
     # "Please stub a default value first if message might be received with other args as well."
     allow(FeatureFlag).to receive(:enabled?).and_call_original
     allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
+    allow(FeatureFlag).to receive(:enabled?).with(:minimagick_social_images, any_args).and_return(true)
   end
 
   config.around(:each, :flaky) do |ex|
@@ -211,6 +212,13 @@ RSpec.configure do |config|
       .to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /robohash.org/)
+      .with(headers:
+            {
+              "Accept" => "*/*",
+              "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+              "User-Agent" => "Ruby"
+            }).to_return(status: 200, body: "", headers: {})
+    stub_request(:get, /assets\/icon/)
       .with(headers:
             {
               "Accept" => "*/*",
