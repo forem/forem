@@ -213,7 +213,7 @@ The endpoint supports pagination, and each page will contain `30` segments by de
         response "409", "Audience segment could not be deleted" do
           let(:"api-key") { admin_api_secret.secret }
           let(:id) { segment.id }
-          let(:billboard) { create(:display_ad, published: true, approved: true) }
+          let(:billboard) { create(:billboard, published: true, approved: true) }
 
           before do
             billboard.update!(audience_segment: segment)
