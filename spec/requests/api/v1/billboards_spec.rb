@@ -17,7 +17,7 @@ RSpec.describe "Api::V1::Billboards" do
       target_geolocations: "US-WA, CA-BC"
     }
   end
-  let!(:ad1) { create(:display_ad, published: true, approved: true, type_of: "in_house") }
+  let!(:billboard1) { create(:billboard, published: true, approved: true, type_of: "in_house") }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
@@ -39,7 +39,7 @@ RSpec.describe "Api::V1::Billboards" do
     end
 
     describe "POST /api/billboards" do
-      it "creates a new display_ad" do
+      it "creates a new billboard" do
         post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
         expect(response).to have_http_status(:created)
@@ -100,12 +100,12 @@ RSpec.describe "Api::V1::Billboards" do
 
     describe "GET /api/billboards/:id" do
       it "returns json response" do
-        get api_billboard_path(ad1.id), headers: auth_header
+        get api_billboard_path(billboard1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body).to include(
-          "id" => ad1.id,
+          "id" => billboard1.id,
           "published" => true,
           "approved" => true,
           "priority" => false,
@@ -117,16 +117,16 @@ RSpec.describe "Api::V1::Billboards" do
     end
 
     describe "PUT /api/billboards/:id" do
-      it "updates an existing display_ad" do
-        put api_billboard_path(ad1.id),
+      it "updates an existing billboard" do
+        put api_billboard_path(billboard1.id),
             params: billboard_params.merge(name: "Updated!", type_of: "external").to_json,
             headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
-        ad1.reload
-        expect(ad1.name).to eq("Updated!")
-        expect(ad1.type_of).to eq("external")
+        billboard1.reload
+        expect(billboard1.name).to eq("Updated!")
+        expect(billboard1.type_of).to eq("external")
         expect(response.parsed_body.keys).to \
           contain_exactly("approved", "body_markdown", "cached_tag_list",
                           "clicks_count", "created_at", "display_to", "id",
@@ -139,19 +139,20 @@ RSpec.describe "Api::V1::Billboards" do
       end
 
       it "also accepts target geolocations as an array" do
-        put api_billboard_path(ad1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json, headers: auth_header
+        put api_billboard_path(billboard1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json,
+                                               headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
-        ad1.reload
-        expect(ad1.target_geolocations).to contain_exactly(
+        billboard1.reload
+        expect(billboard1.target_geolocations).to contain_exactly(
           Geolocation.from_iso3166("US-FL"),
           Geolocation.from_iso3166("US-GA"),
         )
       end
 
       it "returns a malformed response with invalid geolocation" do
-        put api_billboard_path(ad1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
+        put api_billboard_path(billboard1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
@@ -161,11 +162,11 @@ RSpec.describe "Api::V1::Billboards" do
     end
 
     describe "PUT /api/billboards/:id/unpublish" do
-      it "unpublishes the display_ad" do
-        put unpublish_api_billboard_path(ad1.id), headers: auth_header
+      it "unpublishes the billboard" do
+        put unpublish_api_billboard_path(billboard1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
-        expect(ad1.reload).not_to be_published
+        expect(billboard1.reload).not_to be_published
       end
     end
   end
@@ -179,7 +180,7 @@ RSpec.describe "Api::V1::Billboards" do
 
   context "when unauthorized and get to show" do
     it "returns unauthorized" do
-      get api_billboards_path, params: { id: ad1.id },
+      get api_billboards_path, params: { id: billboard1.id },
                                headers: v1_headers.merge({ "api-key" => "invalid api key" })
       expect(response).to have_http_status(:unauthorized)
     end

@@ -233,6 +233,7 @@ class User < ApplicationRecord
   after_create_commit :send_welcome_notification
 
   after_save :create_conditional_autovomits
+  after_save :generate_social_images
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
@@ -346,7 +347,7 @@ class User < ApplicationRecord
   end
 
   def cached_followed_tag_names
-    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/followed_tag_names"
+    cache_name = "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}-x/followed_tag_names"
     Rails.cache.fetch(cache_name, expires_in: 24.hours) do
       Tag.followed_by(self).pluck(:name)
     end
@@ -581,6 +582,15 @@ class User < ApplicationRecord
   end
 
   private
+
+  def generate_social_images
+    return unless FeatureFlag.enabled?(:minimagick_social_images)
+
+    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+    return unless change && articles.published.size.positive?
+
+    Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
 
   def create_users_settings_and_notification_settings_records
     self.setting = Users::Setting.create

@@ -321,7 +321,7 @@ RSpec.describe "Api::V1::AudienceSegments" do
 
     let(:segment) { AudienceSegment.create!(type_of: "manual") }
     let(:users) { create_list(:user, 3) }
-    let(:billboard) { create(:display_ad, published: true, approved: true, type_of: "community") }
+    let(:billboard) { create(:billboard, published: true, approved: true, type_of: "community") }
 
     it_behaves_like "an admin-only protected resource"
 
