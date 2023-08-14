@@ -118,7 +118,7 @@ class DisplayAd < ApplicationRecord
   def self.new_and_priority_range_max(placement_area)
     selected_number = ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] ||
       ApplicationConfig["SELDOM_SEEN_MAX"] ||
-                        NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
+      NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
     selected_number.to_i
   end
 
