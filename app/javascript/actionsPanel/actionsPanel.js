@@ -309,9 +309,11 @@ export function handleRemoveTagButton(btn) {
     handleRemoveTagButton(btn);
   });
 
-  const form = document.getElementById(`remove-tag-submit-${tagName}`)?.form;
-  if (form) {
-    form.addEventListener('submit', (e) => {
+  const removeTagButton = document.getElementById(
+    `remove-tag-submit-${tagName}`,
+  );
+  if (removeTagButton) {
+    removeTagButton.addEventListener('click', (e) => {
       e.preventDefault();
 
       const dataSource = document.getElementById(
@@ -345,9 +347,9 @@ export function handleAddTagButtonListeners() {
       });
     }
 
-    const form = document.getElementById('tag-add-submit')?.form;
-    if (form) {
-      form.addEventListener('submit', (e) => {
+    const addTagSubmitButton = document.getElementById('tag-add-submit');
+    if (addTagSubmitButton) {
+      addTagSubmitButton.addEventListener('click', (e) => {
         e.preventDefault();
 
         const dataSource = document.getElementById('admin-add-tag');

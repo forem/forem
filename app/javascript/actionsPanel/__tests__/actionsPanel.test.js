@@ -8,6 +8,8 @@ import {
   handleRemoveTagButtonsListeners,
 } from '../actionsPanel';
 
+global.fetch = fetch;
+
 describe('addCloseListener()', () => {
   test('toggles the mod actions panel and its button on click', () => {
     document.body.innerHTML = `
@@ -155,23 +157,45 @@ describe('addReactionButtonListeners()', () => {
 describe('addAdjustTagListeners()', () => {
   describe('when an article has no tags', () => {
     beforeEach(() => {
+      fetch.resetMocks();
+
       document.body.innerHTML = `
       <button id="add-tag-button" class="add-tag" type="button">
         Add new tag
       </button>
       <div id="add-tag-container" class="hidden">
-        <form id="add-reason-container" class="reason-container">
+        <div id="add-reason-container" class="reason-container">
           <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="Add a tag" data-article-id="32" data-adjustment-type="plus">
           <textarea class="crayons-textfield" placeholder="Reason to add tag (optional)" id="tag-add-reason"></textarea>
           <div class="flex gap-3">
-            <button class="c-btn c-btn--primary" id="tag-add-submit" type="submit">Submit</button>
+            <button class="c-btn c-btn--primary" id="tag-add-submit">Submit</button>
             <button class="c-btn" id="cancel-add-tag-button" type="button">Cancel</button>
           </div>
-        </form>
+        </div>
       </div>
       `;
+
+      const csrfToken = 'this-is-a-csrf-token';
+
+      window.fetch = fetch;
+      window.getCsrfToken = async () => csrfToken;
+      top.addSnackbarItem = jest.fn();
+
       handleAddTagButtonListeners();
     });
+
+    // function tagResponse() {
+    //   return JSON.stringify({
+    //     outcome: {
+    //       status: 'Success',
+    //       result: 'addition',
+    //       colors: {
+    //         bg: '#8c5595',
+    //         text: '#39ad55',
+    //       },
+    //     },
+    //   });
+    // }
 
     it('shows the add tag button', () => {
       expect(document.getElementById('add-tag-button').classList).not.toContain(
@@ -206,20 +230,53 @@ describe('addAdjustTagListeners()', () => {
       );
     });
 
-    // it('click on add-tag button hides the container and shows add-tag button', () => {
+    // it('click on add-tag button hides the container and shows add-tag button', async () => {
+    //   fetch.mockResponseOnce(tagResponse());
+
     //   document.getElementById('add-tag-button').click();
     //   document.getElementById('admin-add-tag').value = 'pizza';
     //   document.getElementById('tag-add-reason').value = 'Adding a new tag';
     //   document.getElementById('tag-add-submit').click();
 
-    //   expect(document.getElementById('add-tag-button').classList).not.toContain('hidden');
+    //   expect(fetch).toHaveBeenCalledTimes(1);
 
-    //   expect(document.getElementById('add-tag-container').classList).toContain('hidden');
+    //   expect(document.getElementById('add-tag-button').classList).not.toContain(
+    //     'hidden',
+    //   );
+
+    //   expect(document.getElementById('add-tag-container').classList).toContain(
+    //     'hidden',
+    //   );
     // });
+
+    it('shows the adjustment container when admin input is focused', () => {
+      document.getElementById('add-tag-button').click();
+      document.getElementById('admin-add-tag').value = 'pizza';
+      document.getElementById('tag-add-reason').value = 'Adding a new tag';
+      document.getElementById('tag-add-submit').click();
+
+      expect(
+        document.getElementById('add-reason-container').classList,
+      ).not.toContain('hidden');
+    });
   });
 
   describe('article has 1 tag', () => {
     const discussTag = 'discuss';
+
+    // function removeTagResponse() {
+    //   return JSON.stringify({
+    //     outcome: {
+    //       status: 'Success',
+    //       result: 'removal',
+    //       colors: {
+    //         bg: '#8c5595',
+    //         text: '#39ad55',
+    //       },
+    //     },
+    //   });
+    // }
+
     beforeEach(() => {
       document.body.innerHTML = `
       <button id="remove-tag-button-${discussTag}" class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="${discussTag}" data-article-id="32">
@@ -231,13 +288,13 @@ describe('addAdjustTagListeners()', () => {
         </div>
       </button>
       <div id="remove-tag-container-${discussTag}" class="hidden">
-        <form id="adjustment-reason-container" class="reason-container">
-          <textarea class="crayons-textfield" placeholder="Reason to remove tag (optional)" id="tag-adjustment-reason"></textarea>
+        <div id="adjustment-reason-container" class="reason-container">
+          <textarea class="crayons-textfield" placeholder="Reason to remove tag (optional)" id="tag-removal-reason-${discussTag}"></textarea>
           <div class="flex gap-3">
-            <button class="crayons-btn" id="remove-tag-submit-${discussTag}" type="submit">Submit</button>
+            <button class="crayons-btn" id="remove-tag-submit-${discussTag}">Submit</button>
             <button class="c-btn" id="cancel-remove-tag-button-${discussTag}" type="button">Cancel</button>
           </div>
-        </form>
+        </div>
       </div>
       `;
       handleRemoveTagButtonsListeners();
@@ -273,6 +330,17 @@ describe('addAdjustTagListeners()', () => {
         document.getElementById(`remove-tag-container-${discussTag}`).classList,
       ).toContain('hidden');
     });
+
+    // it('click on remove button should have successful api call', async () => {
+    //   fetch.mockResponseOnce(removeTagResponse());
+
+    //   document.getElementById(`remove-tag-button-${discussTag}`).click();
+    //   document.getElementById(`tag-removal-reason-${discussTag}`).value =
+    //     'Removing a tag';
+    //   document.getElementById(`remove-tag-submit-${discussTag}`).click();
+
+    //   expect(fetch).toHaveBeenCalledTimes(1);
+    // });
   });
 });
 

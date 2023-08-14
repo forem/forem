@@ -118,31 +118,31 @@
               </div>
             </button>
             <div id="remove-tag-container-<%= tag.name %>" class="hidden">
-              <form id="adjustment-reason-container" class="reason-container">
+              <div id="adjustment-reason-container" class="reason-container">
                 <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.remove_tag") %>" id="tag-removal-reason-<%= tag.name %>"></textarea>
                 <div class="flex gap-3">
-                  <button class="crayons-btn" id="remove-tag-submit-<%= tag.name %>" type="submit"><%= t("views.moderations.actions.adjust.remove") %></button>
+                  <button class="crayons-btn" id="remove-tag-submit-<%= tag.name %>"><%= t("views.moderations.actions.adjust.remove") %></button>
                   <button class="c-btn" id="cancel-remove-tag-button-<%= tag.name %>" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
                 </div>
-              </form>
+              </div>
             </div>
           <% end %>
           <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
-            <button id="add-tag-button" class="add-tag" type="button">
+            <button id="add-tag-button" data-testid="add-tag-button" class="add-tag" type="button">
               <%= t("views.moderations.actions.adjust.add_tag.button_text") %>
               <div class="circle centered-icon adjustment-icon plus color-base-inverted">
                 <%= crayons_icon_tag(:plus, title: t("views.moderations.actions.adjust.add_tag.icon")) %>
               </div>
             </button>
             <div id="add-tag-container" class="hidden">
-              <form id="add-reason-container" class="reason-container">
+              <div id="add-reason-container" class="reason-container">
                 <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
                 <textarea id="tag-add-reason" class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
                 <div class="flex gap-3">
-                  <button class="c-btn c-btn--primary" id="tag-add-submit" type="submit"><%= t("views.moderations.actions.adjust.add") %></button>
+                  <button class="c-btn c-btn--primary" id="tag-add-submit"><%= t("views.moderations.actions.adjust.add") %></button>
                   <button class="c-btn" id="cancel-add-tag-button" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
                 </div>
-              </form>
+              </div>
             </div>
           <% else %>
             <span class="additional-subtext-section">
