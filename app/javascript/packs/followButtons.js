@@ -419,11 +419,17 @@ function initializeNonUserFollowButtons() {
 
     const user = userLoggedIn ? userData() : null;
 
-    const followedTags = user
-      ? JSON.parse(user.followed_tags).map((tag) => tag.id)
-      : [];
+    const followed = JSON.parse(user.followed_tags); // we don't filter because we still consider this a follow on the ui .filter((tag) => tag.points >= 0);
+    const hidden = JSON.parse(user.followed_tags).filter(
+      (tag) => tag.points < 0,
+    );
+
+    const followedTags = user ? followed.map((tag) => tag.id) : [];
+
+    const hiddenTags = user ? hidden.map((tag) => tag.id) : [];
 
     const followedTagIds = new Set(followedTags);
+    const hiddenTagIds = new Set(hiddenTags);
 
     nonUserFollowButtons.forEach((button) => {
       const { info } = button.dataset;
@@ -438,12 +444,37 @@ function initializeNonUserFollowButtons() {
           ? 'true'
           : 'false';
         updateInitialButtonUI(initialButtonFollowState, button);
+
+        // TODO: we need a better way to determine the hiddenButton
+        // preferably with a classname.
+        const hiddenButton = button.nextElementSibling;
+        if (hiddenButton) {
+          setHiddenTagButtonState(hiddenTagIds, hiddenButton);
+        }
       } else {
         fetchFollowButtonStatus(button, buttonInfo);
       }
     });
   });
 }
+
+/**
+ * Sets the correct UI changes for a button of a tag that is hidden
+ * @param {Array} hiddenTagIds an array of ids of tags that are hidden
+ * @param {*} button the button for a tag that should be "hidden"
+ */
+const setHiddenTagButtonState = (hiddenTagIds, button) => {
+  const { info } = button.dataset;
+  const { id } = JSON.parse(info);
+  hiddenTagIds.has(id);
+
+  if (hiddenTagIds.has(id)) {
+    button.classList.remove('crayons-btn--ghost');
+    button.classList.add('crayons-btn--danger');
+    // TODO: add aria label to button
+    button.textContent = 'Unhide';
+  }
+};
 
 initializeAllUserFollowButtons();
 initializeNonUserFollowButtons();
