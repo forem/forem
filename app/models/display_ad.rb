@@ -111,7 +111,7 @@ class DisplayAd < ApplicationRecord
   def self.random_range_max(placement_area)
     selected_number = ApplicationConfig["SELDOM_SEEN_MIN_FOR_#{placement_area.upcase}"] ||
       ApplicationConfig["SELDOM_SEEN_MIN"] ||
-                        RANDOM_RANGE_MAX_FALLBACK
+      RANDOM_RANGE_MAX_FALLBACK
     selected_number.to_i
   end
 
