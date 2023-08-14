@@ -4,7 +4,7 @@ RSpec.describe "Api::V1::Billboards" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
   let(:organization) { create(:organization) }
-  let(:display_ad_params) do
+  let(:billboard_params) do
     {
       name: "This is new",
       organization_id: organization.id,
@@ -13,10 +13,11 @@ RSpec.describe "Api::V1::Billboards" do
       body_markdown: "## This ad is a new ad.\n\nYay!",
       type_of: "community",
       published: true,
-      approved: true
+      approved: true,
+      target_geolocations: "US-WA, CA-BC"
     }
   end
-  let!(:ad1) { create(:display_ad, published: true, approved: true, type_of: "in_house") }
+  let!(:billboard1) { create(:billboard, published: true, approved: true, type_of: "in_house") }
 
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
@@ -38,10 +39,10 @@ RSpec.describe "Api::V1::Billboards" do
     end
 
     describe "POST /api/billboards" do
-      it "creates a new display_ad" do
-        post api_billboards_path, params: display_ad_params.to_json, headers: auth_header
+      it "creates a new billboard" do
+        post api_billboards_path, params: billboard_params.to_json, headers: auth_header
 
-        expect(response).to have_http_status(:success)
+        expect(response).to have_http_status(:created)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to \
           contain_exactly("approved", "body_markdown", "cached_tag_list",
@@ -52,25 +53,59 @@ RSpec.describe "Api::V1::Billboards" do
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
                           "priority", "target_geolocations")
+        expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
-      it "returns a malformed response" do
-        post api_billboards_path, params: display_ad_params.merge(display_to: "steve").to_json, headers: auth_header
+      it "also accepts target geolocations as an array" do
+        post api_billboards_path,
+             params: billboard_params.merge(target_geolocations: %w[US-WA CA-BC]).to_json,
+             headers: auth_header
+
+        expect(response).to have_http_status(:created)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to \
+          contain_exactly("approved", "body_markdown", "cached_tag_list",
+                          "clicks_count", "created_at", "display_to", "id",
+                          "impressions_count", "name", "organization_id",
+                          "placement_area", "processed_html", "published",
+                          "success_rate", "tag_list", "type_of", "updated_at",
+                          "creator_id", "exclude_article_ids",
+                          "audience_segment_type", "audience_segment_id",
+                          "priority", "target_geolocations")
+        expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
+      end
+
+      it "returns a malformed response with invalid display_to" do
+        post api_billboards_path, params: billboard_params.merge(display_to: "steve").to_json, headers: auth_header
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
-        expect(response.parsed_body.keys).to contain_exactly("error")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("'steve' is not a valid display_to")
+      end
+
+      it "returns a malformed response with invalid geolocation" do
+        expect do
+          post api_billboards_path,
+               params: billboard_params.merge(target_geolocations: "US-FAKE").to_json,
+               headers: auth_header
+        end.not_to change(DisplayAd, :count)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
       end
     end
 
     describe "GET /api/billboards/:id" do
       it "returns json response" do
-        get api_billboard_path(ad1.id), headers: auth_header
+        get api_billboard_path(billboard1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body).to include(
-          "id" => ad1.id,
+          "id" => billboard1.id,
           "published" => true,
           "approved" => true,
           "priority" => false,
@@ -82,16 +117,16 @@ RSpec.describe "Api::V1::Billboards" do
     end
 
     describe "PUT /api/billboards/:id" do
-      it "updates an existing display_ad" do
-        put api_billboard_path(ad1.id),
-            params: display_ad_params.merge(name: "Updated!", type_of: "external").to_json,
+      it "updates an existing billboard" do
+        put api_billboard_path(billboard1.id),
+            params: billboard_params.merge(name: "Updated!", type_of: "external").to_json,
             headers: auth_header
 
         expect(response).to have_http_status(:success)
         expect(response.media_type).to eq("application/json")
-        ad1.reload
-        expect(ad1.name).to eq("Updated!")
-        expect(ad1.type_of).to eq("external")
+        billboard1.reload
+        expect(billboard1.name).to eq("Updated!")
+        expect(billboard1.type_of).to eq("external")
         expect(response.parsed_body.keys).to \
           contain_exactly("approved", "body_markdown", "cached_tag_list",
                           "clicks_count", "created_at", "display_to", "id",
@@ -102,14 +137,36 @@ RSpec.describe "Api::V1::Billboards" do
                           "audience_segment_type", "audience_segment_id",
                           "priority", "target_geolocations")
       end
+
+      it "also accepts target geolocations as an array" do
+        put api_billboard_path(billboard1.id), params: { target_geolocations: %w[US-FL US-GA] }.to_json,
+                                               headers: auth_header
+
+        expect(response).to have_http_status(:success)
+        expect(response.media_type).to eq("application/json")
+        billboard1.reload
+        expect(billboard1.target_geolocations).to contain_exactly(
+          Geolocation.from_iso3166("US-FL"),
+          Geolocation.from_iso3166("US-GA"),
+        )
+      end
+
+      it "returns a malformed response with invalid geolocation" do
+        put api_billboard_path(billboard1.id), params: { target_geolocations: "US-FAKE" }.to_json, headers: auth_header
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.media_type).to eq("application/json")
+        expect(response.parsed_body.keys).to contain_exactly("error", "status")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
+      end
     end
 
     describe "PUT /api/billboards/:id/unpublish" do
-      it "unpublishes the display_ad" do
-        put unpublish_api_billboard_path(ad1.id), headers: auth_header
+      it "unpublishes the billboard" do
+        put unpublish_api_billboard_path(billboard1.id), headers: auth_header
 
         expect(response).to have_http_status(:success)
-        expect(ad1.reload).not_to be_published
+        expect(billboard1.reload).not_to be_published
       end
     end
   end
@@ -123,7 +180,7 @@ RSpec.describe "Api::V1::Billboards" do
 
   context "when unauthorized and get to show" do
     it "returns unauthorized" do
-      get api_billboards_path, params: { id: ad1.id },
+      get api_billboards_path, params: { id: billboard1.id },
                                headers: v1_headers.merge({ "api-key" => "invalid api key" })
       expect(response).to have_http_status(:unauthorized)
     end

@@ -159,7 +159,7 @@ fr:
       x_years:
         one: Expire dans 1 an
         other: Expire dans %{count} ans
-  display_ad:
+  billboard:
     promoted: Promu
     menu:
       aria_label: Basculer le menu déroulant

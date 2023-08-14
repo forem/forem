@@ -1,8 +1,8 @@
 <%= stylesheet_link_tag "minimal", media: "all" %>
-<h1 class="crayons-title mb-6">Edit Display Ad:</h1>
+<h1 class="crayons-title mb-6">Edit Billboard:</h1>
 <div class="crayons-card p-6">
   <%= form_for([:admin, @billboard], url: admin_billboard_path(@billboard), method: :patch) do %>
     <%= render "form" %>
-    <%= submit_tag "Update Display Ad", class: "c-btn c-btn--primary" %>
+    <%= submit_tag "Update Billboard", class: "c-btn c-btn--primary" %>
   <% end %>
 </div>

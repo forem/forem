@@ -29,10 +29,10 @@ en:
       updated: '%{app} has been updated!'
       wrong: Something went wrong with deleting %{app}.
     billboards_controller:
-      created: Display Ad has been created!
-      deleted: Display Ad has been deleted!
-      updated: Display Ad has been updated!
-      wrong: Something went wrong with deleting the Display Ad.
+      created: Billboard has been created!
+      deleted: Billboard has been deleted!
+      updated: Billboard has been updated!
+      wrong: Something went wrong with deleting the Billboard.
     gdpr_delete_requests_controller:
       deleted: Successfully marked as deleted
     extensions_controller:

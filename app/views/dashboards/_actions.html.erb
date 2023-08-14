@@ -34,7 +34,7 @@
         href="<%= dashboard_following_tags_path %>"
         <%= params[:action] == "following_tags" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_tags") %>
-        <span class="c-indicator"><%= @user.following_tags_count %></span>
+        <span class="c-indicator"><%= @user.cached_followed_tag_names.size %></span>
       </a>
     </li>
 
@@ -81,6 +81,15 @@
       </a>
     </li>
     <%- end %>
+
+    <li>
+      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "hidden_tags" %>"
+        href="<%= dashboard_hidden_tags_path %>"
+        <%= params[:action] == "hidden_tags" ? ' aria-current="page"'.html_safe : "" %>>
+        <%= t("views.dashboard.actions.hidden_tags") %>
+        <span class="c-indicator"><%= @user.cached_antifollowed_tag_names.size %></span>
+      </a>
+    </li>
 
   <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
     <% @organizations.each do |org| %>
