@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_14_175212) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -498,6 +498,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
     t.bigint "user_id"
     t.datetime "verified_at", precision: nil
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
+  end
+
+  create_table "feed_events", force: :cascade do |t|
+    t.bigint "article_id"
+    t.integer "article_position"
+    t.integer "category", null: false
+    t.string "context_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id"], name: "index_feed_events_on_article_id"
+    t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -1390,6 +1402,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "feed_events", "articles", on_delete: :cascade
+  add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
