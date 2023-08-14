@@ -42,7 +42,7 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-
+      options[:crop] = Settings::UserExperience.cover_image_fit
       if img_src&.include?(".gif")
         options[:quality] = 66
       end

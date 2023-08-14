@@ -32,6 +32,11 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
   end
 
+  context "when the body has a main image" do
+    body_markdown = file_fixture("article_published_cover_image.txt").read
+    article.update(body_markdown: body_markdown)
+  end
+
   context "when the body renders a liquid tag with images" do
     it "does not alter the processed HTML using CommentTag" do
       comment = create(:comment)

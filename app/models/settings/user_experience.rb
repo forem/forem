@@ -6,7 +6,7 @@ module Settings
     HEX_COLOR_REGEX = /\A#(\h{6}|\h{3})\z/
     FEED_STRATEGIES = %w[basic large_forem_experimental].freeze
     FEED_STYLES = %w[basic rich compact].freeze
-    COVER_IMAGE_FITS = %w[crop limit].freeze
+    COVER_IMAGE_FITS = %w[crop limit imagga_scale].freeze
 
     # The default font for all users that have not chosen a custom font yet
     setting :default_font, type: :string, default: "sans_serif"

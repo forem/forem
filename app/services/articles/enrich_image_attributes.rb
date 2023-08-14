@@ -41,7 +41,6 @@ module Articles
       end
 
       if article.main_image
-        p article.main_image
         main_image_size = FastImage.size(article.main_image, timeout: 10)
         main_image_height = (main_image_size[1].to_f / main_image_size[0].to_f)*1000 if main_image_size
       end

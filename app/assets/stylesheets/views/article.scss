@@ -10,12 +10,13 @@
 
 .crayons-article {
   &__cover {
+    display: block;
     overflow: hidden;
     border-radius: var(--radius-auto);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
     max-height: calc(100vh - var(--header-height) - 2*var(--layout-padding));
-
+    overflow: hidden;
     &__image {
       display: block;
       margin: auto;

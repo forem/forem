@@ -145,7 +145,8 @@ module ApplicationHelper
     image_tag(updated_image_url, image_options)
   end
 
-  def cloud_cover_url(url, height = 420)
+  def cloud_cover_url(url, height = nil)
+    height = Settings::UserExperience.cover_image_height if height.blank?
     CloudCoverUrl.new(url, height).call
   end
 
