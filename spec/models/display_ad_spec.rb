@@ -115,7 +115,7 @@ RSpec.describe DisplayAd do
 
     it "still performs query with number" do
       allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return("100")
-      expect(DisplayAd.random_range_max("sidebar_left")).to eq 100
+      expect(described_class.random_range_max("sidebar_left")).to eq 100
     end
 
     it "falls back to broadly set rangd vars" do
