@@ -197,13 +197,6 @@ function renderTagOnArticle(tagName, colors) {
   newTag.style = `--tag-bg: ${colors.bg}1a; --tag-prefix: ${colors.bg}; --tag-bg-hover: ${colors.bg}1a; --tag-prefix-hover: ${colors.bg};`;
 
   articleTagsContainer.appendChild(newTag);
-
-  // This code refreshes the entire window if maximum number of tags (i.e. 4) have been added.
-  // This is needed because we want to hide the `Add Tag` button after the 4th tag.
-  const tags = articleTagsContainer.getElementsByClassName('crayons-tag');
-  if (tags.length == 4) {
-    window.location.reload(true);
-  }
 }
 
 function getArticleContainer() {
@@ -332,54 +325,6 @@ export function handleRemoveTagButton(btn) {
   }
 }
 
-// export function handleAdjustTagBtn(btn) {
-//   const currentActiveTags = document.querySelectorAll(
-//     'button.adjustable-tag.active',
-//   );
-//   const adminTagInput = document.getElementById('admin-add-tag');
-//   /* eslint-disable no-restricted-globals */
-//   /* eslint-disable no-alert */
-//   if (
-//     adminTagInput &&
-//     adminTagInput.value !== '' &&
-//     confirm(
-//       'This will clear your current "Add a tag" input. Do you want to continue?',
-//     )
-//   ) {
-//     /* eslint-enable no-restricted-globals */
-//     /* eslint-enable no-alert */
-//     adminTagInput.value = '';
-//   } else if (currentActiveTags.length > 0) {
-//     currentActiveTags.forEach((tag) => {
-//       if (tag !== btn) {
-//         tag.classList.remove('active');
-//       }
-//       btn.classList.toggle('active');
-//     });
-//   } else {
-//     btn.classList.toggle('active');
-//   }
-// }
-
-// function handleAdminInput() {
-//   const addTagInput = document.getElementById('admin-add-tag');
-
-//   if (addTagInput) {
-//     addTagInput.addEventListener('focus', () => {
-//       const activeTagBtns = Array.from(
-//         document.querySelectorAll('button.adjustable-tag.active'),
-//       );
-//       activeTagBtns.forEach((btn) => {
-//         btn.classList.remove('active');
-//       });
-//     });
-//     addTagInput.addEventListener('focusout', () => {
-//       if (addTagInput.value === '') {
-//       }
-//     });
-//   }
-// }
-
 export function handleAddTagButtonListeners() {
   const addTagButton = document.getElementById('add-tag-button');
 
@@ -423,25 +368,6 @@ export function handleRemoveTagButtonsListeners() {
       });
     },
   );
-
-  // const form = document.getElementById('tag-adjust-submit')?.form;
-  // if (form) {
-  //   form.addEventListener('submit', (e) => {
-  //     e.preventDefault();
-
-  //     const dataSource =
-  //       document.querySelector('button.adjustable-tag.active') ??
-  //       document.getElementById('admin-add-tag');
-
-  //     const reasonFoAddition = document.getElementById(
-  //       `tag-add-reason`,
-  //     ).value;
-
-  //     adjustTag(dataSource, reasonFoAddition);
-  //   });
-
-  //   handleAdminInput();
-  // }
 }
 
 export function addModActionsListeners() {
