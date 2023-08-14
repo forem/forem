@@ -110,7 +110,7 @@ RSpec.describe DisplayAd do
   context "when range env var is set" do
     it "translates jiberrish to 0" do
       allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return("jibberish")
-      expect(DisplayAd.random_range_max("sidebar_left")).to eq 0
+      expect(described_class.random_range_max("sidebar_left")).to eq 0
     end
 
     it "still performs query with number" do
