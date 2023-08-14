@@ -1099,7 +1099,7 @@ seeder.create_if_none(DisplayAd) do
     organization_id: org_id,
     body_markdown: "<h1>This is a regular billboard</h1>",
     placement_area: "sidebar_left",
-    name: "Tests Display Ad",
+    name: "Tests Billboard",
     published: true,
     approved: true,
   )

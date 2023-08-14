@@ -47,7 +47,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "POST /admin/customization/billboards" do
-      it "creates a new display_ad" do
+      it "creates a new billboard" do
         expect do
           post_resource
         end.to change { DisplayAd.all.count }.by(1)
@@ -78,36 +78,36 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "PUT /admin/customization/billboards" do
-      let!(:display_ad) { create(:display_ad, approved: false) }
+      let!(:billboard) { create(:billboard, approved: false) }
 
       it "updates DisplayAd's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put admin_billboard_path(display_ad.id), params: params
-          end.to change { display_ad.reload.approved }.from(false).to(true)
+            put admin_billboard_path(billboard.id), params: params
+          end.to change { billboard.reload.approved }.from(false).to(true)
         end
       end
 
       it "updates DisplayAd's priority value" do
         Timecop.freeze(Time.current) do
           expect do
-            put admin_billboard_path(display_ad.id), params: params
-          end.to change { display_ad.reload.priority }.from(false).to(true)
+            put admin_billboard_path(billboard.id), params: params
+          end.to change { billboard.reload.priority }.from(false).to(true)
         end
       end
 
       it "redirects back to edit path" do
-        put admin_billboard_path(display_ad.id), params: params
-        expect(response.body).to redirect_to edit_admin_billboard_path(display_ad.id)
+        put admin_billboard_path(billboard.id), params: params
+        expect(response.body).to redirect_to edit_admin_billboard_path(billboard.id)
       end
     end
 
     describe "DELETE /admin/billboards/:id" do
-      let!(:display_ad) { create(:display_ad) }
+      let!(:billboard) { create(:billboard) }
 
       it "deletes the Display Ad" do
         expect do
-          delete admin_billboard_path(display_ad.id)
+          delete admin_billboard_path(billboard.id)
         end.to change { DisplayAd.all.count }.by(-1)
       end
     end
@@ -126,7 +126,7 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "POST /admin/customization/billboards" do
-      it "creates a new display_ad" do
+      it "creates a new billboard" do
         expect do
           post_resource
         end.to change { DisplayAd.all.count }.by(1)
@@ -139,23 +139,23 @@ RSpec.describe "/admin/customization/billboards" do
     end
 
     describe "PUT /admin/customization/billboards" do
-      let!(:display_ad) { create(:display_ad, approved: false) }
+      let!(:billboard) { create(:billboard, approved: false) }
 
       it "updates DisplayAd's approved value" do
         Timecop.freeze(Time.current) do
           expect do
-            put admin_billboard_path(display_ad.id), params: params
-          end.to change { display_ad.reload.approved }.from(false).to(true)
+            put admin_billboard_path(billboard.id), params: params
+          end.to change { billboard.reload.approved }.from(false).to(true)
         end
       end
     end
 
     describe "DELETE /admin/billboards/:id" do
-      let!(:display_ad) { create(:display_ad) }
+      let!(:billboard) { create(:billboard) }
 
       it "deletes the Display Ad" do
         expect do
-          delete admin_billboard_path(display_ad.id)
+          delete admin_billboard_path(billboard.id)
         end.to change { DisplayAd.all.count }.by(-1)
       end
     end

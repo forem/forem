@@ -243,6 +243,15 @@ RSpec.describe Tag do
       other_results = described_class.followed_by(other)
       expect(other_results).to contain_exactly(other_followed_tag)
     end
+
+    it "returns tags in order of follow points" do
+      user.follow(other_followed_tag).update(explicit_points: 4)
+      Follow.where(followable_id: second_followed_tag.id).first.update(explicit_points: 2)
+      results = described_class.followed_by(user)
+
+      expected_order = [first_followed_tag, other_followed_tag, second_followed_tag]
+      expect(results.to_a).to eq(expected_order)
+    end
   end
 
   # [@jeremyf] The implementation details of #accessible_name are contingent on a feature flag that
