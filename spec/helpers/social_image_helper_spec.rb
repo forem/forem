@@ -18,7 +18,7 @@ describe SocialImageHelper do
       url = helper.article_social_image_url(article)
 
       expect(url).to match(/#{article.main_image}/)
-      expect(url).to include("c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/")
+      expect(url).to include("c_#{Settings::UserExperience.cover_image_fit},f_auto,fl_progressive,h_500,q_auto,w_1000/")
     end
 
     it "returns older url2png image if already generated" do
