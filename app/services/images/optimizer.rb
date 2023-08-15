@@ -42,7 +42,7 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-      options[:crop] = Settings::UserExperience.cover_image_fit
+      options[:crop] = Settings::UserExperience.cover_image_fit unless kwargs[:crop].present?
       if img_src&.include?(".gif")
         options[:quality] = 66
       end
@@ -67,7 +67,7 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "fill-down"
+      if options[:crop] == "fill"
         options[:resizing_type] = "fill-down"
       end
 

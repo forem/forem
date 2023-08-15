@@ -70,6 +70,7 @@ RSpec.describe Images::Optimizer, type: :service do
                                      type: "fetch",
                                      quality: "auto",
                                      sign_url: true,
+                                     crop: Settings::UserExperience.cover_image_fit,
                                      flags: "progressive",
                                      fetch_format: "jpg")
       expect(described_class.call(image_url, crop: nil, fetch_format: "jpg")).to eq(cloudinary_url)
@@ -197,7 +198,7 @@ RSpec.describe Images::Optimizer, type: :service do
   describe "#translate_cloudinary_options" do
     it "sets resizing_type to fill if crop: fill is provided" do
       options = { width: 100, height: 100, crop: "fill" }
-      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
+      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill-down")
     end
   end
 end
