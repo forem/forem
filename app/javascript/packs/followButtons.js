@@ -450,6 +450,7 @@ function initializeNonUserFollowButtons() {
         const hiddenButton = button.nextElementSibling;
         if (hiddenButton) {
           setHiddenTagButtonState(hiddenTagIds, hiddenButton);
+          hideFollowingButton(button);
         }
       } else {
         fetchFollowButtonStatus(button, buttonInfo);
@@ -474,6 +475,10 @@ const setHiddenTagButtonState = (hiddenTagIds, button) => {
     // TODO: add aria label to button
     button.textContent = 'Unhide';
   }
+};
+
+const hideFollowingButton = (button) => {
+  button.style = 'display:none';
 };
 
 initializeAllUserFollowButtons();
