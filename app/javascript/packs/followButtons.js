@@ -211,69 +211,102 @@ function handleButtonClick({ target }) {
 
   if (target.classList.contains('hide-action-button')) {
     const followButton = target.previousElementSibling;
-    handleFollowButtonClick({ target: followButton });
-    handleHideButtonClick({ target });
+    handleHideButtonClick({ target }, followButton);
   }
 }
 
-function handleHideButtonClick({ target }) {
+function handleHideButtonClick({ target }, followButton) {
   const button = target;
   // if a user is logged out show the login modal
-  // const { verb: newState } = button.dataset;
+  const { verb: newState } = button.dataset;
   const buttonInfo = JSON.parse(button.dataset.info);
   // const { style } = buttonInfo;
 
-  const matchingFollowButtons = Array.from(
-    document.getElementsByClassName('hide-action-button'),
-  ).filter((button) => {
-    const { info } = button.dataset;
-    if (info) {
-      const { id } = JSON.parse(info);
-      return id === buttonInfo.id;
-    }
-    return false;
-  });
+  // here the button 'unhide' is clicked
+  if (newState === 'unhide') {
+    showFollowingButton(followButton);
 
-  matchingFollowButtons.forEach((matchingButton) => {
-    matchingButton.classList.add('showing');
-    const followingButton = matchingButton.previousElementSibling;
-
-    button.classList.remove('crayons-btn--ghost');
-    button.classList.add('crayons-btn--danger');
+    button.classList.remove('crayons-btn--danger');
+    button.classList.add('crayons-btn--ghost');
     // TODO: add aria label to button
-    button.textContent = 'Unhide';
-    button.dataset.verb = 'hide';
-    hideFollowingButton(followingButton);
-  });
+    button.textContent = 'Hide';
+    const verb = 'hide';
+    button.dataset.verb = verb;
 
-  browserStoreCache('remove');
+    const { className, id } = JSON.parse(target.dataset.info);
+    const formData = new FormData();
+    formData.append('followable_type', className);
+    formData.append('followable_id', id);
+    formData.append('verb', verb);
+    formData.append('explicit_points', 1);
+    getCsrfToken()
+      .then(sendFetch('follow-creation', formData))
+      .then((response) => {
+        if (response.status !== 200) {
+          showModalAfterError({
+            response,
+            element: 'user',
+            action_ing: 'following',
+            action_past: 'followed',
+            timeframe: 'for a day',
+          });
+        }
+      });
+  } else {
+    handleFollowButtonClick({ target: followButton });
 
-  const { verb } = target.dataset;
-
-  if (verb === 'self') {
-    window.location.href = '/settings';
-    return;
-  }
-
-  const { className, id } = JSON.parse(target.dataset.info);
-  const formData = new FormData();
-  formData.append('followable_type', className);
-  formData.append('followable_id', id);
-  formData.append('verb', verb);
-  formData.append('explicit_points', -1);
-  getCsrfToken()
-    .then(sendFetch('follow-creation', formData))
-    .then((response) => {
-      if (response.status !== 200) {
-        showModalAfterError({
-          response,
-          element: 'user',
-          action_ing: 'following',
-          action_past: 'followed',
-          timeframe: 'for a day',
-        });
+    const matchingFollowButtons = Array.from(
+      document.getElementsByClassName('hide-action-button'),
+    ).filter((button) => {
+      const { info } = button.dataset;
+      if (info) {
+        const { id } = JSON.parse(info);
+        return id === buttonInfo.id;
       }
+      return false;
     });
+
+    matchingFollowButtons.forEach((matchingButton) => {
+      // matchingButton.classList.add('hidden');
+      const followingButton = matchingButton.previousElementSibling;
+
+      button.classList.remove('crayons-btn--ghost');
+      button.classList.add('crayons-btn--danger');
+      // TODO: add aria label to button
+      button.textContent = 'Unhide';
+      button.dataset.verb = 'unhide';
+      hideFollowingButton(followingButton);
+    });
+
+    browserStoreCache('remove');
+
+    const { verb } = target.dataset;
+
+    if (verb === 'self') {
+      window.location.href = '/settings';
+      return;
+    }
+
+    const { className, id } = JSON.parse(target.dataset.info);
+    const formData = new FormData();
+    formData.append('followable_type', className);
+    formData.append('followable_id', id);
+    formData.append('verb', verb);
+    formData.append('explicit_points', -1);
+    getCsrfToken()
+      .then(sendFetch('follow-creation', formData))
+      .then((response) => {
+        if (response.status !== 200) {
+          showModalAfterError({
+            response,
+            element: 'user',
+            action_ing: 'following',
+            action_past: 'followed',
+            timeframe: 'for a day',
+          });
+        }
+      });
+  }
 }
 
 function handleFollowButtonClick({ target }) {
@@ -543,12 +576,17 @@ const setHiddenTagButtonState = (hiddenTagIds, button, followingButton) => {
     button.classList.add('crayons-btn--danger');
     // TODO: add aria label to button
     button.textContent = 'Unhide';
+    button.dataset.verb = 'unhide';
     hideFollowingButton(followingButton);
   }
 };
 
 const hideFollowingButton = (button) => {
   button.style = 'display:none';
+};
+
+const showFollowingButton = (button) => {
+  button.style = 'display:inline';
 };
 
 initializeAllUserFollowButtons();
