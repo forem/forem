@@ -252,8 +252,8 @@ async function adjustTag(el, reasonElement) {
       clearReason(reasonElement);
 
       if (outcome.result === 'addition') {
-        renderTagOnArticle(adjustedTagName, outcome.colors);
         resetAddTagButtonUI();
+        renderTagOnArticle(adjustedTagName, outcome.colors);
       } else {
         getArticleContainer()
           .querySelector(`.crayons-tag[href="/t/${adjustedTagName}"]`)
