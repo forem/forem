@@ -1,4 +1,5 @@
 module Notifications
+  # used to stub user for reaction data, potentially useful in notification factory too (to stay DRY)
   def self.user_data(user)
     {
       id: user.id,
