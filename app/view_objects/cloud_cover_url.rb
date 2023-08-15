@@ -1,9 +1,9 @@
 class CloudCoverUrl
   include ActionView::Helpers::AssetUrlHelper
 
-  def initialize(url, height)
+  def initialize(url, height = nil)
     @url = url
-    @height = height
+    @height = height || Settings::UserExperience.cover_image_height
   end
 
   def call
