@@ -31,6 +31,15 @@
 }
 
 .mod-container {
+  hr {
+    width: 100% !important;
+    max-width: none !important;
+    height: 1px;
+    margin: 8px 0px 8px 0px !important;
+    padding: 0px;
+    background-color: var(--grey-200);
+  }
+
   display: flex;
   flex-direction: column;
   background-color: var(--base-inverted);
@@ -374,6 +383,44 @@
     .adjust-tags-options {
       .add-tag-container {
         padding: var(--su-2) var(--su-1);
+      }
+      .add-tag-header {
+        color: var(--tag-name);
+        font-size: var(--fs-base);
+        font-weight: var(--fw-bold);
+        line-height: var(--lh-base);
+      }
+      .tag-input-container {
+        display: flex;
+        margin-top: 12px;
+        padding: 8px 8px 8px 12px;
+        align-items: center;
+        gap: 8px;
+        align-self: stretch;
+        border-radius: 6px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: var(--grey-500);
+
+        span {
+          font-weight: var(--fw-medium);
+          font-size: var(--fs-xl);
+          color: var(--add-tag-hash);
+        }
+        input {
+          border: none;
+          outline: none;
+          background-color: transparent;
+          color: var(--grey-500);
+          font-size: var(--fs-base);
+          line-height: var(--ls-base);
+        }
+        .input:active,
+        .input:focus {
+          border: none;
+          outline: none;
+          box-shadow: none;
+        }
       }
       button.adjustable-tag {
         background: inherit;

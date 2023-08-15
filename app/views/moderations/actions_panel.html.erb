@@ -128,6 +128,7 @@
             </div>
           <% end %>
           <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
+            <hr />
             <button id="add-tag-button" data-testid="add-tag-button" class="add-tag" type="button">
               <%= t("views.moderations.actions.adjust.add_tag.button_text") %>
               <div class="circle centered-icon add-icon">
@@ -136,7 +137,11 @@
             </button>
             <div id="add-tag-container" class="hidden">
               <div id="add-reason-container" class="reason-container">
-                <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+                <div class="add-tag-header"><%= t("views.moderations.actions.adjust.add_tag.header") %></div>
+                <div class="tag-input-container">
+                  <span>#</span>
+                  <input id="admin-add-tag" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+                </div>
                 <textarea id="tag-add-reason" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
                 <div class="flex gap-3">
                   <button class="w-100 c-btn c-btn--primary" disabled="disabled" id="tag-add-submit"><%= t("views.moderations.actions.adjust.add") %></button>
@@ -144,7 +149,9 @@
                 </div>
               </div>
             </div>
+            <hr />
           <% else %>
+            <hr />
             <span class="additional-subtext-section">
               <%= crayons_icon_tag(:info, title: t("views.moderations.actions.adjust.maximum_tags.icon")) %>
               <span>

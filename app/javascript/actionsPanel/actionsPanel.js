@@ -340,13 +340,15 @@ export function handleAddTagButtonListeners() {
   const inputTag = document.getElementById('admin-add-tag');
   const submitButton = document.getElementById('tag-add-submit');
 
-  inputTag.addEventListener('input', () => {
-    if (inputTag.value.trim().length > 0) {
-      submitButton.removeAttribute('disabled');
-    } else {
-      submitButton.setAttribute('disabled', 'disabled');
-    }
-  });
+  if (inputTag) {
+    inputTag.addEventListener('input', () => {
+      if (inputTag.value.trim().length > 0) {
+        submitButton.removeAttribute('disabled');
+      } else {
+        submitButton.setAttribute('disabled', 'disabled');
+      }
+    });
+  }
 
   const addTagButton = document.getElementById('add-tag-button');
 

@@ -29,6 +29,7 @@ en:
             icon: Info
             text: A post can only have four tags.
           add_tag:
+            header: Add new tag
             button_text: Add new tag
             icon: Add tag
         approve:

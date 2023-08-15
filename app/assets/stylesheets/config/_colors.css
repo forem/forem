@@ -389,6 +389,7 @@
   /* Tag name */
   --tag-hash: rgb(var(--grey-500));
   --tag-name: rgb(var(--grey-800));
+  --add-tag-hash: rgb(var(--grey-700));
 
   /***********************************************
   ** Utilities ***********************************
