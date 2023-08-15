@@ -118,7 +118,7 @@ RSpec.describe DisplayAd do
       expect(described_class.random_range_max("sidebar_left")).to eq 100
     end
 
-    it "falls back to broadly set rangd vars" do
+    it "falls back to broadly set range vars" do
       allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN").and_return("89")
       expect(described_class.random_range_max("sidebar_left")).to eq 89
