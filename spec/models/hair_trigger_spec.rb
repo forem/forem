@@ -10,6 +10,11 @@ RSpec.describe HairTrigger do
       if ActiveRecord::Base.descendants.blank?
         ActiveSupport::DescendantsTracker.store_inherited(ActiveRecord::Base, ApplicationRecord)
       end
+      p "current migrations:"
+      p described_class.current_migrations.map(&:last).sort
+
+      p "current_triggers:"
+      p described_class.current_triggers.sort
 
       expect(described_class.migrations_current?).to be(true)
     end
