@@ -449,8 +449,7 @@ function initializeNonUserFollowButtons() {
         // preferably with a classname.
         const hiddenButton = button.nextElementSibling;
         if (hiddenButton) {
-          setHiddenTagButtonState(hiddenTagIds, hiddenButton);
-          hideFollowingButton(button);
+          setHiddenTagButtonState(hiddenTagIds, hiddenButton, button);
         }
       } else {
         fetchFollowButtonStatus(button, buttonInfo);
@@ -464,7 +463,7 @@ function initializeNonUserFollowButtons() {
  * @param {Array} hiddenTagIds an array of ids of tags that are hidden
  * @param {*} button the button for a tag that should be "hidden"
  */
-const setHiddenTagButtonState = (hiddenTagIds, button) => {
+const setHiddenTagButtonState = (hiddenTagIds, button, followingButton) => {
   const { info } = button.dataset;
   const { id } = JSON.parse(info);
   hiddenTagIds.has(id);
@@ -474,6 +473,7 @@ const setHiddenTagButtonState = (hiddenTagIds, button) => {
     button.classList.add('crayons-btn--danger');
     // TODO: add aria label to button
     button.textContent = 'Unhide';
+    hideFollowingButton(followingButton);
   }
 };
 
