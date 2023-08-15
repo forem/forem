@@ -1,8 +1,8 @@
 module Images
-  MEDIUM_FONT_PATH = Rails.root.join("app/assets/fonts/Roboto-Medium.ttf").freeze
-  BOLD_FONT_PATH = Rails.root.join("app/assets/fonts/Roboto-Bold.ttf").freeze
-  TEMPLATE_PATH = Rails.root.join("app/assets/images/social_template.png").freeze
-  ROUNDED_MASK_PATH = Rails.root.join("app/assets/images/rounded_mask.png").freeze
+  MEDIUM_FONT_PATH = "app/assets/fonts/Roboto-Medium.ttf".freeze
+  BOLD_FONT_PATH = "app/assets/fonts/Roboto-Bold.ttf".freeze
+  TEMPLATE_PATH = "app/assets/images/social_template.png".freeze
+  ROUNDED_MASK_PATH = "app/assets/images/rounded_mask.png".freeze
 
   class GenerateSocialImageMagickally
     def self.call(resource = nil)
@@ -185,12 +185,12 @@ module Images
 
     def read_files
       # These are files we can open once for all the images we are generating within the loop.
-      @background_image = MiniMagick::Image.open(ActionController::Base.helpers.asset_path(TEMPLATE_PATH))
+      @background_image = MiniMagick::Image.open(TEMPLATE_PATH)
       @logo_image = MiniMagick::Image.open(@logo_url) if @logo_url.present?
-      image = @user.profile_image_90
+      image = @user&.profile_image_90.to_s
       author_image_url = image.start_with?("http") ? image : Images::Profile::BACKUP_LINK
       @author_image = MiniMagick::Image.open(author_image_url)
-      @rounded_mask = MiniMagick::Image.open(ActionController::Base.helpers.asset_path(ROUNDED_MASK_PATH))
+      @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
     end
   end
 end

@@ -89,21 +89,42 @@ RSpec.describe "CommentsCreate" do
   end
 
   context "when user is commenting on a comment by an author who has blocked the user" do
-    let(:third_party_article) { create(:article, user_id: create(:user).id) }
-
-    it "raises a ModerationUnauthorizedError to prevent the comment from saving" do
+    before do
       create(:user_block, blocker: blocker, blocked: user, config: "default")
       # Manually manage the blocked_by_count attribute that counter_culture manages in prod
-      user.update(blocked_by_count: 1)
-      blocker_comment = create(:comment, user_id: blocker.id,
-                                         commentable_id: third_party_article.id,
-                                         commentable_type: "Article")
+      user.update_column(:blocked_by_count, 1)
+    end
+
+    let!(:third_party_article) { create(:article, user_id: create(:user).id) }
+
+    it "raises a ModerationUnauthorizedError to prevent the comment from saving" do
+      blocker_comment = create(:comment, user_id: blocker.id, commentable: third_party_article)
       expect do
         post comments_path, params: comment_params(body_markdown: "trolling attempted!",
                                                    parent_id: blocker_comment.id)
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body["error"]).to eq("Not allowed due to moderation action")
       end.not_to change(Comment, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("Not allowed due to moderation action")
+    end
+
+    it "raises the error when the commenter is downthread of the blocker" do
+      # Simulate a conversation between the blocking user and two other users who aren't blocking anyone
+      replier_one = create(:user)
+      replier_two = create(:user)
+      blocker_comment = create(:comment, user: blocker, body_markdown: "I just block and then keep it moving",
+                                         commentable: third_party_article)
+      first_reply = create(:comment, user: replier_one, commentable: third_party_article, body_markdown: "+1!",
+                                     parent_id: blocker_comment.id)
+      downthread_reply = create(:comment, user: replier_two, commentable: third_party_article, body_markdown: "<3",
+                                          parent_id: first_reply.id)
+      expect do
+        post comments_path,
+             params: comment_params(body_markdown: "I'd love to derail this convo!", parent_id: downthread_reply.id)
+      end.not_to change(Comment, :count)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("Not allowed due to moderation action")
     end
   end
 
