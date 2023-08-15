@@ -208,6 +208,72 @@ function handleButtonClick({ target }) {
   ) {
     handleFollowButtonClick({ target });
   }
+
+  if (target.classList.contains('hide-action-button')) {
+    const followButton = target.previousElementSibling;
+    handleFollowButtonClick({ target: followButton });
+    handleHideButtonClick({ target });
+  }
+}
+
+function handleHideButtonClick({ target }) {
+  const button = target;
+  // if a user is logged out show the login modal
+  // const { verb: newState } = button.dataset;
+  const buttonInfo = JSON.parse(button.dataset.info);
+  // const { style } = buttonInfo;
+
+  const matchingFollowButtons = Array.from(
+    document.getElementsByClassName('hide-action-button'),
+  ).filter((button) => {
+    const { info } = button.dataset;
+    if (info) {
+      const { id } = JSON.parse(info);
+      return id === buttonInfo.id;
+    }
+    return false;
+  });
+
+  matchingFollowButtons.forEach((matchingButton) => {
+    matchingButton.classList.add('showing');
+    const followingButton = matchingButton.previousElementSibling;
+
+    button.classList.remove('crayons-btn--ghost');
+    button.classList.add('crayons-btn--danger');
+    // TODO: add aria label to button
+    button.textContent = 'Unhide';
+    button.dataset.verb = 'hide';
+    hideFollowingButton(followingButton);
+  });
+
+  browserStoreCache('remove');
+
+  const { verb } = target.dataset;
+
+  if (verb === 'self') {
+    window.location.href = '/settings';
+    return;
+  }
+
+  const { className, id } = JSON.parse(target.dataset.info);
+  const formData = new FormData();
+  formData.append('followable_type', className);
+  formData.append('followable_id', id);
+  formData.append('verb', verb);
+  formData.append('explicit_points', -1);
+  getCsrfToken()
+    .then(sendFetch('follow-creation', formData))
+    .then((response) => {
+      if (response.status !== 200) {
+        showModalAfterError({
+          response,
+          element: 'user',
+          action_ing: 'following',
+          action_past: 'followed',
+          timeframe: 'for a day',
+        });
+      }
+    });
 }
 
 function handleFollowButtonClick({ target }) {
