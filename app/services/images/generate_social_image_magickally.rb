@@ -187,7 +187,7 @@ module Images
       # These are files we can open once for all the images we are generating within the loop.
       @background_image = MiniMagick::Image.open(TEMPLATE_PATH)
       @logo_image = MiniMagick::Image.open(@logo_url) if @logo_url.present?
-      image = @user.profile_image_90
+      image = @user&.profile_image_90.to_s
       author_image_url = image.start_with?("http") ? image : Images::Profile::BACKUP_LINK
       @author_image = MiniMagick::Image.open(author_image_url)
       @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
