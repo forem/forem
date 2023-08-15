@@ -83,7 +83,7 @@ RSpec.describe Images::Optimizer, type: :service do
       imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
       # mb = maximum bytes, defaults to 500_000 bytes
       # ar = autorotate, defaults to "true", serialized as "1"
-      expect(imgproxy_url).to match(%r{/s:500:500/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/rs:fill-down:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 
@@ -101,9 +101,15 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(cloudflare_url).to match(url_regexp)
     end
 
+    it "generates correct url based on h/w input" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
+      url_regexp = %r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
+    end
+
     it "does not error if nil" do
-      cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420)
-      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/})
+      cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420, crop: "limit")
+      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/})
     end
 
     it "pulls suffix if nested cloudflare url is provided" do

@@ -33,8 +33,13 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
   end
 
   context "when the body has a main image" do
-    body_markdown = file_fixture("article_published_cover_image.txt").read
-    article.update(body_markdown: body_markdown)
+    it "does not alter the processed HTML" do
+      allow(FastImage).to receive(:size).and_return([100, 50])
+      body_markdown = file_fixture("article_published_cover_image.txt").read
+      article.update(body_markdown: body_markdown)
+      described_class.call(article)
+      expect(article.reload.main_image_height).to be 500
+    end
   end
 
   context "when the body renders a liquid tag with images" do

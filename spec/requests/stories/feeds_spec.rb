@@ -86,12 +86,12 @@ RSpec.describe "Stories::Feeds" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
       it "renders main_image as a cloud link" do
-        allow(CloudCoverUrl).to receive(:new).with(article.main_image).and_return(cloud_cover)
+        allow(CloudCoverUrl).to receive(:new).with(article.main_image, Settings::UserExperience.cover_image_height).and_return(cloud_cover)
         allow(cloud_cover).to receive(:call).and_call_original
 
         get stories_feed_path
 
-        expect(CloudCoverUrl).to have_received(:new).with(article.main_image)
+        expect(CloudCoverUrl).to have_received(:new).with(article.main_image, Settings::UserExperience.cover_image_height)
         expect(cloud_cover).to have_received(:call)
       end
     end

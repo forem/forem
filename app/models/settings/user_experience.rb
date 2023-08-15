@@ -34,7 +34,6 @@ module Settings
       inclusion: { in: COVER_IMAGE_FITS }
     }
 
-
     # a non-public forem will redirect all unauthenticated pages to the registration page.
     # a public forem could have more fine-grained authentication (listings ar private etc.) in future
     setting :public, type: :boolean, default: true

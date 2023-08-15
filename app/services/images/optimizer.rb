@@ -27,12 +27,13 @@ module Images
 
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
+      fit = (kwargs[:crop] || Settings::UserExperience.cover_image_fit) == "limit" ? "scale-down" : "cover"
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         options: {
           width: kwargs[:width],
           height: kwargs[:height],
-          fit: "cover",
+          fit: fit,
           gravity: "auto",
           format: "auto"
         },
@@ -67,7 +68,9 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "fill"
+      if options[:crop] == "limit"
+        options[:resizing_type] = "fit"
+      else
         options[:resizing_type] = "fill-down"
       end
 
