@@ -201,53 +201,57 @@ function updateFollowButton(button, newState, buttonInfo) {
  *
  * @param {HTMLElement} target The target of the click event
  */
-function handleFollowButtonClick({ target }) {
+function handleButtonClick({ target }) {
   if (
     target.classList.contains('follow-action-button') ||
     target.classList.contains('follow-user')
   ) {
-    const userStatus = document.body.getAttribute('data-user-status');
-    if (userStatus === 'logged-out') {
-      let trackingData = {};
-      if (determineSecondarySource(target)) {
-        trackingData = {
-          referring_source: determineSecondarySource(target),
-          trigger: 'follow_button',
-        };
-      }
-      showLoginModal(trackingData);
-      return;
-    }
-
-    optimisticallyUpdateButtonUI(target);
-    browserStoreCache('remove');
-
-    const { verb } = target.dataset;
-
-    if (verb === 'self') {
-      window.location.href = '/settings';
-      return;
-    }
-
-    const { className, id } = JSON.parse(target.dataset.info);
-    const formData = new FormData();
-    formData.append('followable_type', className);
-    formData.append('followable_id', id);
-    formData.append('verb', verb);
-    getCsrfToken()
-      .then(sendFetch('follow-creation', formData))
-      .then((response) => {
-        if (response.status !== 200) {
-          showModalAfterError({
-            response,
-            element: 'user',
-            action_ing: 'following',
-            action_past: 'followed',
-            timeframe: 'for a day',
-          });
-        }
-      });
+    handleFollowButtonClick({ target });
   }
+}
+
+function handleFollowButtonClick({ target }) {
+  const userStatus = document.body.getAttribute('data-user-status');
+  if (userStatus === 'logged-out') {
+    let trackingData = {};
+    if (determineSecondarySource(target)) {
+      trackingData = {
+        referring_source: determineSecondarySource(target),
+        trigger: 'follow_button',
+      };
+    }
+    showLoginModal(trackingData);
+    return;
+  }
+
+  optimisticallyUpdateButtonUI(target);
+  browserStoreCache('remove');
+
+  const { verb } = target.dataset;
+
+  if (verb === 'self') {
+    window.location.href = '/settings';
+    return;
+  }
+
+  const { className, id } = JSON.parse(target.dataset.info);
+  const formData = new FormData();
+  formData.append('followable_type', className);
+  formData.append('followable_id', id);
+  formData.append('verb', verb);
+  getCsrfToken()
+    .then(sendFetch('follow-creation', formData))
+    .then((response) => {
+      if (response.status !== 200) {
+        showModalAfterError({
+          response,
+          element: 'user',
+          action_ing: 'following',
+          action_past: 'followed',
+          timeframe: 'for a day',
+        });
+      }
+    });
 }
 
 /**
@@ -268,7 +272,7 @@ function determineSecondarySource(target) {
 function listenForFollowButtonClicks() {
   document
     .getElementById('page-content-inner')
-    .addEventListener('click', handleFollowButtonClick);
+    .addEventListener('click', handleButtonClick);
 
   document.getElementById(
     'page-content-inner',
