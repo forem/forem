@@ -58,7 +58,7 @@ experiments:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     started_at: 2023-05-11
-    ended_at: 2023-08-14
+    ended_at: 2023-08-15
     winner: 20230511-variant-b
     variants:
       - 20230424-variant-b
