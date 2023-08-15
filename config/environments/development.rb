@@ -140,7 +140,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :collection)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :distinct_reaction_categories)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
-    # There were some warnings about eager loading the organization for a display ad, however since the code goes down
+    # There were some warnings about eager loading the organization for a billboard, however since the code goes down
     # different paths (in_house where we don’t need the organization info vs external/community where we need the
     # organization info), bullet was getting confused on whether we need the eager loading or not.
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "DisplayAd", association: :organization)
@@ -151,6 +151,7 @@ Rails.application.configure do
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "FeedbackMessage", association: :reporter)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Article", association: :reactions)
     Bullet.add_safelist(type: :unused_eager_loading, class_name: "Reaction", association: :user)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Tag", association: :badge)
 
     # Check if there are any data update scripts to run during startup
     if %w[Console Server DBConsole].any? { |const| Rails.const_defined?(const) } && DataUpdateScript.scripts_to_run?

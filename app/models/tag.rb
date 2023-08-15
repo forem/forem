@@ -170,18 +170,22 @@ class Tag < ActsAsTaggableOn::Tag
       .order(hotness_score: :desc)
   end
 
-  def self.followed_by(user, points = (1..))
-    where(
-      id: Follow.where(
-        follower_id: user.id,
-        followable_type: "ActsAsTaggableOn::Tag",
-        points: points,
-      ).select(:followable_id),
-    )
+  # returns the tags that are followed by the user
+  # @param user [User] the user to check
+  # @param points [Range] the range of points to check for (default is 0 (including 0) to infinity)
+  # @return [ActiveRecord::Relation<Tag>] the tags followed by the user
+  def self.followed_by(user, points = (0...))
+    joins("INNER JOIN follows ON tags.id = follows.followable_id")
+      .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag", points: points })
+      .order("follows.points DESC")
   end
 
+  # returns the tags that are anti-followed (hidden) by the user. It uses the followed_by method
+  # and passes in a range of -infinity to 0 (excluding 0).
+  # @param user [User] the user to check
+  # @return [ActiveRecord::Relation<Tag>] the tags anti-followed by the user (for hidden tags)
   def self.antifollowed_by(user)
-    followed_by(user, (...1))
+    followed_by(user, (...0))
   end
 
   # @return [String]

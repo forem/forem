@@ -28,8 +28,15 @@
     </div>
 
     <div class="crayons-field">
-      <div id="display-ad-targeted-tags"></div>
+      <div id="billboard-targeted-tags"></div>
     </div>
+
+    <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+      <div class="crayons-field">
+        <%= label_tag :target_geolocations, "Target Geolocations:", class: "crayons-field__label" %>
+        <%= text_field_tag :target_geolocations, @billboard.target_geolocations.map(&:to_iso3166).join(", "), class: "crayons-textfield", placeholder: "US-NY, CA-ON", autocomplete: "off" %>
+      </div>
+    <% end %>
 
     <div class="crayons-field hidden">
       <%= label_tag :tag_list, "Tag List:", class: "crayons-field__label" %>
@@ -44,7 +51,7 @@
     <div class="crayons-field">
       <fieldset aria-describedby="section-description" aria-describedby="display-to-description">
         <legend class="crayons-field crayons-field__label pl-0">Display to user group</legend>
-        <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Display Ad</p>
+        <p id="display-to-description" class="crayons-field__description mb-2">Determines which user group will be able to see the Billboard</p>
 
         <label class="crayons-field crayons-field--radio mb-2">
           <%= radio_button_tag :display_to, "all", @billboard.display_to_all?, class: "crayons-radio" %>
@@ -115,19 +122,19 @@
     </div>
   </div>
   <div>
-    <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--display-ad">
+    <div class="crayons-card crayons-card--secondary crayons-sponsorship text-styles text-styles--billboard">
       <% if @billboard.persisted? %>
         <%= @billboard.processed_html.html_safe %>
       <% else %>
         <div class="flex flex-col gap-3">
           <p>
-            Display ads will show up in the designated placement area <strong>once published and approved</strong>. You can safely preview them here before publishing.
+            Billboards will show up in the designated placement area <strong>once published and approved</strong>. You can safely preview them here before publishing.
           </p>
           <p>
-            Multiple ads that share the same placement area will be swapped every few minutes. <strong>The units with the most engagement will show up the most often</strong>.
+            Multiple billboards that share the same placement area will be swapped every few minutes. <strong>The units with the most engagement will show up the most often</strong>.
           </p>
           <p>
-            Organization ID is optional. Use it if you want to attribute an ad to a specific organization.
+            Organization ID is optional. Use it if you want to attribute a billboard to a specific organization.
           </p>
         </div>
       <% end %>
@@ -135,4 +142,4 @@
   </div>
 </div>
 
-<%= javascript_packs_with_chunks_tag "admin/displayAds", defer: true %>
+<%= javascript_packs_with_chunks_tag "admin/billboards", defer: true %>

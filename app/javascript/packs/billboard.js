@@ -1,17 +1,16 @@
-import { setupDisplayAdDropdown } from '../utilities/displayAdDropdown';
-import { observeDisplayAds } from './billboardAfterRenderActions';
+import { setupBillboardDropdown } from '../utilities/billboardDropdown';
+import { observeBillboards } from './billboardAfterRenderActions';
 
-// the term billboard can be synonymously interchanged with displayAd
 async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
-    'js-display-ad-container',
+    'js-billboard-container',
   );
 
-  const promises = [...placeholderElements].map(generateDisplayAd);
+  const promises = [...placeholderElements].map(generateBillboard);
   await Promise.all(promises);
 }
 
-async function generateDisplayAd(element) {
+async function generateBillboard(element) {
   const { asyncUrl } = element.dataset;
 
   if (asyncUrl) {
@@ -24,12 +23,12 @@ async function generateDisplayAd(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
-      setupDisplayAdDropdown();
+      setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.
       // eslint-disable-next-line no-undef
-      observeDisplayAds();
+      observeBillboards();
     } catch (error) {
       if (!/NetworkError/i.test(error.message)) {
         Honeybadger.notify(error);

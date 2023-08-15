@@ -60,7 +60,7 @@ class DisplayAd < ApplicationRecord
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -73,6 +73,7 @@ class DisplayAd < ApplicationRecord
       permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
       user_tags: user_tags,
+      location: location,
     )
 
     case rand(99) # output integer from 0-99
@@ -141,7 +142,7 @@ class DisplayAd < ApplicationRecord
   def validate_in_house_hero_ads
     return unless placement_area == "home_hero" && type_of != "in_house"
 
-    errors.add(:type_of, "must be in_house if display ad is a Home Hero")
+    errors.add(:type_of, "must be in_house if billboard is a Home Hero")
   end
 
   def audience_segment_type
@@ -159,9 +160,10 @@ class DisplayAd < ApplicationRecord
     overrides = {
       "audience_segment_type" => audience_segment_type,
       "tag_list" => cached_tag_list,
-      "exclude_article_ids" => exclude_article_ids.join(",")
+      "exclude_article_ids" => exclude_article_ids.join(","),
+      "target_geolocations" => target_geolocations.map(&:to_iso3166)
     }
-    super(options.merge(except: %i[tags tag_list])).merge(overrides)
+    super(options.merge(except: %i[tags tag_list target_geolocations])).merge(overrides)
   end
   # rubocop:enable Style/OptionHash
 
@@ -178,7 +180,7 @@ class DisplayAd < ApplicationRecord
   def generate_billboard_name
     return unless name.nil?
 
-    self.name = "Display Ad #{id}"
+    self.name = "Billboard #{id}"
     save!
   end
 
