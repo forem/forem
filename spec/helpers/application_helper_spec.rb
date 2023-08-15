@@ -337,7 +337,7 @@ RSpec.describe ApplicationHelper do
     it "works just like cl_image_tag", cloudinary: true do
       image_url = "https://i.imgur.com/fKYKgo4.png"
       cloudinary_image_tag = cl_image_tag(image_url,
-                                          type: "fetch", crop: Settings::UserExperience.cover_image_fit,
+                                          type: "fetch", crop: "imagga_scale",
                                           quality: "auto", flags: "progressive",
                                           fetch_format: "auto", sign_url: true,
                                           loading: "lazy", alt: "profile image",
