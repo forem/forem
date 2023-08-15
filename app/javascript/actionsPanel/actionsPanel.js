@@ -222,8 +222,13 @@ async function adjustTag(el, reasonElement) {
   };
 
   try {
-    const response = await request('/tag_adjustments', {
+    const response = await fetch('/tag_adjustments', {
       method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body),
     });
 

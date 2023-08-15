@@ -9,6 +9,8 @@ import {
 } from '../actionsPanel';
 
 global.fetch = fetch;
+global.top.addSnackbarItem = jest.fn();
+global.alert = jest.fn();
 
 describe('addCloseListener()', () => {
   test('toggles the mod actions panel and its button on click', () => {
@@ -159,6 +161,9 @@ describe('addAdjustTagListeners()', () => {
     beforeEach(() => {
       fetch.resetMocks();
 
+      document.head.innerHTML =
+        '<meta name="csrf-token" content="some-csrf-token" />';
+
       document.body.innerHTML = `
       <button id="add-tag-button" class="add-tag" type="button">
         Add new tag
@@ -184,18 +189,18 @@ describe('addAdjustTagListeners()', () => {
       handleAddTagButtonListeners();
     });
 
-    // function tagResponse() {
-    //   return JSON.stringify({
-    //     outcome: {
-    //       status: 'Success',
-    //       result: 'addition',
-    //       colors: {
-    //         bg: '#8c5595',
-    //         text: '#39ad55',
-    //       },
-    //     },
-    //   });
-    // }
+    function tagResponse() {
+      return JSON.stringify({
+        outcome: {
+          status: 'Success',
+          result: 'addition',
+          colors: {
+            bg: '#8c5595',
+            text: '#39ad55',
+          },
+        },
+      });
+    }
 
     it('shows the add tag button', () => {
       expect(document.getElementById('add-tag-button').classList).not.toContain(
@@ -230,24 +235,16 @@ describe('addAdjustTagListeners()', () => {
       );
     });
 
-    // it('click on add-tag button hides the container and shows add-tag button', async () => {
-    //   fetch.mockResponseOnce(tagResponse());
+    it('click on add-tag button hides the container and shows add-tag button', async () => {
+      fetch.mockResponseOnce(tagResponse());
 
-    //   document.getElementById('add-tag-button').click();
-    //   document.getElementById('admin-add-tag').value = 'pizza';
-    //   document.getElementById('tag-add-reason').value = 'Adding a new tag';
-    //   document.getElementById('tag-add-submit').click();
+      document.getElementById('add-tag-button').click();
+      document.getElementById('admin-add-tag').value = 'pizza';
+      document.getElementById('tag-add-reason').value = 'Adding a new tag';
+      document.getElementById('tag-add-submit').click();
 
-    //   expect(fetch).toHaveBeenCalledTimes(1);
-
-    //   expect(document.getElementById('add-tag-button').classList).not.toContain(
-    //     'hidden',
-    //   );
-
-    //   expect(document.getElementById('add-tag-container').classList).toContain(
-    //     'hidden',
-    //   );
-    // });
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
 
     it('shows the adjustment container when admin input is focused', () => {
       document.getElementById('add-tag-button').click();
@@ -264,20 +261,25 @@ describe('addAdjustTagListeners()', () => {
   describe('article has 1 tag', () => {
     const discussTag = 'discuss';
 
-    // function removeTagResponse() {
-    //   return JSON.stringify({
-    //     outcome: {
-    //       status: 'Success',
-    //       result: 'removal',
-    //       colors: {
-    //         bg: '#8c5595',
-    //         text: '#39ad55',
-    //       },
-    //     },
-    //   });
-    // }
+    function removeTagResponse() {
+      return JSON.stringify({
+        outcome: {
+          status: 'Success',
+          result: 'removal',
+          colors: {
+            bg: '#8c5595',
+            text: '#39ad55',
+          },
+        },
+      });
+    }
 
     beforeEach(() => {
+      fetch.resetMocks();
+
+      document.head.innerHTML =
+        '<meta name="csrf-token" content="some-csrf-token" />';
+
       document.body.innerHTML = `
       <button id="remove-tag-button-${discussTag}" class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="${discussTag}" data-article-id="32">
         <span class="num-sign">#</span>${discussTag}
@@ -331,16 +333,16 @@ describe('addAdjustTagListeners()', () => {
       ).toContain('hidden');
     });
 
-    // it('click on remove button should have successful api call', async () => {
-    //   fetch.mockResponseOnce(removeTagResponse());
+    it('click on remove button should have successful api call', async () => {
+      fetch.mockResponseOnce(removeTagResponse());
 
-    //   document.getElementById(`remove-tag-button-${discussTag}`).click();
-    //   document.getElementById(`tag-removal-reason-${discussTag}`).value =
-    //     'Removing a tag';
-    //   document.getElementById(`remove-tag-submit-${discussTag}`).click();
+      document.getElementById(`remove-tag-button-${discussTag}`).click();
+      document.getElementById(`tag-removal-reason-${discussTag}`).value =
+        'Removing a tag';
+      document.getElementById(`remove-tag-submit-${discussTag}`).click();
 
-    //   expect(fetch).toHaveBeenCalledTimes(1);
-    // });
+      expect(fetch).toHaveBeenCalledTimes(1);
+    });
   });
 });
 
