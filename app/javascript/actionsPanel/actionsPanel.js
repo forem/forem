@@ -293,6 +293,8 @@ function resetAddTagButtonUI() {
 
 export function handleRemoveTagButton(btn) {
   const { tagName } = btn.dataset;
+
+  const removeButton = document.getElementById(`remove-tag-button-${tagName}`);
   const removeIcon = document.getElementById(`remove-tag-icon-${tagName}`);
   const removeTagContainer = document.getElementById(
     `remove-tag-container-${tagName}`,
@@ -302,9 +304,11 @@ export function handleRemoveTagButton(btn) {
   if (containerIsVisible) {
     removeIcon.style.display = 'none';
     removeTagContainer.classList.remove('hidden');
+    removeButton.classList.add('fw-bold');
   } else {
     removeIcon.style.display = 'flex';
     removeTagContainer.classList.add('hidden');
+    removeButton.classList.add('fw-normal');
   }
 
   const cancelRemoveTagButton = document.getElementById(

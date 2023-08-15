@@ -37,6 +37,7 @@
   --accent-danger-darker: rgb(var(--red-700));
   --accent-danger-lighter: rgb(var(--red-500));
   --accent-danger-a10: rgba(var(--red-600), 0.1);
+  --accent-danger-a20: rgba(var(--red-600), 0.2);
 
   /***********************************************
   ** Functional color variables. *****************
@@ -365,6 +366,29 @@
   --banner-bg: rgb(var(--grey-800));
   --banner-color: var(--white);
   --banner-accent: var(--accent-brand);
+
+  /***********************************************
+  ** Tag Moderation *************************************
+  ***********************************************/
+
+  /* Tag item */
+  --item-bg-hover: rgb(var(--indigo-50));
+
+  /* Subtract */
+  --subtract-color: rgb(var(--red-600));
+  --subtract-color-hover: rgb(var(--white));
+  --subtract-bg: rgba(var(--red-600), 0.2);
+  --subtract-bg-hover: rgba(var(--red-600));
+
+  /* Plus */
+  --plus-color: rgb(var(--green-800));
+  --plus-color-hover: rgb(var(--white));
+  --plus-bg: rgb(var(--green-100));
+  --plus-bg-hover: rgba(var(--green-600));
+
+  /* Tag name */
+  --tag-hash: rgb(var(--grey-500));
+  --tag-name: rgb(var(--grey-800));
 
   /***********************************************
   ** Utilities ***********************************

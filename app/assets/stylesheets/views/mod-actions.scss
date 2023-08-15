@@ -33,7 +33,7 @@
 .mod-container {
   display: flex;
   flex-direction: column;
-  background-color: var(--base-0);
+  background-color: var(--base-inverted);
   border: none;
   box-shadow: none;
   margin-bottom: 0;
@@ -378,83 +378,67 @@
       button.adjustable-tag {
         background: inherit;
         border: none;
-        padding: var(--su-2) 2px;
+        padding: var(--su-2) var(--su-3);
+        font-family: var(--ff-monospace);
         font-size: var(--fs-base);
         text-align: left;
-        color: var(--base-80);
-        font-family: var(--ff-monospace);
+        line-height: var(--lh-base);
+        letter-spacing: -0.32px;
+        color: var(--tag-name);
+
         .num-sign {
-          color: var(--base-40);
+          color: var(--tag-hash);
           padding-left: 2px;
+          padding-right: 2px;
         }
-        .adjustment-icon {
+        .remove-icon {
           width: 24px;
           height: 24px;
           float: right;
           margin-right: 2px;
-          &.subtract {
-            background: var(--accent-danger);
-          }
-          &.plus {
-            background: var(--accent-success-darker);
-          }
-          svg > path {
-            fill: var(--base-inverted);
-          }
+          background: var(--subtract-bg);
+          color: var(--subtract-color);
         }
         &:hover {
-          background: var(--base-10);
-          border-radius: 8px;
+          background-color: var(--item-bg-hover);
+          border-radius: 6px;
+          .remove-icon {
+            background: var(--subtract-bg-hover);
+            color: var(--subtract-color-hover);
+          }
         }
-        &.active {
-          background: var(--base-10);
-          border-radius: 8px;
-        }
-        // &.selected {}
       }
       button.add-tag {
         background: inherit;
         border: none;
-        padding: var(--su-2) 2px;
+        padding: var(--su-2) var(--su-3);
         font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
         font-family: var(--ff-monospace);
-        .num-sign {
-          color: var(--base-40);
-          padding-left: 2px;
-        }
-        .adjustment-icon {
+        .add-icon {
           width: 24px;
           height: 24px;
           float: right;
           margin-right: 2px;
-          &.subtract {
-            background: var(--accent-danger);
-          }
-          &.plus {
-            background: var(--accent-success-darker);
-          }
-          svg > path {
-            fill: var(--base-inverted);
-          }
+          background: var(--plus-bg);
+          color: var(--plus-color);
         }
         &:hover {
-          background: var(--base-10);
-          border-radius: 8px;
+          background-color: var(--item-bg-hover);
+          border-radius: 6px;
+          .add-icon {
+            background: var(--plus-bg-hover);
+            color: var(--plus-color-hover);
+          }
         }
-        &.active {
-          background: var(--base-10);
-          border-radius: 8px;
-        }
-        // &.selected {}
       }
       .reason-container {
         display: flex;
         flex-direction: column;
-        padding: var(--su-1);
+        padding: var(--su-1) var(--su-3) 0px var(--su-3);
         textarea {
-          margin-bottom: var(--su-2);
+          margin-bottom: var(--su-3);
         }
       }
     }
