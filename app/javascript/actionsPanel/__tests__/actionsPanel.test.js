@@ -1,5 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import fetch from 'jest-fetch-mock';
+import { fireEvent } from '@testing-library/preact';
 import {
   addCloseListener,
   initializeHeight,
@@ -170,8 +171,8 @@ describe('addAdjustTagListeners()', () => {
           <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="Add a tag" data-article-id="32" data-adjustment-type="plus">
           <textarea class="crayons-textfield" placeholder="Reason to add tag (optional)" id="tag-add-reason"></textarea>
           <div class="flex gap-3">
-            <button class="c-btn c-btn--primary" id="tag-add-submit">Submit</button>
-            <button class="c-btn" id="cancel-add-tag-button" type="button">Cancel</button>
+            <button class="w-100 c-btn c-btn--primary" disabled="disabled" id="tag-add-submit">Submit</button>
+            <button class="w-100 c-btn" id="cancel-add-tag-button" type="button">Cancel</button>
           </div>
         </div>
       </div>
@@ -212,6 +213,21 @@ describe('addAdjustTagListeners()', () => {
       ).not.toContain('hidden');
     });
 
+    it('by default the add tag submit button is disabled and gets enabled when entered tag', () => {
+      document.getElementById('add-tag-button').click();
+      expect(
+        document.getElementById('tag-add-submit').hasAttribute('disabled'),
+      ).toBeTruthy();
+
+      fireEvent.input(document.getElementById('admin-add-tag'), {
+        target: { value: 'New Tag' },
+      });
+
+      expect(
+        document.getElementById('tag-add-submit').hasAttribute('disabled'),
+      ).toBeFalsy();
+    });
+
     it('click on cancel button hides the container and shows add-tag button', () => {
       document.getElementById('add-tag-button').click();
       document.getElementById('cancel-add-tag-button').click();
@@ -231,7 +247,11 @@ describe('addAdjustTagListeners()', () => {
       const addTagContainer = document.getElementById('add-tag-container');
 
       addTagButton.click();
-      document.getElementById('admin-add-tag').value = 'pizza';
+
+      fireEvent.input(document.getElementById('admin-add-tag'), {
+        target: { value: 'New Tag' },
+      });
+
       document.getElementById('tag-add-reason').value = 'Adding a new tag';
       document.getElementById('tag-add-submit').click();
 
