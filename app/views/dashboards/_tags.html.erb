@@ -30,6 +30,10 @@
             </div>
           </div>
         <% end %>
+
+        <% if page === "hidden" %>
+          <div class="unhide-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Unhide</div>
+        <% end %>
       </div>
     <% end %>
   <% end %>

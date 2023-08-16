@@ -36,6 +36,10 @@ function handleClick({ target }) {
   if (target.classList.contains('hide-button')) {
     handleHideButtonClick(target);
   }
+
+  if (target.classList.contains('unhide-button')) {
+    handleUnhideButtonClick(target);
+  }
 }
 
 function handleFollowingButtonClick(target) {
@@ -110,4 +114,46 @@ function handleHideButtonClick(target) {
   );
   const currentHiddenTagsCount = parseInt(hiddenTagsNavigationItem.innerHTML);
   hiddenTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+}
+
+function handleUnhideButtonClick(target) {
+  const { tagId } = target.dataset;
+  const { followId } = target.dataset;
+
+  const tokenMeta = document.querySelector("meta[name='csrf-token']");
+  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+
+  const dataBody = {
+    followable_type: 'Tag',
+    followable_id: tagId,
+    verb: 'follow',
+    explicit_points: 1,
+  };
+
+  window
+    .fetch('/follows', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-Token': csrfToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dataBody),
+      credentials: 'same-origin',
+    })
+    .catch((error) => console.error(error)); // TODO: maybe show a modal here instead.
+
+  // TODO: this should be done on success
+  document.getElementById(`follows-${followId}`).style = 'display:none';
+  const currentNavigationItem = document.querySelector(
+    '.crayons-link--current .c-indicator',
+  );
+  const currentFollowingTagsCount = parseInt(currentNavigationItem.innerHTML);
+  currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+  const followingTagsNavigationItem = document.querySelector(
+    '.js-following-tags-link .c-indicator',
+  );
+  const currentHiddenTagsCount = parseInt(
+    followingTagsNavigationItem.innerHTML,
+  );
+  followingTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
 }
