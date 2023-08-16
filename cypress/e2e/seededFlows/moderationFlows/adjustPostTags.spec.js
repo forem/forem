@@ -17,7 +17,7 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByText('Add new tag').click();
+        cy.findByTestId('add-tag-button').click();
         cy.findByPlaceholderText('Add a tag').type('tag2');
         cy.findByPlaceholderText('Reason to add tag (optional)').type(
           'testing',
@@ -72,7 +72,7 @@ describe('Adjust post tags', () => {
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByText('Add new tag').click();
+        cy.findByTestId('add-tag-button').click();
         cy.findByPlaceholderText('Add a tag').type('tag2');
         cy.findByPlaceholderText('Reason to add tag (optional)').type(
           'testing',
@@ -138,7 +138,7 @@ describe('Adjust post tags', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
 
-        cy.findByText('Add new tag').click();
+        cy.findByTestId('add-tag-button').click();
         cy.findByPlaceholderText('Add a tag').type('tag2');
         cy.findByPlaceholderText('Reason to add tag (optional)').type(
           'testing',
