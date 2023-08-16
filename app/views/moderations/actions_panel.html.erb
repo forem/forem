@@ -152,8 +152,8 @@
             <hr />
           <% else %>
             <hr />
-            <span class="additional-subtext-section">
-              <%= crayons_icon_tag(:info, title: t("views.moderations.actions.adjust.maximum_tags.icon")) %>
+            <span class="max-tags-text">
+              <%= crayons_icon_tag(:info, title: t("views.moderations.actions.adjust.maximum_tags.icon"), width: 18, height: 18) %>
               <span>
                 <%= t("views.moderations.actions.adjust.maximum_tags.text") %>
               </span>
@@ -161,9 +161,6 @@
           <% end %>
         <% elsif policy(@moderatable).tag_moderator_eligible? %>
           <% @tag_moderator_tags.each do |tag| %>
-            <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
-            <% subtract_or_plus_design = @moderatable.tag_list.include?(tag.name) ? "remove-icon hidden" : "add-icon" %>
-            <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
             <% if @moderatable.tag_list.include?(tag.name) %>
               <button id="remove-tag-button-<%= tag.name %>" class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
                 <span class="num-sign">#</span><%= tag.name %>

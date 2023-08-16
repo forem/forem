@@ -210,6 +210,20 @@
     }
   }
 
+  .max-tags-text {
+    display: flex;
+    padding: var(--su-2) var(--su-3);
+    align-items: center;
+    gap: var(--su-2);
+
+    span {
+      color: var(--color-secondary);
+      font-size: var(--fs-s);
+      line-height: var(--lh-base);
+      letter-spacing: -0.28px;
+    }
+  }
+
   .additional-subtext-section {
     font-weight: var(--fw-medium);
     font-size: var(--fs-xs);

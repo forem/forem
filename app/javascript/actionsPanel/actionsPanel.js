@@ -314,9 +314,11 @@ export function handleRemoveTagButton(btn) {
     removeIcon.style.display = 'none';
     removeTagContainer.classList.remove('hidden');
     removeButton.classList.add('fw-bold');
+    removeButton.classList.remove('fw-normal');
   } else {
     removeIcon.style.display = 'flex';
     removeTagContainer.classList.add('hidden');
+    removeButton.classList.remove('fw-bold');
     removeButton.classList.add('fw-normal');
   }
 
