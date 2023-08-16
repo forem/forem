@@ -1,36 +1,13 @@
-document
-  .getElementById('follows_update_form')
-  .addEventListener('submit', checkChanged);
+import { initializeDropdown } from '@utilities/dropdownUtils';
 
-document.addEventListener('change', (event) => {
-  if (event.target && event.target.name == 'follows[][explicit_points]') {
-    addChanged(event.target);
-  }
+/**
+ * Initializes each dropdown within each card
+ */
+const allButtons = document.querySelectorAll('.follow-button');
+allButtons.forEach((button) => {
+  const { id } = button.dataset;
+  initializeDropdown({
+    triggerElementId: `options-dropdown-trigger-${id}`,
+    dropdownContentId: `options-dropdown-${id}`,
+  });
 });
-
-function addChanged(element) {
-  element.setAttribute('changed', true);
-}
-
-function checkChanged(event) {
-  if (document.querySelector('input[changed]')) {
-    disableAllUnchanged();
-  } else {
-    event.preventDefault();
-  }
-}
-
-function disableAllUnchanged() {
-  document.querySelectorAll('div[id^="follows"]').forEach(disableUnchanged);
-}
-
-function disableUnchanged(item) {
-  const inputs = item.getElementsByTagName('input');
-  const id = inputs[0];
-  const point = inputs[1];
-
-  if (!point.hasAttribute('changed')) {
-    point.setAttribute('disabled', true);
-    id.setAttribute('disabled', true);
-  }
-}

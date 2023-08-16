@@ -12,6 +12,24 @@
         <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
           <%= strip_tags(tag.short_summary) %>
         </p>
+
+        <% if page === "following" %>
+          <div class="flex justify-between">
+            <div class="follow-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Following</div>
+            <div class="dropdown-trigger-container relative">
+              <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-<%= tag.id %>" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+                <%= crayons_icon_tag("overflow-horizontal", title: t("views.admin.users.profile.options.icon")) %>
+              </button>
+              <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-<%= tag.id %>">
+                <ul class="p-0">
+                  <li>
+                    <div class="hide-button">Hide</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
       </div>
     <% end %>
   <% end %>
