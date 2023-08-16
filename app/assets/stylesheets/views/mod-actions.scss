@@ -457,14 +457,14 @@
           height: 24px;
           float: right;
           margin-right: 2px;
-          background: var(--subtract-bg);
+          background-color: var(--subtract-bg);
           color: var(--subtract-color);
         }
         &:hover {
           background-color: var(--item-bg-hover);
           border-radius: 6px;
           .remove-icon {
-            background: var(--subtract-bg-hover);
+            background-color: var(--subtract-bg-hover);
             color: var(--subtract-color-hover);
           }
         }

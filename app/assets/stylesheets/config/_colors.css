@@ -384,7 +384,7 @@
   --plus-color: rgb(var(--green-800));
   --plus-color-hover: rgb(var(--white));
   --plus-bg: rgb(var(--green-100));
-  --plus-bg-hover: rgba(var(--green-600));
+  --plus-bg-hover: rgb(var(--green-600));
 
   /* Tag name */
   --tag-hash: rgb(var(--grey-500));

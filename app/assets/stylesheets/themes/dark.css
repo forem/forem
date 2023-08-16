@@ -354,6 +354,30 @@
   --selected-range-color: var(--body-color-inverted);
 
   /***********************************************
+  ** Tag Moderation *************************************
+  ***********************************************/
+
+  /* Tag item */
+  --item-bg-hover: rgb(var(--indigo-900), 0.5);
+
+  /* Subtract */
+  --subtract-color: rgb(var(--red-200));
+  --subtract-color-hover: rgb(var(--white));
+  --subtract-bg: rgb(var(--red-600));
+  --subtract-bg-hover: rgba(var(--red-600));
+
+  /* Plus */
+  --plus-color: rgb(var(--green-200));
+  --plus-color-hover: rgb(var(--white));
+  --plus-bg: rgb(var(--green-600));
+  --plus-bg-hover: rgb(var(--green-600));
+
+  /* Tag name */
+  --tag-hash: rgb(var(--grey-500));
+  --tag-name: rgb(var(--grey-50));
+  --add-tag-hash: rgb(var(--grey-200));
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
