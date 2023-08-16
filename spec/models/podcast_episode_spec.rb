@@ -103,7 +103,7 @@ RSpec.describe PodcastEpisode do
         podcast_episode.validate!
         expect(podcast_episode.processed_html).to include(
           "res.cloudinary.com",
-          "c_crop,f_auto,fl_progressive,q_auto,w_725/https://dummyimage.com/10x10",
+          "c_limit,f_auto,fl_progressive,q_auto,w_725/https://dummyimage.com/10x10",
         )
       end
 

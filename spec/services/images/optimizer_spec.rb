@@ -70,7 +70,6 @@ RSpec.describe Images::Optimizer, type: :service do
                                      type: "fetch",
                                      quality: "auto",
                                      sign_url: true,
-                                     crop: Settings::UserExperience.cover_image_fit,
                                      flags: "progressive",
                                      fetch_format: "jpg")
       expect(described_class.call(image_url, crop: nil, fetch_format: "jpg")).to eq(cloudinary_url)
@@ -83,7 +82,7 @@ RSpec.describe Images::Optimizer, type: :service do
       imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
       # mb = maximum bytes, defaults to 500_000 bytes
       # ar = autorotate, defaults to "true", serialized as "1"
-      expect(imgproxy_url).to match(%r{/rs:fill-down:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 
@@ -96,13 +95,13 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct url based on h/w input" do
-      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
-      url_regexp = %r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "limit")
+      url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
       expect(cloudflare_url).to match(url_regexp)
     end
 
     it "generates correct url based on h/w input" do
-      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "crop")
       url_regexp = %r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}}
       expect(cloudflare_url).to match(url_regexp)
     end
@@ -117,7 +116,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}")
     end
 
     it "does not error out if image is empty" do
@@ -125,7 +124,7 @@ RSpec.describe Images::Optimizer, type: :service do
         cloudfare_basic_url,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/")
     end
 
     it "does not error out if image is not proper url and has https" do
@@ -134,7 +133,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/https%3Ahello")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/https%3Ahello")
     end
 
     it "does not error out if image is not proper url and does not have https" do
@@ -143,7 +142,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/")
     end
   end
 
@@ -202,9 +201,9 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#translate_cloudinary_options" do
-    it "sets resizing_type to fill if crop: fill is provided" do
-      options = { width: 100, height: 100, crop: "fill" }
-      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill-down")
+    it "sets resizing_type to fit if crop: jiberish is provided" do
+      options = { width: 100, height: 100, crop: "jiberish" }
+      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fit")
     end
   end
 end
