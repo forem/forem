@@ -17,7 +17,7 @@ module Articles
 
     def self.call(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
-      main_image_height = Settings::UserExperience.cover_image_fit
+      main_image_height = Settings::UserExperience.cover_image_height
 
       # we ignore images contained in liquid tags as they are not animated
       images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)

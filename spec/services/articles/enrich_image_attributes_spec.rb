@@ -44,11 +44,12 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
 
     it "defaults to image height when settings are crop" do
       allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
+      allow(Settings::UserExperience).to receive(:cover_image_height).and_return(680)
       allow(FastImage).to receive(:size).and_return([100, 50])
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
       described_class.call(article)
-      expect(article.reload.main_image_height).to be 420
+      expect(article.reload.main_image_height).to be 680
     end
   end
 
