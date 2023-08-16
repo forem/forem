@@ -379,9 +379,15 @@ function buildArticleHTML(article, currentUserId = null) {
       </a>
     `;
 
+    let feedContentId = '';
+    if (article.class_name === 'Article') {
+      feedContentId = article.id;
+    }
+
     return `<article class="crayons-story"
       data-article-path="${article.path}"
       id="article-${article.id}"
+      data-feed-content-id="${feedContentId}"
       data-content-user-id="${article.user_id}">\
         ${navigationLink}\
         <div role="presentation">\
