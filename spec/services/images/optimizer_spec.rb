@@ -89,12 +89,12 @@ RSpec.describe Images::Optimizer, type: :service do
 
     it "generates correct crop with 'limit' passed" do
         cloudinary_url = cl_image_path(image_url,
-          type: "fetch",
-          quality: "auto",
-          sign_url: true,
-          crop: "limit",
-          flags: "progressive",
-          fetch_format: "jpg")
+                                       type: "fetch",
+                                       quality: "auto",
+                                       sign_url: true,
+                                       crop: "limit",
+                                       flags: "progressive",
+                                       fetch_format: "jpg")
         expect(described_class.call(image_url, crop: "limit", fetch_format: "jpg")).to eq(cloudinary_url)
     end
 
@@ -173,22 +173,26 @@ RSpec.describe Images::Optimizer, type: :service do
     it "generates correct url with crop default" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
       url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
     end
 
 
     it "generates correct crop with 'crop' passed" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "crop")
       url_regexp = %r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
     end
 
     it "generates correct crop with 'limit' passed" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "limit")
       url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
     end
 
     it "generates correct crop with 'jiberish' passed" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "jiberish")
       url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
     end
 
     it "does not error if nil" do
