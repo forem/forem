@@ -32,6 +32,8 @@ const StandardImageUpload = ({
   uploadLabel,
   handleImageUpload,
   isUploadingImage,
+  coverImageHeight,
+  coverImageCrop,
 }) =>
   isUploadingImage ? null : (
     <Fragment>
@@ -46,14 +48,15 @@ const StandardImageUpload = ({
           className="screen-reader-only"
           data-max-file-size-mb="25"
         />
-        <span data-testid="tooltip" className="crayons-tooltip__content">
-          Use a ratio of 100:42 for best results.
+        <span data-testid="tooltip" className="crayons-tooltip__content" style={{minWidth:'190px'}}>
+         {coverImageCrop === 'crop' ? `Use a ratio of 1000:${coverImageHeight} ` : 'Minimum 1000px wide '}
+         for best results. 
         </span>
       </label>
     </Fragment>
   );
 
-export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
+export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage, coverImageHeight, coverImageCrop }) => {
   const [uploadError, setUploadError] = useState(false);
   const [uploadErrorMessage, setUploadErrorMessage] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -100,10 +103,11 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
 
   const initNativeImagePicker = (e) => {
     e.preventDefault();
-    window.ForemMobile?.injectNativeMessage('coverUpload', {
-      action: 'coverImageUpload',
-      ratio: `${100.0 / 42.0}`,
-    });
+    let options = { action: 'coverImageUpload' };
+    if (coverImageCrop === 'crop') {
+      options = { ...options, ratio: `1000.0 / ${coverImageHeight}.0`, };
+    }
+    window.ForemMobile?.injectNativeMessage('coverUpload', options);
   };
 
   const handleNativeMessage = (e) => {
@@ -204,6 +208,8 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
               <StandardImageUpload
                 isUploadingImage={uploadingImage}
                 uploadLabel={uploadLabel}
+                coverImageHeight={coverImageHeight}
+                coverImageCrop={coverImageCrop}
                 handleImageUpload={handleMainImageUpload}
               />
             )}
@@ -226,6 +232,8 @@ export const ArticleCoverImage = ({ onMainImageUrlChange, mainImage }) => {
 ArticleCoverImage.propTypes = {
   mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
+  coverImageHeight: PropTypes.string.isRequired,
+  coverImageCrop: PropTypes.string.isRequired,
 };
 
 ArticleCoverImage.displayName = 'ArticleCoverImage';
