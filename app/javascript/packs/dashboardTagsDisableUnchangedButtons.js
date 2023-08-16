@@ -64,6 +64,12 @@ function handleFollowingButtonClick(target) {
     .catch((error) => console.error(error)); //maybe show a modal here instead.
 
   document.getElementById(`follows-${followId}`).style = 'display:none';
+
+  const currentNavigationItem = document.querySelector(
+    '.crayons-link--current .c-indicator',
+  );
+  const currentFollowingTagsCount = parseInt(currentNavigationItem.innerHTML);
+  currentNavigationItem.textContent = currentFollowingTagsCount - 1;
 }
 
 function handleHideButtonClick(target) {
