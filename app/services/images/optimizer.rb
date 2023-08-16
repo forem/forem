@@ -14,11 +14,17 @@ module Images
       end
     end
 
+    # Each service has different ways of describing image cropping.
+    # for the ideal croping we want.
+    # Cloudinary uses "crop" and "limit"
+    # Cloudflare uses "cover" and "scale-down" respectively
+    # imgproxy uses "fill-down" and "fit" respectively
+
     DEFAULT_CL_OPTIONS = {
       type: "fetch",
       height: nil,
       width: nil,
-      crop: "imagga_scale",
+      crop: "limit",
       quality: "auto",
       flags: "progressive",
       fetch_format: "auto",
@@ -27,7 +33,7 @@ module Images
 
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
-      fit = (kwargs[:crop] || Settings::UserExperience.cover_image_fit) == "limit" ? "scale-down" : "cover"
+      fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         options: {
@@ -43,7 +49,10 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-      options[:crop] = Settings::UserExperience.cover_image_fit unless kwargs[:crop].present?
+      options[:crop] = kwargs[:crop] if kwargs[:crop].present?
+      if options[:crop] == "crop" && Settings::UserExperience.cover_image_fit == "imagga_scale"
+        options[:crop] = "imagga_scale" # Legacy setting if admin has imagga_scale set
+      end
       if img_src&.include?(".gif")
         options[:quality] = 66
       end
@@ -68,10 +77,10 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "limit"
-        options[:resizing_type] = "fit"
-      else
+      if options[:crop] == "crop"
         options[:resizing_type] = "fill-down"
+      else
+        options[:resizing_type] = "fit"
       end
 
       options[:crop] = nil

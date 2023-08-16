@@ -1,9 +1,8 @@
 class CloudCoverUrl
   include ActionView::Helpers::AssetUrlHelper
 
-  def initialize(url, height = nil)
+  def initialize(url)
     @url = url
-    @height = height || Settings::UserExperience.cover_image_height
   end
 
   def call
@@ -11,9 +10,10 @@ class CloudCoverUrl
     return url if Rails.env.development?
 
     width = 1000
+    height = Settings::UserExperience.cover_image_height
     img_src = url_without_prefix_nesting(url, width)
 
-    Images::Optimizer.call(img_src, width: width, height: height)
+    Images::Optimizer.call(img_src, width: width, height: height, crop: Settings::UserExperience.cover_image_fit)
   end
 
   private
