@@ -17,7 +17,7 @@ module Articles
 
     def self.call(article)
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
-      main_image_height = 420
+      main_image_height = Settings::UserExperience.cover_image_fit
 
       # we ignore images contained in liquid tags as they are not animated
       images = parsed_html.css("img") - parsed_html.css(IMAGES_IN_LIQUID_TAGS_SELECTORS)
@@ -40,7 +40,7 @@ module Articles
         img["data-animated"] = true if img_properties.type == :gif
       end
 
-      if article.main_image
+      if article.main_image && Settings::UserExperience.cover_image_fit == "limit"
         main_image_size = FastImage.size(article.main_image, timeout: 10)
         main_image_height = (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
       end

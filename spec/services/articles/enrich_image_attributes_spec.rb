@@ -33,12 +33,22 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
   end
 
   context "when the body has a main image" do
-    it "does not alter the processed HTML" do
+    it "sets image height when settings are limit" do
+      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
       allow(FastImage).to receive(:size).and_return([100, 50])
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
       described_class.call(article)
       expect(article.reload.main_image_height).to be 500
+    end
+
+    it "defaults to image height when settings are crop" do
+      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
+      allow(FastImage).to receive(:size).and_return([100, 50])
+      body_markdown = file_fixture("article_published_cover_image.txt").read
+      article.update(body_markdown: body_markdown)
+      described_class.call(article)
+      expect(article.reload.main_image_height).to be 420
     end
   end
 

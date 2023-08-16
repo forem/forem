@@ -316,7 +316,7 @@ RSpec.describe ApplicationHelper do
     it "returns cloudinary-manipulated link" do
       image = helper.optimized_image_url(Faker::Placeholdit.image)
       expect(image).to start_with("https://res.cloudinary.com")
-        .and include("image/fetch/", "/c_#{Settings::UserExperience.cover_image_fit},f_auto,fl_progressive,q_80,w_500/")
+        .and include("image/fetch/", "/c_limit,f_auto,fl_progressive,q_80,w_500/")
     end
 
     it "returns an ASCII domain for Unicode input" do
@@ -337,13 +337,13 @@ RSpec.describe ApplicationHelper do
     it "works just like cl_image_tag", cloudinary: true do
       image_url = "https://i.imgur.com/fKYKgo4.png"
       cloudinary_image_tag = cl_image_tag(image_url,
-                                          type: "fetch", crop: "imagga_scale",
+                                          type: "fetch", crop: "crop",
                                           quality: "auto", flags: "progressive",
                                           fetch_format: "auto", sign_url: true,
                                           loading: "lazy", alt: "profile image",
                                           width: 100, height: 100)
       optimized_helper = helper.optimized_image_tag(image_url,
-                                                    optimizer_options: { crop: "imagga_scale", width: 100,
+                                                    optimizer_options: { crop: "crop", width: 100,
                                                                          height: 100 },
                                                     image_options: { loading: "lazy", alt: "profile image" })
       expect(optimized_helper).to eq(cloudinary_image_tag)

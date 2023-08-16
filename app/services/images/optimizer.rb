@@ -49,10 +49,13 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-      options[:crop] = kwargs[:crop] if kwargs[:crop].present?
-      if options[:crop] == "crop" && Settings::UserExperience.cover_image_fit == "imagga_scale"
-        options[:crop] = "imagga_scale" # Legacy setting if admin has imagga_scale set
-      end
+      options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
+                         "imagga_scale" # Legacy setting if admin imagga_scale set
+                       elsif %w(crop limit).include?(kwargs[:crop].to_s)
+                         kwargs[:crop]
+                       else
+                        "limit"
+                       end
       if img_src&.include?(".gif")
         options[:quality] = 66
       end
