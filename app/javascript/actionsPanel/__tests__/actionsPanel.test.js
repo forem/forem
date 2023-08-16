@@ -251,6 +251,9 @@ describe('addAdjustTagListeners()', () => {
       fireEvent.input(document.getElementById('admin-add-tag'), {
         target: { value: 'New Tag' },
       });
+      expect(
+        document.getElementById('tag-add-submit').hasAttribute('disabled'),
+      ).toBeFalsy();
 
       document.getElementById('tag-add-reason').value = 'Adding a new tag';
       document.getElementById('tag-add-submit').click();

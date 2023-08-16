@@ -208,6 +208,10 @@ function getArticleContainer() {
     : window.parent.document.getElementById('main-content');
 }
 
+/**
+ * This function sends an asynchronous request to the server to add or remove
+ * a specific tag from an article.
+ */
 async function adjustTag(el, reasonElement) {
   const tagName = el.dataset.tagName || el.value;
   const body = {
@@ -280,17 +284,22 @@ async function adjustTag(el, reasonElement) {
   }
 }
 
+/**
+ * Resets the UI for the Add Tag button and its associated container.
+ */
 function resetAddTagButtonUI() {
   const addTagButton = document.getElementById('add-tag-button');
   const addTagContainer = document.getElementById('add-tag-container');
 
   addTagContainer.classList.add('hidden');
-
   if (document.querySelectorAll('.adjustable-tag').length < 4) {
     addTagButton.classList.remove('hidden');
   }
 }
 
+/**
+ * Handles various listeners required to handle remove tag functionality.
+ */
 export function handleRemoveTagButton(btn) {
   const { tagName } = btn.dataset;
 
@@ -336,6 +345,9 @@ export function handleRemoveTagButton(btn) {
   }
 }
 
+/**
+ * Handles various listeners required to handle add tag functionality.
+ */
 export function handleAddTagButtonListeners() {
   const inputTag = document.getElementById('admin-add-tag');
   const submitButton = document.getElementById('tag-add-submit');
@@ -375,9 +387,7 @@ export function handleAddTagButtonListeners() {
         e.preventDefault();
 
         const dataSource = document.getElementById('admin-add-tag');
-
         const reasonFoAddition = document.getElementById('tag-add-reason');
-
         adjustTag(dataSource, reasonFoAddition);
       });
     }

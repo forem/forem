@@ -20,16 +20,18 @@ fr:
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
           reason: 
-            remove_tag: Reason to remove tag (optional)
-            add_tag: Reason to add tag (optional)
+            remove_tag: Raison de la suppression de la balise (optionnel)
+            add_tag: Raison d'ajouter la balise (optionnel)
           remove: Retirer l'étiquette
           submit: Soumettre
+          cancel: Annuler
           maximum_tags:
             icon: Info
-            text: A post can only have four tags.
+            text: Une publication ne peut avoir que quatre balises.
           add_tag:
-            button_text: Add new tag
-            icon: Add tag
+            header: Ajouter une nouvelle balise
+            button_text: Ajouter une nouvelle balise
+            icon: Ajouter une étiquette
         approve:
           add: Marquer comme approuvé
           remove: Retirer l'approbation
