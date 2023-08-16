@@ -5,10 +5,10 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
  */
 const allButtons = document.querySelectorAll('.follow-button');
 allButtons.forEach((button) => {
-  const { id } = button.dataset
+  const { tagId } = button.dataset
   initializeDropdown({
-    triggerElementId: `options-dropdown-trigger-${id}`,
-    dropdownContentId: `options-dropdown-${id}`,
+    triggerElementId: `options-dropdown-trigger-${tagId}`,
+    dropdownContentId: `options-dropdown-${tagId}`,
   });
 });
 
