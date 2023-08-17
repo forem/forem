@@ -297,6 +297,43 @@ function resetAddTagButtonUI() {
   }
 }
 
+export function handleAddModTagButton(btn) {
+  const { tagName } = btn.dataset;
+  const addButton = document.getElementById(`add-tag-button-${tagName}`);
+  const addIcon = document.getElementById(`add-tag-icon-${tagName}`);
+  const addTagContainer = document.getElementById(`add-tag-container`);
+
+  const containerIsVisible = addTagContainer.classList.contains('hidden');
+  if (containerIsVisible) {
+    addIcon.style.display = 'none';
+    addTagContainer.classList.remove('hidden');
+    addButton.classList.add('fw-bold');
+    addButton.classList.remove('fw-normal');
+  } else {
+    addIcon.style.display = 'flex';
+    addTagContainer.classList.add('hidden');
+    addButton.classList.remove('fw-bold');
+    addButton.classList.add('fw-normal');
+  }
+
+  const cancelAddModTagButton = document.getElementById(
+    `cancel-add-tag-button`,
+  );
+  cancelAddModTagButton.addEventListener('click', () => {
+    handleAddModTagButton(btn);
+  });
+
+  const addTagButton = document.getElementById(`tag-add-submit`);
+  if (addTagButton) {
+    addTagButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      const dataSource = document.getElementById(`add-tag-button-${tagName}`);
+      const reasonFoRemoval = document.getElementById(`tag-add-reason`);
+      adjustTag(dataSource, reasonFoRemoval);
+    });
+  }
+}
+
 /**
  * Handles various listeners required to handle remove tag functionality.
  */
@@ -309,7 +346,11 @@ export function handleRemoveTagButton(btn) {
     `remove-tag-container-${tagName}`,
   );
 
-  const containerIsVisible = removeTagContainer.classList.contains('hidden');
+  if (!(removeButton && removeIcon && removeTagContainer)) {
+    return false;
+  }
+
+  const containerIsVisible = removeTagContainer?.classList.contains('hidden');
   if (containerIsVisible) {
     removeIcon.style.display = 'none';
     removeTagContainer.classList.remove('hidden');
@@ -396,6 +437,16 @@ export function handleAddTagButtonListeners() {
   }
 }
 
+export function handleAddModTagButtonsListeners() {
+  Array.from(document.getElementsByClassName('adjustable-tag add-tag')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        handleAddModTagButton(btn);
+      });
+    },
+  );
+}
+
 export function handleRemoveTagButtonsListeners() {
   Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
     (btn) => {
@@ -408,6 +459,7 @@ export function handleRemoveTagButtonsListeners() {
 
 export function addModActionsListeners() {
   handleAddTagButtonListeners();
+  handleAddModTagButtonsListeners();
   handleRemoveTagButtonsListeners();
   Array.from(document.getElementsByClassName('other-things-btn')).forEach(
     (btn) => {
