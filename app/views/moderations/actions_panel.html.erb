@@ -127,7 +127,7 @@
           </button>
           <% if moderatable_tag %>
             <div id="remove-tag-container-<%= tag.name %>" class="hidden">
-              <div id="adjustment-reason-container" class="reason-container">
+              <div id="adjustment-reason-container-<%= tag.name %>" class="reason-container">
                 <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.remove_tag") %>" id="tag-removal-reason-<%= tag.name %>"></textarea>
                 <div class="flex gap-3 align-items-stretch">
                   <button class="w-100 c-btn c-btn--primary c-btn--destructive" id="remove-tag-submit-<%= tag.name %>"><%= t("views.moderations.actions.adjust.remove") %></button>

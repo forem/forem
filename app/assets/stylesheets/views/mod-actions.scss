@@ -444,8 +444,23 @@
         font-size: var(--fs-base);
         text-align: left;
         line-height: var(--lh-base);
+        border-radius: var(--radius);
         letter-spacing: -0.32px;
         color: var(--tag-name);
+
+        &:hover:enabled,
+        .js-focus-visible &.focus-visible:focus,
+        &:is(label):focus-within {
+          background-color: var(--bg-hover);
+          color: var(--color-hover);
+          z-index: var(--z-elevate);
+        }
+
+        .js-focus-visible &.focus-visible:focus,
+        &:is(label):focus-within {
+          box-shadow: var(--focus-ring);
+          outline: 0;
+        }
 
         .num-sign {
           color: var(--tag-hash);
@@ -476,6 +491,7 @@
         font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
+        border-radius: var(--radius);
         font-family: var(--ff-monospace);
         .add-icon {
           width: 24px;
@@ -492,6 +508,20 @@
             background: var(--plus-bg-hover);
             color: var(--plus-color-hover);
           }
+        }
+
+        &:hover:enabled,
+        .js-focus-visible &.focus-visible:focus,
+        &:is(label):focus-within {
+          background-color: var(--bg-hover);
+          color: var(--color-hover);
+          z-index: var(--z-elevate);
+        }
+
+        .js-focus-visible &.focus-visible:focus,
+        &:is(label):focus-within {
+          box-shadow: var(--focus-ring);
+          outline: 0;
         }
       }
       .reason-container {

@@ -304,7 +304,7 @@ describe('addAdjustTagListeners()', () => {
         </div>
       </button>
       <div id="remove-tag-container-${discussTag}" class="hidden">
-        <div id="adjustment-reason-container" class="reason-container">
+        <div id="adjustment-reason-container-${discussTag}" class="reason-container">
           <textarea class="crayons-textfield" placeholder="Reason to remove tag (optional)" id="tag-removal-reason-${discussTag}"></textarea>
           <div class="flex gap-3">
             <button class="crayons-btn" id="remove-tag-submit-${discussTag}">Submit</button>
