@@ -49,6 +49,7 @@ class AsyncInfo
       feed_style: feed_style_preference,
       created_at: user.created_at,
       admin: user.any_admin?,
+      antitags: user.cached_antifollowed_tag_names.presence,
       policies: [
         {
           dom_class: ApplicationPolicy.base_dom_class_for(record: Article, query: :create?),
