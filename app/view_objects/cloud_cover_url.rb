@@ -11,9 +11,10 @@ class CloudCoverUrl
 
     width = 1000
     height = Settings::UserExperience.cover_image_height
+    crop = Settings::UserExperience.cover_image_fit
     img_src = url_without_prefix_nesting(url, width)
 
-    Images::Optimizer.call(img_src, width: width, height: height, crop: Settings::UserExperience.cover_image_fit)
+    Images::Optimizer.call(img_src, width: width, height: height, crop: crop)
   end
 
   private

@@ -51,10 +51,10 @@ module Images
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
       options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
                          "imagga_scale" # Legacy setting if admin imagga_scale set
-                       elsif %w(crop limit).include?(kwargs[:crop].to_s)
+                       elsif %w[crop limit].include?(kwargs[:crop].to_s)
                          kwargs[:crop]
                        else
-                        "limit"
+                         "limit"
                        end
       if img_src&.include?(".gif")
         options[:quality] = 66
@@ -80,11 +80,11 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "crop"
-        options[:resizing_type] = "fill-down"
-      else
-        options[:resizing_type] = "fit"
-      end
+      options[:resizing_type] = if options[:crop] == "crop"
+                                  "fill-down"
+                                else
+                                  "fit"
+                                end
 
       options[:crop] = nil
       options[:fetch_format] = nil
