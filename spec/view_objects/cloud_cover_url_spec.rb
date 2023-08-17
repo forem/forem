@@ -37,7 +37,7 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
       .and include("/c_limit,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
   end
 
-  it "returns proper url when config set to limit" do
+  it "returns proper url when height is set" do
     allow(Settings::UserExperience).to receive(:cover_image_height).and_return("902")
     expect(described_class.new(article.main_image).call)
       .to start_with(cloudinary_prefix)
