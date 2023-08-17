@@ -11,7 +11,7 @@ module Images
 
     def initialize(resource)
       @resource = resource
-      @logo_url = "https://dev-to-uploads.s3.amazonaws.com/uploads/articles/8j7kvp660rqzt99zui8e.png"
+      @logo_url = Settings::General.logo_png
     end
 
     def call
@@ -151,7 +151,6 @@ module Images
       tempfile.unlink
 
       # Return the uploaded url
-      p image_uploader.url
       image_uploader.url
     end
 
