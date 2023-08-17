@@ -93,7 +93,7 @@
 
     <%# Checking if the user should see the "Adjust tags" dropdown %>
     <% if policy(@moderatable).allow_tag_adjustment? %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
+      <button id="adjust-tags-button" aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= crayons_icon_tag("mod-filled", title: t("views.moderations.actions.adjust.icon")) %>
@@ -174,12 +174,12 @@
                     <%= crayons_icon_tag(:plus, title: t("views.moderations.actions.adjust.add")) %>
                   </div>
                 </button>
-                <div id="add-tag-container" class="hidden">
-                  <div id="add-reason-container" class="reason-container">
-                    <textarea id="tag-add-reason" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
+                <div id="add-tag-container-<%= tag.name %>" class="hidden">
+                  <div id="add-reason-container-<%= tag.name %>" class="reason-container">
+                    <textarea id="tag-add-reason-<%= tag.name %>" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
                     <div class="flex gap-3">
-                      <button class="w-100 c-btn c-btn--primary" id="tag-add-submit"><%= t("views.moderations.actions.adjust.add") %></button>
-                      <button class="w-100 c-btn" id="cancel-add-tag-button" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
+                      <button class="w-100 c-btn c-btn--primary" id="tag-add-submit-<%= tag.name %>"><%= t("views.moderations.actions.adjust.add") %></button>
+                      <button class="w-100 c-btn" id="cancel-add-tag-button-<%= tag.name %>" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
                     </div>
                   </div>
                 </div>

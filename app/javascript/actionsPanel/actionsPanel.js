@@ -182,10 +182,6 @@ const adminFeatureArticle = async (id, featured) => {
   }
 };
 
-function clearReason(reasonElement) {
-  reasonElement.value = '';
-}
-
 function renderTagOnArticle(tagName, colors) {
   const articleTagsContainer =
     getArticleContainer().getElementsByClassName('spec__tags')[0];
@@ -242,21 +238,13 @@ async function adjustTag(el, reasonElement) {
       let adjustedTagName;
       if (el.tagName === 'BUTTON') {
         adjustedTagName = el.dataset.tagName;
-        el.remove();
-        const removedTagContainer = document.getElementById(
-          `remove-tag-container-${tagName}`,
-        );
-        removedTagContainer.remove();
       } else {
         adjustedTagName = el.value;
         // eslint-disable-next-line no-param-reassign, require-atomic-updates
         el.value = '';
       }
 
-      clearReason(reasonElement);
-
       if (outcome.result === 'addition') {
-        resetAddTagButtonUI();
         renderTagOnArticle(adjustedTagName, outcome.colors);
       } else {
         getArticleContainer()
@@ -271,6 +259,7 @@ async function adjustTag(el, reasonElement) {
         }.`,
         addCloseButton: true,
       });
+      window.location.reload();
     } else {
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
@@ -284,24 +273,13 @@ async function adjustTag(el, reasonElement) {
   }
 }
 
-/**
- * Resets the UI for the Add Tag button and its associated container.
- */
-function resetAddTagButtonUI() {
-  const addTagButton = document.getElementById('add-tag-button');
-  const addTagContainer = document.getElementById('add-tag-container');
-
-  addTagContainer.classList.add('hidden');
-  if (document.querySelectorAll('.adjustable-tag').length < 4) {
-    addTagButton.classList.remove('hidden');
-  }
-}
-
 export function handleAddModTagButton(btn) {
   const { tagName } = btn.dataset;
   const addButton = document.getElementById(`add-tag-button-${tagName}`);
   const addIcon = document.getElementById(`add-tag-icon-${tagName}`);
-  const addTagContainer = document.getElementById(`add-tag-container`);
+  const addTagContainer = document.getElementById(
+    `add-tag-container-${tagName}`,
+  );
 
   const containerIsVisible = addTagContainer.classList.contains('hidden');
   if (containerIsVisible) {
@@ -317,18 +295,20 @@ export function handleAddModTagButton(btn) {
   }
 
   const cancelAddModTagButton = document.getElementById(
-    `cancel-add-tag-button`,
+    `cancel-add-tag-button-${tagName}`,
   );
   cancelAddModTagButton.addEventListener('click', () => {
     handleAddModTagButton(btn);
   });
 
-  const addTagButton = document.getElementById(`tag-add-submit`);
+  const addTagButton = document.getElementById(`tag-add-submit-${tagName}`);
   if (addTagButton) {
     addTagButton.addEventListener('click', (e) => {
       e.preventDefault();
       const dataSource = document.getElementById(`add-tag-button-${tagName}`);
-      const reasonFoRemoval = document.getElementById(`tag-add-reason`);
+      const reasonFoRemoval = document.getElementById(
+        `tag-add-reason-${tagName}`,
+      );
       adjustTag(dataSource, reasonFoRemoval);
     });
   }
