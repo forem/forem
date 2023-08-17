@@ -6,6 +6,7 @@ import {
   initializeHeight,
   addReactionButtonListeners,
   handleAddTagButtonListeners,
+  handleAddModTagButtonsListeners,
   handleRemoveTagButtonsListeners,
 } from '../actionsPanel';
 
@@ -365,6 +366,94 @@ describe('addAdjustTagListeners()', () => {
       // expect(
       //   document.getElementById(`remove-tag-container-${discussTag}`),
       // ).toBeNull();
+    });
+  });
+
+  describe('tag moderator role', () => {
+    const discussTag = 'discuss';
+
+    function addModTagResponse() {
+      return JSON.stringify({
+        status: 'Success',
+        result: 'addition',
+        colors: {
+          bg: '#8c5595',
+          text: '#39ad55',
+        },
+      });
+    }
+
+    beforeEach(() => {
+      fetch.resetMocks();
+
+      document.body.innerHTML = `
+      <button
+        id="add-tag-button-${discussTag}"
+        class="adjustable-tag add-tag" type="button"
+        data-adjustment-type="plus"
+        data-tag-name="${discussTag}"
+        data-article-id="<%= @moderatable.id %>">
+        <span class="num-sign">#</span>${discussTag}
+        <div id="add-tag-icon-${discussTag}" class="circle centered-icon add-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="crayons-icon" role="img"><title id="random">Remove tag</title>
+            <path d="M19 11H5v2h14v-2Z"></path>
+          </svg>
+        </div>
+      </button>
+      <div id="add-tag-container-${discussTag}" class="hidden">
+        <div id="add-reason-container-${discussTag}" class="reason-container">
+          <textarea id="tag-add-reason-${discussTag}" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
+          <div class="flex gap-3">
+            <button class="w-100 c-btn c-btn--primary" id="tag-add-submit-${discussTag}"><%= t("views.moderations.actions.adjust.add") %></button>
+            <button class="w-100 c-btn" id="cancel-add-tag-button-${discussTag}" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
+          </div>
+        </div>
+      </div>
+      `;
+
+      handleAddModTagButtonsListeners();
+    });
+
+    it('add moderator tag container is hidden', () => {
+      expect(
+        document.getElementById(`add-tag-container-${discussTag}`).classList,
+      ).toContain('hidden');
+    });
+
+    it('hides add icon on button click', () => {
+      document.getElementById(`add-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`add-tag-icon-${discussTag}`).style.display,
+      ).toEqual('none');
+    });
+
+    it('shows tag container on button click', () => {
+      document.getElementById(`add-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`add-tag-container-${discussTag}`).classList,
+      ).not.toContain('hidden');
+    });
+
+    it('click on cancel button hides the container', () => {
+      document.getElementById(`add-tag-button-${discussTag}`).click();
+      document.getElementById(`cancel-add-tag-button-${discussTag}`).click();
+
+      expect(
+        document.getElementById(`add-tag-container-${discussTag}`).classList,
+      ).toContain('hidden');
+    });
+
+    it('click on add button should successfully add the item', async () => {
+      fetch.mockResponseOnce(addModTagResponse());
+
+      document.getElementById(`add-tag-button-${discussTag}`).click();
+      document.getElementById(`tag-add-reason-${discussTag}`).value =
+        'Add a tag';
+      document.getElementById(`tag-add-submit-${discussTag}`).click();
+
+      expect(fetch).toHaveBeenCalledTimes(1);
     });
   });
 });
