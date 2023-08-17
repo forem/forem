@@ -80,6 +80,9 @@ en:
     organization:
       integer_only: Integer only. No sign allowed.
       reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
+      proof_length_if_present: length cannot exceed 1500 characters
+      summary_length_if_present: length cannot exceed 250 characters
+      url_length_if_present: length cannot exceed 200 characters
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast:

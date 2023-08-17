@@ -79,6 +79,9 @@ fr:
     organization:
       integer_only: Entier seulement. Aucun signe n'est autorisé.
       reserved_word: "%<value>s est un mot réservé. Contactez l'administrateur du site pour obtenir de l'aide pour enregistrer votre organisation."
+      proof_length_if_present: longueur ne peut pas dépasser 1500 caractères
+      summary_length_if_present: longueur ne peut pas dépasser 250 caractères
+      url_length_if_present: longueur ne peut pas dépasser 200 caractères
     page:
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
     podcast:
