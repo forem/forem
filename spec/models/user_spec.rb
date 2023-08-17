@@ -926,4 +926,26 @@ RSpec.describe User do
       end
     end
   end
+
+  describe "#generate_social_images" do
+    before do
+      create(:article, user: user)
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when the name or profile_image has changed and the user has articles" do
+      it "calls SocialImageWorker.perform_async" do
+        user.name = "New name for this user!"
+        user.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async)
+      end
+    end
+
+    context "when the name or profile_image has not changed or the user has no articles" do
+      it "does not call SocialImageWorker.perform_async" do
+        user.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
 end

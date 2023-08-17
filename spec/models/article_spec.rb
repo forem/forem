@@ -1443,4 +1443,42 @@ RSpec.describe Article do
       expect(Languages::Detection).not_to have_received(:call)
     end
   end
+
+  describe "#generate_social_image" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when title or published_at attribute changes and published is true" do
+      it "triggers the Images::SocialImageWorker" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+        article.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async)
+      end
+    end
+
+    context "when attributes have changed, but main image is present" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\ncover_image: https://example.com/i.jpg\npublished: true\n---\n\n# Hello World"
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when neither title nor published_at attribute changes" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when title or published_at attribute changes but published is false" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: false\n---\n\n# Hello World"
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
 end

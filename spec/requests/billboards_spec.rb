@@ -13,7 +13,7 @@ RSpec.describe "Billboards" do
       published: true,
       display_to: :all
     }
-    create(:display_ad, **options.reverse_merge(defaults))
+    create(:billboard, **options.reverse_merge(defaults))
   end
 
   describe "GET /:username/:slug/billboards/:placement_area" do

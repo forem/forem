@@ -18,6 +18,7 @@ class Organization < ApplicationRecord
   before_save :generate_secret
 
   after_save :bust_cache
+  after_save :generate_social_images
 
   after_update_commit :conditionally_update_articles
   after_destroy_commit :bust_cache
@@ -131,6 +132,15 @@ class Organization < ApplicationRecord
   end
 
   private
+
+  def generate_social_images
+    return unless FeatureFlag.enabled?(:minimagick_social_images)
+
+    change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
+    return unless change && articles.published.size.positive?
+
+    Images::SocialImageWorker.perform_async(id, self.class.name)
+  end
 
   def evaluate_markdown
     self.cta_processed_html = MarkdownProcessor::Parser.new(cta_body_markdown).evaluate_limited_markdown
