@@ -279,6 +279,25 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
         end
       end
     end
+
+    context "read_files" do
+      let(:instance) { described_class.new(article) }
+      let(:logo_url) { 'http://example.com/logo.png' }
+
+      before do
+        allow(Settings::General).to receive(:logo_png).and_return(logo_url)
+        allow(MiniMagick::Image).to receive(:open) # stub the actual image opening
+        described_class.send(:public, :read_files)
+      end
+
+      it "opens the template, logo, author image, and rounded mask" do
+        expect(MiniMagick::Image).to receive(:open).with(Images::TEMPLATE_PATH)
+        expect(MiniMagick::Image).to receive(:open).with(logo_url)
+        expect(MiniMagick::Image).to receive(:open).with("https://thepracticaldev.s3.amazonaws.com/i/99mvlsfu5tfj9m7ku25d.png") # backup link
+        expect(MiniMagick::Image).to receive(:open).with(Images::ROUNDED_MASK_PATH)
+        instance.read_files
+      end
+    end
   end
   # rubocop:enable Style/Send
   # rubocop:enable RSpec/VerifiedDoubles

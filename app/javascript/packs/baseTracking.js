@@ -201,4 +201,7 @@ function trackFifteenSecondsOnPage(articleId, csrfToken) {
   }).catch((error) => console.error(error))
 }
 
+window.InstantClick.on('change', () => {
+  initializeBaseTracking();
+});
 initializeBaseTracking();
