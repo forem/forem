@@ -107,6 +107,24 @@ RSpec.describe DisplayAd do
     end
   end
 
+  context "when range env var is set" do
+    it "translates jiberrish to 0" do
+      allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return("jibberish")
+      expect(described_class.random_range_max("sidebar_left")).to eq 0
+    end
+
+    it "still performs query with number" do
+      allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return("100")
+      expect(described_class.random_range_max("sidebar_left")).to eq 100
+    end
+
+    it "falls back to broadly set range vars" do
+      allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN_FOR_SIDEBAR_LEFT").and_return(nil)
+      allow(ApplicationConfig).to receive(:[]).with("SELDOM_SEEN_MIN").and_return("89")
+      expect(described_class.random_range_max("sidebar_left")).to eq 89
+    end
+  end
+
   context "when parsing liquid tags" do
     it "renders username embed" do
       user = create(:user)
