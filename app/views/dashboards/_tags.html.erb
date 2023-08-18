@@ -16,6 +16,7 @@
         <% end %>
 
         <div class="dashboard__tags__buttons-container">
+          <%# we could use positive explicit points %>
           <% if page === "following" %>
             <div class="flex justify-between">
               <div>
@@ -28,7 +29,7 @@
                 <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-<%= tag.id %>">
                   <ul class="p-0">
                     <li>
-                      <button type="button" class="c-btn c-btn--icon-alone flex items-center">
+                      <button type="button" class="hide-button c-btn w-100 align-left flex items-center" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
                         <%= crayons_icon_tag("eye-off", width: 18, height: 18, title: t("views.dashboard.tags.options.hide")) %> <span class="ml-2"><%= t("views.dashboard.tags.options.hide") %></span>
                       </button>
                     </li>
