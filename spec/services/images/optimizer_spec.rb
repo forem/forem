@@ -57,7 +57,7 @@ RSpec.describe Images::Optimizer, type: :service do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      width: 50, height: 50,
-                                     crop: "crop",
+                                     crop: "fill",
                                      quality: "auto",
                                      flags: "progressive",
                                      fetch_format: "auto",
@@ -81,7 +81,7 @@ RSpec.describe Images::Optimizer, type: :service do
                                      type: "fetch",
                                      quality: "auto",
                                      sign_url: true,
-                                     crop: "crop",
+                                     crop: "fill",
                                      flags: "progressive",
                                      fetch_format: "jpg")
       expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg")).to eq(cloudinary_url)

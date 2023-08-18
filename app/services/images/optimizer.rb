@@ -16,7 +16,7 @@ module Images
 
     # Each service has different ways of describing image cropping.
     # for the ideal croping we want.
-    # Cloudinary uses "crop" and "limit"
+    # Cloudinary uses "fill" and "limit"
     # Cloudflare uses "cover" and "scale-down" respectively
     # imgproxy uses "fill-down" and "fit" respectively
 
@@ -51,8 +51,8 @@ module Images
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
       options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
                          "imagga_scale" # Legacy setting if admin imagga_scale set
-                       elsif %w[crop limit].include?(kwargs[:crop].to_s)
-                         kwargs[:crop]
+                       elsif kwargs[:crop].to_s == "crop"
+                         "fill"
                        else
                          "limit"
                        end
@@ -69,7 +69,7 @@ module Images
       max_bytes: 500_000, # Keep everything under half of one MB.
       auto_rotate: true,
       gravity: "sm",
-      resizing_type: "fill-down"
+      resizing_type: "fit"
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
