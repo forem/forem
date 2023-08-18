@@ -15,7 +15,9 @@
 
         <% if page === "following" %>
           <div class="flex justify-between">
-            <div class="follow-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Following</div>
+            <div>
+              <btn class="c-btn c-btn--secondary follow-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Following</btn>
+            </div>
             <div class="dropdown-trigger-container relative">
               <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-<%= tag.id %>" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
                 <%= crayons_icon_tag("overflow-horizontal", title: t("views.admin.users.profile.options.icon")) %>
@@ -23,7 +25,9 @@
               <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-<%= tag.id %>">
                 <ul class="p-0">
                   <li>
-                    <div class="hide-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Hide</div>
+                    <button type="button" class="c-btn c-btn--icon-alone flex items-center">
+                      <%= crayons_icon_tag("eye-off", width: 18, height: 18, title: t("views.admin.users.profile.options.icon")) %> <span class="ml-2">Hide tag</span>
+                    </button>
                   </li>
                 </ul>
               </div>
@@ -32,7 +36,9 @@
         <% end %>
 
         <% if page === "hidden" %>
-          <div class="unhide-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Unhide</div>
+          <div>
+            <btn class="crayons-btn crayons-btn--danger unhide-button" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">Unhide</btn>
+          </div>
         <% end %>
       </div>
     <% end %>
