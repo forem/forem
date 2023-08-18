@@ -48,19 +48,17 @@ class Organization < ApplicationRecord
   validates :location, :email, length: { maximum: 64 }
   validates :name, :profile_image, presence: true
   validates :name, length: { maximum: 50 }
+  validates :proof, length: { maximum: 1500 }
   validates :secret, length: { is: 100 }, allow_nil: true
   validates :secret, uniqueness: true
   validates :spent_credits_count, presence: true
+  validates :summary, length: { maximum: 250 }
   validates :tag_line, length: { maximum: 60 }
   validates :tech_stack, :story, length: { maximum: 640 }
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
-  validates :url, url: { allow_blank: true, no_local: true }
-
-  validate :proof_length_if_present
-  validate :summary_length_if_present
-  validate :url_length_if_present
+  validates :url, url: { allow_blank: true, no_local: true }, length: { maximum: 200 }
 
   unique_across_models :slug, length: { in: 2..30 }
 
@@ -134,24 +132,6 @@ class Organization < ApplicationRecord
   end
 
   private
-
-  def summary_length_if_present
-    return if summary.blank? || summary.length <= 250
-
-    errors.add(:summary, I18n.t("models.organization.summary_length_if_present"))
-  end
-
-  def proof_length_if_present
-    return if proof.blank? || proof.length <= 1500
-
-    errors.add(:proof, I18n.t("models.organization.proof_length_if_present"))
-  end
-
-  def url_length_if_present
-    return if url.blank? || url.length <= 200
-
-    errors.add(:url, I18n.t("models.organization.url_length_if_present"))
-  end
 
   def generate_social_images
     return unless FeatureFlag.enabled?(:minimagick_social_images)
