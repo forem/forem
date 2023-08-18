@@ -1,0 +1,6 @@
+.yardoc
+Gemfile.lock
+coverage
+bin/
+doc/
+pkg

@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/Casecommons/with_model.git
+  revision: 5fe21fb109f97daed6ce5a2a450beda54f355c86
+  ref: 5fe21fb109f97
+  specs:
+    with_model (2.1.6)
+      activerecord (>= 6.0)
+
+GIT
   remote: https://github.com/forem/acts_as_follower.git
   revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
@@ -947,8 +955,6 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    with_model (2.1.6)
-      activerecord (>= 5.2)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.34)
@@ -1120,7 +1126,7 @@ DEPENDENCIES
   web-console (~> 4.2)
   webmock (~> 3.17)
   webpacker (~> 5.4.3)
-  with_model (~> 2.1.6)
+  with_model!
   yard (~> 0.9)
   yard-activerecord (~> 0.0)
   yard-activesupport-concern (~> 0.0)
