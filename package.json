@@ -42,7 +42,7 @@
   },
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "^7.19.1",
+    "@babel/eslint-parser": "^7.22.10",
     "@babel/plugin-proposal-decorators": "^7.22.10",
     "@cypress/code-coverage": "^3.11.0",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
