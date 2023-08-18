@@ -46,6 +46,8 @@ en:
       preview:
         icon: App logo
         text: 'Preview:'
+    mailers:
+      contact_mailto_html: Contact us at <a href="mailto:%{contact_email}">%{contact_email}</a> if there is anything more we can help with.
     onboardings:
       meta:
         title: Welcome to %{community}
