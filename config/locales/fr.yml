@@ -227,4 +227,3 @@ fr:
       short_with_yy: "%-e %b '%y"
       short_with_year: "%-e %b, %Y"
       stackexchange: "%b %e '%y"
-      tweet: "%H:%M %p - %d %b %Y"
