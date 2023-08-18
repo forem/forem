@@ -15,7 +15,7 @@
     border-radius: var(--radius-auto);
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    max-height: calc(100vh - var(--header-height) - 2*var(--layout-padding));
+    max-height: calc(100vh - var(--header-height) - 2 * var(--layout-padding));
     overflow: hidden;
     &__image {
       display: block;
@@ -23,7 +23,9 @@
       max-width: 100%;
       height: auto;
       object-fit: contain;
-      max-height: calc(100vh - var(--header-height) - 2*var(--layout-padding));
+      max-height: calc(
+        100vh - var(--header-height) - 2 * var(--layout-padding)
+      );
 
       &__feed {
         padding-top: 0;
@@ -33,6 +35,7 @@
         aspect-ratio: auto 650 / 273;
         object-fit: contain;
         border-radius: var(--radius-auto) var(--radius) 0 0;
+        max-height: calc(100vh - var(--header-height) - var(--su-4));
       }
     }
   }

@@ -68,7 +68,6 @@ Object {
         >
           <div
             class="crayons-article__cover crayons-article__cover__image__feed"
-            style="max-height: calc(100vh - 62px);"
           >
             <a
               class="crayons-article__cover__image__feed crayons-story__cover__image"
@@ -337,7 +336,6 @@ Object {
       >
         <div
           class="crayons-article__cover crayons-article__cover__image__feed"
-          style="max-height: calc(100vh - 62px);"
         >
           <a
             class="crayons-article__cover__image__feed crayons-story__cover__image"

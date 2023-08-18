@@ -18,12 +18,12 @@ module Constants
             placeholder: I18n.t("lib.constants.settings.user_experience.feed_style.placeholder")
           },
           cover_image_height: {
-            description: I18n.t("lib.constants.settings.user_experience.feed_style.description"),
-            placeholder: I18n.t("lib.constants.settings.user_experience.feed_style.placeholder")
+            description: I18n.t("lib.constants.settings.user_experience.cover_image_height.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.cover_image_height.placeholder")
           },
           cover_image_fit: {
-            description: I18n.t("lib.constants.settings.user_experience.feed_style.description"),
-            placeholder: I18n.t("lib.constants.settings.user_experience.feed_style.placeholder")
+            description: I18n.t("lib.constants.settings.user_experience.cover_image_fit.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.cover_image_fit.placeholder")
           },
           home_feed_minimum_score: {
             description: I18n.t("lib.constants.settings.user_experience.home_feed.description"),

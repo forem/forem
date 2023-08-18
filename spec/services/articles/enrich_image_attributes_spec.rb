@@ -51,6 +51,16 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
       described_class.call(article)
       expect(article.reload.main_image_height).to be 680
     end
+
+    it "falls back to 300 when FastImage times out and cover_image_fit is set to limit" do
+      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
+      allow(Settings::UserExperience).to receive(:cover_image_height).and_return(2_000)
+      allow(FastImage).to receive(:size).and_return(nil)
+      body_markdown = file_fixture("article_published_cover_image.txt").read
+      article.update(body_markdown: body_markdown)
+      described_class.call(article)
+      expect(article.reload.main_image_height).to be 300
+    end
   end
 
   context "when the body renders a liquid tag with images" do
