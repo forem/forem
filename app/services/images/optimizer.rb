@@ -51,7 +51,7 @@ module Images
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
       options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
                          "imagga_scale" # Legacy setting if admin imagga_scale set
-                       elsif kwargs[:crop].to_s == "crop"
+                       elsif kwargs[:crop] == "crop"
                          "fill"
                        else
                          "limit"
