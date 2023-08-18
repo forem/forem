@@ -347,7 +347,8 @@ function paginate(tag, params, requiresApproval) {
   var homeEl = document.getElementById('index-container');
   if (homeEl.dataset.feed === 'base-feed') {
     searchHash.class_name = 'Article';
-    if (window.location.pathname == '/') {
+    const isHomePageFeed = window.location.pathname == '/';
+    if (isHomePageFeed && userData()) {
       searchHash.antitags = userData().antitags;
     }
   } else if (homeEl.dataset.feed === 'latest') {
