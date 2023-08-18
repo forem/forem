@@ -18,7 +18,7 @@ module Images
     # for the ideal croping we want.
     # Cloudinary uses "fill" and "limit"
     # Cloudflare uses "cover" and "scale-down" respectively
-    # imgproxy uses "fill-down" and "fit" respectively
+    # imgproxy uses "fill" and "fit" respectively
 
     DEFAULT_CL_OPTIONS = {
       type: "fetch",
@@ -81,7 +81,7 @@ module Images
 
     def self.translate_cloudinary_options(options)
       options[:resizing_type] = if options[:crop] == "crop"
-                                  "fill-down"
+                                  "fill"
                                 else
                                   "fit"
                                 end

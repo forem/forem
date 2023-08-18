@@ -136,7 +136,7 @@ RSpec.describe Images::Optimizer, type: :service do
 
     it "generates correct crop with 'crop' passed" do
       imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "crop")
-      expect(imgproxy_url).to match(%r{/rs:fill-down:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/rs:fill:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
 
     it "generates correct crop with 'limit' passed" do
