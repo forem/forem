@@ -22,7 +22,7 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
     expect(described_class.call(article)).to include(
       "article/#{article.id}",
       "image/url2png",
-      "c_fill,g_north,h_400,w_800/",
+      "c_limit,g_north,h_400,w_800/",
     )
   end
 

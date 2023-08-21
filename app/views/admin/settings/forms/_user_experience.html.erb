@@ -22,6 +22,22 @@
                          class: "crayons-select" %>
         </div>
         <div class="crayons-field">
+          <%= admin_config_label :cover_image_height, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:cover_image_height][:description] %>
+          <%= f.number_field :cover_image_height,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.cover_image_height,
+                             placeholder: Constants::Settings::UserExperience.details[:cover_image_height][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :cover_image_fit, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:cover_image_fit][:description] %>
+          <%= select_tag "settings_user_experience[cover_image_fit]",
+                         options_for_select(Settings::UserExperience::COVER_IMAGE_FITS, Settings::UserExperience.cover_image_fit),
+                         multiple: false,
+                         class: "crayons-select" %>
+        </div>
+        <div class="crayons-field">
           <%= admin_config_label :tag_feed_minimum_score, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:tag_feed_minimum_score][:description] %>
           <%= f.number_field :tag_feed_minimum_score,

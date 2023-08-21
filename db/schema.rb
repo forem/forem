@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_20_211851) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -112,6 +112,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_20_211851) do
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.boolean "main_image_from_frontmatter", default: false
+    t.integer "main_image_height", default: 420
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0

@@ -14,7 +14,7 @@ module Articles
       image = user_defined_image
       if image.present?
         image = image.split("w_1000/").last if image.include?("w_1000/https://")
-        return Images::Optimizer.call(image, width: width, height: height, crop: "imagga_scale")
+        return Images::Optimizer.call(image, width: width, height: height, crop: "crop")
       end
       return legacy_article_social_image unless use_new_social_url?
 
@@ -32,7 +32,7 @@ module Articles
         src = Images::GenerateSocialImage.call(article)
         return src if src.start_with? "https://res.cloudinary.com/"
 
-        Images::Optimizer.call(src, width: "1000", height: "500", crop: "imagga_scale")
+        Images::Optimizer.call(src, width: "1000", height: "500", crop: "crop")
       end
     end
 
