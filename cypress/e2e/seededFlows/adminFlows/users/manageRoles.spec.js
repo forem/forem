@@ -170,9 +170,9 @@ describe('Manage User Roles', () => {
 
         cy.getModal().should('not.exist');
         verifyAndDismissFlashMessage('User has been updated', 'flash-success');
-        checkUserStatus('Limited');
+        checkUserStatus('Warned');
 
-        cy.findByRole('button', { name: 'Remove role: Limited' }).should(
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
           'exist',
         );
         cy.findByRole('button', {
