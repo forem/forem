@@ -6,6 +6,8 @@
     <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed"><%= t("views.admin.users.statuses.Warned") %></span>
   <% elsif user.comment_suspended? %>
     <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed"><%= t("views.admin.users.statuses.Comment Suspended") %></span>
+  <% elsif user.limited? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed"><%= t("views.admin.users.statuses.Limited") %></span>
   <% elsif user.trusted? %>
     <span data-testid="user-status" class="c-indicator c-indicator--success c-indicator--relaxed"><%= t("views.admin.users.statuses.Trusted") %></span>
   <% else %>
