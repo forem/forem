@@ -24,7 +24,7 @@ function listenForButtonClicks() {
 }
 
 /**
- * Checks a click event's target to see if it is a follow button, and if so, calls the follow button handler
+ * Checks a click event's target to see which button was clicked and calls the relevant handlers
  *
  * @param {HTMLElement} target The target of the click event
  */
@@ -42,18 +42,9 @@ function handleClick({ target }) {
   }
 }
 
-function handleFollowingButtonClick(target) {
-  const { tagId } = target.dataset;
-  const { followId } = target.dataset;
-
+function fetchFollows(body) {
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-
-  const dataBody = {
-    followable_type: 'Tag',
-    followable_id: tagId,
-    verb: 'unfollow',
-  };
 
   window
     .fetch('/follows', {
@@ -62,10 +53,21 @@ function handleFollowingButtonClick(target) {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(dataBody),
+      body: JSON.stringify(body),
       credentials: 'same-origin',
     })
     .catch((error) => console.error(error)); //maybe show a modal here instead.
+}
+
+function handleFollowingButtonClick(target) {
+  const { tagId, followId } = target.dataset;
+
+  const data = {
+    followable_type: 'Tag',
+    followable_id: tagId,
+    verb: 'unfollow',
+  };
+  fetchFollows(data);
 
   document.getElementById(`follows-${followId}`).style = 'display:none';
 
@@ -77,30 +79,16 @@ function handleFollowingButtonClick(target) {
 }
 
 function handleHideButtonClick(target) {
-  const { tagId } = target.dataset;
-  const { followId } = target.dataset;
+  const { tagId, followId } = target.dataset;
 
-  const tokenMeta = document.querySelector("meta[name='csrf-token']");
-  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-
-  const dataBody = {
+  const data = {
     followable_type: 'Tag',
     followable_id: tagId,
     verb: 'follow',
     explicit_points: -1,
   };
 
-  window
-    .fetch('/follows', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    })
-    .catch((error) => console.error(error)); // TODO: maybe show a modal here instead.
+  fetchFollows(data);
 
   // TODO: this should be done on success
   document.getElementById(`follows-${followId}`).style = 'display:none';
@@ -117,30 +105,15 @@ function handleHideButtonClick(target) {
 }
 
 function handleUnhideButtonClick(target) {
-  const { tagId } = target.dataset;
-  const { followId } = target.dataset;
+  const { tagId, followId } = target.dataset;
 
-  const tokenMeta = document.querySelector("meta[name='csrf-token']");
-  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-
-  const dataBody = {
+  const data = {
     followable_type: 'Tag',
     followable_id: tagId,
     verb: 'follow',
     explicit_points: 1,
   };
-
-  window
-    .fetch('/follows', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(dataBody),
-      credentials: 'same-origin',
-    })
-    .catch((error) => console.error(error)); // TODO: maybe show a modal here instead.
+  fetchFollows(data);
 
   // TODO: this should be done on success
   document.getElementById(`follows-${followId}`).style = 'display:none';
