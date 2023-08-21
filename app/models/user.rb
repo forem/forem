@@ -584,8 +584,6 @@ class User < ApplicationRecord
   private
 
   def generate_social_images
-    return unless FeatureFlag.enabled?(:minimagick_social_images)
-
     change = saved_change_to_attribute?(:name) || saved_change_to_attribute?(:profile_image)
     return unless change && articles.published.size.positive?
 

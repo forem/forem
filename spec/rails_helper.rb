@@ -146,7 +146,6 @@ RSpec.configure do |config|
     # "Please stub a default value first if message might be received with other args as well."
     allow(FeatureFlag).to receive(:enabled?).and_call_original
     allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
-    allow(FeatureFlag).to receive(:enabled?).with(:minimagick_social_images, any_args).and_return(true)
   end
 
   config.around(:each, :flaky) do |ex|

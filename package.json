@@ -95,7 +95,7 @@
     "jsdom": "^20.0.1",
     "lint-staged": "^13.1.2",
     "markdown-loader": "^7.0.0",
-    "prettier": "^2.8.4",
+    "prettier": "^2.8.8",
     "sass": "1.54.0",
     "sass-loader": "^13.1.0",
     "storybook-addon-jsx": "^7.3.14",
