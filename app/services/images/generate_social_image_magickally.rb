@@ -95,17 +95,19 @@ module Images
       font_size = calculate_font_size(title)
 
       result.combine_options do |c|
+        escaped_title = title.gsub('"', '\\"')
         c.gravity "West" # Set the origin for the text at the top left corner
         c.pointsize font_size.to_s
-        c.draw "text 80,-39 '#{title}'" # Start drawing text 90 from the left and slightly north
+        c.draw "text 80,-39 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north, with double quotes around the title
         c.fill "black"
         c.font BOLD_FONT_PATH.to_s
       end
 
       result.combine_options do |c|
+        escaped_name = author_name.gsub('"', '\\"')
         c.gravity "Southwest"
         c.pointsize "32"
-        c.draw "text 156,88 '#{author_name}'" # adjust coordinates as needed
+        c.draw "text 156,88 \"#{escaped_name}\"" # adjust coordinates as needed
         c.fill "black"
         c.font MEDIUM_FONT_PATH.to_s
       end
@@ -113,7 +115,7 @@ module Images
       result.combine_options do |c|
         c.gravity "Southwest"
         c.pointsize "26"
-        c.draw "text 156,60 '#{date}'" # adjust coordinates as needed
+        c.draw "text 156,60 \"#{date}\"" # adjust coordinates as needed
         c.fill "#525252"
       end
     end

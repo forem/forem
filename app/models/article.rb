@@ -986,8 +986,6 @@ class Article < ApplicationRecord
   end
 
   def generate_social_image
-    return unless FeatureFlag.enabled?(:minimagick_social_images)
-
     return if main_image.present?
 
     change = saved_change_to_attribute?(:title) || saved_change_to_attribute?(:published_at)
