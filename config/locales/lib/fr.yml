@@ -139,14 +139,10 @@ fr:
             description: User ID of the Mascot account
           meta_keywords:
             description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
-          onboarding:
-            description: Background for onboarding splash page
           payment:
             description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:
             description: Determines how often periodic email digests are sent (in days)
-          prefer_manual:
-            description: Always show suggested users as suggested people to follow even when auto-suggestion is available
           sidebar:
             description: Determines which tags are shown on the homepage right-hand sidebar
             placeholder: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
@@ -157,9 +153,6 @@ fr:
           tags:
             description: Determines which tags are suggested to new users during onboarding (comma separated, letters only)
             placeholder: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
-          users:
-            description: Determines which users are suggested to follow to new users during onboarding (comma separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested
-            placeholder: 'List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana'
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:

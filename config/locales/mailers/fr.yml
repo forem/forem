@@ -16,7 +16,7 @@ fr:
       account_deleted: "%{community} - Confirmation de la suppression du compte"
       deletion_requested: "%{community} - Suppression du compte demandée"
       trusted: Félicitations ! Vous êtes maintenant un utilisateur "de confiance" sur %{community} !
-      moderator: 'Félicitations ! Vous êtes le modérateur de #%{tag_name}'
+      moderator: "Congrats! You're now a moderator for #%{tag_name}"
       new_follower: vous suit sur %{community}
       new_mention: "%{name} vient de vous mentionner sur %{type}"
       org_deleted: "%{community} - Confirmation de la suppression de l'organisation"
