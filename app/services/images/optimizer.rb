@@ -49,7 +49,7 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-      options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
+      options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present? && !kwargs[:never_imagga]
                          "imagga_scale" # Legacy setting if admin imagga_scale set
                        elsif kwargs[:crop] == "crop"
                          "fill"
