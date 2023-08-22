@@ -155,7 +155,7 @@ function buildTagsHTML(tag) {
         <btn class="c-btn c-btn--secondary follow-button" data-follow-id=${tag.id} data-tag-id=${tag.tag_id}>Following</btn>
       </div>
       <div class="dropdown-trigger-container relative">
-        <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${tag.tag_id} aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+        <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${tag.tag_id}" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="crayons-icon" role="img" aria-labelledby="arimcllskwkmbfpxyu52b8vzin20raon"><title id="arimcllskwkmbfpxyu52b8vzin20raon">Options</title><path fill-rule="evenodd" clip-rule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"></path></svg>
         </button>
         <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-${tag.tag_id}">
