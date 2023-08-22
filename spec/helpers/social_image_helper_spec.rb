@@ -21,6 +21,16 @@ describe SocialImageHelper do
       expect(url).to include("c_fill,f_auto,fl_progressive,h_500,q_auto,w_1000/")
     end
 
+    it "returns the main image with smart cropping if enabled", cloudinary: true do
+      article.main_image = Faker::CryptoCoin.url_logo
+
+      allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
+      url = helper.article_social_image_url(article)
+
+      expect(url).to match(/#{article.main_image}/)
+      expect(url).to include("c_imagga_scale,f_auto,fl_progressive,h_500,q_auto,w_1000/")
+    end
+
     it "returns older url2png image if already generated" do
       article.updated_at = Articles::SocialImage::SOCIAL_PREVIEW_MIGRATION_DATETIME - 1.week
 

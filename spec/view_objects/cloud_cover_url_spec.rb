@@ -30,6 +30,15 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
       .and end_with(cloudinary_string)
   end
 
+  it "returns proper url when smart cropping is set" do
+    image_url = article.main_image
+
+    allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
+    expect(described_class.new(image_url).call)
+      .to start_with(cloudinary_prefix)
+      .and end_with("/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/articlefactory.png")
+  end
+
   it "returns proper url when config set to limit" do
     allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
     expect(described_class.new(article.main_image).call)

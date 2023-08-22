@@ -109,16 +109,33 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(image_url, crop: "jiberish", fetch_format: "jpg")).to eq(cloudinary_url)
     end
 
-    it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set" do
-      allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
-      cloudinary_url = cl_image_path(image_url,
-                                     type: "fetch",
-                                     quality: "auto",
-                                     sign_url: true,
-                                     crop: "imagga_scale",
-                                     flags: "progressive",
-                                     fetch_format: "jpg")
-      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg")).to eq(cloudinary_url)
+    context "when CROP_WITH_IMAGGA_SCALE is set" do
+      before do
+        allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
+      end
+
+      it "generates correct crop with 'smart_crop' set" do
+        cloudinary_url = cl_image_path(image_url,
+                                       type: "fetch",
+                                       quality: "auto",
+                                       sign_url: true,
+                                       crop: "imagga_scale",
+                                       flags: "progressive",
+                                       fetch_format: "jpg")
+        expect(described_class.call(image_url, crop: "crop", smart_crop: true, fetch_format: "jpg"))
+          .to eq(cloudinary_url)
+      end
+
+      it "generates correct crop with 'smart_crop' not set" do
+        cloudinary_url = cl_image_path(image_url,
+                                       type: "fetch",
+                                       quality: "auto",
+                                       sign_url: true,
+                                       crop: "fill",
+                                       flags: "progressive",
+                                       fetch_format: "jpg")
+        expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg")).to eq(cloudinary_url)
+      end
     end
   end
 
@@ -169,7 +186,6 @@ RSpec.describe Images::Optimizer, type: :service do
       url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
       expect(cloudflare_url).to match(url_regexp)
     end
-
 
     it "generates correct crop with 'crop' passed" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "crop")

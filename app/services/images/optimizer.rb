@@ -1,12 +1,12 @@
 module Images
   module Optimizer
-    def self.call(img_src, **kwargs)
+    def self.call(img_src, smart_crop: false, **kwargs)
       return img_src if img_src.blank? || img_src.starts_with?("/")
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
       elsif cloudinary_enabled?
-        cloudinary(img_src, **kwargs)
+        cloudinary(img_src, smart_crop: smart_crop, **kwargs)
       elsif cloudflare_enabled?
         cloudflare(img_src, **kwargs)
       else
@@ -48,8 +48,9 @@ module Images
     end
 
     def self.cloudinary(img_src, **kwargs)
+      smart_crop = kwargs.delete(:smart_crop)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-      options[:crop] = if kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
+      options[:crop] = if smart_crop && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present?
                          "imagga_scale" # Legacy setting if admin imagga_scale set
                        elsif kwargs[:crop] == "crop"
                          "fill"

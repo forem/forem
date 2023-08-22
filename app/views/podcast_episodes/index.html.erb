@@ -46,7 +46,7 @@
       <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card media-card <% unless @podcast %>media-card--all<% end %>">
         <div class="media-card__artwork">
           <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
-                                  optimizer_options: { crop: "crop", width: 240, height: 240 },
+                                  optimizer_options: { crop: "crop", smart_crop: true, width: 240, height: 240 },
                                   image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-100" }) %>
         </div>
         <div class="media-card__content">
@@ -73,7 +73,7 @@
       <% @featured_podcasts.each do |podcast| %>
         <a href="/<%= podcast.slug %>">
             <%= optimized_image_tag(podcast.image_url,
-                                    optimizer_options: { crop: "crop", width: 500, height: 500 },
+                                    optimizer_options: { crop: "crop", smart_crop: true, width: 500, height: 500 },
                                     image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2" }) %>
             <h3 class="crayons-subtitle-2 align-center">
               <%= podcast.title %>
