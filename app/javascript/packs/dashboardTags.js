@@ -91,6 +91,7 @@ function handleHideButtonClick(target) {
   fetchFollows(data);
 
   // TODO: this should be done on success
+  // TODO: the follow and tag id needs to move to the parent container and used from there.
   document.getElementById(`follows-${followId}`).style = 'display:none';
   const currentNavigationItem = document.querySelector(
     '.crayons-link--current .c-indicator',
