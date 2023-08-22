@@ -146,7 +146,6 @@ RSpec.configure do |config|
     # "Please stub a default value first if message might be received with other args as well."
     allow(FeatureFlag).to receive(:enabled?).and_call_original
     allow(FeatureFlag).to receive(:enabled?).with(:connect).and_return(true)
-    allow(FeatureFlag).to receive(:enabled?).with(:minimagick_social_images, any_args).and_return(true)
   end
 
   config.around(:each, :flaky) do |ex|
@@ -225,6 +224,8 @@ RSpec.configure do |config|
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
+    stub_request(:get, /assets\/\d+(-\w+)?\.png/)
+      .to_return(status: 200, body: "", headers: {})
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)

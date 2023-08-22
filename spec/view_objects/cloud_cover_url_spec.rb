@@ -7,12 +7,12 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
   it "returns proper url" do
     expect(described_class.new(article.main_image).call)
       .to start_with(cloudinary_prefix)
-      .and include("/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
+      .and include("/c_fill,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
   end
 
   it "returns proper url when nested cloudinary" do
     image_url = "https://res.cloudinary.com/practicaldev/image/fetch/s--A-gun7rr--/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://res.cloudinary.com/practicaldev/image/fetch/s--hcD8ZkbP--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
-    cloudinary_string = "/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
+    cloudinary_string = "/c_fill,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
 
     article.update_column(:main_image, image_url)
     expect(described_class.new(article.main_image).call)
@@ -22,11 +22,25 @@ RSpec.describe CloudCoverUrl, cloudinary: true, type: :view_object do
 
   it "returns proper url when single cloudinary" do
     image_url = "https://res.cloudinary.com/practicaldev/image/fetch/s--hcD8ZkbP--/c_imagga_scale%2Cf_auto%2Cfl_progressive%2Ch_420%2Cq_auto%2Cw_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
-    cloudinary_string = "/c_imagga_scale,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
+    cloudinary_string = "/c_fill,f_auto,fl_progressive,h_420,q_auto,w_1000/https://dev-to-uploads.s3.amazonaws.com/i/th93d625o27nuz63oeen.png" # rubocop:disable Layout/LineLength
 
     article.update_column(:main_image, image_url)
     expect(described_class.new(article.main_image).call)
       .to start_with(cloudinary_prefix)
       .and end_with(cloudinary_string)
+  end
+
+  it "returns proper url when config set to limit" do
+    allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
+    expect(described_class.new(article.main_image).call)
+      .to start_with(cloudinary_prefix)
+      .and include("/c_limit,f_auto,fl_progressive,h_420,q_auto,w_1000/https://robohash.org/")
+  end
+
+  it "returns proper url when height is set" do
+    allow(Settings::UserExperience).to receive(:cover_image_height).and_return("902")
+    expect(described_class.new(article.main_image).call)
+      .to start_with(cloudinary_prefix)
+      .and include("/c_fill,f_auto,fl_progressive,h_902,q_auto,w_1000/https://robohash.org/")
   end
 end

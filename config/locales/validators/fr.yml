@@ -13,7 +13,7 @@ fr:
       bio_too_long: La biographie est trop longue
     cross_model_slug_validator:
       is_taken: est déjà pris
-      is_invalid: is invalid
-      is_reserved: is reserved
+      is_invalid: est invalide
+      is_reserved: est réservé
     valid_domain_csv_validator:
       invalid_list_format: doit être une liste de domaines valides, séparés par des virgules.
