@@ -94,7 +94,7 @@ function handleFollowingButtonClick(target) {
   };
   fetchFollows(data);
 
-  document.getElementById(`follows-${followId}`).style = 'display:none';
+  document.getElementById(`follows-${followId}`).remove();
 
   const currentNavigationItem = document.querySelector(
     '.crayons-link--current .c-indicator',
@@ -117,7 +117,7 @@ function handleHideButtonClick(target) {
 
   // TODO: this should be done on success
   // TODO: the follow and tag id needs to move to the parent container and used from there.
-  document.getElementById(`follows-${followId}`).style = 'display:none';
+  document.getElementById(`follows-${followId}`).remove();
   const currentNavigationItem = document.querySelector(
     '.crayons-link--current .c-indicator',
   );
@@ -142,7 +142,7 @@ function handleUnhideButtonClick(target) {
   fetchFollows(data);
 
   // TODO: this should be done on success
-  document.getElementById(`follows-${followId}`).style = 'display:none';
+  document.getElementById(`follows-${followId}`).remove();
   const currentNavigationItem = document.querySelector(
     '.crayons-link--current .c-indicator',
   );

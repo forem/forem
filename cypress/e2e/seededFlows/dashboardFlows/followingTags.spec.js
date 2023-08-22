@@ -48,5 +48,20 @@ describe('Dashboard: Following Tags', () => {
     });
   });
 
-  it('unfollows a tag', () => {});
+  it('unfollows a tag', () => {
+    cy.get('.dashboard__tag__container').should('have.length', 5);
+
+    cy.intercept('/follows').as('followsRequest');
+    cy.findByRole('button', { name: 'Following tag: tag0' }).as(
+      'followingButton',
+    );
+
+    cy.get('@followingButton').click();
+    cy.wait('@followsRequest');
+
+    cy.get('.dashboard__tag__container').should('have.length', 4);
+
+    cy.get('.js-following-tags-link .c-indicator').as('followingTagsCount');
+    cy.get('@followingTagsCount').should('contain', '4');
+  });
 });
