@@ -138,8 +138,8 @@
           <% end %>
         <% end %>
         <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
-          <hr />
           <% if policy(@moderatable).can_adjust_any_tag? %>
+            <hr />
             <button id="add-tag-button" data-testid="add-tag-button" class="add-tag" type="button">
               <%= t("views.moderations.actions.adjust.add_tag.button_text") %>
               <div class="circle centered-icon add-icon">
@@ -161,6 +161,16 @@
               </div>
             </div>
           <% else %>
+            <% count = 0 %>
+            <% @tag_moderator_tags.each do |tag| %>
+              <% if !@moderatable.tags.pluck(:name).include?(tag.name) %>
+                <% count += 1 %>
+              <% end %>
+            <% end %>
+
+            <% if count > 0 %>
+              <hr />
+            <% end %>
             <% @tag_moderator_tags.each do |tag| %>
               <% if !@moderatable.tags.pluck(:name).include?(tag.name) %>
                 <button
