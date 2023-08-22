@@ -4,7 +4,7 @@
   <% tags.each do |follow| %>
     <% tag = follow.followable %>
     <% if tag %>
-      <div class="dashboard__tags__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-<%= follow.id %>">
+      <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-<%= follow.id %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
         <div class="mb-1 flex items-center justify-between">
           <h4 class="-ml-2">
             <%= render_tag_link(tag.name) %>
@@ -15,7 +15,7 @@
           <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
 
-        <div class="dashboard__tags__buttons-container">
+        <div class="dashboard__tag__buttons-container">
           <%# we could use positive explicit points %>
           <% if page === "following" %>
             <div class="flex justify-between">
