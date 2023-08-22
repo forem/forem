@@ -123,16 +123,15 @@ RSpec.describe Images::Optimizer, type: :service do
 
     it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set but never_imagga: true is passed" do
       allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
-      cloudinary_url = cl_image_path(image_url,
+      cl_url = cl_image_path(image_url,
                                      type: "fetch",
                                      quality: "auto",
                                      sign_url: true,
                                      crop: "fill",
                                      flags: "progressive",
                                      fetch_format: "jpg")
-      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cloudinary_url)
+      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cl_url)
     end
-
   end
 
   describe "#imgproxy" do
