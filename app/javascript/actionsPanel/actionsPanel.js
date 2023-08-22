@@ -6,6 +6,11 @@ import { request } from '@utilities/http';
 
 export function addCloseListener() {
   const button = document.getElementsByClassName('close-actions-panel')[0];
+  const parentPath = window.parent.location.pathname;
+  if (!parentPath.startsWith('/mod')) {
+    button.classList.remove('hidden');
+  }
+
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
     // eslint-disable-next-line no-restricted-globals
