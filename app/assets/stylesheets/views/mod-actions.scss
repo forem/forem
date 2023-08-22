@@ -448,7 +448,6 @@
         letter-spacing: -0.32px;
         color: var(--tag-name);
 
-        &:hover:enabled,
         .js-focus-visible &.focus-visible:focus,
         &:is(label):focus-within {
           background-color: var(--bg-hover);
@@ -510,7 +509,6 @@
           }
         }
 
-        &:hover:enabled,
         .js-focus-visible &.focus-visible:focus,
         &:is(label):focus-within {
           background-color: var(--bg-hover);
@@ -527,7 +525,7 @@
       .reason-container {
         display: flex;
         flex-direction: column;
-        padding: var(--su-1) var(--su-3) 0px var(--su-3);
+        padding: var(--su-1) var(--su-3) var(--su-2) var(--su-3);
         textarea {
           margin-bottom: var(--su-3);
         }
