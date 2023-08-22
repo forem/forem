@@ -94,4 +94,18 @@ describe('Dashboard: Following Tags', () => {
     cy.get('.js-hidden-tags-link .c-indicator').as('hiddenTagsCount');
     cy.get('@hiddenTagsCount').should('contain', '6');
   });
+
+  it('shows the number of posts published for a tag', () => {
+    cy.get('.dashboard__tag__container')
+      .first()
+      .within(() => {
+        cy.findByText('0 posts');
+      });
+
+    cy.get('.dashboard__tag__container')
+      .eq(1)
+      .within(() => {
+        cy.findByText('1 posts');
+      });
+  });
 });
