@@ -14,6 +14,31 @@ allButtons.forEach((button) => {
 
 listenForButtonClicks();
 
+// TODO: need to discinnect the observer
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        // to remove options like #text '\n  '
+        if (node.hasChildNodes()) {
+          const { tagId } = node.dataset;
+          initializeDropdown({
+            triggerElementId: `options-dropdown-trigger-${tagId}`,
+            dropdownContentId: `options-dropdown-${tagId}`,
+          });
+        }
+      });
+    }
+  });
+});
+
+document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
+  observer.observe(tagContainer, {
+    childList: true,
+    subtree: true,
+  });
+});
+
 /**
  * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
  */
