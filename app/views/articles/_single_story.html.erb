@@ -4,9 +4,9 @@
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
   <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
-    <div class="crayons-article__cover crayons-article__cover__image__feed">
+    <div class="crayons-article__cover crayons-article__cover__image__feed" style="aspect-ratio: auto 1000 / <%= story.main_image_height %>;">
       <a href="<%= story.path %>" title="<%= story.title %>" aria-label="article" class="crayons-article__cover__image__feed crayons-story__cover__image">
-        <img src="<%= cloud_cover_url(story.main_image) %>" width="650" height="275" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
+        <img src="<%= cloud_cover_url(story.main_image) %>" width="1000" height="<%= story.main_image_height %>" style="background-color:<%= story.main_image_background_hex_color %>;" class="crayons-article__cover__image__feed" alt="Cover image for <%= story.title %>">
       </a>
     </div>
   <% end %>

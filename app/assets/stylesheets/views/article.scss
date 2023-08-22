@@ -10,22 +10,22 @@
 
 .crayons-article {
   &__cover {
-    position: relative;
-    width: 100%;
-    padding-top: 42%;
-
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-auto);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    max-height: calc(100vh - var(--header-height) - 2 * var(--layout-padding));
+    overflow: hidden;
     &__image {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: var(--radius-auto);
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      object-fit: scale-down;
-      width: 100%;
-      height: 100%;
+      display: block;
+      margin: auto;
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      max-height: calc(
+        100vh - var(--header-height) - 2 * var(--layout-padding)
+      );
 
       &__feed {
         padding-top: 0;
@@ -33,8 +33,9 @@
         height: 100%;
         width: 100%;
         aspect-ratio: auto 650 / 273;
-        object-fit: scale-down;
+        object-fit: contain;
         border-radius: var(--radius-auto) var(--radius) 0 0;
+        max-height: calc(100vh - var(--header-height) - var(--su-4));
       }
     }
   }

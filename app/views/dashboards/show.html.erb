@@ -55,7 +55,7 @@
       <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1">
         <div>
           <% if Settings::General.mascot_image_url.present? %>
-            <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "imagga_scale") %>
+            <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "crop") %>
             <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
           <% end %>
           <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>

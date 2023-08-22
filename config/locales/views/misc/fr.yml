@@ -46,6 +46,8 @@ fr:
       preview:
         icon: App logo
         text: 'Preview:'
+    mailers:
+      contact_mailto_html: Contactez-nous à l'adresse <a href="mailto:%{contact_email}">%{contact_email}</a> si nous pouvons vous aider davantage.
     onboardings:
       meta:
         title: Welcome to %{community}

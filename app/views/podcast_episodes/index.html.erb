@@ -46,7 +46,7 @@
       <a href="/<%= episode.podcast.slug %>/<%= episode.slug %>" class="crayons-card media-card <% unless @podcast %>media-card--all<% end %>">
         <div class="media-card__artwork">
           <%= optimized_image_tag(episode.image_url || episode.podcast.image_url,
-                                  optimizer_options: { crop: "imagga_scale", width: 240, height: 240 },
+                                  optimizer_options: { crop: "crop", width: 240, height: 240 },
                                   image_options: { alt: episode.title, loading: "lazy", class: "w-100 h-100" }) %>
         </div>
         <div class="media-card__content">
@@ -73,7 +73,7 @@
       <% @featured_podcasts.each do |podcast| %>
         <a href="/<%= podcast.slug %>">
             <%= optimized_image_tag(podcast.image_url,
-                                    optimizer_options: { crop: "imagga_scale", width: 500, height: 500 },
+                                    optimizer_options: { crop: "crop", width: 500, height: 500 },
                                     image_options: { alt: podcast.title, loading: "lazy", class: "w-100 h-auto border-2" }) %>
             <h3 class="crayons-subtitle-2 align-center">
               <%= podcast.title %>
@@ -87,7 +87,7 @@
     <% @more_podcasts&.each do |podcast| %>
       <a href="/<%= podcast.slug %>" class="crayons-link flex items-center m:fs-l  lh-tight">
         <span class="crayons-logo crayons-logo--xl mr-3">
-          <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "fill", width: 100, height: 100) %>"
+          <img src="<%= Images::Optimizer.call(podcast.image_url, crop: "crop", width: 100, height: 100) %>"
             alt="<%= podcast.title %>" aria-hidden="true" class="crayons-logo__image" />
         </span>
         <span class="truncate-at-2">
