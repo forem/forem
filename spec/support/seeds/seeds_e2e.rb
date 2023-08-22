@@ -957,7 +957,7 @@ seeder.create_if_none(Tag) do
       followable_id: tag.id,
       follower_type: "User",
       follower_id: admin_user.id,
-      explicit_points: [-1, 1].sample,
+      explicit_points: i < 5 ? 1 : -1,
     )
   end
 end
