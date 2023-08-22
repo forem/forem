@@ -24,18 +24,6 @@ describe('Dashboard: Following Tags', () => {
     });
   });
 
-  // shows the correct number of tags on the page
-  // for each tag it shows a following button and a hide button
-  // When you click on 'following'
-  // it removes the item from the 'Following tags' page
-  // it decreases the count from the 'Following tags' item
-  // When you click on 'hide tags'
-  // it removes the item from the 'Following tags' page
-  // it decreases the count from the 'Following tags' item
-  // it increases the count from the 'Hidden tags' item
-  // paginates the following tags page
-  // shows the number of posts published
-
   it('shows the correct number of tags on the page', () => {
     cy.get('.dashboard__tag__container').should('have.length', 5);
   });
@@ -108,4 +96,6 @@ describe('Dashboard: Following Tags', () => {
         cy.findByText('1 posts');
       });
   });
+
+  // TODO: add a test for the pagination
 });
