@@ -149,6 +149,7 @@ function buildTagsHTML(tag) {
       </div>`;
   }
 
+  //TODO: follow id = tag.id and tag_id = tag.tag_id. This doesn't make too much sense
   if (tag.points >= 0) {
     followingButtonContainer = `<div class="flex justify-between">
       <div>
@@ -179,10 +180,11 @@ function buildTagsHTML(tag) {
     short_summary = `<p class="mb-6 fs-s color-base-70 truncate-at-3">${tag.short_summary}</p>`;
   }
 
+  // TODO: remove the data-follow-id and the data-tag-id in the child components
   return `
-  <div class="dashboard__tags__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-${
+  <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-${
     tag.id
-  }">
+  }" data-follow-id="${tag.id}" data-tag-id="${tag.tag_id}">
     <div class="mb-1 flex items-center justify-between">
       <h4 class="-ml-2">
       <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
