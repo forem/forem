@@ -32,7 +32,7 @@ module Homepage
       user_id: nil,
       organization_id: nil,
       tags: [],
-      antitags: [],
+      hidden_tags: [],
       sort_by: nil,
       sort_direction: nil,
       page: 0,
@@ -46,7 +46,7 @@ module Homepage
       @user_id = user_id
       @organization_id = organization_id
       @tags = tags.presence || []
-      @antitags = antitags.presence || []
+      @hidden_tags = hidden_tags.presence || []
 
       @sort_by = sort_by
       @sort_direction = sort_direction || DEFAULT_SORT_DIRECTION
@@ -61,7 +61,7 @@ module Homepage
 
     private
 
-    attr_reader :relation, :approved, :published_at, :user_id, :organization_id, :tags, :antitags,
+    attr_reader :relation, :approved, :published_at, :user_id, :organization_id, :tags, :hidden_tags,
                 :sort_by, :sort_direction, :page, :per_page
 
     def filter
@@ -70,7 +70,7 @@ module Homepage
       @relation = @relation.where(user_id: user_id) if user_id.present?
       @relation = @relation.where(organization_id: organization_id) if organization_id.present?
       @relation = @relation.cached_tagged_with_any(tags) if tags.any?
-      @relation = @relation.not_cached_tagged_with_any(antitags) if antitags.any?
+      @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
       @relation = @relation.includes(:distinct_reaction_categories)
 
       relation

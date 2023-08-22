@@ -349,7 +349,7 @@ function paginate(tag, params, requiresApproval) {
     searchHash.class_name = 'Article';
     const isHomePageFeed = window.location.pathname == '/';
     if (isHomePageFeed && userData()) {
-      searchHash.antitags = userData().antitags;
+      searchHash.hidden_tags = userData().hidden_tags;
     }
   } else if (homeEl.dataset.feed === 'latest') {
     searchHash.class_name = 'Article';

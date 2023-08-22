@@ -143,32 +143,32 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
       end
     end
 
-    describe "antitags" do
+    describe "hidden_tags" do
       let!(:article1) { create(:article, tags: "twice, first") }
       let!(:article2) { create(:article, tags: "second, twice") }
       let!(:article3) { create(:article) }
 
-      it "removes articles matching any antitags" do
-        results = described_class.call(antitags: ["twice"])
+      it "removes articles matching any hidden_tags" do
+        results = described_class.call(hidden_tags: ["twice"])
         expect(results).to contain_exactly(article3)
 
-        results = described_class.call(antitags: ["first"])
+        results = described_class.call(hidden_tags: ["first"])
         expect(results).not_to include(article1)
         expect(results).to include(article2)
 
-        results = described_class.call(antitags: ["second"])
+        results = described_class.call(hidden_tags: ["second"])
         expect(results).to include(article1)
         expect(results).not_to include(article2)
       end
 
-      it "behaves expectedly when antitags is any variety of blank" do
-        results = described_class.call(antitags: [])
+      it "behaves expectedly when hidden_tags is any variety of blank" do
+        results = described_class.call(hidden_tags: [])
         expect(results).to contain_exactly(article1, article2, article3)
 
-        results = described_class.call(antitags: nil)
+        results = described_class.call(hidden_tags: nil)
         expect(results).to contain_exactly(article1, article2, article3)
 
-        results = described_class.call(antitags: "")
+        results = described_class.call(hidden_tags: "")
         expect(results).to contain_exactly(article1, article2, article3)
       end
     end
