@@ -12,10 +12,11 @@ RSpec.describe Device do
       it { is_expected.to belong_to(:user) }
 
       it { is_expected.to validate_presence_of(:token) }
+
       it do
         skip "validate_uniqueness_of does not support array. Replace with custom validation"
 
-        is_expected.to validate_uniqueness_of(:token).scoped_to(%i[user_id platform consumer_app_id])
+        expect(subject).to validate_uniqueness_of(:token).scoped_to(%i[user_id platform consumer_app_id])
       end
     end
   end

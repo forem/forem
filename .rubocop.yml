@@ -976,3 +976,6 @@ RSpec/NoExpectationExample:
 
 RSpec/IndexedLet:
   Enabled: false
+
+RSpec/NamedSubject:
+  Enabled: false

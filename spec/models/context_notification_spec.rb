@@ -15,7 +15,7 @@ RSpec.describe ContextNotification do
       it do
         skip "validate_uniqueness_of does not support array. Replace with custom validation"
 
-        is_expected.to validate_uniqueness_of(:context_id).scoped_to(%i[context_type action])
+        expect(subject).to validate_uniqueness_of(:context_id).scoped_to(%i[context_type action])
       end
     end
 
