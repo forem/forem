@@ -79,7 +79,7 @@ RSpec.describe "FollowingsController" do
         expect(response).to have_http_status(:ok)
 
         expect(response.parsed_body.count).to eq(2)
-        expect(response.parsed_body.pluck("name")).to eq(%w[tagone tagthree])
+        expect(response.parsed_body.pluck("name")).to eq(%w[tagthree tagone])
       end
 
       it "returns the user's hidden tag list" do
