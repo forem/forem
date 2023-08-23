@@ -14,7 +14,7 @@ allButtons.forEach((button) => {
 
 listenForButtonClicks();
 
-// TODO: need to discinnect the observer
+// TODO: need to disconnect the observer
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
@@ -71,17 +71,15 @@ function fetchFollows(body) {
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
-  window
-    .fetch('/follows', {
-      method: 'POST',
-      headers: {
-        'X-CSRF-Token': csrfToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-      credentials: 'same-origin',
-    })
-    .catch((error) => console.error(error)); //maybe show a modal here instead.
+  return window.fetch('/follows', {
+    method: 'POST',
+    headers: {
+      'X-CSRF-Token': csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+    credentials: 'same-origin',
+  });
 }
 
 function handleFollowingButtonClick(target) {
@@ -92,15 +90,20 @@ function handleFollowingButtonClick(target) {
     followable_id: tagId,
     verb: 'unfollow',
   };
-  fetchFollows(data);
 
-  document.getElementById(`follows-${followId}`).remove();
+  fetchFollows(data)
+    .then(() => {
+      document.getElementById(`follows-${followId}`).remove();
 
-  const currentNavigationItem = document.querySelector(
-    '.crayons-link--current .c-indicator',
-  );
-  const currentFollowingTagsCount = parseInt(currentNavigationItem.innerHTML);
-  currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      const currentNavigationItem = document.querySelector(
+        '.crayons-link--current .c-indicator',
+      );
+      const currentFollowingTagsCount = parseInt(
+        currentNavigationItem.innerHTML,
+      );
+      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+    })
+    .catch((error) => console.error(error));
 }
 
 function handleHideButtonClick(target) {
@@ -113,21 +116,26 @@ function handleHideButtonClick(target) {
     explicit_points: -1,
   };
 
-  fetchFollows(data);
-
-  // TODO: this should be done on success
   // TODO: the follow and tag id needs to move to the parent container and used from there.
-  document.getElementById(`follows-${followId}`).remove();
-  const currentNavigationItem = document.querySelector(
-    '.crayons-link--current .c-indicator',
-  );
-  const currentFollowingTagsCount = parseInt(currentNavigationItem.innerHTML);
-  currentNavigationItem.textContent = currentFollowingTagsCount - 1;
-  const hiddenTagsNavigationItem = document.querySelector(
-    '.js-hidden-tags-link .c-indicator',
-  );
-  const currentHiddenTagsCount = parseInt(hiddenTagsNavigationItem.innerHTML);
-  hiddenTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+  fetchFollows(data)
+    .then(() => {
+      document.getElementById(`follows-${followId}`).remove();
+      const currentNavigationItem = document.querySelector(
+        '.crayons-link--current .c-indicator',
+      );
+      const currentFollowingTagsCount = parseInt(
+        currentNavigationItem.innerHTML,
+      );
+      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      const hiddenTagsNavigationItem = document.querySelector(
+        '.js-hidden-tags-link .c-indicator',
+      );
+      const currentHiddenTagsCount = parseInt(
+        hiddenTagsNavigationItem.innerHTML,
+      );
+      hiddenTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+    })
+    .catch((error) => console.error(error));
 }
 
 function handleUnhideButtonClick(target) {
@@ -139,20 +147,24 @@ function handleUnhideButtonClick(target) {
     verb: 'follow',
     explicit_points: 1,
   };
-  fetchFollows(data);
 
-  // TODO: this should be done on success
-  document.getElementById(`follows-${followId}`).remove();
-  const currentNavigationItem = document.querySelector(
-    '.crayons-link--current .c-indicator',
-  );
-  const currentFollowingTagsCount = parseInt(currentNavigationItem.innerHTML);
-  currentNavigationItem.textContent = currentFollowingTagsCount - 1;
-  const followingTagsNavigationItem = document.querySelector(
-    '.js-following-tags-link .c-indicator',
-  );
-  const currentHiddenTagsCount = parseInt(
-    followingTagsNavigationItem.innerHTML,
-  );
-  followingTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+  fetchFollows(data)
+    .then(() => {
+      document.getElementById(`follows-${followId}`).remove();
+      const currentNavigationItem = document.querySelector(
+        '.crayons-link--current .c-indicator',
+      );
+      const currentFollowingTagsCount = parseInt(
+        currentNavigationItem.innerHTML,
+      );
+      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      const followingTagsNavigationItem = document.querySelector(
+        '.js-following-tags-link .c-indicator',
+      );
+      const currentHiddenTagsCount = parseInt(
+        followingTagsNavigationItem.innerHTML,
+      );
+      followingTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+    })
+    .catch((error) => console.error(error));
 }
