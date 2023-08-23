@@ -116,9 +116,11 @@ fr:
         heading: Dashboard » Hidden tags
         empty_html: "<span>You don't have any hidden tags...</span>"
       tags:
-        number:
-          aria_label: "%{name} tag weight"
-        update: Update Weights
+        following_button: Following
+        options:
+          icon: Options
+          hide: Hide tag
+        unhide_button: Unhide
       listings:
         meta:
           title: Listings Dashboard
