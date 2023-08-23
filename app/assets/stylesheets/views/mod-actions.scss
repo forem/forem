@@ -1,6 +1,7 @@
 @import '../variables';
 @import '../mixins';
 @import '../config/import';
+@import '../themes/dark.css';
 
 .mod-actions-menu {
   position: fixed;
@@ -437,7 +438,7 @@
         }
       }
       button.adjustable-tag {
-        background: inherit;
+        background-color: inherit;
         border: none;
         padding: var(--su-2) var(--su-3);
         font-family: var(--ff-monospace);
@@ -450,8 +451,6 @@
 
         .js-focus-visible &.focus-visible:focus,
         &:is(label):focus-within {
-          background-color: var(--bg-hover);
-          color: var(--color-hover);
           z-index: var(--z-elevate);
         }
 
@@ -475,7 +474,7 @@
           color: var(--subtract-color);
         }
         &:hover {
-          background-color: var(--item-bg-hover);
+          background-color: var(--tag-item-bg-hover);
           border-radius: 6px;
           .remove-icon {
             opacity: 1;
@@ -485,7 +484,7 @@
         }
       }
       button.add-tag {
-        background: inherit;
+        background-color: inherit;
         border: none;
         padding: var(--su-2) var(--su-3);
         font-size: var(--fs-base);
@@ -502,7 +501,7 @@
           color: var(--plus-color);
         }
         &:hover {
-          background-color: var(--item-bg-hover);
+          background-color: var(--tag-item-bg-hover);
           border-radius: 6px;
           .add-icon {
             background: var(--plus-bg-hover);
@@ -512,8 +511,6 @@
 
         .js-focus-visible &.focus-visible:focus,
         &:is(label):focus-within {
-          background-color: var(--bg-hover);
-          color: var(--color-hover);
           z-index: var(--z-elevate);
         }
 

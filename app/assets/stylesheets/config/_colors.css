@@ -372,7 +372,7 @@
   ***********************************************/
 
   /* Tag item */
-  --item-bg-hover: rgb(var(--indigo-50));
+  --tag-item-bg-hover: rgb(var(--indigo-50));
 
   /* Subtract */
   --subtract-color: rgb(var(--red-600));

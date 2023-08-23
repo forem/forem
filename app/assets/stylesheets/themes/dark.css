@@ -358,7 +358,7 @@
   ***********************************************/
 
   /* Tag item */
-  --item-bg-hover: rgba(var(--green-900), 0.5);
+  --tag-item-bg-hover: rgba(var(--indigo-900), 0.5);
 
   /* Subtract */
   --subtract-color: rgb(var(--red-200));
