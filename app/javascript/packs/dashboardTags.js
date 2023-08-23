@@ -5,7 +5,7 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
  */
 const allButtons = document.querySelectorAll('.follow-button');
 allButtons.forEach((button) => {
-  const { tagId } = button.dataset;
+  const { tagId } = button.closest('.dashboard__tag__container').dataset;
   initializeDropdown({
     triggerElementId: `options-dropdown-trigger-${tagId}`,
     dropdownContentId: `options-dropdown-${tagId}`,
@@ -21,7 +21,7 @@ const observer = new MutationObserver((mutationsList) => {
       mutation.addedNodes.forEach((node) => {
         // to remove options like #text '\n  '
         if (node.hasChildNodes()) {
-          const { tagId } = node.dataset;
+          const { tagId } = node.closest('.dashboard__tag__container').dataset;
           initializeDropdown({
             triggerElementId: `options-dropdown-trigger-${tagId}`,
             dropdownContentId: `options-dropdown-${tagId}`,
@@ -54,16 +54,18 @@ function listenForButtonClicks() {
  * @param {HTMLElement} target The target of the click event
  */
 function handleClick({ target }) {
+  const tagContainer = target.closest('.dashboard__tag__container');
+
   if (target.classList.contains('follow-button')) {
-    handleFollowingButtonClick(target);
+    handleFollowingButtonClick(tagContainer);
   }
 
   if (target.classList.contains('hide-button')) {
-    handleHideButtonClick(target);
+    handleHideButtonClick(tagContainer);
   }
 
   if (target.classList.contains('unhide-button')) {
-    handleUnhideButtonClick(target);
+    handleUnhideButtonClick(tagContainer);
   }
 }
 
@@ -82,8 +84,8 @@ function fetchFollows(body) {
   });
 }
 
-function handleFollowingButtonClick(target) {
-  const { tagId, followId } = target.dataset;
+function handleFollowingButtonClick(tagContainer) {
+  const { tagId, followId } = tagContainer.dataset;
 
   const data = {
     followable_type: 'Tag',
@@ -99,8 +101,8 @@ function handleFollowingButtonClick(target) {
     .catch((error) => console.error(error));
 }
 
-function handleHideButtonClick(target) {
-  const { tagId, followId } = target.dataset;
+function handleHideButtonClick(tagContainer) {
+  const { tagId, followId } = tagContainer.dataset;
 
   const data = {
     followable_type: 'Tag',
@@ -126,8 +128,8 @@ function handleHideButtonClick(target) {
     .catch((error) => console.error(error));
 }
 
-function handleUnhideButtonClick(target) {
-  const { tagId, followId } = target.dataset;
+function handleUnhideButtonClick(tagContainer) {
+  const { tagId, followId } = tagContainer.dataset;
 
   const data = {
     followable_type: 'Tag',
