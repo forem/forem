@@ -62,7 +62,7 @@
       <%= f.label :url, class: "crayons-field__label" do |translation| %>
         <%= translation %>
       <% end %>
-      <%= f.url_field :url, placeholder: "https://yoursite.com", class: "crayons-textfield", oninvalid: "setCustomValidity('Please enter a URL, starting with https://...')", onchange: "setCustomValidity('')" %>
+      <%= f.url_field :url, placeholder: "https://yoursite.com", class: "crayons-textfield", oninvalid: "setCustomValidity('Please enter a URL, starting with https://...')", onchange: "setCustomValidity('')", oninput: "value?.length < 1 ? setCustomValidity('') : ''" %>
     </div>
 
     <div class="crayons-field">

@@ -109,7 +109,7 @@
     </div>
     <div class="crayons-field">
       <%= f.label :url, "Website url", class: "crayons-field__label" %>
-       <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", oninvalid: "setCustomValidity('Please enter a URL, starting with https://...')", onchange: "setCustomValidity('')", class: "crayons-textfield" %>
+       <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", oninvalid: "setCustomValidity('Please enter a URL, starting with https://...')", onchange: "setCustomValidity('')", class: "crayons-textfield", oninput: "value?.length < 1 ? setCustomValidity('') : ''" %>
     </div>
     <div class="crayons-field">
       <%= f.label :tag_line, class: "crayons-field__label" %>
