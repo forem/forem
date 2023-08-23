@@ -143,14 +143,14 @@ function buildTagsHTML(tag) {
   let followingButtonContainer = '';
   let unhideButtonContainer = '';
 
-  if (tag.points < 0) {
+  if (tag.explicit_points < 0) {
     unhideButtonContainer = `<div>
         <button class="crayons-btn crayons-btn--danger unhide-button" data-follow-id=${tag.id} data-tag-id=${tag.tag_id}>Unhide</button>
       </div>`;
   }
 
   //TODO: follow id = tag.id and tag_id = tag.tag_id. This doesn't make too much sense
-  if (tag.points >= 0) {
+  if (tag.explicit_points >= 0) {
     followingButtonContainer = `<div class="flex justify-between">
       <div>
         <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag:${tag.name}" data-follow-id=${tag.id} data-tag-id=${tag.tag_id}>Following</button>
