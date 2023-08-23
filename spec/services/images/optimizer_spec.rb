@@ -57,32 +57,108 @@ RSpec.describe Images::Optimizer, type: :service do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      width: 50, height: 50,
-                                     crop: "imagga_scale",
+                                     crop: "fill",
                                      quality: "auto",
                                      flags: "progressive",
                                      fetch_format: "auto",
                                      sign_url: true)
-      expect(described_class.call(image_url, width: 50, height: 50, crop: "imagga_scale")).to eq(cloudinary_url)
+      expect(described_class.call(image_url, width: 50, height: 50, crop: "crop")).to eq(cloudinary_url)
     end
 
     it "generates correct url by relying on DEFAULT_CL_OPTIONS" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
                                      quality: "auto",
+                                     crop: "limit",
                                      sign_url: true,
                                      flags: "progressive",
                                      fetch_format: "jpg")
-      expect(described_class.call(image_url, crop: nil, fetch_format: "jpg")).to eq(cloudinary_url)
+      expect(described_class.call(image_url, fetch_format: "jpg")).to eq(cloudinary_url)
+    end
+
+    it "generates correct crop with 'crop' passed" do
+      cloudinary_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: "auto",
+                                     sign_url: true,
+                                     crop: "fill",
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg")).to eq(cloudinary_url)
+    end
+
+    it "generates correct crop with 'limit' passed" do
+      cloudinary_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: "auto",
+                                     sign_url: true,
+                                     crop: "limit",
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, crop: "limit", fetch_format: "jpg")).to eq(cloudinary_url)
+    end
+
+    it "generates correct crop with 'jiberish' passed" do
+      cloudinary_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: "auto",
+                                     sign_url: true,
+                                     crop: "limit",
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, crop: "jiberish", fetch_format: "jpg")).to eq(cloudinary_url)
+    end
+
+    it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set" do
+      allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
+      cloudinary_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: "auto",
+                                     sign_url: true,
+                                     crop: "imagga_scale",
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg")).to eq(cloudinary_url)
+    end
+
+    it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set but never_imagga: true is passed" do
+      allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
+      cl_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: "auto",
+                                     sign_url: true,
+                                     crop: "fill",
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cl_url)
     end
   end
 
   describe "#imgproxy" do
-    it "generates correct url" do
+    before do
       allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
+    end
+
+    it "generates correct url with crop default" do
       imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
       # mb = maximum bytes, defaults to 500_000 bytes
       # ar = autorotate, defaults to "true", serialized as "1"
-      expect(imgproxy_url).to match(%r{/s:500:500/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+    end
+
+    it "generates correct crop with 'crop' passed" do
+      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "crop")
+      expect(imgproxy_url).to match(%r{/rs:fill:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+    end
+
+    it "generates correct crop with 'limit' passed" do
+      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "limit")
+      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+    end
+
+    it "generates correct crop with 'jiberish' passed" do
+      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "jiberish")
+      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 
@@ -95,14 +171,39 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct url based on h/w input" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 505, crop: "limit")
+      url_regexp = %r{/width=821,height=505,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
+    end
+
+    it "generates correct url with crop default" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420)
+      url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
+    end
+
+
+    it "generates correct crop with 'crop' passed" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "crop")
       url_regexp = %r{/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}}
       expect(cloudflare_url).to match(url_regexp)
     end
 
+    it "generates correct crop with 'limit' passed" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "limit")
+      url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
+    end
+
+    it "generates correct crop with 'jiberish' passed" do
+      cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "jiberish")
+      url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
+      expect(cloudflare_url).to match(url_regexp)
+    end
+
     it "does not error if nil" do
-      cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420)
-      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=cover,gravity=auto,format=auto/})
+      cloudflare_url = described_class.cloudflare(nil, width: 821, height: 420, crop: "limit")
+      expect(cloudflare_url).to match(%r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/})
     end
 
     it "pulls suffix if nested cloudflare url is provided" do
@@ -110,7 +211,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/#{CGI.escape(image_url)}")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}")
     end
 
     it "does not error out if image is empty" do
@@ -118,7 +219,7 @@ RSpec.describe Images::Optimizer, type: :service do
         cloudfare_basic_url,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/")
     end
 
     it "does not error out if image is not proper url and has https" do
@@ -127,7 +228,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/https%3Ahello")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/https%3Ahello")
     end
 
     it "does not error out if image is not proper url and does not have https" do
@@ -136,7 +237,7 @@ RSpec.describe Images::Optimizer, type: :service do
         [cloudfare_basic_url, CGI.escape(image_url)].join,
         width: 821, height: 420,
       )
-      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=cover,gravity=auto,format=auto/")
+      expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/")
     end
   end
 
@@ -195,9 +296,9 @@ RSpec.describe Images::Optimizer, type: :service do
   end
 
   describe "#translate_cloudinary_options" do
-    it "sets resizing_type to fill if crop: fill is provided" do
-      options = { width: 100, height: 100, crop: "fill" }
-      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fill")
+    it "sets resizing_type to fit if crop: jiberish is provided" do
+      options = { width: 100, height: 100, crop: "jiberish" }
+      expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fit")
     end
   end
 end

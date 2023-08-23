@@ -14,6 +14,12 @@ module Images
       end
     end
 
+    # Each service has different ways of describing image cropping.
+    # for the ideal croping we want.
+    # Cloudinary uses "fill" and "limit"
+    # Cloudflare uses "cover" and "scale-down" respectively
+    # imgproxy uses "fill" and "fit" respectively
+
     DEFAULT_CL_OPTIONS = {
       type: "fetch",
       height: nil,
@@ -27,12 +33,13 @@ module Images
 
     def self.cloudflare(img_src, **kwargs)
       template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
+      fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
       template.expand(
         domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
         options: {
           width: kwargs[:width],
           height: kwargs[:height],
-          fit: "cover",
+          fit: fit,
           gravity: "auto",
           format: "auto"
         },
@@ -42,7 +49,14 @@ module Images
 
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-
+      imagga = kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present? && !kwargs[:never_imagga]
+      options[:crop] = if imagga
+                         "imagga_scale" # Legacy setting if admin imagga_scale set
+                       elsif kwargs[:crop] == "crop"
+                         "fill"
+                       else
+                         "limit"
+                       end
       if img_src&.include?(".gif")
         options[:quality] = 66
       end
@@ -55,7 +69,8 @@ module Images
       width: nil,
       max_bytes: 500_000, # Keep everything under half of one MB.
       auto_rotate: true,
-      resizing_type: nil
+      gravity: "sm",
+      resizing_type: "fit"
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
@@ -66,9 +81,11 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "fill"
-        options[:resizing_type] = "fill"
-      end
+      options[:resizing_type] = if options[:crop] == "crop"
+                                  "fill"
+                                else
+                                  "fit"
+                                end
 
       options[:crop] = nil
       options[:fetch_format] = nil
