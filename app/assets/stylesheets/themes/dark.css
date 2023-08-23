@@ -1,6 +1,6 @@
 :root {
   color-scheme: dark;
-  
+
   --theme-secondary-color: #cedae2;
   --theme-container-background: #141f2d;
   --theme-container-accent-background: #202c3d;
@@ -358,18 +358,18 @@
   ***********************************************/
 
   /* Tag item */
-  --item-bg-hover: rgb(var(--indigo-900), 0.5);
+  --item-bg-hover: rgba(var(--green-900), 0.5);
 
   /* Subtract */
   --subtract-color: rgb(var(--red-200));
   --subtract-color-hover: rgb(var(--white));
-  --subtract-bg: rgb(var(--red-600));
-  --subtract-bg-hover: rgba(var(--red-600));
+  --subtract-bg: rgba(var(--red-600), 0.4);
+  --subtract-bg-hover: rgb(var(--red-600));
 
   /* Plus */
   --plus-color: rgb(var(--green-200));
   --plus-color-hover: rgb(var(--white));
-  --plus-bg: rgb(var(--green-600));
+  --plus-bg: rgba(var(--green-600), 0.4);
   --plus-bg-hover: rgb(var(--green-600));
 
   /* Tag name */

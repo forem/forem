@@ -478,6 +478,7 @@
           background-color: var(--item-bg-hover);
           border-radius: 6px;
           .remove-icon {
+            opacity: 1;
             background-color: var(--subtract-bg-hover);
             color: var(--subtract-color-hover);
           }

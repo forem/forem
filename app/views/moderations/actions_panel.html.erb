@@ -149,10 +149,7 @@
             <div id="add-tag-container" class="hidden">
               <div id="add-reason-container" class="reason-container">
                 <div class="add-tag-header"><%= t("views.moderations.actions.adjust.add_tag.header") %></div>
-                <div class="tag-input-container">
-                  <span>#</span>
-                  <input id="admin-add-tag" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
-                </div>
+                <input id="admin-add-tag" class="crayons-textfield mt-3" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
                 <textarea id="tag-add-reason" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
                 <div class="flex gap-3">
                   <button class="w-100 c-btn c-btn--primary" disabled="disabled" id="tag-add-submit"><%= t("views.moderations.actions.adjust.add") %></button>
