@@ -19,9 +19,19 @@ en:
           icon: Adjust tags
           add: Add tag
           add_placeholder: Add a tag
-          reason: Reason for tag adjustment (optional)
+          reason: 
+            remove_tag: Reason to remove tag (optional)
+            add_tag: Reason to add tag (optional)
           remove: Remove tag
           submit: Submit
+          cancel: Cancel
+          maximum_tags: 
+            icon: Info
+            text: A post can only have four tags.
+          add_tag:
+            header: Add new tag
+            button_text: Add new tag
+            icon: Add tag
         approve:
           add: Mark as approved
           remove: Remove approval
