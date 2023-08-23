@@ -25,6 +25,7 @@ module Images
         width: length,
         height: length,
         crop: "crop",
+        never_imagga: true,
       )
     end
   end
