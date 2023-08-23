@@ -20,7 +20,7 @@
           <% if page === "following" %>
             <div class="flex justify-between">
               <div>
-                <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag: <%= tag.name %>" aria-pressed="true" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>"><%= t("views.dashboard.tags.following_button") %></button>
+                <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag: <%= tag.name %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>"><%= t("views.dashboard.tags.following_button") %></button>
               </div>
               <div class="dropdown-trigger-container relative">
                 <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-<%= tag.id %>" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
@@ -29,7 +29,7 @@
                 <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-<%= tag.id %>">
                   <ul class="p-0">
                     <li>
-                      <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: <%= tag.name %>" aria-pressed="false" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
+                      <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: <%= tag.name %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
                         <%= crayons_icon_tag("eye-off", width: 18, height: 18, title: t("views.dashboard.tags.options.hide")) %> <span class="ml-2"><%= t("views.dashboard.tags.options.hide") %></span>
                       </button>
                     </li>
@@ -41,7 +41,7 @@
 
           <% if page === "hidden" %>
             <div>
-              <button class="crayons-btn crayons-btn--danger unhide-button" aria-label="Unhide tag: <%= tag.name %>" aria-pressed="false" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>"><%= t("views.dashboard.tags.unhide_button") %></button>
+              <button class="crayons-btn crayons-btn--danger unhide-button" aria-label="Unhide tag: <%= tag.name %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>"><%= t("views.dashboard.tags.unhide_button") %></button>
             </div>
           <% end %>
         </div>
