@@ -149,7 +149,6 @@ function buildTagsHTML(tag) {
       </div>`;
   }
 
-  //TODO: follow id = tag.id and tag_id = tag.tag_id. This doesn't make too much sense
   if (tag.explicit_points >= 0) {
     followingButtonContainer = `<div class="flex justify-between">
       <div>
