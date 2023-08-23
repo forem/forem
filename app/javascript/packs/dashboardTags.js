@@ -93,15 +93,8 @@ function handleFollowingButtonClick(target) {
 
   fetchFollows(data)
     .then(() => {
-      document.getElementById(`follows-${followId}`).remove();
-
-      const currentNavigationItem = document.querySelector(
-        '.crayons-link--current .c-indicator',
-      );
-      const currentFollowingTagsCount = parseInt(
-        currentNavigationItem.innerHTML,
-      );
-      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      removeElementFromPage(followId);
+      updateNavigationItemCount();
     })
     .catch((error) => console.error(error));
 }
@@ -119,21 +112,16 @@ function handleHideButtonClick(target) {
   // TODO: the follow and tag id needs to move to the parent container and used from there.
   fetchFollows(data)
     .then(() => {
-      document.getElementById(`follows-${followId}`).remove();
-      const currentNavigationItem = document.querySelector(
-        '.crayons-link--current .c-indicator',
-      );
-      const currentFollowingTagsCount = parseInt(
-        currentNavigationItem.innerHTML,
-      );
-      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      removeElementFromPage(followId);
+
+      // update the current navigation item count
+      updateNavigationItemCount();
+
+      // update the hidden tags navigation item
       const hiddenTagsNavigationItem = document.querySelector(
         '.js-hidden-tags-link .c-indicator',
       );
-      const currentHiddenTagsCount = parseInt(
-        hiddenTagsNavigationItem.innerHTML,
-      );
-      hiddenTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+      updateNavigationItemCount(hiddenTagsNavigationItem, 1);
     })
     .catch((error) => console.error(error));
 }
@@ -150,21 +138,27 @@ function handleUnhideButtonClick(target) {
 
   fetchFollows(data)
     .then(() => {
-      document.getElementById(`follows-${followId}`).remove();
-      const currentNavigationItem = document.querySelector(
-        '.crayons-link--current .c-indicator',
-      );
-      const currentFollowingTagsCount = parseInt(
-        currentNavigationItem.innerHTML,
-      );
-      currentNavigationItem.textContent = currentFollowingTagsCount - 1;
+      removeElementFromPage(followId);
+      // update the current navigation item count
+      updateNavigationItemCount();
+
+      // update the following tags navigation item
       const followingTagsNavigationItem = document.querySelector(
         '.js-following-tags-link .c-indicator',
       );
-      const currentHiddenTagsCount = parseInt(
-        followingTagsNavigationItem.innerHTML,
-      );
-      followingTagsNavigationItem.textContent = currentHiddenTagsCount + 1;
+      updateNavigationItemCount(followingTagsNavigationItem, 1);
     })
     .catch((error) => console.error(error));
+}
+
+function removeElementFromPage(followId) {
+  document.getElementById(`follows-${followId}`).remove();
+}
+
+function updateNavigationItemCount(
+  navItem = document.querySelector('.crayons-link--current .c-indicator'),
+  adjustment = -1,
+) {
+  const currentFollowingTagsCount = parseInt(navItem.innerHTML, 10);
+  navItem.textContent = currentFollowingTagsCount + adjustment;
 }
