@@ -22,18 +22,14 @@ describe('Dashboard: Hidden Tags', () => {
     cy.get('.dashboard__tag__container').should('have.length', 5);
 
     cy.intercept('/follows').as('followsRequest');
-    cy.findByRole('button', { name: 'Unhide tag: tag5' }).as(
-      'unhideButton',
-    );
+    cy.findByRole('button', { name: 'Unhide tag: tag5' }).as('unhideButton');
 
     cy.get('@unhideButton').click();
     cy.wait('@followsRequest');
 
     // it removes the item from the 'Hidden tags' page
     cy.get('.dashboard__tag__container').should('have.length', 4);
-    cy.findByRole('button', { name: 'Unhide tag: tag5' }).should(
-      'not.exist',
-    );
+    cy.findByRole('button', { name: 'Unhide tag: tag5' }).should('not.exist');
 
     // it decreases the count from the 'Hidden tags' nav item
     cy.get('.js-hidden-tags-link .c-indicator').as('hiddenTagsCount');
@@ -43,7 +39,6 @@ describe('Dashboard: Hidden Tags', () => {
     cy.get('.js-following-tags-link .c-indicator').as('followingTagsCount');
     cy.get('@followingTagsCount').should('contain', '6');
   });
-
 
   // TODO: add a test for the pagination
 });
