@@ -140,17 +140,7 @@ allButtons.forEach((button) => {
 });
 
 /**
- * Observes when there additions to the DOM(like when we paginate) within the wrapper
- */
-document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
-  observer.observe(tagContainer, {
-    childList: true,
-    subtree: true,
-  });
-});
-
-/**
- * When there is a change to the DOMTree, we fnd the added node and initializes the dropdown
+ * When there is a change to the DOMTree, we find the added node and initializes the dropdown
  */
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
@@ -166,6 +156,16 @@ const observer = new MutationObserver((mutationsList) => {
         }
       });
     }
+  });
+});
+
+/**
+ * Observes when there additions to the DOM(like when we paginate) within the wrapper
+ */
+document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
+  observer.observe(tagContainer, {
+    childList: true,
+    subtree: true,
   });
 });
 
