@@ -14,7 +14,6 @@ allButtons.forEach((button) => {
 
 listenForButtonClicks();
 
-// TODO: need to disconnect the observer
 const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === 'childList') {
@@ -30,6 +29,14 @@ const observer = new MutationObserver((mutationsList) => {
       });
     }
   });
+});
+
+InstantClick.on('change', () => {
+  observer.disconnect();
+});
+
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
 });
 
 document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
