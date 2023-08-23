@@ -1,50 +1,6 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
-/**
- * Initializes each dropdown within each card
- */
-const allButtons = document.querySelectorAll('.follow-button');
-allButtons.forEach((button) => {
-  const { tagId } = button.closest('.dashboard__tag__container').dataset;
-  initializeDropdown({
-    triggerElementId: `options-dropdown-trigger-${tagId}`,
-    dropdownContentId: `options-dropdown-${tagId}`,
-  });
-});
-
 listenForButtonClicks();
-
-const observer = new MutationObserver((mutationsList) => {
-  mutationsList.forEach((mutation) => {
-    if (mutation.type === 'childList') {
-      mutation.addedNodes.forEach((node) => {
-        // to remove options like #text '\n  '
-        if (node.hasChildNodes()) {
-          const { tagId } = node.closest('.dashboard__tag__container').dataset;
-          initializeDropdown({
-            triggerElementId: `options-dropdown-trigger-${tagId}`,
-            dropdownContentId: `options-dropdown-${tagId}`,
-          });
-        }
-      });
-    }
-  });
-});
-
-InstantClick.on('change', () => {
-  observer.disconnect();
-});
-
-window.addEventListener('beforeunload', () => {
-  observer.disconnect();
-});
-
-document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
-  observer.observe(tagContainer, {
-    childList: true,
-    subtree: true,
-  });
-});
 
 /**
  * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
@@ -118,7 +74,6 @@ function handleHideButtonClick(tagContainer) {
     explicit_points: -1,
   };
 
-  // TODO: the follow and tag id needs to move to the parent container and used from there.
   fetchFollows(data)
     .then(() => {
       removeElementFromPage(followId);
@@ -171,3 +126,53 @@ function updateNavigationItemCount(
   const currentFollowingTagsCount = parseInt(navItem.innerHTML, 10);
   navItem.textContent = currentFollowingTagsCount + adjustment;
 }
+
+/**
+ * Initializes the dropdown within each card
+ */
+const allButtons = document.querySelectorAll('.follow-button');
+allButtons.forEach((button) => {
+  const { tagId } = button.closest('.dashboard__tag__container').dataset;
+  initializeDropdown({
+    triggerElementId: `options-dropdown-trigger-${tagId}`,
+    dropdownContentId: `options-dropdown-${tagId}`,
+  });
+});
+
+/**
+ * Observes when there additions to the DOM(like when we paginate) within the wrapper
+ */
+document.querySelectorAll('#following-wrapper').forEach((tagContainer) => {
+  observer.observe(tagContainer, {
+    childList: true,
+    subtree: true,
+  });
+});
+
+/**
+ * When there is a change to the DOMTree, we fnd the added node and initializes the dropdown
+ */
+const observer = new MutationObserver((mutationsList) => {
+  mutationsList.forEach((mutation) => {
+    if (mutation.type === 'childList') {
+      mutation.addedNodes.forEach((node) => {
+        // to remove options like #text '\n  '
+        if (node.hasChildNodes()) {
+          const { tagId } = node.closest('.dashboard__tag__container').dataset;
+          initializeDropdown({
+            triggerElementId: `options-dropdown-trigger-${tagId}`,
+            dropdownContentId: `options-dropdown-${tagId}`,
+          });
+        }
+      });
+    }
+  });
+});
+
+InstantClick.on('change', () => {
+  observer.disconnect();
+});
+
+window.addEventListener('beforeunload', () => {
+  observer.disconnect();
+});
