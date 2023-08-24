@@ -136,8 +136,8 @@ module Articles
           .includes(:distinct_reaction_categories)
           .order(config.order_by.to_sql)
 
-        if @user.present? && (anti_tags = @user.cached_antifollowed_tag_names).any?
-          scope = scope.not_cached_tagged_with_any(anti_tags)
+        if @user.present? && (hidden_tags = @user.cached_antifollowed_tag_names).any?
+          scope = scope.not_cached_tagged_with_any(hidden_tags)
         end
 
         scope

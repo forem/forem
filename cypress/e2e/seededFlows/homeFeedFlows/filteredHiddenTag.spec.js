@@ -13,10 +13,10 @@ describe('Home Feed should not filter when logged-out', () => {
   });
 });
 
-describe('Home Feed should filter tagged article when logged-in as antitag user', () => {
+describe('Home Feed should filter tagged article when logged-in as user with hidden tags', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/antitagUser.json').as('user');
+    cy.fixture('users/hiddenTagUser.json').as('user');
 
     // Explicitly set the viewport to make sure we're in the full desktop view for these tests
     cy.viewport('macbook-15');
@@ -47,10 +47,10 @@ describe('Home Feed should not filter when logged-in as other user', () => {
   });
 });
 
-describe('Search should **not** filter tagged article even when logged-in as antitag user', () => {
+describe('Search should **not** filter tagged article even when logged-in as user with hidden tags', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/antitagUser.json').as('user');
+    cy.fixture('users/hiddenTagUser.json').as('user');
 
     // Explicitly set the viewport to make sure we're in the full desktop view for these tests
     cy.viewport('macbook-15');
@@ -69,10 +69,10 @@ describe('Search should **not** filter tagged article even when logged-in as ant
   });
 });
 
-describe('Tag view should **not** filter tagged article even when logged-in as antitag user', () => {
+describe('Tag view should **not** filter tagged article even when logged-in as user with hidden tags', () => {
   beforeEach(() => {
     cy.testSetup();
-    cy.fixture('users/antitagUser.json').as('user');
+    cy.fixture('users/hiddenTagUser.json').as('user');
 
     // Explicitly set the viewport to make sure we're in the full desktop view for these tests
     cy.viewport('macbook-15');
