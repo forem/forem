@@ -93,7 +93,7 @@
 
     <%# Checking if the user should see the "Adjust tags" dropdown %>
     <% if policy(@moderatable).allow_tag_adjustment? %>
-      <button aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
+      <button id="adjust-tags-button" aria-haspopup="true" aria-expanded="false" aria-controls="adjust-tags-options" class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags" aria-label="<%= t("views.moderations.actions.adjust.aria_label") %>">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
             <%= crayons_icon_tag("mod-filled", title: t("views.moderations.actions.adjust.icon")) %>
@@ -109,37 +109,100 @@
       </button>
 
       <div id="adjust-tags-options" class="adjust-tags-options dropdown-options hidden">
-        <% if policy(@moderatable).can_adjust_any_tag? %>
-          <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
-            <div class="add-tag-container">
-              <input id="admin-add-tag" class="crayons-textfield" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
-            </div>
-          <% end %>
-
-          <% @moderatable.tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
-              <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon subtract color-base-inverted">
+        <% @moderatable.tags.each do |tag| %>
+          <% moderatable_tag = @tag_moderator_tags.pluck(:name).include?(tag.name) || policy(@moderatable).can_adjust_any_tag? %>
+          <button
+            id="remove-tag-button-<%= tag.name %>"
+            class="adjustable-tag" type="button"
+            data-adjustment-type="subtract"
+            data-tag-name="<%= tag.name %>"
+            data-article-id="<%= @moderatable.id %>"
+            title="<%= moderatable_tag ? "" : "Not allowed to adjust this tag" %>">
+            <span class="num-sign">#</span><%= tag.name %>
+            <% if moderatable_tag %>
+              <div id="remove-tag-icon-<%= tag.name %>" class="circle centered-icon remove-icon hidden">
                 <%= crayons_icon_tag(:minus, title: t("views.moderations.actions.adjust.remove")) %>
               </div>
-            </button>
-          <% end %>
-        <% elsif policy(@moderatable).tag_moderator_eligible? %>
-          <% @tag_moderator_tags.each do |tag| %>
-            <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
-            <% subtract_or_plus_title = t("views.moderations.actions.adjust.#{subtract_or_plus == 'subtract' ? 'remove' : 'add'}") %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="<%= subtract_or_plus %>" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
-              <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon <%= subtract_or_plus %>">
-                <%= crayons_icon_tag(subtract_or_plus, title: subtract_or_plus_title) %>
+            <% end %>
+          </button>
+          <% if moderatable_tag %>
+            <div id="remove-tag-container-<%= tag.name %>" class="hidden">
+              <div id="adjustment-reason-container-<%= tag.name %>" class="reason-container">
+                <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason.remove_tag") %>" id="tag-removal-reason-<%= tag.name %>"></textarea>
+                <div class="flex gap-3 align-items-stretch">
+                  <button class="w-100 c-btn c-btn--primary c-btn--destructive" id="remove-tag-submit-<%= tag.name %>"><%= t("views.moderations.actions.adjust.remove") %></button>
+                  <button class="w-100 c-btn" id="cancel-remove-tag-button-<%= tag.name %>" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
+                </div>
               </div>
-            </button>
+            </div>
           <% end %>
         <% end %>
-        <form id="adjustment-reason-container" class="adjustment-reason-container">
-          <textarea class="crayons-textfield" placeholder="<%= t("views.moderations.actions.adjust.reason") %>" id="tag-adjustment-reason"></textarea>
-          <button class="crayons-btn" id="tag-adjust-submit" type="submit"><%= t("views.moderations.actions.adjust.submit") %></button>
-        </form>
+        <% if @moderatable.tag_list.size < Article::MAX_TAG_LIST_SIZE %>
+          <% if policy(@moderatable).can_adjust_any_tag? %>
+            <hr />
+            <button id="add-tag-button" data-testid="add-tag-button" class="add-tag" type="button">
+              <%= t("views.moderations.actions.adjust.add_tag.button_text") %>
+              <div class="circle centered-icon add-icon">
+                <%= crayons_icon_tag(:plus, title: t("views.moderations.actions.adjust.add_tag.icon")) %>
+              </div>
+            </button>
+            <div id="add-tag-container" class="hidden">
+              <div id="add-reason-container" class="reason-container">
+                <div class="add-tag-header"><%= t("views.moderations.actions.adjust.add_tag.header") %></div>
+                <input id="admin-add-tag" class="crayons-textfield mt-3" type="text" autocomplete="off" placeholder="<%= t("views.moderations.actions.adjust.add_placeholder") %>" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+                <textarea id="tag-add-reason" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
+                <div class="flex gap-3">
+                  <button class="w-100 c-btn c-btn--primary" disabled="disabled" id="tag-add-submit"><%= t("views.moderations.actions.adjust.add") %></button>
+                  <button class="w-100 c-btn" id="cancel-add-tag-button" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <% count = 0 %>
+            <% @tag_moderator_tags.each do |tag| %>
+              <% if !@moderatable.tags.pluck(:name).include?(tag.name) %>
+                <% count += 1 %>
+              <% end %>
+            <% end %>
+
+            <% if count > 0 %>
+              <hr />
+            <% end %>
+            <% @tag_moderator_tags.each do |tag| %>
+              <% if !@moderatable.tags.pluck(:name).include?(tag.name) %>
+                <button
+                  id="add-tag-button-<%= tag.name %>"
+                  class="adjustable-tag add-tag" type="button"
+                  data-adjustment-type="plus"
+                  data-tag-name="<%= tag.name %>"
+                  data-article-id="<%= @moderatable.id %>">
+                  <span class="num-sign">#</span><%= tag.name %>
+                  <div id="add-tag-icon-<%= tag.name %>" class="circle centered-icon add-icon">
+                    <%= crayons_icon_tag(:plus, title: t("views.moderations.actions.adjust.add")) %>
+                  </div>
+                </button>
+                <div id="add-tag-container-<%= tag.name %>" class="hidden">
+                  <div id="add-reason-container-<%= tag.name %>" class="reason-container">
+                    <textarea id="tag-add-reason-<%= tag.name %>" class="crayons-textfield mt-3" placeholder="<%= t("views.moderations.actions.adjust.reason.add_tag") %>"></textarea>
+                    <div class="flex gap-3">
+                      <button class="w-100 c-btn c-btn--primary" id="tag-add-submit-<%= tag.name %>"><%= t("views.moderations.actions.adjust.add") %></button>
+                      <button class="w-100 c-btn" id="cancel-add-tag-button-<%= tag.name %>" type="button"><%= t("views.moderations.actions.adjust.cancel") %></button>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% end %>
+          <hr />
+        <% else %>
+          <hr />
+          <span class="max-tags-text">
+            <%= crayons_icon_tag(:info, title: t("views.moderations.actions.adjust.maximum_tags.icon"), width: 18, height: 18) %>
+            <span>
+              <%= t("views.moderations.actions.adjust.maximum_tags.text") %>
+            </span>
+          </span>
+        <% end %>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="additional-subtext-section py-3">
             <%= t("views.moderations.actions.how") %>
