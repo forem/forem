@@ -41,8 +41,12 @@ describe('Moderation Tools for Posts', () => {
               .pipe(click)
               .should('have.attr', 'aria-expanded', 'true');
 
-            cy.findByRole('button', { name: '#tag1 Remove tag' }).click();
-            cy.findByRole('button', { name: 'Submit' }).click();
+            cy.findByText('tag1').click();
+            cy.findByPlaceholderText('Reason to remove tag (optional)').type(
+              'testing',
+            );
+
+            cy.findByRole('button', { name: 'Remove tag' }).click();
           });
 
           cy.findByTestId('snackbar').should('not.exist');

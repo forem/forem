@@ -1,6 +1,6 @@
 :root {
   color-scheme: dark;
-  
+
   --theme-secondary-color: #cedae2;
   --theme-container-background: #141f2d;
   --theme-container-accent-background: #202c3d;
@@ -352,6 +352,30 @@
 
   --selected-date-color: var(--body-color);
   --selected-range-color: var(--body-color-inverted);
+
+  /***********************************************
+  ** Tag Moderation ******************************
+  ***********************************************/
+
+  /* Tag item */
+  --tag-item-bg-hover: rgba(var(--indigo-900), 0.5);
+
+  /* Subtract */
+  --subtract-color: rgb(var(--red-200));
+  --subtract-color-hover: rgb(var(--white));
+  --subtract-bg: rgba(var(--red-600), 0.4);
+  --subtract-bg-hover: rgb(var(--red-600));
+
+  /* Plus */
+  --plus-color: rgb(var(--green-200));
+  --plus-color-hover: rgb(var(--white));
+  --plus-bg: rgba(var(--green-600), 0.4);
+  --plus-bg-hover: rgb(var(--green-600));
+
+  /* Tag name */
+  --tag-hash: rgb(var(--grey-500));
+  --tag-name: rgb(var(--grey-50));
+  --add-tag-hash: rgb(var(--grey-200));
 
   /***********************************************
   ** Utilities ***********************************

@@ -94,7 +94,7 @@ RSpec.describe "Moderations" do
         sign_in tag_mod
 
         get "#{article1.path}/actions_panel"
-        expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+        expect(response.body).to include "circle centered-icon remove-icon"
       end
 
       it "shows the option to add the tag when the article has the tag" do
@@ -102,7 +102,7 @@ RSpec.describe "Moderations" do
         sign_in tag_mod
 
         get "#{article2.path}/actions_panel"
-        expect(response.body).to include "circle centered-icon adjustment-icon plus"
+        expect(response.body).to include "circle centered-icon add-icon"
       end
     end
   end
@@ -133,7 +133,7 @@ RSpec.describe "Moderations" do
 
     it "shows the admin tag options", :aggregate_failures do
       expect(response.body).to include "admin-add-tag"
-      expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+      expect(response.body).to include "circle centered-icon remove-icon"
     end
   end
 
