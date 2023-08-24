@@ -225,6 +225,7 @@ Lint/MissingSuper:
   Enabled: true
   Exclude:
     - 'app/components/**/*.rb'
+    - 'app/policies/**/*.rb'
 
 Lint/MixedRegexpCaptureTypes:
   Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
