@@ -89,6 +89,7 @@ module Images
 
       options[:crop] = nil
       options[:fetch_format] = nil
+      options[:never_imagga] = nil
       options
     end
 
