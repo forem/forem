@@ -37,13 +37,13 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:no_tags) { create_billboard cached_tag_list: "" }
     let!(:mismatched) { create_billboard cached_tag_list: "career" }
 
-    it "will show no-tag display ads if the article tags do not contain matching tags" do
+    it "will show no-tag billboards if the article tags do not contain matching tags" do
       filtered = filter_billboards(article_id: 11, article_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
-    it "will show display ads with no tags set if there are no article tags" do
+    it "will show billboards with no tags set if there are no article tags" do
       filtered = filter_billboards(article_id: 11, article_tags: [])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
@@ -52,7 +52,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     context "when available ads have matching tags" do
       let!(:matching) { create_billboard cached_tag_list: "linux, git, go" }
 
-      it "will show the display ads that contain tags that match any of the article tags" do
+      it "will show the billboards that contain tags that match any of the article tags" do
         filtered = filter_billboards article_id: 11, article_tags: %w[linux productivity]
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
@@ -65,13 +65,13 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:no_tags) { create_billboard placement_area: "feed_first", cached_tag_list: "" }
     let!(:mismatched) { create_billboard placement_area: "feed_first", cached_tag_list: "career" }
 
-    it "will show no-tag display ads if the user tags do not contain matching tags" do
+    it "will show no-tag billboards if the user tags do not contain matching tags" do
       filtered = filter_billboards(area: "feed_first", user_tags: %w[javascript])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
     end
 
-    it "will show display ads with no tags set if there are no user tags" do
+    it "will show billboards with no tags set if there are no user tags" do
       filtered = filter_billboards(area: "feed_first", user_tags: [])
       expect(filtered).not_to include(mismatched)
       expect(filtered).to include(no_tags)
@@ -80,7 +80,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     context "when available ads have matching tags" do
       let!(:matching) { create_billboard placement_area: "feed_first", cached_tag_list: "linux, git, go" }
 
-      it "will show the display ads that contain tags that match any of the user tags" do
+      it "will show the billboards that contain tags that match any of the user tags" do
         filtered = filter_billboards area: "feed_first", user_tags: %w[linux productivity]
         expect(filtered).not_to include(mismatched)
         expect(filtered).to include(matching)
@@ -108,7 +108,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
     let!(:another_ex_article2) { create_billboard exclude_article_ids: "12,13" }
     let!(:no_excludes) { create_billboard }
 
-    it "will show display ads that exclude articles appropriately" do
+    it "will show billboards that exclude articles appropriately" do
       filtered = filter_billboards article_id: 11
       expect(filtered).to contain_exactly(another_ex_article2, no_excludes)
 
