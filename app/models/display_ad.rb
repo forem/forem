@@ -20,7 +20,7 @@ class DisplayAd < ApplicationRecord
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
 
-  MAX_TAG_LIST_SIZE = 10
+  MAX_TAG_LIST_SIZE = 25
   POST_WIDTH = 775
   SIDEBAR_WIDTH = 350
   LOW_IMPRESSION_COUNT = 1_000

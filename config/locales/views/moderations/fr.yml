@@ -19,9 +19,19 @@ fr:
           icon: Ajuster les étiquettes
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
-          reason: Raison de l'ajustement de l'étiquette (optionnel)
+          reason: 
+            remove_tag: Raison de supprimer la balise
+            add_tag: Raison d'ajouter la balise (optionnel)
           remove: Retirer l'étiquette
           submit: Soumettre
+          cancel: Annuler
+          maximum_tags:
+            icon: Info
+            text: Une publication ne peut avoir que quatre balises.
+          add_tag:
+            header: Ajouter une nouvelle balise
+            button_text: Ajouter une nouvelle balise
+            icon: Ajouter une étiquette
         approve:
           add: Marquer comme approuvé
           remove: Retirer l'approbation

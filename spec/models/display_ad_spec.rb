@@ -245,12 +245,12 @@ RSpec.describe DisplayAd do
 
   describe ".validate_tag" do
     it "rejects more than 10 tags" do
-      eleven_tags = "one, two, three, four, five, six, seven, eight, nine, ten, eleven"
+      twenty_six_tags = Array.new(26) { SecureRandom.alphanumeric(8) }.join(", ")
       expect(build(:billboard,
                    name: "This is a billboard",
                    body_markdown: "Billboard Body",
                    placement_area: "post_comments",
-                   tag_list: eleven_tags).valid?).to be(false)
+                   tag_list: twenty_six_tags).valid?).to be(false)
     end
 
     it "rejects tags with length > 30" do
