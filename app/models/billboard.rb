@@ -1,4 +1,4 @@
-class DisplayAd < ApplicationRecord
+class Billboard < ApplicationRecord
   include Taggable
   acts_as_taggable_on :tags
   resourcify
@@ -32,7 +32,7 @@ class DisplayAd < ApplicationRecord
   enum type_of: { in_house: 0, community: 1, external: 2 }
 
   belongs_to :organization, optional: true
-  has_many :billboard_events, dependent: :destroy
+  has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy
 
   validates :placement_area, presence: true,
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
@@ -59,6 +59,8 @@ class DisplayAd < ApplicationRecord
                      }
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
+
+  self.table_name = "display_ads"
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true

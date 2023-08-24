@@ -18,7 +18,7 @@ class BillboardEventsController < ApplicationMetalController
     billboard_event_id = billboard_event_params[:billboard_id]
 
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 15.minutes) do
-      @billboard = DisplayAd.find(billboard_event_id)
+      @billboard = Billboard.find(billboard_event_id)
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)

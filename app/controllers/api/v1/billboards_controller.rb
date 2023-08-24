@@ -8,30 +8,30 @@ module Api
       rescue_from ArgumentError, with: :error_unprocessable_entity
 
       def index
-        @billboards = DisplayAd.order(id: :desc).page(params[:page]).per(50)
+        @billboards = Billboard.order(id: :desc).page(params[:page]).per(50)
         @billboards = @billboards.search_ads(params[:search]) if params[:search].present?
         render json: @billboards
       end
 
       def show
-        @billboard = DisplayAd.find(params[:id])
+        @billboard = Billboard.find(params[:id])
         render json: @billboard
       end
 
       def create
-        @billboard = DisplayAd.new(permitted_params)
+        @billboard = Billboard.new(permitted_params)
         @billboard.save!
         render json: @billboard, status: :created
       end
 
       def update
-        @billboard = DisplayAd.find(params[:id])
+        @billboard = Billboard.find(params[:id])
         @billboard.update!(permitted_params)
         render json: @billboard
       end
 
       def unpublish
-        @billboard = DisplayAd.find(params[:id])
+        @billboard = Billboard.find(params[:id])
         result = @billboard.update(published: false)
         if result
           head :no_content
@@ -43,7 +43,7 @@ module Api
       private
 
       def require_admin
-        authorize DisplayAd, :access?, policy_class: InternalPolicy
+        authorize Billboard, :access?, policy_class: InternalPolicy
       end
 
       def permitted_params

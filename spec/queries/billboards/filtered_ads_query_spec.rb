@@ -15,7 +15,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
   def filter_billboards(**options)
     defaults = {
-      billboards: DisplayAd, area: placement_area, user_signed_in: false
+      billboards: Billboard, area: placement_area, user_signed_in: false
     }
     described_class.call(**options.reverse_merge(defaults))
   end

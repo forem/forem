@@ -1100,9 +1100,9 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(DisplayAd) do
+seeder.create_if_none(Billboard) do
   org_id = Organization.find_by(slug: "bachmanity").id
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a regular billboard</h1>",
     placement_area: "sidebar_left",
@@ -1111,7 +1111,7 @@ seeder.create_if_none(DisplayAd) do
     approved: true,
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard with a manually managed audience</h1>",
     placement_area: "sidebar_left",
@@ -1121,7 +1121,7 @@ seeder.create_if_none(DisplayAd) do
     audience_segment: AudienceSegment.where(type_of: :manual).first,
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard shown to people in Ontario</h1>",
     placement_area: "feed_first",
@@ -1131,7 +1131,7 @@ seeder.create_if_none(DisplayAd) do
     target_geolocations: "CA-ON",
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard shown to people in the US</h1>",
     placement_area: "feed_first",
