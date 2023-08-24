@@ -24,6 +24,10 @@
         <% if article.collection_id %>
           <strong class="fw-medium pl-2"><%= t("views.dashboard.article.series") %></strong> <%= article.series %>
         <% end %>
+        <% if article&.language %>
+          <strong class="fw-medium pl-2"><%= t("views.dashboard.article.language") %></strong>
+          <%= I18nData.languages(I18n.locale&.to_s&.upcase)[article.language&.upcase] %>
+        <% end %>
       </p>
     <% end %>
   </div>

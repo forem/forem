@@ -43,6 +43,7 @@ en:
         published: 'Published:'
         published_html: 'Published: %{date}'
         edited: 'Edited:'
+        language: 'Language: '
         edited_html: 'Edited: %{date}'
         series: 'Series:'
         series_html: "<strong>Series:</strong> %{series}"

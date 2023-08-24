@@ -90,6 +90,7 @@ gem "redis-actionpack", "~> 5.3.0" # Redis session store for ActionPack. Used fo
 gem "rpush", "~> 7.0" # Push Notification library for Rails
 gem "rpush-redis", "~> 1.1" # Redis module capability for rpush library
 
+gem "i18n_data", "~> 0.17.1"
 gem "request_store", "~> 1.5" # RequestStore gives you per-request global storage
 gem "reverse_markdown", "~> 2.1" # Map simple html back into markdown
 gem "rolify", "~> 6.0" # Very simple Roles library
