@@ -173,7 +173,7 @@ RSpec.describe DisplayAd do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_comments")
-      expect(FastImage).to have_received(:size).with(image_url, { timeout: 10 })
+      expect(FastImage).to have_received(:size).with(image_url, { http_header: { "User-Agent"=>"DEV(local) (http://forem.test)" }, :timeout=>10 })
       # width is billboard.prefix_width
       expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::POST_WIDTH)
       # Images::Optimizer.call(source, width: width)
