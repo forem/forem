@@ -43,8 +43,8 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection
-          img["width"], img["height"] = FastImage.size(src, timeout: 10, 
-http_header: { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" })
+          header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
+          img["width"], img["height"] = FastImage.size(src, timeout: 10, http_header: header)
         end
 
         img["loading"] = "lazy"

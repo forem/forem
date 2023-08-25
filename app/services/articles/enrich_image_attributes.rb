@@ -36,7 +36,7 @@ module Articles
 
         next if image.blank?
 
-        img_properties = FastImage.new(image, timeout: 10, http_header: fast_image_headers )
+        img_properties = FastImage.new(image, timeout: 10, http_header: fast_image_headers)
         img["width"], img["height"] = img_properties.size
         img["data-animated"] = true if img_properties.type == :gif
       end
