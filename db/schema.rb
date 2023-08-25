@@ -501,8 +501,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_083219) do
   end
 
   create_table "feed_events", force: :cascade do |t|
-    t.bigint "article_id"
-    t.integer "article_position"
+    t.bigint "article_id", null: false
+    t.integer "article_position", null: false
     t.integer "category", null: false
     t.string "context_type", null: false
     t.integer "counts_for", default: 1, null: false

@@ -19,7 +19,7 @@ RSpec.describe "FeedEvents" do
       end
 
       it "creates a feed click event" do
-        expect { post "/feed_events", params: { feed_event: event_params } }.to change(FeedEvent, :count).by(1)
+        expect { post "/feed_events", params: { feed_events: [event_params] } }.to change(FeedEvent, :count).by(1)
 
         expect(response).to be_successful
         expect(article.feed_events.first).to have_attributes(
@@ -32,7 +32,7 @@ RSpec.describe "FeedEvents" do
 
       it "creates a feed impression event" do
         params = event_params.merge(category: :impression)
-        expect { post "/feed_events", params: { feed_event: params } }.to change(FeedEvent, :count).by(1)
+        expect { post "/feed_events", params: { feed_events: [params] } }.to change(FeedEvent, :count).by(1)
 
         expect(response).to be_successful
         expect(article.feed_events.first.category).to eq("impression")
@@ -40,14 +40,14 @@ RSpec.describe "FeedEvents" do
 
       it "fails silently if passed invalid params" do
         params = event_params.merge(context_type: "not a real context type")
-        expect { post "/feed_events", params: { feed_event: params } }.not_to change(FeedEvent, :count)
+        expect { post "/feed_events", params: { feed_events: [params] } }.not_to change(FeedEvent, :count)
         expect(response).to be_successful
       end
     end
 
     context "when user is not signed in" do
       it "silently does not create an event" do
-        expect { post "/feed_events", params: { feed_event: event_params } }.not_to change(FeedEvent, :count)
+        expect { post "/feed_events", params: { feed_events: [event_params] } }.not_to change(FeedEvent, :count)
         expect(response).to be_successful
       end
     end

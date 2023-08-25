@@ -10,8 +10,7 @@ class FeedEventsController < ApplicationMetalController
 
   def create
     if session_current_user_id
-      options = single_feed_event_params.merge(user_id: session_current_user_id)
-      FeedEvent.create(options)
+      FeedEvents::BulkUpsert.call(feed_events_params)
     end
 
     head :ok
@@ -19,7 +18,9 @@ class FeedEventsController < ApplicationMetalController
 
   private
 
-  def single_feed_event_params
-    @single_feed_event_params ||= params[:feed_event]&.slice(*FEED_EVENT_ALLOWED_PARAMS)
+  def feed_events_params
+    @feed_events_params ||= params[:feed_events].map do |event|
+      event.slice(*FEED_EVENT_ALLOWED_PARAMS).merge(user_id: session_current_user_id)
+    end
   end
 end
