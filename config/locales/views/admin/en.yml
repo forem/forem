@@ -284,6 +284,7 @@ en:
               admin: Admin
               codeland_admin: Codeland Admin
               comment_suspended: Comment Suspended
+              limited: Limited
               creator: Creator
               mod_relations_admin: Mod Relations Admin
               super_moderator: Super Moderator
@@ -400,6 +401,7 @@ en:
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
+          Limited: Limited
           Suspended: Suspended
           Good Standing: Good Standing
           Good standing: Good standing
