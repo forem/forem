@@ -52,6 +52,8 @@ module Admin
         I18n.t("views.admin.users.statuses.Warned")
       elsif user.comment_suspended?
         I18n.t("views.admin.users.statuses.Comment Suspended")
+      elsif user.limited?
+        I18n.t("views.admin.users.statuses.Limited")
       elsif user.trusted?
         I18n.t("views.admin.users.statuses.Trusted")
       else
@@ -100,6 +102,8 @@ module Admin
       when "Warned"
         "#F59E0B"
       when "Comment Suspended"
+        "#DC2626"
+      when "Limited"
         "#DC2626"
       when "Trusted"
         "#059669"
