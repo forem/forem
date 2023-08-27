@@ -11,7 +11,7 @@ RSpec.describe "BillboardEvents" do
         sign_in user
       end
 
-      it "creates a display ad click event" do
+      it "creates a billboard click event" do
         post "/billboard_events", params: {
           billboard_event: {
             billboard_id: billboard.id,
@@ -22,7 +22,7 @@ RSpec.describe "BillboardEvents" do
         expect(billboard.reload.clicks_count).to eq(1)
       end
 
-      it "creates a display ad click event with old params" do
+      it "creates a billboard click event with old params" do
         post "/billboard_events", params: {
           display_ad_event: {
             display_ad_id: billboard.id,
@@ -33,7 +33,7 @@ RSpec.describe "BillboardEvents" do
         expect(billboard.reload.clicks_count).to eq(1)
       end
 
-      it "creates a display ad impression event" do
+      it "creates a billboard impression event" do
         post "/billboard_events", params: {
           billboard_event: {
             billboard_id: billboard.id,
@@ -44,7 +44,7 @@ RSpec.describe "BillboardEvents" do
         expect(billboard.reload.impressions_count).to eq(1)
       end
 
-      it "creates a display ad success rate" do
+      it "creates a billboard success rate" do
         ad_event_params = { billboard_id: billboard.id, context_type: BillboardEvent::CONTEXT_TYPE_HOME }
         impression_params = ad_event_params.merge(category: BillboardEvent::CATEGORY_IMPRESSION, user: user)
         create_list(:billboard_event, 4, impression_params)

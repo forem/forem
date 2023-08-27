@@ -30,7 +30,7 @@
     <% end %>
 
     <li>
-      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following_tags" %>"
+      <a class="crayons-link crayons-link--block js-following-tags-link <%= "crayons-link--current" if params[:action] == "following_tags" %>"
         href="<%= dashboard_following_tags_path %>"
         <%= params[:action] == "following_tags" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.following_tags") %>
@@ -83,7 +83,7 @@
     <%- end %>
 
     <li>
-      <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "hidden_tags" %>"
+      <a class="crayons-link crayons-link--block js-hidden-tags-link <%= "crayons-link--current" if params[:action] == "hidden_tags" %>"
         href="<%= dashboard_hidden_tags_path %>"
         <%= params[:action] == "hidden_tags" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.hidden_tags") %>

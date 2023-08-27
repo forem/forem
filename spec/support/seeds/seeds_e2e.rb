@@ -941,17 +941,24 @@ end
 ##############################################################################
 
 seeder.create_if_none(Tag) do
-  tags = %w[tag1 tag2]
-
-  tags.each do |tagname|
+  10.times do |i|
     tag = Tag.create!(
-      name: tagname,
+      name: "tag#{i}",
+      short_summary: Faker::Hipster.paragraph(sentence_count: 2),
       bg_color_hex: "#672c99",
       text_color_hex: Faker::Color.hex_color,
       supported: true,
     )
 
     admin_user.add_role(:tag_moderator, tag)
+
+    Follow.create(
+      followable_type: "ActsAsTaggableOn::Tag",
+      followable_id: tag.id,
+      follower_type: "User",
+      follower_id: admin_user.id,
+      explicit_points: i < 5 ? 1 : -1,
+    )
   end
 end
 

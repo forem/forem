@@ -133,6 +133,12 @@ describe Admin::UsersHelper do
       expect(status).to eq "Comment Suspended"
     end
 
+    it "renders the proper status for a user that is limited" do
+      limited_user = create(:user, :limited)
+      status = helper.user_status(limited_user)
+      expect(status).to eq "Limited"
+    end
+
     it "renders the proper status for a user that is trusted" do
       trusted_user = create(:user, :trusted)
       status = helper.user_status(trusted_user)
