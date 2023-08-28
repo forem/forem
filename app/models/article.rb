@@ -1011,7 +1011,7 @@ class Article < ApplicationRecord
   end
 
   def enrich_image_attributes
-    return unless saved_change_to_attribute?(:processed_html)
+    return unless saved_change_to_attribute?(:processed_html) || saved_change_to_attribute?(:main_image)
 
     ::Articles::EnrichImageAttributesWorker.perform_async(id)
   end
