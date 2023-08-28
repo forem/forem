@@ -29,6 +29,7 @@ function renderPage(currentUser) {
         const config = {
           following: following || hidden,
           hidden,
+          id: element.dataset.tagId,
         };
 
         render(
