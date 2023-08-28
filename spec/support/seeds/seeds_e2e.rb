@@ -967,6 +967,29 @@ Settings::General.sidebar_tags = %i[tag1]
 
 ##############################################################################
 
+seeder.create_if_doesnt_exist(User, "email", "not-a-fan@forem.local") do
+  antitagger = User.create!(
+    name: "Doesnt Like Tag1",
+    email: "not-a-fan@forem.local",
+    username: "not-a-fan",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  antitag1 = ActsAsTaggableOn::Tag.find_by(name: "tag1") || create(:tag, name: "tag1")
+  antitagger
+    .follows_by_type("ActsAsTaggableOn::Tag")
+    .create! followable: antitag1, explicit_points: -5.0
+end
+
+##############################################################################
+
 seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
   markdown = <<~MARKDOWN
     ---
