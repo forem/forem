@@ -65,6 +65,8 @@ module Moderator
         TagModerators::AddTrustedRole.call(user)
       when "Comment Suspended"
         comment_suspended
+      when "Limited"
+        limited
       when "Suspended" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
@@ -113,6 +115,11 @@ module Moderator
     def comment_suspended
       user.add_role(:comment_suspended)
       user.remove_role(:suspended)
+      remove_privileges
+    end
+
+    def limited
+      user.add_role(:limited)
       remove_privileges
     end
 

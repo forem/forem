@@ -284,6 +284,7 @@ en:
               admin: Admin
               codeland_admin: Codeland Admin
               comment_suspended: Comment Suspended
+              limited: Limited
               creator: Creator
               mod_relations_admin: Mod Relations Admin
               super_moderator: Super Moderator
@@ -389,7 +390,7 @@ en:
           "Resource Admin: Broadcast": "Resource Admin: Broadcast"
           "Resource Admin: Comment": "Resource Admin: Comment"
           "Resource Admin: Config": "Resource Admin: Config"
-          "Resource Admin: DisplayAd": "Resource Admin: DisplayAd"
+          "Resource Admin: Billboard": "Resource Admin: Billboard"
           "Resource Admin: DataUpdateScript": "Resource Admin: DataUpdateScript"
           "Resource Admin: FeedbackMessage": "Resource Admin: FeedbackMessage"
           "Resource Admin: HtmlVariant": "Resource Admin: HtmlVariant"
@@ -400,6 +401,7 @@ en:
         statuses:
           Warned: Warned
           Comment Suspended: Comment Suspended
+          Limited: Limited
           Suspended: Suspended
           Good Standing: Good Standing
           Good standing: Good standing

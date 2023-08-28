@@ -130,6 +130,14 @@ RSpec.describe "Admin::Users" do
       expect(Note.first.content).to eq("comment suspend this user")
     end
 
+    it "adds limited role" do
+      params = { user: { user_status: "Limited", note_for_current_role: "limited role added" } }
+      patch user_status_admin_user_path(user.id), params: params
+
+      expect(user.roles.first.name).to eq("limited")
+      expect(Note.first.content).to eq("limited role added")
+    end
+
     it "selects new role for user" do
       user.add_role(:trusted)
       user.reload

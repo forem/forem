@@ -4,7 +4,7 @@ class AudienceSegmentRefreshAllWorker
   sidekiq_options queue: :low_priority
 
   def perform
-    ids = DisplayAd.approved_and_published
+    ids = Billboard.approved_and_published
       .distinct(:audience_segment_id)
       .pluck(:audience_segment_id).compact
 

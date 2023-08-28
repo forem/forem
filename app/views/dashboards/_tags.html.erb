@@ -1,28 +1,51 @@
-<%= javascript_packs_with_chunks_tag "dashboardTagsDisableUnchangedButtons", defer: true %>
+<%= javascript_packs_with_chunks_tag "dashboardTags", defer: true %>
 
 <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-3 m:px-0">
   <% tags.each do |follow| %>
     <% tag = follow.followable %>
     <% if tag %>
-      <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center" style="border-top-color: <%= tag.bg_color_hex %>;" id="follows-<%= follow.id %>">
-        <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
-          <%= render_tag_link(tag.name) %>
-        </h3>
-
-        <p class="grid-cell__summary truncate-at-2 mb-4 fs-m h-50">
-          <%= strip_tags(tag.short_summary) %>
-        </p>
-
-        <%= fields(follow) do |f| %>
-          <%= f.hidden_field(:id, name: "follows[][id]", form: "follows_update_form", id: "follow_id_#{follow.followable}") %>
-          <%= f.number_field(:explicit_points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", name: "follows[][explicit_points]", form: "follows_update_form", "aria-label": t("views.dashboard.tags.number.aria_label", name: follow.followable),
-                                               id: "explicit_points_#{follow.followable}") %>
+      <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-<%= follow.id %>" data-follow-id="<%= follow.id %>" data-tag-id="<%= tag.id %>">
+        <div class="mb-1 flex items-center justify-between">
+          <h4 class="-ml-2">
+            <%= render_tag_link(tag.name) %>
+          </h4>
+          <div class="fs-xs color-base-60"><%= t("views.tags.published", count: number_with_delimiter(tag.taggings_count, delimiter: ",")) %></div>
+        </div>
+        <% if tag.short_summary.present? %>
+          <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
+
+        <div class="dashboard__tag__buttons-container">
+          <%# we could use positive explicit points %>
+          <% if page === "following" %>
+            <div class="flex justify-between">
+              <div>
+                <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag: <%= tag.name %>"><%= t("views.dashboard.tags.following_button") %></button>
+              </div>
+              <div class="dropdown-trigger-container relative">
+                <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-<%= tag.id %>" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+                  <%= crayons_icon_tag("overflow-horizontal", title: t("views.dashboard.tags.options.icon")) %>
+                </button>
+                <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-<%= tag.id %>">
+                  <ul class="p-0">
+                    <li>
+                      <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: <%= tag.name %>">
+                        <%= crayons_icon_tag("eye-off", width: 18, height: 18, title: t("views.dashboard.tags.options.hide")) %> <span class="ml-2"><%= t("views.dashboard.tags.options.hide") %></span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <% if page === "hidden" %>
+            <div>
+              <button class="crayons-btn crayons-btn--danger unhide-button" aria-label="Unhide tag: <%= tag.name %>"><%= t("views.dashboard.tags.unhide_button") %></button>
+            </div>
+          <% end %>
+        </div>
       </div>
     <% end %>
   <% end %>
 </div>
-
-<%= form_with url: bulk_update_follows_path, method: :patch, local: true, class: "sticky bg-base-inverted mt-3 pt-3 pl-3 pb-1 z-elevate", html: { style: "bottom: 0;margin-left:-1px" }, id: "follows_update_form" do |f| %>
-  <button type="submit" class="crayons-btn crayons-btn--m mb-3" name="commit"><%= t("views.dashboard.tags.update") %></button>
-<% end %>
