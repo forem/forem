@@ -89,7 +89,7 @@ RSpec.describe "Api::V1::Billboards" do
           post api_billboards_path,
                params: billboard_params.merge(target_geolocations: "US-FAKE").to_json,
                headers: auth_header
-        end.not_to change(DisplayAd, :count)
+        end.not_to change(Billboard, :count)
 
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
