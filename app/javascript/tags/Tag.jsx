@@ -3,9 +3,7 @@ import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 /* global browserStoreCache */
 
-export const Tag = ({config}) => {
-  // const { following, hidden } = config;
-  // maybe change following to follow?
+export const Tag = ({ config }) => {
   const [following, setFollowing] = useState(config.following);
   const [hidden, setHidden] = useState(config.hidden);
 
@@ -17,10 +15,18 @@ export const Tag = ({config}) => {
   const toggleFollowButton = () => {
     setFollowing(!following);
     browserStoreCache('remove');
-    postFollow();
+    postFollowItem({ following: !following, hidden });
   };
 
-  const postFollow = () => {
+  const toggleHideButton = () => {
+    setHidden(!hidden);
+    browserStoreCache('remove');
+    const updatedFollowing = true;
+    setFollowing(updatedFollowing);
+    postFollowItem({ hidden: !hidden, following: updatedFollowing });
+  };
+
+  const postFollowItem = ({ following, hidden }) => {
     fetch('/follows', {
       method: 'POST',
       headers: {
@@ -31,15 +37,15 @@ export const Tag = ({config}) => {
       body: JSON.stringify({
         followable_type: 'Tag',
         followable_id: id,
-        verb: 'follow',
+        verb: `${following ? '' : 'un'}follow`,
+        explicit_points: hidden ? -1 : 1,
       }),
       credentials: 'same-origin',
-    })
-      .then((response) => {
-        if (response.status !== 200) {
-          // TODO: handle error
-        }
-      });
+    }).then((response) => {
+      if (response.status !== 200) {
+        // TODO: handle error
+      }
+    });
   };
 
   if (!hidden) {
@@ -60,6 +66,7 @@ export const Tag = ({config}) => {
     <div>
       {followingButton}
       <button
+        onClick={toggleHideButton}
         className={`crayons-btn ${
           hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
         }`}
