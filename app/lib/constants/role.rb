@@ -22,7 +22,7 @@ module Constants
       "Resource Admin: Broadcast" => { name: "single_resource_admin", resource_type: "Broadcast" },
       "Resource Admin: Comment" => { name: "single_resource_admin", resource_type: "Comment" },
       "Resource Admin: Config" => { name: "single_resource_admin", resource_type: "Config" },
-      "Resource Admin: DisplayAd" => { name: "single_resource_admin", resource_type: "DisplayAd" },
+      "Resource Admin: Billboard" => { name: "single_resource_admin", resource_type: "Billboard" },
       "Resource Admin: DataUpdateScript" => { name: "single_resource_admin", resource_type: "DataUpdateScript" },
       "Resource Admin: FeedbackMessage" => { name: "single_resource_admin", resource_type: "FeedbackMessage" },
       "Resource Admin: HtmlVariant" => { name: "single_resource_admin", resource_type: "HtmlVariant" },

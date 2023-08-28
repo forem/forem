@@ -16,6 +16,7 @@ module Articles
     ].join(", ").freeze
 
     def self.call(article)
+      fast_image_headers = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
       parsed_html = Nokogiri::HTML.fragment(article.processed_html)
       main_image_height = default_image_height
 
@@ -35,13 +36,13 @@ module Articles
 
         next if image.blank?
 
-        img_properties = FastImage.new(image, timeout: 10)
+        img_properties = FastImage.new(image, timeout: 10, http_header: fast_image_headers)
         img["width"], img["height"] = img_properties.size
         img["data-animated"] = true if img_properties.type == :gif
       end
 
       if article.main_image && Settings::UserExperience.cover_image_fit == "limit"
-        main_image_size = FastImage.size(article.main_image, timeout: 15)
+        main_image_size = FastImage.size(article.main_image, timeout: 15, http_header: fast_image_headers)
         main_image_height = (main_image_size[1].to_f / main_image_size[0]) * 1000 if main_image_size
       end
 

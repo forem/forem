@@ -389,6 +389,21 @@ function paginate(tag, params, requiresApproval) {
   var homeEl = document.getElementById('index-container');
   if (homeEl.dataset.feed === 'base-feed') {
     searchHash.class_name = 'Article';
+    const isHomePageFeed = window.location.pathname == '/';
+    if (isHomePageFeed && userData()) {
+      const hidden_tags = JSON.parse(userData().followed_tags).reduce(function (
+        array,
+        tag,
+      ) {
+        if (tag.points < 0) {
+          array.push(tag.name);
+        }
+        return array;
+      },
+      []);
+
+      searchHash.hidden_tags = hidden_tags;
+    }
   } else if (homeEl.dataset.feed === 'latest') {
     searchHash.class_name = 'Article';
     searchHash.sort_by = 'published_at';

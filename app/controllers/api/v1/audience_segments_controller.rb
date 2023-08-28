@@ -34,7 +34,7 @@ module Api
       def destroy
         @segment = scope.find(params[:id])
 
-        if DisplayAd.where(audience_segment_id: @segment.id).any?
+        if Billboard.where(audience_segment_id: @segment.id).any?
           render json: { error: "Segments cannot be deleted while in use by any billboards" }, status: :conflict
         else
           @segment.segmented_users.in_batches.delete_all

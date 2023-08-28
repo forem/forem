@@ -19,6 +19,9 @@ module Articles
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))
+        if (hidden_tags = @user.cached_antifollowed_tag_names).any?
+          articles = articles.not_cached_tagged_with_any(hidden_tags)
+        end
         articles.sort_by.with_index do |article, index|
           tag_score = score_followed_tags(article)
           user_score = score_followed_user(article)
