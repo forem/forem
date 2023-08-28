@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-/* global browserStoreCache */
+/* global browserStoreCache  */
 
 export const Tag = ({ config }) => {
   const [following, setFollowing] = useState(config.following);

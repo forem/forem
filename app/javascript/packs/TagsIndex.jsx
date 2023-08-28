@@ -1,6 +1,8 @@
 import { h, render } from 'preact';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
+/* global showLoginModal  */
+
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
     return resolve();
@@ -45,16 +47,38 @@ function renderPage(currentUser) {
     });
 }
 
-document.ready.then(
+/**
+ * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
+ */
+function listenForFollowButtonClicks() {
+  document
+    .getElementById('page-content-inner')
+    .addEventListener('click', handleButtonClick);
+}
+
+function handleButtonClick() {
+  const trackingData = {
+    referring_source: 'tag',
+    trigger: 'follow_button',
+  };
+  showLoginModal(trackingData);
+}
+
+document.ready.then(() => {
+  const userStatus = document.body.getAttribute('data-user-status');
+  if (userStatus === 'logged-out') {
+    listenForFollowButtonClicks();
+    return;
+  }
+
   getUserDataAndCsrfToken()
     .then(({ currentUser, csrfToken }) => {
       window.currentUser = currentUser;
       window.csrfToken = csrfToken;
-
       renderPage(currentUser);
     })
     .catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
-    }),
-);
+    });
+});
