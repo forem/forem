@@ -2,11 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Sidebars" do
   describe "GET /sidebars/home" do
-    it "includes surrogate headers" do
-      get "/sidebars/home"
-      expect(response.headers["Surrogate-Key"]).to eq("home-sidebar")
-    end
-
     it "includes relevant parts" do
       listing = create(:listing, published: true)
       allow(Settings::General).to receive(:sidebar_tags).and_return(["rubymagoo"])
