@@ -39,6 +39,7 @@ fr:
           submit: Save
         markdown_html: "%{tag} is the name of the tag used in Markdown."
       follow: Suivre
+      hide: Hide
       following_tags: Sujets suivis
       moderator:
         text_html: "comma separated, space is optional. Example: %{code}"
