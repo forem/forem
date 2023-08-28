@@ -324,7 +324,7 @@ class Article < ApplicationRecord
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
            :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
-           :last_comment_at)
+           :last_comment_at, :main_image_height)
   }
 
   scope :limited_columns_internal_select, lambda {

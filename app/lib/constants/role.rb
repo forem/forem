@@ -3,6 +3,7 @@ module Constants
     BASE_ROLES_LABELS_TO_WHERE_CLAUSE = {
       "Warned" => { name: "warned", resource_type: nil },
       "Comment Suspended" => { name: "comment_suspended", resource_type: nil },
+      "Limited" => { name: "limited", resource_type: nil },
       "Suspended" => { name: "suspended", resource_type: nil },
       # This "role" is a weird amalgamation of multiple roles.
       "Good standing" => :good_standing,

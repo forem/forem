@@ -77,9 +77,8 @@ Object {
               <img
                 alt="Unbranded Home Loan Account"
                 class="crayons-article__cover__image__feed"
-                height="275"
                 src="/images/10.png"
-                width="650"
+                width="1000"
               />
             </a>
           </div>
@@ -346,9 +345,8 @@ Object {
             <img
               alt="Unbranded Home Loan Account"
               class="crayons-article__cover__image__feed"
-              height="275"
               src="/images/10.png"
-              width="650"
+              width="1000"
             />
           </a>
         </div>

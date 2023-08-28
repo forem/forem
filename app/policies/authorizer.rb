@@ -71,6 +71,10 @@ module Authorizer
       has_role?(:comment_suspended)
     end
 
+    def limited?
+      has_role?(:limited)
+    end
+
     def creator?
       has_role?(:creator)
     end

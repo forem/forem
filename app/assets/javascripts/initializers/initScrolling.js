@@ -140,20 +140,62 @@ function buildFollowsHTML(follows) {
  * @returns an HTML block for a tag follow.
  */
 function buildTagsHTML(tag) {
-  var antifollow = '';
-  if (tag.points < 0) {
-    antifollow =
-      '<span class="c-indicator c-indicator--danger" title="This tag has negative follow weight">Anti-follow</span>';
+  let followingButtonContainer = '';
+  let unhideButtonContainer = '';
+
+  if (tag.explicit_points < 0) {
+    unhideButtonContainer = `<div>
+        <button class="crayons-btn crayons-btn--danger unhide-button">Unhide</button>
+      </div>`;
   }
 
-  return `<div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article break-word content-center" style="border-top-color: ${tag.color};" id="follows-${tag.id}">
-    <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
+  if (tag.explicit_points >= 0) {
+    followingButtonContainer = `<div class="flex justify-between">
+      <div>
+        <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag:${tag.name}">Following</button>
+      </div>
+      <div class="dropdown-trigger-container relative">
+        <button type="button" aria-label="Unhide tag: ${tag.name}" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${tag.tag_id}" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="crayons-icon" role="img" aria-labelledby="arimcllskwkmbfpxyu52b8vzin20raon"><title id="arimcllskwkmbfpxyu52b8vzin20raon">Options</title><path fill-rule="evenodd" clip-rule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"></path></svg>
+        </button>
+        <div class="crayons-dropdown right-0 left-0 s:left-auto" id="options-dropdown-${tag.tag_id}">
+          <ul class="p-0">
+            <li>
+              <button type="button" class="hide-button c-btn w-100 align-left flex items-center" aria-label="Hide tag: ${tag.name}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" class="crayons-icon" role="img" aria-labelledby="avelns726vzvmu4rpqxq8olxhll9obh"><title id="avelns726vzvmu4rpqxq8olxhll9obh">Hide tag</title>
+                  <path d="M17.882 19.297A10.95 10.95 0 0 1 12 21c-5.392 0-9.878-3.88-10.82-9a10.982 10.982 0 0 1 3.34-6.066L1.393 2.808l1.415-1.415 19.799 19.8-1.415 1.414-3.31-3.31zM5.935 7.35A8.965 8.965 0 0 0 3.223 12a9.006 9.006 0 0 0 13.2 5.838l-2.027-2.028A4.5 4.5 0 0 1 8.19 9.604L5.935 7.35zm6.979 6.978-3.242-3.242a2.5 2.5 0 0 0 3.24 3.241l.002.001zm7.893 2.264-1.431-1.43a8.936 8.936 0 0 0 1.4-3.162A9.006 9.006 0 0 0 9.553 5.338L7.974 3.76A10.99 10.99 0 0 1 12 3c5.392 0 9.878 3.88 10.819 9a10.949 10.949 0 0 1-2.012 4.592zm-9.084-9.084a4.5 4.5 0 0 1 4.769 4.77l-4.77-4.77z"></path>
+                </svg>
+                <span class="ml-2">Hide tag</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  let short_summary = '';
+  if (tag.short_summary) {
+    short_summary = `<p class="mb-6 fs-s color-base-70 truncate-at-3">${tag.short_summary}</p>`;
+  }
+
+  // TODO: remove the data-follow-id and the data-tag-id in the child components
+  return `
+  <div class="dashboard__tag__container crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col single-article break-word content-center" id="follows-${
+    tag.id
+  }" data-follow-id="${tag.id}" data-tag-id="${tag.tag_id}">
+    <div class="mb-1 flex items-center justify-between">
+      <h4 class="-ml-2">
       <a href="/t/${tag.name}" class="crayons-tag crayons-tag--l">
         <span class="crayons-tag__prefix">#</span>${tag.name}
       </a>
-    </h3>
-    <input name="follows[][id]" id="follow_id_${tag.name}" type="hidden" form="follows_update_form" value="${tag.id}">
-    <input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" form="follows_update_form" value="${tag.explicit_points}" name="follows[][explicit_points]" id="follow_points_${tag.name}" aria-label="${tag.name} tag weight">
+      </h4>
+      <div class="fs-xs color-base-60">${tag.taggings_count.toLocaleString()} posts</div>
+    </div>
+    ${short_summary}
+
+    ${unhideButtonContainer}
+    ${followingButtonContainer}
   </div>`;
 }
 

@@ -21,7 +21,7 @@ RSpec.describe "dashboards/show" do
       assign(:user, create(:user))
       assign(:articles, [])
       render
-      expect(rendered).to match(%r{/w:300/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(rendered).to match(%r{/rt:fill/w:300/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 end

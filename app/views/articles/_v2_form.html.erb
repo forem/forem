@@ -41,6 +41,8 @@
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>"
   data-site-logo='<%= render "layouts/logo" %>'
+  data-cover-image-height="<%= Settings::UserExperience.cover_image_height %>"
+  data-cover-image-crop="<%= Settings::UserExperience.cover_image_fit %>"
   data-scheduling-enabled="<%= FeatureFlag.enabled?(:schedule_articles) %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 

@@ -417,6 +417,7 @@ class User < ApplicationRecord
     :auditable?,
     :banished?,
     :comment_suspended?,
+    :limited?,
     :creator?,
     :has_trusted_role?,
     :super_moderator?,
@@ -602,7 +603,7 @@ class User < ApplicationRecord
   end
 
   def set_username
-    self.username = username&.downcase&.presence || generate_username
+    self.username = username&.downcase.presence || generate_username
   end
 
   def auth_provider_usernames
