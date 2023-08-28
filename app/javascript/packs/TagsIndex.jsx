@@ -30,6 +30,7 @@ function renderPage(currentUser) {
           following: following || hidden,
           hidden,
           id: element.dataset.tagId,
+          name: element.dataset.tagName,
         };
 
         render(

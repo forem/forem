@@ -7,7 +7,7 @@ export const Tag = ({ config }) => {
   const [following, setFollowing] = useState(config.following);
   const [hidden, setHidden] = useState(config.hidden);
 
-  const { id } = config;
+  const { id, name } = config;
 
   let followingButton;
 
@@ -55,7 +55,8 @@ export const Tag = ({ config }) => {
         className={`crayons-btn ${
           following ? 'crayons-btn--outlined' : 'crayons-btn--primary'
         }`}
-        data-info='{"followStyle":"primary","id":39,"className":"Tag","name":"facebook"}'
+        aria-pressed={following}
+        aria-label={`${following ? 'Following' : 'Follow'} tag: ${name}`}
       >
         {following ? 'Following' : 'Follow'}
       </button>
@@ -70,7 +71,6 @@ export const Tag = ({ config }) => {
         className={`crayons-btn ${
           hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
         }`}
-        data-info='{"followStyle":"primary","id":39,"className":"Tag","name":"facebook"}'
       >
         {hidden ? 'Unhide' : 'Hide'}
       </button>
