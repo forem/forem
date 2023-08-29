@@ -64,13 +64,13 @@
             <div>
               <button
                 class="crayons-btn crayons-btn--primary follow-action-button"
-                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
+                aria-label="<%= t("views.tags.aria_labels.follow", tag_name: tag.name) %>">
                 <%= t("views.tags.follow") %>
               </button>
               <button
                 class="crayons-btn crayons-btn--ghost hide-action-button"
-                data-verb="hide"
-                data-info='{"id": <%= tag.id %>, "name": "<%= tag.name %>", "className": "Tag"}'>
+                aria-label="<%= t("views.tags.aria_labels.hide", tag_name: tag.name) %>">
+              >
                 <%= t("views.tags.hide") %>
               </button>
             </div>

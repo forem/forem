@@ -39,6 +39,9 @@ fr:
           submit: Save
         markdown_html: "%{tag} is the name of the tag used in Markdown."
       follow: Suivre
+      aria_labels:
+        follow: "Follow tag: %{tag_name}"
+        hide: "Hide tag: %{tag_name}"
       hide: Hide
       following_tags: Sujets suivis
       moderator:
