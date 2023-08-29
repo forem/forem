@@ -26,9 +26,9 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 
   const toggleHideButton = () => {
     setHidden(!hidden);
-    browserStoreCache('remove');
     const updatedFollowing = true;
     setFollowing(updatedFollowing);
+    browserStoreCache('remove');
     postFollowItem({ hidden: !hidden, following: updatedFollowing });
   };
 
