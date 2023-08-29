@@ -8,7 +8,7 @@
 <% end %>
 
 <% if !user_signed_in? %>
-  <% @sidebar_billboard_first = DisplayAd.for_display(area: "feed_first", user_signed_in: user_signed_in?) %>
+  <% @sidebar_billboard_first = Billboard.for_display(area: "feed_first", user_signed_in: user_signed_in?) %>
   <% if @sidebar_billboard_first %>
     <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_first, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
@@ -36,14 +36,14 @@
   <% if @stories.any? %>
     <% @stories.each_with_index do |story, i| %>
       <% if !user_signed_in? && i == second_billboard_position %>
-        <% @sidebar_billboard_second = DisplayAd.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
+        <% @sidebar_billboard_second = Billboard.for_display(area: "feed_second", user_signed_in: user_signed_in?) %>
         <% if @sidebar_billboard_second %>
           <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
         <% end %>
       <% end %>
 
       <% if !user_signed_in? && i == third_billboard_position %>
-        <% @sidebar_billboard_third = DisplayAd.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
+        <% @sidebar_billboard_third = Billboard.for_display(area: "feed_third", user_signed_in: user_signed_in?) %>
         <% if @sidebar_billboard_third %>
           <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard_third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
         <% end %>

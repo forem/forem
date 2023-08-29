@@ -941,22 +941,52 @@ end
 ##############################################################################
 
 seeder.create_if_none(Tag) do
-  tags = %w[tag1 tag2]
-
-  tags.each do |tagname|
+  10.times do |i|
     tag = Tag.create!(
-      name: tagname,
+      name: "tag#{i}",
+      short_summary: Faker::Hipster.paragraph(sentence_count: 2),
       bg_color_hex: "#672c99",
       text_color_hex: Faker::Color.hex_color,
       supported: true,
     )
 
     admin_user.add_role(:tag_moderator, tag)
+
+    Follow.create(
+      followable_type: "ActsAsTaggableOn::Tag",
+      followable_id: tag.id,
+      follower_type: "User",
+      follower_id: admin_user.id,
+      explicit_points: i < 5 ? 1 : -1,
+    )
   end
 end
 
 # Show the tag in the sidebar
 Settings::General.sidebar_tags = %i[tag1]
+
+##############################################################################
+
+seeder.create_if_doesnt_exist(User, "email", "not-a-fan@forem.local") do
+  antitagger = User.create!(
+    name: "Doesnt Like Tag1",
+    email: "not-a-fan@forem.local",
+    username: "not-a-fan",
+    profile_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+    confirmed_at: Time.current,
+    registered_at: Time.current,
+    password: "password",
+    password_confirmation: "password",
+    saw_onboarding: true,
+    checked_code_of_conduct: true,
+    checked_terms_and_conditions: true,
+  )
+
+  antitag1 = ActsAsTaggableOn::Tag.find_by(name: "tag1") || create(:tag, name: "tag1")
+  antitagger
+    .follows_by_type("ActsAsTaggableOn::Tag")
+    .create! followable: antitag1, explicit_points: -5.0
+end
 
 ##############################################################################
 
@@ -1093,9 +1123,9 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(DisplayAd) do
+seeder.create_if_none(Billboard) do
   org_id = Organization.find_by(slug: "bachmanity").id
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a regular billboard</h1>",
     placement_area: "sidebar_left",
@@ -1104,7 +1134,7 @@ seeder.create_if_none(DisplayAd) do
     approved: true,
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard with a manually managed audience</h1>",
     placement_area: "sidebar_left",
@@ -1114,7 +1144,7 @@ seeder.create_if_none(DisplayAd) do
     audience_segment: AudienceSegment.where(type_of: :manual).first,
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard shown to people in Ontario</h1>",
     placement_area: "feed_first",
@@ -1124,7 +1154,7 @@ seeder.create_if_none(DisplayAd) do
     target_geolocations: "CA-ON",
   )
 
-  DisplayAd.create!(
+  Billboard.create!(
     organization_id: org_id,
     body_markdown: "<h1>This is a billboard shown to people in the US</h1>",
     placement_area: "feed_first",

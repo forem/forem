@@ -220,7 +220,8 @@ describe('Post Editor', () => {
           cy.get('@articleForm')
             .findByRole('textbox', { name: 'Add up to 4 tags' })
             .as('postTags')
-            .type('tag1, tag2, tag3,');
+            .type('tag1, tag2, tag3,')
+            .type('{esc}');
 
           getPostContent()
             .should('have.value', `This is a Test Post's contents.`) // checking for original value first

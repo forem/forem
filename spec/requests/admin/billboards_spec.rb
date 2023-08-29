@@ -12,7 +12,7 @@ RSpec.describe "/admin/customization/billboards" do
   end
   let(:post_resource) { post admin_billboards_path, params: params }
 
-  it_behaves_like "an InternalPolicy dependant request", DisplayAd do
+  it_behaves_like "an InternalPolicy dependant request", Billboard do
     let(:request) { get_resource }
   end
 
@@ -50,7 +50,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "creates a new billboard" do
         expect do
           post_resource
-        end.to change { DisplayAd.all.count }.by(1)
+        end.to change { Billboard.all.count }.by(1)
       end
 
       it "busts sidebar" do
@@ -61,26 +61,26 @@ RSpec.describe "/admin/customization/billboards" do
 
       it "sets creator to current_user" do
         post_resource
-        expect(DisplayAd.last.creator_id).to eq(super_admin.id)
+        expect(Billboard.last.creator_id).to eq(super_admin.id)
       end
 
       it "fails to create a new billboard with invalid target geolocations" do
         expect do
           post admin_billboards_path, params: params.merge(target_geolocations: "US-UM, CA-UH")
-        end.not_to change { DisplayAd.all.count }
+        end.not_to change { Billboard.all.count }
       end
 
       it "creates a new billboard with no target geolocations" do
         expect do
           post admin_billboards_path, params: params.merge(target_geolocations: nil)
-        end.to change { DisplayAd.all.count }.by(1)
+        end.to change { Billboard.all.count }.by(1)
       end
     end
 
     describe "PUT /admin/customization/billboards" do
       let!(:billboard) { create(:billboard, approved: false) }
 
-      it "updates DisplayAd's approved value" do
+      it "updates Billboard's approved value" do
         Timecop.freeze(Time.current) do
           expect do
             put admin_billboard_path(billboard.id), params: params
@@ -88,7 +88,7 @@ RSpec.describe "/admin/customization/billboards" do
         end
       end
 
-      it "updates DisplayAd's priority value" do
+      it "updates Billboard's priority value" do
         Timecop.freeze(Time.current) do
           expect do
             put admin_billboard_path(billboard.id), params: params
@@ -108,13 +108,13 @@ RSpec.describe "/admin/customization/billboards" do
       it "deletes the Display Ad" do
         expect do
           delete admin_billboard_path(billboard.id)
-        end.to change { DisplayAd.all.count }.by(-1)
+        end.to change { Billboard.all.count }.by(-1)
       end
     end
   end
 
   context "when the user is a single resource admin" do
-    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: DisplayAd) }
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: Billboard) }
 
     before { sign_in single_resource_admin }
 
@@ -129,19 +129,19 @@ RSpec.describe "/admin/customization/billboards" do
       it "creates a new billboard" do
         expect do
           post_resource
-        end.to change { DisplayAd.all.count }.by(1)
+        end.to change { Billboard.all.count }.by(1)
       end
 
       it "sets creator to current_user" do
         post_resource
-        expect(DisplayAd.last.creator_id).to eq(single_resource_admin.id)
+        expect(Billboard.last.creator_id).to eq(single_resource_admin.id)
       end
     end
 
     describe "PUT /admin/customization/billboards" do
       let!(:billboard) { create(:billboard, approved: false) }
 
-      it "updates DisplayAd's approved value" do
+      it "updates Billboard's approved value" do
         Timecop.freeze(Time.current) do
           expect do
             put admin_billboard_path(billboard.id), params: params
@@ -156,7 +156,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "deletes the Display Ad" do
         expect do
           delete admin_billboard_path(billboard.id)
-        end.to change { DisplayAd.all.count }.by(-1)
+        end.to change { Billboard.all.count }.by(-1)
       end
     end
   end

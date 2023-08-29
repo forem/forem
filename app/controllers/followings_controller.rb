@@ -19,7 +19,7 @@ class FollowingsController < ApplicationController
                else
                  relation.where(explicit_points: (0...))
                end
-    relation = relation.order(explicit_points: :desc)
+    relation = relation.order(created_at: :desc)
     @followed_tags = load_follows_and_paginate(relation)
   end
 

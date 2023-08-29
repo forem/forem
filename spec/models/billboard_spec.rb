@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DisplayAd do
+RSpec.describe Billboard do
   let(:organization) { build(:organization) }
   let(:billboard) { build(:billboard, organization: nil) }
   let(:audience_segment) { create(:audience_segment) }
@@ -164,7 +164,7 @@ RSpec.describe DisplayAd do
 
   describe "#process_markdown" do
     # FastImage.size is called when synchronous_detail_detection: true is passed to Html::Parser#prefix_all_images
-    # which should be the case for DisplayAd
+    # which should be the case for Billboard
     # Images::Optimizer is also called with widht
     it "calls Html::Parser#prefix_all_images with parameters" do
       # Html::Parser.new(html).prefix_all_images(prefix_width, synchronous_detail_detection: true).html
@@ -173,9 +173,10 @@ RSpec.describe DisplayAd do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_comments")
-      expect(FastImage).to have_received(:size).with(image_url, { timeout: 10 })
+      options = { http_header: { "User-Agent" => "DEV(local) (http://forem.test)" }, timeout: 10 }
+      expect(FastImage).to have_received(:size).with(image_url, options)
       # width is billboard.prefix_width
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::POST_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH)
       # Images::Optimizer.call(source, width: width)
     end
 
@@ -185,7 +186,7 @@ RSpec.describe DisplayAd do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_sidebar")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::SIDEBAR_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::SIDEBAR_WIDTH)
     end
 
     it "uses post width for feed location" do
@@ -194,7 +195,7 @@ RSpec.describe DisplayAd do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "feed_second")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: DisplayAd::POST_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH)
     end
 
     it "keeps the same processed_html if markdown was not changed" do
@@ -445,7 +446,7 @@ RSpec.describe DisplayAd do
   end
 
   describe "seldom_seen scope" do
-    let(:low_impression_count) { DisplayAd::LOW_IMPRESSION_COUNT }
+    let(:low_impression_count) { Billboard::LOW_IMPRESSION_COUNT }
     let!(:low_impression_ad) { create(:billboard, impressions_count: low_impression_count - 1) }
     let!(:high_impression_ad) { create(:billboard, impressions_count: low_impression_count + 1) }
 
