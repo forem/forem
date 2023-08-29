@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
-/* global browserStoreCache  */
+/* global browserStoreCache */
 
 /**
  * Renders the updated buttons component for a given tag card
@@ -49,10 +49,14 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
       credentials: 'same-origin',
     }).then((response) => {
       if (response.status !== 200) {
-        // TODO: handle error
+        // TODO: replace this with an actual modal
+        alert('An error occurred');
       }
     });
   };
+
+  const hideButtonLabel = hidden ? 'Unhide' : 'Hide';
+  const followButtonLabel = following ? 'Following' : 'Follow';
 
   if (!hidden) {
     followingButton = (
@@ -62,14 +66,13 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
           following ? 'crayons-btn--outlined' : 'crayons-btn--primary'
         }`}
         aria-pressed={following}
-        aria-label={`${following ? 'Following' : 'Follow'} tag: ${name}`}
+        aria-label={`${followButtonLabel} tag: ${name}`}
       >
-        {following ? 'Following' : 'Follow'}
+        {followButtonLabel}
       </button>
     );
   }
 
-  // we can abstract out the conditionals above and below
   return (
     <div>
       {followingButton}
@@ -78,9 +81,9 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
         className={`crayons-btn ${
           hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
         }`}
-        aria-label={`${hidden ? 'Unhide' : 'Hide'} tag: ${name}`}
+        aria-label={`${hideButtonLabel} tag: ${name}`}
       >
-        {hidden ? 'Unhide' : 'Hide'}
+        {hideButtonLabel}
       </button>
     </div>
   );
