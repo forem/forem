@@ -93,6 +93,15 @@ describe('Show log in modal', () => {
     );
   });
 
+  it('should show login modal for tag hide button click', () => {
+    cy.visit('/tags');
+    cy.findByRole('heading', { name: 'Tags' });
+
+    verifyLoginModalBehavior(() =>
+      cy.findByRole('button', { name: 'Hide tag: tag1' }),
+    );
+  });
+
   it('should show login modal for user profile follow button click', () => {
     cy.visit('/admin_mcadmin');
     cy.get('[data-follow-clicks-initialized]');

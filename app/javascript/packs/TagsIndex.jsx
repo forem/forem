@@ -56,12 +56,24 @@ function listenForFollowButtonClicks() {
     .addEventListener('click', handleButtonClick);
 }
 
-function handleButtonClick() {
-  const trackingData = {
-    referring_source: 'tag',
-    trigger: 'follow_button',
-  };
-  showLoginModal(trackingData);
+function handleButtonClick({ target }) {
+  let trigger;
+
+  if (target.classList.contains('follow-action-button')) {
+    trigger = 'follow_button';
+  }
+
+  if (target.classList.contains('hide-action-button')) {
+    trigger = 'hide_button';
+  }
+
+  if (trigger) {
+    const trackingData = {
+      referring_source: 'tag',
+      trigger,
+    };
+    showLoginModal(trackingData);
+  }
 }
 
 document.ready.then(() => {
