@@ -54,7 +54,7 @@ Object {
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
-        data-feed-content-id="62407"
+        data-feed-content="true"
         id="featured-story-marker"
       >
         <a
@@ -323,7 +323,7 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
-      data-feed-content-id="62407"
+      data-feed-content="true"
       id="featured-story-marker"
     >
       <a

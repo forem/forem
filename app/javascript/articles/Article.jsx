@@ -54,7 +54,7 @@ export const Article = ({
         isFeatured ? ' crayons-story--featured' : ''
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
-      data-feed-content-id={isArticle ? article.id : ''}
+      data-feed-content={isArticle}
       data-content-user-id={article.user_id}
     >
       <a

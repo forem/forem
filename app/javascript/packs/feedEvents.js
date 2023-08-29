@@ -1,5 +1,13 @@
+const MAX_BATCH_SIZE = 20; // Maybe adjust?
+const SECONDS = 1000;
+const VISIBLE_THRESHOLD = 0.333;
+
 const FeedEvents = {
-  initialized: false,
+  queue: [],
+  processInterval: null,
+  observer: new IntersectionObserver(trackFeedImpressions, {
+    threshold: VISIBLE_THRESHOLD,
+  }),
 };
 
 /**
@@ -8,21 +16,21 @@ const FeedEvents = {
  */
 export function observeFeedElements() {
   const feedContainer = document.getElementById('index-container');
-  if (!feedContainer) return;
+  if (!feedContainer) {
+    // TODO: Cleanup logic?
+    return;
+  }
 
   const { feedCategoryClick, feedCategoryImpression, feedContextType } =
     feedContainer.dataset;
 
-  if (!FeedEvents.initialized) {
-    FeedEvents.categoryClick = feedCategoryClick;
-    FeedEvents.categoryImpression = feedCategoryImpression;
-    FeedEvents.contextType = feedContextType;
-    FeedEvents.observer ||= createImpressionsObserver();
-    FeedEvents.initialized = true;
-  } else {
-    // Clear existing subscriptions, if any
-    FeedEvents.observer.disconnect();
-  }
+  // Clear existing subscriptions, if any
+  FeedEvents.observer.disconnect();
+
+  FeedEvents.categoryClick = feedCategoryClick;
+  FeedEvents.categoryImpression = feedCategoryImpression;
+  FeedEvents.contextType = feedContextType;
+  FeedEvents.processInterval ||= setInterval(submitEventsBatch, 10 * SECONDS);
 
   // Recalculating the positions of the entire feed whenever new stories are
   // loaded in is expensive, but something I can return to.
@@ -31,7 +39,7 @@ export function observeFeedElements() {
   // Note that currently, each new page of stories is rendered into the last page,
   // not into its parent element.
   let position = 1;
-  feedContainer.querySelectorAll('[data-feed-content-id]').forEach((post) => {
+  feedContainer.querySelectorAll('[data-feed-content]').forEach((post) => {
     post.dataset.feedPosition = position;
     FeedEvents.observer.observe(post);
     post.addEventListener('click', trackFeedClickListener, true);
@@ -40,66 +48,68 @@ export function observeFeedElements() {
   });
 }
 
-function createImpressionsObserver() {
-  return new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      // At least a quarter of the card is in view; not quite enough to read the
-      // title for many articles, but it'll do
-      if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
-        queueMicrotask(() => {
-          trackFeedImpression(entry.target);
-        });
-      }
-    });
+/**
+ * Collects feed impressions, counted as at least a third of the article card
+ * coming into view. This is typically enough to at least see the title and/or
+ * a significant portion of the cover image.
+ * @param {IntersectionObserverEntry[]} entries
+ */
+function trackFeedImpressions(entries) {
+  entries.forEach((entry) => {
+    // At least a quarter of the card is in view; not quite enough to read the
+    // title for many articles, but it'll do
+    if (entry.isIntersecting && entry.intersectionRatio >= VISIBLE_THRESHOLD) {
+      queueMicrotask(() => {
+        const post = entry.target;
+        if (!post.dataset.impressionRecorded) {
+          queueEvent(post, FeedEvents.categoryImpression);
+          post.dataset.impressionRecorded = true;
+        }
+      });
+    }
   });
 }
 
-function trackFeedImpression(post) {
-  const { impressionRecorded, feedContentId, feedPosition } = post.dataset;
-  // TODO: Maybe don't swallow uninitialized FeedEvents.
-  if (impressionRecorded || !FeedEvents.initialized) return;
-
-  const impressionEvent = {
-    article_id: feedContentId,
-    article_position: feedPosition,
-    context_type: FeedEvents.contextType,
-    category: FeedEvents.categoryImpression,
-  };
-
-  submitRecord([impressionEvent]);
-
-  post.dataset.impressionRecorded = true;
-}
-
 /**
- * Sends single click events to the server immediately.
+ * Sends click events to the server immediately along with any currently-batched
+ * events.
  * These may not necessarily be clicks that open the article (e.g. the user may
  * have clicked on the author's profile image).
+ * TODO: Possible follow-up to filter these out?
  * @param {MouseEvent} event
  */
 function trackFeedClickListener(event) {
   const post = event.currentTarget;
-  const { clickRecorded, feedContentId, feedPosition } = post.dataset;
-  if (clickRecorded || !FeedEvents.initialized) return;
 
-  const clickEvent = {
-    article_id: feedContentId,
+  if (!post.dataset.clickRecorded) {
+    queueEvent(post, FeedEvents.categoryClick);
+    post.dataset.clickRecorded = true;
+    submitEventsBatch();
+  }
+}
+
+function queueEvent(post, category) {
+  const { id, feedPosition } = post.dataset;
+
+  FeedEvents.queue.push({
+    article_id: id,
     article_position: feedPosition,
+    category,
     context_type: FeedEvents.contextType,
-    category: FeedEvents.categoryClick,
-  };
+  });
 
-  submitRecord([clickEvent]);
-
-  post.dataset.clickRecorded = true;
+  if (FeedEvents.queue.length >= MAX_BATCH_SIZE) {
+    submitEventsBatch();
+  }
 }
 
 /**
- * Sends a batch of feed events to
- * @param {[object]} events The list of events to be recorded
+ * Sends a batch of feed events to the server.
+ * There is a possibility that a batch will be dropped/lost due to closing the
+ * tab etc, but that is mostly noise.
  */
-function submitRecord(feed_events) {
-  if (feed_events.length === 0) return;
+function submitEventsBatch() {
+  if (FeedEvents.queue.length === 0) return;
 
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta?.getAttribute('content');
@@ -111,8 +121,10 @@ function submitRecord(feed_events) {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ feed_events }),
+      body: JSON.stringify({ feed_events: FeedEvents.queue }),
       credentials: 'same-origin',
     })
     .catch((error) => console.error(error));
+
+  FeedEvents.queue = [];
 }
