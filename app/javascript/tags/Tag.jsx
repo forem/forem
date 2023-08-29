@@ -63,6 +63,7 @@ export const Tag = ({ config }) => {
     );
   }
 
+  // we can abstract out the conditionals above and below
   return (
     <div>
       {followingButton}
@@ -71,6 +72,7 @@ export const Tag = ({ config }) => {
         className={`crayons-btn ${
           hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
         }`}
+        aria-label={`${hidden ? 'Unhide' : 'Hide'} tag: ${name}`}
       >
         {hidden ? 'Unhide' : 'Hide'}
       </button>
