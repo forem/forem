@@ -11,7 +11,6 @@ export const Tag = ({ config }) => {
 
   let followingButton;
 
-  // TODO: handle click if logged out
   const toggleFollowButton = () => {
     setFollowing(!following);
     browserStoreCache('remove');
