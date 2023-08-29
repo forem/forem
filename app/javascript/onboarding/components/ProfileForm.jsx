@@ -196,6 +196,7 @@ export class ProfileForm extends Component {
             canSkip={canSkip}
             slidesCount={slidesCount}
             currentSlideIndex={currentSlideIndex}
+            hidePrev
           />
           {error && (
             <div role="alert" class="crayons-notice crayons-notice--danger m-2">
