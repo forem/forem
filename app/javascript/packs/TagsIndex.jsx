@@ -3,14 +3,6 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /* global showLoginModal  */
 
-Document.prototype.ready = new Promise((resolve) => {
-  if (document.readyState !== 'loading') {
-    return resolve();
-  }
-  document.addEventListener('DOMContentLoaded', () => resolve());
-  return null;
-});
-
 function renderPage(currentUser) {
   import('../tags/Tag')
     .then(({ Tag }) => {
@@ -46,7 +38,7 @@ function renderPage(currentUser) {
 /**
  * Adds an event listener to the inner page content, to handle any and all follow button clicks with a single handler
  */
-function listenForFollowButtonClicks() {
+function listenForButtonClicks() {
   document
     .getElementById('page-content-inner')
     .addEventListener('click', handleButtonClick);
@@ -75,7 +67,7 @@ function handleButtonClick({ target }) {
 document.ready.then(() => {
   const userStatus = document.body.getAttribute('data-user-status');
   if (userStatus === 'logged-out') {
-    listenForFollowButtonClicks();
+    listenForButtonClicks();
     return;
   }
 
@@ -89,4 +81,12 @@ document.ready.then(() => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
     });
+});
+
+Document.prototype.ready = new Promise((resolve) => {
+  if (document.readyState !== 'loading') {
+    return resolve();
+  }
+  document.addEventListener('DOMContentLoaded', () => resolve());
+  return null;
 });
