@@ -164,8 +164,8 @@ class Tag < ActsAsTaggableOn::Tag
         "tags.name",
         "tags.text_color_hex",
         "followings.points",
-        "followings.explicit_points",
-      ).joins(:followings)
+      )
+      .joins(:followings)
       .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
       .order(hotness_score: :desc)
   end

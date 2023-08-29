@@ -12,19 +12,15 @@ Document.prototype.ready = new Promise((resolve) => {
 });
 
 function renderPage(currentUser) {
-  // const dataElement = document.getElementById('tags-container');
   import('../tags/Tag')
     .then(({ Tag }) => {
       const tagCards = document.getElementsByClassName('tag-card');
 
-      // deal with if not logged in
       const followedTags = JSON.parse(currentUser.followed_tags);
-
       Array.from(tagCards).forEach((element) => {
         const followedTag = followedTags.find(
           (tag) => tag.id == element.dataset.tagId,
         );
-        // NOTE: this needs to be explicit points and not points
         const following = followedTag?.points >= 0;
         const hidden = followedTag?.points < 0;
 
