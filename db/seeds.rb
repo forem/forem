@@ -559,9 +559,9 @@ end
 
 ##############################################################################
 
-seeder.create_if_none(DisplayAd) do
-  DisplayAd::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
-    DisplayAd.create!(
+seeder.create_if_none(Billboard) do
+  Billboard::ALLOWED_PLACEMENT_AREAS.each do |placement_area|
+    Billboard.create!(
       name: "#{Faker::Lorem.word} #{placement_area}",
       body_markdown: Faker::Lorem.sentence,
       published: true,
@@ -571,12 +571,12 @@ seeder.create_if_none(DisplayAd) do
   end
 
   segment = AudienceSegment.create!(type_of: :manual)
-  DisplayAd.create!(
+  Billboard.create!(
     name: "#{Faker::Lorem.word} (Manually Managed Audience)",
     body_markdown: Faker::Lorem.sentence,
     published: true,
     approved: true,
-    placement_area: DisplayAd::ALLOWED_PLACEMENT_AREAS.sample,
+    placement_area: Billboard::ALLOWED_PLACEMENT_AREAS.sample,
     audience_segment: segment,
   )
 end

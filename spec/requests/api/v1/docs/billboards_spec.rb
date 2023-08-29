@@ -24,7 +24,7 @@ RSpec.describe "api/v1/billboards" do
 
         response(200, "successful") do
           schema type: :array,
-                 items: { "$ref": "#/components/schemas/DisplayAd" }
+                 items: { "$ref": "#/components/schemas/Billboard" }
           let(:"api-key") { api_secret.secret }
           add_examples
 
@@ -50,7 +50,7 @@ RSpec.describe "api/v1/billboards" do
         produces "application/json"
         consumes "application/json"
         parameter name: :billboard, in: :body, schema: { type: :object,
-                                                         items: { "$ref": "#/components/schemas/DisplayAd" } }
+                                                         items: { "$ref": "#/components/schemas/Billboard" } }
 
         let(:billboard) do
           {
@@ -68,7 +68,7 @@ RSpec.describe "api/v1/billboards" do
 
         response "201", "A billboard" do
           schema  type: :object,
-                  items: { "$ref": "#/components/schemas/DisplayAd" }
+                  items: { "$ref": "#/components/schemas/Billboard" }
           let(:"api-key") { api_secret.secret }
           add_examples
 
@@ -161,13 +161,13 @@ RSpec.describe "api/v1/billboards" do
                   example: 123
 
         parameter name: :billboard, in: :body, schema: { type: :object,
-                                                         items: { "$ref": "#/components/schemas/DisplayAd" } }
+                                                         items: { "$ref": "#/components/schemas/Billboard" } }
 
         let(:placement_area) { "post_comments" }
 
         response(200, "successful") do
           schema  type: :object,
-                  items: { "$ref": "#/components/schemas/DisplayAd" }
+                  items: { "$ref": "#/components/schemas/Billboard" }
           let(:"api-key") { api_secret.secret }
           let(:id) { billboard.id }
           add_examples

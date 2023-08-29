@@ -1543,7 +1543,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/DisplayAd"
+                    "$ref": "#/components/schemas/Billboard"
                   }
                 }
               }
@@ -1600,7 +1600,7 @@
                 "schema": {
                   "type": "object",
                   "items": {
-                    "$ref": "#/components/schemas/DisplayAd"
+                    "$ref": "#/components/schemas/Billboard"
                   }
                 }
               }
@@ -1635,7 +1635,7 @@
               "schema": {
                 "type": "object",
                 "items": {
-                  "$ref": "#/components/schemas/DisplayAd"
+                  "$ref": "#/components/schemas/Billboard"
                 }
               }
             }
@@ -1770,7 +1770,7 @@
                 "schema": {
                   "type": "object",
                   "items": {
-                    "$ref": "#/components/schemas/DisplayAd"
+                    "$ref": "#/components/schemas/Billboard"
                   }
                 }
               }
@@ -1805,7 +1805,7 @@
               "schema": {
                 "type": "object",
                 "items": {
-                  "$ref": "#/components/schemas/DisplayAd"
+                  "$ref": "#/components/schemas/Billboard"
                 }
               }
             }
@@ -4213,7 +4213,7 @@
           }
         }
       },
-      "DisplayAd": {
+      "Billboard": {
         "description": "A Display Ad, aka Billboard, aka Widget",
         "type": "object",
         "properties": {
