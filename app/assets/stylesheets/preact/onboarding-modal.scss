@@ -655,14 +655,11 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       align-items: center;
       padding: 0 var(--su-1);
       width: 100%;
+      display: inline-block;
 
       &:hover {
         background: var(--body-bg);
         cursor: pointer;
-      }
-
-      &:last-child {
-        margin-bottom: 0;
       }
 
       input[type='checkbox'] {
