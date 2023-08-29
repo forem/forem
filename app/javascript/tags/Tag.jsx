@@ -3,11 +3,18 @@ import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 /* global browserStoreCache  */
 
-export const Tag = ({ config }) => {
-  const [following, setFollowing] = useState(config.following);
-  const [hidden, setHidden] = useState(config.hidden);
-
-  const { id, name } = config;
+/**
+ * Renders the updated buttons component for a given tag card
+ * @param {number} props.id The id of the tag
+ * @param {string} props.name The name of the tag
+ * @param {boolean} props.isFollowing Whether the user is following the tag
+ * @param {string} props.isHidden Whether the tag is hidden
+ *
+ * @returns Updates the given Tag buttons (Follow and Hide) with the correct labels, buttons and actions.
+ */
+export const Tag = ({ id, name, isFollowing, isHidden }) => {
+  const [following, setFollowing] = useState(isFollowing);
+  const [hidden, setHidden] = useState(isHidden);
 
   let followingButton;
 
@@ -80,8 +87,8 @@ export const Tag = ({ config }) => {
 };
 
 Tag.propTypes = {
-  config: PropTypes.shape({
-    following: PropTypes.bool,
-    hidden: PropTypes.bool,
-  }).isRequired,
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  following: PropTypes.bool.isRequired,
+  hidden: PropTypes.bool.isRequired,
 };

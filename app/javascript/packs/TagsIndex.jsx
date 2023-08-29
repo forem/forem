@@ -16,15 +16,13 @@ function renderPage(currentUser) {
         const following = followedTag?.points >= 0;
         const hidden = followedTag?.points < 0;
 
-        const config = {
-          following: following || hidden,
-          hidden,
-          id: element.dataset.tagId,
-          name: element.dataset.tagName,
-        };
-
         render(
-          <Tag config={config} />,
+          <Tag
+            id={element.dataset.tagId}
+            name={element.dataset.tagName}
+            isFollowing={following || hidden}
+            isHidden={hidden}
+          />,
           document.getElementById(`tag-buttons-${element.dataset.tagId}`),
         );
       });
