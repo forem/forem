@@ -98,17 +98,11 @@ function trackFeedClickListener(event) {
  * Sends a batch of feed events to
  * @param {[object]} events The list of events to be recorded
  */
-function submitRecord(events) {
-  if (events.length === 0) return;
+function submitRecord(feed_events) {
+  if (feed_events.length === 0) return;
 
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta?.getAttribute('content');
-  const payload = {};
-  if (events.length === 1) {
-    payload.feed_event = events[0];
-  } else {
-    payload.feed_events = events;
-  }
 
   window
     .fetch('/feed_events', {
@@ -117,7 +111,7 @@ function submitRecord(events) {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ feed_events }),
       credentials: 'same-origin',
     })
     .catch((error) => console.error(error));

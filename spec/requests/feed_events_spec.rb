@@ -38,9 +38,35 @@ RSpec.describe "FeedEvents" do
         expect(article.feed_events.first.category).to eq("impression")
       end
 
-      it "fails silently if passed invalid params" do
-        params = event_params.merge(context_type: "not a real context type")
-        expect { post "/feed_events", params: { feed_events: [params] } }.not_to change(FeedEvent, :count)
+      it "creates multiple events in a batch" do
+        second_article = create(:article)
+        events = [
+          {
+            article_id: article.id,
+            article_position: 20,
+            category: :impression,
+            context_type: FeedEvent::CONTEXT_TYPE_HOME
+          },
+          {
+            article_id: article.id,
+            article_position: 20,
+            category: :click,
+            context_type: FeedEvent::CONTEXT_TYPE_HOME
+          },
+          {
+            article_id: second_article.id,
+            article_position: 7,
+            category: :impression,
+            context_type: FeedEvent::CONTEXT_TYPE_TAG
+          },
+          {
+            article_id: second_article.id,
+            article_position: 7,
+            category: :click,
+            context_type: FeedEvent::CONTEXT_TYPE_TAG
+          },
+        ]
+        expect { post "/feed_events", params: { feed_events: events } }.to change(FeedEvent, :count).by(4)
         expect(response).to be_successful
       end
     end

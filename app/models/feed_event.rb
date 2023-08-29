@@ -19,7 +19,9 @@ class FeedEvent < ApplicationRecord
     CONTEXT_TYPE_SEARCH,
     CONTEXT_TYPE_TAG,
   ].freeze
+  DEFAULT_TIMEBOX = 5.minutes.freeze
 
+  validates :article_position, numericality: { only_integer: true, greater_than: 0 }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
   # Since we have disabled association validation, this is handy to filter basic bad data
   validates :article_id, presence: true, numericality: { only_integer: true }
