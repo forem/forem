@@ -75,3 +75,4 @@ provision:
   - dip compose up -d postgres
   - dip compose up -d redis
   - dip bash -c bin/setup
+  - dip rails db:test:prepare RAILS_ENV=test
