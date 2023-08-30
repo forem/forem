@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
 
-import { UsernameInput } from '../UsernameInput/UsernameInput';
+import { UsernameInput } from '../UsernameInput';
 
 function fakeUsers() {
   return [
