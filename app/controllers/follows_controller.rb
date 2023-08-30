@@ -103,6 +103,7 @@ class FollowsController < ApplicationController
 
   def follow(followable, need_notification: false)
     user_follow = current_user.follow(followable)
+    user_follow.update!(explicit_points: params[:explicit_points]) if params[:explicit_points].present?
     Notification.send_new_follower_notification(user_follow) if need_notification
     I18n.t("follows_controller.followed")
   rescue ActiveRecord::RecordInvalid

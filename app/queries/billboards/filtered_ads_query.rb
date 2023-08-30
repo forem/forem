@@ -7,10 +7,10 @@ module Billboards
 
     # @param area [String] the site area where the ad is visible
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
-    # @param billboards [DisplayAd] can be a filtered scope or Arel relationship
+    # @param billboards [Billboard] can be a filtered scope or Arel relationship
     # @param location [Geolocation|String] the visitor's geographic location
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
-                   permit_adjacent_sponsors: true, article_id: nil, billboards: DisplayAd,
+                   permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil, user_tags: nil, location: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
@@ -118,7 +118,7 @@ module Billboards
     def type_of_ads
       # If this is an organization article and community-type ads exist, show them
       if @organization_id.present?
-        community = @filtered_billboards.where(type_of: DisplayAd.type_ofs[:community],
+        community = @filtered_billboards.where(type_of: Billboard.type_ofs[:community],
                                                organization_id: @organization_id)
         return community if community.any?
       end
@@ -135,7 +135,7 @@ module Billboards
         types_matching << :external
       end
 
-      @filtered_billboards.where(type_of: DisplayAd.type_ofs.slice(*types_matching).values)
+      @filtered_billboards.where(type_of: Billboard.type_ofs.slice(*types_matching).values)
     end
   end
 end

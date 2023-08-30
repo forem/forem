@@ -143,7 +143,7 @@ Rails.application.configure do
     # There were some warnings about eager loading the organization for a billboard, however since the code goes down
     # different paths (in_house where we don’t need the organization info vs external/community where we need the
     # organization info), bullet was getting confused on whether we need the eager loading or not.
-    Bullet.add_safelist(type: :unused_eager_loading, class_name: "DisplayAd", association: :organization)
+    Bullet.add_safelist(type: :unused_eager_loading, class_name: "Billboard", association: :organization)
 
     # TODO: Temporarily ignoring this while working out user - profile relationship
     Bullet.add_safelist(type: :n_plus_one_query, class_name: "User", association: :profile)

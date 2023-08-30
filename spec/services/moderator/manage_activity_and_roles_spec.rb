@@ -16,6 +16,17 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user.suspended?).to be false
   end
 
+  it "updates user status to limited" do
+    user.add_role(:limited)
+    user.reload
+    described_class.handle_user_roles(
+      admin: admin,
+      user: user,
+      user_params: { note_for_current_role: "limited user", user_status: "Limited" },
+    )
+    expect(user.limited?).to be true
+  end
+
   it "updates user to super admin" do
     described_class.handle_user_roles(
       admin: admin,

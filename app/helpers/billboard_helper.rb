@@ -1,6 +1,6 @@
 module BillboardHelper
   def billboards_placement_area_options_array
-    DisplayAd::ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE.zip(DisplayAd::ALLOWED_PLACEMENT_AREAS)
+    Billboard::ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE.zip(Billboard::ALLOWED_PLACEMENT_AREAS)
   end
 
   def automatic_audience_segments_options_array
@@ -20,9 +20,9 @@ module BillboardHelper
   #
   # @return [Boolean] true or false on whether the area is a targeted tag placement on the feed.
   #
-  # @note An area of "sidebar_left_2" will return false as it is not part of DisplayAd::HOME_FEED_PLACEMENTS
+  # @note An area of "sidebar_left_2" will return false as it is not part of Billboard::HOME_FEED_PLACEMENTS
   # whilst an area of "feed_first" will return false.
   def feed_targeted_tag_placement?(area)
-    DisplayAd::HOME_FEED_PLACEMENTS.include?(area)
+    Billboard::HOME_FEED_PLACEMENTS.include?(area)
   end
 end

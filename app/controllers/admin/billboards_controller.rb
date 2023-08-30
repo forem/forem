@@ -2,10 +2,8 @@ module Admin
   class BillboardsController < Admin::ApplicationController
     layout "admin"
 
-    after_action :bust_ad_caches, only: %i[create update destroy]
-
     def index
-      @billboards = DisplayAd.order(id: :desc)
+      @billboards = Billboard.order(id: :desc)
         .page(params[:page]).per(50)
 
       return if params[:search].blank?
@@ -14,15 +12,15 @@ module Admin
     end
 
     def new
-      @billboard = DisplayAd.new
+      @billboard = Billboard.new
     end
 
     def edit
-      @billboard = DisplayAd.find(params[:id])
+      @billboard = Billboard.find(params[:id])
     end
 
     def create
-      @billboard = DisplayAd.new(billboard_params)
+      @billboard = Billboard.new(billboard_params)
       @billboard.creator = current_user
 
       if @billboard.save
@@ -35,7 +33,7 @@ module Admin
     end
 
     def update
-      @billboard = DisplayAd.find(params[:id])
+      @billboard = Billboard.find(params[:id])
 
       if @billboard.update(billboard_params)
         flash[:success] = I18n.t("admin.billboards_controller.updated")
@@ -47,7 +45,7 @@ module Admin
     end
 
     def destroy
-      @billboard = DisplayAd.find(params[:id])
+      @billboard = Billboard.find(params[:id])
 
       if @billboard.destroy
         render json: { message: I18n.t("admin.billboards_controller.deleted") }, status: :ok
@@ -65,11 +63,7 @@ module Admin
     end
 
     def authorize_admin
-      authorize DisplayAd, :access?, policy_class: InternalPolicy
-    end
-
-    def bust_ad_caches
-      EdgeCache::BustSidebar.call
+      authorize Billboard, :access?, policy_class: InternalPolicy
     end
   end
 end

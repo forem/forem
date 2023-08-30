@@ -17,6 +17,7 @@ class Role < ApplicationRecord
     trusted
     warned
     workshop_pass
+    limited
   ].freeze
 
   ROLES.each do |role|

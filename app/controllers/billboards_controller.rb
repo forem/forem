@@ -19,7 +19,7 @@ class BillboardsController < ApplicationController
         @article = Article.find_by(slug: params[:slug])
       end
 
-      @billboard = DisplayAd.for_display(
+      @billboard = Billboard.for_display(
         area: placement_area,
         user_signed_in: user_signed_in?,
         user_id: current_user&.id,

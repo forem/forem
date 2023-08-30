@@ -46,6 +46,7 @@ class SearchController < ApplicationController
     :user_id,
     {
       tag_names: [],
+      hidden_tags: [],
       published_at: [:gte]
     },
   ].freeze
@@ -106,6 +107,7 @@ class SearchController < ApplicationController
           user_id: feed_params[:user_id],
           organization_id: feed_params[:organization_id],
           tags: feed_params[:tag_names],
+          hidden_tags: feed_params[:hidden_tags],
           sort_by: params[:sort_by],
           sort_direction: params[:sort_direction],
           page: params[:page],

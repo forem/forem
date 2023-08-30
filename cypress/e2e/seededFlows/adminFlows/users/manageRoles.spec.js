@@ -159,6 +159,25 @@ describe('Manage User Roles', () => {
         cy.findByRole('button', {
           name: 'Remove role: Comment Suspended',
         }).should('exist');
+
+        openRolesModal().within(() => {
+          cy.findByRole('combobox', { name: 'Role' }).select('Limited');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
+          cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.getModal().should('not.exist');
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
+        checkUserStatus('Warned');
+
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'exist',
+        );
+        cy.findByRole('button', {
+          name: 'Remove role: Limited',
+        }).should('exist');
       });
     });
   });

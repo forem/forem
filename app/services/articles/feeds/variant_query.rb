@@ -130,11 +130,17 @@ module Articles
         # This sub-query allows us to take the hard work of the hand-coded unsanitized sql and
         # create a sub-query that we can use to help ensure that we can use all of the ActiveRecord
         # goodness of scopes (e.g., limited_column_select) and eager includes.
-        Article.joins(join_fragment)
+        scope = Article.joins(join_fragment)
           .limited_column_select
           .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
           .order(config.order_by.to_sql)
+
+        if @user.present? && (hidden_tags = @user.cached_antifollowed_tag_names).any?
+          scope = scope.not_cached_tagged_with_any(hidden_tags)
+        end
+
+        scope
       end
 
       alias more_comments_minimal_weight_randomized call
