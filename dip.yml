@@ -69,12 +69,9 @@ interaction:
     command: redis-cli -h redis
 
 provision:
-  # We need the `|| true` part because some docker-compose versions
-  # cannot down a non-existent container without an error,
-  # see https://github.com/docker/compose/issues/9426
-  # - dip compose down --volumes || true
+  # You may include this command if you would like to remove all volumes
+  # - dip compose down --volumes
+  #
   - dip compose up -d postgres
   - dip compose up -d redis
   - dip bash -c bin/setup
-  # - dip rails db:test:prepare
-
