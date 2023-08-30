@@ -49,5 +49,37 @@ RSpec.describe Settings::General do
         expect { described_class.feed_pinned_article_id = article.id }.not_to raise_error
       end
     end
+
+    describe "validating :billboard_enabled_countries" do
+      it "does not accept non-hash or empty values" do
+        expect { described_class.billboard_enabled_countries = "string" }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { described_class.billboard_enabled_countries = [] }.to raise_error(ActiveRecord::RecordInvalid)
+        expect { described_class.billboard_enabled_countries = {} }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "accepts any valid ISO 3166-2 codes as keys" do
+        countries = ISO3166::Country.codes.sample(5).index_with { true }
+
+        expect { described_class.billboard_enabled_countries = countries }.not_to raise_error
+      end
+
+      it "does not accept invalid ISO 3166-2 codes as keys" do
+        countries = { "XX" => true, "ZZ" => true }
+
+        expect { described_class.billboard_enabled_countries = countries }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "allows 'with_regions' marker as values to enable region targeting" do
+        countries = { "CA" => "with_regions", "ZA" => "with_regions", "GB" => true }
+
+        expect { described_class.billboard_enabled_countries = countries }.not_to raise_error
+      end
+
+      it "does not allow arbitrary strings as values" do
+        countries = { "CA" => true, "US" => "string" }
+
+        expect { described_class.billboard_enabled_countries = countries }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 end

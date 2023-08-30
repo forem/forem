@@ -361,7 +361,7 @@ RSpec.describe Billboard do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("NOT-REAL is not a supported target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("NOT-REAL is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -370,7 +370,7 @@ RSpec.describe Billboard do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("CA-FAKE is not a supported target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("CA-FAKE is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -379,8 +379,8 @@ RSpec.describe Billboard do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("MX is not a supported target ISO 3166-2 code")
-        expect(billboard.errors_as_sentence).to include("NG is not a supported target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("MX is not an enabled target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("NG is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -388,7 +388,7 @@ RSpec.describe Billboard do
       let(:geo_input) { %w[FR-BRE NL GB US-CA] }
       let(:enabled_countries) do
         {
-          "US" => :with_regions,
+          "US" => "with_regions",
           "FR" => true,
           "NL" => true,
           "GB" => true
@@ -399,14 +399,14 @@ RSpec.describe Billboard do
         allow(Settings::General).to receive(:billboard_enabled_countries).and_return(enabled_countries)
 
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("FR-BRE is not a supported target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("FR-BRE is not an enabled target ISO 3166-2 code")
 
         # Remove faulty region targeting
         billboard.target_geolocations = %w[FR NL GB US-CA]
         expect(billboard).to be_valid
 
         # Allow French region targeting
-        enabled_countries["FR"] = :with_regions
+        enabled_countries["FR"] = "with_regions"
         billboard.target_geolocations = geo_input
         expect(billboard).to be_valid
       end

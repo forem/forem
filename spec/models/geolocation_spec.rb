@@ -63,7 +63,7 @@ RSpec.describe Geolocation do
         before do
           allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
             "US" => true,
-            "CA" => :with_regions,
+            "CA" => "with_regions",
           )
         end
 
