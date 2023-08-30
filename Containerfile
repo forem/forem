@@ -192,7 +192,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=tmpfs,target=/var/log \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-      vim \
       imagemagick
 
 # Configure bundler
