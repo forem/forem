@@ -54,16 +54,16 @@
               <% end %>
             </section>
           <% else %>
-            <section class="flex flex-row justify-between w-100 mb-4">
+            <section class="flex m:flex-row justify-between w-100 mb-4 flex-col">
               <% options = @organizations.pluck(:slug, :id).each do |arr| %>
                 <% arr[0] = "@#{arr[0]}" %>
                 <% arr[1] = "/settings/organization/#{arr[1]}" %>
               <% end %>
-              <%= tag.select(options_for_select(options, "/settings/organization/#{params[:org_id]}"), class: "crayons-select lh-tight w-25 align-text-top w-max", onchange: "window.location.href=this.value") %>
+              <%= tag.select(options_for_select(options, "/settings/organization/#{params[:org_id]}"), class: "crayons-select lh-tight m:w-25 align-text-top m:mb-0 m:w-max w-100 mb-2", onchange: "window.location.href=this.value") %>
               <%# For example: %>
               <%# <option value="/settings/organization/1>@devteam</option> %>
               <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-              <%= button_to url_for("/settings/organization/new"), class: "crayons-btn follow-action-button showing", method: :get do %>
+              <%= button_to url_for("/settings/organization/new"), class: "crayons-btn m:w-max w-100 follow-action-button showing", method: :get do %>
                 <%= t("views.settings.new_org") %>
               <% end %>
             </section>
