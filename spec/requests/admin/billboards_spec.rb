@@ -99,7 +99,7 @@ RSpec.describe "/admin/customization/billboards" do
     describe "DELETE /admin/billboards/:id" do
       let!(:billboard) { create(:billboard) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
         end.to change { Billboard.all.count }.by(-1)
@@ -147,7 +147,7 @@ RSpec.describe "/admin/customization/billboards" do
     describe "DELETE /admin/billboards/:id" do
       let!(:billboard) { create(:billboard) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
         end.to change { Billboard.all.count }.by(-1)
