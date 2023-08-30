@@ -1,3 +1,6 @@
+image:
+  file: .gitpod.dockerfile
+
 ports:
   - port: 3000
     onOpen: ignore
@@ -10,19 +13,17 @@ ports:
 
 tasks:
   - name: Forem Server
-    before: |
-      gem install dip
-      cp .env_sample .env
-      echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
-      echo 'APP_PROTOCOL="https://"' >> .env
-    init: dip provision
-    command: dip up web
+    before: >
+      redis-server &
+      gp ports await 5432 &&
+      sleep 1
+    init: ./gitpod-init.sh
+    command: bin/startup
   - name: Open Site
     command: >
       gp ports await 3000 &&
       printf "Waiting for local Forem development environment to load in the browser..." &&
-      gp preview $(gp url 3000) &&
-      exit
+      gp preview $(gp url 3000)
 
 github:
   prebuilds:
