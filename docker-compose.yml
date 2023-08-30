@@ -7,7 +7,7 @@ x-app: &app
       PG_MAJOR: '11'
       NODE_MAJOR: '16'
       YARN_VERSION: '1.22.18'
-  image: forem-dev:1.0.0
+  image: ghcr.io/maestromac/forem-dev:0.1.0
   environment: &env
     NODE_ENV: ${NODE_ENV:-development}
     RAILS_ENV: ${RAILS_ENV:-development}
