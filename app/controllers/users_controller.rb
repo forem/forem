@@ -257,6 +257,7 @@ class UsersController < ApplicationController
     @organizations = @current_user.organizations.order(name: :asc)
     if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
       @organization = Organization.new
+      @is_new_organization = true
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
       authorize @organization, :part_of_org?
