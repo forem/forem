@@ -150,7 +150,6 @@ CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 FROM base AS development
 
 ARG DISTRO_NAME=bullseye
-ARG RUBY_VERSION
 
 # Common dependencies
 # Using --mount to speed up build with caching, see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mount
@@ -178,7 +177,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
   DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
     libpq-dev \
-    postgresql-client-$PG_MAJOR
+    postgresql-client
+
+ARG NODE_MAJOR
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  --mount=type=tmpfs,target=/var/log \
+  curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash - && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    nodejs
 
 # Application dependencies
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \

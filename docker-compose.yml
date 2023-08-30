@@ -3,7 +3,6 @@ x-app: &app
     target: development
     context: .
     args:
-      RUBY_VERSION: '3.1.4'
       PG_MAJOR: '11'
       NODE_MAJOR: '16'
       YARN_VERSION: '1.22.18'
@@ -44,7 +43,6 @@ x-backend: &backend
     HISTFILE: /usr/local/hist/.bash_history
     PSQL_HISTFILE: /usr/local/hist/.psql_history
     IRB_HISTFILE: /usr/local/hist/.irb_history
-    EDITOR: vi
   depends_on:
     postgres:
       condition: service_healthy
