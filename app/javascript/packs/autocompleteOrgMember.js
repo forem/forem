@@ -20,11 +20,13 @@ document.ready.then(() => {
   for (const targetField of usernameFields) {
     if (targetField) {
       targetField.type = 'hidden';
+      const exceptAuthorId =
+        targetField.form.querySelector('#article_user_id').value;
       const inputId = `auto${targetField.id}`; //targetField.id;
       const fetchUrl = targetField.dataset.fetchUsers;
       const row = targetField.parentElement;
 
-      users.fetch(fetchUrl).then(() => {
+      users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
         const value = users.matchingIds(targetField.value.split(','));
         const fetchSuggestions = function (term) {
           return users.search(term);
