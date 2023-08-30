@@ -31,6 +31,7 @@
     <form accept-charset="UTF-8" method="get" action="<%= tags_path %>" role="search">
       <div class="crayons-fields crayons-fields--horizontal">
         <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
+        <%= link_to t("views.tags.hidden_tags"), dashboard_hidden_tags_path, class: "crayons-btn crayons-btn--ghost" %>
         <div class="crayons-field flex-1 relative">
           <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" aria-label="<%= t("views.tags.search.aria_labels.search_input") %>" name="q" placeholder="<%= t("views.tags.search.placeholder") %>" autocomplete="off" />
           <button type="submit" aria-label="<%= t("views.tags.search.aria_labels.submit") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
@@ -48,7 +49,7 @@
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-4 px-3 m:px-0 pb-3" data-follow-button-container="true">
       <% @tags.includes([:badge]).each do |tag| %>
-        <div class="tag-card crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
+        <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="tag-card crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
           <div>
             <div class="mb-1 flex items-center justify-between">
               <h4 class="-ml-2">
@@ -60,21 +61,28 @@
               <p class="mb-6 fs-s color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
             <% end %>
           </div>
-          <% if tag %>
-            <div class="mt-auto flex items-end justify-between">
+          <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
+            <div>
               <button
                 class="crayons-btn crayons-btn--primary follow-action-button"
-                data-info='<%= DataInfo.to_json(object: tag, class_name: "Tag", followStyle: "primary") %>'>
+                aria-label="<%= t("views.tags.aria_labels.follow", tag_name: tag.name) %>">
                 <%= t("views.tags.follow") %>
               </button>
-              <% if tag.badge_id && tag.badge %>
-                <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
-              <% end %>
+              <button
+                class="crayons-btn crayons-btn--ghost hide-action-button"
+                aria-label="<%= t("views.tags.aria_labels.hide", tag_name: tag.name) %>">
+                <%= t("views.tags.hide") %>
+              </button>
             </div>
-          <% end %>
+            <% if tag.badge_id && tag.badge %>
+              <img src="<%= optimized_image_url(tag.badge.badge_image_url, width: 180) %>" class="tag-card__badge" alt="" loading="lazy" />
+            <% end %>
+          </div>
+
         </div>
       <% end %>
     </div>
   <% end %>
 </main>
-<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+
+<%= javascript_packs_with_chunks_tag "TagsIndex", defer: true %>
