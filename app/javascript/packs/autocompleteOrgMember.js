@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { UsernameInput } from './UsernameInput/UsernameInput';
-import { UserStore } from './UserStore/UserStore';
+import { UserStore } from './UserStore';
 
 Document.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {

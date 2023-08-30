@@ -5,6 +5,7 @@ export class UserStore {
   }
 
   fetch(url, options) {
+    options ||= {};
     const { except } = options;
     const myStore = this;
     return new Promise((resolve, _reject) => {
