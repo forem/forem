@@ -22,7 +22,7 @@ document.ready.then(() => {
       targetField.type = 'hidden';
       const exceptAuthorId =
         targetField.form.querySelector('#article_user_id').value;
-      const inputId = `auto${targetField.id}`; //targetField.id;
+      const inputId = `auto${targetField.id}`;
       const fetchUrl = targetField.dataset.fetchUsers;
       const row = targetField.parentElement;
 
@@ -33,7 +33,6 @@ document.ready.then(() => {
         };
 
         const handleSelectionsChanged = function (ids) {
-          // console.log("IDs!", ids, row, `input[id=${inputId}]`, input)
           targetField.value = ids;
         };
 
