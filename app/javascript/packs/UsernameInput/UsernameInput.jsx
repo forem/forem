@@ -24,7 +24,7 @@ export const UsernameInput = ({
 
   return (
     <MultiSelectAutocomplete
-      allowUserDefinedSelections={true}
+      allowUserDefinedSelections={false}
       showLabel={false}
       border={true}
       inputId={inputId}
