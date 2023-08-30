@@ -28,12 +28,6 @@ export const DefaultSelectionTemplate = ({
     return {};
   };
 
-  const wrappedDeselect = function(event) {
-    event.stopPropagation();
-    onDeselect(event);
-    return false;
-  }
-
   return (
     <>
       {enableValidation && (
@@ -59,7 +53,7 @@ export const DefaultSelectionTemplate = ({
           variant={buttonVariant}
           className={`${className} p-1`}
           aria-label={`Remove ${name}`}
-          onClick={wrappedDeselect}
+          onClick={onDeselect}
         >
           <Icon src={Close} />
         </Button>
