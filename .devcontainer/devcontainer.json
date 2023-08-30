@@ -9,13 +9,13 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": "false"
     }
-  },
+  }
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "gem install dip && dip provision"
+  // "postCreateCommand": "gem install dip && dip provision"
 
   // Configure tool-specific properties.
   // "customizations": {},
