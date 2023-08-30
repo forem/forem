@@ -2,8 +2,6 @@ module Admin
   class BillboardsController < Admin::ApplicationController
     layout "admin"
 
-    after_action :bust_ad_caches, only: %i[create update destroy]
-
     def index
       @billboards = Billboard.order(id: :desc)
         .page(params[:page]).per(50)
@@ -66,10 +64,6 @@ module Admin
 
     def authorize_admin
       authorize Billboard, :access?, policy_class: InternalPolicy
-    end
-
-    def bust_ad_caches
-      EdgeCache::BustSidebar.call
     end
   end
 end

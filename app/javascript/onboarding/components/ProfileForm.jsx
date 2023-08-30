@@ -190,14 +190,6 @@ export class ProfileForm extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <Navigation
-            prev={prev}
-            next={this.onSubmit}
-            canSkip={canSkip}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-            hidePrev
-          />
           {error && (
             <div role="alert" class="crayons-notice crayons-notice--danger m-2">
               An error occurred: {errorMessage}
@@ -269,6 +261,14 @@ export class ProfileForm extends Component {
 
             {sections}
           </div>
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+            hidePrev
+          />
         </div>
       </div>
     );
