@@ -369,6 +369,9 @@ function insertArticles(articles) {
   );
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
+  if (window.observeFeedElements && articles.length > 0) {
+    window.observeFeedElements();
+  }
   if (nextPage > 0) {
     fetching = false;
   }

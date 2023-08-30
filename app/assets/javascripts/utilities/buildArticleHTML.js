@@ -381,7 +381,7 @@ function buildArticleHTML(article, currentUserId = null) {
 
     let feedContentAttribute = '';
     if (article.class_name === 'Article') {
-      feedContentAttribute = `data-feed-content="true"`;
+      feedContentAttribute = `data-feed-content-id="${article.id}"`;
     }
 
     return `<article class="crayons-story"
