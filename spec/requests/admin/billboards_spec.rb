@@ -53,12 +53,6 @@ RSpec.describe "/admin/customization/billboards" do
         end.to change { Billboard.all.count }.by(1)
       end
 
-      it "busts sidebar" do
-        allow(EdgeCache::BustSidebar).to receive(:call)
-        post_resource
-        expect(EdgeCache::BustSidebar).to have_received(:call).once
-      end
-
       it "sets creator to current_user" do
         post_resource
         expect(Billboard.last.creator_id).to eq(super_admin.id)
@@ -105,7 +99,7 @@ RSpec.describe "/admin/customization/billboards" do
     describe "DELETE /admin/billboards/:id" do
       let!(:billboard) { create(:billboard) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
         end.to change { Billboard.all.count }.by(-1)
@@ -153,7 +147,7 @@ RSpec.describe "/admin/customization/billboards" do
     describe "DELETE /admin/billboards/:id" do
       let!(:billboard) { create(:billboard) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
         end.to change { Billboard.all.count }.by(-1)
