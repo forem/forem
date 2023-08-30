@@ -24,10 +24,13 @@ export class UserStore {
 
   matchingIds(arrayOfIds) {
     const allUsers = this.users;
-    const someUsers = arrayOfIds.map((idString) => {
+    const someUsers = arrayOfIds.reduce((array, idString) => {
       const aUser = allUsers.find((user) => user.id == idString);
-      return typeof aUser != 'undefined' ? aUser : null;
-    });
+      if (typeof aUser != 'undefined') {
+        array.push(aUser);
+      }
+      return array;
+    }, []);
     return someUsers;
   }
 
