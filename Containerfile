@@ -151,7 +151,6 @@ FROM base AS development
 
 ARG DISTRO_NAME=bullseye
 ARG RUBY_VERSION
-ENV TMPDIR=/var/tmp
 
 # Common dependencies
 # Using --mount to speed up build with caching, see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mount
