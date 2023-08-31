@@ -3,7 +3,7 @@ x-app: &app
     target: development
     context: .
     args:
-      PG_MAJOR: '11'
+      PG_MAJOR: '13'
       NODE_MAJOR: '16'
       YARN_VERSION: '1.22.18'
   image: ghcr.io/forem/forem:development
@@ -70,7 +70,7 @@ services:
     command: bundle exec sidekiq
 
   postgres:
-    image: postgres:11
+    image: postgres:13
     volumes:
       - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
