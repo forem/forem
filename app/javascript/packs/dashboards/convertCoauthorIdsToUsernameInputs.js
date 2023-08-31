@@ -1,16 +1,9 @@
 import { h, render } from 'preact';
 import { UsernameInput } from '../../shared/components/UsernameInput';
 import { UserStore } from '../../shared/components/UserStore';
+import '@utilities/document_ready';
 
-Document.prototype.ready = new Promise((resolve) => {
-  if (document.readyState !== 'loading') {
-    return resolve();
-  }
-  document.addEventListener('DOMContentLoaded', () => resolve());
-  return null;
-});
-
-document.ready.then(() => {
+export async function convertCoauthorIdsToUsernameInputs() {
   const usernameFields = document.getElementsByClassName(
     'article_org_co_author_ids_list',
   );
@@ -26,7 +19,7 @@ document.ready.then(() => {
       const fetchUrl = targetField.dataset.fetchUsers;
       const row = targetField.parentElement;
 
-      users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
+      await users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
         const value = users.matchingIds(targetField.value.split(','));
         const fetchSuggestions = function (term) {
           return users.search(term);
@@ -51,4 +44,8 @@ document.ready.then(() => {
       });
     }
   }
+}
+
+document.ready.then(() => {
+  convertCoauthorIdsToUsernameInputs();
 });
