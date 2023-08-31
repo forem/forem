@@ -54,13 +54,11 @@ describe('convertCoauthorIdsToUsernameInputs', () => {
     `;
   });
 
-  // should call fetch
   it('calls fetch, with exception for author ID', async () => {
     await convertCoauthorIdsToUsernameInputs();
     expect(fetch).toHaveBeenCalledWith('/org7053/members.json');
   });
 
-  // should make the co-author field hidden
   it('makes the co-author field hidden', async () => {
     await convertCoauthorIdsToUsernameInputs();
     const co_author_field = document.getElementById(
@@ -69,7 +67,6 @@ describe('convertCoauthorIdsToUsernameInputs', () => {
     expect(co_author_field.type).toBe('hidden');
   });
 
-  // should set the inputID as "auto"+inputID
   it('render matching snapshot', async () => {
     await convertCoauthorIdsToUsernameInputs();
     expect(document.forms[0].innerHTML).toMatchSnapshot();
