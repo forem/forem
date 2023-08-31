@@ -197,13 +197,6 @@ export class FollowUsers extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <Navigation
-            prev={prev}
-            next={this.handleComplete}
-            canSkip={canSkip}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-          />
           <div className="onboarding-content toggle-bottom">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
@@ -271,6 +264,13 @@ export class FollowUsers extends Component {
               })}
             </fieldset>
           </div>
+          <Navigation
+            prev={prev}
+            next={this.handleComplete}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
         </div>
       </div>
     );

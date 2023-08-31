@@ -35,7 +35,7 @@
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
-    padding: var(--su-7) var(--su-8);
+    padding: var(--su-8);
   }
 }
 
@@ -97,10 +97,10 @@
   align-self: flex-end;
   flex-shrink: 0;
   width: 100%;
-  border-bottom: 2px solid #000;
+  border-top: 1px solid var(--divider);
 
   &.intro-slide {
-    border-bottom: none;
+    border-top: none;
   }
 
   .navigation-content {
