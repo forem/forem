@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -477,6 +477,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
     t.bigint "organization_id"
     t.string "placement_area"
     t.boolean "priority", default: false
+    t.float "priority_weight", default: 1.0, null: false
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
