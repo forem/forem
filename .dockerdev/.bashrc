@@ -1,1 +1,0 @@
-alias be="bundle exec"

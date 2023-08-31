@@ -28,7 +28,6 @@ x-backend: &backend
     - packs-test:/app/public/packs-test
     - history:/usr/local/hist
     - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
-    - ./.dockerdev/.bashrc:/root/.bashrc:ro
   environment: &backend_environment
     <<: *env
     REDIS_URL: redis://redis:6379/
