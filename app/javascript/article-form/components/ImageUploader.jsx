@@ -322,7 +322,7 @@ export const ImageUploader = ({
     let articleImageLinks = "";
 
         links.forEach(link => {
-          const formattedLink = `![Image description](${link})`;
+          const formattedLink = `![Image description](${link}) \n`;
 
           articleImageLinks = articleImageLinks + formattedLink;
         });
