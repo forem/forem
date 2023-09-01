@@ -105,9 +105,9 @@ class Billboard < ApplicationRecord
 
   def self.weighted_random_selection(relation)
     base_query = relation.to_sql
-    random_val = connection.select_value("SELECT RANDOM()").to_f
+    random_val = rand.to_f
 
-    record_attrs = connection.select_all(<<-SQL).first
+    query = <<-SQL
       WITH base AS (#{base_query}),
       weighted AS (
         SELECT *, priority_weight,
@@ -115,14 +115,13 @@ class Billboard < ApplicationRecord
         SUM(priority_weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
         FROM base
       )
-      SELECT *, running_weight, #{random_val} * total_weight AS random_value FROM weighted
-      WHERE running_weight >= #{random_val} * total_weight
+      SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+      WHERE running_weight >= ? * total_weight
       ORDER BY running_weight ASC
       LIMIT 1
     SQL
 
-    # Instantiate an ActiveRecord object from the raw attributes
-    record_attrs ? relation.model.instantiate(record_attrs) : nil
+    relation.find_by_sql([query, random_val, random_val]).first
   end
 
   # Temporary ENV configs, to eventually be replaced by permanent configurations
