@@ -11,38 +11,36 @@ export async function convertCoauthorIdsToUsernameInputs() {
   const users = new UserStore();
 
   for (const targetField of usernameFields) {
-    if (targetField) {
-      targetField.type = 'hidden';
-      const exceptAuthorId =
-        targetField.form.querySelector('#article_user_id').value;
-      const inputId = `auto${targetField.id}`;
-      const fetchUrl = targetField.dataset.fetchUsers;
-      const row = targetField.parentElement;
+    targetField.type = 'hidden';
+    const exceptAuthorId =
+      targetField.form.querySelector('#article_user_id').value;
+    const inputId = `auto${targetField.id}`;
+    const fetchUrl = targetField.dataset.fetchUsers;
+    const row = targetField.parentElement;
 
-      await users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
-        const value = users.matchingIds(targetField.value.split(','));
-        const fetchSuggestions = function (term) {
-          return users.search(term);
-        };
+    await users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
+      const value = users.matchingIds(targetField.value.split(','));
+      const fetchSuggestions = function (term) {
+        return users.search(term);
+      };
 
-        const handleSelectionsChanged = function (ids) {
-          targetField.value = ids;
-        };
+      const handleSelectionsChanged = function (ids) {
+        targetField.value = ids;
+      };
 
-        render(
-          <UsernameInput
-            labelText="Add up to 4"
-            placeholder="Add up to 4..."
-            maxSelections={4}
-            inputId={inputId}
-            defaultValue={value}
-            fetchSuggestions={fetchSuggestions}
-            handleSelectionsChanged={handleSelectionsChanged}
-          />,
-          row,
-        );
-      });
-    }
+      render(
+        <UsernameInput
+          labelText="Add up to 4"
+          placeholder="Add up to 4..."
+          maxSelections={4}
+          inputId={inputId}
+          defaultValue={value}
+          fetchSuggestions={fetchSuggestions}
+          handleSelectionsChanged={handleSelectionsChanged}
+        />,
+        row,
+      );
+    });
   }
 }
 
