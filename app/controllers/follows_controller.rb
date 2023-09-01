@@ -102,9 +102,16 @@ class FollowsController < ApplicationController
   end
 
   def follow(followable, need_notification: false)
-    user_follow = current_user.follow(followable)
-    user_follow.update!(explicit_points: params[:explicit_points]) if params[:explicit_points].present?
-    Notification.send_new_follower_notification(user_follow) if need_notification
+    user_follow = current_user.follows.find_by(followable: followable)
+
+    if user_follow.blank?
+      user_follow = current_user.follow(followable)
+      Notification.send_new_follower_notification(user_follow) if need_notification
+    end
+
+    if params[:explicit_points].present?
+      user_follow.update!(explicit_points: params[:explicit_points])
+    end
     I18n.t("follows_controller.followed")
   rescue ActiveRecord::RecordInvalid
     ForemStatsClient.increment("users.invalid_follow")
