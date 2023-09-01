@@ -1,5 +1,6 @@
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 
 import { convertCoauthorIdsToUsernameInputs } from '../dashboards/convertCoauthorIdsToUsernameInputs';
 
@@ -70,5 +71,17 @@ describe('convertCoauthorIdsToUsernameInputs', () => {
   it('render matching snapshot', async () => {
     await convertCoauthorIdsToUsernameInputs();
     expect(document.forms[0].innerHTML).toMatchSnapshot();
+  });
+
+  it('works as expected', async () => {
+    await convertCoauthorIdsToUsernameInputs();
+    const input = document.querySelector("input[placeholder='Add another...']");
+    input.focus();
+    await userEvent.type(input, 'Bob,');
+
+    const hiddenField = document.querySelector(
+      "input[name='article[co_author_ids_list]']",
+    );
+    expect(hiddenField.value).toBe('3, 2');
   });
 });
