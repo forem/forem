@@ -38,7 +38,12 @@ en:
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
       follow: Follow
+      hide: Hide
+      aria_labels:
+        follow: "Follow tag: %{tag_name}"
+        hide: "Hide tag: %{tag_name}"
       following_tags: Following tags
+      hidden_tags: Hidden tags
       moderator:
         text_html: "comma separated, space is optional. Example: %{code}"
         code: 123
