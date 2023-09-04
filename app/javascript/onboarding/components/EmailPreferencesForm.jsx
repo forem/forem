@@ -62,12 +62,6 @@ export class EmailPreferencesForm extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <Navigation
-            prev={prev}
-            next={this.onSubmit}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-          />
           <div className="onboarding-content terms-and-conditions-wrapper">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
@@ -111,6 +105,12 @@ export class EmailPreferencesForm extends Component {
               </fieldset>
             </form>
           </div>
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
         </div>
       </div>
     );

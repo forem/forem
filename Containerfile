@@ -147,19 +147,71 @@ ENTRYPOINT ["./scripts/entrypoint.sh"]
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
 ## Development
-FROM builder AS development
+FROM base AS development
 
-USER "${APP_USER}"
+# Common dependencies
+# Using --mount to speed up build with caching, see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mount
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  --mount=type=tmpfs,target=/var/log \
+  rm -f /etc/apt/apt.conf.d/docker-clean; \
+  echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache; \
+  apt-get update -qq && \
+  DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    build-essential \
+    gnupg2 \
+    curl \
+    less \
+    git
 
-COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
-COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
+ARG PG_MAJOR
+RUN curl -sSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgres-archive-keyring.gpg \
+  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/postgres-archive-keyring.gpg] https://apt.postgresql.org/pub/repos/apt/" \
+    $(lsb_release -cs)-pgdg main $PG_MAJOR | tee /etc/apt/sources.list.d/postgres.list > /dev/null
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  --mount=type=tmpfs,target=/var/log \
+  apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get -yq dist-upgrade && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    libpq-dev \
+    postgresql-client
 
-RUN bundle config --local build.sassc --disable-march-tune-native && \
-    bundle config --delete without && \
-    BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
-    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
-    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+ARG NODE_MAJOR
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  --mount=type=cache,target=/var/lib/apt,sharing=locked \
+  --mount=type=tmpfs,target=/var/log \
+  curl -sL https://deb.nodesource.com/setup_$NODE_MAJOR.x | bash - && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+    nodejs
 
-ENTRYPOINT ["./scripts/entrypoint.sh"]
+# Application dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=tmpfs,target=/var/log \
+    DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
+      imagemagick
 
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
+# Configure bundler
+ENV LANG=C.UTF-8 \
+  BUNDLE_JOBS=4 \
+  BUNDLE_RETRY=3
+
+# Store Bundler settings in the project's root
+ENV BUNDLE_APP_CONFIG=.bundle
+
+# Uncomment this line if you want to run binstubs without prefixing with `bin/` or `bundle exec`
+# ENV PATH /app/bin:$PATH
+
+# Upgrade RubyGems and install the latest Bundler version
+RUN gem update --system && \
+    gem install bundler
+
+# Create a directory for the app code
+RUN mkdir -p /app
+WORKDIR /app
+
+# Document that we're going to expose port 3000
+EXPOSE 3000
+# Use Bash as the default command
+CMD ["/usr/bin/bash"]

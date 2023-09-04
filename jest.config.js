@@ -3,6 +3,7 @@
 
 /* eslint-env node */
 
+process.env.NODE_ENV = 'test';
 process.env.TZ = 'UTC';
 
 module.exports = {

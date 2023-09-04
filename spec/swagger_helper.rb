@@ -399,10 +399,10 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             }
           },
           Billboard: {
-            description: "A Display Ad, aka Billboard, aka Widget",
+            description: "Billboard, aka Widget, ex. Display Ad",
             type: :object,
             properties: {
-              id: { type: :integer, description: "The ID of the Display Ad" },
+              id: { type: :integer, description: "The ID of the Billboard" },
               name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
               approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
