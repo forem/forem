@@ -62,8 +62,10 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
     followingButton = (
       <button
         onClick={toggleFollowButton}
-        className={`crayons-btn ${
-          following ? 'crayons-btn--outlined' : 'crayons-btn--primary'
+        className={`${
+          following
+            ? 'crayons-btn crayons-btn--outlined'
+            : 'c-btn c-btn--primary'
         }`}
         aria-pressed={following}
         aria-label={`${followButtonLabel} tag: ${name}`}
@@ -78,9 +80,7 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
       {followingButton}
       <button
         onClick={toggleHideButton}
-        className={`crayons-btn ${
-          hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
-        }`}
+        className={`c-btn ${hidden ? 'c-btn--primary c-btn--destructive' : ''}`}
         aria-label={`${hideButtonLabel} tag: ${name}`}
       >
         {hideButtonLabel}
