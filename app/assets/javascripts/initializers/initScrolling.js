@@ -145,7 +145,7 @@ function buildTagsHTML(tag) {
 
   if (tag.explicit_points < 0) {
     unhideButtonContainer = `<div>
-        <button class="crayons-btn crayons-btn--danger unhide-button">Unhide</button>
+        <button class="c-btn c-btn--primary c-btn--destructive unhide-button">Unhide</button>
       </div>`;
   }
 
