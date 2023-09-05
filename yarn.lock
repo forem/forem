@@ -3085,25 +3085,25 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@knapsack-pro/core@^4.1.0":
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-4.1.0.tgz#8bee9abdd355af09fe2eb7f29e416b8553415132"
-  integrity sha512-5DKJUXD/mDJowC7zaWjjmVBhYFpIJZ6yORVtEirO4ioToFQPUA0q3fHohkQbbmlJ7N1gQfFK01y2YXkaACbq/A==
+"@knapsack-pro/core@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/core/-/core-6.4.0.tgz#1c5cb44664ea08fc37baade9ca526f76d63b25cf"
+  integrity sha512-bgnL5dU/N9HwMfs/Xitea9MRqIUnzTn2xytaifeaNN8bpIKq9UUyiXF60OkWtKsrj4IOZAcVr80xwJHyUO3rJA==
   dependencies:
     axios "^0.27.2"
     axios-retry "^3.2.5"
     winston "^3.7.2"
 
-"@knapsack-pro/cypress@^5.6.0":
-  version "5.6.0"
-  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-5.6.0.tgz#b3e4a8acd616ca1f33c6c7e6c704814bc1f44cf1"
-  integrity sha512-czyiB5Ew90T9NqmrsYWQCBcXUDnFT2mcwdbNx1iz8cmgBoqDiBEhpoPYfKBEfGJ97OxiHDh8ddoFaJdxNWSgPw==
+"@knapsack-pro/cypress@^7.4.0":
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/@knapsack-pro/cypress/-/cypress-7.4.0.tgz#c7d557ef0330765468b227e44020bea42d73cb03"
+  integrity sha512-GTl12IaAgcQ1GLazTT167CGHoSuF2S616Yw010tlfaHZFhJ70lc3Kn/xRAgX9fZiCQKWhfdhEkst9cClze8Z8A==
   dependencies:
-    "@knapsack-pro/core" "^4.1.0"
+    "@knapsack-pro/core" "^6.4.0"
     glob "^8.1.0"
     minimatch "^5.1.4"
     minimist "^1.2.6"
-    uuid "^8.3.2"
+    uuid "^9.0.0"
 
 "@mapbox/node-pre-gyp@^1.0.0":
   version "1.0.10"
@@ -17737,6 +17737,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-compile-cache@^2.1.1:
   version "2.3.0"
