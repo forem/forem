@@ -28,7 +28,7 @@ class Organization < ApplicationRecord
   has_many :articles, dependent: :nullify
   has_many :collections, dependent: :nullify
   has_many :credits, dependent: :restrict_with_error
-  has_many :billboards, class_name: "DisplayAd", dependent: :destroy
+  has_many :billboards, class_name: "Billboard", dependent: :destroy
   has_many :listings, dependent: :destroy
   has_many :notifications, dependent: :delete_all
   has_many :organization_memberships, dependent: :delete_all
@@ -46,7 +46,7 @@ class Organization < ApplicationRecord
   validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
   validates :github_username, length: { maximum: 50 }
   validates :location, :email, length: { maximum: 64 }
-  validates :name, :summary, :url, :profile_image, presence: true
+  validates :name, :profile_image, presence: true
   validates :name, length: { maximum: 50 }
   validates :proof, length: { maximum: 1500 }
   validates :secret, length: { is: 100 }, allow_nil: true

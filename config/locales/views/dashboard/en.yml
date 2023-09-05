@@ -108,20 +108,19 @@ en:
         empty: You don't follow any podcasts yet...
       following_tags:
         heading: Dashboard » Following tags
-        adjust: Adjust the tag weight to modify your home feed. Higher values mean more appearances for that tag.
-        default: Default 1.0
         empty_html: "<span>Follow tags to personalize your feed. You can explore popular tags <a href=%{link}>here</a></span>."
       following_users:
         heading: Dashboard » Following users
         empty: You don't follow any users...
       hidden_tags:
         heading: Dashboard » Hidden tags
-        adjust: Adjust the tag weight to modify your home feed. Lower values mean fewer appearances for that tag.
         empty_html: "<span>You don't have any hidden tags...</span>"
       tags:
-        number:
-          aria_label: "%{name} tag weight"
-        update: Update Weights
+        following_button: Following
+        options:
+          icon: Options
+          hide: Hide tag
+        unhide_button: Unhide
       listings:
         meta:
           title: Listings Dashboard

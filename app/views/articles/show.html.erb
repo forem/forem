@@ -91,6 +91,7 @@
         data-pinned-article-id="<%= @pinned_article_id %>"
         data-published="<%= @article.published? %>"
         data-scheduled="<%= @article.scheduled? %>"
+        <%= @article.language? ? "lang=#{@article.language}" : " " %>
         <%= @article.pinned? ? "data-pinned" : " " %>>
         <header class="crayons-article__header" id="main-title">
           <% if @article.video.present? %>
@@ -99,8 +100,8 @@
             <a class="crayons-article__cover" href="<%= cloud_cover_url(@article.main_image) %>">
               <img
                 src="<%= cloud_cover_url(@article.main_image) %>"
-                style="aspect-ratio: auto 1000 / <%= @article.main_image_height%>;"
-                width="1000" height="<%= @article.main_image_height%>"
+                style="aspect-ratio: auto 1000 / <%= @article.main_image_height %>;"
+                width="1000" height="<%= @article.main_image_height %>"
                 class="crayons-article__cover__image" alt="Cover image for <%= @article.title %>">
             </a>
           <% end %>

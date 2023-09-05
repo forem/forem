@@ -400,3 +400,14 @@ $column-flex: 1;
     font-weight: bold;
   }
 }
+
+// dashboard pages
+.dashboard__tag__container {
+  height: 195px;
+  justify-content: space-between;
+
+  .crayons-tag {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}

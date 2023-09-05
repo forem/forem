@@ -228,7 +228,7 @@ RSpec.describe Tag do
       second_followed.update explicit_points: 0
 
       antifollowed = user.follow(antifollowed_tag)
-      antifollowed.update explicit_points: -5
+      antifollowed.update(explicit_points: -5, implicit_points: 6)
 
       other.follow(other_followed_tag)
     end

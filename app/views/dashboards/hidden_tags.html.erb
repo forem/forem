@@ -13,10 +13,7 @@
     </div>
     <div class="crayons-layout__content mb-5" id="user-dashboard">
       <% if @hidden_tags.any? %>
-        <div class="crayons-notice crayons-notice--info p-4 mx-3 s:mx-0 mb-3" aria-live="polite">
-          <%= t("views.dashboard.hidden_tags.adjust") %>
-        </div>
-        <%= render "tags", tags: @hidden_tags %>
+        <%= render "tags", tags: @hidden_tags, page: "hidden" %>
       <% else %>
         <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center"><%= t("views.dashboard.hidden_tags.empty_html", link: tags_path) %></div>
       <% end %>

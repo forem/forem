@@ -29,6 +29,7 @@ RSpec.describe Organization do
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
       it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(250) }
       it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
       it { is_expected.to validate_length_of(:twitter_username).is_at_most(15) }
@@ -39,9 +40,7 @@ RSpec.describe Organization do
       it { is_expected.to validate_presence_of(:profile_image) }
       it { is_expected.to validate_presence_of(:slug) }
       it { is_expected.to validate_presence_of(:spent_credits_count) }
-      it { is_expected.to validate_presence_of(:summary) }
       it { is_expected.to validate_presence_of(:unspent_credits_count) }
-      it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
       it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
 
@@ -407,7 +406,7 @@ RSpec.describe Organization do
 
     context "when the name or profile_image has not changed or the organization has no articles" do
       it "does not call SocialImageWorker.perform_async" do
-        expect(Images::SocialImageWorker).not_to receive(:perform_async)
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
         organization.save
       end
     end
@@ -417,7 +416,7 @@ RSpec.describe Organization do
         organization.articles.destroy_all
         organization.name = "New name for this org!!"
         organization.save
-        expect(Images::SocialImageWorker).not_to receive(:perform_async)
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
     end
   end

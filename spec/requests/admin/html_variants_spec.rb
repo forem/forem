@@ -66,7 +66,7 @@ RSpec.describe "/admin/customization/html_variants" do
     describe "DELETE /admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_html_variant_path(html_variant.id)
         end.to change { HtmlVariant.all.count }.by(-1)
@@ -110,7 +110,7 @@ RSpec.describe "/admin/customization/html_variants" do
     describe "DELETE /admin/customization/html_variants/:id" do
       let!(:html_variant) { create(:html_variant) }
 
-      it "deletes the Display Ad" do
+      it "deletes the Billboard" do
         expect do
           delete admin_html_variant_path(html_variant.id)
         end.to change { HtmlVariant.all.count }.by(-1)

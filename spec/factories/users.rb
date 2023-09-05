@@ -122,6 +122,10 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:comment_suspended) }
     end
 
+    trait :limited do
+      after(:build) { |user| user.add_role(:limited) }
+    end
+
     trait :invited do
       after(:build) do |user|
         user.registered = false

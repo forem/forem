@@ -398,18 +398,18 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               name: { type: :string, nullable: true }
             }
           },
-          DisplayAd: {
-            description: "A Display Ad, aka Billboard, aka Widget",
+          Billboard: {
+            description: "Billboard, aka Widget, ex. Display Ad",
             type: :object,
             properties: {
-              id: { type: :integer, description: "The ID of the Display Ad" },
+              id: { type: :integer, description: "The ID of the Billboard" },
               name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
               body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
               approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
               published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
               organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs", nullable: true },
               creator_id: { type: :integer, description: "Identifies the user who created the ad.", nullable: true },
-              placement_area: { type: :string, enum: DisplayAd::ALLOWED_PLACEMENT_AREAS,
+              placement_area: { type: :string, enum: Billboard::ALLOWED_PLACEMENT_AREAS,
                                 description: "Identifies which area of site layout the ad can appear in" },
               tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
               exclude_article_ids: { type: :string,
@@ -423,9 +423,9 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               target_geolocations: { type: :array,
                                      items: { type: :string },
                                      description: "Locations to show this billboard in (blank means it will be shown in all locations). Specified as a comma-separated list or array of ISO 3166-2 country and optionally region codes)" },
-              display_to: { type: :string, enum: DisplayAd.display_tos.keys, default: "all",
+              display_to: { type: :string, enum: Billboard.display_tos.keys, default: "all",
                             description: "Potentially limits visitors to whom the ad is visible" },
-              type_of: { type: :string, enum: DisplayAd.type_ofs.keys, default: "in_house",
+              type_of: { type: :string, enum: Billboard.type_ofs.keys, default: "in_house",
                          description: <<~DESCRIBE
                            Types of the billboards:
                            in_house (created by admins),
