@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { addSnackbarItem } from '../Snackbar';
+
 /* global browserStoreCache */
 
 /**
@@ -22,6 +24,10 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
     setFollowing(!following);
     browserStoreCache('remove');
     postFollowItem({ following: !following, hidden });
+    addSnackbarItem({
+      message: `You are ${following ? 'un' : ''}following ${name}.`,
+      addCloseButton: true,
+    });
   };
 
   const toggleHideButton = () => {
@@ -30,6 +36,10 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
     setFollowing(updatedFollowing);
     browserStoreCache('remove');
     postFollowItem({ hidden: !hidden, following: updatedFollowing });
+    addSnackbarItem({
+      message: `You have ${hidden ? 'un' : ''}hidden ${name}.`,
+      addCloseButton: true,
+    });
   };
 
   const postFollowItem = ({ following, hidden }) => {
