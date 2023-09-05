@@ -4,6 +4,6 @@ FactoryBot.define do
     sequence(:body_markdown) { |n| "Hello _hey_ Hey hey #{n}" }
     organization
     priority { false }
-    priority_weight { 1.0 }
+    weight { 1.0 }
   end
 end

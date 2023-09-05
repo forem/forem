@@ -497,11 +497,11 @@ RSpec.describe Billboard do
   describe ".weighted_random_selection" do
     it "samples with weights correctly" do
       described_class.delete_all
-      bb1 = create(:billboard, priority_weight: 5)
-      bb2 = create(:billboard, priority_weight: 1)
-      bb3 = create(:billboard, priority_weight: 1)
-      bb4 = create(:billboard, priority_weight: 2)
-      bb5 = create(:billboard, priority_weight: 1)
+      bb1 = create(:billboard, weight: 5)
+      bb2 = create(:billboard, weight: 1)
+      bb3 = create(:billboard, weight: 1)
+      bb4 = create(:billboard, weight: 2)
+      bb5 = create(:billboard, weight: 1)
 
       total_weight = 5 + 1 + 1 + 2 + 1 # 10
       expected_probabilities = {

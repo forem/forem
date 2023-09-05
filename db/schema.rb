@@ -477,13 +477,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
     t.bigint "organization_id"
     t.string "placement_area"
     t.boolean "priority", default: false
-    t.float "priority_weight", default: 1.0, null: false
     t.text "processed_html"
     t.boolean "published", default: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"

@@ -38,7 +38,7 @@ class Billboard < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
-  validates :priority_weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
+  validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
@@ -110,9 +110,9 @@ class Billboard < ApplicationRecord
     query = <<-SQL
       WITH base AS (#{base_query}),
       weighted AS (
-        SELECT *, priority_weight,
-        SUM(priority_weight) OVER () AS total_weight,
-        SUM(priority_weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+        SELECT *, weight,
+        SUM(weight) OVER () AS total_weight,
+        SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
         FROM base
       )
       SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
