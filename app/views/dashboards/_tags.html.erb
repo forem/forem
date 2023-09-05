@@ -19,7 +19,7 @@
           <% if page === "following" %>
             <div class="flex justify-between">
               <div>
-                <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag: <%= tag.name %>"><%= t("views.dashboard.tags.following_button") %></button>
+                <button class="crayons-btn crayons-btn--outlined follow-button" aria-label="Following tag: <%= tag.name %>"><%= t("views.dashboard.tags.following_button") %></button>
               </div>
               <div class="dropdown-trigger-container relative">
                 <button type="button" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-<%= tag.id %>" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">
