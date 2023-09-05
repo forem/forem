@@ -135,6 +135,7 @@ class Article < ApplicationRecord
   # `dependent: :destroy` because in RatingVote we're relying on
   #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
+  has_many :tag_adjustments
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -612,6 +613,10 @@ class Article < ApplicationRecord
 
   def privileged_reaction_counts
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
+  end
+
+  def ordered_tag_adjustments
+    tag_adjustments.includes(:user).order(:created_at).reverse
   end
 
   private
