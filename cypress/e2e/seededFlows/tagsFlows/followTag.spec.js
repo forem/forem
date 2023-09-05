@@ -21,11 +21,19 @@ describe('Follow tag', () => {
       cy.get('@followButton').should('have.text', 'Following');
       cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have followed tag0.');
+      });
+
       cy.get('@followButton').click();
       cy.wait('@followsRequest');
 
       cy.get('@followButton').should('have.text', 'Follow');
       cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
+
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have unfollowed tag0.');
+      });
     });
 
     it('hides and unhides a tag', () => {
@@ -40,6 +48,9 @@ describe('Follow tag', () => {
       // and remove the Follow button
       cy.get('@hideButton').should('have.text', 'Unhide');
       cy.get('@followButton').should('not.exist');
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have hidden tag0.');
+      });
 
       // clicking on 'Unhide' should change it back to 'Hide'
       // and show a 'Following' button
@@ -54,6 +65,9 @@ describe('Follow tag', () => {
       cy.get('@followingButton').should('exist');
       cy.get('@followingButton').should('have.text', 'Following');
       cy.get('@followingButton').should('have.attr', 'aria-pressed', 'true');
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have unhidden tag0.');
+      });
     });
   });
 
