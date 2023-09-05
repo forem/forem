@@ -22,11 +22,10 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 
   const toggleFollowButton = () => {
     const updatedFollowState = !following;
-    const hiddenState = hidden;
 
     postFollowItem({
       following: updatedFollowState,
-      hidden: hiddenState,
+      hidden,
     }).then((response) => {
       if (response.ok) {
         updateItem(
