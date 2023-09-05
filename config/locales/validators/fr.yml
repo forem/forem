@@ -20,4 +20,4 @@ fr:
     iso3166_hash_validator:
       is_blank: doit être fourni
       invalid_key: contient un code non valide de la norme ISO 3166-2
-      invalid_value: doit avoir des valeurs `true` ou `"with_regions"`
+      invalid_value: doit avoir des valeurs `:with_regions` ou `:without_regions`

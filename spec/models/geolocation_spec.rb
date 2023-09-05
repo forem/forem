@@ -23,9 +23,9 @@ RSpec.describe Geolocation do
 
       it "respects the specified enabled locations in the settings" do
         allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
-          "CA" => true,
-          "IN" => true,
-          "ZA" => true,
+          "CA" => :without_regions,
+          "IN" => :without_regions,
+          "ZA" => :without_regions,
         )
 
         expect(united_states).not_to be_valid
@@ -62,8 +62,8 @@ RSpec.describe Geolocation do
       context "when the country does not allow region targeting" do
         before do
           allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
-            "US" => true,
-            "CA" => "with_regions",
+            "US" => :without_regions,
+            "CA" => :with_regions,
           )
         end
 

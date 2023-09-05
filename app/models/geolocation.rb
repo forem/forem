@@ -31,8 +31,8 @@ class Geolocation
   ISO3166_SEPARATOR = "-".freeze
   LTREE_SEPARATOR = ".".freeze
   DEFAULT_ENABLED_COUNTRIES = {
-    ISO3166::Country.code_from_name("United States") => "with_regions",
-    ISO3166::Country.code_from_name("Canada") => "with_regions"
+    ISO3166::Country.code_from_name("United States") => :with_regions,
+    ISO3166::Country.code_from_name("Canada") => :with_regions
   }.freeze
 
   attr_reader :country_code, :region_code
@@ -91,7 +91,7 @@ class Geolocation
 
   def valid_region_for_targeting
     return if region_code.nil? ||
-      Settings::General.billboard_enabled_countries[country_code] == "with_regions"
+      Settings::General.billboard_enabled_countries[country_code] == :with_regions
 
     errors.add(:region_code, "was provided on a country with region targeting disabled")
   end

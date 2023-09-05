@@ -58,27 +58,31 @@ RSpec.describe Settings::General do
       end
 
       it "accepts any valid ISO 3166-2 codes as keys" do
-        countries = ISO3166::Country.codes.sample(5).index_with { true }
+        countries = ISO3166::Country.codes.sample(5).index_with { :with_regions }
 
         expect { described_class.billboard_enabled_countries = countries }.not_to raise_error
       end
 
       it "does not accept invalid ISO 3166-2 codes as keys" do
-        countries = { "XX" => true, "ZZ" => true }
+        countries = { "XX" => :with_regions, "ZZ" => :with_regions }
 
         expect { described_class.billboard_enabled_countries = countries }.to raise_error(ActiveRecord::RecordInvalid)
       end
 
-      it "allows 'with_regions' marker as values to enable region targeting" do
-        countries = { "CA" => "with_regions", "ZA" => "with_regions", "GB" => true }
+      it "allows 'with_regions' and 'without_regions' marker as values to enable/disable region targeting" do
+        countries = { "CA" => :with_regions, "ZA" => :with_regions, "GB" => :without_regions }
 
         expect { described_class.billboard_enabled_countries = countries }.not_to raise_error
       end
 
-      it "does not allow arbitrary strings as values" do
-        countries = { "CA" => true, "US" => "string" }
+      it "does not allow arbitrary strings or symbols as values" do
+        countries = { "CA" => :with_regions, "US" => "string" }
+        other_countries = { "CA" => :with_regions, "US" => :string }
 
         expect { described_class.billboard_enabled_countries = countries }.to raise_error(ActiveRecord::RecordInvalid)
+        expect do
+          described_class.billboard_enabled_countries = other_countries
+        end.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

@@ -299,9 +299,9 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
 
       it "correctly shows targeted billboards if country but not region targeting is enabled" do
         allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
-          "FR" => true,
-          "US" => "with_regions",
-          "CA" => "with_regions",
+          "FR" => :without_regions,
+          "US" => :with_regions,
+          "CA" => :with_regions,
         )
 
         targets_france_and_canada = create_billboard(target_geolocations: "CA, FR")

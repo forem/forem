@@ -388,10 +388,10 @@ RSpec.describe Billboard do
       let(:geo_input) { %w[FR-BRE NL GB US-CA] }
       let(:enabled_countries) do
         {
-          "US" => "with_regions",
-          "FR" => true,
-          "NL" => true,
-          "GB" => true
+          "US" => :with_regions,
+          "FR" => :without_regions,
+          "NL" => :without_regions,
+          "GB" => :without_regions
         }
       end
 
@@ -406,7 +406,7 @@ RSpec.describe Billboard do
         expect(billboard).to be_valid
 
         # Allow French region targeting
-        enabled_countries["FR"] = "with_regions"
+        enabled_countries["FR"] = :with_regions
         billboard.target_geolocations = geo_input
         expect(billboard).to be_valid
       end

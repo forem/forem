@@ -1,5 +1,5 @@
-class Iso3166HashValidator < ActiveModel::EachValidator
-  VALID_HASH_VALUES = [true, "with_regions"].freeze
+class EnabledCountriesHashValidator < ActiveModel::EachValidator
+  VALID_HASH_VALUES = %i[with_regions without_regions].freeze
 
   def validate_each(record, attribute, value)
     if value.blank? || !value.is_a?(Hash)

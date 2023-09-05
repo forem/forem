@@ -3,10 +3,6 @@
 # a mapping of the relationship between hierarchical subdivisions)
 module ISO3166
   class Country
-    def self.common_names_and_codes
-      codes.index_by { |code| new(code).common_name }
-    end
-
     def self.code_from_name(name)
       find_country_by_any_name(name).alpha2
     end
