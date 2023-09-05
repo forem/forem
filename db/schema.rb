@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_18_083219) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_31_105357) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -104,6 +104,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_18_083219) do
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.boolean "featured", default: false
+    t.integer "feed_clicks_count", default: 0
+    t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
     t.integer "hotness_score", default: 0
     t.string "language"
