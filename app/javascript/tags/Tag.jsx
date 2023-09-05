@@ -25,21 +25,20 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 
     postFollowItem({ following: updatedFollowState, hidden }).then(
       (response) => {
-        if (response.status === 200) {
+        if (response.ok) {
           setFollowing(updatedFollowState);
           browserStoreCache('remove');
           addSnackbarItem({
             message: `You have ${following ? 'un' : ''}followed ${name}.`,
             addCloseButton: true,
           });
+          return;
         }
 
-        if (response.status !== 200) {
-          addSnackbarItem({
-            message: `An error has occurred.`,
-            addCloseButton: true,
-          });
-        }
+        addSnackbarItem({
+          message: `An error has occurred.`,
+          addCloseButton: true,
+        });
       },
     );
   };
@@ -52,7 +51,7 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
       hidden: updatedHiddenState,
       following: updatedFollowState,
     }).then((response) => {
-      if (response.status === 200) {
+      if (response.ok) {
         setHidden(updatedHiddenState);
         setFollowing(updatedFollowState);
         browserStoreCache('remove');
@@ -60,14 +59,13 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
           message: `You have ${hidden ? 'un' : ''}hidden ${name}.`,
           addCloseButton: true,
         });
+        return;
       }
 
-      if (response.status !== 200) {
-        addSnackbarItem({
-          message: `An error has occurred.`,
-          addCloseButton: true,
-        });
-      }
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
     });
   };
 
