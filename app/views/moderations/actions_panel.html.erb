@@ -222,6 +222,11 @@
                 <%= adj.user.name %>
               </span>
             </div>
+            <div id="tag-adjustment-<%= adj.id %>-reason">
+              <span>
+                <%= adj.reason_for_adjustment %>
+              </span>
+            </div>
           <% end %>
         </div>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
