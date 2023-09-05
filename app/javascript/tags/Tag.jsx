@@ -76,7 +76,7 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   }
 
   return (
-    <div>
+    <div className="flex gap-2">
       {followingButton}
       <button
         onClick={toggleHideButton}
