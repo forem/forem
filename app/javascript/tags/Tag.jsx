@@ -100,8 +100,8 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 };
 
 Tag.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  following: PropTypes.bool.isRequired,
-  hidden: PropTypes.bool.isRequired,
+  following: PropTypes.bool,
+  hidden: PropTypes.bool,
 };
