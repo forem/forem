@@ -69,7 +69,7 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   };
 
   const updateItem = (updatedHiddenState, updatedFollowState, message) => {
-    if (updatedHiddenState) {
+    if (updatedHiddenState !== null) {
       setHidden(updatedHiddenState);
     }
     setFollowing(updatedFollowState);
