@@ -21,29 +21,58 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   let followingButton;
 
   const toggleFollowButton = () => {
-    setFollowing(!following);
-    browserStoreCache('remove');
-    postFollowItem({ following: !following, hidden });
-    addSnackbarItem({
-      message: `You have ${following ? 'un' : ''}followed ${name}.`,
-      addCloseButton: true,
-    });
+    const updatedFollowState = !following;
+
+    postFollowItem({ following: updatedFollowState, hidden }).then(
+      (response) => {
+        if (response.status === 200) {
+          setFollowing(updatedFollowState);
+          browserStoreCache('remove');
+          addSnackbarItem({
+            message: `You have ${following ? 'un' : ''}followed ${name}.`,
+            addCloseButton: true,
+          });
+        }
+
+        if (response.status !== 200) {
+          addSnackbarItem({
+            message: `An error has occurred.`,
+            addCloseButton: true,
+          });
+        }
+      },
+    );
   };
 
   const toggleHideButton = () => {
-    setHidden(!hidden);
-    const updatedFollowing = true;
-    setFollowing(updatedFollowing);
-    browserStoreCache('remove');
-    postFollowItem({ hidden: !hidden, following: updatedFollowing });
-    addSnackbarItem({
-      message: `You have ${hidden ? 'un' : ''}hidden ${name}.`,
-      addCloseButton: true,
+    const updatedHiddenState = !hidden;
+    const updatedFollowState = true;
+
+    postFollowItem({
+      hidden: updatedHiddenState,
+      following: updatedFollowState,
+    }).then((response) => {
+      if (response.status === 200) {
+        setHidden(updatedHiddenState);
+        setFollowing(updatedFollowState);
+        browserStoreCache('remove');
+        addSnackbarItem({
+          message: `You have ${hidden ? 'un' : ''}hidden ${name}.`,
+          addCloseButton: true,
+        });
+      }
+
+      if (response.status !== 200) {
+        addSnackbarItem({
+          message: `An error has occurred.`,
+          addCloseButton: true,
+        });
+      }
     });
   };
 
   const postFollowItem = ({ following, hidden }) => {
-    fetch('/follows', {
+    return fetch('/follows', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -57,11 +86,6 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
         explicit_points: hidden ? -1 : 1,
       }),
       credentials: 'same-origin',
-    }).then((response) => {
-      if (response.status !== 200) {
-        // TODO: replace this with an actual modal
-        alert('An error occurred');
-      }
     });
   };
 

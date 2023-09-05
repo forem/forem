@@ -11,7 +11,24 @@ describe('Follow tag', () => {
       });
     });
 
-    it('Follows and unfollows a tag from the tag index page', () => {
+    it('shows an error message when following a tag fails', () => {
+      cy.intercept('POST', '/follows', {
+        statusCode: 422,
+        body: {
+          error: 'Something went wrong.',
+        },
+      }).as('followsRequest');
+      cy.findByRole('button', { name: 'Follow tag: tag0' }).as('followButton');
+
+      cy.get('@followButton').click();
+      cy.wait('@followsRequest');
+
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'An error has occurred.');
+      });
+    });
+
+    it('follows and unfollows a tag from the tag index page', () => {
       cy.intercept('/follows').as('followsRequest');
       cy.findByRole('button', { name: 'Follow tag: tag0' }).as('followButton');
 
@@ -84,7 +101,7 @@ describe('Follow tag', () => {
       });
     });
 
-    it('Follows and unfollows a tag from the tag feed page', () => {
+    it('follows and unfollows a tag from the tag feed page', () => {
       cy.intercept('/follows').as('followsRequest');
       cy.findByRole('button', { name: 'Follow tag: tag1' }).as('followButton');
 
