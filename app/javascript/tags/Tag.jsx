@@ -22,25 +22,26 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 
   const toggleFollowButton = () => {
     const updatedFollowState = !following;
+    const hiddenState = hidden;
 
-    postFollowItem({ following: updatedFollowState, hidden }).then(
-      (response) => {
-        if (response.ok) {
-          setFollowing(updatedFollowState);
-          browserStoreCache('remove');
-          addSnackbarItem({
-            message: `You have ${following ? 'un' : ''}followed ${name}.`,
-            addCloseButton: true,
-          });
-          return;
-        }
+    postFollowItem({
+      following: updatedFollowState,
+      hidden: hiddenState,
+    }).then((response) => {
+      if (response.ok) {
+        updateItem(
+          null,
+          updatedFollowState,
+          `You have ${following ? 'un' : ''}followed ${name}.`,
+        );
+        return;
+      }
 
-        addSnackbarItem({
-          message: `An error has occurred.`,
-          addCloseButton: true,
-        });
-      },
-    );
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
+    });
   };
 
   const toggleHideButton = () => {
@@ -52,13 +53,11 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
       following: updatedFollowState,
     }).then((response) => {
       if (response.ok) {
-        setHidden(updatedHiddenState);
-        setFollowing(updatedFollowState);
-        browserStoreCache('remove');
-        addSnackbarItem({
-          message: `You have ${hidden ? 'un' : ''}hidden ${name}.`,
-          addCloseButton: true,
-        });
+        updateItem(
+          updatedHiddenState,
+          updatedFollowState,
+          `You have ${hidden ? 'un' : ''}hidden ${name}.`,
+        );
         return;
       }
 
@@ -67,6 +66,19 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
         addCloseButton: true,
       });
     });
+  };
+
+  const updateItem = (updatedHiddenState, updatedFollowState, message) => {
+    if (updatedHiddenState) {
+      setHidden(updatedHiddenState);
+    }
+    setFollowing(updatedFollowState);
+    browserStoreCache('remove');
+    addSnackbarItem({
+      message,
+      addCloseButton: true,
+    });
+    return;
   };
 
   const postFollowItem = ({ following, hidden }) => {
