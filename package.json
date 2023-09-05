@@ -47,7 +47,7 @@
     "@cypress/code-coverage": "^3.11.0",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
     "@faker-js/faker": "^7.6.0",
-    "@knapsack-pro/cypress": "^5.6.0",
+    "@knapsack-pro/cypress": "^7.4.0",
     "@storybook/addon-a11y": "^6.5.16",
     "@storybook/addon-actions": "^6.5.16",
     "@storybook/addon-backgrounds": "^6.5.16",
