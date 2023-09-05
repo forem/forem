@@ -25,7 +25,7 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
     browserStoreCache('remove');
     postFollowItem({ following: !following, hidden });
     addSnackbarItem({
-      message: `You are ${following ? 'un' : ''}following ${name}.`,
+      message: `You have ${following ? 'un' : ''}followed ${name}.`,
       addCloseButton: true,
     });
   };
