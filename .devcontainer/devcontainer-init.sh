@@ -5,7 +5,7 @@ if [ -n "$CODESPACE" ]; then
     echo "CODESPACE environment variable is set. Performing file changes..."
 
     cp .env_sample .env
-    echo "APP_DOMAIN=\"$CODESPACE.app.github.dev\"" >> .env
+    echo "APP_DOMAIN=\"$CODESPACE-3000.app.github.dev\"" >> .env
     echo 'APP_PROTOCOL="https://"' >> .env
     echo "File changes completed."
 else
