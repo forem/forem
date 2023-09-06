@@ -527,6 +527,24 @@
           margin-bottom: var(--su-3);
         }
       }
+      #tag-moderation-history {
+        .tag-adjustment {
+          padding-bottom: 8px;
+        }
+
+        .num-sign,
+        .adjustment-type {
+          color: var(--tag-hash);
+          padding-left: 2px;
+          padding-right: 2px;
+        }
+
+        .tag-adjustment-reason {
+          color: var(--tag-hash);
+          font-style: italic;
+          font-size: var(--fs-s);
+        }
+      }
     }
     .set-experience-options {
       button.level-rating-button {
