@@ -9,6 +9,12 @@ ports:
     onOpen: ignore
 
 tasks:
+  - name: Open Site
+    command: >
+      gp ports await 3000 &&
+      printf "Waiting for local Forem development environment to load in the browser..." &&
+      gp preview $(gp url 3000) &&
+      exit
   - name: Forem Server
     before: |
       cp .env_sample .env
@@ -19,12 +25,6 @@ tasks:
       gem install solargraph
     init: dip provision
     command: dip up web
-  - name: Open Site
-    command: >
-      gp ports await 3000 &&
-      printf "Waiting for local Forem development environment to load in the browser..." &&
-      gp preview $(gp url 3000) &&
-      exit
 
 github:
   prebuilds:
