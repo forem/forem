@@ -493,4 +493,39 @@ RSpec.describe Billboard do
       expect(described_class.seldom_seen("sidebar_left").size).to be 2
     end
   end
+
+  describe ".weighted_random_selection" do
+    it "samples with weights correctly" do
+      described_class.delete_all
+      bb1 = create(:billboard, weight: 5)
+      bb2 = create(:billboard, weight: 1)
+      bb3 = create(:billboard, weight: 1)
+      bb4 = create(:billboard, weight: 2)
+      bb5 = create(:billboard, weight: 1)
+
+      total_weight = 5 + 1 + 1 + 2 + 1 # 10
+      expected_probabilities = {
+        bb1.id => 5.0 / total_weight,
+        bb2.id => 1.0 / total_weight,
+        bb3.id => 1.0 / total_weight,
+        bb4.id => 2.0 / total_weight,
+        bb5.id => 1.0 / total_weight
+      }
+
+      counts = Hash.new(0)
+      num_trials = 5_000
+
+      num_trials.times do
+        id = described_class.weighted_random_selection(described_class.all).id
+        counts[id] += 1
+      end
+
+      counts.each do |id, count|
+        observed_probability = count.to_f / num_trials
+        expected_probability = expected_probabilities[id]
+
+        expect(observed_probability).to be_within(0.025).of(expected_probability)
+      end
+    end
+  end
 end

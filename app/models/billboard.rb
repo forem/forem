@@ -38,6 +38,7 @@ class Billboard < ApplicationRecord
                              inclusion: { in: ALLOWED_PLACEMENT_AREAS }
   validates :body_markdown, presence: true
   validates :organization, presence: true, if: :community?
+  validates :weight, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 10_000 }
   validates :audience_segment_type,
             inclusion: { in: AudienceSegment.type_ofs },
             allow_blank: true
@@ -88,7 +89,8 @@ class Billboard < ApplicationRecord
     when (random_range_max(area)..new_and_priority_range_max(area)) # medium range, 30%
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
-      billboards_for_display.seldom_seen(area).sample || billboards_for_display.sample
+      relation = billboards_for_display.seldom_seen(area)
+      weighted_random_selection(relation) || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -99,6 +101,27 @@ class Billboard < ApplicationRecord
       # "first ranked" ad will show up in all 15 sets, where as 15 will only show in 1 of the 15.
       billboards_for_display.limit(rand(1..15)).sample
     end
+  end
+
+  def self.weighted_random_selection(relation)
+    base_query = relation.to_sql
+    random_val = rand.to_f
+
+    query = <<-SQL
+      WITH base AS (#{base_query}),
+      weighted AS (
+        SELECT *, weight,
+        SUM(weight) OVER () AS total_weight,
+        SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+        FROM base
+      )
+      SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+      WHERE running_weight >= ? * total_weight
+      ORDER BY running_weight ASC
+      LIMIT 1
+    SQL
+
+    relation.find_by_sql([query, random_val, random_val]).first
   end
 
   # Temporary ENV configs, to eventually be replaced by permanent configurations

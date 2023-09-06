@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Look up if node_module cache exist
         id: cache
         uses: actions/cache/restore@v3
@@ -65,7 +65,7 @@ jobs:
       E2E: true
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Look up if compiled assets exist
         uses: actions/cache@v3
         id: precompiled-asset
@@ -104,7 +104,7 @@ jobs:
     needs: [bundle_install, yarn_install]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -156,7 +156,7 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
@@ -213,7 +213,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -245,7 +245,7 @@ jobs:
     needs: [yarn_install]
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -287,7 +287,7 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
@@ -341,7 +341,7 @@ jobs:
         ci_node_index: [0, 1, 2, 3, 4, 5, 6, 7, non-seed]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Restore compiled assets
         uses: actions/cache/restore@v3
         with:
@@ -367,6 +367,11 @@ jobs:
         with:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
+      - name: Cache cypress binary
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/Cypress
+          key: ${{ runner.os }}-cypress-binary-${{ hashFiles('**/yarn.lock') }}
       - run: yarn cypress install
       - name: cypress
         env:
@@ -412,7 +417,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [rspec, jest, cypress]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: coverage
@@ -472,7 +477,7 @@ jobs:
         environment: [ production, staging ]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
