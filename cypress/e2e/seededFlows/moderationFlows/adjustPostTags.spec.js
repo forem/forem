@@ -142,24 +142,6 @@ describe('Adjust post tags', () => {
         cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
-
-    // it('should show previous tag adjustments', () => {
-    //   cy.findByRole('heading', { name: 'Tag test article' }).click();
-    //   cy.getIframeBody('.article-iframe')
-    //     .findByRole('link', { name: /# tag2/ })
-    //     .should('not.exist');
-
-    //   cy.getIframeBody('.actions-panel-iframe').within(() => {
-    //     cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-    //     cy.findByTestId('add-tag-button').click();
-    //     cy.findByPlaceholderText('Add a tag').type('tag2');
-    //     cy.findByPlaceholderText('Reason to add tag (optional)').type(
-    //       'testing',
-    //     );
-    //     cy.findByRole('button', { name: 'Add tag' }).click();
-    //   });
-
-    // });
   });
 
   describe('from article page', () => {
@@ -230,23 +212,5 @@ describe('Adjust post tags', () => {
         cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
       });
     });
-
-    // it('should add a tag to a post', () => {
-    //   cy.findByRole('heading', { name: 'Tag test article' }).click();
-    //   cy.getIframeBody('.article-iframe')
-    //     .findByRole('link', { name: /# tag2/ })
-    //     .should('not.exist');
-
-    //   cy.getIframeBody('.actions-panel-iframe').within(() => {
-    //     cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-    //     cy.findByTestId('add-tag-button').click();
-    //     cy.findByPlaceholderText('Add a tag').type('tag2');
-    //     cy.findByPlaceholderText('Reason to add tag (optional)').type(
-    //       'testing',
-    //     );
-    //     cy.findByRole('button', { name: 'Add tag' }).click();
-    //   });
-
-    // });
   });
 });
