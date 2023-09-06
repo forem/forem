@@ -15,6 +15,7 @@ tasks:
       echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
       echo 'APP_PROTOCOL="https://"' >> .env
       gem install dip
+      gem install solargraph
     init: dip provision
     command: dip up web
   - name: Open Site
@@ -33,7 +34,7 @@ github:
     # enable for pull requests coming from this repo (defaults to true)
     pullRequests: true
     # enable for pull requests coming from forks (defaults to false)
-    pullRequestsFromForks: false
+    pullRequestsFromForks: true
     # add a "Review in Gitpod" button as a comment to pull requests (defaults to true)
     addComment: false
     # add a "Review in Gitpod" button to pull requests (defaults to false)
