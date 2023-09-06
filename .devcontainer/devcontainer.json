@@ -13,9 +13,10 @@
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
+  "onCreateCommand": "bash devcontainer/devcontainer-init.sh",
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "bash devcontainer/devcontainer-init.sh"
+  "postCreateCommand": "dip up web"
 
   // Configure tool-specific properties.
   // "customizations": {},
