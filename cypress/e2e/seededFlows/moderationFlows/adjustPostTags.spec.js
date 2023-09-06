@@ -67,21 +67,23 @@ describe('Adjust post tags', () => {
       });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
         cy.findByText('tag1').click();
         cy.findByPlaceholderText('Reason to remove tag (optional)').type(
           'testing removal adjustment',
         );
-
         cy.findByRole('button', { name: 'Remove tag' }).click();
       });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByRole('div', { id: 'tag-moderation-history' }).should(
-          'have.value',
-          '#tag1 removed by Admin McAdmin testing removal adjustment',
-        );
+        cy.findByRole('heading', { name: 'Previous tag adjustments' });
+        cy.get('#tag-moderation-history')
+          .find('.tag-adjustment')
+          .should(($div) => {
+            expect($div).to.have.length(3);
+            expect($div.first()).to.contain(
+              'tag1 removed by Admin McAdmin testing removal adjustment',
+            );
+          });
       });
     });
   });

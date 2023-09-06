@@ -528,6 +528,12 @@
         }
       }
       #tag-moderation-history {
+        h1 {
+          font-size: var(--fs-base);
+          padding-top: 12px;
+          padding-bottom: 16px;
+        }
+
         .tag-adjustment {
           padding-bottom: 8px;
         }
