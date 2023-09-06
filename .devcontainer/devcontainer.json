@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
 {
-  "name": "Docker in Docker",
+  "name": "Forem devcontainer",
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
 
@@ -9,13 +9,13 @@
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "moby": "false"
     }
-  }
+  },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "gem install dip && dip provision"
+  "postCreateCommand": "gem install dip && dip provision"
 
   // Configure tool-specific properties.
   // "customizations": {},
