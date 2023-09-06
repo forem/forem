@@ -15,7 +15,7 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "gem install dip && dip provision"
+  "postCreateCommand": "bash devcontainer/devcontainer-init.sh"
 
   // Configure tool-specific properties.
   // "customizations": {},
