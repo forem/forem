@@ -14,6 +14,7 @@ tasks:
       cp .env_sample .env
       echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
       echo 'APP_PROTOCOL="https://"' >> .env
+      echo 'COMMUNITY_NAME="DEV(Gitpod)"' >> .env
       gem install dip
       gem install solargraph
     init: dip provision
