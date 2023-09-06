@@ -45,15 +45,6 @@
       <div class="crayons-page-header">
         <% if @tab == "organization" && @organizations.present? %>
           <% if !@organization&.new_record? %>
-            <section class="flex flex-row justify-between w-100 mb-4">
-              <h4 class="flex self-center">
-                <%= link_to(t("views.settings.new_org_back"), url_for("/settings/organization") || "#") %>
-              </h4>
-              <%= button_to url_for("/settings/organization/new"), class: "crayons-btn follow-action-button showing", method: :get do %>
-                <%= t("views.settings.new_org") %>
-              <% end %>
-            </section>
-          <% else %>
             <section class="flex m:flex-row justify-between w-100 mb-4 flex-col">
               <% options = @organizations.pluck(:slug, :id).each do |arr| %>
                 <% arr[0] = "@#{arr[0]}" %>
