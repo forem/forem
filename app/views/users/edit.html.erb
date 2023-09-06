@@ -44,7 +44,7 @@
     <div class="crayons-layout__content mt-3">
       <div class="crayons-page-header">
         <% if @tab == "organization" && @organizations.present? %>
-          <% if @is_new_organization %>
+          <% if !@organization&.new_record? %>
             <section class="flex flex-row justify-between w-100 mb-4">
               <h4 class="flex self-center">
                 <%= link_to(t("views.settings.new_org_back"), url_for("/settings/organization") || "#") %>
