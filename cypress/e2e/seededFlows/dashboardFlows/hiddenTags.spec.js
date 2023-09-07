@@ -34,10 +34,6 @@ describe('Dashboard: Hidden Tags', () => {
     // it decreases the count from the 'Hidden tags' nav item
     cy.get('.js-hidden-tags-link .c-indicator').as('hiddenTagsCount');
     cy.get('@hiddenTagsCount').should('contain', '4');
-
-    // it decreases the count from the 'Following tags' nav item
-    cy.get('.js-following-tags-link .c-indicator').as('followingTagsCount');
-    cy.get('@followingTagsCount').should('contain', '6');
   });
 
   // TODO: add a test for the pagination

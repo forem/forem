@@ -25,11 +25,19 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   };
 
   const toggleHideButton = () => {
-    setHidden(!hidden);
-    const updatedFollowing = true;
-    setFollowing(updatedFollowing);
+    const updatedHiddenState = !hidden;
+    setHidden(updatedHiddenState);
+
+    // if the tag's new state will be hidden (clicked on the hide button) then we we set it to following.
+    // if the tags new state is to be unhidden (clicked on the unhide button) then we set it to not following.
+    const updatedFollowingState = updatedHiddenState;
+    setFollowing(updatedFollowingState);
+
     browserStoreCache('remove');
-    postFollowItem({ hidden: !hidden, following: updatedFollowing });
+    postFollowItem({
+      hidden: updatedHiddenState,
+      following: updatedFollowingState,
+    });
   };
 
   const postFollowItem = ({ following, hidden }) => {
