@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { addSnackbarItem } from '../Snackbar';
+
 /* global browserStoreCache */
 
 /**
@@ -19,29 +21,69 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   let followingButton;
 
   const toggleFollowButton = () => {
-    setFollowing(!following);
-    browserStoreCache('remove');
-    postFollowItem({ following: !following, hidden });
-  };
+    const updatedFollowState = !following;
 
-  const toggleHideButton = () => {
-    const updatedHiddenState = !hidden;
-    setHidden(updatedHiddenState);
-
-    // if the tag's new state will be hidden (clicked on the hide button) then we we set it to following.
-    // if the tags new state is to be unhidden (clicked on the unhide button) then we set it to not following.
-    const updatedFollowingState = updatedHiddenState;
-    setFollowing(updatedFollowingState);
-
-    browserStoreCache('remove');
     postFollowItem({
-      hidden: updatedHiddenState,
-      following: updatedFollowingState,
+      following: updatedFollowState,
+      hidden,
+    }).then((response) => {
+      if (response.ok) {
+        updateItem(
+          null,
+          updatedFollowState,
+          `You have ${following ? 'un' : ''}followed ${name}.`,
+        );
+        return;
+      }
+
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
     });
   };
 
+  const toggleHideButton = () => {
+    // if the tag's new state will be hidden (clicked on the hide button) then we we set it to following.
+    // if the tags new state is to be unhidden (clicked on the unhide button) then we set it to unfollow.
+    const updatedHiddenState = !hidden;
+    const updatedFollowState = updatedHiddenState;
+
+    postFollowItem({
+      hidden: updatedHiddenState,
+      following: updatedFollowState,
+    }).then((response) => {
+      if (response.ok) {
+        updateItem(
+          updatedHiddenState,
+          updatedFollowState,
+          `You have ${hidden ? 'un' : ''}hidden ${name}.`,
+        );
+        return;
+      }
+
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
+    });
+  };
+
+  const updateItem = (updatedHiddenState, updatedFollowState, message) => {
+    if (updatedHiddenState !== null) {
+      setHidden(updatedHiddenState);
+    }
+    setFollowing(updatedFollowState);
+    browserStoreCache('remove');
+    addSnackbarItem({
+      message,
+      addCloseButton: true,
+    });
+    return;
+  };
+
   const postFollowItem = ({ following, hidden }) => {
-    fetch('/follows', {
+    return fetch('/follows', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -55,11 +97,6 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
         explicit_points: hidden ? -1 : 1,
       }),
       credentials: 'same-origin',
-    }).then((response) => {
-      if (response.status !== 200) {
-        // TODO: replace this with an actual modal
-        alert('An error occurred');
-      }
     });
   };
 
@@ -98,8 +135,8 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 };
 
 Tag.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  following: PropTypes.bool.isRequired,
-  hidden: PropTypes.bool.isRequired,
+  following: PropTypes.bool,
+  hidden: PropTypes.bool,
 };
