@@ -13,18 +13,6 @@ class UsersController < ApplicationController
     @users = sidebar_suggestions || User.none
   end
 
-  # GET /settings/@tab
-  def edit
-    unless current_user
-      skip_authorization
-      return redirect_to sign_up_path
-    end
-    set_user
-    set_users_setting_and_notification_setting
-    set_current_tab(params["tab"] || "profile")
-    handle_settings_tab
-  end
-
   # Unlike other methods in this controller, this does _NOT_ assume the current_user is *the* user
   def show
     user = User.find(params[:id])
@@ -36,6 +24,18 @@ class UsersController < ApplicationController
         render json: user.as_json(attributes_for_show)
       end
     end
+  end
+
+  # GET /settings/@tab
+  def edit
+    unless current_user
+      skip_authorization
+      return redirect_to sign_up_path
+    end
+    set_user
+    set_users_setting_and_notification_setting
+    set_current_tab(params["tab"] || "profile")
+    handle_settings_tab
   end
 
   # PATCH/PUT /users/:id.:format
@@ -342,8 +342,9 @@ class UsersController < ApplicationController
   end
 
   def attributes_for_show
-    default_options = {only: %i[id username]}
-    return default_options unless current_user && current_user.trusted?
+    default_options = { only: %i[id username] }
+    return default_options unless current_user&.trusted?
+
     trusted_options = { methods: %i[suspended] }
     default_options.merge(trusted_options)
   end

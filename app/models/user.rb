@@ -436,7 +436,7 @@ class User < ApplicationRecord
     :workshop_eligible?,
     to: :authorizer,
   )
-  alias :suspended :suspended?
+  alias suspended suspended?
   ##############################################################################
   #
   # End Authorization Refactor
