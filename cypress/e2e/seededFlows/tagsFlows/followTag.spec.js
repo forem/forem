@@ -55,7 +55,9 @@ describe('Follow tag', () => {
 
     it('hides and unhides a tag', () => {
       cy.intercept('/follows').as('followsRequest');
-      cy.findByRole('button', { name: 'Follow tag: tag0' }).as('followButton');
+      cy.findByRole('button', { name: 'Follow tag: tag0' }).as(
+        'toBeHiddenFollowButton',
+      );
       cy.findByRole('button', { name: 'Hide tag: tag0' }).as('hideButton');
 
       cy.get('@hideButton').click();
@@ -64,24 +66,29 @@ describe('Follow tag', () => {
       // clicking on 'Hide' should change it to an 'Unhide'
       // and remove the Follow button
       cy.get('@hideButton').should('have.text', 'Unhide');
-      cy.get('@followButton').should('not.exist');
+      cy.get('@toBeHiddenFollowButton').should('not.exist');
       cy.findByTestId('snackbar').within(() => {
         cy.findByRole('alert').should('have.text', 'You have hidden tag0.');
       });
 
       // clicking on 'Unhide' should change it back to 'Hide'
-      // and show a 'Following' button
+      // and show a 'Follow' button
       cy.get('@hideButton').click();
       cy.wait('@followsRequest');
 
       cy.get('@hideButton').should('have.text', 'Hide');
-      cy.get('@followButton').should('not.exist');
-      cy.findByRole('button', { name: 'Following tag: tag0' }).as(
-        'followingButton',
+      cy.get('@toBeHiddenFollowButton').should('not.exist');
+
+      cy.findByRole('button', { name: 'Follow tag: tag0' }).as(
+        'toBeShownFollowButton',
       );
-      cy.get('@followingButton').should('exist');
-      cy.get('@followingButton').should('have.text', 'Following');
-      cy.get('@followingButton').should('have.attr', 'aria-pressed', 'true');
+      cy.get('@toBeShownFollowButton').should('exist');
+      cy.get('@toBeShownFollowButton').should('have.text', 'Follow');
+      cy.get('@toBeShownFollowButton').should(
+        'have.attr',
+        'aria-pressed',
+        'false',
+      );
       cy.findByTestId('snackbar').within(() => {
         cy.findByRole('alert').should('have.text', 'You have unhidden tag0.');
       });
