@@ -52,41 +52,72 @@ RSpec.describe "UserShow" do
       expect(response_json.value?(nil)).to be(false)
       expect(response_json.value?("")).to be(false)
     end
-  end
 
-  context "when user signed in" do
-    before do
-      sign_in user
-      get user.path
+    context "when user signed in" do
+      before do
+        sign_in user
+        get user.path
+      end
+
+      describe "GET /:slug (user)" do
+        it "does not render json ld" do
+          expect(response.body).not_to include "application/ld+json"
+        end
+      end
     end
 
-    describe "GET /:slug (user)" do
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
+    context "when user not signed in" do
+      before do
+        get user.path
+      end
+
+      describe "GET /:slug (user)" do
+        it "does not render json ld" do
+          expect(response.body).to include "application/ld+json"
+        end
+      end
+    end
+
+    context "when user not signed in but internal nav triggered" do
+      before do
+        get "#{user.path}?i=i"
+      end
+
+      describe "GET /:slug (user)" do
+        it "does not render json ld" do
+          expect(response.body).not_to include "application/ld+json"
+        end
       end
     end
   end
 
-  context "when user not signed in" do
-    before do
-      get user.path
+  describe "GET /users/ID.json" do
+    it "404s when user not found" do
+      get user_path("NaN", format: 'json')
+      expect(response.status).to eq(404)
     end
 
-    describe "GET /:slug (user)" do
-      it "does not render json ld" do
-        expect(response.body).to include "application/ld+json"
+    context "when user not signed in" do
+      it "does not include 'suspended'" do
+        get user_path(user, format: 'json')
+        parsed = JSON.parse response.body
+        expect(parsed.keys).to contain_exactly(*%w[id username])
       end
     end
-  end
 
-  context "when user not signed in but internal nav triggered" do
-    before do
-      get "#{user.path}?i=i"
-    end
+    context "when user **is** signed in **and** trusted" do
+      let(:trusted) { create :user, :trusted }
 
-    describe "GET /:slug (user)" do
-      it "does not render json ld" do
-        expect(response.body).not_to include "application/ld+json"
+      before do
+        sign_in trusted
+
+        get user.path
+      end
+
+      it "**does** include 'suspended'" do
+        get user_path(user, format: 'json')
+        parsed = JSON.parse response.body
+        expect(parsed.keys).to contain_exactly(*%w[id username suspended])
       end
     end
   end

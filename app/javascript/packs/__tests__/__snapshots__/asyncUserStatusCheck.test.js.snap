@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`asyncUserStatusCheck user **is** suspended **does** badge the user 1`] = `
+"
+    <div class=\\"profile-header__details\\" data-url=\\"/users/123\\" data-status-checked=\\"true\\">
+      <h1 class=\\"crayons-title\\">User Hasaname <span data-testid=\\"user-status\\" class=\\"c-indicator c-indicator--danger c-indicator--relaxed\\">Suspended</span></h1>
+      <p class=\\"\\">Animi et qui. Voluptatum voluptas omnis. Libero voluptatem cum. Unde.</p>
+
+      <div class=\\"profile-header__meta\\">
+      </div>
+    </div>
+    "
+`;
+
+exports[`asyncUserStatusCheck user is **NOT** suspended does not badge the user 1`] = `
+"
+    <div class=\\"profile-header__details\\" data-url=\\"/users/123\\" data-status-checked=\\"true\\">
+      <h1 class=\\"crayons-title\\">User Hasaname</h1>
+      <p class=\\"\\">Animi et qui. Voluptatum voluptas omnis. Libero voluptatem cum. Unde.</p>
+
+      <div class=\\"profile-header__meta\\">
+      </div>
+    </div>
+    "
+`;

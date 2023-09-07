@@ -102,7 +102,7 @@ Rails.application.routes.draw do
       end
     end
     resources :comment_mutes, only: %i[update]
-    resources :users, only: %i[index], defaults: { format: :json } do # internal API
+    resources :users, only: %i[index show], defaults: { format: :json } do # internal API
       collection do
         resources :devices, only: %i[create destroy]
       end

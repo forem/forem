@@ -7,6 +7,8 @@ class UsersController < ApplicationController
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   before_action :initialize_stripe, only: %i[edit]
 
+  rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
+
   def index
     @users = sidebar_suggestions || User.none
   end
@@ -21,6 +23,19 @@ class UsersController < ApplicationController
     set_users_setting_and_notification_setting
     set_current_tab(params["tab"] || "profile")
     handle_settings_tab
+  end
+
+  # Unlike other methods in this controller, this does _NOT_ assume the current_user is *the* user
+  def show
+    user = User.find(params[:id])
+    # authorize user, :show?
+    skip_authorization
+
+    respond_to do |format|
+      format.json do
+        render json: user.as_json(attributes_for_show)
+      end
+    end
   end
 
   # PATCH/PUT /users/:id.:format
@@ -320,5 +335,16 @@ class UsersController < ApplicationController
     return if params[:state].to_s != "sidebar_suggestions"
 
     Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
+  end
+
+  def error_not_found
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  def attributes_for_show
+    default_options = {only: %i[id username]}
+    return default_options unless current_user && current_user.trusted?
+    trusted_options = { methods: %i[suspended] }
+    default_options.merge(trusted_options)
   end
 end
