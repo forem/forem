@@ -35,7 +35,9 @@ export const Locations = ({
       defaultValue={defaultValue}
       fetchSuggestions={autocompleteLocations}
       border
+      // The label is already part of the page!
       showLabel={false}
+      labelText=""
       placeholder={placeholder}
       SelectionTemplate={template}
       onSelectionsChanged={onChange}

@@ -22,7 +22,7 @@ export const SelectedLocation = ({
       <div
         role="group"
         aria-label={location.name}
-        className="c-autocomplete--multi__tag-selection flex"
+        className="c-autocomplete--multi__tag-selection flex mr-2 mb-2 w-max"
       >
         <Button
           aria-label={label}
