@@ -11,5 +11,3 @@ if [ -n "$CODESPACE_NAME" ]; then
 else
     echo "CODESPACE environment variable is not set. No file changes performed."
 fi
-gem install dip
-dip provision

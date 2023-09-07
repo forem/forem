@@ -149,8 +149,6 @@ CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 ## Development
 FROM base AS development
 
-ENV TMPDIR=/tmp
-
 # Common dependencies
 # Using --mount to speed up build with caching, see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mount
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
