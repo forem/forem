@@ -1,6 +1,8 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
+import { addSnackbarItem } from '../Snackbar';
+
 /* global browserStoreCache */
 
 /**
@@ -19,21 +21,69 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   let followingButton;
 
   const toggleFollowButton = () => {
-    setFollowing(!following);
-    browserStoreCache('remove');
-    postFollowItem({ following: !following, hidden });
+    const updatedFollowState = !following;
+
+    postFollowItem({
+      following: updatedFollowState,
+      hidden,
+    }).then((response) => {
+      if (response.ok) {
+        updateItem(
+          null,
+          updatedFollowState,
+          `You have ${following ? 'un' : ''}followed ${name}.`,
+        );
+        return;
+      }
+
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
+    });
   };
 
   const toggleHideButton = () => {
-    setHidden(!hidden);
-    const updatedFollowing = true;
-    setFollowing(updatedFollowing);
+    // if the tag's new state will be hidden (clicked on the hide button) then we we set it to following.
+    // if the tags new state is to be unhidden (clicked on the unhide button) then we set it to unfollow.
+    const updatedHiddenState = !hidden;
+    const updatedFollowState = updatedHiddenState;
+
+    postFollowItem({
+      hidden: updatedHiddenState,
+      following: updatedFollowState,
+    }).then((response) => {
+      if (response.ok) {
+        updateItem(
+          updatedHiddenState,
+          updatedFollowState,
+          `You have ${hidden ? 'un' : ''}hidden ${name}.`,
+        );
+        return;
+      }
+
+      addSnackbarItem({
+        message: `An error has occurred.`,
+        addCloseButton: true,
+      });
+    });
+  };
+
+  const updateItem = (updatedHiddenState, updatedFollowState, message) => {
+    if (updatedHiddenState !== null) {
+      setHidden(updatedHiddenState);
+    }
+    setFollowing(updatedFollowState);
     browserStoreCache('remove');
-    postFollowItem({ hidden: !hidden, following: updatedFollowing });
+    addSnackbarItem({
+      message,
+      addCloseButton: true,
+    });
+    return;
   };
 
   const postFollowItem = ({ following, hidden }) => {
-    fetch('/follows', {
+    return fetch('/follows', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -47,11 +97,6 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
         explicit_points: hidden ? -1 : 1,
       }),
       credentials: 'same-origin',
-    }).then((response) => {
-      if (response.status !== 200) {
-        // TODO: replace this with an actual modal
-        alert('An error occurred');
-      }
     });
   };
 
@@ -62,8 +107,10 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
     followingButton = (
       <button
         onClick={toggleFollowButton}
-        className={`crayons-btn ${
-          following ? 'crayons-btn--outlined' : 'crayons-btn--primary'
+        className={`${
+          following
+            ? 'crayons-btn crayons-btn--outlined'
+            : 'c-btn c-btn--primary'
         }`}
         aria-pressed={following}
         aria-label={`${followButtonLabel} tag: ${name}`}
@@ -74,13 +121,11 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
   }
 
   return (
-    <div>
+    <div className="flex gap-2">
       {followingButton}
       <button
         onClick={toggleHideButton}
-        className={`crayons-btn ${
-          hidden ? 'crayons-btn--danger' : 'crayons-btn--ghost'
-        }`}
+        className={`c-btn ${hidden ? 'c-btn--primary c-btn--destructive' : ''}`}
         aria-label={`${hideButtonLabel} tag: ${name}`}
       >
         {hideButtonLabel}
@@ -90,8 +135,8 @@ export const Tag = ({ id, name, isFollowing, isHidden }) => {
 };
 
 Tag.propTypes = {
-  id: PropTypes.number.isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  following: PropTypes.bool.isRequired,
-  hidden: PropTypes.bool.isRequired,
+  following: PropTypes.bool,
+  hidden: PropTypes.bool,
 };

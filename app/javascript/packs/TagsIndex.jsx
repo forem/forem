@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import { Snackbar } from '../Snackbar/Snackbar';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /* global showLoginModal  */
@@ -62,8 +63,17 @@ function handleButtonClick({ target }) {
   }
 }
 
+function loadSnackbar() {
+  const root = document.getElementsByClassName('tags-index');
+  if (root.length > 0) {
+    render(<Snackbar lifespan="1" />, document.getElementById('snack-zone'));
+  }
+}
+
 document.ready.then(() => {
   const userStatus = document.body.getAttribute('data-user-status');
+  loadSnackbar();
+
   if (userStatus === 'logged-out') {
     listenForButtonClicks();
     return;
