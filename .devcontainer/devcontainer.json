@@ -13,10 +13,10 @@
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
-  "onCreateCommand": "bash .devcontainer/devcontainer-init.sh",
+  "onCreateCommand": "gem install dip &&  dip provision",
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "dip up web"
+  "postCreateCommand": "bash .devcontainer/devcontainer-init.sh && dip up web"
 
   // Configure tool-specific properties.
   // "customizations": {},
