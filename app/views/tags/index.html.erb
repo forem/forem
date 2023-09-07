@@ -28,18 +28,22 @@
         <%= t("views.tags.heading.default") %>
       <% end %>
     </h1>
-    <form accept-charset="UTF-8" method="get" action="<%= tags_path %>" role="search">
-      <div class="crayons-fields crayons-fields--horizontal">
+    <div class="tags-interaction-container flex flex-col m:flex-row">
+      <div class="tags-interaction-container__buttons">
         <%= link_to t("views.tags.following_tags"), dashboard_following_tags_path, class: "crayons-btn crayons-btn--ghost" %>
         <%= link_to t("views.tags.hidden_tags"), dashboard_hidden_tags_path, class: "crayons-btn crayons-btn--ghost" %>
-        <div class="crayons-field flex-1 relative">
-          <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" aria-label="<%= t("views.tags.search.aria_labels.search_input") %>" name="q" placeholder="<%= t("views.tags.search.placeholder") %>" autocomplete="off" />
-          <button type="submit" aria-label="<%= t("views.tags.search.aria_labels.submit") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
-            <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
-          </button>
-        </div>
       </div>
-    </form>
+      <form accept-charset="UTF-8" method="get" action="<%= tags_path %>" role="search">
+        <div class="crayons-fields crayons-fields--horizontal">
+          <div class="crayons-field flex-1 relative">
+            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" aria-label="<%= t("views.tags.search.aria_labels.search_input") %>" name="q" placeholder="<%= t("views.tags.search.placeholder") %>" autocomplete="off" />
+            <button type="submit" aria-label="<%= t("views.tags.search.aria_labels.submit") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
+              <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
   </header>
   <% if @tags.empty? %>
     <div class="articles-list crayons-layout__content" id="articles-list" data-follow-button-container="true">
@@ -62,14 +66,14 @@
             <% end %>
           </div>
           <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
-            <div>
+            <div class="flex gap-2">
               <button
-                class="crayons-btn crayons-btn--primary follow-action-button"
+                class="c-btn c-btn--primary follow-action-button"
                 aria-label="<%= t("views.tags.aria_labels.follow", tag_name: tag.name) %>">
                 <%= t("views.tags.follow") %>
               </button>
               <button
-                class="crayons-btn crayons-btn--ghost hide-action-button"
+                class="c-btn hide-action-button"
                 aria-label="<%= t("views.tags.aria_labels.hide", tag_name: tag.name) %>">
                 <%= t("views.tags.hide") %>
               </button>
