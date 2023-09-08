@@ -53,6 +53,5 @@ RSpec.describe "/api/admin/users" do
 
       expect(User.last.registered).to be false
     end
-
   end
 end
