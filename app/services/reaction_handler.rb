@@ -89,6 +89,7 @@ class ReactionHandler
       rate_limit_reaction_creation
       sink_articles(reaction)
       send_notifications(reaction)
+      record_feed_event(reaction)
       update_last_reacted_at(reaction)
     end
 
@@ -157,6 +158,23 @@ class ReactionHandler
     return unless reaction.reaction_on_organization_article?
 
     Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+  end
+
+  def record_feed_event(reaction)
+    return unless reaction.visible_to_public? && reaction.reactable_type == "Article"
+
+    last_click = reaction.user.feed_events.where(category: :click).last
+    return unless last_click&.article_id == reaction.reactable_id
+
+    reaction
+      .user
+      .feed_events
+      .create_with(last_click.slice(:article_position, :context_type))
+      .find_or_create_by(
+        category: :reaction,
+        user: reaction.user,
+        article: reaction.reactable,
+      )
   end
 
   def rate_article(reaction)
