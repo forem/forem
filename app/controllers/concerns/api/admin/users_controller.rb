@@ -11,7 +11,7 @@ module Api
           custom_invite_footnote: params[:custom_invite_footnote]
         }
 
-        User.invite!(user_params, nil, options)
+        User.invite!(user_params.merge(registered: false), nil, options)
 
         head :ok
       end

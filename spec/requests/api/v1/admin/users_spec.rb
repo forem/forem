@@ -69,5 +69,12 @@ RSpec.describe "/api/admin/users" do
       end
       expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
     end
+
+    it "marks user as registered false" do
+      post api_admin_users_path, params: params, headers: headers
+
+      expect(User.last.registered).to be false
+
+    end
   end
 end
