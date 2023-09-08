@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/ruby:3-bookwarm
+FROM mcr.microsoft.com/devcontainers/ruby:3-bookworm
 
 SHELL ["/bin/bash", "-l", "-c"]
 
