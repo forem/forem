@@ -14,5 +14,5 @@
   },
   "updateContentCommand": "dip provision",
   "postCreateCommand": "bash .devcontainer/devcontainer-init.sh",
-  "postAttachCommand": "dip up web"
+  "postAttachCommand": "dip provision && dip up web"
 }
