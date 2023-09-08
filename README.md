@@ -85,8 +85,10 @@ To **launch Forem in Gitpod**, navigate to
 
 ### Installation Documentation
 
-Please see our installation guides, such as the
-[one for macOS](https://developers.forem.com/getting-started/installation/mac).
+Please see our installation guides:
+
+- [MacOS, without containers](https://developers.forem.com/getting-started/installation/mac)
+- [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
 
 ## Developer Documentation
 
