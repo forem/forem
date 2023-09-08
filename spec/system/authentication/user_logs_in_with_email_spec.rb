@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with Email" do
   let(:sign_up_link) { "Sign up with Email" }
 
   before do
-    allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+    allow(Settings::Authentication).to receive_messages(:allow_email_password_registration).and_return(true)
     allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     # rubocop:disable RSpec/AnyInstance
@@ -129,7 +129,7 @@ RSpec.describe "Authenticating with Email" do
   context "when requesting a password reset mail" do
     it "does not let malicious users enumerate email addresses" do
       visit new_user_session_path
-      click_link "I forgot my password"
+      click_link "Forgot password?"
       fill_in "Email", with: "doesnotexist@example.com"
       click_button "Send me reset password instructions"
 

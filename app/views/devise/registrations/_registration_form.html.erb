@@ -1,11 +1,19 @@
-<section class="crayons-layout">
-  <div class="registration crayons-card">
+<section class="crayons-layout crayons-layout__registration">
+  <div class="registration">
     <div class="registration__content">
+      <% if Settings::General.resized_logo.present? %>
+        <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+      <% end %>
+
       <h1 class="registration__title">
         <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
           <%= community_name %> is invite only.
         <% else %>
-          Welcome to <%= community_name %>
+          <% if params[:state] == "new-user" %>
+            Join the <%= community_name %>
+          <% else %>
+            Welcome back to <%= community_name %>
+          <% end %>
         <% end %>
       </h1>
       <p class="registration__description">
@@ -22,20 +30,32 @@
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
-        <div class="registration__hr">
-          <span class="registration__hr-label">
-            Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
-          </span>
+
+        <div class="registration__agreement-text">
+          By signing up, you are agreeing to our <a href="/privacy">privacy policy</a>, <a href="/terms">terms of use</a> and <a href="/code-of-conduct">code of conduct</a>.
         </div>
+
+        <hr class="registration__hr" />
+
+        <div class="registration__alternate-step">
+          Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
+        </div>
+
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <div class="registration__hr">
-              <span class="registration__hr-label">
-                Have a password? Continue with your email address
-              </span>
-            </div>
+            <hr class="registration__hr" />
             <%= render partial: "shared/authentication/email_login_form" %>
+
+            <div class="registration__agreement-text">
+              By signing in, you are agreeing to our <a href="/privacy">privacy policy</a>, <a href="/terms">terms of use</a> and <a href="/code-of-conduct">code of conduct</a>.
+            </div>
+
+            <hr class="registration__hr" />
+
+            <div class="registration__alternate-step">
+              New to <%= community_name %>? <a href="<%= sign_up_path %>">Create account</a>.
+            </div>
           <% end %>
         </div>
       <% end %>

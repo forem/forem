@@ -36,6 +36,11 @@
   grid-template-columns: var(--layout);
   padding: var(--layout-padding);
 
+  &__registration {
+    max-width: 100%;
+    background-color: white;
+  }
+
   &__sidebar-left {
     display: var(--layout-sidebar-left-display);
     grid-row-end: var(--layout-sidebar-left-row-end);

@@ -74,12 +74,65 @@
     width: $breakpoint-s;
   }
 
+  &__button-container {
+    display: flex;
+    width: 100%;
+    padding: 13.5px 12px;
+    border-radius: 6px;
+    align-items: center;
+    border: 1px solid var(--form-border);
+    background: white;
+
+    a {
+      color: var(--label-primary);
+    }
+  }
+
+  &__button-text {
+    display: flex;
+    width: 100%;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--fs-s);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-base);
+    letter-spacing: -0.28px;
+    color: var(--label-primary);
+  }
+
+  &__agreement-text {
+    margin-top: 24px;
+    color: var(--color-secondary);
+    text-align: center;
+    font-size: var(--fs-s);
+    font-style: italic;
+    font-weight: var(--fw-normal);
+    line-height: var(--lh-base);
+    letter-spacing: -0.28px;
+    padding: 0px var(--su-9);
+  }
+
+  &__alternate-step {
+    color: var(--grey-700);
+    text-align: center;
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    letter-spacing: -0.32px;
+  }
+
+  &__logo {
+    width: 48px;
+    height: 48px;
+  }
+
   &__content {
     margin-bottom: var(--su-6);
     text-align: center;
   }
 
   &__title {
+    margin-top: 16px;
     color: var(--card-color);
     font-size: var(--fs-2xl);
     line-height: var(--lh-tight);
@@ -90,24 +143,17 @@
   }
 
   &__description {
+    margin-top: 4px;
     color: var(--card-color-secondary);
     font-size: var(--fs-base);
   }
 
   &__hr {
-    margin-bottom: var(--su-4);
+    height: 1px;
+    margin: var(--su-6) 0px;
     position: relative;
-    text-align: center;
-
-    &:after {
-      border: 1px solid var(--base-20);
-      content: '';
-      display: block;
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      border-radius: var(--radius);
-    }
+    background-color: var(--divider);
+    border: none;
   }
 
   &__hr-label {
@@ -124,7 +170,7 @@
   &__actions-providers {
     margin-bottom: var(--su-4);
     display: grid;
-    grid-gap: var(--su-2);
+    grid-gap: var(--su-3);
     width: 100%;
   }
 
