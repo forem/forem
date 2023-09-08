@@ -2,7 +2,7 @@
   <% authentication_enabled_providers.each do |provider| %>
     <% next unless display_social_login?(provider.provider_name) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
-      <%= f.button type: :submit, class: "registration__button-container" do %>
+      <%= f.button type: :submit, class: "registration__button-container brand-#{provider.provider_name}" do %>
         <%= crayons_icon_tag(provider.provider_name, class: "crayons-icon--default", aria_hidden: true, title: provider.provider_name, width: 24, height: 24) %>
         <span class="registration__button-text">
           <%= t("views.auth.provider.text", action: params[:state] == "new-user" ? t("views.auth.provider.signup") : t("views.auth.provider.login"), provider: provider.official_name) %>
@@ -12,7 +12,7 @@
   <% end %>
   <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !ForemInstance.invitation_only? %>
     <a href="<%= url_for(request.params.merge(state: "email_signup").except("i")) %>"
-      class="registration__button-container"
+      class="registration__button-container brand-email"
       data-no_instant="">
       <%= crayons_icon_tag(:email, class: "crayons-icon--default", aria_hidden: true, title: t("views.auth.provider.email.icon"), width: 24, height: 24) %>
       <span class="registration__button-text">

@@ -9,8 +9,10 @@ RSpec.describe "NotificationsIndex" do
   let(:organization) { create(:organization) }
 
   before do
+    # rubocop:disable RSpec/ReceiveMessages
     allow(User).to receive(:staff_account).and_return(staff_account)
     allow(User).to receive(:mascot_account).and_return(mascot_account)
+    # rubocop:enable RSpec/ReceiveMessages
   end
 
   def has_both_names(response_body)
@@ -44,7 +46,7 @@ RSpec.describe "NotificationsIndex" do
       it "renders the signup page" do
         get "/notifications"
 
-        expect(response.body).to include("Continue with")
+        expect(response.body).to include("OR")
       end
     end
 
@@ -53,7 +55,7 @@ RSpec.describe "NotificationsIndex" do
         sign_in user
 
         get "/notifications"
-        expect(response.body).not_to include("Continue with")
+        expect(response.body).not_to include("OR")
       end
     end
 

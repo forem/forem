@@ -5,8 +5,11 @@ RSpec.describe "Authenticating with Email" do
   let(:sign_up_link) { "Sign up with Email" }
 
   before do
-    allow(Settings::Authentication).to receive_messages(:allow_email_password_registration).and_return(true)
+    # rubocop:disable RSpec/ReceiveMessages
+    allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
     allow(Settings::Authentication).to receive(:allow_email_password_login).and_return(true)
+    # rubocop:enable RSpec/ReceiveMessages
+
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     # rubocop:disable RSpec/AnyInstance
     allow_any_instance_of(ProfileImageUploader).to receive(:download!)
@@ -69,7 +72,7 @@ RSpec.describe "Authenticating with Email" do
         visit sign_up_path
         fill_in("user_email", with: "foo@bar.com")
         fill_in("user_password", with: "password")
-        click_button("Continue", match: :first)
+        click_button("Log in", match: :first)
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_text("Unable to login.")
@@ -149,6 +152,6 @@ RSpec.describe "Authenticating with Email" do
   def log_in_user(user)
     fill_in("user_email", with: user.email)
     fill_in("user_password", with: user.password)
-    click_button("Continue", match: :first)
+    click_button("Log in", match: :first)
   end
 end
