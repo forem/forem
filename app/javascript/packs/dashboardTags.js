@@ -96,8 +96,7 @@ function handleUnhideButtonClick(tagContainer) {
   const data = {
     followable_type: 'Tag',
     followable_id: tagId,
-    verb: 'follow',
-    explicit_points: 1,
+    verb: 'unfollow',
   };
 
   fetchFollows(data)
@@ -105,12 +104,6 @@ function handleUnhideButtonClick(tagContainer) {
       removeElementFromPage(followId);
       // update the current navigation item count
       updateNavigationItemCount();
-
-      // update the following tags navigation item
-      const followingTagsNavigationItem = document.querySelector(
-        '.js-following-tags-link .c-indicator',
-      );
-      updateNavigationItemCount(followingTagsNavigationItem, 1);
     })
     .catch((error) => console.error(error));
 }

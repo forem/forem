@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -483,6 +483,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_03_133228) do
     t.ltree "target_geolocations", default: [], array: true
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
