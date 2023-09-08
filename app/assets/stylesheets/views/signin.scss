@@ -111,6 +111,10 @@
     line-height: var(--lh-base);
     letter-spacing: -0.28px;
     padding: 0px var(--su-9);
+
+    @media (max-width: $breakpoint-m) {
+      padding: 0px var(--su-6);
+    }
   }
 
   &__alternate-step {
@@ -148,23 +152,31 @@
     font-size: var(--fs-base);
   }
 
+  &__hr-container {
+    position: relative;
+    text-align: center;
+    margin: var(--su-7) 0px;
+  }
+
   &__hr {
     height: 1px;
     margin: var(--su-6) 0px;
-    position: relative;
     background-color: var(--divider);
     border: none;
   }
 
   &__hr-label {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 0 16px;
+    color: var(--grey-700);
+    text-align: center;
     font-size: var(--fs-s);
-    color: var(--card-color-secondary);
-    background: var(--card-bg);
-    padding: 0 var(--su-2);
-    z-index: var(--z-elevate);
-    display: inline-block;
-    max-width: 75%;
+    line-height: var(--lh-base);
+    letter-spacing: -0.28px;
   }
 
   &__actions-providers {

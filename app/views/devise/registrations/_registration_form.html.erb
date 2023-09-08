@@ -44,7 +44,10 @@
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <hr class="registration__hr" />
+            <div class="registration__hr-container">
+              <hr class="registration__hr" />
+              <div class="registration__hr-label">OR</div>
+            </div>
             <%= render partial: "shared/authentication/email_login_form" %>
 
             <div class="registration__agreement-text">
@@ -54,7 +57,7 @@
             <hr class="registration__hr" />
 
             <div class="registration__alternate-step">
-              New to <%= community_name %>? <a href="<%= sign_up_path %>">Create account</a>.
+              New to <%= community_name %>? <a href="/enter?state=new-user">Create account</a>.
             </div>
           <% end %>
         </div>
