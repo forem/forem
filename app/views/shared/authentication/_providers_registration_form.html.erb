@@ -3,7 +3,7 @@
     <% next unless display_social_login?(provider.provider_name) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
       <%= f.button type: :submit, class: "registration__button-container brand-#{provider.provider_name}" do %>
-        <%= crayons_icon_tag(provider.provider_name, class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
+        <%= crayons_icon_tag("#{provider.provider_name}-icon", class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
         <span class="registration__button-text">
           <%= t("views.auth.provider.text", action: params[:state] == "new-user" ? t("views.auth.provider.signup") : t("views.auth.provider.login"), provider: provider.official_name) %>
         </span>
