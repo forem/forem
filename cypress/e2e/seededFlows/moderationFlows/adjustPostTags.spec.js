@@ -255,6 +255,23 @@ describe('Adjust post tags', () => {
           .pipe(click)
           .should('have.attr', 'aria-expanded', 'true');
 
+        cy.findByText('tag1').click();
+        cy.get('#tag-removal-reason-tag1').type('testing');
+
+        cy.findByRole('button', { name: 'Remove tag' }).click();
+      });
+
+      cy.wait('@tagAdjustmentRequest');
+      cy.reload();
+
+      cy.findByRole('button', { name: 'Moderation' }).click();
+      cy.getIframeBody('#mod-container').within(() => {
+        cy.findByRole('button', {
+          name: 'Open adjust tags section',
+        })
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
         cy.findByRole('heading', {
           name: 'Previous tag adjustments',
         }).scrollIntoView();
@@ -262,6 +279,9 @@ describe('Adjust post tags', () => {
           .find('.tag-adjustment')
           .should(($div) => {
             expect($div[0].innerText).to.contain(
+              '# tag1 removed by Admin McAdmin\ntesting',
+            );
+            expect($div[1].innerText).to.contain(
               '# tag2 added by Admin McAdmin\ntesting',
             );
           });
