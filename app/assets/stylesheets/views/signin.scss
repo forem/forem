@@ -65,11 +65,12 @@
 // Registration View
 .registration {
   border-radius: unset;
-  padding: var(--su-6);
+  padding: var(--su-4);
 
   @media (min-width: $breakpoint-s) {
     border-radius: var(--radius);
     padding: var(--su-8);
+    padding-top: var(--su-6);
     margin: 0 auto;
     width: $breakpoint-s;
   }
@@ -124,8 +125,8 @@
     letter-spacing: -0.28px;
     padding: 0px var(--su-9);
 
-    @media (max-width: $breakpoint-m) {
-      padding: 0px var(--su-6);
+    @media (max-width: $breakpoint-s) {
+      padding: 0px;
     }
   }
 
