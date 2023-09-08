@@ -1172,7 +1172,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_06_112602) do
 
   create_table "user_languages", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "language"
+    t.string "language", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_user_languages_on_user_id"
