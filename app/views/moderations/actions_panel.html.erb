@@ -6,7 +6,7 @@
   </style>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+<%= javascript_packs_with_chunks_tag "actionsPanel" %>
 
 <% author_suspended = @moderatable.user.suspended? %>
 <% author_username = @moderatable.username %>
@@ -203,26 +203,28 @@
             </span>
           </span>
         <% end %>
-        <div id="tag-moderation-history">
-          <h1><%= t("views.moderations.actions.adjust.previous") %></h1>
-          <% @moderatable.ordered_tag_adjustments.each do |adj| %>
-            <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
-              <span class="num-sign">#</span>
-              <span><%= adj.tag_name %></span>
-              <span class="adjustment-type">
-                <%= if adj.adjustment_type == "addition"
-                      t("views.moderations.actions.adjust.history.added_by")
-                    else
-                      t("views.moderations.actions.adjust.history.removed_by")
-                    end %>
-              </span>
-              <span><%= adj.user.name %></span>
-              <div class="tag-adjustment-reason">
-                <span><%= adj.reason_for_adjustment %></span>
+        <% if @moderatable.ordered_tag_adjustments.any? %>
+          <div id="tag-moderation-history">
+            <h1><%= t("views.moderations.actions.adjust.previous") %></h1>
+            <% @moderatable.ordered_tag_adjustments.each do |adj| %>
+              <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
+                <span class="num-sign">#</span>
+                <span><%= adj.tag_name %></span>
+                <span class="adjustment-type">
+                  <%= if adj.adjustment_type == "addition"
+                        t("views.moderations.actions.adjust.history.added_by")
+                      else
+                        t("views.moderations.actions.adjust.history.removed_by")
+                      end %>
+                </span>
+                <span><%= adj.user.name %></span>
+                <div class="tag-adjustment-reason">
+                  <span><%= adj.reason_for_adjustment %></span>
+                </div>
               </div>
-            </div>
-          <% end %>
-        </div>
+            <% end %>
+          </div>
+        <% end %>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="additional-subtext-section py-3">
             <%= t("views.moderations.actions.how") %>

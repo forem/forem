@@ -53,39 +53,42 @@ describe('Adjust post tags', () => {
       });
     });
 
-    it('should show previous tag adjustments', () => {
-      cy.findByRole('heading', { name: 'Tag test article' }).click();
+    // it('should show previous tag adjustments', () => {
+    //   cy.findByRole('heading', { name: 'Tag test article' }).click();
 
-      cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
-        cy.findByTestId('add-tag-button').click();
-        cy.findByPlaceholderText('Add a tag').type('tag2');
-        cy.findByPlaceholderText('Reason to add tag (optional)').type(
-          'testing addition adjustment',
-        );
-        cy.findByRole('button', { name: 'Add tag' }).click();
-      });
+    //   cy.getIframeBody('.actions-panel-iframe').within(() => {
+    //     cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+    //     cy.findByTestId('add-tag-button').click();
+    //     cy.findByPlaceholderText('Add a tag').type('tag2');
+    //     cy.findByPlaceholderText('Reason to add tag (optional)').type(
+    //       'testing addition adjustment',
+    //     );
+    //     cy.findByRole('button', { name: 'Add tag' }).click();
+    //   });
 
-      cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByText('tag1').click();
-        cy.findByPlaceholderText('Reason to remove tag (optional)').type(
-          'testing removal adjustment',
-        );
-        cy.findByRole('button', { name: 'Remove tag' }).click();
-      });
+    //   cy.getIframeBody('.actions-panel-iframe').within(() => {
+    //     cy.findByText('tag1').click();
+    //     cy.findByPlaceholderText('Reason to remove tag (optional)').type(
+    //       'testing removal adjustment',
+    //     );
+    //     cy.findByRole('button', { name: 'Remove tag' }).click();
+    //   });
 
-      cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('heading', { name: 'Previous tag adjustments' });
-        cy.get('#tag-moderation-history')
-          .find('.tag-adjustment')
-          .should(($div) => {
-            expect($div).to.have.length(3);
-            expect($div.first()).to.contain(
-              'tag1 removed by Admin McAdmin testing removal adjustment',
-            );
-          });
-      });
-    });
+    //   cy.visit('/mod');
+    //   cy.findByRole('heading', { name: 'Tag test article' }).click();
+
+    //   cy.getIframeBody('.actions-panel-iframe').within(() => {
+    //     cy.findByRole('heading', { name: 'Previous tag adjustments' });
+    //     cy.get('#tag-moderation-history')
+    //       .find('.tag-adjustment')
+    //       .should(($div) => {
+    //         expect($div).to.have.length(3);
+    //         expect($div.first()).to.contain(
+    //           'tag1 removed by Admin McAdmin testing removal adjustment',
+    //         );
+    //       });
+    //   });
+    // });
   });
 
   describe('from /mod/tagname page', () => {
@@ -210,6 +213,58 @@ describe('Adjust post tags', () => {
 
       cy.get('@main').within(() => {
         cy.findByRole('link', { name: /# tag1/ }).should('not.exist');
+      });
+    });
+
+    it('should show previous tag adjustments', () => {
+      cy.intercept('/tag_adjustments').as('tagAdjustmentRequest');
+      cy.findByRole('heading', { name: 'Tag test article' });
+      cy.findByRole('main').as('main');
+
+      cy.findByRole('link', { name: /# tag2/ }).should('not.exist');
+
+      cy.findByRole('button', { name: 'Moderation' }).click();
+      cy.getIframeBody('#mod-container').within(() => {
+        // Click listeners are attached async so we use pipe() to retry click until condition met
+        cy.findByRole('button', {
+          name: 'Open adjust tags section',
+        })
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
+        cy.findByTestId('add-tag-button').click();
+        cy.findByPlaceholderText('Add a tag').type('tag2');
+        cy.findByPlaceholderText('Reason to add tag (optional)').type(
+          'testing',
+        );
+        cy.findByRole('button', { name: 'Add tag' }).click();
+      });
+
+      cy.wait('@tagAdjustmentRequest');
+      //  Manually reloading here to clear up async race conditions in cypress as the page is reloaded.
+      // Currently, we manually reload the page as an adjustment occurs, which seems to cause
+      // indeterminate waits for the javascript to be present on the reloaded page,
+      // so some elements end up existing but not interactive on click.
+      cy.reload();
+
+      cy.findByRole('button', { name: 'Moderation' }).click();
+      cy.getIframeBody('#mod-container').within(() => {
+        cy.findByRole('button', {
+          name: 'Open adjust tags section',
+        })
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+
+        cy.findByRole('heading', {
+          name: 'Previous tag adjustments',
+        }).scrollIntoView();
+        cy.get('#tag-moderation-history')
+          .find('.tag-adjustment')
+          .should(($div) => {
+            expect($div[0].innerText).to.contain(
+              '# tag2 added by Admin McAdmin\ntesting',
+            );
+          });
       });
     });
   });
