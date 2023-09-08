@@ -13,6 +13,6 @@
     }
   },
   "updateContentCommand": "dip provision",
-  "postCreateCommand": "bash .devcontainer/devcontainer-init.sh",
-  "postAttachCommand": "dip provision && dip up web"
+  "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
+  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web"
 }
