@@ -85,7 +85,6 @@ RSpec.describe "Completing Onboarding", js: true do
       end
     end
   end
-
   # rubocop:enable RSpec/PendingWithoutReason
 
   # TODO: Extract this into a reusable helper
