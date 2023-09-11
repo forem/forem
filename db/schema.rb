@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_10_135738) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1075,7 +1075,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
