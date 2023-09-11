@@ -74,7 +74,6 @@ RSpec.describe "/api/admin/users" do
       post api_admin_users_path, params: params, headers: headers
 
       expect(User.last.registered).to be false
-
     end
   end
 end
