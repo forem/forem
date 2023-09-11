@@ -161,7 +161,8 @@ class ReactionHandler
   end
 
   def record_feed_event(reaction)
-    return unless reaction.visible_to_public? && reaction.reactable_type == "Article"
+    return unless (reaction.visible_to_public? || reaction.category == "readinglist") &&
+      reaction.reactable_type == "Article"
 
     FeedEvent.record_journey_for(reaction.user, article: reaction.reactable, category: :reaction)
   end

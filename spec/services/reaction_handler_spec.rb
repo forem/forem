@@ -89,7 +89,7 @@ RSpec.describe ReactionHandler, type: :service do
       end
     end
 
-    context "when the reaction is not a public reaction" do
+    context "when the reaction is not a public reaction or bookmark" do
       let(:user) { moderator }
       let(:category) { "vomit" }
 
@@ -121,7 +121,7 @@ RSpec.describe ReactionHandler, type: :service do
       end
     end
 
-    context "when the reaction is not in a notifiable category" do
+    context "when the reaction is a bookmark" do
       let(:category) { "readinglist" }
 
       it "does not send a notification to the author" do
@@ -129,6 +129,17 @@ RSpec.describe ReactionHandler, type: :service do
           expect(result).to be_success
           expect(result.action).to eq("create")
         end
+      end
+
+      it "records a feed event if reached through a feed" do
+        create(:feed_event, category: :click, article: article, user: user)
+
+        expect { result }.to change(FeedEvent, :count).by(1)
+        expect(user.feed_events.last).to have_attributes(
+          category: "reaction",
+          article_id: article.id,
+          user_id: user.id,
+        )
       end
     end
 
