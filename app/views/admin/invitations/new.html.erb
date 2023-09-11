@@ -20,7 +20,7 @@
   </div>
 <% end %>
 
-<% if true #smtp_enabled %>
+<% if smtp_enabled %>
   <h1 class="crayons-title">Invite Users</h1>
   <%= form_for(User.new, url: admin_invitations_path) do |f| %>
     <div class="crayons-field mt-6">
