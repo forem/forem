@@ -127,6 +127,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "3",
+    "cypress-multi-reporters": "^1.6.3",
     "file-loader": "^6.2.0",
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",

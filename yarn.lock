@@ -7639,6 +7639,14 @@ cypress-file-upload@^5.0.8:
   resolved "https://registry.yarnpkg.com/cypress-file-upload/-/cypress-file-upload-5.0.8.tgz#d8824cbeaab798e44be8009769f9a6c9daa1b4a1"
   integrity sha512-+8VzNabRk3zG6x8f8BWArF/xA/W0VK4IZNx3MV0jFWrJS/qKn8eHfa5nU73P9fOQAgwHFJx7zjg4lwOnljMO8g==
 
+cypress-multi-reporters@^1.6.3:
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/cypress-multi-reporters/-/cypress-multi-reporters-1.6.3.tgz#0f0da8db4caf8d7a21f94e5209148348416d7c71"
+  integrity sha512-klb9pf6oAF4WCLHotu9gdB8ukYBdeTzbEMuESKB3KT54HhrZj65vQxubAgrULV5H2NWqxHdUhlntPbKZChNvEw==
+  dependencies:
+    debug "^4.3.4"
+    lodash "^4.17.21"
+
 cypress-pipe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/cypress-pipe/-/cypress-pipe-2.0.0.tgz#577df7a70a8603d89a96dfe4092a605962181af8"

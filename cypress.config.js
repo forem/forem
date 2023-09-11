@@ -12,8 +12,8 @@ module.exports = defineConfig({
     trashAssetsBeforeRuns: false,
     video: false,
     retries: 3,
-    reporter: 'junit',
-    reporterOptions: {
+    reporterEnabled: 'spec, mocha-junit-reporter',
+    mochaJunitReporterReporterOptions: {
       mochaFile: 'cypress/results/results-[hash].xml',
     },
   },
