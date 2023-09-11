@@ -807,10 +807,20 @@ class Article < ApplicationRecord
     published_at || date || Time.current
   end
 
+  # When an article is saved, it ensures that the tags that were adjusted by moderators and admins
+  # remain adjusted. We do not allow the author to add or remove tags that were previously added or
+  # removed by moderators and admins.
+  #
+  # This method is called before validation, so that the tag_list can be validated.
+  #
+  # @return [String] an array of tag names.
   def validate_tag
-    # remove adjusted tags
-    remove_tag_adjustments_from_tag_list
-    add_tag_adjustments_to_tag_list
+    distinct_tag_adjustments = TagAdjustment.where(article_id: id, status: "committed")
+      .select('DISTINCT ON ("tag_id") *')
+      .order(:tag_id, updated_at: :desc, id: :desc)
+
+    remove_tag_adjustments_from_tag_list(distinct_tag_adjustments)
+    add_tag_adjustments_to_tag_list(distinct_tag_adjustments)
 
     # check there are not too many tags
     return errors.add(:tag_list, I18n.t("models.article.too_many_tags")) if tag_list.size > MAX_TAG_LIST_SIZE
@@ -818,14 +828,13 @@ class Article < ApplicationRecord
     validate_tag_name(tag_list)
   end
 
-  def remove_tag_adjustments_from_tag_list
-    tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal",
-                                         status: "committed").pluck(:tag_name)
+  def remove_tag_adjustments_from_tag_list(distinct_adjustments)
+    tags_to_remove = distinct_adjustments.where(adjustment_type: "removal").pluck(:tag_name)
     tag_list.remove(tags_to_remove, parse: true) if tags_to_remove.present?
   end
 
-  def add_tag_adjustments_to_tag_list
-    tags_to_add = TagAdjustment.where(article_id: id, adjustment_type: "addition", status: "committed").pluck(:tag_name)
+  def add_tag_adjustments_to_tag_list(distinct_adjustments)
+    tags_to_add = distinct_adjustments.where(adjustment_type: "addition").pluck(:tag_name)
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
