@@ -22,33 +22,33 @@ FactoryBot.define do
         json_data:
           # Most recent follower
           { "user" =>
-            { "id" => 6,
-              "name" => "Isiah \"The Isiah\" Ebert  \\:/",
+            { "id" => notification.notifiable.follower.id,
+              "name" => notification.notifiable.follower.name,
               "path" => "/isiahebert",
               "class" => { "name" => "User" },
-              "username" => "isiahebert",
-              "created_at" => "2023-05-12T15:16:42.478Z",
+              "username" => notification.notifiable.follower.username,
+              "created_at" => notification.notifiable.follower.created_at,
               "comments_count" => 0,
-              "profile_image_90" => "/uploads/user/profile_image/6/54182c19-4280-4a92-9bcd-32c157c26ac3.png" },
+              "profile_image_90" => notification.notifiable.follower.profile_image_90 },
             # Aggregated followers
             "aggregated_siblings" => [
-              { "id" => 6,
-                "name" => "Isiah \"The Isiah\" Ebert  \\:/",
+              { "id" => notification.notifiable.follower.id,
+                "name" => notification.notifiable.follower.name,
                 "path" => "/isiahebert",
                 "class" => { "name" => "User" },
-                "username" => "isiahebert",
-                "created_at" => "2023-05-12T15:16:42.478Z",
+                "username" => notification.notifiable.follower.username,
+                "created_at" => notification.notifiable.follower.created_at,
                 "comments_count" => 0,
-                "profile_image_90" => "/uploads/user/profile_image/6/54182c19-4280-4a92-9bcd-32c157c26ac3.png" },
+                "profile_image_90" => notification.notifiable.follower.profile_image_90 },
             ] },
-        notifiable_id: 41,
+        notifiable_id: notification.notifiable.id,
         notifiable_type: "Follow",
         notified_at: DateTime.now,
         organization_id: nil,
         read: false,
         updated_at: DateTime.now,
         # User being followed
-        user_id: 7,
+        user_id: notification.notifiable.followable.id,
       )
     end
   end
