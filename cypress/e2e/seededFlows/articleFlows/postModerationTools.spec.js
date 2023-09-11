@@ -383,7 +383,7 @@ describe('Moderation Tools for Posts', () => {
         });
       });
 
-      it('should show error message if flag-user radio is unchecked', () => {
+      it('should flag the user', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -391,21 +391,12 @@ describe('Moderation Tools for Posts', () => {
             .should('have.attr', 'aria-expanded', 'true');
           cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
+        // should show error message if flag-user radio is unchecked
         cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Confirm Flag' }).click();
           cy.findByTestId('unselected-radio-error')
             .contains('You must check the radio button first.')
             .should('exist');
-        });
-      });
-
-      it('should flag the user if flag-user radio is checked', () => {
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open admin actions' })
-            .as('moderatingActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
 
         cy.getModal().within(() => {
