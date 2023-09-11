@@ -374,9 +374,12 @@ describe('Moderation Tools for Posts', () => {
     describe('flag-user flow', () => {
       beforeEach(() => {
         cy.get('@trustedUser').then((user) => {
-          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
-          cy.findByRole('heading', { level: 1, name: 'Test article' });
-          cy.findByRole('button', { name: 'Moderation' }).click();
+          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(
+            () => {
+              cy.findByRole('heading', { level: 1, name: 'Test article' });
+              cy.findByRole('button', { name: 'Moderation' }).click();
+            },
+          );
         });
       });
 
