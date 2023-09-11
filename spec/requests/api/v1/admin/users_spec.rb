@@ -48,5 +48,11 @@ RSpec.describe "/api/admin/users" do
 
       expect(response).to have_http_status(:ok)
     end
+
+    it "marks user as registered false" do
+      post api_admin_users_path, params: params, headers: headers
+
+      expect(User.last.registered).to be false
+    end
   end
 end

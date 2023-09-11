@@ -145,14 +145,14 @@ function buildTagsHTML(tag) {
 
   if (tag.explicit_points < 0) {
     unhideButtonContainer = `<div>
-        <button class="crayons-btn crayons-btn--danger unhide-button">Unhide</button>
+        <button class="c-btn c-btn--primary c-btn--destructive unhide-button">Unhide</button>
       </div>`;
   }
 
   if (tag.explicit_points >= 0) {
     followingButtonContainer = `<div class="flex justify-between">
       <div>
-        <button class="c-btn c-btn--secondary follow-button" aria-label="Following tag:${tag.name}">Following</button>
+        <button class="crayons-btn crayons-btn--outlined follow-button" aria-label="Following tag:${tag.name}">Following</button>
       </div>
       <div class="dropdown-trigger-container relative">
         <button type="button" aria-label="Unhide tag: ${tag.name}" class="c-btn c-btn--icon-alone dropdown-trigger" id="options-dropdown-trigger-${tag.tag_id}" aria-haspopup="true" aria-expanded="false" aria-controls="options-dropdown">

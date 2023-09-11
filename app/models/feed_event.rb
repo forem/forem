@@ -8,7 +8,9 @@ class FeedEvent < ApplicationRecord
 
   enum category: {
     impression: 0,
-    click: 1
+    click: 1,
+    reaction: 2,
+    comment: 3
   }
 
   CONTEXT_TYPE_HOME = "home".freeze
