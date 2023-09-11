@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_06_112602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1187,6 +1187,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
+  create_table "user_languages", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "language", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_languages_on_user_id"
+  end
+
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", null: false
@@ -1454,6 +1462,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_31_160030) do
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "user_languages", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_notification_settings", "users"
