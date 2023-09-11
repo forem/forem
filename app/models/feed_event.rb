@@ -28,4 +28,18 @@ class FeedEvent < ApplicationRecord
   # Since we have disabled association validation, this is handy to filter basic bad data
   validates :article_id, presence: true, numericality: { only_integer: true }
   validates :user_id, numericality: { only_integer: true }, allow_nil: true
+
+  def self.record_journey_for(user, article:, category:)
+    return unless %i[reaction comment].include?(category)
+
+    last_click = where(user: user, category: :click).last
+    return unless last_click&.article_id == article.id
+
+    create_with(last_click.slice(:article_position, :context_type))
+      .find_or_create_by(
+        category: :reaction,
+        user: user,
+        article: article,
+      )
+  end
 end

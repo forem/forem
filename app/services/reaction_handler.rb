@@ -163,18 +163,7 @@ class ReactionHandler
   def record_feed_event(reaction)
     return unless reaction.visible_to_public? && reaction.reactable_type == "Article"
 
-    last_click = reaction.user.feed_events.where(category: :click).last
-    return unless last_click&.article_id == reaction.reactable_id
-
-    reaction
-      .user
-      .feed_events
-      .create_with(last_click.slice(:article_position, :context_type))
-      .find_or_create_by(
-        category: :reaction,
-        user: reaction.user,
-        article: reaction.reactable,
-      )
+    FeedEvent.record_journey_for(reaction.user, article: reaction.reactable, category: :reaction)
   end
 
   def rate_article(reaction)

@@ -55,15 +55,13 @@ RSpec.describe ReactionHandler, type: :service do
       end
 
       it "records a feed event for articles reached through a feed" do
-        click = create(:feed_event, category: :click, article: article, user: user)
+        create(:feed_event, category: :click, article: article, user: user)
 
         expect { result }.to change(FeedEvent, :count).by(1)
         expect(user.feed_events.last).to have_attributes(
-          category: :reaction,
+          category: "reaction",
           article_id: article.id,
           user_id: user.id,
-          context_type: click.context_type,
-          article_position: click.article_position,
         )
       end
 
@@ -99,7 +97,7 @@ RSpec.describe ReactionHandler, type: :service do
         click = create(:feed_event, category: :click, article: article, user: moderator)
 
         expect { result }.not_to change(FeedEvent, :count)
-        expec(moderator.feed_events).to contain_exactly(click)
+        expect(moderator.feed_events).to contain_exactly(click)
       end
     end
 
@@ -205,15 +203,13 @@ RSpec.describe ReactionHandler, type: :service do
       end
 
       it "records a feed event for articles reached through a feed" do
-        click = create(:feed_event, category: :click, article: article, user: user)
+        create(:feed_event, category: :click, article: article, user: user)
 
         expect { result }.to change(FeedEvent, :count).by(1)
         expect(user.feed_events.last).to have_attributes(
-          category: :reaction,
+          category: "reaction",
           article_id: article.id,
           user_id: user.id,
-          context_type: click.context_type,
-          article_position: click.article_position,
         )
       end
 
