@@ -829,12 +829,12 @@ class Article < ApplicationRecord
   end
 
   def remove_tag_adjustments_from_tag_list(distinct_adjustments)
-    tags_to_remove = distinct_adjustments.where(adjustment_type: "removal").pluck(:tag_name)
+    tags_to_remove = distinct_adjustments.select { |adj| adj.adjustment_type == "removal" }.pluck(:tag_name)
     tag_list.remove(tags_to_remove, parse: true) if tags_to_remove.present?
   end
 
   def add_tag_adjustments_to_tag_list(distinct_adjustments)
-    tags_to_add = distinct_adjustments.where(adjustment_type: "addition").pluck(:tag_name)
+    tags_to_add = distinct_adjustments.select { |adj| adj.adjustment_type == "addition" }.pluck(:tag_name)
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
