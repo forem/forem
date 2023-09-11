@@ -102,10 +102,26 @@ describe('Moderation Tools for Posts', () => {
       cy.fixture('users/moderatorUser.json').as('moderatorUser');
     });
 
-    it('should load moderation tools on a post', () => {
+    it('show the correct things', () => {
       cy.get('@moderatorUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          // should load moderation tools on a post
           cy.findByRole('button', { name: 'Moderation' }).should('exist');
+
+          // should show Unpublish Post button on a published post
+          cy.findByRole('button', { name: 'Moderation' }).click();
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
+          });
+
+          // should show Adjust tags button on a published post
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+            cy.findByRole('button', { name: 'Open adjust tags section' })
+              .as('adjustTagsButton')
+              .pipe(click)
+              .should('have.attr', 'aria-expanded', 'true');
+          });
         });
       });
     });
@@ -125,34 +141,6 @@ describe('Moderation Tools for Posts', () => {
             );
           },
         );
-      });
-    });
-
-    it('should show Unpublish Post button on a published post', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
-
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
-          });
-        });
-      });
-    });
-
-    it('should show Adjust tags button on a published post', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
-
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
-            cy.findByRole('button', { name: 'Open adjust tags section' })
-              .as('adjustTagsButton')
-              .pipe(click)
-              .should('have.attr', 'aria-expanded', 'true');
-          });
-        });
       });
     });
 
