@@ -37,7 +37,7 @@ class FeedEvent < ApplicationRecord
 
     create_with(last_click.slice(:article_position, :context_type))
       .find_or_create_by(
-        category: :reaction,
+        category: :category,
         user: user,
         article: article,
       )
