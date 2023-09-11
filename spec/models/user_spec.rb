@@ -112,6 +112,7 @@ RSpec.describe User do
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
+      it { is_expected.to have_many(:languages).dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
