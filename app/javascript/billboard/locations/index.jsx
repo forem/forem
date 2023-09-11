@@ -18,8 +18,9 @@ export const Locations = ({
       return new Promise((resolve) => {
         queueMicrotask(() => {
           const suggestions = [];
+          const caseInsensitiveQuery = query.toLowerCase();
           Object.keys(allLocations).forEach((name) => {
-            if (name.indexOf(query) > -1) {
+            if (name.toLowerCase().indexOf(caseInsensitiveQuery) > -1) {
               suggestions.push(allLocations[name]);
             }
           });
@@ -35,9 +36,7 @@ export const Locations = ({
       defaultValue={defaultValue}
       fetchSuggestions={autocompleteLocations}
       border
-      // The label is already part of the page!
-      showLabel={false}
-      labelText=""
+      labelText="Enabled countries for targeting"
       placeholder={placeholder}
       SelectionTemplate={template}
       onSelectionsChanged={onChange}
