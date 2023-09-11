@@ -2,7 +2,7 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 
-import { convertCoauthorIdsToUsernameInputs } from '../dashboards/convertCoauthorIdsToUsernameInputs';
+import { convertCoauthorIdsToUsernameInputs } from '../packs/dashboards/convertCoauthorIdsToUsernameInputs';
 
 global.fetch = fetch;
 
