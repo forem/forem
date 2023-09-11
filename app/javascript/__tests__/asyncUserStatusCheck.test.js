@@ -1,7 +1,7 @@
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
-import { asyncUserStatusCheck } from '../asyncUserStatusCheck';
+import { asyncUserStatusCheck } from '../packs/asyncUserStatusCheck';
 
 global.fetch = fetch;
 
