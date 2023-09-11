@@ -333,29 +333,18 @@ describe('Moderation Tools for Posts', () => {
       cy.fixture('users/trustedUser.json').as('trustedUser');
     });
 
-    it('should load moderation tools on a post', () => {
+    it('should load appropriate moderation tools on a post', () => {
       cy.get('@trustedUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).should('exist');
         });
-      });
-    });
 
-    it('should not show Feature Post button on a post', () => {
-      cy.get('@trustedUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
-          () => {
-            cy.findByRole('button', { name: 'Moderation' }).click();
+        cy.findByRole('button', { name: 'Moderation' }).click();
 
-            cy.getIframeBody('[title="Moderation panel actions"]').within(
-              () => {
-                cy.findByRole('button', { name: 'Feature Post' }).should(
-                  'not.exist',
-                );
-              },
-            );
-          },
-        );
+        // should not show Feature Post button on a post
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Feature Post' }).should('not.exist');
+        });
       });
     });
 
