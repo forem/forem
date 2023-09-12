@@ -5,7 +5,7 @@ module Api
 
       def create
         # NOTE: We can add an inviting user here, e.g. User.invite!(current_user, user_params).
-        User.invite!(user_params)
+        User.invite!(user_params.merge(registered: false))
 
         head :ok
       end
