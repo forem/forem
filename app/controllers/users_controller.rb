@@ -7,23 +7,23 @@ class UsersController < ApplicationController
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
   before_action :initialize_stripe, only: %i[edit]
 
-  rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
-
   def index
     @users = sidebar_suggestions || User.none
   end
 
   # Unlike other methods in this controller, this does _NOT_ assume the current_user is *the* user
   def show
+    skip_authorization
     user = User.find(params[:id])
     # authorize user, :show?
-    skip_authorization
 
     respond_to do |format|
       format.json do
         render json: user.as_json(attributes_for_show)
       end
     end
+  rescue ActiveRecord::RecordNotFound
+    error_not_found
   end
 
   # GET /settings/@tab
