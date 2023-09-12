@@ -46,7 +46,7 @@ RSpec.describe "NotificationsIndex" do
       it "renders the signup page" do
         get "/notifications"
 
-        expect(response.body).to include("OR")
+        expect(response.body).to include("By signing in")
       end
     end
 
@@ -55,7 +55,7 @@ RSpec.describe "NotificationsIndex" do
         sign_in user
 
         get "/notifications"
-        expect(response.body).not_to include("OR")
+        expect(response.body).not_to include("By signing in")
       end
     end
 

@@ -33,7 +33,7 @@ RSpec.describe "Registrations" do
       it "shows the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).to include("OR")
+        expect(response.body).to include("By signing in")
       end
     end
 
