@@ -6,6 +6,8 @@ class FeedEvent < ApplicationRecord
   belongs_to :article, optional: true
   belongs_to :user, optional: true
 
+  after_save :update_article_counters_and_scores
+
   enum category: {
     impression: 0,
     click: 1,
@@ -41,5 +43,23 @@ class FeedEvent < ApplicationRecord
         user: user,
         article: article,
       )
+  end
+
+  private
+
+  def update_article_counters_and_scores
+    return unless article
+
+    impressions_count = article.feed_events.where(category: "impression").size
+    clicks_count = article.feed_events.where(category: "click").size
+    reactions_count = article.feed_events.where(category: "reaction").size
+    comments_count = article.feed_events.where(category: "comment").size
+
+    score =  (clicks_count + reactions_count + comments_count) / impressions_count.to_f
+
+    article.update_columns(
+      feed_success_score: score,
+      feed_clicks_count: impressions_count,
+      feed_impressions_count: clicks_count)
   end
 end
