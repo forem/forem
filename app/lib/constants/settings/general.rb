@@ -8,6 +8,9 @@ module Constants
           ahoy_tracking: {
             description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
           },
+          billboard_enabled_countries: {
+            description: I18n.t("lib.constants.settings.general.billboard_enabled_countries.description")
+          },
           contact_email: {
             description: I18n.t("lib.constants.settings.general.contact_email.description"),
             placeholder: "hello@example.com"
