@@ -21,6 +21,7 @@ x-backend: &backend
   volumes:
     - .:/app:cached
     - bundle:/usr/local/bundle
+    - cypress:/root/.cache/Cypress
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
     - node_modules:/app/node_modules
@@ -113,6 +114,7 @@ services:
 
 volumes:
   bundle:
+  cypress:
   node_modules:
   history:
   rails_cache:
