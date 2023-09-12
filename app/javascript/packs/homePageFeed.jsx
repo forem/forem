@@ -1,4 +1,4 @@
-import { h, render } from 'preact';
+import { h, Fragment, render } from 'preact';
 import PropTypes from 'prop-types';
 import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
@@ -150,7 +150,7 @@ export const renderFeed = async (timeFrame, afterRender) => {
     }
 
     return (
-      <div>
+      <Fragment>
         {feedConstruct(
           pinnedItem,
           imageItem,
@@ -159,7 +159,7 @@ export const renderFeed = async (timeFrame, afterRender) => {
           bookmarkClick,
           currentUserId,
         )}
-      </div>
+      </Fragment>
     );
   };
 

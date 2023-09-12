@@ -33,6 +33,10 @@
       data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
+      data-feed-context-type="<%= FeedEvent::CONTEXT_TYPE_HOME %>"
+      <% FeedEvent.categories.keys.each do |category| %>
+      data-feed-category-<%= category %>="<%= category %>"
+      <% end %>
       data-articles-since="<%= Timeframe.datetime_iso8601(params[:timeframe]) %>">
 
     <%= render "articles/sidebar" %>
@@ -104,5 +108,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", "feedEvents", defer: true %>
 <% end %>

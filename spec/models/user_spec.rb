@@ -82,6 +82,7 @@ RSpec.describe User do
       it { is_expected.to have_many(:billboard_events).dependent(:nullify) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:feed_events).dependent(:nullify) }
       it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
@@ -111,6 +112,7 @@ RSpec.describe User do
       it { is_expected.to have_many(:subscribed_to_user_subscriptions).dependent(:destroy) }
       it { is_expected.to have_many(:subscribers).dependent(:destroy) }
       it { is_expected.to have_many(:tweets).dependent(:nullify) }
+      it { is_expected.to have_many(:languages).dependent(:delete_all) }
 
       # rubocop:disable RSpec/NamedSubject
       it do
