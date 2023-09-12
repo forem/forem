@@ -96,6 +96,8 @@ fr:
         general:
           ahoy_tracking:
             description: Track visits and events - data is stored in your database. A restart is required for changes to this configuration to take effect.
+          billboard_enabled_countries:
+            description: Countries that can be geotargeted by billboards. Click on a selected country to toggle targeting on a sub-country level.
           contact_email:
             description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
           credit:

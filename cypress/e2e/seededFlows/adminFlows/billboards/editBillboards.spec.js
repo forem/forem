@@ -138,7 +138,7 @@ describe('Billboards Form', () => {
         cy.findByRole('button', { name: 'Save Billboard' }).click();
         cy.get('#flash-0').should(($flashMessage) => {
           expect($flashMessage).to.not.contain(
-            'is not a supported ISO 3166-2 code',
+            'is not an enabled target ISO 3166-2 code',
           );
         });
       });
@@ -151,10 +151,10 @@ describe('Billboards Form', () => {
         cy.get('#flash-0').should(($flashMessage) => {
           // We currently support only the US and CA
           expect($flashMessage).to.contain(
-            'MX-CMX is not a supported ISO 3166-2 code',
+            'MX-CMX is not an enabled target ISO 3166-2 code',
           );
           expect($flashMessage).to.not.contain(
-            'US-NY is not a supported ISO 3166-2 code',
+            'US-NY is not an enabled target ISO 3166-2 code',
           );
         });
       });

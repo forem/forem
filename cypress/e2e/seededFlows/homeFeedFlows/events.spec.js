@@ -3,11 +3,12 @@ describe('Home page feed events', () => {
     cy.testSetup();
   });
 
-  const scrollBackAndForth = () => {
-    // The delay is necessary for Cypress to give `IntersectionObserver` time to actually work.
-    // Also, we scroll twice so we can confirm we don't send extraneous events.
-    cy.scrollTo('bottom', { duration: 700 });
-    cy.scrollTo('top', { duration: 700 });
+  // Cypress full-page scrolling is so janky that it sometimes does not trigger
+  // IntersectionObserver, so we are doing a bit of a manual scroll
+  const scrollAll = (posts) => {
+    posts.each((_, post) => {
+      cy.wrap(post).scrollIntoView({ duration: 50 });
+    });
   };
 
   context('when a user is not logged in', () => {
@@ -21,9 +22,9 @@ describe('Home page feed events', () => {
     });
 
     it('does not send feed events', () => {
-      scrollBackAndForth();
-      // Again for good measure
-      scrollBackAndForth();
+      cy.scrollTo('bottom', { duration: 600 });
+      cy.scrollTo('top', { duration: 600 });
+      cy.scrollTo('bottom', { duration: 600 });
 
       // More than autosubmit threshold
       cy.tick(7000);
@@ -40,25 +41,27 @@ describe('Home page feed events', () => {
 
     const visitAndWaitForLoad = (url, { expectedPostCount }) => {
       cy.visit(url);
-      cy.get('[data-feed-position]').should('have.length', expectedPostCount);
+      return cy
+        .get('[data-feed-position]')
+        .should('have.length', expectedPostCount)
+        .then((posts) => {
+          posts.ea;
+        });
     };
 
-    const findAndDetermineImpressions = (callback) => {
-      cy.get('[data-feed-content-id]').then((posts) => {
-        const ids = posts
-          .map(function () {
-            return this.dataset.feedContentId;
-          })
-          .get();
+    const determineImpressions = (posts) => {
+      const ids = posts
+        .map(function () {
+          return this.dataset.feedContentId;
+        })
+        .get();
 
-        const expectedEvents = ids.map((id, index) => ({
-          article_id: `${id}`,
-          article_position: `${index + 1}`,
-          category: 'impression',
-          context_type: 'home',
-        }));
-        callback(expectedEvents);
-      });
+      return ids.map((id, index) => ({
+        article_id: `${id}`,
+        article_position: `${index + 1}`,
+        category: 'impression',
+        context_type: 'home',
+      }));
     };
 
     it('submits click events immediately', () => {
@@ -83,14 +86,13 @@ describe('Home page feed events', () => {
     });
 
     it('auto-submits incomplete batches of events after a few seconds', () => {
-      visitAndWaitForLoad('/', { expectedPostCount: 11 });
-
       // There are 11 articles currently in the seeder! If this line is failing
       // and a seeded article has recently been added or removed, just bump
       // this number.
-      findAndDetermineImpressions((events) => {
-        scrollBackAndForth();
+      visitAndWaitForLoad('/', { expectedPostCount: 11 }).then((posts) => {
+        const events = determineImpressions(posts);
 
+        scrollAll(posts);
         cy.wait('@feedEventsSubmission')
           .its('request.body.feed_events')
           .should('have.deep.members', events);
@@ -105,12 +107,12 @@ describe('Home page feed events', () => {
         }),
       );
       cy.all(createArticles).then(() => {
-        visitAndWaitForLoad('/', { expectedPostCount: 26 });
+        visitAndWaitForLoad('/', { expectedPostCount: 26 }).then((posts) => {
+          const events = determineImpressions(posts);
 
-        findAndDetermineImpressions((events) => {
           const firstBatch = events.slice(0, 20);
           const secondBatch = events.slice(20);
-          scrollBackAndForth();
+          scrollAll(posts);
 
           cy.wait('@feedEventsSubmission')
             .its('request.body.feed_events')

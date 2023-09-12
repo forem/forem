@@ -284,6 +284,38 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
           targets_maine_alberta_and_ontario,
         )
       end
+
+      it "shows only billboards with no targeting if the user's location is an unsupported country" do
+        filtered = filter_billboards(location: "FR-BRE")
+        expect(filtered).to include(no_targets)
+        expect(filtered).not_to include(
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_california_and_texas,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
+
+      it "correctly shows targeted billboards if country but not region targeting is enabled" do
+        allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
+          "FR" => :without_regions,
+          "US" => :with_regions,
+          "CA" => :with_regions,
+        )
+
+        targets_france_and_canada = create_billboard(target_geolocations: "CA, FR")
+
+        filtered = filter_billboards(location: "FR-BRE")
+        expect(filtered).to include(no_targets, targets_france_and_canada)
+        expect(filtered).not_to include(
+          targets_canada,
+          targets_new_york_and_canada,
+          targets_california_and_texas,
+          targets_quebec_and_newfoundland,
+          targets_maine_alberta_and_ontario,
+        )
+      end
     end
   end
 end
