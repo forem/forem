@@ -72,6 +72,7 @@ RSpec.describe DeviseMailer do
     end
 
     let(:email) { described_class.invitation_instructions(user, token, opts) }
+
     before do
       allow(Settings::SMTP).to receive_messages(
         from_email_address: "custom_noreply@example.com",
