@@ -1,7 +1,7 @@
 import '@utilities/document_ready';
 
 export async function asyncUserStatusCheck() {
-  const indicator = ` <span data-testid="user-status" class="c-indicator c-indicator--danger c-indicator--relaxed">Suspended</span>`;
+  const indicator = ` <span data-testid="user-status" class="ml-3 c-indicator c-indicator--danger c-indicator--relaxed">Suspended</span>`;
 
   const profile = document.querySelector('.profile-header__details');
 
