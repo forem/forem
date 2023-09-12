@@ -76,13 +76,7 @@
   }
 
   &__button-container {
-    display: flex;
-    width: 100%;
-    padding: var(--su-3);
-    border-radius: var(--radius);
-    align-items: center;
     border: 1px solid var(--form-border);
-    background: white;
 
     a {
       color: var(--label-primary);
@@ -98,31 +92,6 @@
     &:hover {
       border: 1px solid var(--form-border);
       background: var(--card-tertiary-bg);
-    }
-  }
-
-  &__button-text {
-    display: flex;
-    width: 100%;
-    align-self: center;
-    align-items: center;
-    justify-content: center;
-    font-size: var(--fs-s);
-    font-weight: var(--fw-medium);
-    color: var(--label-primary);
-  }
-
-  &__agreement-text {
-    margin-top: var(--su-6);
-    color: var(--color-secondary);
-    text-align: center;
-    font-size: var(--fs-s);
-    font-style: italic;
-    font-weight: var(--fw-normal);
-    padding: 0px var(--su-9);
-
-    @media (max-width: $breakpoint-s) {
-      padding: 0px;
     }
   }
 

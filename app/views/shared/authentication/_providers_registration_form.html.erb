@@ -2,9 +2,9 @@
   <% authentication_enabled_providers.each do |provider| %>
     <% next unless display_social_login?(provider.provider_name) %>
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
-      <%= f.button type: :submit, class: "registration__button-container brand-#{provider.provider_name}" do %>
+      <%= f.button type: :submit, class: "flex w-100 p-3 radius-default items-center bg-base-inverted registration__button-container brand-#{provider.provider_name}" do %>
         <%= crayons_icon_tag("#{provider.provider_name}-icon", class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
-        <span class="registration__button-text">
+        <span class="w-100 flex fw-medium fs-s justify-center items-center self-center">
           <%= t("views.auth.provider.text", action: params[:state] == "new-user" ? t("views.auth.provider.signup") : t("views.auth.provider.login"), provider: provider.official_name) %>
         </span>
       <% end %>
@@ -15,7 +15,7 @@
       class="registration__button-container brand-email"
       data-no_instant="">
       <%= crayons_icon_tag(:email, class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
-      <span class="registration__button-text">
+      <span class="flex w-100 p-3 radius-default items-center bg-base-inverted registration__button-container">
         <%= t("views.auth.provider.email.text") %>
       </span>
     </a>
