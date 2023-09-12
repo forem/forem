@@ -125,6 +125,7 @@ class Article < ApplicationRecord
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :context_notifications_published, -> { where(context_notifications_published: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
+  has_many :feed_events, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
