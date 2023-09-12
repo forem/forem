@@ -72,6 +72,10 @@ module Settings
     setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
+    # Billboard-related. Not sure this is the best place for it, but it's a start.
+    setting :billboard_enabled_countries, type: :hash, default: Geolocation::DEFAULT_ENABLED_COUNTRIES, validates: {
+      enabled_countries_hash: true
+    }
 
     # Newsletter
     # <https://mailchimp.com/developer/>

@@ -19,6 +19,10 @@ en:
           icon: Adjust tags
           add: Add tag
           add_placeholder: Add a tag
+          previous: Previous tag adjustments
+          history:
+            added_by: added by
+            removed_by: removed by
           reason: 
             remove_tag: Reason to remove tag (optional)
             add_tag: Reason to add tag (optional)

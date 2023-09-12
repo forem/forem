@@ -1,4 +1,5 @@
 import { initializeDropdown } from '@utilities/dropdownUtils';
+import { showModalAfterError } from '@utilities/showUserAlertModal';
 
 listenForButtonClicks();
 
@@ -57,9 +58,18 @@ function handleFollowingButtonClick(tagContainer) {
   };
 
   fetchFollows(data)
-    .then(() => {
-      removeElementFromPage(followId);
-      updateNavigationItemCount();
+    .then((response) => {
+      if (response.ok) {
+        removeElementFromPage(followId);
+        updateNavigationItemCount();
+      } else {
+        showModalAfterError({
+          response,
+          element: 'follow action',
+          action_ing: 'updating',
+          action_past: 'updated',
+        });
+      }
     })
     .catch((error) => console.error(error));
 }
@@ -75,19 +85,30 @@ function handleHideButtonClick(tagContainer) {
   };
 
   fetchFollows(data)
-    .then(() => {
-      removeElementFromPage(followId);
+    .then((response) => {
+      if (response.ok) {
+        removeElementFromPage(followId);
 
-      // update the current navigation item count
-      updateNavigationItemCount();
+        // update the current navigation item count
+        updateNavigationItemCount();
 
-      // update the hidden tags navigation item
-      const hiddenTagsNavigationItem = document.querySelector(
-        '.js-hidden-tags-link .c-indicator',
-      );
-      updateNavigationItemCount(hiddenTagsNavigationItem, 1);
+        // update the hidden tags navigation item
+        const hiddenTagsNavigationItem = document.querySelector(
+          '.js-hidden-tags-link .c-indicator',
+        );
+        updateNavigationItemCount(hiddenTagsNavigationItem, 1);
+      } else {
+        showModalAfterError({
+          response,
+          element: 'hide action',
+          action_ing: 'updating',
+          action_past: 'updated',
+        });
+      }
     })
-    .catch((error) => console.error(error));
+    .catch((error) => {
+      console.error('Unable to hide tag', error);
+    });
 }
 
 function handleUnhideButtonClick(tagContainer) {
@@ -100,10 +121,19 @@ function handleUnhideButtonClick(tagContainer) {
   };
 
   fetchFollows(data)
-    .then(() => {
-      removeElementFromPage(followId);
-      // update the current navigation item count
-      updateNavigationItemCount();
+    .then((response) => {
+      if (response.ok) {
+        removeElementFromPage(followId);
+        // update the current navigation item count
+        updateNavigationItemCount();
+      } else {
+        showModalAfterError({
+          response,
+          element: 'unhide action',
+          action_ing: 'updating',
+          action_past: 'updated',
+        });
+      }
     })
     .catch((error) => console.error(error));
 }

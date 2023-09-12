@@ -125,6 +125,7 @@ class Article < ApplicationRecord
   has_many :context_notifications, as: :context, inverse_of: :context, dependent: :delete_all
   has_many :context_notifications_published, -> { where(context_notifications_published: { action: "Published" }) },
            as: :context, inverse_of: :context, class_name: "ContextNotification"
+  has_many :feed_events, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :page_views, dependent: :delete_all
@@ -135,6 +136,7 @@ class Article < ApplicationRecord
   # `dependent: :destroy` because in RatingVote we're relying on
   #     counter_culture to do some additional tallies
   has_many :rating_votes, dependent: :destroy
+  has_many :tag_adjustments
   has_many :top_comments,
            lambda {
              where(comments: { score: 11.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
@@ -612,6 +614,10 @@ class Article < ApplicationRecord
 
   def privileged_reaction_counts
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
+  end
+
+  def ordered_tag_adjustments
+    tag_adjustments.includes(:user).order(:created_at).reverse
   end
 
   private

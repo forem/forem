@@ -15,7 +15,7 @@ Rails.application.configure do
   config.cache_classes = false
 
   # See https://github.com/rails/rails/issues/40613#issuecomment-727283155
-  config.action_view.cache_template_loading = true
+  config.action_view.cache_template_loading = false
 
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that

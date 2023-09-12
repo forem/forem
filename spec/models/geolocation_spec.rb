@@ -3,15 +3,15 @@ require "rails_helper"
 RSpec.describe Geolocation do
   describe "validations" do
     describe "country validation" do
-      it "allows only the US and Canada (for now)" do
-        united_states = described_class.new("US")
-        canada = described_class.new("CA")
-        netherlands = described_class.new("NL")
-        india = described_class.new("IN")
-        south_africa = described_class.new("ZA")
-        unassigned_country = described_class.new("ZZ")
-        invalid_code_country = described_class.new("not iso3166")
+      let(:united_states) { described_class.new("US") }
+      let(:canada) { described_class.new("CA") }
+      let(:netherlands) { described_class.new("NL") }
+      let(:india) { described_class.new("IN") }
+      let(:south_africa) { described_class.new("ZA") }
+      let(:unassigned_country) { described_class.new("ZZ") }
+      let(:invalid_code_country) { described_class.new("not iso3166") }
 
+      it "allows only the US and Canada by default" do
         expect(united_states).to be_valid
         expect(canada).to be_valid
         expect(netherlands).not_to be_valid
@@ -20,27 +20,68 @@ RSpec.describe Geolocation do
         expect(unassigned_country).not_to be_valid
         expect(invalid_code_country).not_to be_valid
       end
+
+      it "respects the specified enabled locations in the settings" do
+        allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
+          "CA" => :without_regions,
+          "IN" => :without_regions,
+          "ZA" => :without_regions,
+        )
+
+        expect(united_states).not_to be_valid
+        expect(canada).to be_valid
+        expect(netherlands).not_to be_valid
+        expect(india).to be_valid
+        expect(south_africa).to be_valid
+        expect(unassigned_country).not_to be_valid
+        expect(invalid_code_country).not_to be_valid
+      end
     end
 
     describe "region validation" do
+      # WA: State of Washington (within the US)
+      # QC: Province of Québec (within Canada)
+      let(:us_with_us_region) { described_class.new("US", "WA") }
+      let(:canada_with_canada_region) { described_class.new("CA", "QC") }
+      let(:us_with_canada_region) { described_class.new("US", "QC") }
+      let(:canada_with_us_region) { described_class.new("CA", "WA") }
+
       it "allows an empty region" do
         without_region = described_class.new("US")
         expect(without_region).to be_valid
       end
 
       it "allows only regions that are a part of the country" do
-        # WA: State of Washington (within the US)
-        # QC: Province of Québec (within Canada)
-        us_with_us_region = described_class.new("US", "WA")
-        canada_with_canada_region = described_class.new("CA", "QC")
-        us_with_canada_region = described_class.new("US", "QC")
-        canada_with_us_region = described_class.new("CA", "WA")
-
         expect(us_with_us_region).to be_valid
         expect(canada_with_canada_region).to be_valid
         expect(us_with_canada_region).not_to be_valid
         expect(canada_with_us_region).not_to be_valid
       end
+
+      # rubocop:disable RSpec/NestedGroups
+      context "when the country does not allow region targeting" do
+        before do
+          allow(Settings::General).to receive(:billboard_enabled_countries).and_return(
+            "US" => :without_regions,
+            "CA" => :with_regions,
+          )
+        end
+
+        it "allows regions for the country by default (for querying)" do
+          expect(us_with_us_region).to be_valid
+          expect(canada_with_canada_region).to be_valid
+          expect(us_with_canada_region).not_to be_valid
+          expect(canada_with_us_region).not_to be_valid
+        end
+
+        it "does not allow regions for the country in a targeting context" do
+          expect(us_with_us_region).not_to be_valid(:targeting)
+          expect(canada_with_canada_region).to be_valid(:targeting)
+          expect(us_with_canada_region).not_to be_valid(:targeting)
+          expect(canada_with_us_region).not_to be_valid(:targeting)
+        end
+      end
+      # rubocop:enable RSpec/NestedGroups
     end
   end
 
