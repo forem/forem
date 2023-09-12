@@ -5,6 +5,7 @@ import {
   observeBillboards,
   initializeBillboardVisibility,
 } from '../packs/billboardAfterRenderActions';
+import { observeFeedElements } from '../packs/feedEvents';
 import { setupBillboardDropdown } from '@utilities/billboardDropdown';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
@@ -101,6 +102,7 @@ if (!document.getElementById('featured-story-marker')) {
           initializeBillboardVisibility();
           observeBillboards();
           setupBillboardDropdown();
+          observeFeedElements();
         };
 
         renderFeed(feedTimeFrame, callback);
@@ -123,6 +125,7 @@ if (!document.getElementById('featured-story-marker')) {
             initializeBillboardVisibility();
             observeBillboards();
             setupBillboardDropdown();
+            observeFeedElements();
           };
 
           renderFeed(changedFeedTimeFrame, callback);

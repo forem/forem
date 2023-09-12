@@ -73,6 +73,7 @@ class User < ApplicationRecord
   has_many :billboard_events, dependent: :nullify
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :feed_events, dependent: :nullify
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   # Consider that we might be able to use dependent: :delete_all as the GithubRepo busts the user cache
   has_many :github_repos, dependent: :destroy
@@ -114,6 +115,8 @@ class User < ApplicationRecord
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :tweets, dependent: :nullify
   has_many :devices, dependent: :delete_all
+  # languages that user undestands
+  has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 

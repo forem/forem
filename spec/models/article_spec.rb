@@ -25,6 +25,7 @@ RSpec.describe Article do
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
+    it { is_expected.to have_many(:feed_events).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -34,6 +35,7 @@ RSpec.describe Article do
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
     it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tag_adjustments) }
     it { is_expected.to have_many(:tags) }
     it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
@@ -1311,6 +1313,39 @@ RSpec.describe Article do
     end
   end
 
+  describe "#ordered_tag_adjustments" do
+    let(:tag) { create(:tag, name: "rspec") }
+    let(:another_tag) { create(:tag, name: "testing") }
+    let(:mod) { create(:user) }
+    let(:another_mod) { create(:user) }
+
+    before do
+      mod.add_role(:tag_moderator, tag)
+      another_mod.add_role(:tag_moderator, another_tag)
+    end
+
+    it "returns an empty collection when the tag has not been adjusted" do
+      expect(article.ordered_tag_adjustments.length).to be 0
+    end
+
+    it "returns tag adjustments for the article in reverse chronological order" do
+      adj_first = create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                                          tag_id: tag.id, tag_name: tag.name,
+                                          adjustment_type: "addition")
+      adj_second = create(:tag_adjustment, article_id: article.id, user_id: another_mod.id,
+                                           tag_id: another_tag.id, tag_name: another_tag.name,
+                                           adjustment_type: "addition")
+      expect(article.ordered_tag_adjustments.map(&:id)).to eq([adj_second.id, adj_first.id])
+    end
+
+    it "includes the user object associated with each tag adjustment" do
+      create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                              tag_id: tag.id, adjustment_type: "addition")
+      ordered_adjustment = article.ordered_tag_adjustments.first
+      expect(ordered_adjustment.user.name).to eq(mod.name)
+    end
+  end
+
   describe "#followers" do
     it "returns an array of users who follow the article's author" do
       following_user = create(:user)
@@ -1420,6 +1455,7 @@ RSpec.describe Article do
       end
     end
   end
+
   describe "#detect_language" do
     let(:detected_language) { :kl } # kl for Klingon
 
@@ -1460,7 +1496,11 @@ RSpec.describe Article do
 
     context "when attributes have changed, but main image is present" do
       it "does not trigger the Images::SocialImageWorker" do
-        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\ncover_image: https://example.com/i.jpg\npublished: true\n---\n\n# Hello World"
+        article.body_markdown = <<~MKDN
+          ---\ntitle: New Title #{rand(1_000)}
+          cover_image: https://example.com/i.jpg\npublished: true
+          ---\n\n# Hello World
+        MKDN
         article.save
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end

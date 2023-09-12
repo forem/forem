@@ -3,6 +3,12 @@ require "rails_helper"
 RSpec.describe Languages::Detection, type: :service do
   subject(:language_detection) { described_class.call(text) }
 
+  describe "codes" do
+    it "returns an array including a couple of popular languages" do
+      expect(described_class.codes).to include("en", "es", "fr")
+    end
+  end
+
   context "when the text is clearly identifiable as English" do
     let(:text) { "This is clearly English text." }
 

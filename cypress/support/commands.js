@@ -27,6 +27,26 @@ import { getInterceptsForLingeringUserRequests } from '../util/networkUtils';
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 /**
+ * Use this function to wait for multiple async/then-able commands to complete.
+ * Useful for making multiple requests.
+ */
+Cypress.Commands.add(
+  'all',
+  /**
+   * @param {Cypress.Chainable<undefined>[]} commands Functions that return
+   * a thenable
+   */
+  (commands) =>
+    commands.reduce(
+      (allResults, command) =>
+        allResults.then((results) =>
+          command.then((result) => [...results, result]),
+        ),
+      cy.wrap([]),
+    ),
+);
+
+/**
  * Use this function to sign a user out without lingering network calls causing unintended side-effects.
  */
 Cypress.Commands.add('signOutUser', () => {
@@ -481,3 +501,20 @@ Cypress.Commands.add(
     });
   },
 );
+
+// the `const` and `for` below slow down run speed of most cy commands,
+// letting the user see how things run at an easier-to-follow speed.
+// this should only be uncommented when testing one thing at a time with `it.only('...')`
+
+// const COMMAND_DELAY = 500;
+// for (const command of ['visit', 'click', 'trigger', 'type', 'clear', 'reload',]) {
+//     Cypress.Commands.overwrite(command, (originalFn, ...args) => {
+//         const origVal = originalFn(...args);
+
+//         return new Promise((resolve) => {
+//             setTimeout(() => {
+//                 resolve(origVal);
+//             }, COMMAND_DELAY);
+//         });
+//     });
+// }
