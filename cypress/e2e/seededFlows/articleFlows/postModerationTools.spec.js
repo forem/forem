@@ -72,7 +72,7 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    it('should show Unfeature Post button on a featured post', () => {
+    it('should show Unfeature Post button and unpublish post button on a featured post', () => {
       cy.get('@adminUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).click();
@@ -80,14 +80,6 @@ describe('Moderation Tools for Posts', () => {
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             cy.findByRole('button', { name: 'Unfeature Post' }).should('exist');
           });
-        });
-      });
-    });
-
-    it('should show Unpublish Post button on a published post', () => {
-      cy.get('@adminUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
 
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
