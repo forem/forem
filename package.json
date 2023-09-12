@@ -139,6 +139,7 @@
     "jest-junit": "^14.0.1",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
+    "mocha-junit-reporter": "^2.2.1",
     "moment": "^2.29.4",
     "postcss": "^8.4.28",
     "postcss-cli": "^10.1.0",
