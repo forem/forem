@@ -166,7 +166,6 @@ fr:
         Coding: Coding
         Work: Work
       new_org: Create or Join Organization
-      new_org_back: Back
       notifications:
         email: Email notifications
         general: General notifications
