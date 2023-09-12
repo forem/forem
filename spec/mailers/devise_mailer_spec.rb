@@ -76,7 +76,7 @@ RSpec.describe DeviseMailer do
     before do
       allow(Settings::SMTP).to receive_messages(
         from_email_address: "custom_noreply@example.com",
-        reply_to_email_address: "custom_reply@example.com"
+        reply_to_email_address: "custom_reply@example.com",
       )
     end
 
