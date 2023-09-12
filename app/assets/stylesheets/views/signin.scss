@@ -78,8 +78,8 @@
   &__button-container {
     display: flex;
     width: 100%;
-    padding: 13.5px 12px;
-    border-radius: 6px;
+    padding: var(--su-3);
+    border-radius: var(--radius);
     align-items: center;
     border: 1px solid var(--form-border);
     background: white;
@@ -109,33 +109,21 @@
     justify-content: center;
     font-size: var(--fs-s);
     font-weight: var(--fw-medium);
-    line-height: var(--lh-base);
-    letter-spacing: -0.28px;
     color: var(--label-primary);
   }
 
   &__agreement-text {
-    margin-top: 24px;
+    margin-top: var(--su-6);
     color: var(--color-secondary);
     text-align: center;
     font-size: var(--fs-s);
     font-style: italic;
     font-weight: var(--fw-normal);
-    line-height: var(--lh-base);
-    letter-spacing: -0.28px;
     padding: 0px var(--su-9);
 
     @media (max-width: $breakpoint-s) {
       padding: 0px;
     }
-  }
-
-  &__alternate-step {
-    color: var(--grey-700);
-    text-align: center;
-    font-size: var(--fs-base);
-    line-height: var(--lh-base);
-    letter-spacing: -0.32px;
   }
 
   &__logo {
