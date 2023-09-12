@@ -32,7 +32,7 @@
       <% if params[:state] == "new-user" %>
 
         <div class="registration__agreement-text">
-          By signing up, you are agreeing to our <a href="/privacy">privacy policy</a>, <a href="/terms">terms of use</a> and <a href="/code-of-conduct">code of conduct</a>.
+          By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
         </div>
 
         <hr class="registration__hr" />
@@ -51,7 +51,7 @@
             <%= render partial: "shared/authentication/email_login_form" %>
 
             <div class="registration__agreement-text">
-              By signing in, you are agreeing to our <a href="/privacy">privacy policy</a>, <a href="/terms">terms of use</a> and <a href="/code-of-conduct">code of conduct</a>.
+              By signing in, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
             </div>
 
             <hr class="registration__hr" />
@@ -65,3 +65,15 @@
     </div>
   </div>
 </section>
+
+<script>
+  const registrationsElement = document.querySelector('.registrations');
+  const topbarElement = document.querySelector('#topbar');
+  // Check if the registrations element exists and the topbar element exists
+  if (registrationsElement && topbarElement) {
+      topbarElement.style.display = 'none';
+      document.body.style.paddingTop = '0';
+      // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
+      document.body.style.backgroundColor = 'white';
+  }
+</script>
