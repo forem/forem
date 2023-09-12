@@ -501,3 +501,20 @@ Cypress.Commands.add(
     });
   },
 );
+
+// the `const` and `for` below slow down run speed of most cy commands,
+// letting the user see how things run at an easier-to-follow speed.
+// this should only be uncommented when testing one thing at a time with `it.only('...')`
+
+// const COMMAND_DELAY = 500;
+// for (const command of ['visit', 'click', 'trigger', 'type', 'clear', 'reload',]) {
+//     Cypress.Commands.overwrite(command, (originalFn, ...args) => {
+//         const origVal = originalFn(...args);
+
+//         return new Promise((resolve) => {
+//             setTimeout(() => {
+//                 resolve(origVal);
+//             }, COMMAND_DELAY);
+//         });
+//     });
+// }

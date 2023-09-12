@@ -53,6 +53,25 @@ RSpec.describe ReactionHandler, type: :service do
           expect(result).to be_success
         end
       end
+
+      it "records a feed event for articles reached through a feed" do
+        create(:feed_event, category: :click, article: article, user: user)
+
+        expect { result }.to change(FeedEvent, :count).by(1)
+        expect(user.feed_events.last).to have_attributes(
+          category: "reaction",
+          article_id: article.id,
+          user_id: user.id,
+        )
+      end
+
+      it "does not record a feed event for articles that were not reached through a feed" do
+        # activity by a different user!
+        create(:feed_event, category: :click, article: article, user: moderator)
+
+        expect { result }.not_to change(FeedEvent, :count)
+        expect(user.feed_events).to be_empty
+      end
     end
 
     context "when the article is written for an organization" do
@@ -67,6 +86,18 @@ RSpec.describe ReactionHandler, type: :service do
         expect(result).to be_success
         sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, author])
         sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, org])
+      end
+    end
+
+    context "when the reaction is not a public reaction or bookmark" do
+      let(:user) { moderator }
+      let(:category) { "vomit" }
+
+      it "does not record a feed event" do
+        click = create(:feed_event, category: :click, article: article, user: moderator)
+
+        expect { result }.not_to change(FeedEvent, :count)
+        expect(moderator.feed_events).to contain_exactly(click)
       end
     end
 
@@ -90,7 +121,7 @@ RSpec.describe ReactionHandler, type: :service do
       end
     end
 
-    context "when the reaction is not in a notifiable category" do
+    context "when the reaction is a bookmark" do
       let(:category) { "readinglist" }
 
       it "does not send a notification to the author" do
@@ -98,6 +129,17 @@ RSpec.describe ReactionHandler, type: :service do
           expect(result).to be_success
           expect(result.action).to eq("create")
         end
+      end
+
+      it "records a feed event if reached through a feed" do
+        create(:feed_event, category: :click, article: article, user: user)
+
+        expect { result }.to change(FeedEvent, :count).by(1)
+        expect(user.feed_events.last).to have_attributes(
+          category: "reaction",
+          article_id: article.id,
+          user_id: user.id,
+        )
       end
     end
 
@@ -140,6 +182,13 @@ RSpec.describe ReactionHandler, type: :service do
         expect(result.action).to eq("create")
         expect(Reaction.ids).not_to include(contradictory_mod.id)
       end
+
+      it "does not record a feed event" do
+        click = create(:feed_event, category: :click, article: comment.commentable, user: moderator)
+
+        expect { result }.not_to change(FeedEvent, :count)
+        expect(moderator.feed_events).to contain_exactly(click)
+      end
     end
   end
 
@@ -162,6 +211,25 @@ RSpec.describe ReactionHandler, type: :service do
         sidekiq_assert_enqueued_with(job: Notifications::NewReactionWorker, args: [reactable_data, receiver]) do
           expect(result).to be_success
         end
+      end
+
+      it "records a feed event for articles reached through a feed" do
+        create(:feed_event, category: :click, article: article, user: user)
+
+        expect { result }.to change(FeedEvent, :count).by(1)
+        expect(user.feed_events.last).to have_attributes(
+          category: "reaction",
+          article_id: article.id,
+          user_id: user.id,
+        )
+      end
+
+      it "does not record a feed event for articles that were not reached through a feed" do
+        # activity by a different user!
+        create(:feed_event, category: :click, article: article, user: moderator)
+
+        expect { result }.not_to change(FeedEvent, :count)
+        expect(user.feed_events).to be_empty
       end
     end
 
