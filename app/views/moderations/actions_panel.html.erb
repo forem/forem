@@ -186,9 +186,11 @@
               <% if !@moderatable.tags.pluck(:name).include?(tag.name) %>
 
                 <% if last_removed_by_admin %>
-                  <div><span class="num-sign">#</span><%= tag.name %></div>
-                  <div class="fs-s px-3 adjustment-restriction">
-                    <%= t("views.moderations.actions.adjust.cannot_add_admin_adjusted_tag_html", contact_email: ForemInstance.contact_email) %>
+                  <div class="adjustment-restriction__container px-3 align-left">
+                    <div class="adjustment-restriction__container--tag fs-base"><span class="num-sign px-05">#</span><%= tag.name %></div>
+                    <div class="fs-s adjustment-restriction__container--text">
+                      <%= t("views.moderations.actions.adjust.cannot_add_admin_adjusted_tag_html", contact_email: ForemInstance.contact_email) %>
+                    </div>
                   </div>
                 <% else %>
                   <button
