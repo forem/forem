@@ -9,10 +9,12 @@ RSpec.describe DeviseMailer do
     let(:reply_to_email_address) { "custom_reply@forem.com" }
 
     before do
-      allow(Settings::General).to receive(:app_domain).and_return("funky-one-of-a-kind-domain-#{rand(100)}.com")
-      allow(Settings::SMTP).to receive(:provided_minimum_settings?).and_return(true)
-      allow(Settings::SMTP).to receive(:from_email_address).and_return(from_email_address)
-      allow(Settings::SMTP).to receive(:reply_to_email_address).and_return(reply_to_email_address)
+      allow(Settings::SMTP).to receive_messages(
+        app_domain: "funky-one-of-a-kind-domain-#{rand(100)}.com",
+        provided_minimum_settings: true,
+        from_email_address: from_email_address,
+        reply_to_email_address: reply_to_email_address,
+      )
     end
 
     it "renders sender" do
@@ -54,6 +56,54 @@ RSpec.describe DeviseMailer do
       it "renders proper URL" do
         expect(email.body.to_s).to include("/users/confirmation?confirmation_token=faketoken")
       end
+    end
+  end
+
+  describe "#invitation_instructions" do
+    let(:token) { "some_token" }
+    let(:custom_invite_message) { "Join our community!!" }
+    let(:custom_invite_footnote) { "Looking forward to seeing you!!" }
+    let(:custom_invite_subject) { "You've Been Invited" }
+
+    let(:opts) do
+      {
+        custom_invite_message: custom_invite_message,
+        custom_invite_footnote: custom_invite_footnote,
+        custom_invite_subject: custom_invite_subject
+      }
+    end
+
+    let(:email) { described_class.invitation_instructions(user, token, opts) }
+
+    before do
+      allow(Settings::SMTP).to receive_messages(
+        from_email_address: "custom_noreply@example.com",
+        reply_to_email_address: "custom_reply@example.com",
+      )
+    end
+
+    it "uses the custom invite subject if provided" do
+      expect(email.subject).to eq(custom_invite_subject)
+    end
+
+    it "falls back to default subject if custom subject is not provided" do
+      email_without_custom_subject = described_class.invitation_instructions(user, token, {})
+      expect(email_without_custom_subject.subject).to eq("Invitation Instructions")
+    end
+
+    it "includes the custom invite message if provided" do
+      # Ensure your email view actually includes @message
+      expect(email.to_s).to include(custom_invite_message)
+    end
+
+    it "does not include overridden default message if invite message is provided" do
+      # Ensure your email view actually includes @message
+      expect(email.to_s).not_to include("<p>#{I18n.t('devise.mailer.invitation_instructions.accept_instructions')}")
+    end
+
+    it "includes the custom invite footnote if provided" do
+      # Ensure your email view actually includes @footnote
+      expect(email.to_s).to include(custom_invite_footnote)
     end
   end
 end
