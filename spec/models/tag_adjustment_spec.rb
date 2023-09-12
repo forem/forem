@@ -26,25 +26,25 @@ RSpec.describe TagAdjustment do
       expect(tag_adjustment).to be_valid
     end
 
-    it "allows tag mods to create for a tag that has been adjusted by another tag mod" do
+    it "allows tag mods to create a tag adjustment for a tag that has been adjusted by another tag mod" do
       create(:tag_adjustment, user_id: other_mod.id, article_id: article.id, tag_id: tag.id)
 
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).to be_valid
     end
 
-    it "does not allow tag mods to create for other tags" do
+    it "does not allow tag mods to create a tag adjustment for other tags" do
       another_tag = create(:tag)
       tag_adjustment = build(:tag_adjustment, user_id: mod_user.id, article_id: article.id, tag_id: another_tag.id)
       expect(tag_adjustment).not_to be_valid
     end
 
-    it "allows admins to create for any tags" do
+    it "allows admins to create a tag adjustment for any tags" do
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).to be_valid
     end
 
-    it "allows admins and super moderators to create for a tag that has been adjusted by another admin" do
+    it "allows admins and super moderators to create a tag adjustment for a tag that was adjusted by another admin" do
       create(:tag_adjustment, user_id: admin_user.id, article_id: article.id, tag_id: tag.id)
 
       tag_adjustment = build(:tag_adjustment, user_id: other_admin.id, article_id: article.id, tag_id: tag.id)
@@ -54,7 +54,7 @@ RSpec.describe TagAdjustment do
       expect(tag_adjustment).to be_valid
     end
 
-    it "does not allow normal users to create for any tags" do
+    it "does not allow normal users to create a tag adjustment for any tags" do
       tag_adjustment = build(:tag_adjustment, user_id: regular_user.id, article_id: article.id, tag_id: tag.id)
       expect(tag_adjustment).not_to be_valid
     end

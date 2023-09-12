@@ -113,7 +113,7 @@
           <% last_added_by_admin = last_adjusted_by_admin?(@moderatable, tag, "addition") %>
           <% current_tag_moderator = @tag_moderator_tags.pluck(:name).include?(tag.name) %>
 
-          <%# you are a moderator of that tag but that tag was not added by admin OR you are an admin  %>
+          <%# The tag is moderatable if the user is a current moderator of that tag and that tag was not added by admin OR the user is an admin %>
           <% moderatable_tag = (current_tag_moderator && !last_added_by_admin) || policy(@moderatable).can_adjust_any_tag? %>
 
           <button
