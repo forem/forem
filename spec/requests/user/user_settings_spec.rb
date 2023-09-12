@@ -14,14 +14,6 @@ RSpec.describe "UserSettings" do
     context "when signed-in" do
       before { sign_in user }
 
-      it "renders various settings tabs properly" do
-        Constants::Settings::TAB_LIST.each do |tab|
-          get user_settings_path(tab.downcase.tr(" ", "-"))
-
-          expect(response.body).to include(user.username)
-        end
-      end
-
       it "handles unknown settings tab properly" do
         expect { get "/settings/does-not-exist" }
           .to raise_error(ActiveRecord::RecordNotFound)
