@@ -106,7 +106,7 @@
   }
 
   &__title {
-    margin-top: 16px;
+    margin-top: var(--su-4);
     color: var(--card-color);
     font-size: var(--fs-2xl);
     line-height: var(--lh-tight);
@@ -117,7 +117,7 @@
   }
 
   &__description {
-    margin-top: 4px;
+    margin-top: var(--su-1);
     color: var(--card-color-secondary);
     font-size: var(--fs-base);
   }
@@ -141,12 +141,10 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    padding: 0 16px;
+    padding: 0 var(--su-4);
     color: var(--grey-700);
     text-align: center;
     font-size: var(--fs-s);
-    line-height: var(--lh-base);
-    letter-spacing: -0.28px;
   }
 
   &__actions-providers {
