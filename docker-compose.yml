@@ -1,150 +1,124 @@
-version: "3"
+x-app: &app
+  build:
+    target: development
+    context: .
+    args:
+      PG_MAJOR: '13'
+      NODE_MAJOR: '16'
+      YARN_VERSION: '1.22.18'
+  image: ghcr.io/forem/forem:development
+  environment: &env
+    NODE_ENV: ${NODE_ENV:-development}
+    RAILS_ENV: ${RAILS_ENV:-development}
+  tmpfs:
+    - /tmp
+    - /app/tmp/pids
+
+x-backend: &backend
+  <<: *app
+  stdin_open: true
+  tty: true
+  volumes:
+    - .:/app:cached
+    - bundle:/usr/local/bundle
+    - rails_cache:/app/tmp/cache
+    - assets:/app/public/assets
+    - node_modules:/app/node_modules
+    - packs:/app/public/packs
+    - packs-test:/app/public/packs-test
+    - history:/usr/local/hist
+    - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+  environment: &backend_environment
+    <<: *env
+    REDIS_URL: redis://redis:6379/
+    DATABASE_URL: postgres://postgres:postgres@postgres:5432
+    DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
+    WEBPACKER_DEV_SERVER_HOST: webpacker
+    MALLOC_ARENA_MAX: 2
+    WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+    BOOTSNAP_CACHE_DIR: /usr/local/bundle/_bootsnap
+    XDG_DATA_HOME: /app/tmp/cache
+    YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
+    HISTFILE: /usr/local/hist/.bash_history
+    PSQL_HISTFILE: /usr/local/hist/.psql_history
+    IRB_HISTFILE: /usr/local/hist/.irb_history
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_healthy
+
 services:
   rails:
-    image: quay.io/forem/forem:development
-    container_name: forem_rails
-    user: root
+    <<: *backend
+    command: bundle exec rails
+
+  web:
+    <<: *backend
+    command: bundle exec rails server -b 0.0.0.0
     ports:
-      - "3000:3000"
+      - '3000:3000'
     depends_on:
-      - bundle
-      - db
-      - redis
-      - yarn
-      - testdb
-    environment:
-      RAILS_ENV: development
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-      DATABASE_URL_TEST: postgresql://forem:forem@testdb:5432/Forem_test
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      RACK_TIMEOUT_WAIT_TIMEOUT: 10000
-      RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
-      STATEMENT_TIMEOUT: 10000
-      APP_DOMAIN: localhost:3000
-    tmpfs:
-      - /tmp
-    volumes:
-      - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
-    command: [ "bash", "-c", "./scripts/entrypoint.sh bootstrap && bundle exec rails server -b 0.0.0.0 -p 3000"]
-
-  bundle:
-    image: quay.io/forem/forem:development
-    container_name: forem_bundle
-    user: root
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-    volumes:
-      - .:/opt/apps/forem:delegated
-    command: ["./scripts/bundle.sh"]
-
-  yarn:
-    image: quay.io/forem/forem:development
-    container_name: forem_yarn
-    user: root
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-    volumes:
-      - .:/opt/apps/forem:delegated
-    command: yarn install --dev
-
-  webpacker:
-    image: quay.io/forem/forem:development
-    container_name: forem_webpacker
-    user: root
-    depends_on:
-      - bundle
-      - rails
-      - yarn
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-    volumes:
-      - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "file:///opt/apps/forem/node_modules/.bin/webpack-dev-server", "-wait", "file:///opt/apps/forem/vendor/bundle/.bundle_finished", "-timeout", "2700s", "-wait-retry-interval", "10s"]
-    command: ["./bin/webpack-dev-server"]
-
-  seed:
-    image: quay.io/forem/forem:development
-    container_name: forem_seed
-    user: root
-    depends_on:
-      - rails
-      - redis
-      - db
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-    volumes:
-      - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "tcp://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
-    command: ["bundle", "exec", "rake","db:seed"]
+      webpacker:
+        condition: service_started
+      sidekiq:
+        condition: service_started
 
   sidekiq:
-    image: quay.io/forem/forem:development
-    container_name: forem_sidekiq
-    user: root
-    depends_on:
-      - rails
-      - redis
-      - db
-    environment:
-      RAILS_ENV: development
-      REDIS_SESSIONS_URL: redis://redis:6379
-      REDIS_SIDEKIQ_URL: redis://redis:6379
-      REDIS_URL: redis://redis:6379
-      DATABASE_URL: postgresql://forem:forem@db:5432/PracticalDeveloper_development
-    volumes:
-      - .:/opt/apps/forem:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "tcp://redis:6379", "-wait", "tcp://rails:3000", "-timeout", "2700s", "-wait-retry-interval", "20s"]
-    command: ["bundle", "exec", "sidekiq","-c","2"]
+    <<: *backend
+    command: bundle exec sidekiq
 
-  db:
-    image: postgres:13-alpine
-    container_name: forem_postgresql
+  postgres:
+    image: postgres:13
+    volumes:
+      - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+      - postgres:/var/lib/postgresql/data
+      - history:/usr/local/hist
     environment:
-      POSTGRES_USER: forem
-      POSTGRES_PASSWORD: forem
-      POSTGRES_DB: PracticalDeveloper_development
+      PSQL_HISTFILE: /usr/local/hist/.psql_history
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
-    volumes:
-      - db_data:/var/lib/postgresql/data:delegated
-
-  testdb:
-    image: postgres:13-alpine
-    container_name: forem_postgresql_test
-    environment:
-      POSTGRES_USER: forem
-      POSTGRES_PASSWORD: forem
-      POSTGRES_DB: Forem_test
-    expose:
-      - "5432"
-    volumes:
-      - testdb_data:/var/lib/postgresql/data:delegated
+      - 5432
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
 
   redis:
-    image: redis:6.0.9-alpine
-    container_name: forem_redis
+    image: redis:7.0-alpine
+    volumes:
+      - redis:/data
     ports:
-      - "6379:6379"
+      - 6379
+    healthcheck:
+      test: redis-cli ping
+      interval: 1s
+      timeout: 3s
+      retries: 30
+
+  webpacker:
+    <<: *app
+    command: bundle exec ./bin/webpack-dev-server
+    ports:
+      - '3035:3035'
+    volumes:
+      - .:/app:cached
+      - bundle:/usr/local/bundle
+      - node_modules:/app/node_modules
+      - packs:/app/public/packs
+      - packs-test:/app/public/packs-test
+    environment:
+      <<: *env
+      WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
+      YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
 
 volumes:
-  db_data:
-  testdb_data:
+  bundle:
+  node_modules:
+  history:
+  rails_cache:
+  postgres:
+  redis:
+  assets:
+  packs:
+  packs-test:
+

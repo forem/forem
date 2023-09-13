@@ -8,7 +8,7 @@ module Admin
       articles: "https://admin.forem.com/docs/forem-basics/posts",
       badges: "https://admin.forem.com/docs/forem-basics/badges",
       badge_achievements: "https://admin.forem.com/docs/forem-basics/badges",
-      display_ads: "https://admin.forem.com/docs/advanced-customization/display-ads",
+      billboards: "https://admin.forem.com/docs/advanced-customization/billboards",
       feedback_messages: "https://admin.forem.com/docs/advanced-customization/reports",
       html_variants: "https://admin.forem.com/docs/advanced-customization/html-variants",
       navigation_links: "https://admin.forem.com/docs/advanced-customization/navigation-links",

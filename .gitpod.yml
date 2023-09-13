@@ -1,6 +1,3 @@
-image:
-  file: .gitpod.dockerfile
-
 ports:
   - port: 3000
     onOpen: ignore
@@ -12,25 +9,29 @@ ports:
     onOpen: ignore
 
 tasks:
-  - name: Forem Server
-    before: >
-      redis-server &
-      gp ports await 5432 &&
-      sleep 1
-    init: ./gitpod-init.sh
-    command: bin/startup
   - name: Open Site
     command: >
       gp ports await 3000 &&
       printf "Waiting for local Forem development environment to load in the browser..." &&
-      gp preview $(gp url 3000)
+      gp preview $(gp url 3000) &&
+      exit
+  - name: Forem Server
+    before: |
+      cp .env_sample .env
+      echo "APP_DOMAIN=\"$(gp url 3000 | cut -f 3 -d /)\"" >> .env
+      echo 'APP_PROTOCOL="https://"' >> .env
+      echo 'COMMUNITY_NAME="DEV(Gitpod)"' >> .env
+      gem install dip
+      gem install solargraph
+    init: dip provision
+    command: dip up web
 
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)
     master: true
     # enable for all branches in this repo (defaults to false)
-    branches: true
+    branches: false
     # enable for pull requests coming from this repo (defaults to true)
     pullRequests: true
     # enable for pull requests coming from forks (defaults to false)

@@ -97,5 +97,38 @@ describe('Dashboard: Following Tags', () => {
       });
   });
 
+  it('shows a modal when there is an error with hiding a tag', () => {
+    cy.intercept('/follows', { statusCode: 500 }).as('followsRequest');
+
+    openOptionsMenu(() => {
+      cy.findByRole('button', { name: 'Hide tag: tag0' }).click();
+    });
+    cy.wait('@followsRequest');
+
+    cy.findByTestId('modal-container').as('confirmationModal');
+
+    cy.get('@confirmationModal')
+      .findByText('Your hide action could not be updated due to a server error')
+      .should('exist');
+  });
+
+  it('shows a modal when there is an error with following a tag', () => {
+    cy.intercept('/follows', { statusCode: 500 }).as('followsRequest');
+    cy.findByRole('button', { name: 'Following tag: tag0' }).as(
+      'followingButton',
+    );
+
+    cy.get('@followingButton').click();
+    cy.wait('@followsRequest');
+
+    cy.findByTestId('modal-container').as('confirmationModal');
+
+    cy.get('@confirmationModal')
+      .findByText(
+        'Your follow action could not be updated due to a server error',
+      )
+      .should('exist');
+  });
+
   // TODO: add a test for the pagination
 });

@@ -25,7 +25,7 @@ Datadog.configure do |c|
   # *lot* of memory on instrumentation alone. This env var allows us to
   # enable it only when needed.
   if ENV["DD_ENABLE_REDIS_SIDEKIQ"] == "true"
-    c.tracing.strument :redis, service_name: "#{service_name}-redis-sidekiq",
+    c.tracing.instrument :redis, service_name: "#{service_name}-redis-sidekiq",
                                describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
   end
   # Generic REDIS_URL comes last, allowing it to overwrite any of the
