@@ -6,8 +6,21 @@ table active_geofencing_regions {
   // 2. It lets us enable more granular caching (for big campaigns and/or customers)
   //    without having to redeploy the app.
   // 3. It lets us turn off geofenced caching entirely fairly easily (by emptying the table)
-  "CA": "CA",
-  "US": "US"
+  "CA": "CA",  // Canada
+  "US": "US",  // USA
+  "AU": "AU",  // Australia
+  "BR": "BR",  // Brazil
+  "CN": "CN",  // China
+  "FR": "FR",  // France
+  "DE": "DE",  // Germany
+  "IN": "IN",  // India
+  "ID": "ID",  // Indonesia
+  "MY": "MY",  // Malaysia
+  "NZ": "NZ",  // New Zealand
+  "PH": "PH",  // Philippines
+  "RU": "RU",  // Russia
+  "SG": "SG",  // Singapore
+  "GB": "GB"   // United Kingdom
 }
 
 sub vcl_recv {

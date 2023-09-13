@@ -4,6 +4,10 @@ module Languages
 
     PROBABILITY_THRESHOLD = 0.5
 
+    def self.codes
+      CLD3::TaskContextParams::LANGUAGE_NAMES.map(&:to_s).freeze
+    end
+
     def self.call(...)
       new(...).call
     end
