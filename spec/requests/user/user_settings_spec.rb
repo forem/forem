@@ -18,7 +18,7 @@ RSpec.describe "UserSettings" do
         Constants::Settings::TAB_LIST.each do |tab|
           get user_settings_path(tab.downcase.tr(" ", "-"))
 
-          expect(response.body).to include("Settings for")
+          expect(response.body).to include("@#{user.username}")
         end
       end
 

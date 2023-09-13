@@ -89,6 +89,7 @@ class ReactionHandler
       rate_limit_reaction_creation
       sink_articles(reaction)
       send_notifications(reaction)
+      record_feed_event(reaction)
       update_last_reacted_at(reaction)
     end
 
@@ -157,6 +158,13 @@ class ReactionHandler
     return unless reaction.reaction_on_organization_article?
 
     Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+  end
+
+  def record_feed_event(reaction)
+    return unless (reaction.visible_to_public? || reaction.category == "readinglist") &&
+      reaction.reactable_type == "Article"
+
+    FeedEvent.record_journey_for(reaction.user, article: reaction.reactable, category: :reaction)
   end
 
   def rate_article(reaction)

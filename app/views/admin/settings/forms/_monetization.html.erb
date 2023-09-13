@@ -32,6 +32,23 @@
                            value: Settings::General.payment_pointer,
                            placeholder: Constants::Settings::General.details[:payment_pointer][:placeholder] %>
         </div>
+
+        <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+          <div class="crayons-field">
+            <%= admin_config_label :billboard_enabled_countries %>
+            <%= admin_config_description Constants::Settings::General.details[:billboard_enabled_countries][:description] %>
+            <div id="billboard-enabled-countries-editor"></div>
+          </div>
+
+          <div class="crayons-field hidden">
+            <%= f.text_field :billboard_enabled_countries,
+                             class: "crayons-textfield geolocation-multiselect",
+                             value: billboard_enabled_countries_for_editing,
+                             autocomplete: "off",
+                             data: { all_countries: billboard_all_countries_for_editing } %>
+          </div>
+          <%= javascript_packs_with_chunks_tag "admin/billboardEnabledCountries", defer: true %>
+        <% end %>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

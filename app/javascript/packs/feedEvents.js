@@ -56,7 +56,8 @@ function findAndTrackFeedItems(root) {
       findAndTrackFeedItems(element);
     } else if (element.dataset?.feedContentId) {
       element.dataset.feedPosition = tracker.nextFeedPosition;
-      element.addEventListener('click', trackFeedClickListener, true);
+      // Also captures right-click opens
+      element.addEventListener('mousedown', trackFeedClickListener, true);
       tracker.observer.observe(element);
 
       tracker.nextFeedPosition += 1;
