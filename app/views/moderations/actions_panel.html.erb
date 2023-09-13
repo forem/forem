@@ -203,6 +203,28 @@
             </span>
           </span>
         <% end %>
+        <% if @moderatable.ordered_tag_adjustments.any? %>
+          <div id="tag-moderation-history">
+            <h1><%= t("views.moderations.actions.adjust.previous") %></h1>
+            <% @moderatable.ordered_tag_adjustments.each do |adj| %>
+              <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
+                <span class="num-sign">#</span>
+                <span><%= adj.tag_name %></span>
+                <span class="adjustment-type">
+                  <%= if adj.adjustment_type == "addition"
+                        t("views.moderations.actions.adjust.history.added_by")
+                      else
+                        t("views.moderations.actions.adjust.history.removed_by")
+                      end %>
+                </span>
+                <span><%= adj.user.name %></span>
+                <div class="tag-adjustment-reason">
+                  <span><%= adj.reason_for_adjustment %></span>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
         <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="additional-subtext-section py-3">
             <%= t("views.moderations.actions.how") %>

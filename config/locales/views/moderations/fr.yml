@@ -19,6 +19,10 @@ fr:
           icon: Ajuster les étiquettes
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
+          previous: Ajustements des étiquettes précédents
+          history:
+            added_by: ajouté par
+            removed_by: supprimé par
           reason: 
             remove_tag: Raison de supprimer la balise
             add_tag: Raison d'ajouter la balise (optionnel)

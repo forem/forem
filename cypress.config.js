@@ -12,9 +12,9 @@ module.exports = defineConfig({
     trashAssetsBeforeRuns: false,
     video: false,
     retries: 3,
-    reporter: 'junit',
+    reporter: 'cypress-multi-reporters',
     reporterOptions: {
-      mochaFile: 'cypress/results/results-[hash].xml',
+      configFile: 'cypress/reporter-config.json',
     },
   },
 });

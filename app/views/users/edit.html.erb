@@ -54,7 +54,7 @@
               <%# For example: %>
               <%# <option value="/settings/organization/1>@devteam</option> %>
               <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-              <%= button_to url_for("/settings/organization/new"), class: "crayons-btn m:w-max w-100 follow-action-button showing", method: :get do %>
+              <%= button_to url_for("/settings/organization/new"), class: "crayons-btn m:w-max w-100", method: :get do %>
                 <%= t("views.settings.new_org") %>
               <% end %>
             </section>

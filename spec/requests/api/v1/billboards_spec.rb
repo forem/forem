@@ -94,7 +94,7 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
-        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -158,7 +158,7 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
-        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
       end
     end
 
