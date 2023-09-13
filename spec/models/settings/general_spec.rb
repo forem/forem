@@ -50,6 +50,16 @@ RSpec.describe Settings::General do
       end
     end
 
+    describe "validating :default_content_language" do
+      it "does not accept languages that are not included" do
+        expect { described_class.default_content_language = "hahaha" }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "accepts languages that are included" do
+        expect { described_class.default_content_language = "ru" }.not_to raise_error
+      end
+    end
+
     describe "validating :billboard_enabled_countries" do
       it "does not accept non-hash or empty values" do
         expect { described_class.billboard_enabled_countries = "string" }.to raise_error(ActiveRecord::RecordInvalid)
