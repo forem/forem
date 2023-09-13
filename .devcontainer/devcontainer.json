@@ -7,7 +7,7 @@
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
-    "LOCAL_WORKSPACE_FOLDER:-.": "${localWorkspaceFolder}"
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
   },
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
