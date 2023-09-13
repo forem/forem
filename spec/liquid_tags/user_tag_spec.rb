@@ -20,13 +20,7 @@ RSpec.describe UserTag, type: :liquid_tag do
       expect(liquid.render).to include("<img")
     end
 
-    it "renders the proper follow button if passed a user" do
-      liquid = generate_user_tag(user.username)
-      expect(liquid.render).to include("follow-user")
-    end
-
-    it "renders the proper follow button if passed a user decorator" do
-      user = user.decorate
+    it "renders the proper follow button for a user" do
       liquid = generate_user_tag(user.username)
       expect(liquid.render).to include("follow-user")
     end
