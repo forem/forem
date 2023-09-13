@@ -1,5 +1,5 @@
 <section class="crayons-layout bg-base-inverted max-w-100">
-  <div class="registration">
+  <div class="registration js-registration">
     <div class="registration__content">
       <% if Settings::General.resized_logo.present? %>
         <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
@@ -67,8 +67,7 @@
 </section>
 
 <script>
-  const registrationsPage = document.querySelector('.registrations');
-  const notificationsPage = document.querySelector('.notifications');
+  const registrationsPage = document.querySelector('.js-registration');
   const topbarElement = document.querySelector('#topbar');
   // Check if the registrations or notifications element exists and the topbar element exists.
   if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
