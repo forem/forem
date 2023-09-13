@@ -134,7 +134,7 @@ RSpec.describe "UserSettings" do
         expect(response.body).not_to include(remove_oauth_instructions)
       end
 
-      it "shows instructions on how to remove a identity if a user has one enabled identity" do
+      it "shows instructions how to remove an identity if a user has one enabled identity" do
         provider = Authentication::Providers.available.first
         allow(Authentication::Providers).to receive(:enabled).and_return([provider])
         allow(user).to receive(:identities).and_return(user.identities.where(provider: provider))
@@ -144,7 +144,7 @@ RSpec.describe "UserSettings" do
         expect(response.body).to include(remove_oauth_instructions)
       end
 
-      it "shows instructions on how to remove a identity if a user has one enabled identity and one disabled" do
+      it "shows instructions how to remove an identity if a user has one enabled identity and one disabled" do
         provider = Authentication::Providers.available.first
         allow(Authentication::Providers).to receive(:enabled).and_return([provider])
 
