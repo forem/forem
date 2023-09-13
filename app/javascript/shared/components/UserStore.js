@@ -4,9 +4,7 @@ export class UserStore {
     this.wasFetched = false;
   }
 
-  fetch(url, options) {
-    options ||= {};
-    const { except } = options;
+  fetch(url) {
     const myStore = this;
     return new Promise((resolve, _reject) => {
       if (myStore.wasFetched) {
@@ -17,9 +15,7 @@ export class UserStore {
           .then((res) => res.json())
           .then((data) => {
             myStore.users = data.reduce((array, aUser) => {
-              if (aUser.id != except) {
-                array.push(aUser);
-              }
+              array.push(aUser);
               return array;
             }, []);
             myStore.wasFetched = true;
@@ -46,11 +42,16 @@ export class UserStore {
     return someUsers;
   }
 
-  search(term) {
+  search(term, options) {
+    options ||= {};
+    const { except } = options;
     const allUsers = this.users;
     const results = [];
     for (const aUser of allUsers) {
-      if (aUser.name.search(term) >= 0 || aUser.username.search(term) >= 0) {
+      if (
+        aUser.id != except &&
+        (aUser.name.search(term) >= 0 || aUser.username.search(term) >= 0)
+      ) {
         results.push(aUser);
       }
     }

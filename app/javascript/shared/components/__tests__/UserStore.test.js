@@ -42,16 +42,6 @@ describe('UserStore', () => {
     expect(fetch).toHaveBeenCalledTimes(1);
   });
 
-  test('fetch with an exception', async () => {
-    const subject = new UserStore();
-    await subject.fetch('/path/to/the/users', { except: '3' });
-    expect(subject.users).toStrictEqual([
-      { name: 'Alice', username: 'alice', id: 1 },
-      { name: 'Bob', username: 'bob', id: 2 },
-      { name: 'Almost Alice', username: 'almostalice', id: 4 },
-    ]);
-  });
-
   test('return a sub-set of users matching given IDs', async () => {
     const subject = new UserStore();
     await subject.fetch('/path/to/the/users');
@@ -76,5 +66,14 @@ describe('UserStore', () => {
       { name: 'Almost Alice', username: 'almostalice', id: 4 },
     ]);
     expect(subject.search('david')).toStrictEqual([]);
+  });
+
+  test('search with an exception', async () => {
+    const subject = new UserStore();
+    await subject.fetch('/path/to/the/users');
+    expect(subject.search('a', { except: '3' })).toStrictEqual([
+      { name: 'Alice', username: 'alice', id: 1 },
+      { name: 'Almost Alice', username: 'almostalice', id: 4 },
+    ]);
   });
 });

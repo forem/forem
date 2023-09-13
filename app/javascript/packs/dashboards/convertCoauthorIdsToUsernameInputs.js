@@ -18,10 +18,10 @@ export async function convertCoauthorIdsToUsernameInputs() {
     const fetchUrl = targetField.dataset.fetchUsers;
     const row = targetField.parentElement;
 
-    await users.fetch(fetchUrl, { except: exceptAuthorId }).then(() => {
+    await users.fetch(fetchUrl).then(() => {
       const value = users.matchingIds(targetField.value.split(','));
       const fetchSuggestions = function (term) {
-        return users.search(term);
+        return users.search(term, { except: exceptAuthorId });
       };
 
       const handleSelectionsChanged = function (ids) {
