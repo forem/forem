@@ -5,7 +5,13 @@ module Api
 
       def create
         # NOTE: We can add an inviting user here, e.g. User.invite!(current_user, user_params).
-        User.invite!(user_params.merge(registered: false))
+        options = {
+          custom_invite_subject: params[:custom_invite_subject],
+          custom_invite_message: params[:custom_invite_message],
+          custom_invite_footnote: params[:custom_invite_footnote]
+        }
+
+        User.invite!(user_params.merge(registered: false), nil, options)
 
         head :ok
       end
