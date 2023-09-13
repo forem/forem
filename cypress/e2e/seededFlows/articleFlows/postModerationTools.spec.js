@@ -72,7 +72,7 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    it('should show Unfeature Post button on a featured post', () => {
+    it('should show Unfeature Post button and unpublish post button on a featured post', () => {
       cy.get('@adminUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).click();
@@ -80,14 +80,6 @@ describe('Moderation Tools for Posts', () => {
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             cy.findByRole('button', { name: 'Unfeature Post' }).should('exist');
           });
-        });
-      });
-    });
-
-    it('should show Unpublish Post button on a published post', () => {
-      cy.get('@adminUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
 
           cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
             cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
@@ -102,10 +94,26 @@ describe('Moderation Tools for Posts', () => {
       cy.fixture('users/moderatorUser.json').as('moderatorUser');
     });
 
-    it('should load moderation tools on a post', () => {
+    it('show the correct things', () => {
       cy.get('@moderatorUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
+          // should load moderation tools on a post
           cy.findByRole('button', { name: 'Moderation' }).should('exist');
+
+          // should show Unpublish Post button on a published post
+          cy.findByRole('button', { name: 'Moderation' }).click();
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
+          });
+
+          // should show Adjust tags button on a published post
+          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
+            cy.findByRole('button', { name: 'Open adjust tags section' })
+              .as('adjustTagsButton')
+              .pipe(click)
+              .should('have.attr', 'aria-expanded', 'true');
+          });
         });
       });
     });
@@ -125,34 +133,6 @@ describe('Moderation Tools for Posts', () => {
             );
           },
         );
-      });
-    });
-
-    it('should show Unpublish Post button on a published post', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
-
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            cy.findByRole('button', { name: 'Unpublish Post' }).should('exist');
-          });
-        });
-      });
-    });
-
-    it('should show Adjust tags button on a published post', () => {
-      cy.get('@moderatorUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).click();
-
-          cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-            // We use `pipe` here to retry the click, as the animation of the mod tools opening can sometimes cause the button to not be ready yet
-            cy.findByRole('button', { name: 'Open adjust tags section' })
-              .as('adjustTagsButton')
-              .pipe(click)
-              .should('have.attr', 'aria-expanded', 'true');
-          });
-        });
       });
     });
 
@@ -345,42 +325,34 @@ describe('Moderation Tools for Posts', () => {
       cy.fixture('users/trustedUser.json').as('trustedUser');
     });
 
-    it('should load moderation tools on a post', () => {
+    it('should load appropriate moderation tools on a post', () => {
       cy.get('@trustedUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
           cy.findByRole('button', { name: 'Moderation' }).should('exist');
         });
-      });
-    });
 
-    it('should not show Feature Post button on a post', () => {
-      cy.get('@trustedUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
-          () => {
-            cy.findByRole('button', { name: 'Moderation' }).click();
+        cy.findByRole('button', { name: 'Moderation' }).click();
 
-            cy.getIframeBody('[title="Moderation panel actions"]').within(
-              () => {
-                cy.findByRole('button', { name: 'Feature Post' }).should(
-                  'not.exist',
-                );
-              },
-            );
-          },
-        );
+        // should not show Feature Post button on a post
+        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+          cy.findByRole('button', { name: 'Feature Post' }).should('not.exist');
+        });
       });
     });
 
     describe('flag-user flow', () => {
       beforeEach(() => {
         cy.get('@trustedUser').then((user) => {
-          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
-          cy.findByRole('heading', { level: 1, name: 'Test article' });
-          cy.findByRole('button', { name: 'Moderation' }).click();
+          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(
+            () => {
+              cy.findByRole('heading', { level: 1, name: 'Test article' });
+              cy.findByRole('button', { name: 'Moderation' }).click();
+            },
+          );
         });
       });
 
-      it('should show error message if flag-user radio is unchecked', () => {
+      it('should flag the user', () => {
         cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
           cy.findByRole('button', { name: 'Open admin actions' })
             .as('moderatingActionsButton')
@@ -388,21 +360,12 @@ describe('Moderation Tools for Posts', () => {
             .should('have.attr', 'aria-expanded', 'true');
           cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
+        // should show error message if flag-user radio is unchecked
         cy.getModal().within(() => {
           cy.findByRole('button', { name: 'Confirm Flag' }).click();
           cy.findByTestId('unselected-radio-error')
             .contains('You must check the radio button first.')
             .should('exist');
-        });
-      });
-
-      it('should flag the user if flag-user radio is checked', () => {
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open admin actions' })
-            .as('moderatingActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
         });
 
         cy.getModal().within(() => {
