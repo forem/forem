@@ -1,18 +1,23 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-in-docker
+// README at: https://github.com/devcontainers/templates/tree/main/src/docker-outside-of-docker-compose
 {
   "name": "Forem devcontainer",
   "build": {
     "dockerfile": "Dockerfile"
   },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER:-.": "${localWorkspaceFolder}"
+  },
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
       "version": "latest",
       "enableNonRootDocker": "false",
-      "moby": "false"
+      "moby": "true"
     }
   },
   "updateContentCommand": "dip provision",
   "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web"
+  // "remoteUser": "root"
 }

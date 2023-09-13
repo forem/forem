@@ -1,7 +1,7 @@
 x-app: &app
   build:
     target: development
-    context: .
+    context: ${LOCAL_WORKSPACE_FOLDER:-.}
     args:
       PG_MAJOR: '13'
       NODE_MAJOR: '16'
@@ -19,8 +19,7 @@ x-backend: &backend
   stdin_open: true
   tty: true
   volumes:
-    - /var/run/docker.sock:/var/run/docker-host.sock 
-    - .:/app:cached
+    - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
     - bundle:/usr/local/bundle
     - cypress:/root/.cache/Cypress
     - rails_cache:/app/tmp/cache
@@ -29,7 +28,7 @@ x-backend: &backend
     - packs:/app/public/packs
     - packs-test:/app/public/packs-test
     - history:/usr/local/hist
-    - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+    - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
     REDIS_URL: redis://redis:6379/
@@ -73,7 +72,7 @@ services:
   postgres:
     image: postgres:13
     volumes:
-      - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+      - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
       - history:/usr/local/hist
     environment:
@@ -103,7 +102,7 @@ services:
     ports:
       - '3035:3035'
     volumes:
-      - .:/app:cached
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
       - bundle:/usr/local/bundle
       - node_modules:/app/node_modules
       - packs:/app/public/packs
