@@ -18,6 +18,6 @@
   },
   "updateContentCommand": "dip provision",
   "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
-  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web"
-  // "remoteUser": "root"
+  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web",
+  "remoteUser": "root"
 }
