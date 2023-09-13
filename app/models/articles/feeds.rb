@@ -90,13 +90,13 @@ module Articles
                      order_by_fragment: "article_relevancies.randomized_value " \
                                         "^ (1.0 / greatest(articles.score, 0.1)) DESC")
       order_by_lever(:final_order_by_feed_success_score,
-                      label: "Order by feed success score",
-                      order_by_fragment: "articles.feed_success_score DESC")
+                     label: "Order by feed success score",
+                     order_by_fragment: "articles.feed_success_score DESC")
 
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
-                      label: "Order by feed success score and score",
-                      order_by_fragment: "((articles.feed_success_score + 0.1) * (articles.score / 10)) DESC")
-  
+                     label: "Order by feed success score and score",
+                     order_by_fragment: "((articles.feed_success_score + 0.1) * (articles.score / 10)) DESC")
+
       order_by_lever(:published_at_with_randomization_favoring_public_reactions,
                      label: "Favor recent articles with more reactions, " \
                             "but apply randomness to mitigate stagnation.",

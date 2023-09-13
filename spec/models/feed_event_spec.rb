@@ -77,7 +77,7 @@ RSpec.describe FeedEvent do
       create(:feed_event, category: "comment", article: article, user: user2)
 
       # Trigger the after_save
-      last_feed_event = create(:feed_event, category: "impression", article: article, user: user2)
+      create(:feed_event, category: "impression", article: article, user: user2)
 
       # Reload the article to get the updated counters and scores
       article.reload
@@ -89,8 +89,8 @@ RSpec.describe FeedEvent do
 
     it "returns early if article is nil" do
       feed_event_without_article = build(:feed_event, category: "impression")
-      expect(feed_event_without_article).to_not receive(:update_article_counters_and_scores)
       feed_event_without_article.save
+      expect(feed_event_without_article).not_to have_receive(:update_article_counters_and_scores)
     end
 
     it "initializes counters and scores to zero when no events have occurred" do
@@ -106,9 +106,9 @@ RSpec.describe FeedEvent do
 
     it "correctly updates when only one type of event occurs" do
       create(:feed_event, category: "reaction", article: article, user: user1)
-      
+
       # Trigger the after_save
-      last_feed_event = create(:feed_event, category: "impression", article: article, user: user1)
+      create(:feed_event, category: "impression", article: article, user: user1)
 
       article.reload
 
@@ -124,7 +124,7 @@ RSpec.describe FeedEvent do
       create_list(:feed_event, 2, category: "comment", article: article, user: user2)
 
       # Trigger the after_save
-      last_feed_event = create(:feed_event, category: "impression", article: article, user: user2)
+      create(:feed_event, category: "impression", article: article, user: user2)
 
       article.reload
 

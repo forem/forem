@@ -54,22 +54,23 @@ class FeedEvent < ApplicationRecord
     return unless article
 
     impressions = article.feed_events.where(category: "impression")
-    return if impressions.size.zero? # This should not happen — but no need to continue if it does
-    
+    return if impressions.empty? # This should not happen — but no need to continue if it does
+
     clicks = article.feed_events.where(category: "click")
     reactions = article.feed_events.where(category: "reaction")
     comments = article.feed_events.where(category: "comment")
 
     distinct_impressions_score = impressions.distinct.count(:user_id)
     distinct_clicks_count = clicks.distinct.count(:user_id)
-    distinct_reactions_score = reactions.distinct.count(:user_id) * REACTION_SCORE_MULTIPLIER
-    distinct_comments_score = comments.distinct.count(:user_id) * COMMENT_SCORE_MULTIPLIER
+    reactions_score = reactions.distinct.count(:user_id) * REACTION_SCORE_MULTIPLIER
+    comments_score = comments.distinct.count(:user_id) * COMMENT_SCORE_MULTIPLIER
 
-    score = (distinct_clicks_count + distinct_reactions_score + distinct_comments_score) / distinct_impressions_score.to_f
+    score = (distinct_clicks_count + reactions_score + comments_score) / distinct_impressions_score.to_f
 
     article.update_columns(
       feed_success_score: score,
       feed_clicks_count: clicks.size,
-      feed_impressions_count: impressions.size)
+      feed_impressions_count: impressions.size,
+    )
   end
 end
