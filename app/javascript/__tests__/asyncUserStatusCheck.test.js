@@ -28,7 +28,7 @@ describe('asyncUserStatusCheck', () => {
 
     window.document.body.innerHTML = `
     <div class="profile-header__details" data-url="/users/123">
-      <div class="username-container">
+      <div class="js-username-container">
         <h1 class="crayons-title">User Hasaname</h1>
       </div>
       <p class="">Animi et qui. Voluptatum voluptas omnis. Libero voluptatem cum. Unde.</p>

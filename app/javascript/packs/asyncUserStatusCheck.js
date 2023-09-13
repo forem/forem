@@ -13,7 +13,8 @@ export async function asyncUserStatusCheck() {
         profile.dataset.statusChecked = true;
         const { suspended } = data;
         if (suspended) {
-          profile.querySelector('.username-container').innerHTML += indicator;
+          profile.querySelector('.js-username-container').innerHTML +=
+            indicator;
         }
       });
   }
