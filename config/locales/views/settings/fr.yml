@@ -39,6 +39,7 @@ fr:
             you will have to do so in your settings for the specific provider:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
+          unable_to_remove: Vous ne pouvez pas supprimer l'une de vos méthodes d'authentification car vous avez besoin d'une méthode restante pour vous authentifier. Veuillez ajouter une autre méthode d'authentification ci-dessus avant de continuer.
       billing:
         heading: Billing
         add: Add Credit Card
