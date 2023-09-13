@@ -43,7 +43,7 @@ RSpec.describe "NotificationsIndex" do
     end
 
     context "when signed out" do
-      it "renders the signup page" do
+      it "renders the signin page" do
         get "/notifications"
 
         expect(response.body).to include("By signing in")

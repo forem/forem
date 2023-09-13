@@ -4,7 +4,7 @@
     <%= form_with url: provider.sign_in_path(state: "navbar_basic"), class: "flex w-100", local: true do |f| %>
       <%= f.button type: :submit, class: "flex w-100 p-3 radius-default items-center bg-base-inverted registration__button-container brand-#{provider.provider_name}" do %>
         <%= crayons_icon_tag("#{provider.provider_name}-icon", class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
-        <span class="w-100 flex fw-medium fs-s justify-center items-center self-center">
+        <span class="w-100 flex fw-medium fs-s justify-center items-center self-center color-primary">
           <%= t("views.auth.provider.text", action: params[:state] == "new-user" ? t("views.auth.provider.signup") : t("views.auth.provider.login"), provider: provider.official_name) %>
         </span>
       <% end %>
@@ -12,10 +12,10 @@
   <% end %>
   <% if params[:state] == "new-user" && Settings::Authentication.allow_email_password_registration && !ForemInstance.invitation_only? %>
     <a href="<%= url_for(request.params.merge(state: "email_signup").except("i")) %>"
-      class="registration__button-container brand-email"
+      class="flex w-100 p-3 radius-default items-center bg-base-inverted registration__button-container"
       data-no_instant="">
       <%= crayons_icon_tag(:email, class: "crayons-icon--default", aria_hidden: true, width: 24, height: 24) %>
-      <span class="flex w-100 p-3 radius-default items-center bg-base-inverted registration__button-container">
+      <span class="w-100 flex fw-medium fs-s justify-center items-center self-center color-primary">
         <%= t("views.auth.provider.email.text") %>
       </span>
     </a>
