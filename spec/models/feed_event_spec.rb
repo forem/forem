@@ -63,4 +63,74 @@ RSpec.describe FeedEvent do
       end
     end
   end
+
+  describe "after_save .update_article_counters_and_scores" do
+    let!(:article) { create(:article) }
+    let!(:user1) { create(:user) }
+    let!(:user2) { create(:user) }
+
+    it "updates article counters and scores when a FeedEvent is saved" do
+      # Create some feed events to simulate behavior
+      create(:feed_event, category: "impression", article: article, user: user1)
+      create(:feed_event, category: "click", article: article, user: user1)
+      create(:feed_event, category: "reaction", article: article, user: user1)
+      create(:feed_event, category: "comment", article: article, user: user2)
+
+      # Trigger the after_save
+      last_feed_event = create(:feed_event, category: "impression", article: article, user: user2)
+
+      # Reload the article to get the updated counters and scores
+      article.reload
+
+      expect(article.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article.feed_impressions_count).to eq(2) # Two impressions
+      expect(article.feed_clicks_count).to eq(1) # One click
+    end
+
+    it "returns early if article is nil" do
+      feed_event_without_article = build(:feed_event, category: "impression")
+      expect(feed_event_without_article).to_not receive(:update_article_counters_and_scores)
+      feed_event_without_article.save
+    end
+
+    it "initializes counters and scores to zero when no events have occurred" do
+      # Trigger the after_save
+      create(:feed_event, category: "impression", article: article, user: user1)
+
+      article.reload
+
+      expect(article.feed_success_score).to eq(0.0)
+      expect(article.feed_impressions_count).to eq(1) # One impression
+      expect(article.feed_clicks_count).to eq(0) # Zero clicks
+    end
+
+    it "correctly updates when only one type of event occurs" do
+      create(:feed_event, category: "reaction", article: article, user: user1)
+      
+      # Trigger the after_save
+      last_feed_event = create(:feed_event, category: "impression", article: article, user: user1)
+
+      article.reload
+
+      expect(article.feed_success_score).to eq(5.0) # One reaction by one distinct user
+      expect(article.feed_impressions_count).to eq(1) # One impression
+      expect(article.feed_clicks_count).to eq(0) # Zero clicks
+    end
+
+    it "considers only distinct users for each type of event for score, but not count" do
+      create_list(:feed_event, 2, category: "impression", article: article, user: user1)
+      create_list(:feed_event, 4, category: "click", article: article, user: user1)
+      create_list(:feed_event, 3, category: "reaction", article: article, user: user2)
+      create_list(:feed_event, 2, category: "comment", article: article, user: user2)
+
+      # Trigger the after_save
+      last_feed_event = create(:feed_event, category: "impression", article: article, user: user2)
+
+      article.reload
+
+      expect(article.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article.feed_clicks_count).to eq(4)
+      expect(article.feed_impressions_count).to eq(3)
+    end
+  end
 end

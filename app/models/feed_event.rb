@@ -25,6 +25,9 @@ class FeedEvent < ApplicationRecord
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 
+  REACTION_SCORE_MULTIPLIER = 5
+  COMMENT_SCORE_MULTIPLIER = 10
+
   validates :article_position, numericality: { only_integer: true, greater_than: 0 }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
   # Since we have disabled association validation, this is handy to filter basic bad data
@@ -50,16 +53,23 @@ class FeedEvent < ApplicationRecord
   def update_article_counters_and_scores
     return unless article
 
-    impressions_count = article.feed_events.where(category: "impression").size
-    clicks_count = article.feed_events.where(category: "click").size
-    reactions_count = article.feed_events.where(category: "reaction").size
-    comments_count = article.feed_events.where(category: "comment").size
+    impressions = article.feed_events.where(category: "impression")
+    return if impressions.size.zero? # This should not happen — but no need to continue if it does
+    
+    clicks = article.feed_events.where(category: "click")
+    reactions = article.feed_events.where(category: "reaction")
+    comments = article.feed_events.where(category: "comment")
 
-    score =  (clicks_count + reactions_count + comments_count) / impressions_count.to_f
+    distinct_impressions_score = impressions.distinct.count(:user_id)
+    distinct_clicks_count = clicks.distinct.count(:user_id)
+    distinct_reactions_score = reactions.distinct.count(:user_id) * REACTION_SCORE_MULTIPLIER
+    distinct_comments_score = comments.distinct.count(:user_id) * COMMENT_SCORE_MULTIPLIER
+
+    score = (distinct_clicks_count + distinct_reactions_score + distinct_comments_score) / distinct_impressions_score.to_f
 
     article.update_columns(
       feed_success_score: score,
-      feed_clicks_count: impressions_count,
-      feed_impressions_count: clicks_count)
+      feed_clicks_count: clicks.size,
+      feed_impressions_count: impressions.size)
   end
 end
