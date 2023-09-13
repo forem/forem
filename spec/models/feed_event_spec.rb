@@ -89,8 +89,9 @@ RSpec.describe FeedEvent do
 
     it "returns early if article is nil" do
       feed_event_without_article = build(:feed_event, category: "impression")
+      allow(feed_event_without_article).to receive(:update_article_counters_and_scores)
       feed_event_without_article.save
-      expect(feed_event_without_article).not_to have_receive(:update_article_counters_and_scores)
+      expect(feed_event_without_article).not_to have_received(:update_article_counters_and_scores)
     end
 
     it "initializes counters and scores to zero when no events have occurred" do
