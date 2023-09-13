@@ -67,10 +67,11 @@
 </section>
 
 <script>
-  const registrationsElement = document.querySelector('.registrations');
+  const registrationsPage = document.querySelector('.registrations');
+  const notificationsPage = document.querySelector('.notifications');
   const topbarElement = document.querySelector('#topbar');
-  // Check if the registrations element exists and the topbar element exists
-  if (registrationsElement && topbarElement) {
+  // Check if the registrations or notifications element exists and the topbar element exists.
+  if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
       topbarElement.style.display = 'none';
       document.body.style.paddingTop = '0';
       // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
