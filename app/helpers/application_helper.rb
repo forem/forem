@@ -186,8 +186,8 @@ module ApplicationHelper
   def follow_button(followable, style = "full", classes = "")
     return if followable == Users::DeletedUser
 
-    user_follow = followable.instance_of?(User) ? "follow-user" : ""
     followable_type = followable.class_name
+    user_follow = followable_type.include?("User") ? "follow-user" : "" # User or UserDecorator
     followable_name = followable.name
 
     tag.button(
