@@ -4,7 +4,7 @@
 // For ARM64 (ie Apple Silicon M1/M2), please you can use the Docker-outside-of-Docker feature instead (.devcontainer/arm/devcontainer.json).
 
 {
-  "name": "Forem DEVcontainer",
+  "name": "Forem DEVcontainer DiD",
   "build": {
     "dockerfile": "Dockerfile"
   },
