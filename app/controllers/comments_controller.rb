@@ -56,6 +56,7 @@ class CommentsController < ApplicationController
         render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
         return
       end
+      record_feed_event
       render partial: "comments/comment", formats: :json
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
@@ -273,6 +274,15 @@ class CommentsController < ApplicationController
     else
       @root_comment
     end
+  end
+
+  def record_feed_event
+    article = @comment.commentable if @comment.commentable.is_a?(Article)
+    return unless article
+
+    FeedEvent.record_journey_for(current_user,
+                                 article: article,
+                                 category: :comment)
   end
 
   def set_user
