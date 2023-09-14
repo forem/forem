@@ -123,6 +123,9 @@ module Settings
       existing_published_article_id: true, allow_nil: true
     }
 
+    setting :default_content_language, type: :string, default: "en",
+                                       validates: { inclusion: Languages::Detection.codes }
+
     def self.social_media_services
       SOCIAL_MEDIA_SERVICES.index_with do |name|
         social_media_handles[name]

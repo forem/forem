@@ -267,6 +267,7 @@ export class ProfileForm extends Component {
             canSkip={canSkip}
             slidesCount={slidesCount}
             currentSlideIndex={currentSlideIndex}
+            hidePrev
           />
         </div>
       </div>
