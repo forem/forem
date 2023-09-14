@@ -123,6 +123,12 @@ module Settings
       existing_published_article_id: true, allow_nil: true
     }
 
+    # Onboarding newsletter
+    setting :onboarding_newsletter_content, type: :markdown
+    setting :onboarding_newsletter_content_processed_html
+    setting :onboarding_newsletter_opt_in_head
+    setting :onboarding_newsletter_opt_in_subhead
+
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
 

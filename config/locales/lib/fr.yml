@@ -141,6 +141,15 @@ fr:
             description: User ID of the Mascot account
           meta_keywords:
             description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
+          onboarding_newsletter_content:
+            description: ""
+            placeholder: "You can enter markdown"
+          onboarding_newsletter_opt_in_head:
+            description: ""
+            placeholder: "Almost there!"
+          onboarding_newsletter_opt_in_subhead:
+            description: ""
+            placeholder: "Review your email preferences before we continue."
           payment:
             description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:
