@@ -178,6 +178,7 @@ Rails.application.routes.draw do
         patch :notifications, defaults: { format: :json }
         get :tags, defaults: { format: :json }
         get :users_and_organizations, defaults: { format: :json }
+        get :newsletter, defaults: { format: :json }
       end
     end
 
