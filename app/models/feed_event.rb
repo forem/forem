@@ -76,7 +76,7 @@ class FeedEvent < ApplicationRecord
 
       # Calculate score based on distinct users
       reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER
-      clicks_score = distinct_clicks_users.size # assuming 1x multiplier for clicks
+      clicks_score = distinct_clicks_users.size # 1x multiplier for clicks
       comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER
 
       score = (clicks_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
