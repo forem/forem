@@ -1,0 +1,21 @@
+// This is a default devcontainer.json file for Forem.
+// It utilizes the Docker-in-Docker feature of devcontainers which is more straightforward than Docker-outside-of-Docker and easier compatability with Github Codespace but has some performance overhead and does not work on ARM64.
+//
+// For ARM64 (ie Apple Silicon M1/M2), please you can use the Docker-outside-of-Docker feature instead (.devcontainer/arm/devcontainer.json).
+
+{
+  "name": "Forem DEVcontainer",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "enableNonRootDocker": "false",
+      "moby": "true"
+    }
+  },
+  "updateContentCommand": "dip provision",
+  "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
+  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web"
+}

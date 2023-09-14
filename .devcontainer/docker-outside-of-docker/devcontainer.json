@@ -1,9 +1,9 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/docker-outside-of-docker-compose
+// This is the Docker-outside-of-Docker (DooD) version of the Forem DEVcontainer.
+// It is more performant than the Docker-in-Docker (DiD) version, but may require additional configuration. This is not supported on Github Codespace.
 {
-  "name": "Forem DEVcontainer",
+  "name": "Forem DEVcontainer DooD (Supports Apple Silicon)",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile"
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
