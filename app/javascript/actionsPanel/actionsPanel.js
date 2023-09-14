@@ -266,7 +266,8 @@ async function adjustTag(el, reasonElement) {
       });
       // TODO: explore possible alternatives to reloading window, which seems to have the side effect
       // of making deferred JS load-in times unpredictable in e2e tests
-      // window.location.reload();
+      // Dummy change
+      window.location.reload();
     } else {
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
