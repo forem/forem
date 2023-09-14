@@ -65,13 +65,39 @@
 // Registration View
 .registration {
   border-radius: unset;
-  padding: var(--su-6);
+  padding: var(--su-4);
 
   @media (min-width: $breakpoint-s) {
     border-radius: var(--radius);
     padding: var(--su-8);
+    padding-top: var(--su-6);
     margin: 0 auto;
     width: $breakpoint-s;
+  }
+
+  &__button-container {
+    border: 1px solid var(--form-border);
+
+    a {
+      color: var(--label-primary);
+    }
+
+    .js-focus-visible &.focus-visible:focus,
+    &:is(label):focus-within {
+      box-shadow: var(--focus-ring);
+      outline: 0;
+      z-index: var(--z-elevate);
+    }
+
+    &:hover {
+      border: 1px solid var(--form-border);
+      background: var(--card-tertiary-bg);
+    }
+  }
+
+  &__logo {
+    width: 48px;
+    height: 48px;
   }
 
   &__content {
@@ -80,6 +106,7 @@
   }
 
   &__title {
+    margin-top: var(--su-4);
     color: var(--card-color);
     font-size: var(--fs-2xl);
     line-height: var(--lh-tight);
@@ -90,41 +117,40 @@
   }
 
   &__description {
+    margin-top: var(--su-1);
     color: var(--card-color-secondary);
     font-size: var(--fs-base);
   }
 
-  &__hr {
-    margin-bottom: var(--su-4);
+  &__hr-container {
     position: relative;
     text-align: center;
+    margin: var(--su-7) 0px;
+  }
 
-    &:after {
-      border: 1px solid var(--base-20);
-      content: '';
-      display: block;
-      position: absolute;
-      top: 50%;
-      width: 100%;
-      border-radius: var(--radius);
-    }
+  &__hr {
+    height: 1px;
+    margin: var(--su-6) 0px;
+    background-color: var(--divider);
+    border: none;
   }
 
   &__hr-label {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 0 var(--su-4);
+    color: var(--grey-700);
+    text-align: center;
     font-size: var(--fs-s);
-    color: var(--card-color-secondary);
-    background: var(--card-bg);
-    padding: 0 var(--su-2);
-    z-index: var(--z-elevate);
-    display: inline-block;
-    max-width: 75%;
   }
 
   &__actions-providers {
     margin-bottom: var(--su-4);
     display: grid;
-    grid-gap: var(--su-2);
+    grid-gap: var(--su-3);
     width: 100%;
   }
 

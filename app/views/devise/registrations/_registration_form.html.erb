@@ -1,11 +1,19 @@
-<section class="crayons-layout">
-  <div class="registration crayons-card">
+<section class="crayons-layout bg-base-inverted max-w-100">
+  <div class="registration js-registration">
     <div class="registration__content">
+      <% if Settings::General.resized_logo.present? %>
+        <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+      <% end %>
+
       <h1 class="registration__title">
         <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
           <%= community_name %> is invite only.
         <% else %>
-          Welcome to <%= community_name %>
+          <% if params[:state] == "new-user" %>
+            Join the <%= community_name %>
+          <% else %>
+            Welcome back to <%= community_name %>
+          <% end %>
         <% end %>
       </h1>
       <p class="registration__description">
@@ -22,23 +30,50 @@
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
-        <div class="registration__hr">
-          <span class="registration__hr-label">
-            Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
-          </span>
+
+        <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
+          By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
         </div>
+
+        <hr class="registration__hr" />
+
+        <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center">
+          Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
+        </div>
+
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <div class="registration__hr">
-              <span class="registration__hr-label">
-                Have a password? Continue with your email address
-              </span>
+            <div class="registration__hr-container">
+              <hr class="registration__hr" />
+              <div class="registration__hr-label">OR</div>
             </div>
             <%= render partial: "shared/authentication/email_login_form" %>
+
+            <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
+              By signing in, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
+            </div>
+
+            <hr class="registration__hr" />
+
+            <div class="rcrayons-subtitle-3 color-grey-700 fw-normal align-center">
+              New to <%= community_name %>? <a href="/enter?state=new-user">Create account</a>.
+            </div>
           <% end %>
         </div>
       <% end %>
     </div>
   </div>
 </section>
+
+<script>
+  const registrationsPage = document.querySelector('.js-registration');
+  const topbarElement = document.querySelector('#topbar');
+  // Check if the registrations or notifications element exists and the topbar element exists.
+  if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
+      topbarElement.style.display = 'none';
+      document.body.style.paddingTop = '0';
+      // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
+      document.body.style.backgroundColor = 'white';
+  }
+</script>

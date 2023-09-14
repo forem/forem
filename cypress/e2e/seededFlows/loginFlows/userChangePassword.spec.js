@@ -49,7 +49,7 @@ describe('User Change Password', () => {
     );
 
     // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
+    cy.get('@loginForm').findByText('Log in').click();
     cy.wait(loginNetworkRequests);
 
     const { baseUrl } = Cypress.config();
