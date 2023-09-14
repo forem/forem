@@ -14,6 +14,7 @@ export class FollowTags extends Component {
     this.state = {
       allTags: [],
       selectedTags: [],
+      email_digest_periodic: false,
     };
   }
 
@@ -36,6 +37,13 @@ export class FollowTags extends Component {
       }),
       credentials: 'same-origin',
     });
+  }
+
+  handleChange(event) {
+    const { name } = event.target;
+    this.setState((currentState) => ({
+      [name]: !currentState[name],
+    }));
   }
 
   handleClick(tag) {
@@ -94,7 +102,7 @@ export class FollowTags extends Component {
 
   render() {
     const { prev, currentSlideIndex, slidesCount } = this.props;
-    const { selectedTags, allTags } = this.state;
+    const { selectedTags, allTags, email_digest_periodic } = this.state;
     const canSkip = selectedTags.length === 0;
 
     return (
@@ -161,6 +169,21 @@ export class FollowTags extends Component {
                 );
               })}
             </div>
+          </div>
+          <div class="onboarding-tags__content-separator">&nbsp;</div>
+          <div class="onboarding-tags__email-digest">
+            <li className="checkbox-item">
+              <label htmlFor="email_digest_periodic">
+                <input
+                  type="checkbox"
+                  id="email_digest_periodic"
+                  name="email_digest_periodic"
+                  checked={email_digest_periodic}
+                  onChange={this.handleChange}
+                />
+                I want to receive weekly newsletter emails.
+              </label>
+            </li>
           </div>
           <Navigation
             prev={prev}

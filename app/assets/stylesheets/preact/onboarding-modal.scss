@@ -304,6 +304,20 @@
       }
     }
   }
+
+  &__content-separator {
+    width: 100%;
+    height: 40px;
+    opacity: 0.9;
+    background: linear-gradient(180deg, #fff 50%, rgba(255, 255, 255, 0) 100%);
+  }
+
+  &__email-digest {
+    position: absolute;
+    border-radius: 0px 6px 6px 0px;
+    border: 1px solid var(--grey-200);
+    background: var(--grey-50);
+  }
 }
 
 // Onboarding Intro
