@@ -9,17 +9,17 @@
     <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
   </div>
 
-  <div class="crayons-field crayons-field--checkbox inline-flex flex-row items-center">
-    <%= f.check_box :remember_me, class: "crayons-checkbox" %>
-    <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
+  <div class="crayons-field flex flex-row items-center justify-between mb-3">
+    <div>
+      <%= f.check_box :remember_me, class: "crayons-checkbox" %>
+      <%= f.label :remember_me, class: "crayons-field__label fw-normal" %>
+    </div>
+    <a class="m-0" href="<%= new_password_path(:user) %>">
+       <%= t("views.auth.login.forgot") %>
+    </a>
   </div>
 
   <div class="actions pt-3">
-    <%= f.submit t("views.auth.login.continue"), class: "crayons-btn crayons-btn--l w-100" %>
+    <%= f.submit t("views.auth.login.text"), class: "crayons-btn crayons-btn--l w-100" %>
   </div>
 <% end %>
-<p class="pt-6 fs-s align-center">
-  <a href="<%= new_password_path(:user) %>">
-    <%= t("views.auth.login.forgot") %>
-  </a>
-</p>
