@@ -144,6 +144,8 @@ RSpec.describe FeedEvent do
     it "updates counters and scores for multiple articles" do
       # Create some feed events for article1
       create(:feed_event, category: "impression", article: article1, user: user1)
+      create(:feed_event, category: "impression", article: article1, user: user2)
+      create(:feed_event, category: "impression", article: article1, user: user2) # Duplicate
       create(:feed_event, category: "click", article: article1, user: user1)
       create(:feed_event, category: "reaction", article: article1, user: user1)
       create(:feed_event, category: "comment", article: article1, user: user2)
@@ -159,10 +161,10 @@ RSpec.describe FeedEvent do
       article2.reload
 
       expect(article1.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
-      expect(article1.feed_impressions_count).to eq(1)
+      expect(article1.feed_impressions_count).to eq(3)
       expect(article1.feed_clicks_count).to eq(1)
 
-      expect(article2.feed_success_score).to eq((1 + 5) / 2.0) # Calculated score
+      expect(article2.feed_success_score).to eq((1 + 5) / 1.0) # Calculated score
       expect(article2.feed_impressions_count).to eq(1)
       expect(article2.feed_clicks_count).to eq(1)
     end
