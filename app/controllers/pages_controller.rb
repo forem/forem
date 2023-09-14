@@ -57,6 +57,12 @@ class PagesController < ApplicationController
     set_surrogate_key_header "faq_page"
   end
 
+  def post_a_job
+    @page = Page.find_by(slug: "post-a-job")
+    render :show if @page
+    set_surrogate_key_header "post_a_job_page"
+  end
+
   def privacy
     @page = Page.find_by(slug: "privacy")
     render :show if @page

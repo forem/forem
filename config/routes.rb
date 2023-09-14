@@ -260,6 +260,7 @@ Rails.application.routes.draw do
     get "/security", to: "pages#bounty"
     get "/community-moderation", to: "pages#community_moderation"
     get "/faq", to: "pages#faq"
+    get "/page/post-a-job", to: "pages#post_a_job"
     get "/tag-moderation", to: "pages#tag_moderation"
 
     get "/mod", to: "moderations#index", as: :mod

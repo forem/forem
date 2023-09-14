@@ -73,6 +73,13 @@ RSpec.describe "Pages" do
     end
   end
 
+  describe "GET /page/post-a-job" do
+    it "has proper headline" do
+      get "/page/post-a-job"
+      expect(response.body).to include("Posting a Job on #{Settings::Community.community_name} Listings")
+    end
+  end
+
   describe "GET /api" do
     it "redirects to the API docs" do
       get "/api"
