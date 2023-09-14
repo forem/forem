@@ -48,29 +48,53 @@ class FeedEvent < ApplicationRecord
       )
   end
 
+  def self.bulk_update_counters_by_article_id(article_ids)
+    unique_article_ids = article_ids.uniq
+    update_counters_for_articles(unique_article_ids)
+  end
+
+  def self.update_counters_for_articles(article_ids)
+    article_ids.each do |article_id|
+      update_single_article_counters(article_id)
+    end
+  end
+
+  def self.update_single_article_counters(article_id)
+    ThrottledCall.perform("billboards_data_update-#{article_id}", throttle_for: 15.minutes) do
+      impressions = FeedEvent.where(article_id: article_id, category: "impression")
+      return if impressions.empty?
+
+      clicks = FeedEvent.where(article_id: article_id, category: "click")
+      reactions = FeedEvent.where(article_id: article_id, category: "reaction")
+      comments = FeedEvent.where(article_id: article_id, category: "comment")
+
+      # Count the distinct users for impressions and each event type
+      distinct_impressions_users = impressions.distinct.pluck(:user_id)
+      distinct_clicks_users = clicks.distinct.pluck(:user_id)
+      distinct_reactions_users = reactions.distinct.pluck(:user_id)
+      distinct_comments_users = comments.distinct.pluck(:user_id)
+
+      # Calculate score based on distinct users
+      reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER
+      clicks_score = distinct_clicks_users.size # assuming 1x multiplier for clicks
+      comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER
+
+      score = (clicks_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+
+      # Update the article counters
+      Article.where(id: article_id).update_all(
+        feed_success_score: score,
+        feed_clicks_count: clicks.size,
+        feed_impressions_count: impressions.size,
+      )
+    end
+  end
+
   private
 
   def update_article_counters_and_scores
     return unless article
 
-    impressions = article.feed_events.where(category: "impression")
-    return if impressions.empty? # This should not happen — but no need to continue if it does
-
-    clicks = article.feed_events.where(category: "click")
-    reactions = article.feed_events.where(category: "reaction")
-    comments = article.feed_events.where(category: "comment")
-
-    distinct_impressions_score = impressions.distinct.count(:user_id)
-    distinct_clicks_count = clicks.distinct.count(:user_id)
-    reactions_score = reactions.distinct.count(:user_id) * REACTION_SCORE_MULTIPLIER
-    comments_score = comments.distinct.count(:user_id) * COMMENT_SCORE_MULTIPLIER
-
-    score = (distinct_clicks_count + reactions_score + comments_score) / distinct_impressions_score.to_f
-
-    article.update_columns(
-      feed_success_score: score,
-      feed_clicks_count: clicks.size,
-      feed_impressions_count: impressions.size,
-    )
+    self.class.update_single_article_counters(article_id)
   end
 end

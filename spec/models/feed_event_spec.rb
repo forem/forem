@@ -134,4 +134,58 @@ RSpec.describe FeedEvent do
       expect(article.feed_impressions_count).to eq(3)
     end
   end
+
+  describe ".bulk_update_counters_by_article_id" do
+    let!(:article1) { create(:article) }
+    let!(:article2) { create(:article) }
+    let!(:user1) { create(:user) }
+    let!(:user2) { create(:user) }
+
+    it "updates counters and scores for multiple articles" do
+      # Create some feed events for article1
+      create(:feed_event, category: "impression", article: article1, user: user1)
+      create(:feed_event, category: "click", article: article1, user: user1)
+      create(:feed_event, category: "reaction", article: article1, user: user1)
+      create(:feed_event, category: "comment", article: article1, user: user2)
+
+      # Create some feed events for article2
+      create(:feed_event, category: "impression", article: article2, user: user2)
+      create(:feed_event, category: "click", article: article2, user: user1)
+      create(:feed_event, category: "reaction", article: article2, user: user2)
+
+      described_class.bulk_update_counters_by_article_id([article1.id, article2.id])
+
+      article1.reload
+      article2.reload
+
+      expect(article1.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article1.feed_impressions_count).to eq(1)
+      expect(article1.feed_clicks_count).to eq(1)
+
+      expect(article2.feed_success_score).to eq((1 + 5) / 2.0) # Calculated score
+      expect(article2.feed_impressions_count).to eq(1)
+      expect(article2.feed_clicks_count).to eq(1)
+    end
+
+    it "skips articles with no impressions" do
+      # Create some feed events for article2, but none for article1
+      create(:feed_event, category: "click", article: article2, user: user1)
+      create(:feed_event, category: "reaction", article: article2, user: user2)
+      create(:feed_event, category: "comment", article: article2, user: user2)
+
+      described_class.bulk_update_counters_by_article_id([article1.id, article2.id])
+
+      article1.reload
+      article2.reload
+
+      expect(article1.feed_success_score).to eq(0.0) # Should remain uninitialized
+      expect(article1.feed_impressions_count).to eq(0)
+      expect(article1.feed_clicks_count).to eq(0)
+
+      # Scores and counters for article2 should remain uninitialized
+      expect(article2.feed_success_score).to eq(0.0)
+      expect(article2.feed_impressions_count).to eq(0)
+      expect(article2.feed_clicks_count).to eq(0)
+    end
+  end
 end

@@ -57,6 +57,7 @@ module FeedEvents
       end
 
       FeedEvent.insert_all(records_to_insert) if records_to_insert.present?
+      FeedEvent.bulk_update_counters_by_article_id(records_to_insert.pluck(:article_id).sample(5))
     end
 
     private
