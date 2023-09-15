@@ -13,9 +13,12 @@
       "enableNonRootDocker": "false",
       "moby": "true"
     },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "16",
-      "nvmVersion": "latest"
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000",
+      "upgradePackages": "true"
     }
   },
   "forwardPorts": [3000],
