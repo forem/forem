@@ -30,6 +30,37 @@ RSpec.describe FeedEvents::BulkUpsert, type: :service do
         articles.map { |article| [article.id, user.id, "impression"] },
       )
     end
+
+    it "calls bulk_update_counters_by_article_id for article ids" do
+      allow(FeedEvent).to receive(:bulk_update_counters_by_article_id)
+      described_class.call(feed_events_data)
+      expect(FeedEvent).to have_received(:bulk_update_counters_by_article_id).with(match_array(articles.map(&:id)))
+    end
+  end
+
+  context "when there are more than 5 events" do
+    let(:articles) { create_list(:article, 8) }
+    let(:feed_events_data) do
+      articles
+        .map
+        .with_index do |article, index|
+          {
+            article: article,
+            user: user,
+            article_position: index + 1,
+            category: :impression,
+            context_type: FeedEvent::CONTEXT_TYPE_HOME
+          }
+        end
+    end
+
+    it "calls bulk_update_counters_by_article_id for article ids" do
+      allow(FeedEvent).to receive(:bulk_update_counters_by_article_id)
+      described_class.call(feed_events_data)
+      expect(FeedEvent).to have_received(:bulk_update_counters_by_article_id).with(satisfy do |arg|
+                                                                                     arg.is_a?(Array) && arg.length == 5
+                                                                                   end)
+    end
   end
 
   context "when there are duplicate events within the list" do
