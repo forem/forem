@@ -14,7 +14,6 @@
       "moby": "true"
     },
     "ghcr.io/devcontainers/features/node:1": {
-      "nodeGypDependencies": true,
       "version": "16",
       "nvmVersion": "latest"
     }
