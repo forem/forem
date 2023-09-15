@@ -11,12 +11,6 @@
      <hr />
 </ul>
 
-<div>
-  👋 <b>Looking for work?</b> <a href="<%= app_url("/listings/jobs") %>">Browse job openings</a> or create an <a href="<%= app_url("/listings/forhire") %>">available for hire</a> listing.
-  <br />
-  🔍 <b>Hiring <%= community_members_label %>?</b> Post your position(s) on <a href="<%= app_url(page_post_a_job_url) %>"><%= community_name %> Listings</a>.
-</div>
-
 <center style="margin-top:50px;">
   <em>
     <% if @user.setting.experience_level.nil? %>
