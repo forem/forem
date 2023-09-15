@@ -20,7 +20,7 @@ module Notifications
         notifiable = Article.find_by(id: notifiable_id)
       end
 
-      return unless notifiable
+      return unless notifiable && !notifiable.user.limited?
 
       random_moderators.each do |mod|
         next if mod == notifiable.user
