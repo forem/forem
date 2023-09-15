@@ -23,19 +23,21 @@ en:
           history:
             added_by: added by
             removed_by: removed by
-          reason: 
+          reason:
             remove_tag: Reason to remove tag (optional)
             add_tag: Reason to add tag (optional)
           remove: Remove tag
           submit: Submit
           cancel: Cancel
-          maximum_tags: 
+          maximum_tags:
             icon: Info
             text: A post can only have four tags.
           add_tag:
             header: Add new tag
             button_text: Add new tag
             icon: Add tag
+          cannot_remove_admin_adjusted_tag_html: Tag has been added by an Admin. You can't remove it now. If you feel that's a mistake, please contact us at <a href="mailto:%{contact_email}">%{contact_email}</a>.
+          cannot_add_admin_adjusted_tag_html: Tag has been removed by an Admin. You can't add it now. If you feel that's a mistake, please contact us at <a href="mailto:%{contact_email}">%{contact_email}</a>.
         approve:
           add: Mark as approved
           remove: Remove approval
