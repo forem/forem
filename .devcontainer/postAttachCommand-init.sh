@@ -9,5 +9,5 @@
 if [ -n "$CODESPACE_NAME" ]; then
     git pull origin $(git rev-parse --abbrev-ref HEAD)
     dip provision
-    dip up web
+    dip rails s
 fi
