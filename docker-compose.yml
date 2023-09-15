@@ -1,7 +1,7 @@
 x-app: &app
   build:
     target: development
-    context: ${LOCAL_WORKSPACE_FOLDER:-.}
+    context: .
     args:
       PG_MAJOR: '13'
       NODE_MAJOR: '16'
