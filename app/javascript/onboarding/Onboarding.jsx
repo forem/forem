@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { FocusTrap } from '../shared/components/focusTrap';
-import { IntroSlide } from './components/IntroSlide';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
@@ -14,13 +13,7 @@ export class Onboarding extends Component {
     const url = new URL(window.location);
     const previousLocation = url.searchParams.get('referrer');
 
-    const slides = [
-      IntroSlide,
-      FollowTags,
-      ProfileForm,
-      FollowUsers,
-      EmailPreferencesForm,
-    ];
+    const slides = [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);

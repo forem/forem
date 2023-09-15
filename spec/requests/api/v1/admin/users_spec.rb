@@ -49,6 +49,27 @@ RSpec.describe "/api/admin/users" do
       expect(response).to have_http_status(:ok)
     end
 
+    it "enqueues an invitation email to be sent with custom options", :aggregate_failures do
+      allow(DeviseMailer).to receive(:invitation_instructions).and_call_original
+
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
+        params = { email: "hey#{rand(1000)}@email.co",
+                   custom_invite_subject: "Custom Subject!",
+                   custom_invite_message: "**Custom message**",
+                   custom_invite_footnote: "Custom footnote" }
+
+        post api_admin_users_path, params: params, headers: headers
+      end
+
+      expect(DeviseMailer).to have_received(:invitation_instructions) do |_user, _token, args|
+        expect(args).to include(
+          custom_invite_subject: "Custom Subject!",
+          custom_invite_message: "**Custom message**",
+        )
+      end
+      expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
+    end
+
     it "marks user as registered false" do
       post api_admin_users_path, params: params, headers: headers
 
