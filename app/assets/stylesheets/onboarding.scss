@@ -73,3 +73,13 @@
     right: var(--su-6);
   }
 }
+
+.onboarding-main {
+  .email_newsletter {
+    border: 1px solid var(--accent-brand);
+    border-top-right-radius: var(--radius-auto);
+    border-bottom-right-radius: var(--radius-auto);
+    border-left-width: thick;
+    background-color: var(--card-secondary-bg);
+  }
+}
