@@ -99,18 +99,10 @@
   width: 100%;
   border-top: 1px solid var(--divider);
 
-  &.intro-slide {
-    border-top: none;
-  }
-
   .navigation-content {
     display: flex;
     justify-content: space-between;
     padding: var(--su-4);
-
-    &.intro-slide {
-      padding: 0;
-    }
 
     button {
       @extend .crayons-btn;
@@ -140,6 +132,10 @@
       &:active {
         background: var(--base-10);
       }
+    }
+
+    .hide-button {
+      visibility: hidden;
     }
 
     .skip-for-now {
@@ -370,10 +366,6 @@
   .navigation-content {
     padding: var(--su-7);
     justify-content: center;
-
-    &.intro-slide {
-      padding: 0;
-    }
 
     button {
       @extend .crayons-btn;
