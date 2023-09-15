@@ -1,6 +1,9 @@
 require "rails_helper"
 
 RSpec.describe FeedEvent do
+  let(:reaction_multiplier) { FeedEvent::REACTION_SCORE_MULTIPLIER }
+  let(:comment_multiplier) { FeedEvent::COMMENT_SCORE_MULTIPLIER }
+
   describe "validations" do
     it { is_expected.to belong_to(:article).optional }
     it { is_expected.to validate_numericality_of(:article_id).only_integer }
@@ -82,7 +85,7 @@ RSpec.describe FeedEvent do
       # Reload the article to get the updated counters and scores
       article.reload
 
-      expect(article.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
       expect(article.feed_impressions_count).to eq(2) # Two impressions
       expect(article.feed_clicks_count).to eq(1) # One click
     end
@@ -95,14 +98,11 @@ RSpec.describe FeedEvent do
     end
 
     it "initializes counters and scores to zero when no events have occurred" do
-      # Trigger the after_save
-      create(:feed_event, category: "impression", article: article, user: user1)
-
-      article.reload
-
-      expect(article.feed_success_score).to eq(0.0)
-      expect(article.feed_impressions_count).to eq(1) # One impression
-      expect(article.feed_clicks_count).to eq(0) # Zero clicks
+      expect do
+        create(:feed_event, category: "impression", article: article, user: user1)
+      end.to not_change { article.reload.feed_success_score }
+        .and not_change { article.reload.feed_clicks_count }
+        .and change { article.reload.feed_impressions_count }.from(0).to(1)
     end
 
     it "correctly updates when only one type of event occurs" do
@@ -129,7 +129,7 @@ RSpec.describe FeedEvent do
 
       article.reload
 
-      expect(article.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
       expect(article.feed_clicks_count).to eq(4)
       expect(article.feed_impressions_count).to eq(3)
     end
@@ -160,7 +160,7 @@ RSpec.describe FeedEvent do
       article1.reload
       article2.reload
 
-      expect(article1.feed_success_score).to eq((1 + 5 + 10) / 2.0) # Calculated score
+      expect(article1.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
       expect(article1.feed_impressions_count).to eq(3)
       expect(article1.feed_clicks_count).to eq(1)
 

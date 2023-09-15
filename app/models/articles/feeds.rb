@@ -94,7 +94,7 @@ module Articles
                      order_by_fragment: "articles.feed_success_score DESC")
 
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
-                     label: "Order by feed success score and score",
+                     label: "Order by feed success score and primary score",
                      order_by_fragment: "((articles.feed_success_score + 0.1) * (articles.score / 10)) DESC")
 
       order_by_lever(:published_at_with_randomization_favoring_public_reactions,
