@@ -577,6 +577,10 @@ class Article < ApplicationRecord
                    hotness_score: BlackBox.article_hotness_score(self))
   end
 
+  def co_author_ids_list
+    co_author_ids.join(", ")
+  end
+
   def co_author_ids_list=(list_of_co_author_ids)
     self.co_author_ids = list_of_co_author_ids.split(",").map(&:strip)
   end

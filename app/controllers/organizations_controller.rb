@@ -97,6 +97,11 @@ class OrganizationsController < ApplicationController
   def members
     @organization = Organization.find_by(slug: params[:slug])
     @members = @organization.users
+
+    respond_to do |format|
+      format.json { render json: @members.to_json(only: %i[id name username]) }
+      format.html
+    end
   end
 
   private
