@@ -22,7 +22,6 @@ export class UserStore {
             resolve();
           })
           .catch((error) => {
-            // console.log("what error?", error)
             Honeybadger.notify(error);
             resolve();
           });
