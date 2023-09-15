@@ -23,7 +23,7 @@ fr:
           history:
             added_by: ajouté par
             removed_by: supprimé par
-          reason: 
+          reason:
             remove_tag: Raison de supprimer la balise
             add_tag: Raison d'ajouter la balise (optionnel)
           remove: Retirer l'étiquette
@@ -36,6 +36,8 @@ fr:
             header: Ajouter une nouvelle balise
             button_text: Ajouter une nouvelle balise
             icon: Ajouter une étiquette
+        cannot_add_admin_adjusted_tag_html: La balise aurait ajoutée par l'Admin. Vous pouvez pas la supprimer maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}.
+        cannot_remove_admin_adjusted_tag_html: La balise aurait supprimée par l'Admin. Vous pouvez pas l'ajouter maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}.
         approve:
           add: Marquer comme approuvé
           remove: Retirer l'approbation
