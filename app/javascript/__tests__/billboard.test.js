@@ -1,4 +1,4 @@
-import { getBillboard } from '../billboard';
+import { getBillboard } from '../packs/billboard';
 
 describe('getBillboard', () => {
   beforeEach(() => {

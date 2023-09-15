@@ -598,7 +598,12 @@ export const MultiSelectAutocomplete = ({
           className={`c-autocomplete--multi__wrapper${
             border ? '-border crayons-textfield' : ' border-none p-0'
           } flex items-center  cursor-text`}
-          onClick={() => inputRef.current?.focus()}
+          onClick={(event) => {
+            // Stopping propagation here so that clicks on the 'x' close button
+            // don't appear to be "outside" of any container (eg, dropdown)
+            event.stopPropagation();
+            inputRef.current?.focus();
+          }}
         >
           <ul id="combo-selected" className="list-none flex flex-wrap w-100">
             {allSelectedItemElements}

@@ -1093,7 +1093,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_12_220412) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
