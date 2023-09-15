@@ -18,6 +18,8 @@ window.observeFeedElements = observeFeedElements;
 /**
  * Sets up the feed events tracker.
  * Called every time posts are inserted into the feed.
+ *
+ * NOTE: this module has E2E tests at `seededFlows/homeFeedFlows/events.spec.js`
  */
 export function observeFeedElements() {
   const feedContainer = document.getElementById('index-container');
