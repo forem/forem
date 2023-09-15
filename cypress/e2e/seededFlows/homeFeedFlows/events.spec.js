@@ -1,4 +1,12 @@
-describe('Home page feed events', () => {
+/**
+ * Cypress takes extensive control of browser scrolling in order to facilitate
+ * its automation and testing; unfortunately that means that various scrolling
+ * behaviours (such as smooth scrolling or firing `IntersectionObserver` events)
+ * don't work consistently.
+ * This makes these tests flaky, but they are still useful to run locally and
+ * update if you are modifying feed event functionality.
+ */
+describe.skip('Home page feed events', () => {
   beforeEach(() => {
     cy.testSetup();
   });
