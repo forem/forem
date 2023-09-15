@@ -1,7 +1,8 @@
 {
   "name": "Forem DEVcontainer",
   "build": {
-    "dockerfile": "Dockerfile"
+    "dockerfile": "../Dockerfile",
+    "target": "devcontainer"
   },
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
@@ -24,6 +25,6 @@
   "forwardPorts": [3000],
   "updateContentCommand": "dip provision",
   "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
-  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh && dip up web",
+  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh",
   "remoteUser": "root"
 }

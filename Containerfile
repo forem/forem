@@ -221,3 +221,16 @@ WORKDIR /app
 EXPOSE 3000
 # Use Bash as the default command
 CMD ["/usr/bin/bash"]
+
+FROM base as devcontainer
+
+RUN apt update && \
+    apt install -y \
+        build-essential \
+        libpq-dev \
+      && \
+  apt clean
+
+SHELL ["/bin/bash", "-l", "-c"]
+
+RUN gem install dip
