@@ -94,6 +94,7 @@ fr:
         archive: Archive post
         unarchive: Unarchive post
         author: Author
+        co_authors: Co-authors
         author_is: 'AUTHOR: '
         save: Save
         submit: Submit author change
