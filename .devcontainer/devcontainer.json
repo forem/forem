@@ -24,7 +24,7 @@
   },
   "forwardPorts": [3000],
   "updateContentCommand": "dip provision",
-  "postCreateCommand": "bash .devcontainer/postCreateCommand-init.sh",
-  "postAttachCommand": "bash .devcontainer/postAttachCommand-init.sh",
+  "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
+  "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "remoteUser": "root"
 }

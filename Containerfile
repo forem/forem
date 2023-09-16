@@ -234,3 +234,6 @@ RUN apt update && \
 SHELL ["/bin/bash", "-l", "-c"]
 
 RUN gem install dip
+
+ENTRYPOINT [ "/usr/local/share/docker-init.sh"]
+CMD [ "sleep", "infinity" ]
