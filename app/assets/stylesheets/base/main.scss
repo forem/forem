@@ -48,10 +48,6 @@ body {
   #main-content {
     scroll-margin-top: var(--header-height);
   }
-  ::selection {
-    background-color: cornflowerblue;
-    color: black;
-  }
 }
 
 .wrapper {

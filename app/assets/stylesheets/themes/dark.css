@@ -1,3 +1,8 @@
+::selection {
+  background-color: rgba(248,28,229, 0.5); /* 0.5 represents 50% opacity */
+  color: #fff;
+}
+
 :root {
   color-scheme: dark;
 
