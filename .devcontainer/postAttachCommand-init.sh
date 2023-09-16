@@ -3,14 +3,12 @@
 if [ -n "$CODESPACE_NAME" ]; then
     echo "Running updates"
 
-    # For some reason, Codespace prebuild also caches the codebase
-    # at the time of prebuild. This means that if we don't run prebuild
-    # on every single commit, the loaded codespace will not be on latest of
-    # the chosen branch. This mitigates that.
+    # Github Codespace prebuild caches the codebase. 
+    # This means depending on the time the Codespace is created,
+    # it may not be on latest commit with latest dependency changes
     #
     # See https://github.com/orgs/community/discussions/58172
     
-    # check if the branch is already up to date with git pull
     if git fetch origin $(git rev-parse --abbrev-ref HEAD) && git diff --quiet HEAD..origin/$(git rev-parse --abbrev-ref HEAD) ;then
         echo "Branch is already up to date"
     else
@@ -19,7 +17,6 @@ if [ -n "$CODESPACE_NAME" ]; then
         echo "Updating dependencies"
         dip provision
     fi
-
 fi
 
 cat <<EOF
