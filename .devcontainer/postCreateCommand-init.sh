@@ -2,6 +2,8 @@
 
 if [ -n "$CODESPACE_NAME" ]; then
     # CODESPACE is set, perform your file changes here
+    echo "eval $(dip console)" >> ~/.bashrc
+    echo "eval $(dip console)" >> ~/.zshrc
     echo "CODESPACE environment variable is set. Performing file changes..."
 
     cp .env_sample .env

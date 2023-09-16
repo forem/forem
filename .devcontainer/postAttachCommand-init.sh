@@ -8,6 +8,5 @@
 # See https://github.com/orgs/community/discussions/58172
 if [ -n "$CODESPACE_NAME" ]; then
     git pull origin $(git rev-parse --abbrev-ref HEAD)
-    dip provision
-    dip rails s
+    provision
 fi
