@@ -27,8 +27,13 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
     async function fetchFeedItems(timeFrame = '', page = 1) {
+      const feedType = 'explore'; //following
+
+      const url = timeFrame
+        ? `/feed/${feedType}/${timeFrame}?page=${page}`
+        : `/feed/${feedType}?page=${page}`;
       const promises = [
-        fetch(`/stories/feed/${timeFrame}?page=${page}`, {
+        fetch(url, {
           method: 'GET',
           headers: {
             Accept: 'application/json',

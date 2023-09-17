@@ -41,6 +41,11 @@ Rails.application.routes.draw do
       end
     end
 
+    resource :feed, as: :home_feed, only: [:show] do
+      resource :pinned_article, only: %w[show update destroy]
+
+      get "/:feed_type/(:timeframe)", to: "feeds#show", as: :feed_parameters
+    end
     namespace :api, defaults: { format: "json" } do
       scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
         # V1 only endpoints
@@ -328,7 +333,7 @@ Rails.application.routes.draw do
     get "/readinglist", to: "reading_list_items#index"
     get "/readinglist/:view", to: "reading_list_items#index", constraints: { view: /archive/ }
 
-    get "/feed", to: "articles#feed", as: "feed", defaults: { format: "rss" }
+    # get "/feed", to: "articles#feed", as: "feed", defaults: { format: "rss" }
     get "/feed/tag/:tag", to: "articles#feed", as: "tag_feed", defaults: { format: "rss" }
     get "/feed/latest", to: "articles#feed", as: "latest_feed", defaults: { format: "rss" }
     get "/feed/:username", to: "articles#feed", as: "user_feed", defaults: { format: "rss" }

@@ -85,6 +85,7 @@ module Stories
     end
 
     def timeframe_feed
+      # not sure that params[:tag] should be here or in any other of the methods above and below
       Articles::Feeds::Timeframe.call(params[:timeframe], tag: params[:tag], page: @page)
     end
 
