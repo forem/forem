@@ -1,9 +1,9 @@
 module Articles
   module Feeds
     module Timeframe
-      def self.call(timeframe, tag: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1)
-        articles = ::Articles::Feeds::Tag.call(tag)
-
+      # [Ridhwana]: We should make timframe a keyword argument
+      def self.call(timeframe, articles: Article, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE,
+                    page: 1)
         articles
           .where("published_at > ?", ::Timeframe.datetime(timeframe))
           .includes(:distinct_reaction_categories)

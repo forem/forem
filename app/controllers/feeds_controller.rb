@@ -120,11 +120,22 @@ class FeedsController < ApplicationController
   end
 
   def timeframe_feed
-    # not sure that params[:tag] should be here or in any other of the methods above and below
-    Articles::Feeds::Timeframe.call(params[:timeframe], tag: params[:tag], page: @page)
+    # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
+    # in our application.
+    articles_filtered_by_tag = Articles::Feeds::Tag.call(params[:tag])
+    # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
+    articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
+    # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
+    Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
   end
 
   def latest_feed
-    Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
+    # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
+    # in our application.
+    articles_filtered_by_tag = Articles::Feeds::Tag.call(params[:tag])
+    # [Ridhwana]: we could add this Base class call in Articles::Feeds::Latest?
+    articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
+    # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
+    Articles::Feeds::Latest.call(articles: articles, page: @page)
   end
 end

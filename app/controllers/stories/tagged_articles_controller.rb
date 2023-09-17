@@ -49,7 +49,8 @@ module Stories
 
     # @raise [ActiveRecord::NotFound] if we don't have an "established" tag
     def set_stories(number_of_articles:, page:, tag:)
-      stories = Articles::Feeds::Tag.call(tag.name, number_of_articles: number_of_articles, page: page)
+      stories = Articles::Feeds::Tag.call(tag.name)
+      stories = Articles::Feeds::Base.call(articles: stories, number_of_articles: number_of_articles, page: page)
 
       stories = stories.approved if tag.requires_approval?
 
