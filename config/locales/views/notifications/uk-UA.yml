@@ -63,7 +63,7 @@ uk-UA:
         comments: Коментарі
         posts: Дописи
       new_post:
-        if_org_html: " under %{org}"
+        if_org_html: " (%{org})"
         verb_html: "Новий допис  від %{user} %{if_org}"
       reacted:
         and_html: "%{first} та %{last}"
