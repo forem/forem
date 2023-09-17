@@ -1,6 +1,7 @@
 class StoriesController < ApplicationController
   helper ProfileHelper
 
+  # [Ridhwana]: Is this being used anywhere?
   DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
     only: %i[
       title path id user_id comments_count public_reactions_count organization_id
