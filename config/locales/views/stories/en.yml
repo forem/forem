@@ -15,7 +15,7 @@ en:
       sort:
         aria_label: View posts by
         aria_tagged: View tagged posts by
-        relevant: Relevant
+        relevant: Recommended
         week: Week
         month: Month
         year: Year
