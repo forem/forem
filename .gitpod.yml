@@ -24,7 +24,7 @@ tasks:
       gem install dip
       gem install solargraph
     init: dip provision
-    command: dip rails s
+    command: dip up web
 
 github:
   prebuilds:

@@ -56,12 +56,6 @@ interaction:
     service: rails
     command: yarn
     compose_run_options: [ no-deps ]
-    subcommands:
-      'lint-staged':
-        description: Run lint-staged
-        command: yarn lint-staged
-        compose:
-          run_options: [ no-TTY, no-deps ]
 
   psql:
     description: Run Postgres psql console
