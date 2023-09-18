@@ -1,8 +1,10 @@
 module Articles
   module Feeds
     class Basic
-      def initialize(articles: Article, user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
-        @articles = articles
+      def initialize(articles: Article, user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE,
+                     page: 1, tag: nil)
+        # another temp hack
+        @articles = (articles.presence || Article)
         @user = user
         @number_of_articles = number_of_articles
         @page = page

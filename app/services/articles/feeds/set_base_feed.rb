@@ -3,6 +3,9 @@ module Articles
   module Feeds
     module SetBaseFeed
       def self.call(articles: Article)
+        # again this is a hack until i fix teh stuffs
+        articles = Article if articles.blank?
+
         articles
           .published
           .limited_column_select

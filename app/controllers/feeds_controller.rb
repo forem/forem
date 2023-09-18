@@ -29,15 +29,7 @@ class FeedsController < ApplicationController
   def show
     @page = (params[:page] || 1).to_i
 
-    # /explore/:timeframe
-    if params[:feed_type] == "explore"
-      @stories = assign_explore_feed_posts
-    end
-
-    if params[:feed_type] == "following"
-      @stories = assign_following_feed_posts
-    end
-
+    @stories = assign_feed_posts
     add_pinned_article
   end
 
@@ -52,11 +44,12 @@ class FeedsController < ApplicationController
     @stories.prepend(pinned_article.decorate)
   end
 
-  def assign_explore_feed_posts
+  def assign_feed_posts
     articles = nil
 
     if params[:feed_type] == "following"
       followed_articles = Articles::Feeds::Following.call(user: current_user)
+      # unnecessary but used for verbosity at the moment
       articles = followed_articles
     end
 
@@ -73,9 +66,10 @@ class FeedsController < ApplicationController
     ArticleDecorator.decorate_collection(posts)
   end
 
-  def signed_in_base_feed(_articles)
+  def signed_in_base_feed(articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
-             Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+             articles = Articles::Feeds::SetBaseFeed.call(articles: articles)
+             Articles::Feeds::Basic.new(articles: articles, user: current_user, page: @page, tag: params[:tag])
            # [Ridhwana]: possibly need to filter by base and then following tags
            else
              Articles::Feeds.feed_for(
@@ -99,7 +93,7 @@ class FeedsController < ApplicationController
     end
   end
 
-  # [Ridhwana]: ?? When do we ever get here? Signed out feed is server side rendered.
+  # [Ridhwana]: ?? When do we ever get here? Signed out feed is server side rendered. Haven't tackled it as yet.
   def signed_out_base_feed(_articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
