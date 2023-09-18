@@ -36,7 +36,12 @@
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {
     "vscode": {
-      "extensions": ["Shopify.ruby-lsp", "KoichiSasada.vscode-rdbg"],
+      "extensions": [
+        "Shopify.ruby-lsp",
+        "KoichiSasada.vscode-rdbg",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh"
       }
