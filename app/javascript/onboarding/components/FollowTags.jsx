@@ -170,20 +170,37 @@ export class FollowTags extends Component {
               })}
             </div>
           </div>
-          <div class="onboarding-tags__content-separator">&nbsp;</div>
-          <div class="onboarding-tags__email-digest">
-            <li className="checkbox-item">
-              <label htmlFor="email_digest_periodic">
-                <input
-                  type="checkbox"
-                  id="email_digest_periodic"
-                  name="email_digest_periodic"
-                  checked={email_digest_periodic}
-                  onChange={this.handleChange}
-                />
-                I want to receive weekly newsletter emails.
-              </label>
-            </li>
+          <span class="onboarding-content-separator" />
+          <div class="onboarding-email-digest">
+            <span class="onboarding-email-digest__rectangle" />
+            <div class="flex items-start my-4 ml-1 mr-4">
+              <form>
+                <fieldset>
+                  <ul>
+                    <li className="checkbox-item">
+                      <label htmlFor="email_digest_periodic">
+                        <input
+                          type="checkbox"
+                          id="email_digest_periodic"
+                          name="email_digest_periodic"
+                          checked={email_digest_periodic}
+                          onChange={this.handleChange}
+                        />
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+              </form>
+              <div class="flex flex-col items-start">
+                <p class="crayons-subtitle-3 fw-medium">
+                  Get a Periodic Digest of Top Posts
+                </p>
+                <p class="fs-s fw-normal lh-base color-secondary">
+                  We'll email you with a curated selection of top posts based on
+                  the tags you follow.
+                </p>
+              </div>
+            </div>
           </div>
           <Navigation
             prev={prev}
