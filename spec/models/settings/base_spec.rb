@@ -136,11 +136,12 @@ RSpec.describe Settings::Base do
     end
 
     it "can be coerced from markdown to parsed_html" do
-      TestSetting.some_markdown = <<~HEREDOC
+      some_markdown = <<~HEREDOC
         Hi, Hello!
 
         This is **markdown**.
       HEREDOC
+      TestSetting.some_markdown = some_markdown
 
       processed_html = "<p>Hi, Hello!</p>\n\n<p>This is <strong>markdown</strong>.</p>\n\n"
       expect(TestSetting.some_markdown_processed_html).to eq(processed_html)
