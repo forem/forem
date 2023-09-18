@@ -10,6 +10,7 @@ module Articles
         articles = Articles::Feeds::FilterByTagQuery.call(tag: tag, articles: articles)
         articles = Articles::Feeds::BaseFeedQuery.call(articles: articles)
         articles = Articles::Feeds::FilterOutHiddenTagsQuery.call(articles: articles, user: user)
+        # this could possibly be moved to a query as well so that the service just shows the queries that are run for the feed subtypes
         articles
           .where("score > ?", minimum_score)
           .includes(:distinct_reaction_categories)
