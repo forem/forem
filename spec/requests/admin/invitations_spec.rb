@@ -40,6 +40,26 @@ RSpec.describe "/admin/member_manager/invitations" do
       expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
     end
 
+    it "enqueues an invitation email to be sent with custom subject", :aggregate_failures do
+      allow(DeviseMailer).to receive(:invitation_instructions).and_call_original
+
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
+        user_params = { email: "hey#{rand(1000)}@email.co",
+                        custom_invite_subject: "Custom Subject!",
+                        custom_invite_message: "**Custom message**",
+                        custom_invite_footnote: "Custom footnote" }
+        post admin_invitations_path, params: { user: user_params }
+      end
+
+      expect(DeviseMailer).to have_received(:invitation_instructions) do |_user, _token, args|
+        expect(args).to include(
+          custom_invite_subject: "Custom Subject!",
+          custom_invite_message: "**Custom message**",
+        )
+      end
+      expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
+    end
+
     it "does not create an invitation if a user with that email exists" do
       expect do
         post admin_invitations_path,

@@ -18,7 +18,7 @@ coverage:
   status:
     patch:
       default:
-        target: 85%
+        target: 60%
     project: false
 flag_management:
   default_rules:

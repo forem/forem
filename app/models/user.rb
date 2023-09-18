@@ -39,7 +39,7 @@ class User < ApplicationRecord
 
   attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :merge_user_id,
                 :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ip_address,
-                :current_password
+                :current_password, :custom_invite_subject, :custom_invite_message, :custom_invite_footnote
 
   acts_as_followable
   acts_as_follower
@@ -439,6 +439,7 @@ class User < ApplicationRecord
     :workshop_eligible?,
     to: :authorizer,
   )
+  alias suspended suspended?
   ##############################################################################
   #
   # End Authorization Refactor

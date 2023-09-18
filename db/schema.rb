@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_06_112602) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_12_220412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -107,6 +107,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_06_112602) do
     t.integer "feed_clicks_count", default: 0
     t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
+    t.float "feed_success_score", default: 0.0, null: false
     t.integer "hotness_score", default: 0
     t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
@@ -1092,7 +1093,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_06_112602) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
