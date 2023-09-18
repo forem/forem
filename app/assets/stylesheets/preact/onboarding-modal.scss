@@ -104,11 +104,15 @@
 
 .onboarding-email-digest {
   display: flex;
-  margin: 0px 48px 40px 48px;
+  margin: 0px var(--su-4) var(--su-4) var(--su-4);
   align-items: center;
   border-radius: 0px 6px 6px 0px;
   border: 1px solid rgba(var(--tag-onboarding-border), 1);
   background-color: var(--card-secondary-bg);
+
+  @media screen and (min-width: $breakpoint-s) {
+    margin: 0px var(--su-8) 40px var(--su-8);
+  }
 
   &__rectangle {
     width: 4px;
