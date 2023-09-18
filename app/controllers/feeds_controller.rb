@@ -27,6 +27,13 @@ class FeedsController < ApplicationController
   # Articles::Feed::Timeframes::Latest, Articles::Feed:Timeframes::Top, Articles::Feed::Timeframes::Recommended
   # 4. if we have a signed in user then
 
+  # Still to implement hidden tags in the feeds.
+  # Think about the performance of the queries.
+  # Need to think about event tracking for the feeds.
+  # Not show following for signed out users + amend the feed to work with explore for signed out users
+  # ?? Biggest question mark here is the Variant Query (hidden tags)
+  # Change relevant to recommended
+
   # /recommended
   # /latest
   # /top/week
@@ -43,9 +50,15 @@ class FeedsController < ApplicationController
 
   def assign_following_feed_posts
     posts = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-              timeframe_feed
+              # [Ridhwana]: we should use the timeframe_feed method
+              following_tagged_articles = Articles::Feeds::Following.call(user: current_user)
+              articles = Articles::Feeds::Base.call(articles: following_tagged_articles, page: @page)
+              Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
             elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-              latest_feed
+              following_tagged_articles = Articles::Feeds::Following.call(user: current_user)
+              articles = Articles::Feeds::Base.call(articles: following_tagged_articles, page: @page)
+              # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
+              Articles::Feeds::Latest.call(articles: articles, page: @page)
             elsif user_signed_in?
               signed_in_base_feed
             else
