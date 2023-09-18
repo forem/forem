@@ -377,6 +377,18 @@ Rails.application.routes.draw do
     get "/:username/:slug/stats", to: "articles#stats"
     get "/:username/:view", to: "stories#index",
                             constraints: { view: /comments|moderate|admin/ }
+
+    get "/:handle",
+      to: redirect { |path_params, req| "/#{path_params[:handle].downcase}" },
+      constraints: { handle: /[A-Z]/ }
+
+    get "/:handle/:slug",
+      to: redirect { |path_params, req| "/#{path_params[:handle]}/#{path_params[:slug]}".downcase },
+      constraints: ->(req) { req.parameters["handle"] =~ /[A-Z]/ || req.parameters["slug"] =~ /[A-Z]/ }
+
+    get "/:handle/:slug", to: 'podcast_episodes#show',
+      constraints: ->(req) { 'podcast_episodes#show' == SlugRouter[req] }
+
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
