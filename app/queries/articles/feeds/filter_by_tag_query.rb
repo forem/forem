@@ -1,6 +1,6 @@
 module Articles
   module Feeds
-    module FilterByTag
+    module FilterByTagQuery
       def self.call(articles: Article, tag: nil)
         # [Ridhwana]: time didnt allow to amke this smarter but I will.
         articles = Article if articles.blank?

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Feeds::FilterByTag, type: :service do
+RSpec.describe Articles::Feeds::FilterByTagQuery, type: :service do
   let(:tag) { "tag" }
   let!(:article) { create(:article) }
   let!(:tagged_article) { create(:article, tags: tag) }

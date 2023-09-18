@@ -2,7 +2,7 @@
 # we want to create a base feed controller that does the following:
 # 1. We have a base class Articles::Feeds::SetBaseFeed that checks for published and maybe orders accordingly
 # 2. if we are in the following path then it calls Articles::Feed::Following which returns articles that are followed.
-# 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feeds::FilterByTag
+# 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feeds::FilterByTagQuery
 # (although this seems unused)
 # 3. if we have a timeframe then it will amend those passed in articles accordingly from Articles
 # Articles::Feed::Timeframes::Latest, Articles::Feed:Timeframes::Top, Articles::Feed::Timeframes::Recommended
@@ -123,7 +123,7 @@ class FeedsController < ApplicationController
   def timeframe_feed(articles)
     # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
     # in our application.
-    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
+    articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
     articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
     articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
@@ -131,7 +131,7 @@ class FeedsController < ApplicationController
   end
 
   def latest_feed(articles)
-    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
+    articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
     articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
     articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
     Articles::Feeds::Latest.call(articles: articles, page: @page)
