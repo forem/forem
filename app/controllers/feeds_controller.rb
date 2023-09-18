@@ -1,6 +1,6 @@
 # Temporary replacement for stories/feed
 # we want to create a base feed controller that does the following:
-# 1. We have a base class Articles::Feeds::SetBaseFeed that checks for published and maybe orders accordingly
+# 1. We have a base class Articles::Feeds::BaseFeedQuery that checks for published and maybe orders accordingly
 # 2. if we are in the following path then it calls Articles::Feed::Following which returns articles that are followed.
 # 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feeds::FilterByTagQuery
 # (although this seems unused)
@@ -68,7 +68,7 @@ class FeedsController < ApplicationController
 
   def signed_in_base_feed(articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
-             articles = Articles::Feeds::SetBaseFeed.call(articles: articles)
+             articles = Articles::Feeds::BaseFeedQuery.call(articles: articles)
              Articles::Feeds::Basic.new(articles: articles, user: current_user, page: @page, tag: params[:tag])
            # [Ridhwana]: possibly need to filter by base and then following tags
            else
@@ -125,14 +125,14 @@ class FeedsController < ApplicationController
     # in our application.
     articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
-    articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
+    articles = Articles::Feeds::BaseFeedQuery.call(articles: articles_filtered_by_tag)
     articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
     Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
   end
 
   def latest_feed(articles)
     articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
-    articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
+    articles = Articles::Feeds::BaseFeedQuery.call(articles: articles_filtered_by_tag)
     articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
     Articles::Feeds::Latest.call(articles: articles, page: @page)
   end

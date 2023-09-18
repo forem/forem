@@ -1,7 +1,7 @@
 # [Ridhwana]: These feel like they should be queries rather than services?
 module Articles
   module Feeds
-    module SetBaseFeed
+    module BaseFeedQuery
       def self.call(articles: Article)
         # again this is a hack until i fix teh stuffs
         articles = Article if articles.blank?
