@@ -5,7 +5,8 @@
   "runServices": ["postgres", "redis"],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
-    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+    "GIT_EDITOR": "code --wait"
   },
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
