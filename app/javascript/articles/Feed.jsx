@@ -7,7 +7,7 @@ import { insertInArrayIf } from '../../javascript/utilities/insertInArrayIf';
 
 /* global userData sendHapticMessage showLoginModal buttonFormData renderNewSidebarCount */
 
-export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
+export const Feed = ({ timeFrame, feedType, renderFeed, afterRender }) => {
   const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
   const [bookmarkedFeedItems, setBookmarkedFeedItems] = useState(
     new Set(reading_list_ids),
@@ -26,8 +26,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     //  *
     //  * @returns {Promise} A promise containing the JSON response for the feed data.
     //  */
-    async function fetchFeedItems(timeFrame = '', page = 1) {
-      const feedType = 'explore'; //following
+    async function fetchFeedItems(timeFrame = '', feedType = 'explore' , page = 1) {
 
       const url = timeFrame
         ? `/feed/${feedType}/${timeFrame}?page=${page}`
@@ -98,7 +97,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       try {
         if (onError) setOnError(false);
 
-        fetchFeedItems(timeFrame).then(
+        fetchFeedItems(timeFrame, feedType).then(
           ([
             feedPosts,
             feedFirstBillboard,
@@ -151,7 +150,7 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
       }
     };
     organizeFeedItems();
-  }, [timeFrame, onError]);
+  }, [timeFrame, onError, feedType]);
 
   useEffect(() => {
     if (feedItems.length > 0) {

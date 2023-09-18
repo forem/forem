@@ -131,7 +131,8 @@ PodcastEpisodes.propTypes = {
 /**
  * Renders the main feed.
  */
-export const renderFeed = async (timeFrame, afterRender) => {
+export const renderFeed = async (timeFrame, feedType, afterRender) => {
+
   const feedContainer = document.getElementById('homepage-feed');
 
   const { currentUser } = await getUserDataAndCsrfToken();
@@ -166,6 +167,7 @@ export const renderFeed = async (timeFrame, afterRender) => {
   render(
     <Feed
       timeFrame={timeFrame}
+      feedType={feedType}
       renderFeed={callback}
       afterRender={afterRender}
     />,

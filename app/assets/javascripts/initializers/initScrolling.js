@@ -429,6 +429,9 @@ function paginate(tag, params, requiresApproval) {
     }
   });
 
+  // [Ridhwana]: We'l need to make amendments here and in the search controller:
+  // for top - here we sort by public reactions count, vs on the server we sort by score
+  // for latest .where("score > ?", minimum_score)
   fetch(`/search/feed_content?${searchParams.toString()}`, {
     method: 'GET',
     headers: {

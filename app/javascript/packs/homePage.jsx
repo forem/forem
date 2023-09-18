@@ -83,7 +83,10 @@ function renderSidebar() {
   }
 }
 
-const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
+// [Ridhwana]: So much Hackity hack on the FE for now, will do better later
+const pathName = window.location.pathname
+const feedTimeFrame = frontPageFeedPathNames.get(pathName.slice(pathName.indexOf("/", 1)))
+const feedType = window.location.pathname.includes('following') ? 'following' : 'explore';
 
 if (!document.getElementById('featured-story-marker')) {
   const waitingForDataLoad = setInterval(() => {
@@ -105,7 +108,7 @@ if (!document.getElementById('featured-story-marker')) {
           observeFeedElements();
         };
 
-        renderFeed(feedTimeFrame, callback);
+        renderFeed(feedTimeFrame, feedType, callback);
 
         InstantClick.on('change', () => {
           const { userStatus: currentUserStatus } = document.body.dataset;
@@ -115,6 +118,8 @@ if (!document.getElementById('featured-story-marker')) {
           }
 
           const url = new URL(window.location);
+          // [Ridhwana]: Hackity hack, will do better later
+          const changedFeedType = url.pathname.includes('/following') ? 'following' : 'explore';
           const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
           if (!frontPageFeedPathNames.has(url.pathname)) {
@@ -128,7 +133,7 @@ if (!document.getElementById('featured-story-marker')) {
             observeFeedElements();
           };
 
-          renderFeed(changedFeedTimeFrame, callback);
+          renderFeed(changedFeedTimeFrame, changedFeedType, callback);
         });
       });
 

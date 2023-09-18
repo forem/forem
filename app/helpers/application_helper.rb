@@ -223,7 +223,7 @@ module ApplicationHelper
   end
 
   def list_path
-    return "" if params[:tag].blank?
+    return "" if params[:tag].blank? || params[:feed_type].blank?
 
     "/t/#{params[:tag]}"
   end
