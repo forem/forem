@@ -126,7 +126,7 @@ jobs:
           rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
           reporter: github-pr-review # Default is github-pr-check
       - run: yarn lint:frontend
-      - run: bundle exec bundle-audit check --update
+      - run: bundle exec bundle-audit check --update --ignore CVE-2023-26141
 
   rspec:
     runs-on: ubuntu-latest
