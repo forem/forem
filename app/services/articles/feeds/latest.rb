@@ -3,12 +3,13 @@ module Articles
     module Latest
       MINIMUM_SCORE = -20
 
-      def self.call(articles: Article, number_of_articles: nil, page: 1, minimum_score: nil)
+      def self.call(articles: Article, number_of_articles: nil, page: 1, minimum_score: nil, tag: nil, user: nil)
         number_of_articles ||= Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE
         minimum_score ||= MINIMUM_SCORE
 
-        # [Ridhwana] I moved the where clause to the top here because it seems more efficient to filter first and
-        # we matching the behavior of timeframe.
+        articles = Articles::Feeds::FilterByTagQuery.call(tag: tag, articles: articles)
+        articles = Articles::Feeds::BaseFeedQuery.call(articles: articles)
+        articles = Articles::Feeds::FilterOutHiddenTagsQuery.call(articles: articles, user: user)
         articles
           .where("score > ?", minimum_score)
           .includes(:distinct_reaction_categories)

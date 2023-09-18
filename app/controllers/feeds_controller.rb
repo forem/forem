@@ -131,9 +131,6 @@ class FeedsController < ApplicationController
   end
 
   def latest_feed(articles)
-    articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
-    articles = Articles::Feeds::BaseFeedQuery.call(articles: articles_filtered_by_tag)
-    articles = Articles::Feeds::FilterOutHiddenTagsQuery.call(articles: articles, user: current_user)
-    Articles::Feeds::Latest.call(articles: articles, page: @page)
+    Articles::Feeds::Latest.call(articles: articles, page: @page, tag: params[:tag], user: current_user)
   end
 end
