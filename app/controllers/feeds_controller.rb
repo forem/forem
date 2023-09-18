@@ -1,3 +1,28 @@
+# Temporary replacement for stories/feed
+# we want to create a base feed controller that does the following:
+# 1. We have a base class Articles::Feeds::Base that checks for published and maybe orders accordingly
+# 2. if we are in the following path then it calls Articles::Feed::Following which returns articles that are followed.
+# 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feeds::FilterByTag
+# (although this seems unused)
+# 3. if we have a timeframe then it will amend those passed in articles accordingly from Articles
+# Articles::Feed::Timeframes::Latest, Articles::Feed:Timeframes::Top, Articles::Feed::Timeframes::Recommended
+# 4. if we have a signed in user then
+
+# Still to implement:
+# A general way to incorporate hidden tags in the feeds.
+# Think about the performance of the queries.
+# Need to think about event tracking for the feeds.
+# Not show following for signed out users + amend the feed to work with explore for signed out users
+# ?? Biggest question mark here is the Variant Query (hidden tags)
+# Change relevant to recommended
+
+# /recommended
+# /latest
+# /top/week
+# /top/month
+# /top/year
+# /top/infinity
+
 class FeedsController < ApplicationController
   respond_to :json
 
@@ -17,27 +42,6 @@ class FeedsController < ApplicationController
   end
 
   private
-
-  # we want to create a base feed controller that does the following:
-  # 1. We have a base class Articles::Feeds::Base that checks for published and maybe orders accordingly
-  # 2. if we are in the following path then it calls Articles::Feed::Following which returns articles that are followed.
-  # 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feed::Tag
-  # (although this really seems unused)
-  # 3. if we have a timeframe then it will amend those passed in articles accordingly from Articles
-  # Articles::Feed::Timeframes::Latest, Articles::Feed:Timeframes::Top, Articles::Feed::Timeframes::Recommended
-  # 4. if we have a signed in user then
-
-  # Still to implement hidden tags in the feeds.
-  # Think about the performance of the queries.
-  # Need to think about event tracking for the feeds.
-  # Not show following for signed out users + amend the feed to work with explore for signed out users
-  # ?? Biggest question mark here is the Variant Query (hidden tags)
-  # Change relevant to recommended
-
-  # /recommended
-  # /latest
-  # /top/week
-  # /top/month
 
   def add_pinned_article
     return if params[:timeframe].present?
@@ -136,7 +140,7 @@ class FeedsController < ApplicationController
   def timeframe_feed
     # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
     # in our application.
-    articles_filtered_by_tag = Articles::Feeds::Tag.call(params[:tag])
+    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(params[:tag])
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
     articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
     # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
@@ -146,7 +150,7 @@ class FeedsController < ApplicationController
   def latest_feed
     # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
     # in our application.
-    articles_filtered_by_tag = Articles::Feeds::Tag.call(params[:tag])
+    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(params[:tag])
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Latest?
     articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
     # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
