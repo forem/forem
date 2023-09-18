@@ -1,7 +1,10 @@
 module Articles
   module Feeds
     module FilterByTag
-      def self.call(articles = Article, tag = nil)
+      def self.call(articles: Article, tag: nil)
+        # [Ridhwana]: time didnt allow to amke this smarter but I will.
+        articles = Article if articles.blank?
+
         return articles if tag.blank?
 
         if FeatureFlag.enabled?(:optimize_article_tag_query)
