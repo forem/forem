@@ -18,8 +18,10 @@
 
 # Random Thoughts:
 # - We need an “empty state” for the feed
-# - we still want hidden-tagged content to appear when searching or /tagname ? I’m not sure on adding to tag feeds at the moment, but its definitely not part of this work. I'm unsure of what you mean by toggle-able in this instance.
-# - Currently there is no /relevant but it would be nice for there to be a /explore  separate to / which selects explore by default (unless the user profile overrides this)
+# - we still want hidden-tagged content to appear when searching or /tagname ? I’m not sure on adding to tag feeds at the moment,
+# but its definitely not part of this work. I'm unsure of what you mean by toggle-able in this instance.
+# - Currently there is no /relevant but it would be nice for there to be a /explore  separate to / which selects explore by
+# default (unless the user profile overrides this)
 # - ? Might need to amend analytics????
 # - ? Following will not show up on signed out feed?
 # - ? We’re messing with the url, may be useful to rename some more appropriately ?
