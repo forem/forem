@@ -133,7 +133,7 @@ RSpec.describe "Api::V1::Users" do
 
     context "when unauthenticated" do
       it "returns unauthorized" do
-        put api_user_suspend_path(id: target_user.id),
+        put api_user_add_role_path(id: target_user.id, role: "suspended"),
             params: payload,
             headers: headers
 
@@ -143,7 +143,7 @@ RSpec.describe "Api::V1::Users" do
 
     context "when unauthorized" do
       it "returns unauthorized if api key is invalid" do
-        put api_user_suspend_path(id: target_user.id),
+        put api_user_add_role_path(id: target_user.id, role: "suspended"),
             params: payload,
             headers: headers.merge({ "api-key" => "invalid api key" })
 
@@ -151,7 +151,7 @@ RSpec.describe "Api::V1::Users" do
       end
 
       it "returns unauthorized if api key belongs to non-admin user" do
-        put api_user_suspend_path(id: target_user.id),
+        put api_user_add_role_path(id: target_user.id, role: "suspended"),
             params: payload,
             headers: headers
 
@@ -164,7 +164,7 @@ RSpec.describe "Api::V1::Users" do
 
       it "is successful in suspending a user", :aggregate_failures do
         expect do
-          put api_user_suspend_path(id: target_user.id),
+          put api_user_add_role_path(id: target_user.id, role: "suspended"),
               params: payload,
               headers: auth_headers
 
@@ -175,7 +175,7 @@ RSpec.describe "Api::V1::Users" do
       end
 
       it "creates an audit log of the action taken" do
-        put api_user_suspend_path(id: target_user.id),
+        put api_user_add_role_path(id: target_user.id, role: "suspended"),
             params: payload,
             headers: auth_headers
 
@@ -227,8 +227,8 @@ RSpec.describe "Api::V1::Users" do
 
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
         # User's articles are published and comments exist
-        expect(target_articles.map(&:published?)).to match_array([true, true, true])
-        expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+        expect(target_articles.map(&:published?)).to contain_exactly(true, true, true)
+        expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
 
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
           put api_user_unpublish_path(id: target_user.id), headers: auth_headers
@@ -238,8 +238,8 @@ RSpec.describe "Api::V1::Users" do
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
-        expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
-        expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
+        expect(target_articles.map(&:reload).map(&:published?)).to contain_exactly(false, false, false)
+        expect(target_comments.map(&:reload).map(&:deleted)).to contain_exactly(true, true, true)
       end
 
       it "creates an audit log of the action taken" do
