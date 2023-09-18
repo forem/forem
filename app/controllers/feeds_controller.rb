@@ -60,7 +60,6 @@ class FeedsController < ApplicationController
       articles = followed_articles
     end
 
-
     posts = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
               timeframe_feed(articles)
             elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
@@ -74,7 +73,7 @@ class FeedsController < ApplicationController
     ArticleDecorator.decorate_collection(posts)
   end
 
-  def signed_in_base_feed(articles)
+  def signed_in_base_feed(_articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
            # [Ridhwana]: possibly need to filter by base and then following tags
@@ -101,7 +100,7 @@ class FeedsController < ApplicationController
   end
 
   # [Ridhwana]: ?? When do we ever get here? Signed out feed is server side rendered.
-  def signed_out_base_feed(articles)
+  def signed_out_base_feed(_articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
            else
@@ -133,20 +132,14 @@ class FeedsController < ApplicationController
     articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
     articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
-    # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
+    articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
     Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
   end
 
   def latest_feed(articles)
     articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
     articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
-  def latest_feed
-    # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
-    # in our application.
-    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(params[:tag])
-    # [Ridhwana]: we could add this Base class call in Articles::Feeds::Latest?
-    articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
-    # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
+    articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
     Articles::Feeds::Latest.call(articles: articles, page: @page)
   end
 end
