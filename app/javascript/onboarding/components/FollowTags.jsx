@@ -8,6 +8,7 @@ export class FollowTags extends Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleComplete = this.handleComplete.bind(this);
 
@@ -39,12 +40,30 @@ export class FollowTags extends Component {
     });
   }
 
-  handleChange(event) {
-    const { name } = event.target;
-    this.setState((currentState) => ({
-      [name]: !currentState[name],
-    }));
-  }
+  handleContainerClick = () => {
+    const checkbox = document.getElementById('email_digest_periodic');
+    checkbox.checked = !checkbox.checked;
+
+    const event = new Event('change', { bubbles: true });
+    checkbox.dispatchEvent(event);
+
+    this.setState({ email_digest_periodic: checkbox.checked });
+  };
+
+  handleContainerKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.handleContainerClick();
+    }
+  };
+
+  handleCheckboxClick = (event) => {
+    event.stopPropagation();
+  };
+
+  handleChange = (event) => {
+    const { name, checked } = event.target;
+    this.setState({ [name]: checked });
+  };
 
   handleClick(tag) {
     let { selectedTags } = this.state;
@@ -64,7 +83,7 @@ export class FollowTags extends Component {
 
   handleComplete() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { selectedTags } = this.state;
+    const { selectedTags, email_digest_periodic } = this.state;
 
     Promise.all(
       selectedTags.map((tag) =>
@@ -82,10 +101,31 @@ export class FollowTags extends Component {
           credentials: 'same-origin',
         }),
       ),
-    ).then((_) => {
-      const { next } = this.props;
-      next();
-    });
+    )
+      .then(() => {
+        if (email_digest_periodic) {
+          return fetch('/onboarding/notifications', {
+            method: 'PATCH',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              notifications: {
+                email_digest_periodic: this.state.email_digest_periodic,
+              },
+            }),
+            credentials: 'same-origin',
+          });
+        }
+        return Promise.resolve();
+      })
+      .then((response) => {
+        if (!email_digest_periodic || response.ok) {
+          const { next } = this.props;
+          next();
+        }
+      });
   }
 
   renderFollowCount() {
@@ -171,7 +211,13 @@ export class FollowTags extends Component {
             </div>
           </div>
           <span class="onboarding-content-separator" />
-          <div class="onboarding-email-digest">
+          <div
+            class="onboarding-email-digest"
+            onClick={this.handleContainerClick}
+            onKeyDown={this.handleContainerKeyDown}
+            role="button"
+            tabIndex="0"
+          >
             <span class="onboarding-email-digest__rectangle" />
             <div class="flex items-start my-4 ml-1 mr-4">
               <form>
@@ -185,6 +231,8 @@ export class FollowTags extends Component {
                           name="email_digest_periodic"
                           checked={email_digest_periodic}
                           onChange={this.handleChange}
+                          onClick={this.handleCheckboxClick}
+                          tabIndex="-1"
                         />
                       </label>
                     </li>
