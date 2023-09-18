@@ -14,7 +14,8 @@ module Articles
           .order(hotness_score: :desc)
           .with_at_least_home_feed_minimum_score
           .limit(@number_of_articles)
-          .limited_column_select.includes(top_comments: :user)
+          .limited_column_select
+          .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
         return articles unless @user
 
