@@ -126,14 +126,14 @@ class FeedsController < ApplicationController
     articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
     articles = Articles::Feeds::BaseFeedQuery.call(articles: articles_filtered_by_tag)
-    articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
+    articles = Articles::Feeds::FilterOutHiddenTagsQuery.call(articles: articles, user: current_user)
     Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
   end
 
   def latest_feed(articles)
     articles_filtered_by_tag = Articles::Feeds::FilterByTagQuery.call(tag: params[:tag], articles: articles)
     articles = Articles::Feeds::BaseFeedQuery.call(articles: articles_filtered_by_tag)
-    articles = Articles::Feeds::FilterOutHiddenTags.call(articles: articles, user: current_user)
+    articles = Articles::Feeds::FilterOutHiddenTagsQuery.call(articles: articles, user: current_user)
     Articles::Feeds::Latest.call(articles: articles, page: @page)
   end
 end
