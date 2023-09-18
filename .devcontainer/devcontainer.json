@@ -32,5 +32,13 @@
   "onCreateCommand": ".devcontainer/onCreateCommand-init.sh",
   "updateContentCommand": "bin/setup",
   "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
-  "postAttachCommand": ".devcontainer/postAttachCommand-init.sh"
+  "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": ["Shopify.ruby-lsp", "KoichiSasada.vscode-rdbg"],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  }
 }

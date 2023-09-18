@@ -8,6 +8,7 @@
     "philosowaffle.openapi-designer",
     "sbenp.prettier-vscode",
     "silvenon.mdx",
-    "waderyan.nodejs-extension-pack"
+    "waderyan.nodejs-extension-pack",
+    "koichisasada.vscode-rdbg"
   ]
 }
