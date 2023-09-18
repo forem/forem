@@ -1,0 +1,35 @@
+{
+  "name": "Forem DEVcontainer",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "devcontainer",
+  "runServices": ["postgres", "redis"],
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "enableNonRootDocker": "false",
+      "moby": "true"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000",
+      "upgradePackages": "true"
+    }
+  },
+  "portsAttributes": {
+    "3000": {
+      "onAutoForward": "notify"
+    },
+    "3035": {
+      "onAutoForward": "silent"
+    }
+  },
+  "onCreateCommand": ".devcontainer/onCreateCommand-init.sh",
+  "updateContentCommand": "bin/setup",
+  "postAttachCommand": ".devcontainer/postAttachCommand-init.sh"
+}

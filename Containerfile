@@ -149,6 +149,8 @@ CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 ## Development
 FROM base AS development
 
+ENV TMPDIR=/var/tmp
+
 # Common dependencies
 # Using --mount to speed up build with caching, see https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md#run---mount
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -192,7 +194,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
     --mount=type=tmpfs,target=/var/log \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
-      imagemagick
+      imagemagick \
+      libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
 
 # Configure bundler
 ENV LANG=C.UTF-8 \
