@@ -85,6 +85,7 @@ class FeedsController < ApplicationController
   def signed_in_base_feed
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
+           # [Ridhwana]: possibly need to filter by base and then following tags
            else
              Articles::Feeds.feed_for(
                user: current_user,
