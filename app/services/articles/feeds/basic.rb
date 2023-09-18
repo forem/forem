@@ -1,7 +1,8 @@
 module Articles
   module Feeds
     class Basic
-      def initialize(user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
+      def initialize(articles: Article, user: nil, number_of_articles: Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE, page: 1, tag: nil)
+        @articles = articles
         @user = user
         @number_of_articles = number_of_articles
         @page = page
@@ -10,13 +11,9 @@ module Articles
       end
 
       def default_home_feed(**_kwargs)
-        articles = Article.published
+        articles = @articles
           .order(hotness_score: :desc)
           .with_at_least_home_feed_minimum_score
-          .limit(@number_of_articles)
-          .limited_column_select
-          .includes(top_comments: :user)
-          .includes(:distinct_reaction_categories)
         return articles unless @user
 
         articles = articles.where.not(user_id: UserBlock.cached_blocked_ids_for_blocker(@user.id))

@@ -1,6 +1,6 @@
 # Temporary replacement for stories/feed
 # we want to create a base feed controller that does the following:
-# 1. We have a base class Articles::Feeds::Base that checks for published and maybe orders accordingly
+# 1. We have a base class Articles::Feeds::SetBaseFeed that checks for published and maybe orders accordingly
 # 2. if we are in the following path then it calls Articles::Feed::Following which returns articles that are followed.
 # 4. if we have a tag then it will amend those passed in articles accordingly from Articles::Feeds::FilterByTag
 # (although this seems unused)
@@ -52,33 +52,21 @@ class FeedsController < ApplicationController
     @stories.prepend(pinned_article.decorate)
   end
 
-  def assign_following_feed_posts
-    posts = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-              # [Ridhwana]: we should use the timeframe_feed method
-              following_tagged_articles = Articles::Feeds::Following.call(user: current_user)
-              articles = Articles::Feeds::Base.call(articles: following_tagged_articles, page: @page)
-              Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
-            elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-              following_tagged_articles = Articles::Feeds::Following.call(user: current_user)
-              articles = Articles::Feeds::Base.call(articles: following_tagged_articles, page: @page)
-              # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
-              Articles::Feeds::Latest.call(articles: articles, page: @page)
-            elsif user_signed_in?
-              signed_in_base_feed
-            else
-              signed_out_base_feed
-            end
-
-    ArticleDecorator.decorate_collection(posts)
-  end
-
   def assign_explore_feed_posts
+    articles = nil
+
+    if params[:feed_type] == "following"
+      followed_articles = Articles::Feeds::Following.call(user: current_user)
+      articles = followed_articles
+    end
+
+
     posts = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-              timeframe_feed
+              timeframe_feed(articles)
             elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-              latest_feed
+              latest_feed(articles)
             elsif user_signed_in?
-              signed_in_base_feed
+              signed_in_base_feed(articles)
             else
               signed_out_base_feed
             end
@@ -86,7 +74,7 @@ class FeedsController < ApplicationController
     ArticleDecorator.decorate_collection(posts)
   end
 
-  def signed_in_base_feed
+  def signed_in_base_feed(articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: current_user, page: @page, tag: params[:tag])
            # [Ridhwana]: possibly need to filter by base and then following tags
@@ -112,7 +100,8 @@ class FeedsController < ApplicationController
     end
   end
 
-  def signed_out_base_feed
+  # [Ridhwana]: ?? When do we ever get here? Signed out feed is server side rendered.
+  def signed_out_base_feed(articles)
     feed = if Settings::UserExperience.feed_strategy == "basic"
              Articles::Feeds::Basic.new(user: nil, page: @page, tag: params[:tag])
            else
@@ -137,16 +126,20 @@ class FeedsController < ApplicationController
     end
   end
 
-  def timeframe_feed
+  # Same comments apply for latest feed
+  def timeframe_feed(articles)
     # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
     # in our application.
-    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(params[:tag])
+    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
     # [Ridhwana]: we could add this Base class call in Articles::Feeds::Timeframe?
-    articles = Articles::Feeds::Base.call(articles: articles_filtered_by_tag, page: @page)
+    articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
     # [Ridhwana]: page is duplicated here, lets figure out what to do with it.
     Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
   end
 
+  def latest_feed(articles)
+    articles_filtered_by_tag = Articles::Feeds::FilterByTag.call(tag: params[:tag], articles: articles)
+    articles = Articles::Feeds::SetBaseFeed.call(articles: articles_filtered_by_tag)
   def latest_feed
     # [Ridhwana]: It doesnt seem like we need articles_filtered_by_tag because it doesnt match existing behaviour
     # in our application.

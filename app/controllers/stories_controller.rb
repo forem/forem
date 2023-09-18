@@ -246,13 +246,13 @@ class StoriesController < ApplicationController
     # [Ridhwana]: to handle explore for signed out users
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       # add the base feed here
-      articles = Articles::Feeds::Base.call(page: @page)
-      @stories = Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles)
+      articles = Articles::Feeds::SetBaseFeed.call
+      @stories = Articles::Feeds::Timeframe.call(params[:timeframe], articles: articles, page: @page)
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      # add the base feed here
-      articles = Articles::Feeds::Base.call(page: @page)
+      # [Ridhwana]: it feels like the last call should set the page and number of articles.
+      articles = Articles::Feeds::SetBaseFeed.call
       @stories = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score,
-                                              articles: articles)
+                                              articles: articles, page: @page)
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
