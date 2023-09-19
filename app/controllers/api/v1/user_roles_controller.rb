@@ -4,8 +4,8 @@ module Api
       before_action :authenticate_with_api_key!
 
       # 'suspended' is also known as 'suspend' for historical reasons
-      SUSPEND_MODE = %w{suspend suspended}.freeze
-      ROLES = (SUSPEND_MODE + %w{limited}).freeze
+      SUSPEND_MODE = %w[suspend suspended].freeze
+      ROLES = (SUSPEND_MODE + %w[limited]).freeze
 
       before_action :check_role
       before_action :set_target_user
@@ -14,7 +14,7 @@ module Api
       rescue_from StandardError, with: :unprocessable_error
 
       def update
-        if suspend_mode?
+        if suspend_mode? # suspend user requires more data, such as note
           suspend_target_user
         else
           add_role_to_target_user
@@ -23,21 +23,30 @@ module Api
         render json: { success: "okay" }, status: :no_content
       end
 
-      def destroy
-      end
+      def destroy; end
 
       private
+
       def add_role_to_target_user
+        manager = Moderator::ManageActivityAndRoles.new(admin: @user,
+                                                        user: @target_user,
+                                                        user_params: {})
+        manager.handle_user_status(params[:role].titleize, nil)
+
+        payload = { action: "api_user_#{params[:role]}", target_user_id: @target_user.id }
+        Audit::Logger.log(:admin_api, @user, payload)
       end
 
       def authorize_role_management
         authorize(@target_user, :manage_user_roles?)
+      rescue Pundit::NotAuthorizedError
+        error_unauthorized
       end
 
       def check_role
-        unless ROLES.include?(params[:role])
-          raise StandardError.new("Unable to process #{params[:role]}")
-        end
+        return if ROLES.include?(params[:role])
+
+        raise StandardError, "Unable to process #{params[:role]}"
       end
 
       def set_target_user
