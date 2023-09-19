@@ -387,7 +387,7 @@ Rails.application.routes.draw do
       constraints: ->(req) { req.parameters["handle"] =~ /[A-Z]/ || req.parameters["slug"] =~ /[A-Z]/ }
 
     get "/:handle/:slug", to: 'podcast_episodes#show',
-      constraints: ->(req) { 'podcast_episodes#show' == SlugRouter[req] }
+      constraints: ->(req) { 'podcast_episodes#show' == SlugRouter[req].map }
 
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",

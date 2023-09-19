@@ -3,7 +3,7 @@ class SlugRouter
 
   class << self
     def call(request)
-      new(**request.parameters.symbolize_keys).map
+      new(**request.parameters.symbolize_keys)
     end
 
     alias :[] :call
@@ -22,8 +22,12 @@ class SlugRouter
 
   def map
     Rails.cache.fetch(File.join(*["routing", handle, slug].compact), expires_in: 12.hours) do
-      slug.blank? ? map_for_handle_only : map_for_handle_with_slug
+      map_without_cache
     end
+  end
+
+  def map_without_cache
+    slug.blank? ? map_for_handle_only : map_for_handle_with_slug
   end
 
   def map_for_handle_only
