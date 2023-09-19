@@ -68,6 +68,8 @@ module Api
 
       def set_target_user
         @target_user = User.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        error_not_found
       end
 
       def suspend_mode?
