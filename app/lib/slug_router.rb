@@ -46,7 +46,7 @@ class SlugRouter
   def map_for_handle_with_slug
     if Article.exists?(path: "/#{handle.downcase}/#{slug}")
       logger.info " ]]]]]> SlugRouter: Articles#show"
-      'stories#show'
+      'articles#show'
     elsif PodcastEpisode.joins(:podcast).where("podcasts.slug" => handle).exists?(slug: slug)
       logger.info " ]]]]]> SlugRouter: PodcastEpisodes#show"
       'podcast_episodes#show'
