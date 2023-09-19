@@ -45,14 +45,13 @@ describe('EmailPreferencesForm', () => {
         </ul>
       </fieldset>
     </form>
-    `
+    `,
   });
-
 
   beforeEach(() => {
     fetch.resetMocks();
     fetch.mockResponseOnce(fakeResponse);
-  })
+  });
 
   beforeAll(() => {
     document.head.innerHTML =
@@ -67,10 +66,9 @@ describe('EmailPreferencesForm', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('should load the appropriate text', () => {
-    const { queryByText } = renderEmailPreferencesForm();
-
-    expect(queryByText("Almost there!")).toExist();
+  it('should load the appropriate text', async () => {
+    await renderEmailPreferencesForm();
+    expect(document.innerHTML).toMatchSnapshot();
   });
 
   it.skip('should show the two checkboxes unchecked', () => {

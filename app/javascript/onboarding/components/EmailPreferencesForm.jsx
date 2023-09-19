@@ -10,7 +10,7 @@ export class EmailPreferencesForm extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
     this.state = {
-      content: "<p>Loading...</p>"
+      content: '<p>Loading...</p>',
     };
   }
 
@@ -57,12 +57,11 @@ export class EmailPreferencesForm extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-
-          <div className="onboarding-content terms-and-conditions-wrapper"
-          // eslint-disable-next-line react/no-danger
-               dangerouslySetInnerHTML={{ __html: this.state.content }}
-          >
-          </div>
+          <div
+            className="onboarding-content terms-and-conditions-wrapper"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: this.state.content }}
+          />
 
           <Navigation
             prev={prev}
