@@ -22,13 +22,13 @@ class RegistrationsController < Devise::RegistrationsController
     build_devise_resource
 
     if resource.persisted?
-      update_first_user_permissions(resource)
+      update_user_permissions(resource)
 
       if ForemInstance.smtp_enabled?
         redirect_to confirm_email_path(email: resource.email)
       else
         sign_in(resource)
-        if resource.roles.includes(:creator).any?
+        if resource.creator?
           redirect_to new_admin_creator_setting_path
         else
           redirect_to root_path
@@ -41,8 +41,11 @@ class RegistrationsController < Devise::RegistrationsController
 
   private
 
-  def update_first_user_permissions(resource)
-    return unless Settings::General.waiting_on_first_user
+  def update_user_permissions(resource)
+    unless Settings::General.waiting_on_first_user
+      resource.add_role(:limited) if Settings::Authentication.limit_new_users?
+      return
+    end
 
     resource.add_role(:creator)
     resource.add_role(:super_admin)

@@ -62,5 +62,9 @@ module Settings
 
       false
     end
+
+    def self.limit_new_users?
+      new_user_status == "limited"
+    end
   end
 end

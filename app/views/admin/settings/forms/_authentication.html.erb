@@ -209,14 +209,12 @@
         </section>
 
         <section class="crayons-field mb-6">
-          <%# <div class="crayons-fieldx"> %>
-            <%= admin_config_label :new_user_status, model: Settings::Authentication %>
-            <%= admin_config_description Constants::Settings::Authentication.details[:new_user_status][:description] %>
-            <%= select_tag "settings_authentication[new_user_status]",
-                           options_for_select(Settings::Authentication::NEW_USER_STATUSES, Settings::Authentication.new_user_status),
-                           multiple: false,
-                           class: "crayons-select" %>
-          <%# </div> %>
+          <%= admin_config_label :new_user_status, model: Settings::Authentication %>
+          <%= admin_config_description Constants::Settings::Authentication.details[:new_user_status][:description] %>
+          <%= select_tag "settings_authentication[new_user_status]",
+                         options_for_select(new_user_status_options, Settings::Authentication.new_user_status),
+                         multiple: false,
+                         class: "crayons-select" %>
         </section>
       </section>
 
