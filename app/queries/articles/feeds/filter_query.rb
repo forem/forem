@@ -28,9 +28,11 @@ module Articles
           @filtered_articles = timeframe_feed
         end
 
-        return unless @timeframe == Timeframe::LATEST_TIMEFRAME
+        if @timeframe == Timeframe::LATEST_TIMEFRAME
+          @filtered_articles = latest_feed
+        end
 
-        @filtered_articles = latest_feed
+        @filtered_articles
       end
 
       private
