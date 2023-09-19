@@ -28,6 +28,7 @@
     }
   },
   "updateContentCommand": "bin/setup",
+  "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {
     "vscode": {
