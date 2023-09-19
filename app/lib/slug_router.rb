@@ -1,3 +1,4 @@
+# rubocop:disable Style/StringLiterals
 class SlugRouter
   attr_reader :handle, :slug
 
@@ -6,7 +7,7 @@ class SlugRouter
       new(**request.parameters.symbolize_keys)
     end
 
-    alias :[] :call
+    alias [] call
 
     def logger
       Rails.logger
@@ -54,7 +55,9 @@ class SlugRouter
   end
 
   private
+
   def logger
     self.class.logger
   end
 end
+# rubocop:enable Style/StringLiterals
