@@ -39,19 +39,12 @@ class StoriesController < ApplicationController
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
-    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
-      @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
-      handle_podcast_show
     else
       not_found
     end
   end
 
   private
-
-  def set_user_limit
-    @user_limit = 50
-  end
 
   def assign_hero_banner
     @hero_billboard = Billboard.for_display(area: "home_hero", user_signed_in: user_signed_in?)
@@ -212,16 +205,6 @@ class StoriesController < ApplicationController
     set_user_json_ld
 
     render template: "users/show"
-  end
-
-  def handle_podcast_show
-    set_surrogate_key_header @episode.record_key
-    @episode = @episode.decorate
-    @podcast_episode_show = true
-    @comments_to_show_count = 25
-    @comment = Comment.new
-    render template: "podcast_episodes/show"
-    nil
   end
 
   def redirect_if_view_param
