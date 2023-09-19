@@ -21,6 +21,7 @@ module Stories
     end
 
     def assign_feed_stories
+      # Articles::Feeds::FilterQuery.call(timeframe: params[:timeframe], page: @page)
       stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   timeframe_feed
                 elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
