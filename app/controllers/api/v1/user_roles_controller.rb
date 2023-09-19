@@ -23,7 +23,14 @@ module Api
         render json: { success: "okay" }, status: :no_content
       end
 
-      def destroy; end
+      def destroy
+        # This mechanism for removing roles is pretty specific to limited & suspended,
+        # where they revert to "Good standing" — we would need a different approach,
+        # possibly a whole different service object — to remove *any* roles
+        remove_role_from_target_user
+
+        render json: { success: "okay" }, status: :no_content
+      end
 
       private
 
@@ -47,6 +54,16 @@ module Api
         return if ROLES.include?(params[:role])
 
         raise StandardError, "Unable to process #{params[:role]}"
+      end
+
+      def remove_role_from_target_user
+        manager = Moderator::ManageActivityAndRoles.new(admin: @user,
+                                                        user: @target_user,
+                                                        user_params: {})
+        manager.handle_user_status("Good standing", nil)
+
+        payload = { action: "api_user_remove_#{params[:role]}", target_user_id: @target_user.id }
+        Audit::Logger.log(:admin_api, @user, payload)
       end
 
       def set_target_user
