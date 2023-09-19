@@ -27,7 +27,6 @@
       "onAutoForward": "silent"
     }
   },
-  "onCreateCommand": ".devcontainer/onCreateCommand-init.sh",
   "updateContentCommand": "bin/setup",
   "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",

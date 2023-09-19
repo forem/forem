@@ -55,6 +55,9 @@ services:
     environment:
       MALLOC_ARENA_MAX: 2
       WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+      REDIS_URL: redis://redis:6379/
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
+      DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
