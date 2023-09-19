@@ -8,6 +8,8 @@ if [ ! -f .env ]; then
     cp .env_sample .env
 fi
 
-echo "Updating .env file with codespace specific values"
-sed -i "s/APP_DOMAIN=.*/APP_DOMAIN=$CODESPACE_NAME-3000.app.github.dev/g" .env
-sed -i "s/APP_PROTOCOL=.*/APP_PROTOCOL=https:\/\//g" .env
+if [ -n "$CODESPACE_NAME" ]; then
+    echo "Updating .env file with codespace specific values"
+    sed -i "s/APP_DOMAIN=.*/APP_DOMAIN=$CODESPACE_NAME-3000.app.github.dev/g" .env
+    sed -i "s/APP_PROTOCOL=.*/APP_PROTOCOL=https:\/\//g" .env
+fi
