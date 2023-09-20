@@ -2,7 +2,9 @@
   <div class="registration js-registration">
     <div class="registration__content">
       <% if Settings::General.resized_logo.present? %>
-        <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+        <a href="/">
+          <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+        </a>
       <% end %>
 
       <h1 class="registration__title">
