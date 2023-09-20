@@ -143,13 +143,13 @@ en:
             description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
           onboarding_newsletter_content:
             description: "Use this field to set the title and subtitle for your newsletter offering step. Keep it concise."
-            placeholder: "You can enter markdown"
+            placeholder: "You can configure image, title and subtitle via markdown"
           onboarding_newsletter_opt_in_head:
             description: "Newsletter checkbox heading"
-            placeholder: "Yes, subscribe me to the weekly newsletter"
+            placeholder: "E.g., Yes, subscribe me to the weekly newsletter"
           onboarding_newsletter_opt_in_subhead:
             description: "Newsletter checkbox subheading"
-            placeholder: "Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+            placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
           payment:
             description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:
