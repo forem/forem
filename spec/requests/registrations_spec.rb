@@ -448,6 +448,20 @@ RSpec.describe "Registrations" do
         expect(User.first.email).to eq user_email
       end
 
+      it "logs in user and redirects them to the creator settings path" do
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.first
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(controller.current_user).to eq(new_user)
+        expect(response).to redirect_to(new_admin_creator_setting_path)
+      end
+
       it "makes user super admin and config admin" do
         post "/users", params:
           { user: { name: "test #{rand(10)}",
