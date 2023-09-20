@@ -78,6 +78,9 @@ class SearchController < ApplicationController
 
   # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def feed_content
+    #  [Ridhwana]: We'l need to make amendments here and in the http call to cater for following tags.
+    #  Something to note is that we deviate from the server definition of top - here we sort
+    #  by public reactions count, vs on the server we sort by score
     class_name = feed_params[:class_name].to_s.inquiry
 
     is_homepage_search = (
