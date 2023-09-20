@@ -217,4 +217,18 @@ describe('FollowTags', () => {
 
     expect(clicked).toBeFalsy();
   });
+
+  it('should call /onboarding/notifications API when email_digest_periodic is true', async () => {
+    const { getByText, container } = renderFollowTags();
+
+    fireEvent.click(container.querySelector('.onboarding-email-digest'));
+
+    const skipButton = getByText(/Skip for now/i);
+    fireEvent.click(skipButton);
+
+    await waitFor(() => {
+      const [lastFetchUri] = fetch.mock.calls[fetch.mock.calls.length - 1];
+      expect(lastFetchUri).toEqual('/onboarding/notifications');
+    });
+  });
 });
