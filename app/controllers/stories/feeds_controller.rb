@@ -21,11 +21,18 @@ module Stories
     end
 
     def assign_feed_stories
-      stories = if params[:timeframe]
+      # [Ridhwana]: the if statement is a bit verbose at the moment but we're hoping to refactor out more of the feeds
+      #  to use it and thereafter at some point maybe we can remove the if statement and just call the method directly.
+      stories = if params[:timeframe] == Timeframe::LATEST_TIMEFRAME ||
+          params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
+                  # [Ridhwana]: I've not called passed params[:tag] here because I dont think we need it on the home
+                  # feed but we should double check.
                   Articles::Feeds::FilterQuery.call(timeframe: params[:timeframe], page: @page, user: current_user)
                 elsif user_signed_in?
                   signed_in_base_feed
                 else
+                  # [Ridhwana]: I think this never gets called because signed out should be handled by the server,
+                  # but I'd like us to confirm.
                   signed_out_base_feed
                 end
 
@@ -80,14 +87,6 @@ module Stories
         # ActiveRecord::Relation.  So this is a compromise.
         feed.default_home_feed(user_signed_in: false).to_a
       end
-    end
-
-    def timeframe_feed
-      Articles::Feeds::Timeframe.call(params[:timeframe], tag: params[:tag], page: @page)
-    end
-
-    def latest_feed
-      Articles::Feeds::Latest.call(tag: params[:tag], page: @page)
     end
   end
 end
