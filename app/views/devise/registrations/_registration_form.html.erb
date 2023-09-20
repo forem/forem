@@ -16,9 +16,16 @@
           <% end %>
         <% end %>
       </h1>
-      <p class="registration__description">
-        <%= render "shared/authentication_title" %>
-      </p>
+
+      <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
+        <p class="registration__description -mb-6">
+          Since this is an invite-only community, you cannot join without an invitation. If you would like to request an invitation, please contact the community admin at <a href="mailto:yo@dev.to">yo@dev.to</a>
+        </p>
+      <% else %>
+        <p class="registration__description">
+          <%= render "shared/authentication_title" %>
+        </p>
+      <% end %>
     </div>
 
     <div class="registration__actions">
@@ -30,10 +37,11 @@
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
-
-        <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
-          By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
-        </div>
+        <% if !ForemInstance.invitation_only? %>
+          <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
+            By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
+          </div>
+        <% end %>
 
         <hr class="registration__hr" />
 
