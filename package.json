@@ -44,7 +44,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.15",
     "@babel/plugin-proposal-decorators": "^7.22.10",
-    "@cypress/code-coverage": "^3.11.0",
+    "@cypress/code-coverage": "^3.12.1",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
     "@faker-js/faker": "^7.6.0",
     "@knapsack-pro/cypress": "^7.4.0",
