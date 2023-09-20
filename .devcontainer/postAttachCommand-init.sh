@@ -9,11 +9,11 @@ if [ -n "$CODESPACE_NAME" ]; then
     #
     # See https://github.com/orgs/community/discussions/58172
 
-    if git fetch origin $(git rev-parse --abbrev-ref HEAD) && git diff --quiet HEAD..origin/$(git rev-parse --abbrev-ref HEAD) ;then
+    if git fetch origin "$(git rev-parse --abbrev-ref HEAD)" && git diff --quiet "HEAD..origin/$(git rev-parse --abbrev-ref HEAD)" ;then
         echo "Branch is already up to date"
     else
         echo "Branch is not up to date, pulling latest code"
-        git pull origin $(git rev-parse --abbrev-ref HEAD) --no-rebase
+        git pull origin "$(git rev-parse --abbrev-ref HEAD)" --no-rebase
         echo "Updating dependencies"
         bin/setup
     fi
