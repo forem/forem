@@ -15,8 +15,10 @@
     <div class="flex flex-col gap-2">
       <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :post, local: true do |f| %>
         <div class="crayons-field w-50 my-4">
-          <%= f.label :user_id, "Add Moderator (ID):", class: "crayons-field__label" %>
-          <%= f.text_field :user_id, class: "crayons-textfield" %>
+          <%= f.label :user_id, "Add Moderator:", class: "crayons-field__label" %>
+          <div>
+            <%= f.text_field :user_id, class: "crayons-textfield js-username_id_input" %>
+          </div>
           <%= f.submit "Add Moderator", class: "crayons-btn" %>
         </div>
       <% end %>
@@ -45,3 +47,5 @@
     <%= render "form", tag: @tag, badges_for_options: @badges_for_options %>
   </div>
 </div>
+
+<%= javascript_packs_with_chunks_tag "admin/convertUserIdsToUsernameInputs" %>

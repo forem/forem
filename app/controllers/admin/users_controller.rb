@@ -46,21 +46,10 @@ module Admin
     end
 
     def index
-      @users = Admin::UsersQuery.call(
-        relation: User.registered,
-        search: params[:search],
-        role: params[:role],
-        roles: params[:roles],
-        statuses: params[:statuses],
-        joining_start: params[:joining_start],
-        joining_end: params[:joining_end],
-        date_format: params[:date_format],
-        organizations: params[:organizations],
-      ).page(params[:page]).per(50)
-
-      @organization_limit = 3
-      @organizations = Organization.order(name: :desc)
-      @earliest_join_date = User.first.registered_at.to_s
+      respond_to do |format|
+        format.html { index_for_html }
+        format.json { index_for_json }
+      end
     end
 
     def show
@@ -332,6 +321,33 @@ module Admin
     end
 
     private
+
+    def index_for_html
+      @users = Admin::UsersQuery.call(
+        relation: User.registered,
+        search: params[:search],
+        role: params[:role],
+        roles: params[:roles],
+        statuses: params[:statuses],
+        joining_start: params[:joining_start],
+        joining_end: params[:joining_end],
+        date_format: params[:date_format],
+        organizations: params[:organizations],
+      ).page(params[:page]).per(50)
+
+      @organization_limit = 3
+      @organizations = Organization.order(name: :desc)
+      @earliest_join_date = User.first.registered_at.to_s
+    end
+
+    def index_for_json
+      @users = Admin::UsersQuery.call(
+        relation: User.registered,
+        search: params[:search],
+      )
+
+      render json: @users.to_json(only: %i[id name username])
+    end
 
     def set_user_details
       @organizations = @user.organizations.order(:name)
