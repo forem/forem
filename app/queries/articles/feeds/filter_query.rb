@@ -2,20 +2,21 @@ module Articles
   module Feeds
     class FilterQuery
       MINIMUM_SCORE = -20
-      # add defaults for page and number_of_articles
 
       def self.call(...)
         new(...).call
       end
 
-      def initialize(feed_type:, timeframe:, user:, tag: nil, number_of_articles: nil, page: 1, minimum_score: nil)
+      def initialize(feed_type: "explore", minimum_score: MINIMUM_SCORE,
+                     number_of_articles: ::Article::DEFAULT_FEED_PAGINATION_WINDOW_SIZE,
+                     page: 1, timeframe: nil, tag: nil, user: nil)
+        @filtered_articles = Article.all
         @feed_type = feed_type
-        @timeframe = timeframe
-        @tag = tag
+        @minimum_score = minimum_score
         @number_of_articles = number_of_articles
         @page = page
-        @minimum_score = minimum_score
-        @filtered_articles = Article
+        @timeframe = timeframe
+        @tag = tag
         @user = user
       end
 
@@ -30,13 +31,14 @@ module Articles
 
         @filtered_articles = base_operations
 
-        if @timeframe == Timeframe::LATEST_TIMEFRAME
+        if @timeframe == ::Timeframe::LATEST_TIMEFRAME
           @filtered_articles = latest_feed
-          elseif @timeframe.in?(Timeframe::FILTER_TIMEFRAMES)
+        elsif @timeframe.in?(::Timeframe::FILTER_TIMEFRAMES)
           @filtered_articles = timeframe_feed
         end
 
         @filtered_articles = filter_out_hidden_tagged_articles
+
         @filtered_articles
       end
 
@@ -48,8 +50,8 @@ module Articles
           .limited_column_select
           .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
-          .page(page)
-          .per(number_of_articles)
+          .page(@page)
+          .per(@number_of_articles)
       end
 
       def filter_by_following_tags
@@ -75,7 +77,7 @@ module Articles
       def latest_feed
         @filtered_articles
           .order(published_at: :desc)
-          .where("score > ?", minimum_score)
+          .where("score > ?", @minimum_score)
       end
 
       def timeframe_feed

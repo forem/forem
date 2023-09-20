@@ -21,11 +21,8 @@ module Stories
     end
 
     def assign_feed_stories
-      # stories = Articles::Feeds::FilterQuery.call(timeframe: params[:timeframe], page: @page)
-      stories = if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
-                  timeframe_feed
-                elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-                  latest_feed
+      stories = if params[:timeframe]
+                  Articles::Feeds::FilterQuery.call(timeframe: params[:timeframe], page: @page, user: current_user)
                 elsif user_signed_in?
                   signed_in_base_feed
                 else
