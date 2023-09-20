@@ -8,6 +8,7 @@ en:
       az: Azerbaijani
       be: Belarusian
       bg: Bulgarian
+      bg-Latn: Bulgarian (Latin)
       bn: Bangla
       bs: Bosnian
       ca: Catalan
@@ -18,6 +19,7 @@ en:
       da: Danish
       de: German
       el: Greek
+      el-Latn: Greek (Latin)
       en: English
       eo: Esperanto
       es: Spanish
@@ -45,7 +47,9 @@ en:
       ig: Igbo
       is: Icelandic
       it: Italian
+      iw: Hebrew
       ja: Japanese
+      ja-Latn: Japanese (Latin)
       jv: Javanese
       ka: Georgian
       kk: Kazakh
@@ -78,6 +82,7 @@ en:
       pt: Portuguese
       ro: Romanian
       ru: Russian
+      ru-Latn: Russian (Latin)
       sd: Sindhi
       si: Sinhala
       sk: Slovak
@@ -104,4 +109,5 @@ en:
       yi: Yiddish
       yo: Yoruba
       zh: Chinese
+      zh-Latn: Chinese (Latin)
       zu: Zulu
