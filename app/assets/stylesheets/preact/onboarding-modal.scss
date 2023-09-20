@@ -93,16 +93,26 @@
 }
 
 .onboarding-content-separator {
-  margin: 0px 48px;
-  display: flex;
-  height: 40px;
-  opacity: 0.5;
-  margin-bottom: -12px;
-  z-index: 1;
-  background: linear-gradient(180deg, #fff 50%, rgba(255, 255, 255, 0) 100%);
+  position: absolute;
+  bottom: 160px;
+  left: var(--su-4);
+  width: calc(100% - 2 * var(--su-4));
+  height: 96px;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0) 25%,
+    rgba(255, 255, 255, 1) 75%
+  );
+  pointer-events: none;
+
+  @media screen and (min-width: $breakpoint-s) {
+    left: var(--su-8);
+    width: calc(100% - 2 * var(--su-8));
+    bottom: 168px;
+  }
 }
 
 .onboarding-email-digest {
+  z-index: 1;
   display: flex;
   margin: 0px var(--su-4) var(--su-4) var(--su-4);
   align-items: center;
@@ -247,6 +257,11 @@
   grid-template-columns: repeat(2, 1fr);
   grid-gap: var(--su-2);
   width: 100%;
+  padding-bottom: 48px;
+
+  @media screen and (min-width: $breakpoint-s) {
+    padding-bottom: 24px;
+  }
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
