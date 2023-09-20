@@ -1,16 +1,39 @@
 <%= render "devise/shared/error_messages", resource: resource %>
 
-<div class="mt-8 mb-10 crayons-card p-7 pt-3 align-left mx-auto" style="max-width:490px;">
-  <h2 class="pb-4">Forgot your password?</h2>
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-
-    <div class="crayons-field">
-      <%= f.label :email, class: "crayons-field__label" %>
-      <%= f.email_field :email, class: "crayons-textfield", placeholder: "you@email.com", autofocus: true, required: true %>
-    </div>
-
-    <div class="crayons-field pt-6">
-      <%= f.submit "Send me reset password instructions", class: "crayons-btn" %>
-    </div>
+<div class="js-new-password flex flex-col items-center s:mx-auto mx-4" style="max-width:488px;">
+  <% if Settings::General.resized_logo.present? %>
+    <a class="mt-6" href="/">
+      <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+    </a>
   <% end %>
+
+  <h2 class="crayons-title s:mt-6 mt-4">Forgot your password?</h2>
+  <p class="crayons-subtitle-3 fw-normal mt-1 color-secondary align-center ">Enter the email address associated with your account, and we'll send you a link to reset your password.</p>
+
+  <div class="mt-5 w-100">
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <div class="crayons-field">
+        <%= f.label :email, class: "crayons-field__label" %>
+        <%= f.email_field :email, class: "crayons-textfield", placeholder: "you@email.com", autofocus: true, required: true %>
+      </div>
+
+      <div class="crayons-field pt-6">
+        <%= f.submit "Send reset link", class: "crayons-btn" %>
+      </div>
+    <% end %>
+  </div>
+
+  <a class="mt-6 fs-base" href="javascript:history.back()">Go back</a>
 </div>
+
+<script>
+  const registrationsPage = document.querySelector('.js-new-password');
+  const topbarElement = document.querySelector('#topbar');
+  // Check if the registrations or notifications element exists and the topbar element exists.
+  if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
+      topbarElement.style.display = 'none';
+      document.body.style.paddingTop = '0';
+      // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
+      document.body.style.backgroundColor = 'white';
+  }
+</script>
