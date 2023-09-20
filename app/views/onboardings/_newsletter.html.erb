@@ -20,6 +20,24 @@
       </div>
     </fieldset>
   </form>
+<% elsif feature_flag_enabled?(:onboarding_newsletter_content) %>
+  <h1>Almost there!</h1>
+  <p>Review your email preferences before we continue.</p>
+
+  <form>
+    <fieldset>
+      <div class="flex email_newsletter mt-5 pt-3 ">
+        <div class="flex h-5 ml-3">
+          <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-2 crayons-checkbox">
+        </div>
+        <div class="ml-2">
+          <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
+            <p id="helper-checkbox-text" class="pb-6 font-normal text-gray-300 dark:text-gray-300">I want to receive weekly newsletter emails</p>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  </form>
 <% else %>
   <header class="onboarding-content-header">
     <h1 id="title" class="title">
