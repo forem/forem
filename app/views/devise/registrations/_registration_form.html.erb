@@ -37,7 +37,7 @@
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
-        <% if !ForemInstance.invitation_only? %>
+        <% unless ForemInstance.invitation_only? %>
           <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
             By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
           </div>
@@ -52,10 +52,12 @@
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <div class="registration__hr-container">
-              <hr class="registration__hr" />
-              <div class="registration__hr-label">OR</div>
-            </div>
+            <% unless authentication_enabled_providers.empty? %>
+              <div class="registration__hr-container">
+                <hr class="registration__hr" />
+                <div class="registration__hr-label">OR</div>
+              </div>
+            <% end %>
             <%= render partial: "shared/authentication/email_login_form" %>
 
             <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
