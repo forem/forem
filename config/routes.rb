@@ -37,7 +37,7 @@ Rails.application.routes.draw do
       resource :feed, only: [:show] do
         resource :pinned_article, only: %w[show update destroy]
 
-        get ":timeframe", to: "feeds#show", as: :timeframe
+        get "/:feed_type/(:timeframe)", to: "feeds#show", as: :feed_parameters
       end
     end
 

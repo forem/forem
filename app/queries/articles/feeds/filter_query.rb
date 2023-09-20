@@ -47,7 +47,7 @@ module Articles
       private
 
       def base_operations
-        Article
+        @filtered_articles
           .published
           .limited_column_select
           .includes(top_comments: :user)

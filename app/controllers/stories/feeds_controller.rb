@@ -27,7 +27,8 @@ module Stories
           params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
                   # [Ridhwana]: I've not called passed params[:tag] here because I dont think we need it on the home
                   # feed but we should double check.
-                  Articles::Feeds::FilterQuery.call(timeframe: params[:timeframe], page: @page, user: current_user)
+                  Articles::Feeds::FilterQuery.call(feed_type: params[:feed_type], timeframe: params[:timeframe],
+                                                    page: @page, user: current_user)
                 elsif user_signed_in?
                   signed_in_base_feed
                 else
@@ -40,7 +41,7 @@ module Stories
     end
 
     def signed_in_base_feed
-      # [Ridhwana]: We need to update the Basic feed and the VariantQuery to include the following tags.
+      # [Ridhwana]: We need to update the Basic feed and the VariantQuery to filter by the following tags.
       # we may want to try to use the Articles::Feeds::FilterQuery for Basic if we can but I suspect
       # it may be challenging for the variant query.
       feed = if Settings::UserExperience.feed_strategy == "basic"
