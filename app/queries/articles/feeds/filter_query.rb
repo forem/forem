@@ -8,30 +8,35 @@ module Articles
         new(...).call
       end
 
-      def initialize(type:, timeframe:, tag: nil, number_of_articles: nil, page: 1, minimum_score: nil)
-        @type = type
+      def initialize(feed_type:, timeframe:, user:, tag: nil, number_of_articles: nil, page: 1, minimum_score: nil)
+        @feed_type = feed_type
         @timeframe = timeframe
         @tag = tag
         @number_of_articles = number_of_articles
         @page = page
         @minimum_score = minimum_score
+        @filtered_articles = Article
+        @user = user
       end
 
       def call
-        @filtered_articles = base_operations
-
         if @tag.present?
           @filtered_articles = filter_by_tags
         end
 
-        if @timeframe.in?(Timeframe::FILTER_TIMEFRAMES)
-          @filtered_articles = timeframe_feed
+        if @feed_type == "following"
+          @filtered_articles = filter_by_following_tags
         end
+
+        @filtered_articles = base_operations
 
         if @timeframe == Timeframe::LATEST_TIMEFRAME
           @filtered_articles = latest_feed
+          elseif @timeframe.in?(Timeframe::FILTER_TIMEFRAMES)
+          @filtered_articles = timeframe_feed
         end
 
+        @filtered_articles = filter_out_hidden_tagged_articles
         @filtered_articles
       end
 
@@ -47,12 +52,24 @@ module Articles
           .per(number_of_articles)
       end
 
+      def filter_by_following_tags
+        return unless (followed_tags = @user.cached_followed_tag_names).any?
+
+        @filtered_articles.cached_tagged_with_any(followed_tags)
+      end
+
       def filter_by_tags
         if FeatureFlag.enabled?(:optimize_article_tag_query)
-          Article.cached_tagged_with_any(tag)
+          @filtered_articles.cached_tagged_with_any(tag)
         else
           ::Tag.find_by(name: tag).articles
         end
+      end
+
+      def filter_out_hidden_tagged_articles
+        return unless (hidden_tags = @user.cached_antifollowed_tag_names).any?
+
+        @filtered_articles.not_cached_tagged_with_any(hidden_tags)
       end
 
       def latest_feed
