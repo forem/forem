@@ -13,7 +13,6 @@ export class EmailPreferencesForm extends Component {
 
     this.state = {
       email_newsletter: false,
-      email_digest_periodic: false,
     };
   }
 
@@ -49,7 +48,7 @@ export class EmailPreferencesForm extends Component {
   }
 
   render() {
-    const { email_newsletter, email_digest_periodic } = this.state;
+    const { email_newsletter } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
       <div
@@ -86,19 +85,6 @@ export class EmailPreferencesForm extends Component {
                         onChange={this.handleChange}
                       />
                       I want to receive weekly newsletter emails.
-                    </label>
-                  </li>
-                  <li className="checkbox-item">
-                    <label htmlFor="email_digest_periodic">
-                      <input
-                        type="checkbox"
-                        id="email_digest_periodic"
-                        name="email_digest_periodic"
-                        checked={email_digest_periodic}
-                        onChange={this.handleChange}
-                      />
-                      I want to receive a periodic digest of top posts from my
-                      tags.
                     </label>
                   </li>
                 </ul>
