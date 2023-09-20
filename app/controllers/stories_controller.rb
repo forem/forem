@@ -242,6 +242,8 @@ class StoriesController < ApplicationController
   end
 
   def assign_feed_stories
+    #  [Ridhwana]: we want to use Articles::Feeds::FilterQuery.call here. We want to remove
+    # Articles::Feeds::Timeframe and Articles::Feeds::Latest.
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME

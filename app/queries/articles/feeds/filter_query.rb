@@ -1,6 +1,8 @@
 module Articles
   module Feeds
     class FilterQuery
+      # [Ridhwana]: Important to note that this is a POC and is not thoroughly tested manually or
+      # in an automated fashion as yet. More verification is required.
       MINIMUM_SCORE = -20
 
       def self.call(...)
