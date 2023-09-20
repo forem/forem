@@ -58,7 +58,7 @@ export class EmailPreferencesForm extends Component {
           aria-describedby="subtitle"
         >
           <div
-            className="onboarding-content terms-and-conditions-wrapper"
+            className="onboarding-content email-preferences-wrapper"
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: this.state.content }}
           />
