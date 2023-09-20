@@ -9,10 +9,10 @@
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
         <div class="crayons-field">
-          <%= admin_config_label :mascot_user_id, "Mascot user ID" %>
+          <%= admin_config_label :mascot_user_id, "Mascot user" %>
           <%= admin_config_description Constants::Settings::General.details[:mascot_user_id][:description] %>
           <%= f.text_field :mascot_user_id,
-                           class: "crayons-textfield",
+                           class: "crayons-textfield js-username_id_input",
                            value: Settings::General.mascot_user_id,
                            min: 1,
                            placeholder: Constants::Settings::General.details[:mascot_user_id][:placeholder] %>

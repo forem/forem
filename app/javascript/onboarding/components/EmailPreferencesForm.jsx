@@ -10,7 +10,7 @@ export class EmailPreferencesForm extends Component {
 
     this.onSubmit = this.onSubmit.bind(this);
     this.state = {
-      content: '<p>Loading...</p>',
+      content: '<p>Loading...</p>'
     };
   }
 
