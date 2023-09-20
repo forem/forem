@@ -67,14 +67,15 @@ describe('EmailPreferencesForm', () => {
   });
 
   it('should load the appropriate text', async () => {
-    await renderEmailPreferencesForm();
-    expect(document.innerHTML).toMatchSnapshot();
+    const { findByLabelText } = renderEmailPreferencesForm();
+    await findByLabelText(/receive weekly newsletter/i);
+    expect(document.body.innerHTML).toMatchSnapshot();
   });
 
-  it('should show the checkbox unchecked', () => {
-    const { queryByLabelText } = renderEmailPreferencesForm();
-
-    expect(queryByLabelText(/receive weekly newsletter/i).checked).toBe(false);
+  it('should show the checkbox unchecked', async () => {
+    const { findByLabelText } = renderEmailPreferencesForm();
+    const checkbox = await findByLabelText(/receive weekly newsletter/i);
+    expect(checkbox.checked).toBe(false);
   });
 
   it('should render a stepper', () => {
