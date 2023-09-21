@@ -54,6 +54,14 @@ RSpec.describe "Dashboards" do
         expect(response.body).to include "Scheduled"
       end
 
+      it "renders the detected language if an article has it" do
+        article
+        article.update_column(:language, :es)
+        get "/dashboard"
+        expect(response.body).to include "Language:"
+        expect(response.body).to include "Spanish"
+      end
+
       it "renders the delete button for scheduled article" do
         scheduled_article
         get "/dashboard"
