@@ -4,7 +4,7 @@
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
-  <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="crayons-layout">
+  <div data-tag-id="<%= @tag.id %>" data-tag-name="<%= @tag.name %>" id="tag-<%= @tag.id %>" class="crayons-layout js-tag-card">
     <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
       <div class="flex">
         <% if @tag.badge_id && @tag.badge %>
