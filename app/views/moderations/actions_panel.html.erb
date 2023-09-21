@@ -255,7 +255,10 @@
             <dialog id="full-tag-history">
               <h1>
                 <%= t("views.moderations.actions.adjust.previous") %>
-
+                <button id="close-tag-history"
+                        class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden"
+                        type="button"
+                        title="<%= t("views.moderations.actions.close") %>">
               </h1>
               <% @moderatable.ordered_tag_adjustments.each do |adj| %>
                 <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">

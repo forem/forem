@@ -449,10 +449,21 @@ function showTagAdjustmentHistoryModal() {
   dialog.showModal();
 }
 
-function addExpandTagHistoryListener() {
+function hideTagAdjustmentHistoryModal() {
+  const dialog = document.getElementById('full-tag-history');
+  dialog.close();
+}
+
+function addTagHistoryModalListeners() {
   const seeAllTagHistoryButton = document.getElementById('expand-tag-history');
   seeAllTagHistoryButton.addEventListener('click', () => {
     showTagAdjustmentHistoryModal();
+  });
+
+  const closeFullTagHistoryButton =
+    document.getElementById('close-tag-history');
+  closeFullTagHistoryButton.addEventListener('click', () => {
+    hideTagAdjustmentHistoryModal();
   });
 }
 
@@ -528,5 +539,5 @@ export function initializeActionsPanel() {
   addCloseListener();
   addReactionButtonListeners();
   addModActionsListeners();
-  addExpandTagHistoryListener();
+  addTagHistoryModalListeners();
 }
