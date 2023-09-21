@@ -195,7 +195,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=tmpfs,target=/var/log \
     DEBIAN_FRONTEND=noninteractive apt-get install -yq --no-install-recommends \
       build-essential \
-      imagemagick \
       libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb \
       libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
