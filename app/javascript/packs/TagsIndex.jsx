@@ -7,7 +7,7 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 function renderPage(currentUser) {
   import('../tags/Tag')
     .then(({ Tag }) => {
-      const tagCards = document.getElementsByClassName('tag-card');
+      const tagCards = document.getElementsByClassName('js-tag-card');
 
       const followedTags = JSON.parse(currentUser.followed_tags);
       Array.from(tagCards).forEach((element) => {

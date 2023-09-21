@@ -21,12 +21,20 @@
               <% end %>
             </h1>
             <% if @tag %>
-              <button
-                id="user-follow-butt"
-                class="crayons-btn follow-action-button"
-                data-info='<%= DataInfo.to_json(object: @tag, class_name: "Tag", name: @tag.pretty_name || @tag.name) %>'>
-                <%= t("views.stories.follow") %>
-              </button>
+              <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
+                <div class="flex gap-2">
+                  <button
+                    class="c-btn c-btn--primary follow-action-button"
+                    aria-label="<%= t("views.tags.aria_labels.follow", tag_name: tag.name) %>">
+                    <%= t("views.tags.follow") %>
+                  </button>
+                  <button
+                    class="c-btn hide-action-button"
+                    aria-label="<%= t("views.tags.aria_labels.hide", tag_name: tag.name) %>">
+                    <%= t("views.tags.hide") %>
+                  </button>
+                </div>
+              </div>
             <% end %>
           </div>
           <% if @tag && @tag.short_summary.present? %>
