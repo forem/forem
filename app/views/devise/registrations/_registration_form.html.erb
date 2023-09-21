@@ -68,9 +68,15 @@
 
             <hr class="registration__hr" />
 
-            <div class="rcrayons-subtitle-3 color-grey-700 fw-normal align-center">
-              New to <%= community_name %>? <a href="/enter?state=new-user">Create account</a>.
-            </div>
+            <% if ForemInstance.invitation_only? %>
+              <p class="registration__description -mb-6 align-center pb-6">
+                Since this is an invite-only community, you cannot join without an invitation. If you would like to request an invitation, please contact the community admin at <a href="mailto:yo@dev.to">yo@dev.to</a>
+              </p>
+            <% else %>
+              <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center pb-6">
+                New to <%= community_name %>? <a href="/enter?state=new-user">Create account</a>.
+              </div>
+            <% end %>
           <% end %>
         </div>
       <% end %>

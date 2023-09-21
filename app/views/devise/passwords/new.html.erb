@@ -27,10 +27,10 @@
 </div>
 
 <script>
-  const registrationsPage = document.querySelector('.js-new-password');
+  const resetPasswordPage = document.querySelector('.js-new-password');
   const topbarElement = document.querySelector('#topbar');
-  // Check if the registrations or notifications element exists and the topbar element exists.
-  if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
+  // Check if the reset password element exists and the topbar element exists.
+  if (resetPasswordPage && topbarElement) {
       topbarElement.style.display = 'none';
       document.body.style.paddingTop = '0';
       // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
