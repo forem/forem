@@ -445,11 +445,8 @@ export function handleRemoveTagButtonsListeners() {
 }
 
 function showTagAdjustmentHistoryModal() {
-  window.Forem.showModal({
-    title: 'Previous tag adjustments',
-    contentSelector: '#tag-adjustment-history-modal',
-    overlay: true,
-  });
+  const dialog = document.getElementById('full-tag-history');
+  dialog.showModal();
 }
 
 function addExpandTagHistoryListener() {
