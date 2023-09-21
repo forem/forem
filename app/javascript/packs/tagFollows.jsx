@@ -5,7 +5,7 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 /* global showLoginModal  */
 
 function renderPage(currentUser) {
-  import('../tags/Tag')
+  import('../tags/TagButtonContainer')
     .then(({ Tag }) => {
       const tagCards = document.getElementsByClassName('js-tag-card');
 
