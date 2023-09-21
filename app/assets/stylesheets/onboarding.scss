@@ -77,18 +77,26 @@
 .onboarding-main {
   .email-preferences-wrapper {
     h1 {
-      margin-top: 32px;
-      margin-bottom: 8px;
-      line-height: var(--lh-base);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      line-height: var(--lh-tight);
     }
     p {
       line-height: var(--lh-base);
     }
   }
+
+  .onboarding_newsletter_opt_in_head {
+    font-weight: 600;
+  }
+
+  .onboarding_newsletter_opt_in_subhead {
+    color: var(--base-60);
+  }
+
   .email_newsletter {
     border: 1px solid var(--card-border);
-    border-top-right-radius: var(--radius-auto);
-    border-bottom-right-radius: var(--radius-auto);
+    border-radius: 0 6px 6px 0;
     border-left-width: thick;
     border-left-color: var(--accent-brand);
     background-color: var(--card-secondary-bg);
