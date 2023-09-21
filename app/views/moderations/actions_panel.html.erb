@@ -256,9 +256,11 @@
               <h1>
                 <%= t("views.moderations.actions.adjust.previous") %>
                 <button id="close-tag-history"
-                        class="crayons-btn crayons-btn--ghost crayons-btn--icon-rounded hidden"
+                        class="left-7 crayons-btn crayons-btn--ghost crayons-btn--icon-rounded"
                         type="button"
-                        title="<%= t("views.moderations.actions.close") %>">
+                        title="<%= t("views.moderations.actions.adjust.close") %>">
+                          <%= crayons_icon_tag(:x, title: t("views.moderations.actions.adjust.close")) %>
+                </button>
               </h1>
               <% @moderatable.ordered_tag_adjustments.each do |adj| %>
                 <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
