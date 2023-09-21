@@ -19,8 +19,9 @@ module Notifications
       def call
         return unless notifiable_supported?(notifiable)
 
-        # do not create the notification if the comment/article was created by the moderator
-        return if moderator == notifiable.user
+        # do not create the notification if the comment/article was created by
+        # the moderator of the user has the `limited` role
+        return if notifiable.user.limited? || moderator == notifiable.user
 
         json_data = { user: user_data(User.staff_account) }
         notifiable_name = notifiable.class.name.downcase

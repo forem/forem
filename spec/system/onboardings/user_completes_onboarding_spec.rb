@@ -8,6 +8,7 @@ RSpec.describe "Completing Onboarding", js: true do
     sign_out user
   end
 
+  # rubocop:disable RSpec/PendingWithoutReason
   context "when the user hasn't seen onboarding" do
     xit "does not render the onboarding task card on the feed" do
       sign_in(user)
@@ -84,11 +85,12 @@ RSpec.describe "Completing Onboarding", js: true do
       end
     end
   end
+  # rubocop:enable RSpec/PendingWithoutReason
 
   # TODO: Extract this into a reusable helper
   def log_in_user(user)
     fill_in("user_email", with: user.email)
     fill_in("user_password", with: user.password)
-    click_button("Continue", match: :first)
+    click_button("Log in", match: :first)
   end
 end

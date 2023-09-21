@@ -25,6 +25,7 @@ RSpec.describe Article do
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
+    it { is_expected.to have_many(:feed_events).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -34,6 +35,7 @@ RSpec.describe Article do
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
     it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tag_adjustments) }
     it { is_expected.to have_many(:tags) }
     it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
@@ -101,6 +103,46 @@ RSpec.describe Article do
 
         expect(article).not_to be_valid
         expect(article.errors_as_sentence).to match("too long")
+      end
+    end
+
+    describe "#validate_tag" do
+      # rubocop:disable RSpec/VerifiedDoubles
+      it "does not modify the tag list if there are no adjustments" do
+        # See https://github.com/forem/forem/pull/6302
+        article = build(:article, user: user)
+        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
+        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
+
+        article.save
+
+        # We expect this to happen once in #evaluate_front_matter
+        expect(article.tag_list).to have_received(:add).once
+        expect(article.tag_list).not_to have_received(:remove)
+      end
+      # rubocop:enable RSpec/VerifiedDoubles
+
+      it "adjusts the tags in the tag_list based on the tag_adjustments" do
+        user = create(:user, :admin)
+        tag1 = create(:tag, name: "tag1")
+        tag2 = create(:tag, name: "tag2")
+
+        # try save an article with a tag_list of tag 1, tag 3
+        # in the tag adjustments we have a removal of tag1 and an addition of tag2
+        # hence the tag_list should be tag2, tag3
+        article = build(:article, user: user, tags: "#{tag1.name}, tag3")
+
+        create(:tag_adjustment, adjustment_type: "addition", tag_id: tag2.id,
+                                tag_name: tag2.name, article: article, user: user)
+
+        create(:tag_adjustment, adjustment_type: "removal", tag_id: tag1.id,
+                                tag_name: tag1.name, article: article, user: user)
+
+        article.save
+
+        expect(article.tag_list).to include("tag3")
+        expect(article.tag_list).to include("tag2")
+        expect(article.tag_list).not_to include("tag1")
       end
     end
 
@@ -271,24 +313,6 @@ RSpec.describe Article do
         expect(test_article).not_to be_valid
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
-    end
-
-    describe "tag validation" do
-      let(:article) { build(:article, user: user) }
-
-      # See https://github.com/forem/forem/pull/6302
-      # rubocop:disable RSpec/VerifiedDoubles
-      it "does not modify the tag list if there are no adjustments" do
-        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
-        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
-
-        article.save
-
-        # We expect this to happen once in #evaluate_front_matter
-        expect(article.tag_list).to have_received(:add).once
-        expect(article.tag_list).not_to have_received(:remove)
-      end
-      # rubocop:enable RSpec/VerifiedDoubles
     end
   end
 
@@ -1310,6 +1334,39 @@ RSpec.describe Article do
     end
   end
 
+  describe "#ordered_tag_adjustments" do
+    let(:tag) { create(:tag, name: "rspec") }
+    let(:another_tag) { create(:tag, name: "testing") }
+    let(:mod) { create(:user) }
+    let(:another_mod) { create(:user) }
+
+    before do
+      mod.add_role(:tag_moderator, tag)
+      another_mod.add_role(:tag_moderator, another_tag)
+    end
+
+    it "returns an empty collection when the tag has not been adjusted" do
+      expect(article.ordered_tag_adjustments.length).to be 0
+    end
+
+    it "returns tag adjustments for the article in reverse chronological order" do
+      adj_first = create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                                          tag_id: tag.id, tag_name: tag.name,
+                                          adjustment_type: "addition")
+      adj_second = create(:tag_adjustment, article_id: article.id, user_id: another_mod.id,
+                                           tag_id: another_tag.id, tag_name: another_tag.name,
+                                           adjustment_type: "addition")
+      expect(article.ordered_tag_adjustments.map(&:id)).to eq([adj_second.id, adj_first.id])
+    end
+
+    it "includes the user object associated with each tag adjustment" do
+      create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                              tag_id: tag.id, adjustment_type: "addition")
+      ordered_adjustment = article.ordered_tag_adjustments.first
+      expect(ordered_adjustment.user.name).to eq(mod.name)
+    end
+  end
+
   describe "#followers" do
     it "returns an array of users who follow the article's author" do
       following_user = create(:user)
@@ -1419,6 +1476,7 @@ RSpec.describe Article do
       end
     end
   end
+
   describe "#detect_language" do
     let(:detected_language) { :kl } # kl for Klingon
 
@@ -1459,7 +1517,11 @@ RSpec.describe Article do
 
     context "when attributes have changed, but main image is present" do
       it "does not trigger the Images::SocialImageWorker" do
-        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\ncover_image: https://example.com/i.jpg\npublished: true\n---\n\n# Hello World"
+        article.body_markdown = <<~MKDN
+          ---\ntitle: New Title #{rand(1_000)}
+          cover_image: https://example.com/i.jpg\npublished: true
+          ---\n\n# Hello World
+        MKDN
         article.save
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end

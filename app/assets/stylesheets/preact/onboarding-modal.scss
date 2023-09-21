@@ -33,6 +33,11 @@
   min-height: 100%;
   overflow: auto;
 
+  &__tags {
+    min-height: auto;
+    margin-bottom: 100px;
+  }
+
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
     padding: var(--su-8);
@@ -92,6 +97,50 @@
   }
 }
 
+.onboarding-content-separator {
+  position: absolute;
+  bottom: 160px;
+  left: var(--su-4);
+  width: calc(100% - 2 * var(--su-4));
+  height: 96px;
+  background-image: linear-gradient(
+    rgba(255, 255, 255, 0) 25%,
+    rgba(255, 255, 255, 1) 75%
+  );
+  pointer-events: none;
+
+  @media screen and (min-width: $breakpoint-s) {
+    left: var(--su-8);
+    width: calc(100% - 2 * var(--su-8));
+    bottom: 168px;
+  }
+}
+
+.onboarding-email-digest {
+  position: absolute;
+  bottom: 112px;
+  left: var(--su-4);
+  width: calc(100% - 2 * var(--su-4));
+  z-index: 1;
+  align-items: center;
+  border-radius: 0px 6px 6px 0px;
+  border: 1px solid rgba(var(--tag-onboarding-border), 1);
+  background-color: var(--card-secondary-bg);
+
+  @media screen and (min-width: $breakpoint-s) {
+    left: var(--su-8);
+    width: calc(100% - 2 * var(--su-8));
+  }
+
+  &__rectangle {
+    position: absolute;
+    width: 4px;
+    top: 0;
+    bottom: 0;
+    background: rgba(var(--accent-brand-rgb), 1);
+  }
+}
+
 // modal navigation
 .onboarding-navigation {
   align-self: flex-end;
@@ -99,18 +148,10 @@
   width: 100%;
   border-top: 1px solid var(--divider);
 
-  &.intro-slide {
-    border-top: none;
-  }
-
   .navigation-content {
     display: flex;
     justify-content: space-between;
     padding: var(--su-4);
-
-    &.intro-slide {
-      padding: 0;
-    }
 
     button {
       @extend .crayons-btn;
@@ -140,6 +181,10 @@
       &:active {
         background: var(--base-10);
       }
+    }
+
+    .hide-button {
+      visibility: hidden;
     }
 
     .skip-for-now {
@@ -221,6 +266,11 @@
   grid-template-columns: repeat(2, 1fr);
   grid-gap: var(--su-2);
   width: 100%;
+  padding-bottom: 48px;
+
+  @media screen and (min-width: $breakpoint-s) {
+    padding-bottom: 24px;
+  }
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
@@ -370,10 +420,6 @@
   .navigation-content {
     padding: var(--su-7);
     justify-content: center;
-
-    &.intro-slide {
-      padding: 0;
-    }
 
     button {
       @extend .crayons-btn;

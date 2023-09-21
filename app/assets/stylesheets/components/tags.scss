@@ -54,3 +54,23 @@
     height: 48px;
   }
 }
+
+@media (max-width: $breakpoint-s) {
+  .tags-index {
+    .crayons-page-header {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .tags-interaction-container {
+      justify-content: space-between;
+      width: 100%;
+      grid-gap: 4px;
+    }
+
+    .tags-interaction-container__buttons > :first-child {
+      padding-left: 0;
+    }
+  }
+}

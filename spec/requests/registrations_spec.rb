@@ -33,7 +33,7 @@ RSpec.describe "Registrations" do
       it "shows the sign in text for password based authentication" do
         get sign_up_path
 
-        expect(response.body).to include("Have a password? Continue with your email address")
+        expect(response.body).to include("By signing in")
       end
     end
 
@@ -125,10 +125,12 @@ RSpec.describe "Registrations" do
     context "when email registration allowed and captcha required" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+        # rubocop:disable RSpec/ReceiveMessages
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
+        # rubocop:enable RSpec/ReceiveMessages
       end
 
       it "displays the captcha box on email signup page" do
@@ -265,8 +267,10 @@ RSpec.describe "Registrations" do
     context "when email registration allowed and email allow list empty" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+        # rubocop:disable RSpec/ReceiveMessages
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return([])
+        # rubocop:enable RSpec/ReceiveMessages
       end
 
       it "creates user when email in allow list" do
@@ -283,9 +287,11 @@ RSpec.describe "Registrations" do
     context "when email registration allowed and email allow list present" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+        # rubocop:disable RSpec/ReceiveMessages
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:allowed_registration_email_domains).and_return(["dev.to",
                                                                                                     "forem.com"])
+        # rubocop:enable RSpec/ReceiveMessages
       end
 
       it "does not create user when email not in allow list" do
@@ -312,10 +318,12 @@ RSpec.describe "Registrations" do
     context "when Forem instance configured to accept email registration AND require captcha" do
       before do
         allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+        # rubocop:disable RSpec/ReceiveMessages
         allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
         allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
         allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
         allow(Settings::Authentication).to receive(:require_captcha_for_email_password_registration).and_return(true)
+        # rubocop:enable RSpec/ReceiveMessages
       end
 
       it "creates user when valid params passed and recaptcha completed" do

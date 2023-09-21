@@ -104,7 +104,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.boolean "featured", default: false
+    t.integer "feed_clicks_count", default: 0
+    t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
+    t.float "feed_success_score", default: 0.0, null: false
     t.integer "hotness_score", default: 0
     t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
@@ -482,6 +485,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
     t.ltree "target_geolocations", default: [], array: true
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
@@ -497,6 +501,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
     t.bigint "user_id"
     t.datetime "verified_at", precision: nil
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
+  end
+
+  create_table "feed_events", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.integer "article_position"
+    t.integer "category", null: false
+    t.string "context_type", null: false
+    t.integer "counts_for", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
+    t.index ["article_id"], name: "index_feed_events_on_article_id"
+    t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -1073,7 +1092,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -1166,6 +1184,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
+  end
+
+  create_table "user_languages", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "language", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_languages_on_user_id"
   end
 
   create_table "user_subscriptions", force: :cascade do |t|
@@ -1389,6 +1415,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "feed_events", "articles", on_delete: :cascade
+  add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
@@ -1433,6 +1461,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_02_150239) do
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "user_languages", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_notification_settings", "users"
