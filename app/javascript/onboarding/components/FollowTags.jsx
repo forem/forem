@@ -156,7 +156,7 @@ export class FollowTags extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <div className="onboarding-content toggle-bottom">
+          <div className="onboarding-content onboarding-content__tags toggle-bottom ">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
                 What are you interested in?
