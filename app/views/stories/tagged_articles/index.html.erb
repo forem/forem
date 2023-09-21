@@ -4,7 +4,7 @@
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
-  <div class="crayons-layout">
+  <div class="crayons-layout js-tag-card">
     <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
       <div class="flex">
         <% if @tag.badge_id && @tag.badge %>
@@ -138,5 +138,5 @@
     <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "TagsIndex", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
 <% end %>
