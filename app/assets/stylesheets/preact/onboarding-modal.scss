@@ -33,6 +33,11 @@
   min-height: 100%;
   overflow: auto;
 
+  &__tags {
+    min-height: auto;
+    margin-bottom: 100px;
+  }
+
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
     padding: var(--su-8);
@@ -112,22 +117,26 @@
 }
 
 .onboarding-email-digest {
+  position: absolute;
+  bottom: 112px;
+  left: var(--su-4);
+  width: calc(100% - 2 * var(--su-4));
   z-index: 1;
-  display: flex;
-  margin: 0px var(--su-4) var(--su-4) var(--su-4);
   align-items: center;
   border-radius: 0px 6px 6px 0px;
   border: 1px solid rgba(var(--tag-onboarding-border), 1);
   background-color: var(--card-secondary-bg);
 
   @media screen and (min-width: $breakpoint-s) {
-    margin: 0px var(--su-8) 40px var(--su-8);
+    left: var(--su-8);
+    width: calc(100% - 2 * var(--su-8));
   }
 
   &__rectangle {
+    position: absolute;
     width: 4px;
-    height: 100%;
-    flex-shrink: 0;
+    top: 0;
+    bottom: 0;
     background: rgba(var(--accent-brand-rgb), 1);
   }
 }

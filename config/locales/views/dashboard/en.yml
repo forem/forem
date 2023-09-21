@@ -49,6 +49,7 @@ en:
         draft: Draft
         scheduled: Scheduled
         scheduled_at: 'Scheduled:'
+        language: 'Language:'
         reactions:
           title: Reactions
           icon: Reactions
