@@ -56,11 +56,10 @@ describe('EmailPreferencesForm', () => {
     expect(queryByText('Email preferences')).toExist();
   });
 
-  it('should show the two checkboxes unchecked', () => {
+  it('should show the checkbox unchecked', () => {
     const { queryByLabelText } = renderEmailPreferencesForm();
 
     expect(queryByLabelText(/receive weekly newsletter/i).checked).toBe(false);
-    expect(queryByLabelText(/receive a periodic digest/i).checked).toBe(false);
   });
 
   it('should render a stepper', () => {

@@ -54,7 +54,7 @@
           <%= admin_config_label :staff_user_id, model: Settings::Community %>
           <%= admin_config_description Constants::Settings::Community.details[:staff_user_id][:description] %>
           <%= f.text_field :staff_user_id,
-                           class: "crayons-textfield",
+                           class: "crayons-textfield js-username_id_input",
                            value: Settings::Community.staff_user_id,
                            placeholder: Constants::Settings::Community.details[:staff_user_id][:placeholder] %>
         </div>
