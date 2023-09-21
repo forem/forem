@@ -24,6 +24,7 @@
       "onAutoForward": "notify"
     },
     "3035": {
+      // This port is used by the Rails' webpack-dev-server. Users won't need to access it directly.
       "onAutoForward": "silent"
     }
   },
@@ -32,6 +33,7 @@
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {
     "vscode": {
+      // Extensions listed here will be installed unlike the one specificed in extensions.json
       "extensions": [
         "Shopify.ruby-lsp",
         "KoichiSasada.vscode-rdbg",

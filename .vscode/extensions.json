@@ -1,4 +1,6 @@
 {
+  // List of extensions which should be recommended for users of this workspace.
+  // Suggestions are welcome!
   "recommendations": [
     "42crunch.vscode-openapi",
     "donjayamanne.git-extension-pack",
