@@ -230,8 +230,11 @@
         <% end %>
         <% if @moderatable.ordered_tag_adjustments.any? %>
           <div id="tag-moderation-history">
-            <h1><%= t("views.moderations.actions.adjust.previous") %></h1>
-            <% @moderatable.ordered_tag_adjustments.each do |adj| %>
+            <h1>
+              <%= t("views.moderations.actions.adjust.previous") %>
+              <button id="expand-tag-history" class="left-8 crayons-btn crayons-btn--ghost"><%= t("views.moderations.actions.adjust.expand") %></button>
+            </h1>
+            <% @moderatable.ordered_tag_adjustments.first(2).each do |adj| %>
               <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
                 <span class="num-sign">#</span>
                 <span><%= adj.tag_name %></span>

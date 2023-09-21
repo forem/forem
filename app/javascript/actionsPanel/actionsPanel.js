@@ -444,6 +444,21 @@ export function handleRemoveTagButtonsListeners() {
   );
 }
 
+function showTagAdjustmentHistoryModal() {
+  window.Forem.showModal({
+    title: 'Previous tag adjustments',
+    contentSelector: '#tag-adjustment-history-modal',
+    overlay: true,
+  });
+}
+
+function addExpandTagHistoryListener() {
+  const seeAllTagHistoryButton = document.getElementById('expand-tag-history');
+  seeAllTagHistoryButton.addEventListener('click', () => {
+    showTagAdjustmentHistoryModal();
+  });
+}
+
 export function addModActionsListeners() {
   handleAddTagButtonListeners();
   handleAddModTagButtonsListeners();
@@ -516,4 +531,5 @@ export function initializeActionsPanel() {
   addCloseListener();
   addReactionButtonListeners();
   addModActionsListeners();
+  addExpandTagHistoryListener();
 }

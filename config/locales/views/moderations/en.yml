@@ -19,6 +19,7 @@ en:
           icon: Adjust tags
           add: Add tag
           add_placeholder: Add a tag
+          expand: See all
           previous: Previous tag adjustments
           history:
             added_by: added by
