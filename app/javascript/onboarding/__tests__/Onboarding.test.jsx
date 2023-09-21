@@ -45,23 +45,15 @@ describe('<Onboarding />', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('should render the IntroSlide first', () => {
+  it('should render the ProfileForm first', () => {
     const { queryByTestId } = renderOnboarding();
 
-    expect(queryByTestId('onboarding-intro-slide')).toExist();
+    expect(queryByTestId('onboarding-profile-form')).toExist();
   });
 
   it('should allow the modal to move forward and backward a step where relevant', async () => {
     // combined back and forward into one test to avoid a long test running time
     const { getByTestId, findByText, findByTestId } = renderOnboarding();
-
-    getByTestId('onboarding-intro-slide');
-
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
 
     // click to next step
     const nextButton = await findByText(/continue/i);
@@ -78,22 +70,14 @@ describe('<Onboarding />', () => {
     const backButton = getByTestId('back-button');
     backButton.click();
 
-    // we should be on the Intro Slide step
-    const introSlide = await findByTestId('onboarding-intro-slide');
+    // we should be on the Profile Form Slide step
+    const introSlide = await findByTestId('onboarding-profile-form');
 
     expect(introSlide).toExist();
   });
 
   it("should skip the step when 'Skip for now' is clicked", async () => {
-    const { getByTestId, getByText, findByText, findByTestId } =
-      renderOnboarding();
-    getByTestId('onboarding-intro-slide');
-
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
+    const { getByText, findByText, findByTestId } = renderOnboarding();
 
     // click to next step
     const nextButton = await findByText(/continue/i);
@@ -112,7 +96,7 @@ describe('<Onboarding />', () => {
     skipButton.click();
 
     // we should be on the Profile Form step
-    const profileStep = await findByTestId('onboarding-profile-form');
+    const profileStep = await findByTestId('onboarding-follow-users');
 
     expect(profileStep).toExist();
   });
@@ -120,16 +104,11 @@ describe('<Onboarding />', () => {
   it('should redirect the users to the correct steps every time', async () => {
     const { getByTestId, getByText, findByText, findByTestId } =
       renderOnboarding();
-    getByTestId('onboarding-intro-slide');
 
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
+    getByTestId('onboarding-profile-form');
 
     // click to next step
-    let nextButton = await findByText(/continue/i);
+    const nextButton = await findByText(/continue/i);
     await waitFor(() => expect(nextButton).not.toHaveAttribute('disabled'));
 
     fetch.mockResponse(fakeEmptyResponse);
@@ -141,14 +120,6 @@ describe('<Onboarding />', () => {
     // click on skip for now
     let skipButton = getByText(/Skip for now/i);
     skipButton.click();
-
-    // we should be on the Profile Form step
-    await findByTestId('onboarding-profile-form');
-
-    // click on continue without adjusting form fields
-    nextButton = getByText(/Continue/i);
-    fetch.mockResponse(fakeEmptyResponse);
-    nextButton.click();
 
     // we should be on the Follow Users step
     await findByTestId('onboarding-follow-users');

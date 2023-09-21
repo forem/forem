@@ -22,7 +22,7 @@ module Admin
     end
 
     def award
-      @all_badges = Badge.all.select(:title, :slug)
+      @all_badges = Badge.all.select(:title, :slug).order(title: :asc)
     end
 
     def award_badges

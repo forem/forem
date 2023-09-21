@@ -160,7 +160,7 @@ class Billboard < ApplicationRecord
 
   def validate_geolocations
     target_geolocations.each do |geo|
-      unless geo.valid?
+      unless geo.valid?(:targeting)
         errors.add(:target_geolocations, I18n.t("models.billboard.invalid_location", location: geo.to_iso3166))
       end
     end

@@ -30,6 +30,27 @@
                        placeholder: "Email of invitee",
                        required: true %>
     </div>
+    <div class="crayons-field mt-6">
+      <%= f.label :custom_invite_subject, "Subject (Optional)", class: "crayons-field__label" %>
+      <%= f.text_field :custom_invite_subject,
+                       class: "crayons-textfield",
+                       placeholder: 'REPLACES "Invitation Instructions"',
+                       required: true %>
+    </div>
+    <div class="crayons-field mt-6">
+      <%= f.label :custom_invite_message, "Custom Message (Optional)", class: "crayons-field__label" %>
+      <%= f.text_area :custom_invite_message,
+                      class: "crayons-textfield",
+                      placeholder: "REPLACES INTRO: Hello... You have been invited to join...",
+                      required: true %>
+    </div>
+    <div class="crayons-field mt-6">
+      <%= f.label :custom_invite_footnote, "Custom Footer (Optional)", class: "crayons-field__label" %>
+      <%= f.text_field :custom_invite_footnote,
+                       class: "crayons-textfield",
+                       placeholder: "Comes right after invitation link",
+                       required: true %>
+    </div>
     <div class="mt-6">
       <%= f.submit "Invite User", class: "crayons-btn" %>
     </div>
