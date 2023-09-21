@@ -3,6 +3,8 @@
 # This is intentionally separate from .devcontainer/onCreateCommand-init.sh
 # because $CODESPACE_NAME is not available at that point in time.
 
+echo HISTFILE="/usr/local/hist/.zsh_history" >> ~/.zshrc
+
 if [ ! -f .env ]; then
     echo "Creating .env file"
     cp .env_sample .env
