@@ -19,15 +19,16 @@ x-backend: &backend
   stdin_open: true
   tty: true
   volumes:
-    - .:/app:cached
+    - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
     - bundle:/usr/local/bundle
+    - cypress:/root/.cache/Cypress
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
     - node_modules:/app/node_modules
     - packs:/app/public/packs
     - packs-test:/app/public/packs-test
     - history:/usr/local/hist
-    - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+    - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
     REDIS_URL: redis://redis:6379/
@@ -49,6 +50,32 @@ x-backend: &backend
       condition: service_healthy
 
 services:
+  devcontainer:
+    <<: *backend
+    environment:
+      MALLOC_ARENA_MAX: 2
+      WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+      REDIS_URL: redis://redis:6379/
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
+      DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
+      - bundle:/usr/local/bundle
+      - cypress:/root/.cache/Cypress
+      - rails_cache:/workspaces/forem/tmp/cache
+      - assets:/workspaces/forem/public/assets
+      - node_modules:/workspaces/forem/node_modules
+      - packs:/workspaces/forem/public/packs
+      - packs-test:/workspaces/forem/public/packs-test
+      - history:/usr/local/hist
+      - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
+      - /var/run/docker.sock:/var/run/docker-host.sock
+    command: sleep infinity
+    tmpfs:
+      - /workspaces/forem/tmp/pids
+    ports:
+      - '3000:3000'
+
   rails:
     <<: *backend
     command: bundle exec rails
@@ -71,7 +98,7 @@ services:
   postgres:
     image: postgres:13
     volumes:
-      - ./.dockerdev/.psqlrc:/root/.psqlrc:ro
+      - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
       - history:/usr/local/hist
     environment:
@@ -101,7 +128,7 @@ services:
     ports:
       - '3035:3035'
     volumes:
-      - .:/app:cached
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
       - bundle:/usr/local/bundle
       - node_modules:/app/node_modules
       - packs:/app/public/packs
@@ -113,6 +140,7 @@ services:
 
 volumes:
   bundle:
+  cypress:
   node_modules:
   history:
   rails_cache:
