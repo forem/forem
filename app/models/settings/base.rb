@@ -137,7 +137,7 @@ module Settings
         when :big_decimal
           value.to_d
         when :markdown
-          ContentRenderer.new(value).process&.processed_html
+          ContentRenderer.new(value).process.processed_html
         else
           value
         end
