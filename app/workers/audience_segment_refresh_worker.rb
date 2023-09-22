@@ -1,5 +1,5 @@
 class AudienceSegmentRefreshWorker
-  include Sidekiq::Worker
+  include Sidekiq::Job
 
   sidekiq_options queue: :low_priority
 
