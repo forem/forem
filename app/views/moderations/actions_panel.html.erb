@@ -230,10 +230,12 @@
           <hr />
         <% end %>
         <% if @moderatable.ordered_tag_adjustments.any? %>
-          <div id="tag-moderation-history" class="px-3 pt-0">
+          <div id="tag-adjustment-history" class="px-3 pt-0" data-tag-adjustments="<%= @moderatable.ordered_tag_adjustments.to_json %>">
             <h1 class="pt-3 pb-3 fs-base">
               <span><%= t("views.moderations.actions.adjust.previous") %></span>
-              <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost"><%= t("views.moderations.actions.adjust.expand") %></button>
+              <% if @moderatable.ordered_tag_adjustments.size > 2 %>
+                <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost"><%= t("views.moderations.actions.adjust.expand") %></button>
+              <% end %>
             </h1>
             <% @moderatable.ordered_tag_adjustments.first(2).each do |adj| %>
               <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment fs-base pb-4">

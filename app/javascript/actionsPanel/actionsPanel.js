@@ -445,14 +445,20 @@ export function handleRemoveTagButtonsListeners() {
 }
 
 function showTagAdjustmentHistoryModal() {
-  const dialog = document.getElementById('full-tag-history');
-  dialog.showModal();
+  // const historyDiv = document.getElementById('tag-adjustment-history');
+  // const tagAdjustmentHistory = JSON.parse(historyDiv.dataset.tagAdjustments);
+  // console.log(tagAdjustmentHistory);
+  window.parent.Forem.showModal({
+    title: 'Previous tag adjustments',
+    contentSelector: '#tag-adjustment-history-modal',
+    overlay: true,
+  });
 }
 
-function hideTagAdjustmentHistoryModal() {
-  const dialog = document.getElementById('full-tag-history');
-  dialog.close();
-}
+// function hideTagAdjustmentHistoryModal() {
+//   const dialog = document.getElementById('full-tag-history');
+//   dialog.close();
+// }
 
 function addTagHistoryModalListeners() {
   const seeAllTagHistoryButton = document.getElementById('expand-tag-history');
@@ -460,11 +466,11 @@ function addTagHistoryModalListeners() {
     showTagAdjustmentHistoryModal();
   });
 
-  const closeFullTagHistoryButton =
-    document.getElementById('close-tag-history');
-  closeFullTagHistoryButton.addEventListener('click', () => {
-    hideTagAdjustmentHistoryModal();
-  });
+  // const closeFullTagHistoryButton =
+  //   document.getElementById('close-tag-history');
+  // closeFullTagHistoryButton.addEventListener('click', () => {
+  //   hideTagAdjustmentHistoryModal();
+  // });
 }
 
 export function addModActionsListeners() {
