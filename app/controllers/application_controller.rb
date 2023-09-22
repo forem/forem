@@ -293,10 +293,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :feature_flag_enabled?
 
-  def set_user_limit
-    @user_limit = 50
-  end
-
   private
 
   def configure_permitted_parameters

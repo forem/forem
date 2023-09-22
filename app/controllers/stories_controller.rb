@@ -405,6 +405,10 @@ class StoriesController < ApplicationController
     }
   end
 
+  def set_user_limit
+    @user_limit = 50
+  end
+
   def user_same_as
     # For further information on the sameAs property, please refer to this link:
     # https://schema.org/sameAs

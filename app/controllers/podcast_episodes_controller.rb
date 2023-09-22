@@ -1,7 +1,6 @@
 class PodcastEpisodesController < ApplicationController
   # No authorization required for entirely public controller
   before_action :set_cache_control_headers, only: %i[index show]
-  before_action :set_user_limit, only: %i[show]
 
   rescue_from ArgumentError, with: :bad_request
 
