@@ -98,7 +98,7 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def co_authors
-    User.select(:name, :username).where(id: co_author_ids).order(created_at: :asc)
+    User.select(:name, :username).where(id: co_author_ids)
   end
 
   def co_author_name_and_path
