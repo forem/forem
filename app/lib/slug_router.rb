@@ -35,6 +35,9 @@ class SlugRouter
     if Page.exists?(slug: handle, is_top_level_path: true)
       logger.info " ]]]]]> SlugRouter: Top-level Page!"
       'pages#show'
+    elsif Podcast.exists?(slug: handle)
+      logger.info " ]]]]]> SlugRouter: Podcasts#show!"
+      'podcasts#show'
     elsif Organization.exists?(username: handle)
       logger.info " ]]]]]> SlugRouter: Organizations#show"
       'organizations#show'

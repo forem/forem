@@ -52,6 +52,11 @@ RSpec.describe SlugRouter, type: :lib do
     expect(mapping_for("/wrong_page")).to be_nil
   end
 
+  it "finds the Podcast if it exists" do
+    expect(mapping_for("/a_podcast")).to eq('podcasts#show')
+    expect(mapping_for("/wrong_podcast")).to be_nil
+  end
+
   it "finds the Organization if it exists" do
     expect(mapping_for("/an_org")).to eq('organizations#show')
     expect(mapping_for("/an_org/wrong_article")).to be_nil
