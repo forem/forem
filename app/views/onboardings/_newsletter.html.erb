@@ -1,44 +1,44 @@
-<% if feature_flag_enabled?(:onboarding_newsletter_content) &&
-      Settings::General.onboarding_newsletter_content_processed_html.present? &&
-      Settings::General.onboarding_newsletter_opt_in_head.present? &&
-      Settings::General.onboarding_newsletter_opt_in_subhead.present? %>
+<% if feature_flag_enabled?(:onboarding_newsletter_content) %>
+  <% if Settings::General.custom_newsletter_configured? %>
+    <%= Settings::General.onboarding_newsletter_content_processed_html.html_safe %>
 
-  <%= Settings::General.onboarding_newsletter_content_processed_html.html_safe %>
+    <form>
+      <fieldset>
+        <div class="flex email_newsletter mt-5 pt-4 ">
+          <div class="flex h-5 ml-3">
+            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-1 crayons-checkbox">
+          </div>
+          <div class="ml-3">
+            <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
+              <p class="onboarding_newsletter_opt_in_head" style="font-weight: 600"><%= Settings::General.onboarding_newsletter_opt_in_head %></p>
+              <p class="onboarding_newsletter_opt_in_subhead mt-1 pb-4"><%= Settings::General.onboarding_newsletter_opt_in_subhead %></p>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </form>
+  <% else %>
+    <%# feature flag is "on" but feature is not configured or only partly configured %>
+    <h1>Almost there!</h1>
+    <p>Review your email preferences before we continue.</p>
 
-  <form>
-    <fieldset>
-      <div class="flex email_newsletter mt-5 pt-4 ">
-        <div class="flex h-5 ml-3">
-          <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-1 crayons-checkbox">
+    <form>
+      <fieldset>
+        <div class="flex email_newsletter mt-5 pt-3 ">
+          <div class="flex h-5 ml-3">
+            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-2 crayons-checkbox">
+          </div>
+          <div class="ml-2">
+            <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
+              <p class="mt-1 pb-4">I want to receive weekly newsletter emails</p>
+            </label>
+          </div>
         </div>
-        <div class="ml-3">
-          <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
-            <p class="onboarding_newsletter_opt_in_head" style="font-weight: 600"><%= Settings::General.onboarding_newsletter_opt_in_head %></p>
-            <p class="onboarding_newsletter_opt_in_subhead mt-1 pb-4"><%= Settings::General.onboarding_newsletter_opt_in_subhead %></p>
-          </label>
-        </div>
-      </div>
-    </fieldset>
-  </form>
-<% elsif feature_flag_enabled?(:onboarding_newsletter_content) %>
-  <h1>Almost there!</h1>
-  <p>Review your email preferences before we continue.</p>
-
-  <form>
-    <fieldset>
-      <div class="flex email_newsletter mt-5 pt-3 ">
-        <div class="flex h-5 ml-3">
-          <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-2 crayons-checkbox">
-        </div>
-        <div class="ml-2">
-          <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
-            <p class="onboarding_newsletter_opt_in_subhead mt-1 pb-4">I want to receive weekly newsletter emails</p>
-          </label>
-        </div>
-      </div>
-    </fieldset>
-  </form>
+      </fieldset>
+    </form>
+  <% end %>
 <% else %>
+  <%# feature flag is "off", original behavior %>
   <header class="onboarding-content-header">
     <h1 id="title" class="title">
       Almost there!

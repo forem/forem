@@ -132,6 +132,12 @@ module Settings
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
 
+    def self.custom_newsletter_configured?
+      onboarding_newsletter_content_processed_html.present? &&
+        onboarding_newsletter_opt_in_head.present? &&
+        onboarding_newsletter_opt_in_subhead.present?
+    end
+
     def self.social_media_services
       SOCIAL_MEDIA_SERVICES.index_with do |name|
         social_media_handles[name]
