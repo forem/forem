@@ -133,7 +133,7 @@ RSpec.describe "Authenticating with Email" do
       visit new_user_session_path
       click_link "Forgot password?"
       fill_in "Email", with: "doesnotexist@example.com"
-      click_button "Send me reset password instructions"
+      click_button "Send reset link"
 
       expect(page).not_to have_text("Email not found")
     end
