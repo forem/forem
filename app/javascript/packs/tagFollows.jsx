@@ -64,8 +64,9 @@ function handleButtonClick({ target }) {
 }
 
 function loadSnackbar() {
-  const root = document.getElementsByClassName('tags-index');
-  if (root.length > 0) {
+  const snackZone = document.getElementById('snack-zone');
+
+  if (snackZone) {
     render(<Snackbar lifespan="1" />, document.getElementById('snack-zone'));
   }
 }
