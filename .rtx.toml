@@ -1,0 +1,4 @@
+[tools]
+yarn = "1"
+postgres = "13.12"
+redis = "6.0.9"
