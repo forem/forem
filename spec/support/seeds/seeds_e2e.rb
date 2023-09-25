@@ -990,13 +990,12 @@ end
 
 ##############################################################################
 
-seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
+test_article = seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
   markdown = <<~MARKDOWN
     ---
     title:  Tag test article
     published: true
     cover_image: #{Faker::Company.logo}
-    tags: tag1
     ---
     #{Faker::Hipster.paragraph(sentence_count: 2)}
     #{Faker::Markdown.random}
@@ -1008,6 +1007,48 @@ seeder.create_if_doesnt_exist(Article, "title", "Tag test article") do
     show_comments: true,
     user_id: admin_user.id,
     slug: "tag-test-article",
+  )
+end
+
+# Rather than add the tag via markdown, let's add it via creation of a tag adjustment
+# so the tag's first addition will appear in the article's tag adjustment history.
+tag_zero = Tag.find_by(name: "tag0")
+tag_one = Tag.find_by(name: "tag1")
+tag_two = Tag.find_by(name: "tag2")
+
+seeder.create_if_doesnt_exist(TagAdjustment, "reason_for_adjustment", "adding test tag 0") do
+  TagAdjustment.create(
+    adjustment_type: "addition",
+    article_id: test_article.id,
+    user_id: admin_user.id,
+    tag_id: tag_zero.id,
+    tag_name: tag_zero.name,
+    status: "committed",
+    reason_for_adjustment: "adding test tag 0",
+  )
+end
+
+seeder.create_if_doesnt_exist(TagAdjustment, "reason_for_adjustment", "adding test tag 2") do
+  TagAdjustment.create(
+    adjustment_type: "addition",
+    article_id: test_article.id,
+    user_id: admin_user.id,
+    tag_id: tag_two.id,
+    tag_name: tag_two.name,
+    status: "committed",
+    reason_for_adjustment: "adding test tag 2",
+  )
+end
+
+seeder.create_if_doesnt_exist(TagAdjustment, "reason_for_adjustment", "adding test tag 1") do
+  TagAdjustment.create(
+    adjustment_type: "addition",
+    article_id: test_article.id,
+    user_id: admin_user.id,
+    tag_id: tag_one.id,
+    tag_name: tag_one.name,
+    status: "committed",
+    reason_for_adjustment: "adding test tag 1",
   )
 end
 

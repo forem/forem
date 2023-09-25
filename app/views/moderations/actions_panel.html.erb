@@ -234,7 +234,7 @@
             data-tag-adjustments="<%= @moderatable.ordered_tag_adjustments.to_json %>"
             data-added-by="<%= t("views.moderations.actions.adjust.history.added_by") %>"
             data-removed-by="<%= t("views.moderations.actions.adjust.history.removed_by") %>">
-            <h1 class="pt-3 pb-3 fs-base">
+            <h1 class="pt-3 pb-3 fs-base" id="tag-history-heading">
               <span><%= t("views.moderations.actions.adjust.previous") %></span>
               <% if @moderatable.ordered_tag_adjustments.size > 2 %>
                 <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost"><%= t("views.moderations.actions.adjust.expand") %></button>
