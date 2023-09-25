@@ -2,63 +2,81 @@
   <div class="registration js-registration">
     <div class="registration__content">
       <% if Settings::General.resized_logo.present? %>
-        <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+        <a href="/">
+          <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+        </a>
       <% end %>
 
       <h1 class="registration__title">
         <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
-          <%= community_name %> is invite only.
+          <%= I18n.t("devise.registrations.title.invite_only_commuty", community_name: community_name) %>
         <% else %>
           <% if params[:state] == "new-user" %>
-            Join the <%= community_name %>
+            <%= I18n.t("devise.registrations.title.join_community", community_name: community_name) %>
           <% else %>
-            Welcome back to <%= community_name %>
+            <%= I18n.t("devise.registrations.title.welcome_back_community", community_name: community_name) %>
           <% end %>
         <% end %>
       </h1>
-      <p class="registration__description">
-        <%= render "shared/authentication_title" %>
-      </p>
+
+      <% if params[:state] == "new-user" && ForemInstance.invitation_only? %>
+        <p class="registration__description -mb-6">
+          <%= t("devise.registrations.invite_only_disclaimer_html", contact_link: contact_link) %>
+        </p>
+      <% else %>
+        <p class="registration__description">
+          <%= render "shared/authentication_title" %>
+        </p>
+      <% end %>
     </div>
 
     <div class="registration__actions">
       <% if display_registration_fallback?(params[:state]) %>
-        <h2 class="mt-8" style="text-align: center;" aria-live="polite">Sorry to be a bummer...</h2>
-        <p class="mb-8" style="text-align: center;" aria-live="polite">Unfortunately, we do not support creating new accounts right now on our mobile app. If you want create a new account to join <%= community_name %>, please do that on the web at <a href="<%= URL.url %>"><%= URL.url %></a>.</p>
+        <h2 class="mt-8" style="text-align: center;" aria-live="polite"><%= t("devise.registrations.errors.bummer") %></h2>
+        <p class="mb-8" style="text-align: center;" aria-live="polite"><%= t("devise.registrations.errors.mobile_app_no_new_account_html", community_name: community_name, path: URL.url) %></p>
       <% end %>
 
       <%= render partial: "shared/authentication/providers_registration_form" %>
 
       <% if params[:state] == "new-user" %>
-
-        <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
-          By signing up, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
-        </div>
+        <% unless ForemInstance.invitation_only? %>
+          <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
+            <%= t("devise.registrations.agreement.sign_up_html", privacy_path: privacy_path, terms_path: terms_path, code_of_conduct_path: code_of_conduct_path) %>
+          </div>
+        <% end %>
 
         <hr class="registration__hr" />
 
         <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center">
-          Already have an account? <a href="<%= sign_up_path %>">Log in</a>.
+          <%= t("devise.registrations.already_have_an_account_html", sign_up_path: sign_up_path) %>
         </div>
 
       <% else %>
         <div class="registration__actions-email" id="sign-in-password-form">
           <% if Settings::Authentication.allow_email_password_login %>
-            <div class="registration__hr-container">
-              <hr class="registration__hr" />
-              <div class="registration__hr-label">OR</div>
-            </div>
+            <% unless authentication_enabled_providers.empty? %>
+              <div class="registration__hr-container">
+                <hr class="registration__hr" />
+                <div class="registration__hr-label"><%= t("devise.registrations.or") %></div>
+              </div>
+            <% end %>
             <%= render partial: "shared/authentication/email_login_form" %>
 
             <div class="mt-6 align-center fs-s fw-normal fs-italic px-0 s:px-9 color-secondary">
-              By signing in, you are agreeing to our <a href="<%= privacy_path %>">privacy policy</a>, <a href="<%= terms_path %>">terms of use</a> and <a href="<%= code_of_conduct_path %>">code of conduct</a>.
+              <%= t("devise.registrations.agreement.sign_in_html", privacy_path: privacy_path, terms_path: terms_path, code_of_conduct_path: code_of_conduct_path) %>
             </div>
 
             <hr class="registration__hr" />
 
-            <div class="rcrayons-subtitle-3 color-grey-700 fw-normal align-center">
-              New to <%= community_name %>? <a href="/enter?state=new-user">Create account</a>.
-            </div>
+            <% if ForemInstance.invitation_only? %>
+              <p class="registration__description -mb-6 align-center pb-6">
+                <%= t("devise.registrations.invite_only_disclaimer_html", contact_link: contact_link) %>
+              </p>
+            <% else %>
+              <div class="crayons-subtitle-3 color-grey-700 fw-normal align-center pb-6">
+                <%= t("devise.registrations.create_account_html", community_name: community_name, sign_up_path: sign_up_path(state: "new-user")) %>
+              </div>
+            <% end %>
           <% end %>
         </div>
       <% end %>
