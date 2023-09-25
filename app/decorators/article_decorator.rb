@@ -102,7 +102,8 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def co_author_name_and_path
-    co_authors.map do |user|
+    co_author_ids.map do |id|
+      user = User.select(:name, :username).find(id)
       %(<a href="#{user.path}" class="crayons-link">#{user.name}</a>)
     end.to_sentence
   end
