@@ -81,7 +81,7 @@ class CommentPolicy < ApplicationPolicy
   private
 
   def user_trusted?
-    Authorizer.for(user: user).accesses_mod_response_templates?
+    user.trusted?
   end
 
   def user_moderator?
