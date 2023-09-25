@@ -4,6 +4,14 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /* global showLoginModal  */
 
+// This Pack file has some dependencies for it to function accurately:
+// Copy and paste the FOllow and Hide button snippets from a tag card.
+// An example can be found in app/views/tags/index.html.erb
+// The tag card needs to contain a class .js-tag-card elements,
+// with data attributes for the tag-id and name.
+// The follow button and the hide button need to contain classes
+// js-follow-tag-button and/or js-hide-tag-button respectively.
+
 function renderPage(currentUser) {
   import('../tags/TagButtonContainer')
     .then(({ Tag }) => {
