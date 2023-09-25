@@ -33,6 +33,14 @@ describe('View tag adjustments', () => {
               '# tag2 added by Admin McAdmin\nadding test tag 2',
             );
           });
+
+        cy.get('#expand-tag-history').pipe(click);
+      });
+
+      cy.get('.crayons-modal__box').should(($modalDiv) => {
+        expect($modalDiv[0].innerText).to.contain(
+          '# tag0 added by Admin McAdmin\nadding test tag 0',
+        );
       });
     });
   });
