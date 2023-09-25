@@ -445,32 +445,42 @@ export function handleRemoveTagButtonsListeners() {
 }
 
 function showTagAdjustmentHistoryModal() {
-  // const historyDiv = document.getElementById('tag-adjustment-history');
-  // const tagAdjustmentHistory = JSON.parse(historyDiv.dataset.tagAdjustments);
-  // console.log(tagAdjustmentHistory);
+  const historyDiv = document.getElementById('tag-adjustment-history');
+  const tagAdjustments = JSON.parse(historyDiv.dataset.tagAdjustments);
+  let historyHtml = '';
+  Array.from(tagAdjustments).forEach((adj, index) => {
+    historyHtml += `<div id="tag-adjustment-${adj.id}" class="tag-adjustment">
+                      <span class="num-sign fs-italic color-secondary ">#</span>
+                      <span>${adj.tag_name}</span>
+                      <span class="adjustment-type color-secondary px-1">
+                        ${
+                          adj.adjustment_type == 'addition'
+                            ? historyDiv.dataset.addedBy
+                            : historyDiv.dataset.removedBy
+                        }
+                      </span>
+                      <span>${adj.username}</span>
+                      <div class="tag-adjustment-reason fs-s fs-italic color-secondary px-4">
+                        <span>${adj.reason_for_adjustment}</span>
+                      </div>
+                    </div>`;
+    if (index < tagAdjustments.length - 1) {
+      historyHtml += `<hr class="color-secondary"/>`;
+    }
+  });
   window.parent.Forem.showModal({
     title: 'Previous tag adjustments',
     contentSelector: '#tag-adjustment-history-modal',
     overlay: true,
+    modalContent: historyHtml,
   });
 }
-
-// function hideTagAdjustmentHistoryModal() {
-//   const dialog = document.getElementById('full-tag-history');
-//   dialog.close();
-// }
 
 function addTagHistoryModalListeners() {
   const seeAllTagHistoryButton = document.getElementById('expand-tag-history');
   seeAllTagHistoryButton.addEventListener('click', () => {
     showTagAdjustmentHistoryModal();
   });
-
-  // const closeFullTagHistoryButton =
-  //   document.getElementById('close-tag-history');
-  // closeFullTagHistoryButton.addEventListener('click', () => {
-  //   hideTagAdjustmentHistoryModal();
-  // });
 }
 
 export function addModActionsListeners() {
