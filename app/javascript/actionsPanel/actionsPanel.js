@@ -465,7 +465,7 @@ function showTagAdjustmentHistoryModal() {
                       </div>
                     </div>`;
     if (index < tagAdjustments.length - 1) {
-      historyHtml += `<hr class="color-secondary"/>`;
+      historyHtml += `<hr class="tag-history-modal-rule"/>`;
     }
   });
   window.parent.Forem.showModal({

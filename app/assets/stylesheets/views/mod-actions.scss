@@ -759,6 +759,12 @@
   }
 }
 
+.tag-history-modal-rule {
+  border: 0px;
+  height: 1px;
+  background-color: var(--card-tertiary-bg);
+}
+
 .subscribe-button.comment-subscribed {
   background: rgba(59, 73, 223, 0.1);
   color: #4338ca;
