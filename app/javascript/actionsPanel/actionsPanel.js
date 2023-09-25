@@ -446,24 +446,30 @@ export function handleRemoveTagButtonsListeners() {
 
 function showTagAdjustmentHistoryModal() {
   const historyDiv = document.getElementById('tag-adjustment-history');
+  // HTML view has JSONified the reverse-chronological tag history, merged with mod usernames
   const tagAdjustments = JSON.parse(historyDiv.dataset.tagAdjustments);
   let historyHtml = '';
+  // For each tag adjustment's json, fill in the template for a modal entry
+  // adjustment-type text is passed in from view after i18n translations have been applied
   Array.from(tagAdjustments).forEach((adj, index) => {
-    historyHtml += `<div id="tag-adjustment-${adj.id}" class="tag-adjustment">
-                      <span class="num-sign fs-italic color-secondary ">#</span>
-                      <span>${adj.tag_name}</span>
-                      <span class="adjustment-type color-secondary px-1">
-                        ${
-                          adj.adjustment_type == 'addition'
-                            ? historyDiv.dataset.addedBy
-                            : historyDiv.dataset.removedBy
-                        }
-                      </span>
-                      <span>${adj.username}</span>
-                      <div class="tag-adjustment-reason fs-s fs-italic color-secondary px-4">
-                        <span>${adj.reason_for_adjustment}</span>
-                      </div>
-                    </div>`;
+    historyHtml += `
+      <div id="tag-adjustment-${adj.id}" class="tag-adjustment">
+        <span class="num-sign fs-italic color-secondary ">#</span>
+        <span>${adj.tag_name}</span>
+        <span class="adjustment-type color-secondary px-1">
+          ${
+            adj.adjustment_type == 'addition'
+              ? historyDiv.dataset.addedBy
+              : historyDiv.dataset.removedBy
+          }
+        </span>
+        <span>${adj.username}</span>
+        <div class="tag-adjustment-reason fs-s fs-italic color-secondary px-4">
+          <span>${adj.reason_for_adjustment}</span>
+        </div>
+      </div>
+    `;
+    // No need for a horizontal rule after the last tag adjustment in the modal
     if (index < tagAdjustments.length - 1) {
       historyHtml += `<hr class="tag-history-modal-rule"/>`;
     }
@@ -476,7 +482,7 @@ function showTagAdjustmentHistoryModal() {
   });
 }
 
-function addViewTagHistoryModalListener() {
+export function addViewTagHistoryModalListener() {
   const seeAllTagHistoryButton = document.getElementById('expand-tag-history');
   seeAllTagHistoryButton.addEventListener('click', () => {
     showTagAdjustmentHistoryModal();

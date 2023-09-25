@@ -8,6 +8,7 @@ import {
   handleAddTagButtonListeners,
   handleAddModTagButtonsListeners,
   handleRemoveTagButtonsListeners,
+  addViewTagHistoryModalListener,
 } from '../actionsPanel';
 
 global.fetch = fetch;
@@ -444,5 +445,35 @@ describe('addAdjustTagListeners()', () => {
     });
   });
 });
+/* eslint-disable no-useless-escape */
+// This spec is failing in two ways: 1) the modal is coming up null (probably needs a mock, working on it)
+// and also, 2) the data-tag-adjustments is throwing an "unexpected end of json input" when the listener parses it.
+// checked this json in a linter and it says it's fine.
+// Might try setting the JSON string as a separate const and interpolating it
+describe.skip('addViewTagHistoryModalListener()', () => {
+  test('shows the tag adjustment history modal on click', () => {
+    document.body.innerHTML = `
+    <div id="tag-adjustment-history" class="px-3 pt-0"
+             data-tag-adjustments="[{\"id\":20,\"adjustment_type\":\"addition\",\"article_id\":1,\"reason_for_adjustment\":\"adjustment reason\",\"status\":\"committed\",\"tag_id\":13,\"tag_name\":\"discuss\",\"user_id\":11,\"username\":\"Admin\"}]"
+             data-added-by="added by"
+             data-removed-by="removed by">
+      <h1 class="pt-3 pb-3 fs-base" id="tag-history-heading">
+        <span>Previous tag adjustments</span>
+          <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost">See all</button>
+      </h1>
+    </div>
+    `;
+    addViewTagHistoryModalListener();
+
+    const seeAllButton = document.getElementById('expand-tag-history');
+    seeAllButton.click();
+
+    // eslint-disable-next-line no-restricted-globals
+    const modal = top.document.getElementById('tag-adjustment-history-modal');
+    expect(modal.innerHTML).toContain('discuss added by Admin');
+    expect(modal.innerHTML).toContain('older adjustment reason');
+  });
+});
 
 /* eslint-enable no-restricted-globals */
+/* eslint-enable no-useless-escape */
