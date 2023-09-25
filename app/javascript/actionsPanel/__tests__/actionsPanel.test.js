@@ -470,7 +470,8 @@ describe('addViewTagHistoryModalListener()', () => {
     document.body.innerHTML = `
     <div id="tag-adjustment-history" class="px-3 pt-0"
          data-added-by="added by"
-         data-removed-by="removed by">
+         data-removed-by="removed by"
+         data-tag-adjustments="${JSON.stringify(tagAdjustmentData)}">
       <h1 class="pt-3 pb-3 fs-base" id="tag-history-heading">
         <span>Previous tag adjustments</span>
           <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost">See all</button>
