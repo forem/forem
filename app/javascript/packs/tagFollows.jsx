@@ -46,11 +46,11 @@ function listenForButtonClicks() {
 function handleButtonClick({ target }) {
   let trigger;
 
-  if (target.classList.contains('follow-tag-button')) {
+  if (target.classList.contains('js-follow-tag-button')) {
     trigger = 'follow_button';
   }
 
-  if (target.classList.contains('hide-tag-button')) {
+  if (target.classList.contains('js-hide-tag-button')) {
     trigger = 'hide_button';
   }
 
