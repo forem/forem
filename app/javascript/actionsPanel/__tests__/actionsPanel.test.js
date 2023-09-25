@@ -445,13 +445,14 @@ describe('addAdjustTagListeners()', () => {
     });
   });
 });
-/* eslint-disable no-useless-escape */
-// This spec is failing in two ways: 1) the modal is coming up null (probably needs a mock, working on it)
-// and also, 2) the data-tag-adjustments is throwing an "unexpected end of json input" when the listener parses it.
-// checked this json in a linter and it says it's fine.
-// Might try setting the JSON string as a separate const and interpolating it
+
 describe('addViewTagHistoryModalListener()', () => {
-  it.skip('shows the tag adjustment history modal on click', () => {
+  beforeEach(() => {
+    const mockShowModal = jest.fn();
+    global.window.Forem = { showModal: mockShowModal };
+  });
+
+  it('shows the tag adjustment history modal on click', () => {
     const tagAdjustmentData = [
       {
         id: 20,
@@ -481,12 +482,8 @@ describe('addViewTagHistoryModalListener()', () => {
     const seeAllButton = document.getElementById('expand-tag-history');
     seeAllButton.click();
 
-    // eslint-disable-next-line no-restricted-globals
-    const modal = top.document.getElementById('tag-adjustment-history-modal');
-    expect(modal.innerHTML).toContain('discuss added by Admin');
-    expect(modal.innerHTML).toContain('older adjustment reason');
+    expect(global.window.Forem.showModal).toHaveBeenCalled();
   });
 });
 
 /* eslint-enable no-restricted-globals */
-/* eslint-enable no-useless-escape */
