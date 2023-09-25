@@ -107,6 +107,46 @@ RSpec.describe Article do
       end
     end
 
+    describe "#validate_tag" do
+      # rubocop:disable RSpec/VerifiedDoubles
+      it "does not modify the tag list if there are no adjustments" do
+        # See https://github.com/forem/forem/pull/6302
+        article = build(:article, user: user)
+        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
+        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
+
+        article.save
+
+        # We expect this to happen once in #evaluate_front_matter
+        expect(article.tag_list).to have_received(:add).once
+        expect(article.tag_list).not_to have_received(:remove)
+      end
+      # rubocop:enable RSpec/VerifiedDoubles
+
+      it "adjusts the tags in the tag_list based on the tag_adjustments" do
+        user = create(:user, :admin)
+        tag1 = create(:tag, name: "tag1")
+        tag2 = create(:tag, name: "tag2")
+
+        # try save an article with a tag_list of tag 1, tag 3
+        # in the tag adjustments we have a removal of tag1 and an addition of tag2
+        # hence the tag_list should be tag2, tag3
+        article = build(:article, user: user, tags: "#{tag1.name}, tag3")
+
+        create(:tag_adjustment, adjustment_type: "addition", tag_id: tag2.id,
+                                tag_name: tag2.name, article: article, user: user)
+
+        create(:tag_adjustment, adjustment_type: "removal", tag_id: tag1.id,
+                                tag_name: tag1.name, article: article, user: user)
+
+        article.save
+
+        expect(article.tag_list).to include("tag3")
+        expect(article.tag_list).to include("tag2")
+        expect(article.tag_list).not_to include("tag1")
+      end
+    end
+
     describe "#validate co_authors" do
       it "is invalid if the co_author is the same as the author" do
         article.co_author_ids = [user.id]
@@ -274,24 +314,6 @@ RSpec.describe Article do
         expect(test_article).not_to be_valid
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
-    end
-
-    describe "tag validation" do
-      let(:article) { build(:article, user: user) }
-
-      # See https://github.com/forem/forem/pull/6302
-      # rubocop:disable RSpec/VerifiedDoubles
-      it "does not modify the tag list if there are no adjustments" do
-        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
-        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
-
-        article.save
-
-        # We expect this to happen once in #evaluate_front_matter
-        expect(article.tag_list).to have_received(:add).once
-        expect(article.tag_list).not_to have_received(:remove)
-      end
-      # rubocop:enable RSpec/VerifiedDoubles
     end
   end
 

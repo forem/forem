@@ -1,16 +1,39 @@
 <%= render "devise/shared/error_messages", resource: resource %>
 
-<div class="mt-8 mb-10 crayons-card p-7 pt-3 align-left mx-auto" style="max-width:490px;">
-  <h2 class="pb-4">Forgot your password?</h2>
-  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-
-    <div class="crayons-field">
-      <%= f.label :email, class: "crayons-field__label" %>
-      <%= f.email_field :email, class: "crayons-textfield", placeholder: "you@email.com", autofocus: true, required: true %>
-    </div>
-
-    <div class="crayons-field pt-6">
-      <%= f.submit "Send me reset password instructions", class: "crayons-btn" %>
-    </div>
+<div class="js-new-password flex flex-col items-center s:mx-auto mx-4" style="max-width:488px;">
+  <% if Settings::General.resized_logo.present? %>
+    <a class="mt-4 s:mt-7" href="/">
+      <img class="registration__logo" src="<%= Settings::General.original_logo %>" alt="<%= community_name %>">
+    </a>
   <% end %>
+
+  <h2 class="crayons-title s:mt-6 mt-4"><%= I18n.t("devise.passwords.reset_password.forgot_password") %></h2>
+  <p class="crayons-subtitle-3 fw-normal mt-1 color-secondary align-center "><%= I18n.t("devise.passwords.reset_password.forgot_password_description") %></p>
+
+  <div class="mt-5 w-100">
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <div class="crayons-field">
+        <%= f.label :email, class: "crayons-field__label" %>
+        <%= f.email_field :email, class: "crayons-textfield", placeholder: I18n.t("devise.passwords.reset_password.email_placeholder"), autofocus: true, required: true %>
+      </div>
+
+      <div class="crayons-field pt-6">
+        <%= f.submit I18n.t("devise.passwords.reset_password.send_reset_link_button"), class: "crayons-btn" %>
+      </div>
+    <% end %>
+  </div>
+
+  <a class="mt-6 fs-base" href="javascript:history.back()"><%= I18n.t("devise.passwords.reset_password.go_back") %></a>
 </div>
+
+<script>
+  const resetPasswordPage = document.querySelector('.js-new-password');
+  const topbarElement = document.querySelector('#topbar');
+  // Check if the reset password element exists and the topbar element exists.
+  if (resetPasswordPage && topbarElement) {
+      topbarElement.style.display = 'none';
+      document.body.style.paddingTop = '0';
+      // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
+      document.body.style.backgroundColor = 'white';
+  }
+</script>

@@ -63,6 +63,14 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       expect(notification.json_data["user"]["id"]).to eq(staff_account.id)
       expect(notification.json_data["comment_user"]["id"]).to eq(comment.user.id)
     end
+
+    context "when the comment's author is limited" do
+      let(:user) { create(:user, :limited) }
+
+      it "does not create a notification" do
+        expect { described_class.call(moderator, comment) }.not_to change(Notification, :count)
+      end
+    end
   end
 
   context "when notifying on articles" do
@@ -112,6 +120,14 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
 
       expect(notification.json_data["user"]["id"]).to eq(staff_account.id)
       expect(notification.json_data["article_user"]["id"]).to eq(article.user.id)
+    end
+
+    context "when the article's author is limited" do
+      let(:user) { create(:user, :limited) }
+
+      it "does not create a notification" do
+        expect { described_class.call(moderator, article) }.not_to change(Notification, :count)
+      end
     end
   end
 end

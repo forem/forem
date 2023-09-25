@@ -57,8 +57,13 @@
           </div>
         </div>
 
-        <div class="profile-header__details">
-          <h1 class="crayons-title fw-heavy mb-2"><%= @user.name %></h1>
+        <div class="profile-header__details" data-url="<%= user_path(@user, format: "json") %>">
+          <div class="items-center js-username-container mb-2">
+            <h1 class="crayons-title lh-tight">
+              <%= @user.name %>
+            </h1>
+          </div>
+
           <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
 
           <div class="profile-header__meta">
@@ -145,4 +150,8 @@
 </div>
 </main>
 
-<%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "hideBookmarkButtons", "profileDropdown", "users/profilePage", "localizeArticleDates", defer: true %>
+<%= javascript_packs_with_chunks_tag "storiesList", "followButtons",
+                                     "feedPreviewCards", "hideBookmarkButtons",
+                                     "profileDropdown", "users/profilePage",
+                                     "localizeArticleDates", "asyncUserStatusCheck",
+                                     defer: true %>

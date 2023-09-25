@@ -8,12 +8,14 @@ export class FollowTags extends Component {
   constructor(props) {
     super(props);
 
+    this.handleChange = this.handleChange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleComplete = this.handleComplete.bind(this);
 
     this.state = {
       allTags: [],
       selectedTags: [],
+      email_digest_periodic: false,
     };
   }
 
@@ -38,6 +40,31 @@ export class FollowTags extends Component {
     });
   }
 
+  handleContainerClick = () => {
+    const checkbox = document.getElementById('email_digest_periodic');
+    checkbox.checked = !checkbox.checked;
+
+    const event = new Event('change', { bubbles: true });
+    checkbox.dispatchEvent(event);
+
+    this.setState({ email_digest_periodic: checkbox.checked });
+  };
+
+  handleContainerKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      this.handleContainerClick();
+    }
+  };
+
+  handleCheckboxClick = (event) => {
+    event.stopPropagation();
+  };
+
+  handleChange = (event) => {
+    const { name, checked } = event.target;
+    this.setState({ [name]: checked });
+  };
+
   handleClick(tag) {
     let { selectedTags } = this.state;
     if (!selectedTags.includes(tag)) {
@@ -56,7 +83,7 @@ export class FollowTags extends Component {
 
   handleComplete() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { selectedTags } = this.state;
+    const { selectedTags, email_digest_periodic } = this.state;
 
     Promise.all(
       selectedTags.map((tag) =>
@@ -74,10 +101,31 @@ export class FollowTags extends Component {
           credentials: 'same-origin',
         }),
       ),
-    ).then((_) => {
-      const { next } = this.props;
-      next();
-    });
+    )
+      .then(() => {
+        if (email_digest_periodic) {
+          return fetch('/onboarding/notifications', {
+            method: 'PATCH',
+            headers: {
+              'X-CSRF-Token': csrfToken,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              notifications: {
+                email_digest_periodic: this.state.email_digest_periodic,
+              },
+            }),
+            credentials: 'same-origin',
+          });
+        }
+        return Promise.resolve();
+      })
+      .then((response) => {
+        if (!email_digest_periodic || response.ok) {
+          const { next } = this.props;
+          next();
+        }
+      });
   }
 
   renderFollowCount() {
@@ -94,7 +142,7 @@ export class FollowTags extends Component {
 
   render() {
     const { prev, currentSlideIndex, slidesCount } = this.props;
-    const { selectedTags, allTags } = this.state;
+    const { selectedTags, allTags, email_digest_periodic } = this.state;
     const canSkip = selectedTags.length === 0;
 
     return (
@@ -108,7 +156,7 @@ export class FollowTags extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <div className="onboarding-content toggle-bottom">
+          <div className="onboarding-content onboarding-content__tags toggle-bottom ">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
                 What are you interested in?
@@ -160,6 +208,46 @@ export class FollowTags extends Component {
                   </div>
                 );
               })}
+            </div>
+          </div>
+          <span class="onboarding-content-separator" />
+          <div
+            class="onboarding-email-digest"
+            onClick={this.handleContainerClick}
+            onKeyDown={this.handleContainerKeyDown}
+            role="button"
+            tabIndex="0"
+          >
+            <span class="onboarding-email-digest__rectangle" />
+            <div class="flex items-start my-4 ml-1 mr-4">
+              <form>
+                <fieldset>
+                  <ul>
+                    <li className="checkbox-item">
+                      <label htmlFor="email_digest_periodic">
+                        <input
+                          type="checkbox"
+                          id="email_digest_periodic"
+                          name="email_digest_periodic"
+                          checked={email_digest_periodic}
+                          onChange={this.handleChange}
+                          onClick={this.handleCheckboxClick}
+                          tabIndex="-1"
+                        />
+                      </label>
+                    </li>
+                  </ul>
+                </fieldset>
+              </form>
+              <div class="flex flex-col items-start">
+                <p class="crayons-subtitle-3 fw-medium">
+                  Get a Periodic Digest of Top Posts
+                </p>
+                <p class="fs-s fw-normal lh-base color-secondary">
+                  We'll email you with a curated selection of top posts based on
+                  the tags you follow.
+                </p>
+              </div>
             </div>
           </div>
           <Navigation
