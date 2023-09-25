@@ -450,13 +450,26 @@ describe('addAdjustTagListeners()', () => {
 // and also, 2) the data-tag-adjustments is throwing an "unexpected end of json input" when the listener parses it.
 // checked this json in a linter and it says it's fine.
 // Might try setting the JSON string as a separate const and interpolating it
-describe.skip('addViewTagHistoryModalListener()', () => {
-  test('shows the tag adjustment history modal on click', () => {
+describe('addViewTagHistoryModalListener()', () => {
+  it.skip('shows the tag adjustment history modal on click', () => {
+    const tagAdjustmentData = [
+      {
+        id: 20,
+        adjustment_type: 'addition',
+        tag_name: 'discuss',
+        username: 'Admin',
+        reason_for_adjustment: 'older adjustment reason',
+      },
+    ];
+
+    JSON.parse = jest.fn().mockImplementationOnce(() => {
+      return tagAdjustmentData;
+    });
+
     document.body.innerHTML = `
     <div id="tag-adjustment-history" class="px-3 pt-0"
-             data-tag-adjustments="[{\"id\":20,\"adjustment_type\":\"addition\",\"article_id\":1,\"reason_for_adjustment\":\"adjustment reason\",\"status\":\"committed\",\"tag_id\":13,\"tag_name\":\"discuss\",\"user_id\":11,\"username\":\"Admin\"}]"
-             data-added-by="added by"
-             data-removed-by="removed by">
+         data-added-by="added by"
+         data-removed-by="removed by">
       <h1 class="pt-3 pb-3 fs-base" id="tag-history-heading">
         <span>Previous tag adjustments</span>
           <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost">See all</button>
