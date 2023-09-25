@@ -227,24 +227,33 @@
               <%= t("views.moderations.actions.adjust.maximum_tags.text") %>
             </span>
           </span>
+          <hr />
         <% end %>
         <% if @moderatable.ordered_tag_adjustments.any? %>
-          <div id="tag-moderation-history">
-            <h1><%= t("views.moderations.actions.adjust.previous") %></h1>
-            <% @moderatable.ordered_tag_adjustments.each do |adj| %>
-              <div id="tag-adjustment-<%= adj.id %>" class="tag-adjustment">
-                <span class="num-sign">#</span>
-                <span><%= adj.tag_name %></span>
-                <span class="adjustment-type">
-                  <%= if adj.adjustment_type == "addition"
+          <div id="tag-adjustment-history" class="px-3 pt-0"
+            data-tag-adjustments="<%= @moderatable.ordered_tag_adjustments.to_json %>"
+            data-added-by="<%= t("views.moderations.actions.adjust.history.added_by") %>"
+            data-removed-by="<%= t("views.moderations.actions.adjust.history.removed_by") %>">
+            <h1 class="pt-3 pb-3 fs-base" id="tag-history-heading">
+              <span><%= t("views.moderations.actions.adjust.previous") %></span>
+              <% if @moderatable.ordered_tag_adjustments.size > 2 %>
+                <button id="expand-tag-history" class="left-7 crayons-btn crayons-btn--ghost"><%= t("views.moderations.actions.adjust.expand") %></button>
+              <% end %>
+            </h1>
+            <% @moderatable.ordered_tag_adjustments.first(2).each do |adj| %>
+              <div id="tag-adjustment-<%= adj["id"] %>" class="tag-adjustment fs-base pb-4">
+                <span class="num-sign fs-italic color-secondary">#</span>
+                <span><%= adj["tag_name"] %></span>
+                <span class="adjustment-type color-secondary px-1">
+                  <%= if adj["adjustment_type"] == "addition"
                         t("views.moderations.actions.adjust.history.added_by")
                       else
                         t("views.moderations.actions.adjust.history.removed_by")
                       end %>
                 </span>
-                <span><%= adj.user.name %></span>
-                <div class="tag-adjustment-reason">
-                  <span><%= adj.reason_for_adjustment %></span>
+                 <span><%= adj["username"] %></span>
+                <div class="tag-adjustment-reason fs-s fs-italic color-secondary px-4">
+                  <span><%= adj["reason_for_adjustment"] %></span>
                 </div>
               </div>
             <% end %>

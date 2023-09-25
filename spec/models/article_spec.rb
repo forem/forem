@@ -1350,21 +1350,22 @@ RSpec.describe Article do
       expect(article.ordered_tag_adjustments.length).to be 0
     end
 
-    it "returns tag adjustments for the article in reverse chronological order" do
+    it "returns tag adjustment json for the article in reverse chronological order" do
       adj_first = create(:tag_adjustment, article_id: article.id, user_id: mod.id,
                                           tag_id: tag.id, tag_name: tag.name,
                                           adjustment_type: "addition")
       adj_second = create(:tag_adjustment, article_id: article.id, user_id: another_mod.id,
                                            tag_id: another_tag.id, tag_name: another_tag.name,
                                            adjustment_type: "addition")
-      expect(article.ordered_tag_adjustments.map(&:id)).to eq([adj_second.id, adj_first.id])
+      expect(article.ordered_tag_adjustments.first["id"]).to eq(adj_second.id)
+      expect(article.ordered_tag_adjustments.second["id"]).to eq(adj_first.id)
     end
 
-    it "includes the user object associated with each tag adjustment" do
+    it "includes the username associated with each tag adjustment" do
       create(:tag_adjustment, article_id: article.id, user_id: mod.id,
                               tag_id: tag.id, adjustment_type: "addition")
       ordered_adjustment = article.ordered_tag_adjustments.first
-      expect(ordered_adjustment.user.name).to eq(mod.name)
+      expect(ordered_adjustment["username"]).to eq(mod.name)
     end
   end
 

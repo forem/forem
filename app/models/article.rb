@@ -621,7 +621,10 @@ class Article < ApplicationRecord
   end
 
   def ordered_tag_adjustments
-    tag_adjustments.includes(:user).order(:created_at).reverse
+    adjustments = tag_adjustments.includes(:user).order(:created_at).reverse
+    adjustments.map do |adj|
+      adj.as_json.merge("username" => adj.user&.name)
+    end
   end
 
   private

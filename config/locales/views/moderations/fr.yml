@@ -19,7 +19,9 @@ fr:
           icon: Ajuster les étiquettes
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
+          expand: Voir tout
           previous: Ajustements des étiquettes précédents
+          close: Fermer l'historique complet
           history:
             added_by: ajouté par
             removed_by: supprimé par
