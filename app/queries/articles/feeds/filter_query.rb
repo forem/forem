@@ -28,7 +28,7 @@ module Articles
         end
 
         if @feed_type == "following"
-          @filtered_articles = filter_by_following_tags
+          @filtered_articles = filter_by_following_users_and_organization
         end
 
         @filtered_articles = base_operations
@@ -56,10 +56,17 @@ module Articles
           .per(@number_of_articles)
       end
 
-      def filter_by_following_tags
-        return unless (followed_tags = @user.cached_followed_tag_names).any?
+      def filter_by_following_users_and_organization
+        followed_user_ids = @user.cached_following_users_ids
+        followed_organization_ids = @user.cached_following_organizations_ids
+        return unless followed_user_ids.any? || followed_organization_ids.any?
 
-        @filtered_articles.cached_tagged_with_any(followed_tags)
+        # Just want to call out that the users articles will not be included in the following
+        # feed. This is because the user is not following themselves. Will confirm with product
+        # that this is expected behaviour.
+        @filtered_articles
+          .where(user_id: followed_user_ids)
+          .or(@filtered_articles.where(organization_id: followed_organization_ids))
       end
 
       def filter_by_tags
