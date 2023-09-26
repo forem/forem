@@ -42,27 +42,19 @@ describe('play or pause animated images', () => {
         .should('have.length', 2);
 
       // By default, both buttons should be in the 'playing' state
-      cy.get('@pauseButtons')
-        .first()
-        .should('have.attr', 'aria-pressed', 'false');
-      cy.get('@pauseButtons')
-        .last()
-        .should('have.attr', 'aria-pressed', 'false');
+      cy.get('@pauseButtons').first().as('firstButton');
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
+      cy.get('@pauseButtons').last().as('lastButton');
+      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
 
       // Pressing the button should toggle only the state of the individual image
-      cy.get('@pauseButtons')
-        .first()
-        .click()
-        .should('have.attr', 'aria-pressed', 'true');
-      cy.get('@pauseButtons')
-        .last()
-        .should('have.attr', 'aria-pressed', 'false');
+      cy.get('@firstButton').click();
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'true');
+      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'false');
 
       // It should also toggle back to playing
-      cy.get('@pauseButtons')
-        .first()
-        .click()
-        .should('have.attr', 'aria-pressed', 'false');
+      cy.get('@firstButton').click();
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
     });
   });
 
@@ -84,27 +76,19 @@ describe('play or pause animated images', () => {
         .should('have.length', 2);
 
       // By default, both buttons should be in the 'paused' state
-      cy.get('@pauseButtons')
-        .first()
-        .should('have.attr', 'aria-pressed', 'true');
-      cy.get('@pauseButtons')
-        .last()
-        .should('have.attr', 'aria-pressed', 'true');
+      cy.get('@pauseButtons').first().as('firstButton');
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'true');
+      cy.get('@pauseButtons').last().as('lastButton');
+      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'true');
 
       // Pressing the button should toggle only the state of the individual image
-      cy.get('@pauseButtons')
-        .first()
-        .click()
-        .should('have.attr', 'aria-pressed', 'false');
-      cy.get('@pauseButtons')
-        .last()
-        .should('have.attr', 'aria-pressed', 'true');
+      cy.get('@firstButton').click();
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'false');
+      cy.get('@lastButton').should('have.attr', 'aria-pressed', 'true');
 
       // It should also toggle back to paused
-      cy.get('@pauseButtons')
-        .first()
-        .click()
-        .should('have.attr', 'aria-pressed', 'true');
+      cy.get('@firstButton').click();
+      cy.get('@firstButton').should('have.attr', 'aria-pressed', 'true');
     });
   });
 });

@@ -63,7 +63,7 @@ describe('Billboards Form', () => {
         cy.findByLabelText('Users who:')
           .as('audienceSegments')
           .should('be.visible');
-
+        /* eslint-disable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments').select('Are trusted').should('exist');
         cy.get('@audienceSegments')
           .select('Have not posted yet')
@@ -71,7 +71,7 @@ describe('Billboards Form', () => {
         cy.get('@audienceSegments')
           .select('Have not set an experience level')
           .should('exist');
-
+        /* eslint-enable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments')
           .contains('Managed elsewhere')
           .should('not.exist');
