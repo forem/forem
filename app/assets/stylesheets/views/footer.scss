@@ -21,6 +21,10 @@
   display: none;
 }
 
+.passwords-new + #footer {
+  display: none;
+}
+
 .crayons-footer {
   --footer-padding: var(--su-5);
   background: var(--footer-bg);
