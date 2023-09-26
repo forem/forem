@@ -4,10 +4,18 @@ import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 /* global showLoginModal  */
 
+// This Pack file has some dependencies for it to function accurately:
+// Copy and paste the FOllow and Hide button snippets from a tag card.
+// An example can be found in app/views/tags/index.html.erb
+// The tag card needs to contain a class .js-tag-card elements,
+// with data attributes for the tag-id and name.
+// The follow button and the hide button need to contain classes
+// js-follow-tag-button and/or js-hide-tag-button respectively.
+
 function renderPage(currentUser) {
-  import('../tags/Tag')
+  import('../tags/TagButtonContainer')
     .then(({ Tag }) => {
-      const tagCards = document.getElementsByClassName('tag-card');
+      const tagCards = document.getElementsByClassName('js-tag-card');
 
       const followedTags = JSON.parse(currentUser.followed_tags);
       Array.from(tagCards).forEach((element) => {
@@ -46,11 +54,11 @@ function listenForButtonClicks() {
 function handleButtonClick({ target }) {
   let trigger;
 
-  if (target.classList.contains('follow-action-button')) {
+  if (target.classList.contains('js-follow-tag-button')) {
     trigger = 'follow_button';
   }
 
-  if (target.classList.contains('hide-action-button')) {
+  if (target.classList.contains('js-hide-tag-button')) {
     trigger = 'hide_button';
   }
 
@@ -64,8 +72,9 @@ function handleButtonClick({ target }) {
 }
 
 function loadSnackbar() {
-  const root = document.getElementsByClassName('tags-index');
-  if (root.length > 0) {
+  const snackZone = document.getElementById('snack-zone');
+
+  if (snackZone) {
     render(<Snackbar lifespan="1" />, document.getElementById('snack-zone'));
   }
 }
