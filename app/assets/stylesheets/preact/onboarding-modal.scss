@@ -104,8 +104,8 @@
   width: calc(100% - 2 * var(--su-4));
   height: 96px;
   background-image: linear-gradient(
-    rgba(var(--tag-onboarding-graident), 0) 0%,
-    rgba(var(--tag-onboarding-graident), 1) 100%
+    rgba(var(--tag-onboarding-graident), 0) 25%,
+    rgba(var(--tag-onboarding-graident), 1) 75%
   );
   pointer-events: none;
 
