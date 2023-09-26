@@ -28,16 +28,24 @@ module Admin
       end
 
       def settings_params
-        params.require(:settings_general)&.permit(
+        params.require(:settings_general)&.merge(parsed_countries)&.permit(
           settings_keys.map(&:to_sym),
           social_media_handles: ::Settings::General::SOCIAL_MEDIA_SERVICES,
           meta_keywords: ::Settings::General.meta_keywords.keys,
           credit_prices_in_cents: ::Settings::General.credit_prices_in_cents.keys,
+          billboard_enabled_countries: ISO3166::Country.codes,
         )
       end
 
       def settings_keys
         ::Settings::General.keys + SPECIAL_PARAMS_TO_ADD
+      end
+
+      def parsed_countries
+        countries = params[:settings_general][:billboard_enabled_countries]
+        return {} unless countries
+
+        { billboard_enabled_countries: JSON.parse(countries) }
       end
     end
   end

@@ -13,7 +13,6 @@ export class EmailPreferencesForm extends Component {
 
     this.state = {
       email_newsletter: false,
-      email_digest_periodic: false,
     };
   }
 
@@ -49,7 +48,7 @@ export class EmailPreferencesForm extends Component {
   }
 
   render() {
-    const { email_newsletter, email_digest_periodic } = this.state;
+    const { email_newsletter } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
       <div
@@ -62,12 +61,6 @@ export class EmailPreferencesForm extends Component {
           aria-labelledby="title"
           aria-describedby="subtitle"
         >
-          <Navigation
-            prev={prev}
-            next={this.onSubmit}
-            slidesCount={slidesCount}
-            currentSlideIndex={currentSlideIndex}
-          />
           <div className="onboarding-content terms-and-conditions-wrapper">
             <header className="onboarding-content-header">
               <h1 id="title" className="title">
@@ -94,23 +87,16 @@ export class EmailPreferencesForm extends Component {
                       I want to receive weekly newsletter emails.
                     </label>
                   </li>
-                  <li className="checkbox-item">
-                    <label htmlFor="email_digest_periodic">
-                      <input
-                        type="checkbox"
-                        id="email_digest_periodic"
-                        name="email_digest_periodic"
-                        checked={email_digest_periodic}
-                        onChange={this.handleChange}
-                      />
-                      I want to receive a periodic digest of top posts from my
-                      tags.
-                    </label>
-                  </li>
                 </ul>
               </fieldset>
             </form>
           </div>
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
         </div>
       </div>
     );

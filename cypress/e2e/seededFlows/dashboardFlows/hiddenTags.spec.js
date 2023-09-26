@@ -34,10 +34,22 @@ describe('Dashboard: Hidden Tags', () => {
     // it decreases the count from the 'Hidden tags' nav item
     cy.get('.js-hidden-tags-link .c-indicator').as('hiddenTagsCount');
     cy.get('@hiddenTagsCount').should('contain', '4');
+  });
 
-    // it decreases the count from the 'Following tags' nav item
-    cy.get('.js-following-tags-link .c-indicator').as('followingTagsCount');
-    cy.get('@followingTagsCount').should('contain', '6');
+  it('shows a modal when there is an error', () => {
+    cy.intercept('/follows', { statusCode: 500 }).as('followsRequest');
+    cy.findByRole('button', { name: 'Unhide tag: tag5' }).as('unhideButton');
+
+    cy.get('@unhideButton').click();
+    cy.wait('@followsRequest');
+
+    cy.findByTestId('modal-container').as('confirmationModal');
+
+    cy.get('@confirmationModal')
+      .findByText(
+        'Your unhide action could not be updated due to a server error',
+      )
+      .should('exist');
   });
 
   // TODO: add a test for the pagination

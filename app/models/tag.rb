@@ -172,11 +172,12 @@ class Tag < ActsAsTaggableOn::Tag
 
   # returns the tags that are followed by the user
   # @param user [User] the user to check
-  # @param points [Range] the range of points to check for (default is 0 (including 0) to infinity)
+  # @param points [Range] the range of explicit points to check for (default is 0 (including 0) to infinity)
   # @return [ActiveRecord::Relation<Tag>] the tags followed by the user
-  def self.followed_by(user, points = (0...))
+  def self.followed_by(user, explicit_points = (0...))
     joins("INNER JOIN follows ON tags.id = follows.followable_id")
-      .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag", points: points })
+      .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag",
+                        explicit_points: explicit_points })
       .order("follows.points DESC")
   end
 

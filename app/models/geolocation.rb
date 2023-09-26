@@ -30,11 +30,10 @@ class Geolocation
   FEATURE_FLAG = :billboard_location_targeting
   ISO3166_SEPARATOR = "-".freeze
   LTREE_SEPARATOR = ".".freeze
-  # Maybe this should be a config of some kind...?
-  PERMITTED_COUNTRIES = [
-    ISO3166::Country.code_from_name("United States"),
-    ISO3166::Country.code_from_name("Canada"),
-  ].freeze
+  DEFAULT_ENABLED_COUNTRIES = {
+    ISO3166::Country.code_from_name("United States") => :with_regions,
+    ISO3166::Country.code_from_name("Canada") => :with_regions
+  }.freeze
 
   attr_reader :country_code, :region_code
 
@@ -60,11 +59,13 @@ class Geolocation
     @region_code = region_code
   end
 
-  # validates :country_code, inclusion: { in: ISO3166::Country.codes }
-  validates :country_code, inclusion: { in: PERMITTED_COUNTRIES }
+  validates :country_code, inclusion: {
+    in: ->(_) { Settings::General.billboard_enabled_countries.keys }
+  }
   validates :region_code, inclusion: {
     in: ->(geolocation) { ISO3166::Country.region_codes_if_exists(geolocation.country_code) }
   }, allow_nil: true
+  validate :valid_region_for_targeting, on: :targeting
 
   def ==(other)
     country_code == other.country_code && region_code == other.region_code
@@ -86,6 +87,13 @@ class Geolocation
     lquery += ".#{region_code}{,}" if region_code
 
     "'#{lquery}' ~ #{column_name}"
+  end
+
+  def valid_region_for_targeting
+    return if region_code.nil? ||
+      Settings::General.billboard_enabled_countries[country_code] == :with_regions
+
+    errors.add(:region_code, "was provided on a country with region targeting disabled")
   end
 
   def errors_as_sentence

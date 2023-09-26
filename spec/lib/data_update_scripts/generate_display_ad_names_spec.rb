@@ -5,7 +5,7 @@ require Rails.root.join(
 
 describe DataUpdateScripts::GenerateDisplayAdNames do
   context "when there is no name for a billboard" do
-    it "generates a name for an existing Display Ad" do
+    it "generates a name for an existing Billboard" do
       billboard = create(:billboard, name: nil)
 
       described_class.new.run
@@ -13,7 +13,7 @@ describe DataUpdateScripts::GenerateDisplayAdNames do
     end
   end
 
-  context "when there is a name for the Display Ad" do
+  context "when there is a name for the Billboard" do
     it "does not change the name" do
       billboard = create(:billboard, name: "Test")
 

@@ -1,0 +1,26 @@
+-- Don't display the "helpful" message on startup.
+\set QUIET 1
+
+-- Allow specifying the path to history file via `PSQL_HISTFILE` env variable
+-- (and fallback to the default $HOME/.psql_history otherwise)
+\set HISTFILE `[ -z $PSQL_HISTFILE ] && echo $HOME/.psql_history || echo $PSQL_HISTFILE`
+
+-- Show how long each query takes to execute
+\timing
+
+-- Use best available output format
+\x auto
+
+-- Verbose error reports
+\set VERBOSITY verbose
+
+-- If a command is run more than once in a row,
+-- only store it once in the history
+\set HISTCONTROL ignoredups
+\set COMP_KEYWORD_CASE upper
+
+-- By default, NULL displays as an empty space. Is it actually an empty
+-- string, or is it null? This makes that distinction visible
+\pset null '[NULL]'
+
+\unset QUIET

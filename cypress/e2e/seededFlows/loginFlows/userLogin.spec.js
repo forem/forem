@@ -27,7 +27,7 @@ describe('User Login', () => {
     });
 
     // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
+    cy.get('@loginForm').findByText('Log in').click();
 
     // User should be redirected to onboarding
     const { baseUrl } = Cypress.config();
@@ -56,7 +56,7 @@ describe('User Login', () => {
     });
 
     // Submit the form
-    cy.get('@loginForm').findByText('Continue').click();
+    cy.get('@loginForm').findByText('Log in').click();
 
     cy.url().should('contains', '/new?prefill=');
 

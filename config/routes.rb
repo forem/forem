@@ -102,7 +102,7 @@ Rails.application.routes.draw do
       end
     end
     resources :comment_mutes, only: %i[update]
-    resources :users, only: %i[index], defaults: { format: :json } do # internal API
+    resources :users, only: %i[index show], defaults: { format: :json } do # internal API
       collection do
         resources :devices, only: %i[create destroy]
       end
@@ -142,6 +142,7 @@ Rails.application.routes.draw do
     resources :tag_adjustments, only: %i[create destroy]
     resources :rating_votes, only: [:create]
     resources :page_views, only: %i[create update]
+    resources :feed_events, only: %i[create]
     resources :credits, only: %i[index new create] do
       get "purchase", on: :collection, to: "credits#new"
     end

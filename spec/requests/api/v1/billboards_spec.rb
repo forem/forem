@@ -52,7 +52,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "target_geolocations")
+                          "priority", "weight", "target_geolocations")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -71,7 +71,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "target_geolocations")
+                          "priority", "weight", "target_geolocations")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -94,7 +94,7 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
-        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -109,6 +109,7 @@ RSpec.describe "Api::V1::Billboards" do
           "published" => true,
           "approved" => true,
           "priority" => false,
+          "weight" => 1.0,
           "type_of" => "in_house",
           "cached_tag_list" => "",
           "clicks_count" => 0,
@@ -135,7 +136,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "target_geolocations")
+                          "priority", "weight", "target_geolocations")
       end
 
       it "also accepts target geolocations as an array" do
@@ -157,7 +158,7 @@ RSpec.describe "Api::V1::Billboards" do
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.media_type).to eq("application/json")
         expect(response.parsed_body.keys).to contain_exactly("error", "status")
-        expect(response.parsed_body["error"]).to include("US-FAKE is not a supported ISO 3166-2 code")
+        expect(response.parsed_body["error"]).to include("US-FAKE is not an enabled target ISO 3166-2 code")
       end
     end
 
