@@ -83,7 +83,7 @@ class OnboardingsController < ApplicationController
   def newsletter
     respond_to do |format|
       format.json do
-        rendered_content = render_to_string(partial: 'onboardings/newsletter',
+        rendered_content = render_to_string(partial: "onboardings/newsletter",
                                             formats: [:html],
                                             layout: false)
         render json: { content: rendered_content }
