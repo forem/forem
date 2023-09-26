@@ -94,6 +94,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   alias toggle_suspension_status? elevated_user?
+  alias manage_user_roles? elevated_user?
   alias unpublish_all_articles? elevated_user?
 
   def moderation_routes?

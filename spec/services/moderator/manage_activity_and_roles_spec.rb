@@ -4,95 +4,199 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 
-  it "updates user status" do
-    user.add_role(:suspended)
-    user.reload
+  def manage_roles_for(user, user_status:, note: "Test note", acting_as: admin)
     described_class.handle_user_roles(
-      admin: admin,
+      admin: acting_as,
       user: user,
-      user_params: { note_for_current_role: "warning user", user_status: "Warned" },
+      user_params: {
+        note_for_current_role: note,
+        user_status: user_status
+      },
     )
-    expect(user.warned?).to be true
-    expect(user.suspended?).to be false
+  end
+
+  shared_examples_for "elevated role" do |status|
+    context "when user is in limited role" do
+      before { user.add_role(:limited) }
+
+      it "adding #{status} also removes the limited role" do
+        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("limited") # confirm assumptions
+      end
+    end
+
+    context "when user is in suspended role" do
+      before { user.add_role(:suspended) }
+
+      it "adding #{status} also removes the suspended role" do
+        expect(user.roles.pluck(:name)).to include("suspended") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("suspended") # confirm assumptions
+      end
+    end
+
+    context "when user is in warned role" do
+      before { user.add_role(:warned) }
+
+      it "adding #{status} also removes the warned role" do
+        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("warned") # confirm assumptions
+      end
+    end
+
+    context "when user is in comment_suspended role" do
+      before { user.add_role(:comment_suspended) }
+
+      it "adding #{status} also removes the comment_suspended role" do
+        expect(user.roles.pluck(:name)).to include("comment_suspended") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("comment_suspended") # confirm assumptions
+      end
+    end
+  end
+
+  shared_examples_for "negative role" do |status|
+    context "when user is in trusted role" do
+      before { user.add_role(:trusted) }
+
+      it "adding #{status} removes the trusted role" do
+        expect(user.roles.pluck(:name)).to include("trusted") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("trusted") # confirm assumptions
+      end
+    end
+
+    context "when user is in tag_moderator role" do
+      before { user.add_role(:tag_moderator) }
+
+      it "adding #{status} removes the tag_moderator role" do
+        expect(user.roles.pluck(:name)).to include("tag_moderator") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("tag_moderator") # confirm assumptions
+      end
+    end
+
+    context "when user is in admin role" do
+      before { user.add_role(:admin) }
+
+      it "adding #{status} ignores the admin role" do
+        expect(user.roles.pluck(:name)).to include("admin") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).to include("admin") # confirm assumptions
+      end
+    end
+
+    context "when user is in super_moderator role" do
+      before { user.add_role(:super_moderator) }
+
+      it "adding #{status} ignores the super_moderator role" do
+        expect(user.roles.pluck(:name)).to include("super_moderator") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).to include("super_moderator") # confirm assumptions
+      end
+    end
+
+    context "when user is in tech_admin role" do
+      before { user.add_role(:tech_admin) }
+
+      it "adding #{status} ignores the tech_admin role" do
+        expect(user.roles.pluck(:name)).to include("tech_admin") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).to include("tech_admin") # confirm assumptions
+      end
+    end
+
+    context "when user is in limited role" do
+      before { user.add_role(:limited) }
+
+      it "adding #{status} ignores the limited role" do
+        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).to include("limited") # confirm assumptions
+      end
+    end
+
+    context "when user is in warned role" do
+      before { user.add_role(:warned) }
+
+      it "adding #{status} ignores the warned role" do
+        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).to include("warned") # confirm assumptions
+      end
+    end
+  end
+
+  it_behaves_like "elevated role", "Admin"
+  it_behaves_like "elevated role", "Super Moderator"
+  it_behaves_like "elevated role", "Resource Admin: Tag"
+  it_behaves_like "elevated role", "Super Admin"
+  it_behaves_like "elevated role", "Trusted"
+  it_behaves_like "elevated role", "Good standing"
+  it_behaves_like "elevated role", "Tech Admin"
+
+  it_behaves_like "negative role", "Suspended"
+  it_behaves_like "negative role", "Limited"
+  it_behaves_like "negative role", "Warned"
+
+  context "when user is in suspended role" do
+    before { user.add_role(:suspended) }
+
+    it "adding warned removes the suspended role" do
+      expect(user.roles.pluck(:name)).to include("suspended") # confirm assumptions
+      manage_roles_for user, user_status: "Warned"
+      expect(user.roles.pluck(:name)).not_to include("suspended") # confirm assumptions
+    end
   end
 
   it "updates user status to limited" do
-    user.add_role(:limited)
-    user.reload
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "limited user", user_status: "Limited" },
-    )
-    expect(user.limited?).to be true
+    expect(user).not_to be_limited
+    manage_roles_for(user, user_status: "Limited")
+    expect(user).to be_limited
+    manage_roles_for(user, user_status: "Good standing")
+    expect(user).not_to be_limited
   end
 
   it "updates user to super admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Super Admin" },
-    )
-    expect(user.super_admin?).to be true
-  end
-
-  it "assigns trusted role to user that's updated to super admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Super Admin" },
-    )
-    expect(user.super_admin?).to be true
+    expect(user).not_to be_super_admin
+    expect(user.has_trusted_role?).to be false
+    manage_roles_for(user, user_status: "Super Admin")
+    expect(user).to be_super_admin
     expect(user.has_trusted_role?).to be true
   end
 
   it "updates user to admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to admin", user_status: "Admin" },
-    )
-    expect(user.admin?).to be true
-  end
-
-  it "assigns trusted role to user that's updated to admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to admin", user_status: "Admin" },
-    )
-    expect(user.admin?).to be true
+    expect(user).not_to be_admin
+    expect(user.has_trusted_role?).to be false
+    manage_roles_for(user, user_status: "Admin")
+    expect(user).to be_admin
     expect(user.has_trusted_role?).to be true
   end
 
   it "updates user to tech admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to tech admin", user_status: "Tech Admin" },
-    )
-    expect(user.tech_admin?).to be true
+    expect(user).not_to be_tech_admin
+    expect(user.single_resource_admin_for?(DataUpdateScript)).to be false
+    manage_roles_for(user, user_status: "Tech Admin")
+    expect(user).to be_tech_admin
     expect(user.single_resource_admin_for?(DataUpdateScript)).to be true
   end
 
   it "updates user to single resource admin" do
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Resource Admin: Article" },
-    )
+    expect(user.single_resource_admin_for?(Article)).to be false
+    manage_roles_for(user, user_status: "Resource Admin: Article")
     expect(user.single_resource_admin_for?(Article)).to be true
   end
 
-  it "updates negative role to positive role" do
+  it "user in 'Good standing' has no negative or elevated roles" do
     user.add_role(:comment_suspended)
-    described_class.handle_user_roles(
-      admin: admin,
-      user: user,
-      user_params: { note_for_current_role: "user in good standing", user_status: "Good standing" },
-    )
+    user.add_role(:warned)
+    user.add_role(:trusted)
+    manage_roles_for(user, user_status: "Good standing")
     expect(user.suspended?).to be false
     expect(user.roles.count).to eq(0)
+    expect(user.has_trusted_role?).to be false
   end
 
   describe "Rack::Attack cache invalidation optimization" do
@@ -135,43 +239,27 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       admin.add_role(:admin)
     end
 
-    it "updates user to super admin" do
+    it "raises exception when trying to upgrade user to super admin" do
       expect do
-        described_class.handle_user_roles(
-          admin: admin,
-          user: user,
-          user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Super Admin" },
-        )
+        manage_roles_for(user, user_status: "Super Admin")
       end.to raise_error(StandardError)
     end
 
-    it "updates user to admin" do
+    it "raises exception when trying to upgrade user to admin" do
       expect do
-        described_class.handle_user_roles(
-          admin: admin,
-          user: user,
-          user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Admin" },
-        )
+        manage_roles_for(user, user_status: "Admin")
       end.to raise_error(StandardError)
     end
 
-    it "updates user to single resource admin" do
+    it "raises exception when trying to upgrade user to single resource admin" do
       expect do
-        described_class.handle_user_roles(
-          admin: admin,
-          user: user,
-          user_params: { note_for_current_role: "Upgrading to super admin", user_status: "Resource Admin: Article" },
-        )
+        manage_roles_for(user, user_status: "Resource Admin: Article")
       end.to raise_error(StandardError)
     end
 
-    it "updates user to super moderator" do
+    it "raises exception when trying to upgrade user to super moderator" do
       expect do
-        described_class.handle_user_roles(
-          admin: admin,
-          user: user,
-          user_params: { note_for_current_role: "Upgrading to super_moderator", user_status: "Super Moderator" },
-        )
+        manage_roles_for(user, user_status: "Super Moderator")
       end.to raise_error(StandardError)
     end
   end
