@@ -13,7 +13,7 @@ describe('View tag adjustments', () => {
     const click = ($el) => $el.click();
 
     it('should show previous tag adjustments', () => {
-      cy.findByRole('heading', { name: 'Tag test article' }).click();
+      cy.findByRole('heading', { name: 'Tag adjusted article' }).click();
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', {
@@ -27,7 +27,7 @@ describe('View tag adjustments', () => {
           .find('.tag-adjustment')
           .should(($div) => {
             expect($div[0].innerText).to.contain(
-              '# tag1 added by Admin McAdmin\nadding test tag 1',
+              '# tag1 removed by Admin McAdmin\nremoving test tag 1',
             );
             expect($div[1].innerText).to.contain(
               '# tag2 added by Admin McAdmin\nadding test tag 2',
@@ -59,7 +59,7 @@ describe('View tag adjustments', () => {
     const click = ($el) => $el.click();
 
     it('should show previous tag adjustments', () => {
-      cy.findByRole('heading', { name: 'Tag test article' }).click();
+      cy.findByRole('heading', { name: 'Tag adjusted article' }).click();
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
         cy.findByRole('button', {
@@ -73,7 +73,7 @@ describe('View tag adjustments', () => {
           .find('.tag-adjustment')
           .should(($div) => {
             expect($div[0].innerText).to.contain(
-              '# tag1 added by Admin McAdmin\nadding test tag 1',
+              '# tag1 removed by Admin McAdmin\nremoving test tag 1',
             );
             expect($div[1].innerText).to.contain(
               '# tag2 added by Admin McAdmin\nadding test tag 2',
@@ -97,7 +97,7 @@ describe('View tag adjustments', () => {
       cy.fixture('users/adminUser.json').as('user');
 
       cy.get('@user').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/tag-test-article');
+        cy.loginAndVisit(user, '/admin_mcadmin/tag-adjusted-article');
       });
     });
 
@@ -105,7 +105,7 @@ describe('View tag adjustments', () => {
     const click = ($el) => $el.click();
 
     it('should show previous tag adjustments', () => {
-      cy.findByRole('heading', { name: 'Tag test article' }).click();
+      cy.findByRole('heading', { name: 'Tag adjusted article' }).click();
 
       cy.getIframeBody('#mod-container').within(() => {
         cy.findByRole('button', {
@@ -119,7 +119,7 @@ describe('View tag adjustments', () => {
           .find('.tag-adjustment')
           .should(($div) => {
             expect($div[0].innerText).to.contain(
-              '# tag1 added by Admin McAdmin\nadding test tag 1',
+              '# tag1 removed by Admin McAdmin\nremoving test tag 1',
             );
             expect($div[1].innerText).to.contain(
               '# tag2 added by Admin McAdmin\nadding test tag 2',
