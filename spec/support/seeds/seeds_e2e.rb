@@ -1034,9 +1034,6 @@ adjusted_article = seeder.create_if_doesnt_exist(Article, "title", "Tag adjusted
   )
 end
 
-p "/" * 85
-p adjusted_article.id
-p "/" * 85
 # Rather than add the tag via markdown, let's add it via creation of a tag adjustment
 # so the tag's first addition will appear in the article's tag adjustment history.
 tag_zero = Tag.find_by(name: "tag0")
