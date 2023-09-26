@@ -40,8 +40,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    # NOTE: Here, when we say "moderator", we mean "tag_moderator"
-    user_trusted? || user_moderator? || user_any_admin?
+    Authorizer.for(user: user).accesses_mod_response_templates?
   end
 
   def hide?
@@ -79,10 +78,6 @@ class CommentPolicy < ApplicationPolicy
   end
 
   private
-
-  def user_trusted?
-    user.trusted?
-  end
 
   def user_moderator?
     user.moderator_for_tags.present?
