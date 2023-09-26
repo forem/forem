@@ -277,6 +277,21 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
+  def set_initial_roles!
+    # Avoid overwriting roles for users who already exist but are e.g. logging in
+    # through a new identity provider
+    return unless valid? && previously_new_record?
+
+    if Settings::General.waiting_on_first_user
+      add_role(:creator)
+      add_role(:super_admin)
+      add_role(:trusted)
+    elsif Settings::Authentication.limit_new_users?
+      add_role(:limited)
+      # Otherwise just leave the new user in good standing
+    end
+  end
+
   def calculate_score
     # User score is used to mitigate spam by reducing visibility of flagged users
     # It can generally be used as a baseline for affecting certain functionality which
