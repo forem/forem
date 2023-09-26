@@ -1,0 +1,48 @@
+{
+  "name": "Forem DEVcontainer",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "devcontainer",
+  "runServices": ["postgres", "redis"],
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
+    "GIT_EDITOR": "code --wait"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "enableNonRootDocker": "false",
+      "moby": "true"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "true",
+      "configureZshAsDefaultShell": "true"
+    }
+  },
+  "portsAttributes": {
+    "3000": {
+      "onAutoForward": "notify"
+    },
+    "3035": {
+      // This port is used by the Rails' webpack-dev-server. Users won't need to access it directly.
+      "onAutoForward": "silent"
+    }
+  },
+  "updateContentCommand": "bin/setup",
+  "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
+  "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
+  "customizations": {
+    "vscode": {
+      // Extensions listed here will be installed unlike the one specificed in extensions.json
+      "extensions": [
+        "Shopify.ruby-lsp",
+        "KoichiSasada.vscode-rdbg",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh"
+      }
+    }
+  }
+}

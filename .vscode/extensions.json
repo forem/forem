@@ -1,13 +1,16 @@
 {
+  // List of extensions which should be recommended for users of this workspace.
+  // Suggestions are welcome!
   "recommendations": [
-    "nickytonline.dev-to-extension-pack",
-    "waderyan.nodejs-extension-pack",
-    "esbenp.prettier-vscode",
-    "donjayamanne.git-extension-pack",
-    "rebornix.ruby",
-    "ms-vsliveshare.vsliveshare-pack",
     "42crunch.vscode-openapi",
+    "donjayamanne.git-extension-pack",
+    "esbenp.prettier-vscode",
+    "firefox-devtools.vscode-firefox-d",
+    "ms-vsliveshare.vsliveshare-pack",
     "philosowaffle.openapi-designer",
-    "silvenon.mdx"
+    "sbenp.prettier-vscode",
+    "silvenon.mdx",
+    "waderyan.nodejs-extension-pack",
+    "koichisasada.vscode-rdbg"
   ]
 }
