@@ -146,7 +146,6 @@
   --tag-prefix-hover: rgb(var(--grey-900));
   --tag-onboarding-bg: var(--white);
   --tag-onboarding-border: var(--grey-200);
-  --tag-onboarding-graident: var(--white);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-50));
