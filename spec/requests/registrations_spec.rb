@@ -232,15 +232,46 @@ RSpec.describe "Registrations" do
         expect(User.all.size).to be 1
       end
 
-      it "marks as registered" do
+      it "registers a user in good standing" do
         post "/users", params:
         { user: { name: "test #{rand(10)}",
                   username: "haha_#{rand(10)}",
                   email: "yoooo#{rand(100)}@yo.co",
                   password: "PaSSw0rd_yo000",
                   password_confirmation: "PaSSw0rd_yo000" } }
-        expect(User.last.registered).to be true
-        expect(User.last.registered_at).not_to be_nil
+
+        new_user = User.last
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(new_user).not_to be_limited
+      end
+
+      it "limits the user if the admins have set new user status to limited" do
+        allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.last
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(new_user).to be_limited
+      end
+
+      it "logs in user and redirects to the root path" do
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.last
+        expect(new_user).to have_attributes(user_attributes)
+        expect(controller.current_user).to eq(new_user)
+        expect(response).to redirect_to(root_path)
       end
 
       it "does not create user with password confirmation mismatch" do
@@ -261,6 +292,44 @@ RSpec.describe "Registrations" do
                   password: "PaSSw0rd_yo000",
                   password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.all.size).to be 0
+      end
+    end
+
+    context "when email registration is allowed and confirmation is required" do
+      before do
+        allow(Settings::Authentication).to receive(:allow_email_password_registration).and_return(true)
+        allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+        allow_any_instance_of(ProfileImageUploader).to receive(:download!)
+      end
+
+      it "registers the user but does not log them in" do
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.last
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(new_user).not_to be_limited
+        expect(controller.current_user).to be_nil
+        expect(response).to redirect_to(confirm_email_path(email: user.email))
+      end
+
+      it "also limits the user first if the admins have set new user status to limited" do
+        allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.last
+        expect(new_user).to be_limited
+        expect(controller.current_user).to be_nil
+        expect(response).to redirect_to(confirm_email_path(email: user.email))
       end
     end
 
@@ -379,6 +448,20 @@ RSpec.describe "Registrations" do
         expect(User.first.email).to eq user_email
       end
 
+      it "logs in user and redirects them to the creator settings path" do
+        user = build(:user)
+        user_attributes = user.slice(:name, :username, :email)
+
+        post "/users", params:
+          { user: { **user_attributes, password: "Passw0rd!", password_confirmation: "Passw0rd!" } }
+
+        new_user = User.first
+        expect(new_user.registered).to be true
+        expect(new_user.registered_at).not_to be_nil
+        expect(controller.current_user).to eq(new_user)
+        expect(response).to redirect_to(new_admin_creator_setting_path)
+      end
+
       it "makes user super admin and config admin" do
         post "/users", params:
           { user: { name: "test #{rand(10)}",
@@ -388,6 +471,8 @@ RSpec.describe "Registrations" do
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.super_admin?).to be true
         expect(User.first.trusted?).to be true
+        expect(User.first.creator?).to be true
+        expect(User.first.limited?).to be false
       end
 
       it "creates mascot user" do
@@ -471,6 +556,9 @@ RSpec.describe "Registrations" do
                     password: "PaSSw0rd_yo000",
                     password_confirmation: "PaSSw0rd_yo000" } }
         expect(User.first.super_admin?).to be true
+        expect(User.first.trusted?).to be true
+        expect(User.first.creator?).to be true
+        expect(User.first.limited?).to be false
       end
     end
   end

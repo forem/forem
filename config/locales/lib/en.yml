@@ -37,6 +37,9 @@ en:
             description: The "Client Secret" portion of the OAuth 2.0 page on the Google Cloud Platform portal
           invite_only:
             description: Only users invited by email can join this community.
+          new_user_status:
+            description: What status do you want to apply to new users?
+            placeholder: Good standing
           providers:
             description: How can users sign in?
           recaptcha_secret:

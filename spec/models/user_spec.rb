@@ -663,6 +663,69 @@ RSpec.describe User do
     end
   end
 
+  describe "#set_initial_roles!" do
+    it "adds creator roles if waiting on first user" do
+      allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
+
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).to be_creator
+      expect(user).to be_super_admin
+      expect(user).to be_trusted
+      expect(user).not_to be_limited
+    end
+
+    it "does not add any roles if not waiting on first user" do
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).not_to be_creator
+      expect(user).not_to be_super_admin
+      expect(user).not_to be_trusted
+      expect(user).not_to be_limited
+    end
+
+    it "adds the limited role to a new user if the new user status setting is limited" do
+      allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).not_to be_creator
+      expect(user).not_to be_super_admin
+      expect(user).not_to be_trusted
+      expect(user).to be_limited
+    end
+
+    it "does not change any roles if the user is not a new user" do
+      create(:user, :trusted, email: "trusted-user@forem.test")
+
+      # Now considered an already existing record to ActiveRecord
+      user = described_class.find_by(email: "trusted-user@forem.test")
+      expect(UserRole.count).to eq(1)
+
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+      expect(user).to be_trusted
+    end
+
+    it "does not change any roles if the user is not valid" do
+      user = create(:user, :tag_moderator)
+      expect(UserRole.count).to eq(1)
+
+      user.username = ""
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+      expect(user).to be_tag_moderator
+    end
+
+    it "does nothing if the user has not been persisted" do
+      user = build(:user)
+      expect(UserRole.count).to eq(0)
+
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+    end
+  end
+
   describe "#calculate_score" do
     it "calculates a score" do
       user.update_column(:badge_achievements_count, 3)
