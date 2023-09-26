@@ -91,7 +91,7 @@ class CommentsController < ApplicationController
     return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
-    authorize response_template, :moderator_create?
+    authorize response_template, :use_template_for_moderator_comment?
 
     moderator = User.find(Settings::General.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))

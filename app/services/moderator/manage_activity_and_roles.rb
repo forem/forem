@@ -135,6 +135,7 @@ module Moderator
     end
 
     def remove_negative_roles
+      user.remove_role(:limited) if user.limited?
       user.remove_role(:suspended) if user.suspended?
       user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?

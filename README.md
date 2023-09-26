@@ -94,21 +94,6 @@ Please see our installation guides:
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
 
-## Core team
-
-- [@benhalpern](https://dev.to/ben)
-- [@jessleenyc](https://dev.to/jess)
-- [@peterkimfrank](https://dev.to/peter)
-- [@maestromac](https://dev.to/maestromac)
-- [@lightalloy](https://dev.to/lightalloy)
-- [@ridhwana](https://dev.to/ridhwana)
-- [@rt4914](https://dev.to/rt4914)
-- [@jaw6](https://dev.to/jaw6)
-- [@lboogie2004](https://dev.to/lboogie2004)
-- [@klardotsh](https://dev.to/klardotsh)
-- [@filleduchaos](https://dev.to/filleduchaos)
-- [@dukegreene](https://dev.to/dukegreene)
-
 ## Vulnerability disclosure
 
 Forem is the open source software which powers [DEV](https://dev.to).

@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EmailPreferencesForm should load the appropriate text 1`] = `
+"<div><div data-testid=\\"onboarding-email-preferences-form\\" class=\\"onboarding-main crayons-modal crayons-modal--large\\"><div class=\\"crayons-modal__box\\" role=\\"dialog\\" aria-labelledby=\\"title\\" aria-describedby=\\"subtitle\\"><div class=\\"onboarding-content email-preferences-wrapper\\">
+    <h1>Almost there!</h1>
+    <form>
+      <fieldset>
+        <ul>
+          <li class=\\"checkbox-item\\">
+            <label for=\\"email_newsletter\\"><input type=\\"checkbox\\" id=\\"email_newsletter\\" name=\\"email_newsletter\\">I want to receive weekly newsletter emails.</label>
+          </li>
+        </ul>
+      </fieldset>
+    </form>
+    </div><nav class=\\"onboarding-navigation\\"><div class=\\"navigation-content\\"><div class=\\"back-button-container \\"><button data-testid=\\"back-button\\" class=\\"back-button\\" type=\\"button\\" aria-label=\\"Back to previous onboarding step\\"><svg width=\\"24\\" height=\\"24\\" fill=\\"none\\" class=\\"crayons-icon\\" xmlns=\\"http://www.w3.org/2000/svg\\"><path d=\\"M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z\\"></path></svg></button></div><div data-testid=\\"stepper\\" class=\\"stepper\\"><span class=\\"dot active\\"></span><span class=\\"dot active\\"></span><span class=\\"dot active\\"></span><span class=\\"dot active\\"></span><span class=\\"dot active\\"></span></div><button class=\\"next-button\\" type=\\"button\\">Finish</button></div></nav></div></div></div>"
+`;
