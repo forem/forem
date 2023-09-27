@@ -11,20 +11,6 @@ ports:
   - port: 6379
     onOpen: ignore
 
-tasks:
-  # - name: Forem Server
-  #   before: >
-  #     docker-compose up -d redis postgres &
-  #     gp ports await 5432 &&
-  #     sleep 1
-  #   init: ./gitpod-init.sh
-  #   command: bin/startup
-  # - name: Open Site
-  #   command: >
-  #     gp ports await 3000 &&
-  #     printf "Waiting for local Forem development environment to load in the browser..." &&
-  #     gp preview $(gp url 3000)
-
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)
