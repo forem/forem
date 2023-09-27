@@ -1,9 +1,9 @@
-FROM gitpod/workspace-postgres
+FROM gitpod/workspace-full
 
 # Install the GitHub CLI
-RUN brew install gh
+# RUN brew install gh
 
-# Install Ruby
+# # Install Ruby
 ENV RUBY_VERSION=3.1.4
 RUN printf "rvm_gems_path=/home/gitpod/.rvm\n" > ~/.rvmrc \
     && bash -lc "rvm reinstall $RUBY_VERSION && \

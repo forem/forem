@@ -14,7 +14,7 @@ ports:
 tasks:
   - name: Forem Server
     before: >
-      redis-server &
+      docker-compose -d redis postgres &
       gp ports await 5432 &&
       sleep 1
     init: ./gitpod-init.sh
