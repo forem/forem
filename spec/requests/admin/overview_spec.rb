@@ -8,6 +8,31 @@ RSpec.describe "/admin" do
     allow(FeatureFlag).to receive(:enabled?).and_call_original
   end
 
+  describe "Notices" do
+    it "does not show warning if deployed at is recent" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(1.day.ago)
+      get admin_path
+
+      expect(response.body).not_to include("If you stay out of date for too long")
+    end
+
+    it "shows warning notice if deployed at is over two weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(3.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include("If you stay out of date for too long")
+      expect(response.body).to include("crayons-notice--warning")
+    end
+
+    it "shows danger notice if deployed at is over four weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(5.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include("If you stay out of date for too long")
+      expect(response.body).to include("crayons-notice--danger")
+    end
+  end
+
   describe "Last deployed and Latest Commit ID card" do
     before do
       ForemInstance.instance_variable_set(:@deployed_at, nil)
