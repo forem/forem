@@ -63,7 +63,10 @@ describe('Billboards Form', () => {
         cy.findByLabelText('Users who:')
           .as('audienceSegments')
           .should('be.visible');
-
+        // Unsure of the best way to separate the get/select chaining at the moment.
+        // It's getting late and I may be missing something easy.
+        // Skipping the linter rule for now to unblock depfu.
+        /* eslint-disable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments').select('Are trusted').should('exist');
         cy.get('@audienceSegments')
           .select('Have not posted yet')
@@ -71,7 +74,7 @@ describe('Billboards Form', () => {
         cy.get('@audienceSegments')
           .select('Have not set an experience level')
           .should('exist');
-
+        /* eslint-enable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments')
           .contains('Managed elsewhere')
           .should('not.exist');

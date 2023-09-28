@@ -198,30 +198,34 @@ describe('Post Editor', () => {
           // Update the title, tags, and content for an post.
           cy.get('@articleForm')
             .findByLabelText(/^Post Title$/i)
-            .as('postTitle')
-            .should('have.value', 'Test Post') // checking for original value first
-            .clear()
-            .type('This is some title that should be reverted', {
+            .as('postTitle');
+          cy.get('@postTitle').should('have.value', 'Test Post'); // checking for original value first
+          cy.get('@postTitle').clear();
+          cy.get('@postTitle').type(
+            'This is some title that should be reverted',
+            {
               force: true,
-            });
+            },
+          );
 
           // Check original tag selections are present, and remove them
           cy.findByRole('button', { name: 'Remove beginner' })
-            .click()
-            .should('not.exist');
+            .as('beginnerButton')
+            .click();
+          cy.get('@beginnerButton').should('not.exist');
           cy.findByRole('button', { name: 'Remove ruby' })
-            .click()
-            .should('not.exist');
-          cy.findByRole('button', { name: 'Remove go' })
-            .click()
-            .should('not.exist');
+            .as('rubyButton')
+            .click();
+          cy.get('@rubyButton').should('not.exist');
+          cy.findByRole('button', { name: 'Remove go' }).as('goButton').click();
+          cy.get('@goButton').should('not.exist');
 
           // Add the new tags
           cy.get('@articleForm')
             .findByRole('textbox', { name: 'Add up to 4 tags' })
-            .as('postTags')
-            .type('tag1, tag2, tag3,')
-            .type('{esc}');
+            .as('postTags');
+          cy.get('@postTags').type('tag1, tag2, tag3,');
+          cy.get('@postTags').type('{esc}');
 
           getPostContent()
             .should('have.value', `This is a Test Post's contents.`) // checking for original value first

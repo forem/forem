@@ -98,9 +98,8 @@ describe('Add tags to article', () => {
     cy.findByRole('button', { name: 'Remove another' }).should('exist');
 
     // selects currently entered text when input blurs
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
-      .type('something')
-      .blur();
+    cy.get('@input').type('something');
+    cy.get('@input').blur();
 
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
     cy.findByRole('button', { name: 'Remove something' }).should('exist');
@@ -134,11 +133,10 @@ describe('Add tags to article', () => {
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
 
     // Verify input was cleared on selection, then type a backspace and check we're now editing the tag again
-    cy.get('@input')
-      .should('have.focus')
-      .should('have.value', '')
-      .type('{backspace}')
-      .should('have.value', 'something');
+    cy.get('@input').should('have.focus');
+    cy.get('@input').should('have.value', '');
+    cy.get('@input').type('{backspace}');
+    cy.get('@input').should('have.value', 'something');
 
     // When editing the edit/remove buttons should not be present any more
     cy.findByRole('button', { name: 'Edit something' }).should('not.exist');
@@ -195,11 +193,13 @@ describe('Add tags to article', () => {
     cy.findAllByRole('option').should('have.length', 0);
 
     // Try to select by typing a comma, and check nothing happens
-    cy.get('@input').type(',').should('have.value', 'a');
+    cy.get('@input').type(',');
+    cy.get('@input').should('have.value', 'a');
     cy.findByRole('button', { name: 'Edit a' }).should('not.exist');
 
     // Try to select by typing a space, and check nothing happens
-    cy.get('@input').type(' ').should('have.value', 'a');
+    cy.get('@input').type(' ');
+    cy.get('@input').should('have.value', 'a');
     cy.findByRole('button', { name: 'Edit a' }).should('not.exist');
   });
 });
