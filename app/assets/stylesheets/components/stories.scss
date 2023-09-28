@@ -28,7 +28,7 @@
   @media (min-width: $breakpoint-s) {
     --story-padding: var(--su-4);
     --title-font-size: var(--fs-2xl);
-
+	   margin-bottom: 25px;
     &--featured {
       --title-font-size: var(--fs-3xl);
     }
