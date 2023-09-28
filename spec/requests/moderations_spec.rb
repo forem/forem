@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when not logged-in" do
-    it "does not grant access", proper_status: true do
+    it "does not grant access", :proper_status do
       get path
       expect(response).to have_http_status(:not_found)
     end
@@ -15,7 +15,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when user is not trusted" do
     before { sign_in create(:user) }
 
-    it "does not grant access", proper_status: true do
+    it "does not grant access", :proper_status do
       get path
       expect(response).to have_http_status(:not_found)
     end
@@ -169,6 +169,30 @@ RSpec.describe "Moderations" do
         get "/mod"
 
         expect(response.body).to include logged_out_copy
+      end
+    end
+
+    context "when user is trusted" do
+      before do
+        sign_in trusted_user
+      end
+
+      it "does not show articles the user has already reacted to for inbox" do
+        first_article = create(:article)
+        second_article = create(:article, score: -12)
+        get "/mod"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "shows all articles on latest" do
+        first_article = create(:article)
+        second_article = create(:article, score: -12)
+        get "/mod?state=latest"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
       end
     end
   end
