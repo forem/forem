@@ -76,8 +76,7 @@ function initializeCommentsPage() {
                     var userActionsEl = allNodes[i].querySelector('.current-user-actions');
                     var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                     if (userActionsEl && buttEl) {
-                      userActionsEl.innerHTML = `<li><a href="${ path }/edit" class="crayons-link crayons-link--block" aria-label="Edit this comment">Edit</a></li>
-                                                <li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Видалити</a></li>`
+                      userActionsEl.innerHTML = `<li><a data-no-instant href="${ path }/delete_confirm" class="edit-butt crayons-link crayons-link--block" aria-label="Delete this comment">Видалити</a></li>`
                       userActionsEl.classList.remove('hidden');
                     }
                   }
