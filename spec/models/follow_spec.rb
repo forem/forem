@@ -4,6 +4,11 @@ RSpec.describe Follow do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:user_2) { create(:user) }
+  let(:suspended_user) { create(:user) }
+
+  before do
+    suspended_user.add_role(:suspended)
+  end
 
   describe "validations" do
     subject { user.follow(user_2) }
@@ -55,6 +60,36 @@ RSpec.describe Follow do
           described_class.create!(follower: user, followable: user_2)
         end
       end.to change(EmailMessage, :count).by(1)
+    end
+  end
+
+  describe "scopes" do
+    describe ".non_suspended" do
+      before do
+        user.follow(user_2)
+        user.follow(tag)
+        suspended_user.follow(user_2)
+      end
+
+      it "excludes suspended users from the result" do
+        result = described_class.non_suspended(user_2.class.name, user_2.id)
+        expect(result.map(&:follower)).to include(user)
+        expect(result.map(&:follower)).not_to include(suspended_user)
+      end
+
+      it "filters by followable type and id" do
+        result = described_class.non_suspended("ActsAsTaggableOn::Tag", tag.id)
+        expect(result.map(&:follower)).to include(user)
+        expect(result.map(&:follower)).not_to include(user_2)
+        expect(result.map(&:follower)).not_to include(suspended_user)
+      end
+
+      it "includes only Users in the result" do
+        result = described_class.non_suspended(user_2.class.name, user_2.id)
+        expect(result.map(&:follower).all?(User)).to be(true)
+      end
+
+      # Additional test cases for more edge cases
     end
   end
 end
