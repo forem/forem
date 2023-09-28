@@ -60,7 +60,7 @@ class FeedEvent < ApplicationRecord
   end
 
   def self.update_single_article_counters(article_id)
-    ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 15.minutes) do
+    ThrottledCall.perform("article_feed_success_score_#{article_id}", throttle_for: 5.minutes) do
       impressions = FeedEvent.where(article_id: article_id, category: "impression")
       return if impressions.empty?
 
