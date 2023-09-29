@@ -186,7 +186,8 @@ describe('Article flagged by a trusted user', () => {
       .should('contain', 'Mark as Valid')
       .click();
 
-    cy.get('.crayons-dropdown').should('not.be.visible');
+    cy.get('.crayons-dropdown').as('dropdown');
+    cy.get('@dropdown').should('not.be.visible');
   });
 
   it('should update status to Invalid on click of "Mark as Invalid"', () => {
@@ -222,7 +223,8 @@ describe('Article flagged by a trusted user', () => {
 
     cy.wait('@request');
 
-    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    cy.get('.flex .c-indicator').as('flagStatus');
+    cy.get('@flagStatus').should('be.visible');
     cy.get('@flagStatus')
       .should('have.class', 'c-indicator--relaxed')
       .and('contain', 'Invalid');
