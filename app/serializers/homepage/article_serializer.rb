@@ -29,13 +29,12 @@ module Homepage
       :title,
       :user_id,
       :public_reaction_categories,
-	  :main_image,
+	  :cover_image,
     )
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
-
     attribute :user do |article|
       user = article.user
 

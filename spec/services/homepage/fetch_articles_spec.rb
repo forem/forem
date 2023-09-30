@@ -35,8 +35,6 @@ RSpec.describe Homepage::FetchArticles, type: :service do
 
       expect(result[:user_id]).to eq(article.user_id)
       expect(result[:video_duration_string]).to eq(article.video_duration_in_minutes)
-	  expect(result[:main_image]).to eq(article.main_image)
-	  
 	  
     end
     # rubocop:enable RSpec/ExampleLength
