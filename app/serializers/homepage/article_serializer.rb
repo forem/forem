@@ -33,7 +33,6 @@ module Homepage
     )
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :published_at_int, ->(article) { article.published_at.to_i }
-    attribute :main_image, ->(article) { article.main_image }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
 
