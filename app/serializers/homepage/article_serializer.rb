@@ -35,6 +35,9 @@ module Homepage
     attribute :published_at_int, ->(article) { article.published_at.to_i }
     attribute :tag_list, ->(article) { article.cached_tag_list.to_s.split(", ") }
     attribute :flare_tag, ->(article, params) { params.dig(:tag_flares, article.id) }
+	validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
+	
+	
     attribute :user do |article|
       user = article.user
 
