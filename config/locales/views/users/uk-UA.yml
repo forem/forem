@@ -77,7 +77,7 @@ uk-UA:
       details: "%{user} деталі профілю"
       dropdown: Дії
       email_icon: Email адреса
-      empty: 404 біографія не знайдена
+      empty: 404 біографію не знайдена
       flag: Шадоубан @%{user}
       follow: Підписатися
       joined:

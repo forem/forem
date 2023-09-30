@@ -29,7 +29,6 @@ module Homepage
       :title,
       :user_id,
       :public_reaction_categories,
-	  :cover_image,
     )
     attribute :video_duration_string, &:video_duration_in_minutes
     attribute :published_at_int, ->(article) { article.published_at.to_i }
