@@ -28,7 +28,7 @@
 ################################################################################
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
-    feed_strategy_starting_20231001:
+  feed_strategy_starting_20231001:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     started_at: 2023-10-01
