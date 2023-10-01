@@ -100,9 +100,9 @@ uk-UA:
       heading: "Серія дописів від %{user}"
       empty: Цей користувач не має серій
       list:
-        heading: "%{series} Series' Articles"
+        heading: "Серія дописиів %{series}"
         back: Повернутися до серій %{user}
-        empty: This series doesn't have any articles
+        empty: Ця серія не має жодного допису.
     sponsor:
       seek: Стати спонсором
     stats:
