@@ -7,6 +7,7 @@ module Images
     def perform(id, class_name)
       object = class_name.constantize.find(id)
       Images::GenerateSocialImageMagickally.call(object)
+      Images::GenerateProfileSocialImageMagickally.call(object) if class_name == "User"
     end
   end
 end

@@ -93,6 +93,19 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
     end
 
+    it "displays social image if present" do
+      user.profile.update(social_image: "https://socialimage.com/image.png")
+      get "/#{user.username}"
+      # Does not include the word, but does include the SVG
+      expect(response.body).to include "https://socialimage.com/image.png"
+    end
+
+    it "displays fallback image if social image not set" do
+      get "/#{user.username}"
+      # Does not include the word, but does include the SVG
+      expect(response.body).to include Settings::General.main_social_image
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
