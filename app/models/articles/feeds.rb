@@ -95,7 +95,15 @@ module Articles
 
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
                      label: "Order by feed success score and primary score",
-                     order_by_fragment: "((articles.feed_success_score + 0.1) * (articles.score / 10)) DESC")
+                     order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")
+
+      order_by_lever(:final_order_by_feed_success_score_and_log_of_primary_score,
+                     label: "Order by feed success score and log of primary score",
+                     order_by_fragment: "((feed_success_score + 0.01) * LOG(GREATEST(score, 1))) DESC")
+
+      order_by_lever(:final_order_by_feed_success_score_and_log_of_comment_score,
+                     label: "Order by feed success score and log of comment_score",
+                     order_by_fragment: "((feed_success_score + 0.01) * LOG(GREATEST(comment_score, 1))) DESC")
 
       order_by_lever(:published_at_with_randomization_favoring_public_reactions,
                      label: "Favor recent articles with more reactions, " \
