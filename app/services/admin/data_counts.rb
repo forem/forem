@@ -27,6 +27,8 @@ module Admin
 
       flags = Reaction
         .includes(:user, :reactable)
+        .where(status: "valid")
+        .live_reactable
         .privileged_category
       Response.new(
         open_abuse_reports_count: open_abuse_reports_count,

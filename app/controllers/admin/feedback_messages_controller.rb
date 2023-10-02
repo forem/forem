@@ -85,6 +85,7 @@ module Admin
                       end
       q = Reaction.includes(:user, :reactable)
         .where(category: "vomit", status: status)
+        .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
         .order(updated_at: :desc)
         .limit(limit)
