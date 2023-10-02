@@ -98,7 +98,7 @@ module Images
         escaped_title = title.gsub('"', '\\"')
         c.gravity "West" # Set the origin for the text at the top left corner
         c.pointsize font_size.to_s
-        c.draw "text 80,-39 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north, with double quotes around the title
+        c.draw "text 80,-39 \"#{escaped_title}\"" # Start drawing text 90 from the left and slightly north
         c.fill "black"
         c.font BOLD_FONT_PATH.to_s
       end
@@ -120,14 +120,14 @@ module Images
       end
     end
 
-    def add_profile_image(result)
-      profile_image_size = "64x64"
-      profile_image_location = "+80+63"
+    def add_profile_image(result, size = "64x64", offset = "+80+63", gravity = "Southwest")
+      profile_image_size = size
+      profile_image_location = offset
       # Add subtext and author image
       @author_image.resize profile_image_size
       result = result.composite(@author_image) do |c|
         c.compose "Over"
-        c.gravity "Southwest"
+        c.gravity gravity
         c.geometry profile_image_location
       end
 
@@ -185,11 +185,11 @@ module Images
       end * "\n"
     end
 
-    def read_files
+    def read_files(profile_image_size = 90)
       # These are files we can open once for all the images we are generating within the loop.
       @background_image = MiniMagick::Image.open(TEMPLATE_PATH)
       @logo_image = MiniMagick::Image.open(@logo_url) if @logo_url.present?
-      image = @user&.profile_image_90.to_s
+      image = @user&.profile_image_url_for(length: profile_image_size).to_s
       author_image_url = image.start_with?("http") ? image : Images::Profile::BACKUP_LINK
       @author_image = MiniMagick::Image.open(author_image_url)
       @rounded_mask = MiniMagick::Image.open(ROUNDED_MASK_PATH)
