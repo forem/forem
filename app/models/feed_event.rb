@@ -12,7 +12,8 @@ class FeedEvent < ApplicationRecord
     impression: 0,
     click: 1,
     reaction: 2,
-    comment: 3
+    comment: 3,
+    extended_pageview: 4
   }
 
   CONTEXT_TYPE_HOME = "home".freeze
@@ -25,8 +26,8 @@ class FeedEvent < ApplicationRecord
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 
-  REACTION_SCORE_MULTIPLIER = 5
-  COMMENT_SCORE_MULTIPLIER = 10
+  REACTION_SCORE_MULTIPLIER = 6
+  COMMENT_SCORE_MULTIPLIER = 12
 
   validates :article_position, numericality: { only_integer: true, greater_than: 0 }
   validates :context_type, inclusion: { in: VALID_CONTEXT_TYPES }, presence: true
@@ -35,7 +36,7 @@ class FeedEvent < ApplicationRecord
   validates :user_id, numericality: { only_integer: true }, allow_nil: true
 
   def self.record_journey_for(user, article:, category:)
-    return unless %i[reaction comment].include?(category)
+    return unless %i[reaction comment extended_pageview].include?(category)
 
     last_click = where(user: user, category: :click).last
     return unless last_click&.article_id == article.id
@@ -67,19 +68,22 @@ class FeedEvent < ApplicationRecord
       clicks = FeedEvent.where(article_id: article_id, category: "click")
       reactions = FeedEvent.where(article_id: article_id, category: "reaction")
       comments = FeedEvent.where(article_id: article_id, category: "comment")
+      pageviews = FeedEvent.where(article_id: article_id, category: "extended_pageview")
 
       # Count the distinct users for impressions and each event type
       distinct_impressions_users = impressions.distinct.pluck(:user_id)
       distinct_clicks_users = clicks.distinct.pluck(:user_id)
       distinct_reactions_users = reactions.distinct.pluck(:user_id)
       distinct_comments_users = comments.distinct.pluck(:user_id)
+      distinct_pageviews_users = pageviews.distinct.pluck(:user_id)
 
       # Calculate score based on distinct users
       reactions_score = distinct_reactions_users.size * REACTION_SCORE_MULTIPLIER
       clicks_score = distinct_clicks_users.size # 1x multiplier for clicks
       comments_score = distinct_comments_users.size * COMMENT_SCORE_MULTIPLIER
+      pageviews_score = distinct_pageviews_users.size # 1x multiplier for extended pageviews
 
-      score = (clicks_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
+      score = (clicks_score + pageviews_score + reactions_score + comments_score).to_f / distinct_impressions_users.size
 
       # Update the article counters
       Article.where(id: article_id).update_all(
