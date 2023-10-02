@@ -2,7 +2,6 @@ module Admin
   class DataCounts
     Response = Struct.new(
       :open_abuse_reports_count,
-      :possible_spam_users_count,
       :flags_count,
       :flags_posts_count,
       :flags_comments_count,
@@ -18,13 +17,6 @@ module Admin
       open_abuse_reports_count =
         FeedbackMessage.open_abuse_reports.size
 
-      possible_spam_users_count = User.registered.where("length(name) > ?", 30)
-        .where("created_at > ?", 48.hours.ago)
-        .order(created_at: :desc)
-        .select(:username, :name, :id)
-        .where.not("username LIKE ?", "%spam_%")
-        .size
-
       flags = Reaction
         .includes(:user, :reactable)
         .where(status: "valid")
@@ -32,7 +24,6 @@ module Admin
         .privileged_category
       Response.new(
         open_abuse_reports_count: open_abuse_reports_count,
-        possible_spam_users_count: possible_spam_users_count,
         flags_count: flags.size,
         flags_posts_count: flags.where(reactable_type: "Article").size,
         flags_comments_count: flags.where(reactable_type: "Comment").size,
