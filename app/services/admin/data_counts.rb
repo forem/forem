@@ -21,7 +21,7 @@ module Admin
         .includes(:user, :reactable)
         .where(status: "valid")
         .live_reactable
-        .privileged_category
+        .where(category: "vomit")
       Response.new(
         open_abuse_reports_count: open_abuse_reports_count,
         flags_count: flags.size,

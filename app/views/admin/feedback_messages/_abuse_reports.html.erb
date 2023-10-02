@@ -22,8 +22,6 @@
       <div id="vomitReactionsBodyContainer" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
         <div class="crayons-card__body" style="overflow: scroll; max-height: 500px;">
           <% @vomits.each do |reaction| %>
-            <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-
             <div
               class="flex justify-between"
               data-controller="reaction"

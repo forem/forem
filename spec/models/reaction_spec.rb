@@ -334,26 +334,42 @@ RSpec.describe Reaction do
   end
 
   describe ".live_reactable" do
+    let(:moderator) { create(:user, :trusted) }
+
     it "returns reactions on articles where article is published" do
       article = create(:article, published: true)
-      reaction = create(:reaction, reactable: article)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
 
-      expect(described_class.live_reactable).to eq([reaction])
+      expect(described_class.live_reactable.to_a).to eq([reaction])
     end
 
     it "does not return reaction on articles where not published" do
       article = create(:article)
-      create(:reaction, reactable: article)
+      create(:vomit_reaction, user: moderator, reactable: article)
       article.update_column(:published, false)
 
-      expect(described_class.live_reactable).to eq([])
+      expect(described_class.live_reactable.to_a).to eq([])
     end
 
     it "returns reactions on comments" do
       comment = create(:comment)
-      reaction = create(:reaction, reactable: comment)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
 
       expect(described_class.live_reactable).to eq([reaction])
+    end
+
+    it "returns reactions to users" do
+      user = create(:user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([reaction])
+    end
+
+    it "does not return reactions to users who are deemed spam already" do
+      user = create(:user, username: "spam_400")
+      create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([])
     end
   end
 end
