@@ -7,7 +7,7 @@
 
 .mod-index-header {
   @media (min-width: $breakpoint-m) {
-    padding: var(--su-2) 0 var(--su-6);
+    padding: var(--su-2) 0 var(--su-2);
   }
 }
 
@@ -133,17 +133,24 @@
 
     .iframes-container {
       display: flex;
-      height: 650px;
+      height: 780px;
       width: 100%;
+      background-color: var(--base-0);
+      max-height: calc(100vh - 180px);
 
       .article-iframe {
         width: 100%;
-        height: 650px; // height is arbitrary, will be removed for modal-esque view
+        height: 780px; // height is arbitrary, will be removed for modal-esque view
+        max-height: calc(100vh - 180px);
+        border: 2px solid var(--base-40);
+        border-right: 0;
       }
 
       .actions-panel-iframe {
-        width: 60%;
-        height: 650px; // height is arbitrary, will be removed for modal-esque view
+        width: 40%;
+        height: 780px; // height is arbitrary, will be removed for modal-esque view
+        max-height: calc(100vh - 180px);
+        border: 2px solid var(--base-40);
       }
     }
   }

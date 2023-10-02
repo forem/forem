@@ -77,11 +77,13 @@
         <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
       </div>
     <% end %>
-    <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
-      <span class="additional-subtext-section py-3">
-        <%= t("views.moderations.actions.how") %>
-      </span>
-    </a>
+    <% unless is_mod_center %>
+      <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
+        <span class="additional-subtext-section py-3">
+          <%= t("views.moderations.actions.how") %>
+        </span>
+      </a>
+    <% end %>
   </div>
 
   <div class="other-things-container">

@@ -141,7 +141,11 @@ en:
         featured_past_day:
           one: '%{count} post from the past day is featured.'
           other: '%{count} posts from the past day are featured.'
-      all: All topics
+      feed:
+        inbox_filter: Inbox
+        latest_filter: Latest
+        inbox_html: <strong>Inbox</strong> is a chronological list of posts which have not yet been scrutinized by multiple mods or members.
+        latest_html: <strong>Latest</strong> shows all posts in chronological order regardless of whether they have been scrutinized. 
       article:
         approved: Approved
         author_id: Author ID
@@ -164,7 +168,7 @@ en:
         user_warned: User warned
         view_details: View details
       aside:
-        all: All topics
+        all: All tags
         code_of_conduct: Code of Conduct
         external: External link
         feedback:
