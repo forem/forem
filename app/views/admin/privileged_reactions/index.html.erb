@@ -40,7 +40,7 @@
           <% elsif reaction.reactable_type == "User" %>
             <%= link_to reaction.reactable.username, reaction.reactable.path %>
           <% elsif reaction.reactable_type == "Comment" %>
-            <%= link_to "#{reaction.reactable.user.username}'s Comment", reaction.reactable.path %>
+            <%= link_to "Comment", "/admin/content_manager/comments/#{reaction.reactable_id}" %>
           <% end %>
         </td>
         <td><%= reaction.created_at %></td>
