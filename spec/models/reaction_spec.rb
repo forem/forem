@@ -332,4 +332,28 @@ RSpec.describe Reaction do
       expect(described_class.readinglist_for_user(user).pluck(:reactable_id)).to contain_exactly(article.id)
     end
   end
+
+  describe ".live_reactable" do
+    it "returns reactions on articles where article is published" do
+      article = create(:article, published: true)
+      reaction = create(:reaction, reactable: article)
+
+      expect(described_class.live_reactable).to eq([reaction])
+    end
+
+    it "does not return reaction on articles where not published" do
+      article = create(:article)
+      create(:reaction, reactable: article)
+      article.update_column(:published, false)
+
+      expect(described_class.live_reactable).to eq([])
+    end
+
+    it "returns reactions on comments" do
+      comment = create(:comment)
+      reaction = create(:reaction, reactable: comment)
+
+      expect(described_class.live_reactable).to eq([reaction])
+    end
+  end
 end

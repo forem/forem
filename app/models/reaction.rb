@@ -38,6 +38,15 @@ class Reaction < ApplicationRecord
   scope :from_user, ->(user) { where(user: user) }
   scope :readinglist_for_user, ->(user) { readinglist.unarchived.only_articles.from_user(user) }
   scope :distinct_categories, -> { select("distinct(reactions.category) as category, reactable_id, reactable_type") }
+  scope :live_reactable, lambda {
+    joins("LEFT JOIN articles ON reactions.reactable_id = articles.id AND reactions.reactable_type = 'Article'")
+      .where("
+          CASE
+            WHEN reactions.reactable_type = 'Article' THEN articles.published = TRUE
+            ELSE TRUE
+          END
+        ")
+  }
 
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
