@@ -57,7 +57,6 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:user_subscription_tag_available?).to(:authorizer) }
     it { is_expected.to delegate_method(:vomited_on?).to(:authorizer) }
     it { is_expected.to delegate_method(:warned?).to(:authorizer) }
-    it { is_expected.to delegate_method(:workshop_eligible?).to(:authorizer) }
   end
 
   describe "validations" do

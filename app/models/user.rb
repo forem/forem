@@ -451,7 +451,6 @@ class User < ApplicationRecord
     :user_subscription_tag_available?,
     :vomited_on?,
     :warned?,
-    :workshop_eligible?,
     to: :authorizer,
   )
   alias suspended suspended?
