@@ -332,4 +332,44 @@ RSpec.describe Reaction do
       expect(described_class.readinglist_for_user(user).pluck(:reactable_id)).to contain_exactly(article.id)
     end
   end
+
+  describe ".live_reactable" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns reactions on articles where article is published" do
+      article = create(:article, published: true)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.live_reactable.to_a).to eq([reaction])
+    end
+
+    it "does not return reaction on articles where not published" do
+      article = create(:article)
+      create(:vomit_reaction, user: moderator, reactable: article)
+      article.update_column(:published, false)
+
+      expect(described_class.live_reactable.to_a).to eq([])
+    end
+
+    it "returns reactions on comments" do
+      comment = create(:comment)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      expect(described_class.live_reactable).to eq([reaction])
+    end
+
+    it "returns reactions to users" do
+      user = create(:user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([reaction])
+    end
+
+    it "does not return reactions to users who are deemed spam already" do
+      user = create(:user, username: "spam_400")
+      create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([])
+    end
+  end
 end
