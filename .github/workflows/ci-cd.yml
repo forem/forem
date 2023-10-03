@@ -31,28 +31,17 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Look up if node_module cache exist
-        id: cache
-        uses: actions/cache/restore@v3
-        with:
-          lookup-only: true
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-
-        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
-        if: steps.cache.outputs.cache-hit != 'true'
         with:
           node-version: 16
           cache: yarn
       - run: yarn install --immutable
-        if: steps.cache.outputs.cache-hit != 'true'
       - name: Look up if compiled assets exist
         uses: actions/cache@v3
         id: precompiled-asset
@@ -64,20 +53,6 @@ jobs:
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v2-
-      - name: Cache node_modules
-        uses: actions/cache/restore@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 16
-          cache: yarn
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - run: yarn install --immutable
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
 
