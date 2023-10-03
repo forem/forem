@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_12_220412) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1215,6 +1215,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_12_220412) do
     t.integer "badge_achievements_count", default: 0, null: false
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
+    t.string "browser_accept_language"
+    t.datetime "browser_accept_language_updated_at"
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
