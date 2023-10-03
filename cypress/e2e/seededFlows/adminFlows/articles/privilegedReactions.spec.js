@@ -136,7 +136,8 @@ describe('Article flagged by an admin user', () => {
 
     cy.wait('@request');
 
-    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    cy.get('.flex .c-indicator').as('flagStatus');
+    cy.get('@flagStatus').should('be.visible');
     cy.get('@flagStatus').should('contain', 'Invalid');
   });
 });
