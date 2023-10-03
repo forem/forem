@@ -2,7 +2,7 @@
 uk-UA:
   views:
     moderations:
-      heading: Mod Center
+      heading: Центр модерації
       actions:
         meta:
           title: Moderating %{title}

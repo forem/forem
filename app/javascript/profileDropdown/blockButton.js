@@ -45,10 +45,10 @@ export function initBlock() {
 
   function block() {
     const confirmBlock = window.confirm(
-      `Are you sure you want to block this person? This will:
-      - prevent them from commenting on your posts
-      - block all notifications from them
-      - hide their posts from your feed`,
+      `Ви впевнені, що хочете заблокувати цю особу? Це:
+      - заборонить їй коментувати ваші дописи
+      - заблокує всі сповіщення від неї
+      - сховає її дописи з вашої стрічки.`,
     );
     if (confirmBlock) {
       fetch(`/user_blocks`, {

@@ -177,7 +177,7 @@ RSpec.describe "ArticlesUpdate" do
       attributes[:published] = true
       put "/articles/#{article.id}", params: { article: attributes }
       article.reload
-      published_at_utc = article.published_at.in_time_zone("Europe/Kiev").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = article.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
       expect(published_at_utc).to eq("#{tomorrow.strftime('%m/%d/%Y')} 15:00")
     end
 
@@ -199,7 +199,7 @@ RSpec.describe "ArticlesUpdate" do
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }
       draft.reload
-      published_at_utc = draft.published_at.in_time_zone("Europe/Kiev").strftime("%m/%d/%Y %H:%M")
+      published_at_utc = draft.published_at.in_time_zone("Kyiv").strftime("%m/%d/%Y %H:%M")
       draft.published_at.in_time_zone(attributes[:timezone])
       expected_time = "#{(tomorrow + 1.day).strftime('%m/%d/%Y')} 00:00"
       expect(published_at_utc).to eq(expected_time)
@@ -218,7 +218,7 @@ RSpec.describe "ArticlesUpdate" do
 
   context "when setting published_at in editor v1" do
     it "updates published_at from scheduled to scheduled with timezone" do
-      published_at = 3.days.from_now.in_time_zone("Asia/Dhaka")
+      published_at = 3.days.from_now.in_time_zone("Kyiv")
       article.update_columns(published: true, published_at: 1.day.from_now)
       body_markdown = "---\ntitle: super-article\npublished: true\ndescription:\ntags: heytag
       \npublished_at: #{published_at.strftime('%Y-%m-%d %H:%M %z')}\n---\n\nHey this is the article"

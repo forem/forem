@@ -11,8 +11,8 @@ function addFlagUserBehavior(flagButton) {
   function flag() {
     const confirmFlag = window.confirm(
       isUserFlagged
-        ? 'Are you sure you want to unflag this person? This will make all of their posts visible again.'
-        : 'Are you sure you want to flag this person? This will make all of their posts less visible.',
+        ? 'Ви дійсно хочете зняти позначку шадоубану з цієї людини? Це зробить всі її публікації знову видимими'
+        : 'Ви впевнені, що хочете позначити цю людину як шкідливу чи нецікаву для спільноти? Це зробить всі її дописи менш помітними.',
     );
 
     if (confirmFlag) {
