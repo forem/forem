@@ -165,10 +165,6 @@ module Authorizer
       has_role?(:warned)
     end
 
-    def workshop_eligible?
-      has_any_role?(:workshop_pass)
-    end
-
     def clear_cache
       remove_instance_variable(:@trusted) if defined? @trusted
     end

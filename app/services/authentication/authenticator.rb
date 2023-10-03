@@ -51,6 +51,7 @@ module Authentication
                else
                  update_user(user)
                end
+        user.set_initial_roles!
 
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?

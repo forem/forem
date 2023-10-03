@@ -57,7 +57,6 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:user_subscription_tag_available?).to(:authorizer) }
     it { is_expected.to delegate_method(:vomited_on?).to(:authorizer) }
     it { is_expected.to delegate_method(:warned?).to(:authorizer) }
-    it { is_expected.to delegate_method(:workshop_eligible?).to(:authorizer) }
   end
 
   describe "validations" do
@@ -660,6 +659,69 @@ RSpec.describe User do
       classes = "dark-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
+    end
+  end
+
+  describe "#set_initial_roles!" do
+    it "adds creator roles if waiting on first user" do
+      allow(Settings::General).to receive(:waiting_on_first_user).and_return(true)
+
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).to be_creator
+      expect(user).to be_super_admin
+      expect(user).to be_trusted
+      expect(user).not_to be_limited
+    end
+
+    it "does not add any roles if not waiting on first user" do
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).not_to be_creator
+      expect(user).not_to be_super_admin
+      expect(user).not_to be_trusted
+      expect(user).not_to be_limited
+    end
+
+    it "adds the limited role to a new user if the new user status setting is limited" do
+      allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+
+      user = create(:user)
+      user.set_initial_roles!
+
+      expect(user).not_to be_creator
+      expect(user).not_to be_super_admin
+      expect(user).not_to be_trusted
+      expect(user).to be_limited
+    end
+
+    it "does not change any roles if the user is not a new user" do
+      create(:user, :trusted, email: "trusted-user@forem.test")
+
+      # Now considered an already existing record to ActiveRecord
+      user = described_class.find_by(email: "trusted-user@forem.test")
+      expect(UserRole.count).to eq(1)
+
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+      expect(user).to be_trusted
+    end
+
+    it "does not change any roles if the user is not valid" do
+      user = create(:user, :tag_moderator)
+      expect(UserRole.count).to eq(1)
+
+      user.username = ""
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
+      expect(user).to be_tag_moderator
+    end
+
+    it "does nothing if the user has not been persisted" do
+      user = build(:user)
+      expect(UserRole.count).to eq(0)
+
+      expect { user.set_initial_roles! }.not_to change(UserRole, :count)
     end
   end
 

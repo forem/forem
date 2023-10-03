@@ -76,8 +76,9 @@ describe('Upload image', () => {
       cy.get('@editorBody').should('have.value', '\n');
 
       // Mouseover on snackbar ensures it remains readable for test duration
-      cy.findByTestId('snackbar')
-        .trigger('mouseover')
+      cy.findByTestId('snackbar').as('snackbar');
+      cy.get('@snackbar').trigger('mouseover');
+      cy.get('@snackbar')
         .findByRole('alert')
         .should('have.text', 'The user aborted a request.');
     });
@@ -101,8 +102,9 @@ describe('Upload image', () => {
       cy.get('@editorBody').should('have.value', '\n');
 
       // Mouseover on snackbar ensures it remains readable for test duration
-      cy.findByTestId('snackbar')
-        .trigger('mouseover')
+      cy.findByTestId('snackbar').as('snackbar');
+      cy.get('@snackbar').trigger('mouseover');
+      cy.get('@snackbar')
         .findByRole('alert')
         .should('have.text', 'Error message');
     });
@@ -112,9 +114,8 @@ describe('Upload image', () => {
 
       cy.findByLabelText('Post Content').as('editorBody');
       // Type some text and place the cursor between one & two
-      cy.get('@editorBody')
-        .clear()
-        .type('one two{leftarrow}{leftarrow}{leftarrow}');
+      cy.get('@editorBody').clear();
+      cy.get('@editorBody').type('one two{leftarrow}{leftarrow}{leftarrow}');
 
       cy.findByLabelText(/Upload image/, { selector: 'button' }).click();
       cy.findByLabelText(/Upload image/, { selector: 'input' }).attachFile(

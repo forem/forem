@@ -90,6 +90,9 @@ Rails.application.configure do
   if (uffizzi_url = ENV.fetch("UFFIZZI_URL", nil))
     config.hosts << /.*#{URI.parse(uffizzi_url).host}/
   end
+
+  config.hosts << "www.example.com"
+
   config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:3000")
 
   config.action_mailer.delivery_method = :smtp

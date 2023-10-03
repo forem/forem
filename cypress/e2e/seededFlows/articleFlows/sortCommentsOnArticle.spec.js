@@ -12,10 +12,10 @@ describe('Sort Comments in an Article', () => {
   });
 
   it('clicking on sort comments button should open and close dropdown menu', () => {
-    cy.findByRole('button', { name: 'Sort comments' })
-      .should('have.attr', 'aria-expanded', 'false')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.findByRole('button', { name: 'Sort comments' }).as('sortButton');
+    cy.get('@sortButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@sortButton').click();
+    cy.get('@sortButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('navigation', { name: 'Sort discussion:' }).within(() => {
       cy.findByRole('link', { name: /Top/ });

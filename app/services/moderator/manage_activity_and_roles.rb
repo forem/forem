@@ -29,7 +29,6 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role(:workshop_pass)
       remove_mod_roles
       remove_tag_moderator_role
     end
@@ -135,6 +134,7 @@ module Moderator
     end
 
     def remove_negative_roles
+      user.remove_role(:limited) if user.limited?
       user.remove_role(:suspended) if user.suspended?
       user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?

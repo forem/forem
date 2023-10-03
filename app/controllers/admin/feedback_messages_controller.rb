@@ -3,13 +3,21 @@ module Admin
     layout "admin"
 
     def index
+      reconcile_ransack_params
       @q = FeedbackMessage.includes(:reporter, :offender, :affected)
         .order(created_at: :desc)
         .ransack(params[:q])
       @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+      @feedback_messages = if params[:status] == "Resolved"
+                             @feedback_messages.where(status: "Resolved")
+                           elsif params[:status] == "Invalid"
+                             @feedback_messages = @feedback_messages.where(status: "Invalid")
+                           else
+                             @feedback_messages = @feedback_messages.where(status: "Open")
+                           end
 
       @feedback_type = params[:state] || "abuse-reports"
-      @status = params[:status] || "Open"
+      @status = params[:status].presence || "Open"
 
       @email_messages = EmailMessage.find_for_reports(@feedback_messages)
 
@@ -77,6 +85,7 @@ module Admin
                       end
       q = Reaction.includes(:user, :reactable)
         .where(category: "vomit", status: status)
+        .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
         .order(updated_at: :desc)
         .limit(limit)
@@ -109,6 +118,13 @@ module Admin
         :id, :status, :reviewer_id,
         note: %i[content reason noteable_id noteable_type author_id]
       )
+    end
+
+    def reconcile_ransack_params
+      if (params[:q] && params.dig(:q, :status_eq).blank?) && params[:status].present?
+        params[:q][:status_eq] = params[:status]
+      end
+      params[:status] = params[:q][:status_eq] if params[:q].present? # ransack
     end
   end
 end
