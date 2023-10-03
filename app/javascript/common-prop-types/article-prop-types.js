@@ -9,7 +9,6 @@ export const articlePropTypes = PropTypes.shape({
   title: PropTypes.string.isRequired,
   path: PropTypes.string.isRequired,
   cloudinary_video_url: PropTypes.string,
-  main_image: PropTypes.string,
   video_duration_in_minutes: PropTypes.string,
   type_of: PropTypes.oneOf(['podcast_episodes']),
   class_name: PropTypes.oneOf(['PodcastEpisode', 'User', 'Article']),

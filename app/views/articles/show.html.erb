@@ -122,7 +122,7 @@
                           start: tag("span", { class: "color-base-60" }, true),
                           end: "</span>".html_safe,
                           org: tag.a(@organization.name, href: @organization.path, class: "crayons-link")) %>
-                  <% end %>
+                  <% end %> 
                   <p class="fs-xs color-base-60">
                     <% if @article.published_timestamp.present? %>
                       <%= t("views.articles.#{@article.current_state}_html", date: local_date(@article.published_timestamp, show_year: @article.displayable_published_at.year != Time.current.year)) %>
