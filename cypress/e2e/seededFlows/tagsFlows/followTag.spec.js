@@ -103,12 +103,11 @@ describe('Follow tag', () => {
       cy.get('@user').then((user) => {
         cy.loginAndVisit(user, '/t/tag1').then(() => {
           cy.findByRole('heading', { name: '# tag1' });
-          cy.get('[data-follow-clicks-initialized]');
         });
       });
     });
 
-    it('follows and unfollows a tag from the tag feed page', () => {
+    it('follows and unfollows a tag', () => {
       cy.intercept('/follows').as('followsRequest');
       cy.findByRole('button', { name: 'Follow tag: tag1' }).as('followButton');
 
@@ -116,11 +115,62 @@ describe('Follow tag', () => {
       cy.wait('@followsRequest');
 
       cy.get('@followButton').should('have.text', 'Following');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
+
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have followed tag1.');
+      });
 
       cy.get('@followButton').click();
       cy.wait('@followsRequest');
 
       cy.get('@followButton').should('have.text', 'Follow');
+      cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
+
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have unfollowed tag1.');
+      });
+    });
+
+    it('hides and unhides a tag', () => {
+      cy.intercept('/follows').as('followsRequest');
+      cy.findByRole('button', { name: 'Follow tag: tag1' }).as(
+        'toBeHiddenFollowButton',
+      );
+      cy.findByRole('button', { name: 'Hide tag: tag1' }).as('hideButton');
+
+      cy.get('@hideButton').click();
+      cy.wait('@followsRequest');
+
+      // clicking on 'Hide' should change it to an 'Unhide'
+      // and remove the Follow button
+      cy.get('@hideButton').should('have.text', 'Unhide');
+      cy.get('@toBeHiddenFollowButton').should('not.exist');
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have hidden tag1.');
+      });
+
+      // clicking on 'Unhide' should change it back to 'Hide'
+      // and show a 'Follow' button
+      cy.get('@hideButton').click();
+      cy.wait('@followsRequest');
+
+      cy.get('@hideButton').should('have.text', 'Hide');
+      cy.get('@toBeHiddenFollowButton').should('not.exist');
+
+      cy.findByRole('button', { name: 'Follow tag: tag1' }).as(
+        'toBeShownFollowButton',
+      );
+      cy.get('@toBeShownFollowButton').should('exist');
+      cy.get('@toBeShownFollowButton').should('have.text', 'Follow');
+      cy.get('@toBeShownFollowButton').should(
+        'have.attr',
+        'aria-pressed',
+        'false',
+      );
+      cy.findByTestId('snackbar').within(() => {
+        cy.findByRole('alert').should('have.text', 'You have unhidden tag1.');
+      });
     });
   });
 });

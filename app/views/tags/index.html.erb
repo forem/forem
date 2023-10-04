@@ -53,7 +53,7 @@
   <% else %>
     <div class="grid gap-3 m:gap-4 l:gap-4 m:grid-cols-2 l:grid-cols-4 px-3 m:px-0 pb-3" data-follow-button-container="true">
       <% @tags.includes([:badge]).each do |tag| %>
-        <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="tag-card crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
+        <div data-tag-id="<%= tag.id %>" data-tag-name="<%= tag.name %>" id="tag-<%= tag.id %>" class="js-tag-card tag-card crayons-card p-3 pt-2 m:p-5 m:pt-4 relative flex flex-col">
           <div>
             <div class="mb-1 flex items-center justify-between">
               <h4 class="-ml-2">
@@ -68,12 +68,12 @@
           <div id="tag-buttons-<%= tag.id %>" class="mt-auto flex items-end justify-between">
             <div class="flex gap-2">
               <button
-                class="c-btn c-btn--primary follow-action-button"
+                class="c-btn c-btn--primary js-follow-tag-button"
                 aria-label="<%= t("views.tags.aria_labels.follow", tag_name: tag.name) %>">
                 <%= t("views.tags.follow") %>
               </button>
               <button
-                class="c-btn hide-action-button"
+                class="c-btn js-hide-tag-button"
                 aria-label="<%= t("views.tags.aria_labels.hide", tag_name: tag.name) %>">
                 <%= t("views.tags.hide") %>
               </button>
@@ -89,4 +89,4 @@
   <% end %>
 </main>
 
-<%= javascript_packs_with_chunks_tag "TagsIndex", defer: true %>
+<%= javascript_packs_with_chunks_tag "tagFollows", defer: true %>

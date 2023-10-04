@@ -83,6 +83,12 @@ RSpec.describe CommentPolicy, type: :policy do
           .for_action(:moderator_create)
       end
     end
+
+    context "when user is trusted" do
+      before { user.add_role(:trusted) }
+
+      it { is_expected.to permit_actions(%i[moderator_create]) }
+    end
   end
 
   context "when user is the author" do

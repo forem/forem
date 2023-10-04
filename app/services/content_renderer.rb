@@ -1,4 +1,4 @@
-# renders markdown for Articles, Billboards, Comments
+# renders markdown for Articles, Billboards, Comments, Onboarding newsletter content
 class ContentRenderer
   Result = Struct.new(:front_matter, :reading_time, :processed_html, keyword_init: true)
 
@@ -9,10 +9,10 @@ class ContentRenderer
   end
 
   # @param input [String] body_markdown to process
-  # @param source [Article, Comment, Billboard]
+  # @param source [optional, possibly Article, Comment, Billboard]
   # @param user [User, NilClass] article's or comment's user, nil for Billboard
   # @param fixer [Object] fixes the input markdown
-  def initialize(input, source:, user: nil, fixer: MarkdownProcessor::Fixer::FixAll)
+  def initialize(input, source: nil, user: nil, fixer: MarkdownProcessor::Fixer::FixAll)
     @input = input || ""
     @source = source
     @user = user

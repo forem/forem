@@ -288,6 +288,7 @@ body {
   }
 
   pre:not(.highlight),
+  div:not(.highlight) > pre.highlight,
   div.highlight {
     margin: 0 0 var(--content-rhythm) 0;
   }

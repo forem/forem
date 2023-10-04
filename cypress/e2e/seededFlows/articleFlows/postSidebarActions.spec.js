@@ -91,7 +91,7 @@ describe('Post sidebar actions', () => {
       const comments = $comments[0];
       const originalScroll = comments.scrollIntoView.bind(comments);
       cy.stub(comments, 'scrollIntoView').callsFake(() => originalScroll());
-
+      /* eslint-disable-next-line cypress/unsafe-to-chain-command */
       cy.findByRole('button', { name: 'Jump to Comments' })
         .click()
         .then(() => {

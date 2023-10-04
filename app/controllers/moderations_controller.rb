@@ -1,6 +1,9 @@
 class ModerationsController < ApplicationController
   after_action :verify_authorized
 
+  SCORE_MIN = -10
+  SCORE_MAX = 5
+
   JSON_OPTIONS = {
     only: %i[id title published_at cached_tag_list path],
     include: {
@@ -12,9 +15,17 @@ class ModerationsController < ApplicationController
     skip_authorization
     return unless current_user&.trusted?
 
+    @feed = params[:state] == "latest" ? "latest" : "inbox"
     articles = Article.published
       .order(published_at: :desc).limit(70)
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
+    if @feed == "inbox"
+      articles = articles
+        .joins("LEFT OUTER JOIN reactions ON articles.id = reactions.reactable_id AND
+               reactions.reactable_type = 'Article' AND reactions.user_id = #{current_user.id}")
+        .where("articles.score >= ? AND articles.score <= ?", SCORE_MIN, SCORE_MAX)
+        .where(reactions: { id: nil })
+    end
     if params[:state] == "new-authors"
       articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?",
                                 7.days.ago)
