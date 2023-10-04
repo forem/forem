@@ -12,5 +12,7 @@ end
 
 chdir APP_ROOT do
   puts "== STARTING UP =="
-  system! "foreman start -f Procfile.dev"
+  # Foreman .env load behavior is at odds with dotenv
+  # https://github.com/ddollar/foreman/issues/702#issuecomment-1227334155
+  system! "foreman start -f Procfile.dev --env=/dev/null"
 end

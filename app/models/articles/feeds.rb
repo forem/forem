@@ -89,6 +89,21 @@ module Articles
                      label: "Order by conflating a random number and the score (see forem/forem#16128)",
                      order_by_fragment: "article_relevancies.randomized_value " \
                                         "^ (1.0 / greatest(articles.score, 0.1)) DESC")
+      order_by_lever(:final_order_by_feed_success_score,
+                     label: "Order by feed success score",
+                     order_by_fragment: "articles.feed_success_score DESC")
+
+      order_by_lever(:final_order_by_feed_success_score_and_primary_score,
+                     label: "Order by feed success score and primary score",
+                     order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")
+
+      order_by_lever(:final_order_by_feed_success_score_and_log_of_primary_score,
+                     label: "Order by feed success score and log of primary score",
+                     order_by_fragment: "((feed_success_score + 0.01) * LOG(GREATEST(score, 1))) DESC")
+
+      order_by_lever(:final_order_by_feed_success_score_and_log_of_comment_score,
+                     label: "Order by feed success score and log of comment_score",
+                     order_by_fragment: "((feed_success_score + 0.01) * LOG(GREATEST(comment_score, 1))) DESC")
 
       order_by_lever(:published_at_with_randomization_favoring_public_reactions,
                      label: "Favor recent articles with more reactions, " \
@@ -340,6 +355,18 @@ module Articles
                       user_required: false,
                       select_fragment: "articles.score",
                       group_by_fragment: "articles.score")
+      relevancy_lever(:language_match,
+                      label: "Weight to give based on whether the language matches any of the user's languages",
+                      range: "[0..1]", # 0 for no match, 1 for match
+                      user_required: true,
+                      select_fragment: "CASE
+                                         WHEN COUNT(user_languages.language) = 0 THEN 0
+                                         WHEN articles.language = ANY(array_agg(user_languages.language)) THEN 1
+                                         ELSE 0
+                                        END",
+                      joins_fragments: ["LEFT OUTER JOIN user_languages
+                                         ON user_languages.user_id = :user_id"],
+                      group_by_fragment: "articles.language")
     end
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength

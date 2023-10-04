@@ -38,6 +38,17 @@ class Reaction < ApplicationRecord
   scope :from_user, ->(user) { where(user: user) }
   scope :readinglist_for_user, ->(user) { readinglist.unarchived.only_articles.from_user(user) }
   scope :distinct_categories, -> { select("distinct(reactions.category) as category, reactable_id, reactable_type") }
+  scope :live_reactable, lambda {
+    joins("LEFT JOIN articles ON reactions.reactable_id = articles.id AND reactions.reactable_type = 'Article'")
+      .joins("LEFT JOIN users ON reactions.reactable_id = users.id AND reactions.reactable_type = 'User'")
+      .where("
+          CASE
+            WHEN reactions.reactable_type = 'Article' THEN articles.published = TRUE
+            WHEN reactions.reactable_type = 'User' THEN users.username NOT LIKE 'spam_%'
+            ELSE TRUE
+          END
+        ")
+  }
 
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -195,7 +206,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
+    return false if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
     negative? && !user.trusted?
   end

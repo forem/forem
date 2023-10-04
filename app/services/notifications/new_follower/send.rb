@@ -21,8 +21,8 @@ module Notifications
       delegate :user_data, to: Notifications
 
       def call
-        recent_follows = Follow.where(followable_type: followable_type, followable_id: followable_id)
-          .where("created_at > ?", 24.hours.ago).order(created_at: :desc)
+        recent_follows = Follow.non_suspended(followable_type, followable_id)
+          .where("follows.created_at > ?", 24.hours.ago).order(created_at: :desc)
 
         notification_params = { action: "Follow" }
         case followable_type

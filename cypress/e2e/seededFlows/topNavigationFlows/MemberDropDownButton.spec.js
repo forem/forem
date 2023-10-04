@@ -10,10 +10,9 @@ describe('Member Menu Dropdown', () => {
 
   it('clicking on User Avatar should open and close User Dropdown menu', () => {
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
-    cy.get('@menuButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@menuButton').click();
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.get('#crayons-header__menu__dropdown__list').within(() => {
       cy.findByRole('link', {
@@ -27,18 +26,16 @@ describe('Member Menu Dropdown', () => {
       cy.findByRole('link', { name: 'Sign Out' });
     });
 
-    cy.get('@menuButton')
-      .click()
-      .should('have.attr', 'aria-expanded', 'false')
-      .should('have.focus');
+    cy.get('@menuButton').click();
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@menuButton').should('have.focus');
   });
 
   it('pressing escape should close the User Dropdown menu', () => {
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
-    cy.get('@menuButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@menuButton').click();
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('link', { name: 'Dashboard' })
       .as('dashboard')
@@ -51,14 +48,12 @@ describe('Member Menu Dropdown', () => {
 
   it('closes menu on click outside', () => {
     cy.findByRole('button', { name: 'Navigation menu' }).as('menuButton');
-    cy.get('@menuButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@menuButton').click();
+    cy.get('@menuButton').should('have.attr', 'aria-expanded', 'true');
 
-    cy.findByRole('link', { name: 'Dashboard' })
-      .as('dashboard')
-      .should('be.visible');
+    cy.findByRole('link', { name: 'Dashboard' }).as('dashboard');
+    cy.get('@dashboard').should('be.visible');
 
     cy.get('body').click('topLeft');
 

@@ -361,7 +361,7 @@ RSpec.describe Billboard do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("NOT-REAL is not a supported ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("NOT-REAL is not an enabled target ISO 3166-2 code")
       end
     end
 
@@ -370,7 +370,45 @@ RSpec.describe Billboard do
 
       it "does not permit them" do
         expect(billboard).not_to be_valid
-        expect(billboard.errors_as_sentence).to include("CA-FAKE is not a supported ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("CA-FAKE is not an enabled target ISO 3166-2 code")
+      end
+    end
+
+    context "with valid ISO 3166-2 country codes that are not enabled" do
+      let(:geo_input) { %w[MX NG] }
+
+      it "does not permit them" do
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("MX is not an enabled target ISO 3166-2 code")
+        expect(billboard.errors_as_sentence).to include("NG is not an enabled target ISO 3166-2 code")
+      end
+    end
+
+    context "with countries that don't have region targeting enabled" do
+      let(:geo_input) { %w[FR-BRE NL GB US-CA] }
+      let(:enabled_countries) do
+        {
+          "US" => :with_regions,
+          "FR" => :without_regions,
+          "NL" => :without_regions,
+          "GB" => :without_regions
+        }
+      end
+
+      it "permits country-level targets but not region-level ones" do
+        allow(Settings::General).to receive(:billboard_enabled_countries).and_return(enabled_countries)
+
+        expect(billboard).not_to be_valid
+        expect(billboard.errors_as_sentence).to include("FR-BRE is not an enabled target ISO 3166-2 code")
+
+        # Remove faulty region targeting
+        billboard.target_geolocations = %w[FR NL GB US-CA]
+        expect(billboard).to be_valid
+
+        # Allow French region targeting
+        enabled_countries["FR"] = :with_regions
+        billboard.target_geolocations = geo_input
+        expect(billboard).to be_valid
       end
     end
   end
@@ -491,6 +529,41 @@ RSpec.describe Billboard do
 
     it "includes both priority to be proper size when two qualifying ads exist" do
       expect(described_class.seldom_seen("sidebar_left").size).to be 2
+    end
+  end
+
+  describe ".weighted_random_selection" do
+    it "samples with weights correctly" do
+      described_class.delete_all
+      bb1 = create(:billboard, weight: 5)
+      bb2 = create(:billboard, weight: 1)
+      bb3 = create(:billboard, weight: 1)
+      bb4 = create(:billboard, weight: 2)
+      bb5 = create(:billboard, weight: 1)
+
+      total_weight = 5 + 1 + 1 + 2 + 1 # 10
+      expected_probabilities = {
+        bb1.id => 5.0 / total_weight,
+        bb2.id => 1.0 / total_weight,
+        bb3.id => 1.0 / total_weight,
+        bb4.id => 2.0 / total_weight,
+        bb5.id => 1.0 / total_weight
+      }
+
+      counts = Hash.new(0)
+      num_trials = 5_000
+
+      num_trials.times do
+        id = described_class.weighted_random_selection(described_class.all).id
+        counts[id] += 1
+      end
+
+      counts.each do |id, count|
+        observed_probability = count.to_f / num_trials
+        expected_probability = expected_probabilities[id]
+
+        expect(observed_probability).to be_within(0.025).of(expected_probability)
+      end
     end
   end
 end

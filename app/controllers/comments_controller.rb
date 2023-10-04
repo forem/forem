@@ -56,6 +56,7 @@ class CommentsController < ApplicationController
         render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
         return
       end
+      record_feed_event
       render partial: "comments/comment", formats: :json
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
@@ -90,7 +91,7 @@ class CommentsController < ApplicationController
     return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
-    authorize response_template, :moderator_create?
+    authorize response_template, :use_template_for_moderator_comment?
 
     moderator = User.find(Settings::General.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
@@ -273,6 +274,15 @@ class CommentsController < ApplicationController
     else
       @root_comment
     end
+  end
+
+  def record_feed_event
+    article = @comment.commentable if @comment.commentable.is_a?(Article)
+    return unless article
+
+    FeedEvent.record_journey_for(current_user,
+                                 article: article,
+                                 category: :comment)
   end
 
   def set_user

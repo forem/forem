@@ -49,6 +49,7 @@ en:
         draft: Draft
         scheduled: Scheduled
         scheduled_at: 'Scheduled:'
+        language: 'Language:'
         reactions:
           title: Reactions
           icon: Reactions
@@ -94,6 +95,7 @@ en:
         archive: Archive post
         unarchive: Unarchive post
         author: Author
+        co_authors: Co-authors
         author_is: 'AUTHOR: '
         save: Save
         submit: Submit author change

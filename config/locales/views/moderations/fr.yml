@@ -19,7 +19,11 @@ fr:
           icon: Ajuster les étiquettes
           add: Ajouter une étiquette
           add_placeholder: Ajouter une étiquette
-          reason: 
+          previous: Ajustements des étiquettes précédents
+          history:
+            added_by: ajouté par
+            removed_by: supprimé par
+          reason:
             remove_tag: Raison de supprimer la balise
             add_tag: Raison d'ajouter la balise (optionnel)
           remove: Retirer l'étiquette
@@ -32,6 +36,8 @@ fr:
             header: Ajouter une nouvelle balise
             button_text: Ajouter une nouvelle balise
             icon: Ajouter une étiquette
+        cannot_add_admin_adjusted_tag_html: La balise aurait ajoutée par l'Admin. Vous pouvez pas la supprimer maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}.
+        cannot_remove_admin_adjusted_tag_html: La balise aurait supprimée par l'Admin. Vous pouvez pas l'ajouter maintenant. Si vous pensez que c'est une erreur, veuillez nous contacter à %{support_email}.
         approve:
           add: Marquer comme approuvé
           remove: Retirer l'approbation
@@ -134,7 +140,11 @@ fr:
         featured_past_day:
           one: '%{count} des articles de la journée précédente sont mis en avant.'
           other: '%{count} des articles de la journée précédente sont mis en avant.'
-      all: Tous les sujets
+      feed:
+        inbox_filter: Inbox
+        latest_filter: Récent
+        inbox_html: <strong>Inbox</strong> est une liste chronologique des publications qui n'ont pas encore été examinées par plusieurs modérateurs ou membres.
+        latest_html: <strong>Récent</strong> montre tous les posts dans l'ordre chronologique, indépendamment de s'ils ont été examinés ou non.
       article:
         approved: Approuvée
         author_id: Identifiant de l'auteur

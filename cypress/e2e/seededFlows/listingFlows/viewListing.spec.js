@@ -55,14 +55,16 @@ describe('View listing', () => {
     cy.findByRole('main')
       .findByRole('link', { name: 'Listing title' })
       .as('listingTitle');
-    cy.get('@listingTitle').focus().click();
+    cy.get('@listingTitle').focus();
+    cy.get('@listingTitle').click();
 
     cy.findByTestId('listings-modal').as('listingsModal');
     cy.get('@listingsModal')
       .findByRole('link', { name: 'cfp' })
       .as('listingCategory');
 
-    cy.get('@listingCategory').focus().click();
+    cy.get('@listingCategory').focus();
+    cy.get('@listingCategory').click();
 
     cy.findByTestId('listings-modal').should('not.exist');
     cy.get('@listingTitle').should('be.focused');

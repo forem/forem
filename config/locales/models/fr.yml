@@ -41,7 +41,7 @@ fr:
         experience4: Have experience level four
         experience5: Have experience level five
     billboard:
-      invalid_location: "%{location} n'est pas un code pris en charge de la norme ISO 3166-2"
+      invalid_location: "%{location} n'est pas un code cible activé de la norme ISO 3166-2"
     broadcast:
       single_active: Vous ne pouvez avoir qu'une seule diffusion d'annonce active
     comment:

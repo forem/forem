@@ -1,8 +1,12 @@
 function openOptionsMenu(callback) {
-  cy.findAllByRole('button', { name: 'Options' })
-    .first()
-    .should('have.attr', 'aria-haspopup', 'true')
-    .should('have.attr', 'aria-expanded', 'false')
+  cy.findAllByRole('button', { name: 'Options' }).first().as('option');
+  cy.get('@option').should('have.attr', 'aria-haspopup', 'true');
+  cy.get('@option').should('have.attr', 'aria-expanded', 'false');
+  // Can't find a better way to get to the aria-controls attribute at the moment
+  // Might be possible if we use pipe(click) with the helper method used in AdjustPostTags spec,
+  // instead of the .then syntax... but skipping the linter may be safest of all.
+  /* eslint-disable-next-line cypress/unsafe-to-chain-command */
+  cy.get('@option')
     .click()
     .then(([button]) => {
       expect(button.getAttribute('aria-expanded')).to.equal('true');
@@ -95,6 +99,39 @@ describe('Dashboard: Following Tags', () => {
       .within(() => {
         cy.findByText('1 posts');
       });
+  });
+
+  it('shows a modal when there is an error with hiding a tag', () => {
+    cy.intercept('/follows', { statusCode: 500 }).as('followsRequest');
+
+    openOptionsMenu(() => {
+      cy.findByRole('button', { name: 'Hide tag: tag0' }).click();
+    });
+    cy.wait('@followsRequest');
+
+    cy.findByTestId('modal-container').as('confirmationModal');
+
+    cy.get('@confirmationModal')
+      .findByText('Your hide action could not be updated due to a server error')
+      .should('exist');
+  });
+
+  it('shows a modal when there is an error with following a tag', () => {
+    cy.intercept('/follows', { statusCode: 500 }).as('followsRequest');
+    cy.findByRole('button', { name: 'Following tag: tag0' }).as(
+      'followingButton',
+    );
+
+    cy.get('@followingButton').click();
+    cy.wait('@followsRequest');
+
+    cy.findByTestId('modal-container').as('confirmationModal');
+
+    cy.get('@confirmationModal')
+      .findByText(
+        'Your follow action could not be updated due to a server error',
+      )
+      .should('exist');
   });
 
   // TODO: add a test for the pagination

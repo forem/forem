@@ -162,4 +162,73 @@ describe('FollowTags', () => {
       expect(getByText('0 tags selected')).toBeInTheDocument(),
     );
   });
+
+  it('should toggle the checkbox when container is clicked', async () => {
+    const { container } = renderFollowTags();
+    const checkbox = container.querySelector('#email_digest_periodic');
+
+    expect(checkbox.checked).toBeFalsy();
+
+    fireEvent.click(container.querySelector('.onboarding-email-digest'));
+
+    expect(checkbox.checked).toBeTruthy();
+
+    fireEvent.click(container.querySelector('.onboarding-email-digest'));
+
+    expect(checkbox.checked).toBeFalsy();
+  });
+
+  it('should toggle the checkbox when Enter or Space key is pressed', async () => {
+    const { container } = renderFollowTags();
+    const checkbox = container.querySelector('#email_digest_periodic');
+
+    expect(checkbox.checked).toBeFalsy();
+
+    fireEvent.keyDown(container.querySelector('.onboarding-email-digest'), {
+      key: 'Enter',
+      code: 'Enter',
+      keyCode: 13,
+      charCode: 13,
+    });
+
+    expect(checkbox.checked).toBeTruthy();
+
+    fireEvent.keyDown(container.querySelector('.onboarding-email-digest'), {
+      key: ' ',
+      code: 'Space',
+      keyCode: 32,
+      charCode: 32,
+    });
+
+    expect(checkbox.checked).toBeFalsy();
+  });
+
+  it('should prevent checkbox click event from propagating', async () => {
+    const { container } = renderFollowTags();
+    const checkbox = container.querySelector('#email_digest_periodic');
+
+    let clicked = false;
+
+    checkbox.addEventListener('click', () => {
+      clicked = true;
+    });
+
+    fireEvent.click(container.querySelector('.onboarding-email-digest'));
+
+    expect(clicked).toBeFalsy();
+  });
+
+  it('should call /onboarding/notifications API when email_digest_periodic is true', async () => {
+    const { getByText, container } = renderFollowTags();
+
+    fireEvent.click(container.querySelector('.onboarding-email-digest'));
+
+    const skipButton = getByText(/Skip for now/i);
+    fireEvent.click(skipButton);
+
+    await waitFor(() => {
+      const [lastFetchUri] = fetch.mock.calls[fetch.mock.calls.length - 1];
+      expect(lastFetchUri).toEqual('/onboarding/notifications');
+    });
+  });
 });

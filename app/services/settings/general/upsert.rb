@@ -26,6 +26,7 @@ module Settings
           settings[param] = settings[param]&.downcase&.delete(" ") if settings[param]
         end
         settings[:credit_prices_in_cents]&.transform_values!(&:to_i)
+        settings[:billboard_enabled_countries]&.transform_values!(&:to_sym)
         settings
       end
 

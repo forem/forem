@@ -379,6 +379,43 @@ RSpec.describe "Comments" do
 
         expect(Users::RecordFieldTestEventWorker).not_to have_received(:perform_async)
       end
+
+      it "records a feed event for articles reached through a feed" do
+        create(:feed_event, category: :click, article: article, user: user)
+
+        expect { post "/comments", params: base_comment_params }
+          .to change(FeedEvent, :count).by(1)
+        expect(user.feed_events.last).to have_attributes(
+          category: "comment",
+          article_id: article.id,
+          user_id: user.id,
+        )
+      end
+
+      it "does not record a feed event for articles that were not reached through a feed" do
+        # activity by a different user!
+        create(:feed_event, category: :click, article: article, user: create(:user))
+
+        expect { post "/comments", params: base_comment_params }
+          .not_to change(FeedEvent, :count)
+        expect(user.feed_events).to be_empty
+      end
+
+      it "does not record a feed event for a comment on a podcast episode" do
+        podcast_episode_params = {
+          comment: {
+            commentable_id: podcast_episode.id,
+            commentable_type: "PodcastEpisode"
+          }
+        }
+
+        expect do
+          post "/comments",
+               params: base_comment_params.merge(podcast_episode_params)
+        end.not_to change(FeedEvent, :count)
+
+        expect(user.feed_events).to be_empty
+      end
     end
   end
 

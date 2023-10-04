@@ -11,6 +11,21 @@ class UsersController < ApplicationController
     @users = sidebar_suggestions || User.none
   end
 
+  # Unlike other methods in this controller, this does _NOT_ assume the current_user is *the* user
+  def show
+    skip_authorization
+    user = User.find(params[:id])
+    # authorize user, :show?
+
+    respond_to do |format|
+      format.json do
+        render json: user.as_json(attributes_for_show)
+      end
+    end
+  rescue ActiveRecord::RecordNotFound
+    error_not_found
+  end
+
   # GET /settings/@tab
   def edit
     unless current_user
@@ -320,5 +335,17 @@ class UsersController < ApplicationController
     return if params[:state].to_s != "sidebar_suggestions"
 
     Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
+  end
+
+  def error_not_found
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  def attributes_for_show
+    default_options = { only: %i[id username] }
+    return default_options unless current_user&.trusted?
+
+    trusted_options = { methods: %i[suspended] }
+    default_options.merge(trusted_options)
   end
 end

@@ -123,71 +123,6 @@ RSpec.describe "Api::V1::Users" do
     end
   end
 
-  describe "PUT /api/users/:id/suspend", :aggregate_failures do
-    let(:target_user) { create(:user) }
-    let(:payload) { { note: "Violated CoC despite multiple warnings" } }
-
-    before { Audit::Subscribe.listen listener }
-
-    after { Audit::Subscribe.forget listener }
-
-    context "when unauthenticated" do
-      it "returns unauthorized" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when unauthorized" do
-      it "returns unauthorized if api key is invalid" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: headers.merge({ "api-key" => "invalid api key" })
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-
-      it "returns unauthorized if api key belongs to non-admin user" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: headers
-
-        expect(response).to have_http_status(:unauthorized)
-      end
-    end
-
-    context "when request is authenticated" do
-      before { api_secret.user.add_role(:super_admin) }
-
-      it "is successful in suspending a user", :aggregate_failures do
-        expect do
-          put api_user_suspend_path(id: target_user.id),
-              params: payload,
-              headers: auth_headers
-
-          expect(response).to have_http_status(:no_content)
-          expect(target_user.reload.suspended?).to be true
-          expect(Note.last.content).to eq(payload[:note])
-        end.to change(Note, :count).by(1)
-      end
-
-      it "creates an audit log of the action taken" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: auth_headers
-
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
-        expect(log.data["action"]).to eq("api_user_suspend")
-        expect(log.data["target_user_id"]).to eq(target_user.id)
-        expect(log.user_id).to eq(api_secret.user.id)
-      end
-    end
-  end
-
   describe "PUT /api/users/:id/unpublish", :aggregate_failures do
     let(:target_user) { create(:user) }
     let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }
@@ -227,8 +162,8 @@ RSpec.describe "Api::V1::Users" do
 
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
         # User's articles are published and comments exist
-        expect(target_articles.map(&:published?)).to match_array([true, true, true])
-        expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+        expect(target_articles.map(&:published?)).to contain_exactly(true, true, true)
+        expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
 
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
           put api_user_unpublish_path(id: target_user.id), headers: auth_headers
@@ -238,8 +173,8 @@ RSpec.describe "Api::V1::Users" do
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
-        expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
-        expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
+        expect(target_articles.map(&:reload).map(&:published?)).to contain_exactly(false, false, false)
+        expect(target_comments.map(&:reload).map(&:deleted)).to contain_exactly(true, true, true)
       end
 
       it "creates an audit log of the action taken" do

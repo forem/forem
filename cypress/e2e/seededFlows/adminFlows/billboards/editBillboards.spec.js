@@ -63,7 +63,10 @@ describe('Billboards Form', () => {
         cy.findByLabelText('Users who:')
           .as('audienceSegments')
           .should('be.visible');
-
+        // Unsure of the best way to separate the get/select chaining at the moment.
+        // It's getting late and I may be missing something easy.
+        // Skipping the linter rule for now to unblock depfu.
+        /* eslint-disable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments').select('Are trusted').should('exist');
         cy.get('@audienceSegments')
           .select('Have not posted yet')
@@ -71,7 +74,7 @@ describe('Billboards Form', () => {
         cy.get('@audienceSegments')
           .select('Have not set an experience level')
           .should('exist');
-
+        /* eslint-enable cypress/unsafe-to-chain-command */
         cy.get('@audienceSegments')
           .contains('Managed elsewhere')
           .should('not.exist');
@@ -138,7 +141,7 @@ describe('Billboards Form', () => {
         cy.findByRole('button', { name: 'Save Billboard' }).click();
         cy.get('#flash-0').should(($flashMessage) => {
           expect($flashMessage).to.not.contain(
-            'is not a supported ISO 3166-2 code',
+            'is not an enabled target ISO 3166-2 code',
           );
         });
       });
@@ -151,10 +154,10 @@ describe('Billboards Form', () => {
         cy.get('#flash-0').should(($flashMessage) => {
           // We currently support only the US and CA
           expect($flashMessage).to.contain(
-            'MX-CMX is not a supported ISO 3166-2 code',
+            'MX-CMX is not an enabled target ISO 3166-2 code',
           );
           expect($flashMessage).to.not.contain(
-            'US-NY is not a supported ISO 3166-2 code',
+            'US-NY is not an enabled target ISO 3166-2 code',
           );
         });
       });

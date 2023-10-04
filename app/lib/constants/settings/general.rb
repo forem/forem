@@ -8,6 +8,9 @@ module Constants
           ahoy_tracking: {
             description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
           },
+          billboard_enabled_countries: {
+            description: I18n.t("lib.constants.settings.general.billboard_enabled_countries.description")
+          },
           contact_email: {
             description: I18n.t("lib.constants.settings.general.contact_email.description"),
             placeholder: "hello@example.com"
@@ -85,6 +88,18 @@ module Constants
           meta_keywords: {
             description: "",
             placeholder: I18n.t("lib.constants.settings.general.meta_keywords.description")
+          },
+          onboarding_newsletter_content: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.placeholder")
+          },
+          onboarding_newsletter_opt_in_head: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.placeholder")
+          },
+          onboarding_newsletter_opt_in_subhead: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.placeholder")
           },
           payment_pointer: {
             description: I18n.t("lib.constants.settings.general.payment.description"),
