@@ -5,7 +5,7 @@ module DateHelper
 
     tag.time(
       l(datetime, format: format),
-      datetime: datetime.utc.iso8601,
+      datetime: datetime.iso8601,
       class: "date#{'-no-year' unless show_year}",
     )
   end

@@ -82,6 +82,7 @@ module PracticalDeveloper
     config.i18n.fallbacks = [:en]
 	
 	config.time_zone = "Kyiv"
+	
 
     # Authorization / Authentication exception handling.
     config.action_dispatch.rescue_responses["Pundit::NotAuthorizedError"] = :not_found

@@ -13,7 +13,7 @@ RSpec.describe "Viewing a comment", js: true do
   end
 
   after do
-    ENV["TZ"] = "Europe/Kiev"
+    ENV["TZ"] = "Kyiv"
     ENV["DESYNC_TIMEZONE"] = nil
     Capybara.current_session.quit
     Timecop.return
