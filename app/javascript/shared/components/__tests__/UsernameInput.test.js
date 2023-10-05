@@ -6,6 +6,10 @@ import '@testing-library/jest-dom';
 
 import { UsernameInput } from '../UsernameInput';
 
+jest.mock('@utilities/debounceAction', () => ({
+  debounceAction: fn => fn
+}));
+
 function fakeUsers() {
   return [
     { name: 'Alice', username: 'alice', id: 1 },

@@ -8,6 +8,7 @@ RSpec.describe Admin::UsersQuery, type: :query do
   let(:search) { [] }
   let(:joining_start) { nil }
   let(:joining_end) { nil }
+  let(:ids) { [] }
 
   describe ".find" do
     let!(:user1) { create(:user, username: "user1") }
@@ -56,7 +57,8 @@ RSpec.describe Admin::UsersQuery, type: :query do
     subject do
       described_class.call(search: search, role: role, roles: roles, organizations: organizations,
                            joining_start: joining_start, joining_end: joining_end, date_format: date_format,
-                           statuses: statuses)
+                           statuses: statuses,
+                           ids: ids)
     end
 
     let(:date_format) { "DD/MM/YYYY" }
@@ -197,6 +199,18 @@ RSpec.describe Admin::UsersQuery, type: :query do
       let(:joining_end) { "31/05/2020" }
 
       it { is_expected.to eq([user3, user2, user]) }
+    end
+
+    context "when given ids" do
+      let(:ids) { [user2.id, user3.id, user4.id] }
+
+      it { is_expected.to eq([user4, user3, user2]) }
+    end
+
+    context "when ids contains an invalid user_id" do
+      let(:ids) { [0, "foo"] }
+
+      it { is_expected.to eq([]) }
     end
   end
 end

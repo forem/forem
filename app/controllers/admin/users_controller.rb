@@ -344,7 +344,11 @@ module Admin
       @users = Admin::UsersQuery.call(
         relation: User.registered,
         search: params[:search],
+        ids: params[:ids],
       )
+
+      limit = params[:limit].to_i.zero? ? nil : params[:limit].to_i
+      @users.limit!(limit) if limit.present?
 
       render json: @users.to_json(only: %i[id name username])
     end

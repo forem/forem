@@ -21,6 +21,7 @@ module Admin
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
     # @param statuses [Array<String>, nil]
+    # @param ids [Array<Integer>, nil]
     # @param organizations [Array<String>, nil]
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
@@ -31,6 +32,7 @@ module Admin
                   roles: [],
                   organizations: [],
                   statuses: [],
+                  ids: [],
                   joining_start: nil,
                   joining_end: nil,
                   date_format: "DD/MM/YYYY")
@@ -53,11 +55,16 @@ module Admin
       end
 
       relation = search_relation(relation, search) if search.presence
+      relation = filter_ids(relation, ids) if ids.presence
       relation.distinct.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
       relation.where(SEARCH_CLAUSE, search: "%#{search.strip}%")
+    end
+
+    def self.filter_ids(relation, ids)
+      relation.where(id: ids)
     end
 
     def self.filter_joining_date(relation:, joining_start:, joining_end:, date_format:)
