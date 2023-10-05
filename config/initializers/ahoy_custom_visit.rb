@@ -8,14 +8,14 @@ module Ahoy
         geolocation: request.headers["X-Client-Geo"],
         user_agent: request.user_agent,
         accept_language: request.headers["HTTP_ACCEPT_LANGUAGE"],
-        user: visit.user,
+        user_id: data[:user_id],
       )
 
       # Increase the visit count for this context
       context.increment(:visit_count)
 
       # Update the last visit timestamp
-      context.last_visit_at = Time.current
+      context.last_visit_at = data[:started_at]
 
       # Save context with all changes
       context.save!
