@@ -147,7 +147,7 @@
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^7.8.2",
     "postscribe": "^2.0.8",
-    "preact": "^10.17.1",
+    "preact": "^10.18.1",
     "prop-types": "^15.8.1",
     "rails-erb-loader": "^5.5.2",
     "react-colorful": "^5.6.1",
