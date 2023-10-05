@@ -2,7 +2,6 @@
 class AsyncInfoController < ApplicationController
   NUMBER_OF_MINUTES_FOR_CACHE_EXPIRY = 15
   before_action :set_cache_control_headers, only: %i[navigation_links]
-  before_action :store_language_accept_header, only: %i[base_data]
 
   def base_data
     flash.discard(:notice)
@@ -57,18 +56,5 @@ class AsyncInfoController < ApplicationController
     # We're sending HTML over the wire hence 'render layout: false' enforces rails NOT TO look for a layout file to wrap
     # the view file - it allows us to not include the HTML headers for sending back to client.
     render layout: false
-  end
-
-  private
-
-  def store_language_accept_header
-    return unless user_signed_in?
-
-    accept_language = request.env["HTTP_ACCEPT_LANGUAGE"]
-    return if accept_language.blank? || current_user.browser_accept_language_updated_at.present?
-
-    current_user
-      .update_columns(browser_accept_language: accept_language,
-                      browser_accept_language_updated_at: Time.current)
   end
 end

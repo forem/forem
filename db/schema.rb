@@ -959,7 +959,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_05_040352) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.string "location"
-    t.string "social_image"
     t.text "summary"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
