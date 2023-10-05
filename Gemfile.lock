@@ -1122,7 +1122,7 @@ DEPENDENCIES
   web-console (~> 4.2)
   webmock (~> 3.17)
   webpacker (~> 5.4.3)
-  with_model (~> 2.1.6)
+  with_model (~> 2.1.7)
   yard (~> 0.9)
   yard-activerecord (~> 0.0)
   yard-activesupport-concern (~> 0.0)
