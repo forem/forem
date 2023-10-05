@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_05_040352) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -57,9 +57,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
   create_table "ahoy_visits", force: :cascade do |t|
     t.datetime "started_at", precision: nil
     t.bigint "user_id"
+    t.bigint "user_visit_context_id"
     t.string "visit_token"
     t.string "visitor_token"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["user_visit_context_id"], name: "index_ahoy_visits_on_user_visit_context_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
@@ -957,6 +959,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
     t.datetime "created_at", null: false
     t.jsonb "data", default: {}, null: false
     t.string "location"
+    t.string "social_image"
     t.text "summary"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
@@ -1209,14 +1212,25 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
+  create_table "user_visit_contexts", force: :cascade do |t|
+    t.text "accept_language"
+    t.datetime "created_at", null: false
+    t.string "geolocation"
+    t.datetime "last_visit_at"
+    t.datetime "updated_at", null: false
+    t.text "user_agent"
+    t.bigint "user_id", null: false
+    t.bigint "visit_count", default: 0
+    t.index ["geolocation", "user_agent", "accept_language", "user_id"], name: "index_user_visit_contexts_on_all_attributes", unique: true
+    t.index ["user_id"], name: "index_user_visit_contexts_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.integer "badge_achievements_count", default: 0, null: false
     t.bigint "blocked_by_count", default: 0, null: false
     t.bigint "blocking_others_count", default: 0, null: false
-    t.string "browser_accept_language"
-    t.datetime "browser_accept_language_updated_at"
     t.boolean "checked_code_of_conduct", default: false
     t.boolean "checked_terms_and_conditions", default: false
     t.integer "comments_count", default: 0, null: false
@@ -1467,6 +1481,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_071434) do
   add_foreign_key "user_languages", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "user_visit_contexts", "users"
   add_foreign_key "users_notification_settings", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade
