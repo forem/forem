@@ -622,6 +622,7 @@ RSpec.describe "Api::V1::Articles" do
 
     describe "when authorized" do
       let(:default_params) { { body_markdown: "" } }
+      let(:tomorrow) { 1.day.from_now }
 
       def post_article(**params)
         params = default_params.merge params
@@ -876,6 +877,33 @@ RSpec.describe "Api::V1::Articles" do
           expect(response).to have_http_status(:created)
         end.to change(Article, :count).by(1)
         expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
+      end
+
+      it "creates an articles with published_at in the future" do
+        formatted_date = tomorrow.strftime("%Y-%m-%d")
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: "#{formatted_date} 18:00 MSK",
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at).to be_present
+        expect(created_article.published_at.strftime("%Y-%m-%d")).to eq(formatted_date)
+      end
+
+      it "creates an article when publushed_at without time is passed" do
+        formatted_date = tomorrow.strftime("%Y-%m-%d")
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: formatted_date,
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at.strftime("%Y-%m-%d")).to eq(formatted_date)
       end
 
       it "does not raise an error if article params are missing" do
