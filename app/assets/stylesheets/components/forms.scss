@@ -169,6 +169,10 @@
     + .crayons-field__description {
       margin-top: 0;
     }
+
+    &.required:after {
+      content: '*';
+    }
   }
 
   &__required {
@@ -216,7 +220,7 @@
   }
 }
 
-input[type=file]::file-selector-button {
+input[type='file']::file-selector-button {
   @extend .crayons-btn;
   @extend .crayons-btn--secondary;
 }
