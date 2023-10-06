@@ -13,11 +13,10 @@ describe('Markdown toolbar', () => {
     cy.findByRole('button', { name: 'More options' }).as('overflowMenuButton');
 
     // Check the menu opens on down arrow press
-    cy.get('@overflowMenuButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .focus()
-      .type('{downarrow}')
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@overflowMenuButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@overflowMenuButton').focus();
+    cy.get('@overflowMenuButton').type('{downarrow}');
+    cy.get('@overflowMenuButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('menuitem', { name: 'Underline' })
       .should('be.visible')
@@ -30,17 +29,15 @@ describe('Markdown toolbar', () => {
       .should('have.attr', 'aria-expanded', 'false');
 
     // Check clicking toggles the menu
-    cy.get('@overflowMenuButton')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@overflowMenuButton').click();
+    cy.get('@overflowMenuButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.findByRole('menuitem', { name: 'Underline' })
       .should('be.visible')
       .should('have.focus');
 
-    cy.get('@overflowMenuButton')
-      .click()
-      .should('have.attr', 'aria-expanded', 'false');
+    cy.get('@overflowMenuButton').click();
+    cy.get('@overflowMenuButton').should('have.attr', 'aria-expanded', 'false');
   });
 
   it('closes overflow menu after formatter button press', () => {
@@ -63,20 +60,21 @@ describe('Markdown toolbar', () => {
     cy.findByLabelText('Post Content').clear();
     cy.findByRole('button', { name: 'Bold' }).click();
 
-    cy.findByLabelText('Post Content')
-      .should('have.value', '****')
-      .should('have.focus')
-      .type('something')
-      .should('have.value', '**something**');
+    cy.findByLabelText('Post Content').as('content');
+    cy.get('@content').should('have.value', '****');
+    cy.get('@content').should('have.focus');
+    cy.get('@content').type('something');
+    cy.get('@content').should('have.value', '**something**');
   });
 
   it('cycles button focus using arrow keys', () => {
     cy.findByRole('button', { name: 'Bold' }).as('boldButton');
 
-    cy.get('@boldButton').focus().type('{leftarrow}');
-    cy.findByRole('button', { name: 'More options' })
-      .should('have.focus')
-      .type('{rightarrow}');
+    cy.get('@boldButton').focus();
+    cy.get('@boldButton').type('{leftarrow}');
+    cy.findByRole('button', { name: 'More options' }).as('options');
+    cy.get('@options').should('have.focus');
+    cy.get('@options').type('{rightarrow}');
 
     cy.get('@boldButton').should('have.focus');
   });

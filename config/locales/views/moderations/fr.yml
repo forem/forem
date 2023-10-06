@@ -140,7 +140,11 @@ fr:
         featured_past_day:
           one: '%{count} des articles de la journée précédente sont mis en avant.'
           other: '%{count} des articles de la journée précédente sont mis en avant.'
-      all: Tous les sujets
+      feed:
+        inbox_filter: Inbox
+        latest_filter: Récent
+        inbox_html: <strong>Inbox</strong> est une liste chronologique des publications qui n'ont pas encore été examinées par plusieurs modérateurs ou membres.
+        latest_html: <strong>Récent</strong> montre tous les posts dans l'ordre chronologique, indépendamment de s'ils ont été examinés ou non.
       article:
         approved: Approuvée
         author_id: Identifiant de l'auteur

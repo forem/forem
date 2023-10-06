@@ -323,97 +323,66 @@ describe('Moderation Tools for Posts', () => {
   });
 
   context('as trusted user', () => {
-    beforeEach(() => {
+    it('can flag and unflag', () => {
       cy.fixture('users/trustedUser.json').as('trustedUser');
-    });
 
-    it('should load appropriate moderation tools on a post', () => {
       cy.get('@trustedUser').then((user) => {
-        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(() => {
-          cy.findByRole('button', { name: 'Moderation' }).should('exist');
-        });
-
-        cy.findByRole('button', { name: 'Moderation' }).click();
-
-        // should not show Feature Post button on a post
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Feature Post' }).should('not.exist');
-        });
+        cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug');
       });
-    });
+      cy.findByRole('button', { name: 'Moderation' }).should('be.visible');
+      cy.findByRole('button', { name: 'Moderation' }).click();
 
-    describe('flag-user flow', () => {
-      beforeEach(() => {
-        cy.get('@trustedUser').then((user) => {
-          cy.loginAndVisit(user, '/admin_mcadmin/test-article-slug').then(
-            () => {
-              cy.findByRole('heading', { level: 1, name: 'Test article' });
-              cy.findByRole('button', { name: 'Moderation' }).click();
-            },
-          );
-        });
+      cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+        cy.findByRole('button', { name: 'Feature Post' }).should('not.exist');
       });
 
-      it('should flag the user', () => {
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open admin actions' })
-            .as('moderatingActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
-        });
-        // should show error message if flag-user radio is unchecked
-        cy.getModal().within(() => {
-          cy.findByRole('button', { name: 'Confirm Flag' }).click();
-          cy.findByTestId('unselected-radio-error')
-            .contains('You must check the radio button first.')
-            .should('exist');
-        });
-
-        cy.getModal().within(() => {
-          const flagUserRadioName =
-            "Make all posts by admin_mcadmin less visible admin_mcadmin consistently posts content that violates DEV(local)'s code of conduct because it is harassing, offensive or spammy.";
-          cy.findByRole('radio', {
-            name: flagUserRadioName,
-          }).check();
-          cy.findByRole('button', { name: 'Confirm Flag' }).click();
-        });
-
-        cy.findByTestId('snackbar')
-          .contains('All posts by this author will be less visible.')
+      // flag works
+      cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+        cy.findByRole('button', { name: 'Open admin actions' })
+          .as('moderatingActionsButton')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
+      });
+      // should show error message if flag-user radio is unchecked
+      cy.getModal().within(() => {
+        cy.findByRole('button', { name: 'Confirm Flag' }).click();
+        cy.findByTestId('unselected-radio-error')
+          .contains('You must check the radio button first.')
           .should('exist');
       });
 
-      it('should unflag the user if user was previously flagged', () => {
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open admin actions' })
-            .as('moderatingActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-          cy.findByRole('button', { name: 'Flag admin_mcadmin' }).click();
-        });
-
-        cy.getModal().within(() => {
-          cy.get('#flag-user-radio-input').check();
-          cy.findByRole('button', { name: 'Confirm Flag' }).click();
-        });
-
-        cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
-          cy.findByRole('button', { name: 'Open admin actions' })
-            .as('moderatingActionsButton')
-            .pipe(click)
-            .should('have.attr', 'aria-expanded', 'true');
-          cy.findByRole('button', { name: 'Unflag admin_mcadmin' }).click();
-        });
-
-        cy.getModal().within(() => {
-          cy.findByRole('button', { name: 'Confirm Unflag' }).click();
-        });
-
-        cy.findByTestId('snackbar')
-          .contains('You have unflagged this author successfully.')
-          .should('exist');
+      cy.getModal().within(() => {
+        const flagUserRadioName =
+          "Make all posts by admin_mcadmin less visible admin_mcadmin consistently posts content that violates DEV(local)'s code of conduct because it is harassing, offensive or spammy.";
+        cy.findByRole('radio', {
+          name: flagUserRadioName,
+        }).check();
+        cy.findByRole('button', { name: 'Confirm Flag' }).click();
       });
+
+      cy.findByTestId('snackbar')
+        .contains('All posts by this author will be less visible.')
+        .should('exist');
+
+      // unflag works
+      cy.visit('/admin_mcadmin/test-article-slug');
+
+      cy.getIframeBody('[title="Moderation panel actions"]').within(() => {
+        cy.findByRole('button', { name: 'Open admin actions' })
+          .as('moderatingActionsButton')
+          .pipe(click)
+          .should('have.attr', 'aria-expanded', 'true');
+        cy.findByRole('button', { name: 'Unflag admin_mcadmin' }).click();
+      });
+
+      cy.getModal().within(() => {
+        cy.findByRole('button', { name: 'Confirm Unflag' }).click();
+      });
+
+      cy.findByTestId('snackbar')
+        .contains('You have unflagged this author successfully.')
+        .should('exist');
     });
   });
 });

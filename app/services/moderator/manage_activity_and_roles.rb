@@ -29,7 +29,6 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role(:workshop_pass)
       remove_mod_roles
       remove_tag_moderator_role
     end

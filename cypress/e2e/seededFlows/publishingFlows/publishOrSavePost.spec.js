@@ -20,9 +20,9 @@ describe('Publish or save a post', () => {
 
     it('Publishes a post without errors', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Content')
-          .clear()
-          .type(validPublishedArticleContent);
+        cy.findByLabelText('Post Content').as('field');
+        cy.get('@field').clear();
+        cy.get('@field').type(validPublishedArticleContent);
         cy.findByRole('button', { name: 'Save changes' }).click();
       });
       //   The post should now be published
@@ -35,9 +35,9 @@ describe('Publish or save a post', () => {
 
     it('Saves a draft without errors', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Content')
-          .clear()
-          .type(validDraftArticleContent);
+        cy.findByLabelText('Post Content').as('field');
+        cy.get('@field').clear();
+        cy.get('@field').type(validDraftArticleContent);
         cy.findByRole('button', { name: 'Save changes' }).click();
       });
 
@@ -49,11 +49,11 @@ describe('Publish or save a post', () => {
 
     it('Shows an error message when markdown is incorrect', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Content')
-          .clear()
-          .type(invalidPublishedArticleContent, {
-            parseSpecialCharSequences: false,
-          });
+        cy.findByLabelText('Post Content').as('field');
+        cy.get('@field').clear();
+        cy.get('@field').type(invalidPublishedArticleContent, {
+          parseSpecialCharSequences: false,
+        });
         cy.findByRole('button', { name: 'Save changes' }).click();
       });
 
@@ -61,9 +61,9 @@ describe('Publish or save a post', () => {
       // We should still be on the form page,
       // and should be able to edit the broken draft successfully
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Content')
-          .clear()
-          .type(validDraftArticleContent);
+        cy.findByLabelText('Post Content').as('field');
+        cy.get('@field').clear();
+        cy.get('@field').type(validDraftArticleContent);
         cy.findByRole('button', { name: 'Save changes' }).click();
       });
       // The Draft view should be shown
@@ -75,9 +75,9 @@ describe('Publish or save a post', () => {
     it('Shows an error message when network request fails', () => {
       cy.intercept('POST', '/articles', { statusCode: 500 });
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Content')
-          .clear()
-          .type(validPublishedArticleContent);
+        cy.findByLabelText('Post Content').as('field');
+        cy.get('@field').clear();
+        cy.get('@field').type(validPublishedArticleContent);
         cy.findByRole('button', { name: 'Save changes' }).click();
       });
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
@@ -98,8 +98,12 @@ describe('Publish or save a post', () => {
 
     it('Publishes a post without errors', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Publish' }).click();
       });
       //   The post should now be published
@@ -112,8 +116,12 @@ describe('Publish or save a post', () => {
 
     it('Saves a draft without errors', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Save draft' }).click();
       });
 
@@ -125,9 +133,13 @@ describe('Publish or save a post', () => {
 
     it('Shows an error message when publishing with incorrect markdown', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
 
-        cy.findByLabelText('Post Content').clear().type('{% tag %}', {
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('{% tag %}', {
           parseSpecialCharSequences: false,
         });
         cy.findByRole('button', { name: 'Publish' }).click();
@@ -142,9 +154,13 @@ describe('Publish or save a post', () => {
 
     it('Shows an error message when saving draft with incorrect markdown', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
 
-        cy.findByLabelText('Post Content').clear().type('{% tag %}', {
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('{% tag %}', {
           parseSpecialCharSequences: false,
         });
         cy.findByRole('button', { name: 'Save draft' }).click();
@@ -160,8 +176,12 @@ describe('Publish or save a post', () => {
     it('Shows an error message when publishing and network request fails', () => {
       cy.intercept('POST', '/articles', { statusCode: 500 });
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Publish' }).click();
       });
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
@@ -174,8 +194,12 @@ describe('Publish or save a post', () => {
     it('Shows an error message when saving draft and network request fails', () => {
       cy.intercept('POST', '/articles', { statusCode: 500 });
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Save draft' }).click();
       });
       cy.findByRole('heading', { name: 'Whoops, something went wrong:' });
@@ -187,8 +211,12 @@ describe('Publish or save a post', () => {
 
     it('Maintains draft status when editing a draft fails', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Save draft' }).click();
       });
 
@@ -196,7 +224,9 @@ describe('Publish or save a post', () => {
       cy.findByText(/Unpublished Post/);
       cy.findByRole('link', { name: 'Click to edit' }).click();
 
-      cy.findByLabelText('Post Content').clear().type('something else');
+      cy.findByLabelText('Post Content').as('contentField');
+      cy.get('@contentField').clear();
+      cy.get('@contentField').type('something else');
       cy.intercept('PUT', '/articles/*', { statusCode: 500 });
       cy.findByRole('button', { name: 'Save draft' }).click();
 
@@ -213,8 +243,12 @@ describe('Publish or save a post', () => {
 
     it('Maintains draft status when publishing a draft fails', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Save draft' }).click();
       });
 
@@ -222,7 +256,9 @@ describe('Publish or save a post', () => {
       cy.findByText(/Unpublished Post/);
       cy.findByRole('link', { name: 'Click to edit' }).click();
 
-      cy.findByLabelText('Post Content').clear().type('something else');
+      cy.findByLabelText('Post Content').as('contentField');
+      cy.get('@contentField').clear();
+      cy.get('@contentField').type('something else');
       cy.intercept('PUT', '/articles/*', { statusCode: 500 });
       cy.findByRole('button', { name: 'Publish' }).click();
 
@@ -239,8 +275,12 @@ describe('Publish or save a post', () => {
 
     it('Maintains published status when editing a published post fails', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).within(() => {
-        cy.findByLabelText('Post Title').clear().type('Test title');
-        cy.findByLabelText('Post Content').clear().type('something');
+        cy.findByLabelText('Post Title').as('titleField');
+        cy.get('@titleField').clear();
+        cy.get('@titleField').type('Test title');
+        cy.findByLabelText('Post Content').as('contentField');
+        cy.get('@contentField').clear();
+        cy.get('@contentField').type('something');
         cy.findByRole('button', { name: 'Publish' }).click();
       });
 
@@ -249,7 +289,9 @@ describe('Publish or save a post', () => {
       cy.findByRole('heading', { name: 'Top comments (0)' });
       cy.findByRole('link', { name: 'Edit' }).click();
 
-      cy.findByLabelText('Post Content').clear().type('something else');
+      cy.findByLabelText('Post Content').as('contentField');
+      cy.get('@contentField').clear();
+      cy.get('@contentField').type('something else');
       cy.intercept('PUT', '/articles/*', { statusCode: 500 });
       cy.findByRole('button', { name: 'Save changes' }).click();
 

@@ -121,19 +121,17 @@ describe('Filter user index', () => {
           .findAllByRole('checkbox')
           .should('have.length', 6);
 
-        cy.findByRole('button', { name: 'See more roles' })
-          .as('seeMoreButton')
-          .should('have.attr', 'aria-pressed', 'false')
-          .click()
-          .should('have.attr', 'aria-pressed', 'true');
+        cy.findByRole('button', { name: 'See more roles' }).as('seeMoreButton');
+        cy.get('@seeMoreButton').should('have.attr', 'aria-pressed', 'false');
+        cy.get('@seeMoreButton').click();
+        cy.get('@seeMoreButton').should('have.attr', 'aria-pressed', 'true');
 
         cy.get('@memberRoles')
           .findAllByRole('checkbox')
           .should('have.length', 16);
 
-        cy.get('@seeMoreButton')
-          .click()
-          .should('have.attr', 'aria-pressed', 'false');
+        cy.get('@seeMoreButton').click();
+        cy.get('@seeMoreButton').should('have.attr', 'aria-pressed', 'false');
 
         cy.get('@memberRoles')
           .findAllByRole('checkbox')

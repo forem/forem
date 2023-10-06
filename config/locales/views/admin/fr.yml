@@ -286,7 +286,6 @@ fr:
               comment_suspended: Comment Suspended
               limited: Limited
               creator: Creator
-              mod_relations_admin: Mod Relations Admin
               super_moderator: Super Moderator
               podcast_admin: Podcast Admin
               restricted_liquid_tag: Restricted Liquid Tag
@@ -309,7 +308,6 @@ fr:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
-              workshop_pass: Workshop Pass
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
