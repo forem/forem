@@ -153,6 +153,13 @@ services:
       PORT: 3333
       CONNECTION_TIMEOUT: 600000
 
+  rspec_system:
+    <<: *backend
+    depends_on:
+      <<: *backend_depends_on
+      chrome:
+        condition: service_started
+
 volumes:
   bundle:
   cypress:

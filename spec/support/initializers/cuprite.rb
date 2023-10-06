@@ -34,5 +34,3 @@ Capybara.register_driver(:better_cuprite) do |app|
     }.merge(remote_options),
   )
 end
-
-Capybara.default_driver = Capybara.javascript_driver = :better_cuprite
