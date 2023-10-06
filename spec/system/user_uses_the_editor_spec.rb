@@ -33,17 +33,11 @@ RSpec.describe "Using the editor" do
   end
 
   describe "Previewing an article", :js do
-    before do
+    it "fills out form with rich content and click preview", :cloudinary do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
       click_button "Preview"
-    end
 
-    after do
-      page.evaluate_script("window.onbeforeunload = function(){}")
-    end
-
-    it "fills out form with rich content and click preview", :cloudinary do
       article_body = find("div.crayons-article__body")["innerHTML"]
       article_body.gsub!(%r{"https://res\.cloudinary\.com/.{1,}"}, "cloudinary_link")
 
@@ -54,6 +48,8 @@ RSpec.describe "Using the editor" do
         .and include('<blockquote>')
         .and include('Format: <a href=cloudinary_link></a>')
       # rubocop:enable Style/StringLiterals
+
+      page.evaluate_script("window.onbeforeunload = function(){}")
     end
   end
 
