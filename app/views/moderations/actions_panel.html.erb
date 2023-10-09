@@ -264,7 +264,7 @@
     <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.experience.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= crayons_icon_tag(:book, title: t("views.moderations.actions.experience.icon")) %>
+          <%= crayons_icon_tag("book", title: t("views.moderations.actions.experience.icon")) %>
         </div>
         <header>
           <h2><%= t("views.moderations.actions.experience.heading") %></h2>
@@ -312,7 +312,7 @@
       aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
+          <%= crayons_icon_tag("admin", title: t("views.moderations.actions.admin.icon")) %>
         </div>
         <header>
           <h2><%= t("views.moderations.actions.admin.heading") %></h2>
@@ -320,7 +320,7 @@
         </header>
       </div>
       <div class="toggle-chevron-container">
-        <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+        <%= crayons_icon_tag("arrow-down-fill", title: t("views.moderations.actions.toggle")) %>
       </div>
     </button>
 
