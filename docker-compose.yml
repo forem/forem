@@ -59,7 +59,7 @@ services:
       REDIS_URL: redis://redis:6379/
       DATABASE_URL: postgres://postgres:postgres@postgres:5432
       DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
-      CHROME_URL: http://chrome:3333 
+      CHROME_URL: http://chrome:3333
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
@@ -156,7 +156,6 @@ services:
   rspec_system:
     <<: *backend
     depends_on:
-      <<: *backend_depends_on
       chrome:
         condition: service_started
 
