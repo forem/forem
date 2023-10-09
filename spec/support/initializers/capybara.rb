@@ -4,7 +4,6 @@ require "capybara/rspec"
 Capybara.server_host = "0.0.0.0"
 Capybara.app_host = "http://#{ENV.fetch('APP_HOST', `hostname`.strip&.downcase || '0.0.0.0')}"
 Capybara.default_max_wait_time = 10
-Capybara.default_normalize_ws = true
 Capybara.save_path = ENV.fetch("CAPYBARA_ARTIFACTS", "./tmp/capybara")
 
 RSpec.configure do |config|
