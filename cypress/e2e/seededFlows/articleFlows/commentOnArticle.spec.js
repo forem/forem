@@ -191,12 +191,12 @@ describe('Comment on articles', () => {
 
         cy.get('@commentTextArea').type('Some text @se');
         verifyComboboxMode();
-        cy.get('@commentTextArea').type('{backspace}{backspace}');
+        cy.get('@commentTextArea').type('{backspace}{backspace}{backspace}');
       });
 
       cy.findByRole('option', { name: /@search_user_1/ }).should('not.exist');
 
-      cy.get('@commentTextArea').type('se');
+      cy.get('@commentTextArea').type('@se');
       cy.findByRole('option', { name: /@search_user_1/ }).should('exist');
     });
 
