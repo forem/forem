@@ -74,6 +74,7 @@
       }
       pre:not(.highlight),
       div.highlight,
+      div:not(.highlight) > pre.highlight,
       li pre.highlight,
       blockquote pre.highlight {
         padding: var(--su-2);
@@ -115,6 +116,7 @@
     }
 
     pre:not(.highlight),
+    div:not(.highlight) > pre.highlight,
     div.highlight {
       margin: var(--su-1) auto;
       font-size: 90%; // little adjustment for feed comments since default monospace font looks really tiny there.

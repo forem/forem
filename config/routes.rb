@@ -44,7 +44,6 @@ Rails.application.routes.draw do
     namespace :api, defaults: { format: "json" } do
       scope module: :v1, constraints: ApiConstraints.new(version: 1, default: false) do
         # V1 only endpoints
-        put "/users/:id/suspend", to: "users#suspend", as: :user_suspend
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
@@ -68,6 +67,16 @@ Rails.application.routes.draw do
         resources :pages, only: %i[index show create update destroy]
 
         resources :organizations, only: %i[index create update destroy]
+
+        scope("/users/:id") do
+          constraints(role: /suspend|suspended|limited/) do
+            put "/:role", to: "user_roles#update", as: "user_add_role"
+          end
+
+          constraints(role: /limited/) do
+            delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
+          end
+        end
 
         draw :api
       end
@@ -178,6 +187,7 @@ Rails.application.routes.draw do
         patch :notifications, defaults: { format: :json }
         get :tags, defaults: { format: :json }
         get :users_and_organizations, defaults: { format: :json }
+        get :newsletter, defaults: { format: :json }
       end
     end
 

@@ -5,7 +5,7 @@
     <summary class="crayons-subtitle-2 p-6">User Experience and Brand</summary>
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
-        <div class="crayons-fieldx">
+        <div class="crayons-field">
           <%= admin_config_label :feed_style, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:feed_style][:description] %>
           <%= select_tag "settings_user_experience[feed_style]",

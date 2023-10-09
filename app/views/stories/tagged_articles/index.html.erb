@@ -4,7 +4,7 @@
 <% expiry_minutes = params[:timeframe].blank? || params[:timeframe] == "latest" ? 4 : 20 %>
 <% flag = true %>
 <% cache("tag-stories-index-#{params}-#{flag}-#{@tag.updated_at}-#{user_signed_in?}", expires_in: expiry_minutes.minutes) do %>
-  <div class="crayons-layout">
+  <div data-tag-id="<%= @tag.id %>" data-tag-name="<%= @tag.name %>" id="tag-<%= @tag.id %>" class="crayons-layout js-tag-card">
     <header class="crayons-card branded-4 p-4 l:p-6 spec__tag-header" style="border-top-color: <%= @tag.bg_color_hex %> ">
       <div class="flex">
         <% if @tag.badge_id && @tag.badge %>
@@ -21,12 +21,20 @@
               <% end %>
             </h1>
             <% if @tag %>
-              <button
-                id="user-follow-butt"
-                class="crayons-btn follow-action-button"
-                data-info='<%= DataInfo.to_json(object: @tag, class_name: "Tag", name: @tag.pretty_name || @tag.name) %>'>
-                <%= t("views.stories.follow") %>
-              </button>
+              <div id="tag-buttons-<%= @tag.id %>" class="mt-auto flex items-end justify-between">
+                <div class="flex gap-2">
+                  <button
+                    class="c-btn c-btn--primary js-follow-tag-button"
+                    aria-label="<%= t("views.tags.aria_labels.follow", tag_name: @tag.name) %>">
+                    <%= t("views.tags.follow") %>
+                  </button>
+                  <button
+                    class="c-btn js-hide-tag-button"
+                    aria-label="<%= t("views.tags.aria_labels.hide", tag_name: @tag.name) %>">
+                    <%= t("views.tags.hide") %>
+                  </button>
+                </div>
+              </div>
             <% end %>
           </div>
           <% if @tag && @tag.short_summary.present? %>
@@ -130,5 +138,5 @@
     <%= render "stories/tagged_articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
+  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "tagFollows", "feedPreviewCards", "hideBookmarkButtons", "drawerSliders", "localizeArticleDates", defer: true %>
 <% end %>

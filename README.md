@@ -44,12 +44,8 @@ within our community. ❤️
 - [Community](#community)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-    - [Local](#local)
-    - [Containers](#containers)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Core team](#core-team)
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -83,54 +79,16 @@ A more complete overview of our stack is available in
 To **launch Forem in Gitpod**, navigate to
 [https://gitpod.io/#https://github.com/{your_github_username}/forem](https://gitpod.io/#https://github.com/{your_github_username}/forem).
 
-### Prerequisites
-
-#### Local
-
-- [Ruby](https://www.ruby-lang.org/en/): we recommend using
-  [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on
-  the badge.
-- [Yarn](https://yarnpkg.com/) 1.x: please refer to their
-  [installation guide](https://classic.yarnpkg.com/en/docs/install).
-- [PostgreSQL](https://www.postgresql.org/) 11 or higher.
-- [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
-  [installation instructions](https://imagemagick.org/script/download.php).
-- [Redis](https://redis.io/) 4 or higher.
-
-#### Containers
-
-**Linux**
-
-- [Podman](https://github.com/containers/libpod) 1.9.2 or higher
-- [Podman Compose](https://github.com/containers/podman-compose) 0.1.5 or higher
-
-**OS X**
-
-- [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
-
 ### Installation Documentation
 
-Please see our installation guides, such as the
-[one for macOS](https://developers.forem.com/getting-started/installation/mac).
+Please see our installation guides:
+
+- [MacOS, without containers](https://developers.forem.com/getting-started/installation/mac)
+- [Linux, without containers](https://developers.forem.com/getting-started/installation/linux)
 
 ## Developer Documentation
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
-
-## Core team
-
-- [@benhalpern](https://dev.to/ben)
-- [@jessleenyc](https://dev.to/jess)
-- [@peterkimfrank](https://dev.to/peter)
-- [@maestromac](https://dev.to/maestromac)
-- [@lightalloy](https://dev.to/lightalloy)
-- [@ridhwana](https://dev.to/ridhwana)
-- [@rt4914](https://dev.to/rt4914)
-- [@jaw6](https://dev.to/jaw6)
-- [@lboogie2004](https://dev.to/lboogie2004)
-- [@klardotsh](https://dev.to/klardotsh)
-- [@filleduchaos](https://dev.to/filleduchaos)
-- [@dukegreene](https://dev.to/dukegreene)
 
 ## Vulnerability disclosure
 

@@ -83,7 +83,7 @@
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
-  --link-bg-current: var(--base-inverted);
+  --link-bg-current: var(--card-bg);
 
   /* Primary buttons */
   --button-primary-bg: var(--accent-brand-darker);

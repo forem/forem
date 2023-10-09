@@ -39,6 +39,7 @@ en:
             you will have to do so in your settings for the specific provider:
           confirm: Are you absolutely sure you want to remove your %{provider} account?
           submit: Remove %{provider}
+          unable_to_remove: You are unable to remove one of your authentication methods as you need a remaining method to authenticate you. Please add another authentication method above before continuing.
       billing:
         heading: Billing
         add: Add Credit Card
