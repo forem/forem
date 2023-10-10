@@ -622,7 +622,8 @@ RSpec.describe "Api::V1::Articles" do
 
     describe "when authorized" do
       let(:default_params) { { body_markdown: "" } }
-      let(:tomorrow) { 1.day.from_now }
+      let(:tomorrow) { Date.tomorrow }
+      let(:formatted_date) { tomorrow.strftime("%Y-%m-%d") }
 
       def post_article(**params)
         params = default_params.merge params
@@ -880,7 +881,6 @@ RSpec.describe "Api::V1::Articles" do
       end
 
       it "creates an articles with published_at in the future" do
-        formatted_date = tomorrow.strftime("%Y-%m-%d")
         formatted_published_at = "#{formatted_date} 18:00 MSK"
         published_at = DateTime.parse(formatted_published_at)
         expect do
@@ -896,7 +896,6 @@ RSpec.describe "Api::V1::Articles" do
       end
 
       it "creates an article when publushed_at in the future without time is passed" do
-        formatted_date = tomorrow.strftime("%Y-%m-%d")
         expect do
           post_article(
             title: Faker::Book.title,
