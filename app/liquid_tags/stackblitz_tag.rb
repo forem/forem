@@ -4,7 +4,7 @@ class StackblitzTag < LiquidTagBase
   ID_REGEXP = /\A(?<id>[\w-]{,60})\Z/
   REGEXP_OPTIONS = [REGISTRY_REGEXP, ID_REGEXP].freeze
   # rubocop:disable Layout/LineLength
-  PARAM_REGEXP = /\A(view=(preview|editor|both))|(file=(.*))|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=\d)\Z/
+  PARAM_REGEXP = /\A(view=(preview|editor|both))|(file=(.*))|(embed=1)|(hideExplorer=1)|(hideNavigation=1)|(theme=(default|light|dark))|(ctl=1)|(devtoolsheight=\d)|(hidedevtools=1)|(initialpath=(.*))|(showSidebar=1)|(terminalHeight=\d)|(startScript=(.*))\Z/
   # rubocop:enable Layout/LineLength
 
   def initialize(_tag_name, input, _parse_context)
@@ -34,12 +34,12 @@ class StackblitzTag < LiquidTagBase
     match = pattern_match_for(id, REGEXP_OPTIONS)
     raise StandardError, I18n.t("liquid_tags.stackblitz_tag.invalid_stackblitz_id") unless match
 
-    return [match[:id], nil] unless params_present?(match) || params
+    return [match[:id], nil] unless url_params(match) || params
 
-    build_link_with_params(match[:id], (params_present?(match) || params))
+    build_link_with_params(match[:id], (url_params(match) || params))
   end
 
-  def params_present?(match)
+  def url_params(match)
     return unless match.names.include?("params")
 
     match[:params].delete("?")
