@@ -4,11 +4,12 @@ module Api
 
     SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
       id username name summary twitter_username github_username website_url
-      location created_at profile_image registered display_email_on_profile email
+      location created_at profile_image registered
     ].freeze
 
     def show
-      relation = User.joins(:profile).joins(:setting).select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+      attributes_for_select = SHOW_ATTRIBUTES_FOR_SERIALIZATION + %i[display_email_on_profile email]
+      relation = User.joins(:profile).joins(:setting).select(attributes_for_select)
 
       @user = if params[:id] == "by_username"
                 relation.find_by!(username: params[:url])
