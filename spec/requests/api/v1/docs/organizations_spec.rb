@@ -41,7 +41,7 @@ RSpec.describe "Api::V1::Docs::Organizations" do
       end
     end
 
-    path "/api/organizations/{username}/users" do
+    path "/api/organizations/{organization_id_or_username}/users" do
       get "Organization's users" do
         tags "organizations", "users"
         security []
@@ -50,12 +50,20 @@ RSpec.describe "Api::V1::Docs::Organizations" do
 It supports pagination, each page will contain `30` users by default."
         operationId "getOrgUsers"
         produces "application/json"
-        parameter name: :username, in: :path, type: :string, required: true
+        parameter name: :organization_id_or_username, in: :path, type: :string, required: true
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
 
-        response "200", "An Organization's users" do
-          let(:username) { organization.username }
+        response "200", "An Organization's users (with username)" do
+          let(:organization_id_or_username) { organization.username }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/User" }
+          add_examples
+          run_test!
+        end
+
+        response "200", "An Organization's users (with ID)" do
+          let(:organization_id_or_username) { organization.id }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/User" }
           add_examples
@@ -63,14 +71,14 @@ It supports pagination, each page will contain `30` users by default."
         end
 
         response "404", "Not Found" do
-          let(:username) { "non-existent-username" }
+          let(:organization_id_or_username) { "non-existent-id-or-username" }
           add_examples
           run_test!
         end
       end
     end
 
-    path "/api/organizations/{username}/articles" do
+    path "/api/organizations/{organization_id_or_username}/articles" do
       get "Organization's Articles" do
         tags "organizations", "articles"
         security []
@@ -79,12 +87,20 @@ It supports pagination, each page will contain `30` users by default."
 It supports pagination, each page will contain `30` users by default."
         operationId "getOrgArticles"
         produces "application/json"
-        parameter name: :username, in: :path, type: :string, required: true
+        parameter name: :organization_id_or_username, in: :path, type: :string, required: true
         parameter "$ref": "#/components/parameters/pageParam"
         parameter "$ref": "#/components/parameters/perPageParam30to1000"
 
-        response "200", "An Organization's Articles" do
-          let(:username) { organization.username }
+        response "200", "An Organization's Articles (with username)" do
+          let(:organization_id_or_username) { organization.username }
+          schema  type: :array,
+                  items: { "$ref": "#/components/schemas/ArticleIndex" }
+          add_examples
+          run_test!
+        end
+
+        response "200", "An Organization's Articles (with ID)" do
+          let(:organization_id_or_username) { organization.id }
           schema  type: :array,
                   items: { "$ref": "#/components/schemas/ArticleIndex" }
           add_examples
@@ -92,7 +108,7 @@ It supports pagination, each page will contain `30` users by default."
         end
 
         response "404", "Not Found" do
-          let(:username) { "non-existent-username" }
+          let(:organization_id_or_username) { "non-existent-username" }
           add_examples
           run_test!
         end
