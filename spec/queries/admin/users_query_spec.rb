@@ -9,6 +9,7 @@ RSpec.describe Admin::UsersQuery, type: :query do
   let(:joining_start) { nil }
   let(:joining_end) { nil }
   let(:ids) { [] }
+  let(:limit) { nil }
 
   describe ".find" do
     let!(:user1) { create(:user, username: "user1") }
@@ -57,8 +58,7 @@ RSpec.describe Admin::UsersQuery, type: :query do
     subject do
       described_class.call(search: search, role: role, roles: roles, organizations: organizations,
                            joining_start: joining_start, joining_end: joining_end, date_format: date_format,
-                           statuses: statuses,
-                           ids: ids)
+                           statuses: statuses, ids: ids, limit: limit)
     end
 
     let(:date_format) { "DD/MM/YYYY" }
@@ -80,10 +80,11 @@ RSpec.describe Admin::UsersQuery, type: :query do
     let!(:user8) { create(:user, :comment_suspended, name: "Bob", registered_at: "2020-10-08T13:09:47+0000") }
     let!(:user9) { create(:user, name: "Lucia",  registered_at: "2020-10-08T13:09:47+0000") }
     let!(:user10) { create(:user, :warned, name: "Billie", registered_at: "2020-10-08T13:09:47+0000") }
+    let!(:all_users) { [user10, user9, user8, user7, user6, user5, user4, user3, user2, user] }
 
     context "when no arguments are given" do
       it "returns all users" do
-        expect(described_class.call).to eq([user10, user9, user8, user7, user6, user5, user4, user3, user2, user])
+        expect(described_class.call).to eq(all_users)
       end
     end
 
@@ -211,6 +212,30 @@ RSpec.describe Admin::UsersQuery, type: :query do
       let(:ids) { [0, "foo"] }
 
       it { is_expected.to eq([]) }
+    end
+
+    context "when limit is grater than zero" do
+      let(:limit) { 2 }
+
+      it { is_expected.to eq([user10, user9]) }
+    end
+
+    context "when limit is zero" do
+      let(:limit) { 0 }
+
+      it { expect(described_class.call).to eq(all_users) }
+    end
+
+    context "when limit is not a number" do
+      let(:limit) { "foo" }
+
+      it { expect(described_class.call).to eq(all_users) }
+    end
+
+    context "when limit is nil" do
+      let(:limit) { nil }
+
+      it { expect(described_class.call).to eq(all_users) }
     end
   end
 end

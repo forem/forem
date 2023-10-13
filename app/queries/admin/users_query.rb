@@ -35,7 +35,8 @@ module Admin
                   ids: [],
                   joining_start: nil,
                   joining_end: nil,
-                  date_format: "DD/MM/YYYY")
+                  date_format: "DD/MM/YYYY",
+                  limit: nil)
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
@@ -56,6 +57,8 @@ module Admin
 
       relation = search_relation(relation, search) if search.presence
       relation = filter_ids(relation, ids) if ids.presence
+      relation = relation.limit(limit.to_i) if limit.to_i.positive?
+
       relation.distinct.order(created_at: :desc)
     end
 
