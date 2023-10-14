@@ -60,6 +60,20 @@ RSpec.describe "Api::V1::Users" do
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
       expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
     end
+
+    it "includes email if display_email_on_profile is set to true" do
+      user.setting.update_column(:display_email_on_profile, true)
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user["email"]).to eq(user.email)
+    end
+
+    it "doesn't include email if display_email_on_profile is false" do
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user.key?("email")).to be true
+      expect(response_user["email"]).to be_nil
+    end
   end
 
   describe "GET /api/users/me" do
@@ -173,8 +187,8 @@ RSpec.describe "Api::V1::Users" do
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
-        expect(target_articles.map(&:reload).map(&:published?)).to contain_exactly(false, false, false)
-        expect(target_comments.map(&:reload).map(&:deleted)).to contain_exactly(true, true, true)
+        expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false, false)
+        expect(target_comments.map { |c| c.reload.deleted }).to contain_exactly(true, true, true)
       end
 
       it "creates an audit log of the action taken" do
