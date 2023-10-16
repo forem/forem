@@ -297,6 +297,8 @@ RSpec.describe "Api::V1::Organizations" do
 
       expect(response_org_users["joined_at"]).to eq(org_user.created_at.strftime("%b %e, %Y"))
       expect(response_org_users["profile_image"]).to eq(org_user.profile_image_url_for(length: 320))
+
+      expect(response_org_users.key?("email")).to be false
     end
   end
 
