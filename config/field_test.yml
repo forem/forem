@@ -28,10 +28,39 @@
 ################################################################################
 experiments:
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20231017:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-10-17
+    variants:
+      - 20230918-variant-a
+      - 20231017-variant-a
+      - 20231017-variant-b
+      - 20231017-variant-c
+    weights:
+      - 64
+      - 12
+      - 12
+      - 12
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+
   feed_strategy_starting_20231001:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     started_at: 2023-10-01
+    ended_at: 2023-10-17
+    winner: 20230918-variant-a
     variants:
       - 20230918-variant-a
       - 20231001-variant-a
