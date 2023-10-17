@@ -26,6 +26,7 @@ module Admin
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
     # @param date_format [String]
+    # @param limit [Integer, nil]
     def self.call(relation: User.registered,
                   role: nil,
                   search: nil,
