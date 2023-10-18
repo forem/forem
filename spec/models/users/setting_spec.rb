@@ -101,7 +101,7 @@ RSpec.describe Users::Setting do
       end
     end
 
-    context "when validating feed_url", vcr: true do
+    context "when validating feed_url", :vcr do
       it "is valid with no feed_url" do
         setting.feed_url = nil
 
