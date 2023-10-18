@@ -150,6 +150,13 @@
   &::-ms-clear {
     display: none;
   }
+
+  &.disabled {
+    background-color: #f2f2f2;
+    color: #888888;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
 
 ///////////////////////////////////////////////////
