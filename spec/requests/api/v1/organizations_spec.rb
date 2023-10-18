@@ -67,8 +67,7 @@ RSpec.describe "Api::V1::Organizations" do
           # the controller sets the remote_profile_image_url instead
           profile_image_url = org_params[:profile_image]
           allow(Organization).to receive(:new).and_return(organization)
-          allow(organization).to receive(:profile_image).and_return(profile_image)
-          allow(organization).to receive(:profile_image_url).and_return(profile_image_url)
+          allow(organization).to receive_messages(profile_image: profile_image, profile_image_url: profile_image_url)
         end
 
         it "accepts request and creates the organization" do
