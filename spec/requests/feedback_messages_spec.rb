@@ -17,8 +17,8 @@ RSpec.describe "feedback_messages" do
     end
 
     def mock_recaptcha_config_enabled
-      allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-      allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
+      allow(Settings::Authentication).to receive_messages(recaptcha_secret_key: "someSecretKey",
+                                                          recaptcha_site_key: "someSiteKey")
     end
 
     valid_abuse_report_params = {
@@ -65,8 +65,7 @@ RSpec.describe "feedback_messages" do
 
     context "with valid params and recaptcha not configured" do
       before do
-        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return(nil)
-        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return(nil)
+        allow(Settings::Authentication).to receive_messages(recaptcha_secret_key: nil, recaptcha_site_key: nil)
       end
 
       it "does not show the recaptcha tag" do
