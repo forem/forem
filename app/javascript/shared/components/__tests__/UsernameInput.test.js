@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 import '@testing-library/jest-dom';
 
