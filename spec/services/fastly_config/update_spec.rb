@@ -11,16 +11,13 @@ RSpec.describe FastlyConfig::Update, type: :service do
   # quite a bit here to simulate Fastly working ¯\_(ツ)_/¯
   before do
     allow(Fastly).to receive(:new).and_return(fastly)
-    allow(fastly).to receive(:get_service).and_return(fastly_service)
     allow(described_class).to receive(:new).and_return(fastly_updater)
-    allow(fastly_updater).to receive(:get_active_version).and_return(fastly_version)
-    allow(fastly_updater).to receive(:fastly).and_return(fastly)
-    allow(fastly_updater).to receive(:service).and_return(fastly_service)
+    allow(fastly_updater).to receive_messages(get_active_version: fastly_version, fastly: fastly,
+                                              service: fastly_service)
     allow(fastly_version).to receive(:number).and_return(1)
-    allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)
-    allow(fastly_version).to receive(:clone).and_return(fastly_version)
+    allow(fastly).to receive_messages(get_service: fastly_service, get_snippet: fastly_snippet)
     allow(fastly_version).to receive(:number).and_return(99)
-    allow(fastly_version).to receive(:activate!).and_return(true)
+    allow(fastly_version).to receive_messages(clone: fastly_version, activate!: true)
   end
 
   describe "::run" do
@@ -45,8 +42,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets
       allow(FastlyConfig::Snippets).to receive(:new).and_return(snippet_handler)
-      allow(snippet_handler).to receive(:update_needed?).and_return(true)
-      allow(snippet_handler).to receive(:update).and_return(true)
+      allow(snippet_handler).to receive_messages(update_needed?: true, update: true)
       described_class.call
       expect(fastly_version).to have_received(:activate!)
     end
@@ -58,8 +54,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets
       allow(FastlyConfig::Snippets).to receive(:new).and_return(snippet_handler)
-      allow(snippet_handler).to receive(:update_needed?).and_return(true)
-      allow(snippet_handler).to receive(:update).and_return(true)
+      allow(snippet_handler).to receive_messages(update_needed?: true, update: true)
 
       described_class.call
       expect(Rails.logger).to have_received(:info)

@@ -355,8 +355,8 @@ RSpec.describe "/admin/member_manager/users" do
 
       # Ensure article's aren't published and comments deleted
       # (with boolean attribute so they can be reverted if needed)
-      expect(target_articles.map(&:reload).map(&:published?)).to contain_exactly(false, false, false)
-      expect(target_comments.map(&:reload).map(&:deleted)).to contain_exactly(true, true, true)
+      expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false, false)
+      expect(target_comments.map { |c| c.reload.deleted? }).to contain_exactly(true, true, true)
     end
 
     it "creates a log record" do

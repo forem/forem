@@ -371,7 +371,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
     end
 
-    it "wraps the image with Cloudinary", cloudinary: true do
+    it "wraps the image with Cloudinary", :cloudinary do
       expect(generate_and_parse_markdown(markdown_with_img))
         .to include("https://res.cloudinary.com")
     end

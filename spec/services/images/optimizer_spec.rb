@@ -22,8 +22,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "returns the image if neither cloudinary nor imgproxy are enabled", :aggregate_failures do
-      allow(described_class).to receive(:cloudinary_enabled?).and_return(false)
-      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
+      allow(described_class).to receive_messages(cloudinary_enabled?: false, imgproxy_enabled?: false)
 
       expect(described_class.call(image_url)).to eq(image_url)
 
@@ -32,8 +31,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "calls cloudinary if imgproxy is not enabled" do
-      allow(described_class).to receive(:cloudinary_enabled?).and_return(true)
-      allow(described_class).to receive(:imgproxy_enabled?).and_return(false)
+      allow(described_class).to receive_messages(cloudinary_enabled?: true, imgproxy_enabled?: false)
 
       described_class.call(image_url)
 
@@ -42,8 +40,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "calls imgproxy if imgproxy is enabled" do
-      allow(described_class).to receive(:cloudinary_enabled?).and_return(true)
-      allow(described_class).to receive(:imgproxy_enabled?).and_return(true)
+      allow(described_class).to receive_messages(cloudinary_enabled?: true, imgproxy_enabled?: true)
 
       described_class.call(image_url)
 
@@ -52,7 +49,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
   end
 
-  describe "#cloudinary", cloudinary: true do
+  describe "#cloudinary", :cloudinary do
     it "performs exactly like cl_image_path" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
@@ -124,12 +121,12 @@ RSpec.describe Images::Optimizer, type: :service do
     it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set but never_imagga: true is passed" do
       allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
       cl_url = cl_image_path(image_url,
-                                     type: "fetch",
-                                     quality: "auto",
-                                     sign_url: true,
-                                     crop: "fill",
-                                     flags: "progressive",
-                                     fetch_format: "jpg")
+                             type: "fetch",
+                             quality: "auto",
+                             sign_url: true,
+                             crop: "fill",
+                             flags: "progressive",
+                             fetch_format: "jpg")
       expect(described_class.call(image_url, crop: "crop", fetch_format: "jpg", never_imagga: true)).to eq(cl_url)
     end
   end
@@ -186,7 +183,6 @@ RSpec.describe Images::Optimizer, type: :service do
       url_regexp = %r{/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}}
       expect(cloudflare_url).to match(url_regexp)
     end
-
 
     it "generates correct crop with 'crop' passed" do
       cloudflare_url = described_class.cloudflare(image_url, width: 821, height: 420, crop: "crop")
@@ -262,9 +258,8 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "returns true if cloud_name and api_key and api_secret are provided" do
-      allow(Cloudinary.config).to receive(:cloud_name).and_return("cloud name")
-      allow(Cloudinary.config).to receive(:api_key).and_return("api key")
-      allow(Cloudinary.config).to receive(:api_secret).and_return("api secret")
+      allow(Cloudinary.config).to receive_messages(cloud_name: "cloud name", api_key: "api key",
+                                                   api_secret: "api secret")
 
       expect(described_class.cloudinary_enabled?).to be(true)
     end
