@@ -234,7 +234,8 @@ RSpec.describe "StoriesIndex" do
 
       it "doesn't display unapproved posts" do
         allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
-                                                      sidebar_image: "https://example.com/image.png", articles_require_approval: true)
+                                                      sidebar_image: "https://example.com/image.png",
+                                                      articles_require_approval: true)
         Article.last.update_column(:score, -2)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
@@ -242,7 +243,8 @@ RSpec.describe "StoriesIndex" do
 
       it "displays unapproved post if approval is not required" do
         allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
-                                                      sidebar_image: "https://example.com/image.png", articles_require_approval: false)
+                                                      sidebar_image: "https://example.com/image.png",
+                                                      articles_require_approval: false)
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
