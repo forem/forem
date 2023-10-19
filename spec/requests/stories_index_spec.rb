@@ -233,18 +233,18 @@ RSpec.describe "StoriesIndex" do
       end
 
       it "doesn't display unapproved posts" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
-        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)
+        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
+                                                      sidebar_image: "https://example.com/image.png",
+                                                      articles_require_approval: true)
         Article.last.update_column(:score, -2)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays unapproved post if approval is not required" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
-        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(false)
+        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
+                                                      sidebar_image: "https://example.com/image.png",
+                                                      articles_require_approval: false)
         get "/"
         expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
@@ -256,16 +256,14 @@ RSpec.describe "StoriesIndex" do
       end
 
       it "displays sidebar url if url is set" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
+        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true, url: "https://campaign-lander.com",
+                                                      sidebar_image: "https://example.com/image.png")
         get "/"
         expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
 
       it "does not display sidebar url if image is not present is set" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
+        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true, url: "https://campaign-lander.com")
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end

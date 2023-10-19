@@ -103,7 +103,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     it "deletes the badge_achievement" do
       expect do
         delete admin_badge_achievement_path(badge_achievement.id)
-      end.to change { BadgeAchievement.all.count }.by(-1)
+      end.to change(BadgeAchievement, :count).by(-1)
     end
   end
 end

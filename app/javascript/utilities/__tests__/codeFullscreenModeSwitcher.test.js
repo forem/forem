@@ -53,6 +53,8 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
     ({ onPressEscape, onPopstate } = await importModule());
   });
 
+  // Assertions are called within the `testNonFullScreen` function.
+  // eslint-disable-next-line jest/expect-expect
   it('starts in non-fullscreen mode', testNonFullScreen);
 
   it('enters fullscreen mode on click', () => {

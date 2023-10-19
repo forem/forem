@@ -94,17 +94,17 @@ RSpec.describe "Api::V1::Pages" do
     expect(response).to have_http_status(:success)
     expect(response.parsed_body.size).to eq(1)
     expect(response.parsed_body.first.keys).to \
-      contain_exactly(*%w[id title slug description is_top_level_path
-                          landing_page body_html body_json body_markdown
-                          processed_html social_image template])
+      match_array(%w[id title slug description is_top_level_path
+                     landing_page body_html body_json body_markdown
+                     processed_html social_image template])
   end
 
   it "retrieves a page and renders it as json" do
     get api_page_path(page.id), headers: v1_headers
     expect(response).to have_http_status(:success)
     expect(response.parsed_body.keys).to \
-      contain_exactly(*%w[id title slug description is_top_level_path
-                          landing_page body_html body_json body_markdown
-                          processed_html social_image template])
+      match_array(%w[id title slug description is_top_level_path
+                     landing_page body_html body_json body_markdown
+                     processed_html social_image template])
   end
 end
