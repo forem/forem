@@ -19,7 +19,7 @@ RSpec.describe UserVisitContext do
 
   describe "#set_user_language" do
     let(:user) { create(:user) }
-    let(:user_visit_context) { create(:user_visit_context, user: user, accept_language: "en-US;q=0.9,fr-FR;q=0.8") }
+    let(:user_visit_context) { build(:user_visit_context, user: user, accept_language: "en-US;q=0.9,fr-FR;q=0.8") }
 
     it "creates UserLanguage records" do
       expect { user_visit_context.set_user_language }
@@ -27,14 +27,14 @@ RSpec.describe UserVisitContext do
     end
 
     it "logs an error if something goes wrong" do
+      allow(UserLanguage).to receive(:where).and_raise(StandardError)
       allow(Rails.logger).to receive(:error).with(instance_of(StandardError))
-      # Code that causes the error to be logged
+      user_visit_context.set_user_language
       expect(Rails.logger).to have_received(:error).with(instance_of(StandardError))
     end
-  end
 
-  describe "additional specs" do
     it "matches specific languages" do
+      user_visit_context.set_user_language
       expect(UserLanguage.pluck(:language)).to match_array(%w[en fr])
     end
   end
