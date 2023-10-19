@@ -126,7 +126,7 @@
               <%= f.hidden_field :from_dashboard, value: 1 %>
               <% if article_series %>
                   <div class="disabled-info-container">
-                    <%= crayons_icon_tag("info", class: "disabled-info-icon") %>
+                    <%= crayons_icon_tag("info", class: "disabled-info-icon", title: t("views.dashboard.article.icon")) %>
                     <p class="disabled-info-text"><%= t("views.dashboard.article.series_author_change_warning") %></p>
                   </div>
               <% end %>
