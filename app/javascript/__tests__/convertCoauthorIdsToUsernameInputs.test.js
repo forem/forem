@@ -1,6 +1,6 @@
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 import { convertCoauthorIdsToUsernameInputs } from '../packs/dashboards/convertCoauthorIdsToUsernameInputs';
 
