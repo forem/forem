@@ -79,6 +79,7 @@ fr:
     organization:
       integer_only: Entier seulement. Aucun signe n'est autorisé.
       reserved_word: "%<value>s est un mot réservé. Contactez l'administrateur du site pour obtenir de l'aide pour enregistrer votre organisation."
+      slug_format: doit inclure au moins un caractère non numérique. Veuillez ajouter d'autres caractères au nom d'utilisateur de votre organisation
     page:
       body_must_exist: doit exister si body_html ou body_json n'existe pas.
     podcast_episode_appearance:
