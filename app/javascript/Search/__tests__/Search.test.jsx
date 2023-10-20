@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render, fireEvent, waitFor } from '@testing-library/preact';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 import { axe } from 'jest-axe';
 import { Search } from '../Search';
