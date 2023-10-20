@@ -80,6 +80,7 @@ en:
     organization:
       integer_only: Integer only. No sign allowed.
       reserved_word: '%<value>s is a reserved word. Contact site admins for help registering your organization.'
+      slug_format: must include at least one non-digit character. Please add other characters to your organization's username.
     page:
       body_must_exist: must exist if body_html or body_json doesn't exist.
     podcast_episode_appearance:

@@ -52,6 +52,11 @@ RSpec.describe Organization do
       it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.not_to allow_value("3.0").for(:company_size) }
       it { is_expected.to allow_value("3").for(:company_size) }
+
+      it { is_expected.to allow_value("1345abc").for(:slug) }
+      it { is_expected.to allow_value("just_non_digit_characters").for(:slug) }
+      it { is_expected.to allow_value("123_4").for(:slug) }
+      it { is_expected.not_to allow_value("1234").for(:slug) }
     end
   end
 
@@ -185,6 +190,15 @@ RSpec.describe Organization do
       it "triggers cache busting on save" do
         organization.save
         expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
+      end
+    end
+
+    context "when validating the format" do
+      it "sets the correct error message" do
+        organization = build(:organization, slug: "1337")
+
+        expect(organization).not_to be_valid
+        expect(organization.errors[:slug].to_s).to include(I18n.t("models.organization.slug_format"))
       end
     end
   end
