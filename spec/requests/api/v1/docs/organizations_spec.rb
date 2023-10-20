@@ -193,11 +193,10 @@ It supports pagination, each page will contain `30` users by default."
             organization = Organization.new(org_params)
             allow(Organization).to receive(:new).and_return(organization)
             profile_image = Images::ProfileImageGenerator.call
-            allow(organization).to receive(:profile_image).and_return(profile_image)
             # presence of image file allows save, mocking the upload in specs means file won't respond to :url
-            allow(organization).to receive(:profile_image_url).and_return(
-              "uploads/organization/profile_image/1/400x400.jpg",
-            )
+            profile_image_url = "uploads/organization/profile_image/1/400x400.jpg"
+            allow(organization).to receive_messages(profile_image: profile_image,
+                                                    profile_image_url: profile_image_url)
           end
 
           let(:"api-key") { api_secret.secret }

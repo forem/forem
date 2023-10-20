@@ -64,7 +64,7 @@ RSpec.describe "/admin/member_manager/invitations" do
       expect do
         post admin_invitations_path,
              params: { user: { email: admin.email } }
-      end.not_to change { User.all.count }
+      end.not_to change(User, :count)
       expect(admin.reload.registered).to be true
       expect(flash[:error].present?).to be true
     end
@@ -91,7 +91,7 @@ RSpec.describe "/admin/member_manager/invitations" do
     it "deletes the invitation" do
       expect do
         delete admin_invitation_path(invitation.id)
-      end.to change { User.all.count }.by(-1)
+      end.to change(User, :count).by(-1)
       expect(response.body).to redirect_to admin_invitations_path
     end
   end

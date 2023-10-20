@@ -50,7 +50,7 @@ RSpec.describe "Admin - Consumer Apps" do
       it "creates a new consumer_app" do
         expect do
           post_resource
-        end.to change { ConsumerApp.all.count }.by(1)
+        end.to change(ConsumerApp, :count).by(1)
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe "Admin - Consumer Apps" do
       it "deletes the ConsumerApp" do
         expect do
           delete admin_consumer_app_path(consumer_app.id)
-        end.to change { ConsumerApp.all.count }.by(-1)
+        end.to change(ConsumerApp, :count).by(-1)
         expect(response.body).to redirect_to admin_consumer_apps_path
       end
     end
@@ -98,14 +98,14 @@ RSpec.describe "Admin - Consumer Apps" do
       it "creates a new ConsumerApp" do
         expect do
           post_resource
-        end.to change { ConsumerApp.all.count }.by(1)
+        end.to change(ConsumerApp, :count).by(1)
       end
 
       it "fails when trying to create duplicate apps (app_bundle + platform)" do
         expect do
           post_resource
           post_resource
-        end.to change { ConsumerApp.all.count }.by(1)
+        end.to change(ConsumerApp, :count).by(1)
       end
     end
 
@@ -131,7 +131,7 @@ RSpec.describe "Admin - Consumer Apps" do
       it "deletes the ConsumerApp" do
         expect do
           delete admin_consumer_app_path(consumer_app.id)
-        end.to change { ConsumerApp.all.count }.by(-1)
+        end.to change(ConsumerApp, :count).by(-1)
         expect(response.body).to redirect_to admin_consumer_apps_path
       end
     end

@@ -622,6 +622,8 @@ RSpec.describe "Api::V1::Articles" do
 
     describe "when authorized" do
       let(:default_params) { { body_markdown: "" } }
+      let(:tomorrow) { Date.tomorrow }
+      let(:formatted_date) { tomorrow.strftime("%Y-%m-%d") }
 
       def post_article(**params)
         params = default_params.merge params
@@ -878,6 +880,33 @@ RSpec.describe "Api::V1::Articles" do
         expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
       end
 
+      it "creates an articles with published_at in the future" do
+        formatted_published_at = "#{formatted_date} 18:00 MSK"
+        published_at = DateTime.parse(formatted_published_at)
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: formatted_published_at,
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at).to be_present
+        expect(created_article.published_at).to be_within(1.minute).of(published_at)
+      end
+
+      it "creates an article when publushed_at in the future without time is passed" do
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: formatted_date,
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at.strftime("%Y-%m-%d")).to eq(formatted_date)
+      end
+
       it "does not raise an error if article params are missing" do
         expect do
           post api_articles_path, params: {}.to_json, headers: post_headers
@@ -898,6 +927,8 @@ RSpec.describe "Api::V1::Articles" do
     let(:article)       { create(:article, user: user, published: false, published_at: nil) }
     let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
+    let(:tomorrow)      { Date.tomorrow }
+    let(:formatted_future_time) { "#{tomorrow.strftime('%Y-%m-%d')} 18:00 UTC" }
 
     describe "when unauthorized" do
       it "fails with no api key" do
@@ -1149,6 +1180,41 @@ RSpec.describe "Api::V1::Articles" do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "updates published_at draft => scheduled" do
+        put_article(published_at: formatted_future_time, published: true)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at > Time.current).to be true
+      end
+
+      it "updates published_at sheduled => scheduled" do
+        article.update_columns(published_at: 2.days.from_now, published: true)
+        future_time = DateTime.parse(formatted_future_time)
+        put_article(published_at: formatted_future_time)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(future_time)
+      end
+
+      it "doesn't allow to update published_at of a scheduled article to a past date" do
+        future = 2.days.from_now
+        article.update_columns(published_at: future, published: true)
+        put_article(published_at: "2020-02-02 19:00 UTC")
+        expect(response).to have_http_status(:unprocessable_entity)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(future)
+      end
+
+      # published_at is immutable after publishing
+      it "doesn't update published_at for a published article (but doesn't raise an error)" do
+        time = 1.day.ago
+        article.update_columns(published_at: time, published: true)
+        put_article(published_at: formatted_future_time)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(time)
       end
 
       it "fails if params are not a Hash" do

@@ -42,7 +42,7 @@ RSpec.describe "/admin/content_manager/tags" do
     it "creates a new tag" do
       expect do
         post_resource
-      end.to change { Tag.all.count }.by(1)
+      end.to change(Tag, :count).by(1)
       expect(response.body).to redirect_to edit_admin_tag_path(Tag.last)
     end
   end

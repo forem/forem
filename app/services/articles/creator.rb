@@ -4,6 +4,20 @@ module Articles
       new(...).call
     end
 
+    # @param user [User]
+    # @param article_params [Hash]
+    # @option article_params [NilClass, String] :title
+    # @option article_params [NilClass, String] :body_markdown
+    # @option article_params [NilClass, String] :main_image
+    # @option article_params [Boolean] :published
+    # @option article_params [NilClass, String] :description
+    # @option article_params [NilClass, String] :video_thumbnail_url
+    # @option article_params [NilClass, String] :canonical_url
+    # @option article_params [NilClass, String] :series series slug
+    # @option article_params [Integer, NilClass] :collection_id
+    # @option article_params [Boolean] :archived
+    # @option article_params [String<Array>] :tags
+    # @option article_params [NilClass, String, ActiveSupport::TimeWithZone] :published_at
     def initialize(user, article_params)
       @user = user
       @article_params = normalize_params(article_params)

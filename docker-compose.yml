@@ -31,6 +31,7 @@ x-backend: &backend
     - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
+    CHROME_URL: http://chrome:3333
     REDIS_URL: redis://redis:6379/
     DATABASE_URL: postgres://postgres:postgres@postgres:5432
     DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
@@ -58,6 +59,7 @@ services:
       REDIS_URL: redis://redis:6379/
       DATABASE_URL: postgres://postgres:postgres@postgres:5432
       DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
+      CHROME_URL: http://chrome:3333
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
@@ -137,6 +139,25 @@ services:
       <<: *env
       WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
       YARN_CACHE_FOLDER: /app/node_modules/.yarn-cache
+
+  chrome:
+    image: browserless/chrome:latest
+    ports:
+      - "3333:3333"
+    # Mount application source code to support file uploading
+    # (otherwise Chrome won't be able to find files).
+    # NOTE: Make sure you use absolute paths in `#attach_file`.
+    volumes:
+      - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
+    environment:
+      PORT: 3333
+      CONNECTION_TIMEOUT: 600000
+
+  rspec_system:
+    <<: *backend
+    depends_on:
+      chrome:
+        condition: service_started
 
 volumes:
   bundle:
