@@ -656,7 +656,7 @@ RSpec.describe User do
       user.setting.config_theme = "dark_theme"
 
       # rubocop:disable Layout/LineLength
-      classes = "dark-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header"
+      classes = "dark-theme sans-serif-article-body mod-status-#{user.admin? || !user.moderator_for_tags.empty?} trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header ten-x-hacker-theme"
       # rubocop:enable Layout/LineLength
       expect(user.decorate.config_body_class).to eq(classes)
     end

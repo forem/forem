@@ -80,6 +80,9 @@ class UserDecorator < ApplicationDecorator
       "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
+
+    # Backfill ten-x-hacker-theme because the ios app looks for it to render native dark shell.
+    body_class << "ten-x-hacker-theme" if setting.config_theme == "dark_theme"
     body_class.join(" ")
   end
 
