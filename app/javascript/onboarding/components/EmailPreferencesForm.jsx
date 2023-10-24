@@ -26,7 +26,8 @@ export class EmailPreferencesForm extends Component {
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-    const newsletterChecked = document.getElementById('email_newsletter').checked
+    const newsletterEl = document.getElementById('email_newsletter');
+    const newsletterChecked = newsletterEl ? newsletterEl.checked : false
     fetch('/onboarding/notifications', {
       method: 'PATCH',
       headers: {
