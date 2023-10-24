@@ -59,7 +59,6 @@ class Organization < ApplicationRecord
   validates :twitter_username, length: { maximum: 15 }
   validates :unspent_credits_count, presence: true
   validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
-  validates :slug, format: { with: /\A.*[\D].*\z/, message: I18n.t("models.organization.slug_format") }
 
   unique_across_models :slug, length: { in: 2..30 }
 

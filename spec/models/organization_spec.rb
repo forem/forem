@@ -192,15 +192,6 @@ RSpec.describe Organization do
         expect(Organizations::BustCacheWorker).to have_received(:perform_async).with(organization.id, organization.slug)
       end
     end
-
-    context "when validating the format" do
-      it "sets the correct error message" do
-        organization = build(:organization, slug: "1337")
-
-        expect(organization).not_to be_valid
-        expect(organization.errors[:slug].to_s).to include(I18n.t("models.organization.slug_format"))
-      end
-    end
   end
 
   describe "#url" do
