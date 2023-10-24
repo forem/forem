@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns += %w[workshop_expiration]
-
   resourcify
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
