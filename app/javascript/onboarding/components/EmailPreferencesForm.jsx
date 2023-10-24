@@ -26,14 +26,14 @@ export class EmailPreferencesForm extends Component {
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-
+    const newsletterChecked = document.getElementById('email_newsletter').checked
     fetch('/onboarding/notifications', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ notifications: this.state }),
+      body: JSON.stringify({ notifications: { email_newsletter: newsletterChecked } }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
