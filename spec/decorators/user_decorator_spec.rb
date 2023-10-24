@@ -98,6 +98,7 @@ RSpec.describe UserDecorator, type: :decorator do
         dark-theme sans-serif-article-body
         mod-status-#{user.admin? || !user.moderator_for_tags.empty?}
         trusted-status-#{user.trusted?} #{user.setting.config_navbar}-header
+        ten-x-hacker-theme
       ].join(" ")
       expect(user.decorate.config_body_class).to eq(expected_result)
     end
