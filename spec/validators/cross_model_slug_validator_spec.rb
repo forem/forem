@@ -80,4 +80,16 @@ RSpec.describe CrossModelSlugValidator do
 
     it { is_expected.to be_valid }
   end
+
+  context "when name consists of only digits" do
+    let(:name) { "1337" }
+
+    it { is_expected.not_to be_valid }
+  end
+
+  context "when name contains at least one non-digit character" do
+    let(:name) { "1234a" }
+
+    it { is_expected.to be_valid }
+  end
 end
