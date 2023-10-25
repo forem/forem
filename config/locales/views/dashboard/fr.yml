@@ -95,6 +95,8 @@ fr:
         unarchive: Unarchive post
         author: Author
         co_authors: Co-authors
+        series_author_change_warning: No author changes allowed for series posts.
+        icon: Details
         author_is: 'AUTHOR: '
         save: Save
         submit: Submit author change
