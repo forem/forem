@@ -39,7 +39,7 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
       describe "#featured_story_and_default_home_feed" do
         let(:user) { nil }
 
-        it "returns an array with two elements and entries", aggregate_failures: true do
+        it "returns an array with two elements and entries", :aggregate_failures do
           create_list(:article, 3)
           response = variant_query.featured_story_and_default_home_feed(user_signed_in: false)
           expect(response).to be_a(Array)

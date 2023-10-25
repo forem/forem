@@ -47,7 +47,7 @@ RSpec.describe "/admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
-        end.to change { HtmlVariant.all.count }.by(1)
+        end.to change(HtmlVariant, :count).by(1)
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe "/admin/customization/html_variants" do
       it "deletes the Billboard" do
         expect do
           delete admin_html_variant_path(html_variant.id)
-        end.to change { HtmlVariant.all.count }.by(-1)
+        end.to change(HtmlVariant, :count).by(-1)
         expect(response.body).to redirect_to admin_html_variants_path
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe "/admin/customization/html_variants" do
       it "creates a new html_variant" do
         expect do
           post_resource
-        end.to change { HtmlVariant.all.count }.by(1)
+        end.to change(HtmlVariant, :count).by(1)
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe "/admin/customization/html_variants" do
       it "deletes the Billboard" do
         expect do
           delete admin_html_variant_path(html_variant.id)
-        end.to change { HtmlVariant.all.count }.by(-1)
+        end.to change(HtmlVariant, :count).by(-1)
         expect(response.body).to redirect_to admin_html_variants_path
       end
     end

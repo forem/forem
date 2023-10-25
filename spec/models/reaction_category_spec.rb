@@ -17,21 +17,21 @@ RSpec.describe ReactionCategory do
   end
 
   it "lists all category slugs" do
-    expect(described_class.all_slugs).to contain_exactly(*%i[exploding_head fire hands like
-                                                             raised_hands readinglist thinking
-                                                             thumbsdown thumbsup unicorn vomit])
+    expect(described_class.all_slugs).to match_array(%i[exploding_head fire hands like
+                                                        raised_hands readinglist thinking
+                                                        thumbsdown thumbsup unicorn vomit])
   end
 
   it "lists public categories" do
-    expect(described_class.public).to contain_exactly(*%i[like unicorn raised_hands fire exploding_head])
+    expect(described_class.public).to match_array(%i[like unicorn raised_hands fire exploding_head])
   end
 
   it "lists privileged categories" do
-    expect(described_class.privileged).to contain_exactly(*%i[thumbsup thumbsdown vomit])
+    expect(described_class.privileged).to match_array(%i[thumbsup thumbsdown vomit])
   end
 
   it "lists negative_privileged categories" do
-    expect(described_class.negative_privileged).to contain_exactly(*%i[thumbsdown vomit])
+    expect(described_class.negative_privileged).to match_array(%i[thumbsdown vomit])
   end
 
   it "initializes via an attributes hash" do

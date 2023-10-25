@@ -5,7 +5,7 @@ RSpec.describe "BillboardEvents" do
   let(:organization) { create(:organization) }
   let(:billboard) { create(:billboard, organization_id: organization.id) }
 
-  describe "POST /billboard_events", throttled_call: true do
+  describe "POST /billboard_events", :throttled_call do
     context "when user signed in" do
       before do
         sign_in user
