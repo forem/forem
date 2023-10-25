@@ -40,7 +40,7 @@
       <div class="crayons-card mb-6 mt-3">
         <% @articles.each do |article| %>
           <% if params[:which] == "organization" %>
-            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false %>
+            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false, article_series: article.collection.present? %>
           <% else %>
             <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
           <% end %>
