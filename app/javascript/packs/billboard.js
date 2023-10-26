@@ -23,6 +23,7 @@ async function generateBillboard(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
+      executeBBScripts(element);
       setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
@@ -34,6 +35,48 @@ async function generateBillboard(element) {
         Honeybadger.notify(error);
       }
     }
+  }
+}
+
+function executeBBScripts(el) {
+  // This is the same execute JS functionality we use for InstantClick
+  // It's likely we could refactor this to by DRY — Rule of 3 for now.
+  const scriptElementsInDOM = el.getElementsByTagName('script');
+  const scriptElementsToCopy = [];
+  let originalElement;
+  let copyElement;
+  let parentNode;
+  let nextSibling;
+  let i;
+
+  for (i = 0; i < scriptElementsInDOM.length; i++) {
+    if (scriptElementsInDOM[i].id === 'gist-ltag') continue;
+    scriptElementsToCopy.push(scriptElementsInDOM[i]);
+  }
+
+  for (i = 0; i < scriptElementsToCopy.length; i++) {
+    originalElement = scriptElementsToCopy[i];
+    if (!originalElement) {
+      // Might have disappeared, see previous comment
+      continue;
+    }
+    if (originalElement.hasAttribute('data-no-instant')) {
+      continue;
+    }
+
+    copyElement = document.createElement('script');
+    for (let j = 0; j < originalElement.attributes.length; j++) {
+      copyElement.setAttribute(
+        originalElement.attributes[j].name,
+        originalElement.attributes[j].value,
+      );
+    }
+    copyElement.textContent = originalElement.textContent;
+
+    parentNode = originalElement.parentNode;
+    nextSibling = originalElement.nextSibling;
+    parentNode.removeChild(originalElement);
+    parentNode.insertBefore(copyElement, nextSibling);
   }
 }
 

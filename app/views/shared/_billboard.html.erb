@@ -1,4 +1,13 @@
-<% if billboard.placement_area.start_with?("feed_") %>
+<% if billboard.template == "plain" %>
+  <div
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-type-of="<%= billboard.type_of %>">
+      <%= billboard.processed_html.html_safe %>
+  </div>
+<% elsif billboard.placement_area.start_with?("feed_") %>
   <div class="crayons-story crayons-story__billboard billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"

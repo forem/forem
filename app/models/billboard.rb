@@ -30,6 +30,8 @@ class Billboard < ApplicationRecord
   attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
+  enum render_mode: { forem_markdown: 0, raw: 1 }
+  enum template: { authorship_box: 0, plain: 1 }
 
   belongs_to :organization, optional: true
   has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy
@@ -214,10 +216,11 @@ class Billboard < ApplicationRecord
   def process_markdown
     return unless body_markdown_changed?
 
-    if FeatureFlag.enabled?(:consistent_rendering)
+    if render_mode == "forem_markdown"
       extracted_process_markdown
-    else
-      original_process_markdown
+    else # raw
+      self.processed_html = Html::Parser.new(body_markdown)
+        .prefix_all_images(width: 880, synchronous_detail_detection: true).html
     end
   end
 
@@ -226,18 +229,6 @@ class Billboard < ApplicationRecord
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
                                                                     synchronous_detail_detection: true }).processed_html
     self.processed_html = processed_html.delete("\n")
-  end
-
-  def original_process_markdown
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-    initial_html = markdown.render(body_markdown)
-    stripped_html = ActionController::Base.helpers.sanitize initial_html,
-                                                            tags: MarkdownProcessor::AllowedTags::BILLBOARD,
-                                                            attributes: MarkdownProcessor::AllowedAttributes::BILLBOARD
-    html = stripped_html.delete("\n")
-    self.processed_html = Html::Parser.new(html)
-      .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html
   end
 
   def prefix_width
