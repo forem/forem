@@ -4,6 +4,7 @@ import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useReducer } from 'preact/hooks';
 import { DefaultSelectionTemplate } from '../../shared/components/defaultSelectionTemplate';
+import { debounceAction } from '@utilities/debounceAction';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -295,15 +296,7 @@ export const MultiSelectAutocomplete = ({
     }
   };
 
-  const handleInputChange = async ({ target: { value } }) => {
-    // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
-    // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
-    inputSizerRef.current.innerText = value;
-
-    if (inputPosition !== null) {
-      resizeInputToContentSize();
-    }
-
+  const updateSuggestion = debounceAction(async (value) => {
     // If max selections have already been reached, no need to fetch further suggestions
     if (!allowSelections) {
       return;
@@ -343,6 +336,17 @@ export const MultiSelectAutocomplete = ({
           ),
       ),
     });
+  })
+
+  const handleInputChange = async ({ target: { value } }) => {
+    // When the input appears inline in "edit" mode, we need to dynamically calculate the width to ensure it occupies the right space
+    // (an input cannot resize based on its text content). We use a hidden <span> to track the size.
+    inputSizerRef.current.innerText = value;
+
+    if (inputPosition !== null) {
+      resizeInputToContentSize();
+    }
+    await updateSuggestion(value)
   };
 
   const clearInput = () => {

@@ -6,6 +6,10 @@ import '@testing-library/jest-dom';
 
 import { MultiSelectAutocomplete } from '../MultiSelectAutocomplete';
 
+jest.mock('@utilities/debounceAction', () => ({
+  debounceAction: (fn) => fn,
+}));
+
 describe('<MultiSelectAutocomplete />', () => {
   it('renders default UI', () => {
     const { container } = render(
