@@ -50,7 +50,7 @@ class SettingsModelGenerator < Rails::Generators::NamedBase
   end
 
   def migration_version
-    "[#{rails_version_major}.#{rails_version_minor}]" if rails_version_major >= 5
+    "[#{rails_version_major}.#{rails_version_minor}]"
   end
 
   def table_name
