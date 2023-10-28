@@ -153,13 +153,13 @@
       <div class="flex gap-4">
         <div class="crayons-field flex-1">
           <label for="author_id_<%= article.id %>" class="crayons-field__label"><%= t("views.moderations.article.author_id") %></label>
-          <input id="author_id_<%= article.id %>" class=" crayons-textfield" size="6" name="article[user_id]"
+          <input id="author_id_<%= article.id %>" class="js-username_id_input crayons-textfield" size="6" name="article[user_id]"
             value="<%= article.user_id %>">
         </div>
 
         <div class="crayons-field flex-1">
           <label for="co_author_ids_list_<%= article.id %>" class="crayons-field__label"><%= t("views.moderations.article.co_author_ids") %></label>
-          <input id="co_author_ids_list_<%= article.id %>" class=" crayons-textfield" size="6" name="article[co_author_ids_list]" placeholder="Comma separated"
+          <input id="co_author_ids_list_<%= article.id %>" class="js-coauthor_username_id_input crayons-textfield" size="6" name="article[co_author_ids_list]" placeholder="Comma separated"
             value="<%= article.co_author_ids&.join(", ") %>">
         </div>
       </div>
