@@ -34,13 +34,16 @@ describe('getBillboard', () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         text: () =>
-          Promise.resolve('<script>window.someGlobalVar = "test";</script>'),
+          Promise.resolve(
+            '<script>window.someGlobalVar = "test";</script><script>window.someOtherGlobalVar = "test2";</script>',
+          ),
       }),
     );
 
     await getBillboard();
 
     expect(window.someGlobalVar).toBe('test');
+    expect(window.someOtherGlobalVar).toBe('test2');
   });
 
   test('should handle fetch errors gracefully', async () => {
