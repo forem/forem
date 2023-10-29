@@ -136,13 +136,13 @@ RSpec.describe Billboard do
 
   context "when render_mode is set to raw" do
     it "outputs processed html that matches the body input" do
-      raw_input = "<style>.bb { color: red }</style><div class='bb'>This is a raw div</div>"
+      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
       raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
       expect(raw_billboard.processed_html).to eq raw_input
     end
 
     it "still processes images in raw mode" do
-      raw_input = "<style>.bb { color: red }</style><div class='bb'><img src='https://dummyimage.com/100x100' /></div>"
+      raw_input = "<div class=\"bb\"><img src=\"https://dummyimage.com/100x100\" /></div>"
       raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
       expect(raw_billboard.processed_html).to include "dummyimage.com/100x100\" width=\"\" height=\"\" loading=\"lazy\""
     end
@@ -150,7 +150,7 @@ RSpec.describe Billboard do
 
   context "when render_mode is not set to raw" do
     it "outputs processed html that sanitizes raw html as if it were markdown" do
-      raw_input = "<style>.bb { color: red }</style><div class='bb'>This is a raw div</div>"
+      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
       raw_billboard = create(:billboard, body_markdown: raw_input) # default render mode
       expect(raw_billboard.processed_html).to eq "<p>.very-raw { color: red }</p>This is a raw div"
     end
