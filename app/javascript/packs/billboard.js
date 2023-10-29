@@ -57,7 +57,6 @@ function executeBBScripts(el) {
   for (i = 0; i < scriptElementsToCopy.length; i++) {
     originalElement = scriptElementsToCopy[i];
     if (!originalElement) {
-      // Might have disappeared, see previous comment
       continue;
     }
     if (originalElement.hasAttribute('data-no-instant')) {
