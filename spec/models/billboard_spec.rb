@@ -152,7 +152,7 @@ RSpec.describe Billboard do
     it "outputs processed html that sanitizes raw html as if it were markdown" do
       raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
       raw_billboard = create(:billboard, body_markdown: raw_input) # default render mode
-      expect(raw_billboard.processed_html).to eq "<p>.very-raw { color: red }</p>This is a raw div"
+      expect(raw_billboard.processed_html).to eq "<p>.bb { color: red }</p>This is a raw div"
     end
   end
 
