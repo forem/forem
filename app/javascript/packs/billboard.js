@@ -35,16 +35,11 @@ async function generateBillboard(element) {
 }
 
 function executeBBScripts(el) {
-  const scriptElementsInDOM = el.getElementsByTagName('script');
-  const scriptElementsToCopy = [];
+  const scriptElements = el.getElementsByTagName('script');
   let originalElement, copyElement, parentNode, nextSibling, i;
 
-  for (i = 0; i < scriptElementsInDOM.length; i++) {
-    scriptElementsToCopy.push(scriptElementsInDOM[i]);
-  }
-
-  for (i = 0; i < scriptElementsToCopy.length; i++) {
-    originalElement = scriptElementsToCopy[i];
+  for (i = 0; i < scriptElements.length; i++) {
+    originalElement = scriptElements[i];
     if (!originalElement) {
       continue;
     }
