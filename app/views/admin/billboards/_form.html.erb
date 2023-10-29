@@ -24,12 +24,12 @@
 
     <div class="crayons-field">
       <%= label_tag :render_mode, "Render Mode:", class: "crayons-field__label" %>
-      <%= select_tag :render_mode, options_for_select([["Forem Markdown (Default)", "forem_markdown"], ["Raw", "raw"]], selected: @billboard.render_mode), class: "crayons-select js-placement-area" %>
+      <%= select_tag :render_mode, options_for_select([["Forem Markdown", "forem_markdown"], ["Raw", "raw"]], selected: @billboard.render_mode), class: "crayons-select" %>
     </div>
 
     <div class="crayons-field">
       <%= label_tag :template, "Template:", class: "crayons-field__label" %>
-      <%= select_tag :template, options_for_select([["Authorship Box (Default)", "authorship_box"], ["Plain", "plain"]], selected: @billboard.template), class: "crayons-select js-placement-area" %>
+      <%= select_tag :template, options_for_select([["Authorship Box", "authorship_box"], ["Plain", "plain"]], selected: @billboard.template), class: "crayons-select" %>
     </div>
 
     <div class="crayons-field">
