@@ -63,4 +63,30 @@ describe('getBillboard', () => {
       new Error('Some other error'),
     );
   });
+
+  test('should clone and re-insert script tags in fetched content', async () => {
+    // Setup fetch to return a script tag
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () =>
+          Promise.resolve(
+            '<script type="text/javascript">console.log("test")</script>',
+          ),
+      }),
+    );
+
+    await getBillboard();
+
+    // Find the new script tags in the document
+    const scriptElements = document.querySelectorAll(
+      '.js-billboard-container script',
+    );
+
+    // Assert that the script tags are properly cloned and re-inserted
+    expect(scriptElements.length).toBe(2); // You have two .js-billboard-container in your setup, so expect two script tags
+    scriptElements.forEach((script) => {
+      expect(script.type).toEqual('text/javascript'); // Should retain attributes
+      expect(script.innerHTML).toEqual('console.log("test")'); // Should retain content
+    });
+  });
 });
