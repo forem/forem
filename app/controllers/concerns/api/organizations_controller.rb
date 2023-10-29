@@ -73,7 +73,9 @@ module Api
     def find_organization
       # Looking up via id_or_slug parameter since both types of lookup are handled in
       # the v1 show route
-      @organization = Organization.find_by!(username: params[:organization_id_or_slug])
+      @organization = Organization.find_by(id: params[:organization_id_or_slug]) ||
+        Organization.find_by(username: params[:organization_id_or_slug])
+      raise ActiveRecord::RecordNotFound unless @organization
     end
   end
 end
