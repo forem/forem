@@ -120,7 +120,7 @@
     "@hotwired/stimulus": "3.1.0",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "7.0.3",
-    "@rails/webpacker": "5.4.3",
+    "@rails/webpacker": "5.4.4",
     "ahoy.js": "^0.4.3",
     "autoprefixer": "^10.4.16",
     "babel-plugin-inline-react-svg": "^2.0.2",
