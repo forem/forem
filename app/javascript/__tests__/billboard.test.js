@@ -1,4 +1,5 @@
-import { getBillboard, executeBBScripts } from '../packs/billboard';
+import { getBillboard } from '../packs/billboard';
+import { executeBBScripts } from '../packs/billboardAfterRenderActions';
 
 describe('getBillboard', () => {
   let originalFetch;

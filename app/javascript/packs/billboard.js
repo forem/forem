@@ -1,5 +1,8 @@
 import { setupBillboardDropdown } from '../utilities/billboardDropdown';
-import { observeBillboards } from './billboardAfterRenderActions';
+import {
+  observeBillboards,
+  executeBBScripts,
+} from './billboardAfterRenderActions';
 
 export async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
@@ -35,30 +38,6 @@ async function generateBillboard(element) {
         Honeybadger.notify(error);
       }
     }
-  }
-}
-
-export function executeBBScripts(el) {
-  const scriptElements = el.getElementsByTagName('script');
-  let originalElement, copyElement, parentNode, nextSibling, i;
-
-  for (i = 0; i < scriptElements.length; i++) {
-    originalElement = scriptElements[i];
-    if (!originalElement) {
-      continue;
-    }
-    copyElement = document.createElement('script');
-    for (let j = 0; j < originalElement.attributes.length; j++) {
-      copyElement.setAttribute(
-        originalElement.attributes[j].name,
-        originalElement.attributes[j].value,
-      );
-    }
-    copyElement.textContent = originalElement.textContent;
-    parentNode = originalElement.parentNode;
-    nextSibling = originalElement.nextSibling;
-    parentNode.removeChild(originalElement);
-    parentNode.insertBefore(copyElement, nextSibling);
   }
 }
 
