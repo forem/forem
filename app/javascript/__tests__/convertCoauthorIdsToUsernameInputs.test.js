@@ -6,6 +6,10 @@ import { convertCoauthorIdsToUsernameInputs } from '../packs/dashboards/convertC
 
 global.fetch = fetch;
 
+jest.mock('@utilities/debounceAction', () => ({
+  debounceAction: fn => fn
+}));
+
 function fakeFetchResponseJSON() {
   return JSON.stringify([
     { name: 'Alice', username: 'alice', id: 1 },
