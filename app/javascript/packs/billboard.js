@@ -1,7 +1,10 @@
 import { setupBillboardDropdown } from '../utilities/billboardDropdown';
-import { observeBillboards } from './billboardAfterRenderActions';
+import {
+  observeBillboards,
+  executeBBScripts,
+} from './billboardAfterRenderActions';
 
-async function getBillboard() {
+export async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
     'js-billboard-container',
   );
@@ -23,6 +26,7 @@ async function generateBillboard(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
+      executeBBScripts(element);
       setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
@@ -38,5 +42,3 @@ async function generateBillboard(element) {
 }
 
 getBillboard();
-
-export { getBillboard };

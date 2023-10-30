@@ -143,5 +143,27 @@ RSpec.describe "Billboards" do
         )
       end
     end
+
+    context "when billboard template is authorship_box" do
+      before do
+        billboard.update_column(:template, "authorship_box")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "crayons-sponsorship__header relative"
+      end
+    end
+
+    context "when billboard template is plain" do
+      before do
+        billboard.update_column(:template, "plain")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).not_to include "crayons-sponsorship__header relative"
+      end
+    end
   end
 end

@@ -59,7 +59,8 @@ module Admin
     def billboard_params
       params.permit(:organization_id, :body_markdown, :placement_area, :target_geolocations,
                     :published, :approved, :name, :display_to, :tag_list, :type_of,
-                    :exclude_article_ids, :audience_segment_id, :priority)
+                    :exclude_article_ids, :audience_segment_id, :priority,
+                    :render_mode, :template)
     end
 
     def authorize_admin
