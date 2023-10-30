@@ -1,7 +1,7 @@
 import { setupBillboardDropdown } from '../utilities/billboardDropdown';
 import { observeBillboards } from './billboardAfterRenderActions';
 
-async function getBillboard() {
+export async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
     'js-billboard-container',
   );
@@ -25,6 +25,10 @@ async function generateBillboard(element) {
       element.appendChild(generatedElement);
       executeBBScripts(element);
       setupBillboardDropdown();
+      // This is called here because the ad is loaded asynchronously.
+      // The original code is still in the asset pipeline, so is not importable.
+      // This could be refactored to be importable as we continue that migration.
+      // eslint-disable-next-line no-undef
       observeBillboards();
     } catch (error) {
       if (!/NetworkError/i.test(error.message)) {
@@ -34,7 +38,7 @@ async function generateBillboard(element) {
   }
 }
 
-function executeBBScripts(el) {
+export function executeBBScripts(el) {
   const scriptElements = el.getElementsByTagName('script');
   let originalElement, copyElement, parentNode, nextSibling, i;
 
@@ -59,5 +63,3 @@ function executeBBScripts(el) {
 }
 
 getBillboard();
-
-export { getBillboard };

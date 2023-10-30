@@ -1,4 +1,4 @@
-import { getBillboard } from '../packs/billboard';
+import { getBillboard, executeBBScripts } from '../packs/billboard';
 
 describe('getBillboard', () => {
   let originalFetch;
@@ -88,5 +88,68 @@ describe('getBillboard', () => {
       expect(script.type).toEqual('text/javascript'); // Should retain attributes
       expect(script.innerHTML).toEqual('console.log("test")'); // Should retain content
     });
+  });
+});
+
+describe('executeBBScripts', () => {
+  let container;
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    document.body.removeChild(container);
+  });
+
+  test('should execute script when script tag is present', () => {
+    container.innerHTML = '<script>window.someGlobalVar = "executed";</script>';
+
+    executeBBScripts(container);
+
+    expect(window.someGlobalVar).toBe('executed');
+  });
+
+  test('should skip null or undefined script elements', () => {
+    container.innerHTML = '<script>window.someGlobalVar = "executed";</script>';
+    // Simulating an inconsistency in the returned HTMLCollection
+    const spiedGetElementsByTagName = jest
+      .spyOn(container, 'getElementsByTagName')
+      .mockReturnValue([null, undefined]);
+
+    executeBBScripts(container);
+
+    expect(spiedGetElementsByTagName).toBeCalled();
+  });
+
+  test('should copy attributes of original script element', () => {
+    container.innerHTML =
+      '<script type="text/javascript" async>window.someGlobalVar = "executed";</script>';
+
+    executeBBScripts(container);
+
+    const newScript = container.querySelector('script');
+    expect(newScript.type).toBe('text/javascript');
+  });
+
+  test('should remove the original script element', () => {
+    container.innerHTML = '<script>window.someGlobalVar = "executed";</script>';
+
+    executeBBScripts(container);
+
+    const allScripts = container.getElementsByTagName('script');
+    expect(allScripts.length).toBe(1);
+  });
+
+  test('should insert the new script element at the same position as the original', () => {
+    container.innerHTML =
+      '<div></div><script>window.someGlobalVar = "executed";</script><div></div>';
+
+    executeBBScripts(container);
+
+    const middleChild = container.children[1];
+    expect(middleChild.tagName).toBe('SCRIPT');
+    expect(middleChild.textContent).toBe('window.someGlobalVar = "executed";');
   });
 });
