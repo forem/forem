@@ -18,8 +18,18 @@
     </div>
 
     <div class="crayons-field">
-      <%= label_tag :body_markdown, "Body Markdown:", class: "crayons-field__label" %>
+      <%= label_tag :body_markdown, "Body Content:", class: "crayons-field__label" %>
       <%= text_area_tag :body_markdown, @billboard.body_markdown, size: "100x5", class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :render_mode, "Render Mode:", class: "crayons-field__label" %>
+      <%= select_tag :render_mode, options_for_select([["Forem Markdown", "forem_markdown"], ["Raw", "raw"]], selected: @billboard.render_mode), class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag :template, "Template:", class: "crayons-field__label" %>
+      <%= select_tag :template, options_for_select([["Authorship Box", "authorship_box"], ["Plain", "plain"]], selected: @billboard.template), class: "crayons-select" %>
     </div>
 
     <div class="crayons-field">
