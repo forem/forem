@@ -728,6 +728,17 @@ RSpec.describe "/admin/customization/config" do
             }
           end.to change(Settings::UserExperience, :display_in_directory).from(default_value).to(false)
         end
+
+        it "updates the award_tag_minimum_score" do
+          default_value = Settings::UserExperience.get_default(:award_tag_minimum_score)
+          new_award_tag_minimum_score = 200
+          expect do
+            post admin_settings_user_experiences_path, params: {
+              settings_user_experience: { award_tag_minimum_score: new_award_tag_minimum_score }
+            }
+          end.to change(Settings::UserExperience,
+                        :award_tag_minimum_score).from(default_value).to(new_award_tag_minimum_score)
+        end
       end
 
       describe "Credits" do
