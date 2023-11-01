@@ -42,7 +42,7 @@ gem "flipper-active_support_cache_store", "~> 0.25.0" # Cache feature flags for 
 gem "flipper-ui", "~> 0.25.0" # UI for the Flipper gem
 gem "fog-aws", "~> 3.14" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 1.0" # Parse a front matter from syntactically correct strings or files
-gem "gemoji", "~> 4.0.0.rc3" # Character information and metadata for standard and custom emoji
+gem "gemoji", "~> 4.1.0" # Character information and metadata for standard and custom emoji
 gem "gibbon", "~> 3.4" # API wrapper for MailChimp's API
 gem "hairtrigger", "~> 1.0.0" # HairTrigger lets you create and manage database triggers in a concise, db-agnostic, Rails-y way.
 gem "honeybadger", "~> 4.12" # Used for tracking application errors
