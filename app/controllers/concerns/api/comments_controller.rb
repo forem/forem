@@ -7,13 +7,15 @@ module Api
     ].freeze
     private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
+    DEFAULT_PER_PAGE = 50
+    private_constant :DEFAULT_PER_PAGE
+
     def index
       commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
-      @comments = commentable.comments
-        .includes(user: :profile)
-        .select(ATTRIBUTES_FOR_SERIALIZATION)
-        .arrange
+      per_page = params[:per_page] || DEFAULT_PER_PAGE
+      @comments = Comments::Tree.for_api(commentable, attributes: ATTRIBUTES_FOR_SERIALIZATION,
+                                                      page: params[:page], per_page: per_page)
 
       set_surrogate_key_header commentable.record_key, Comment.table_key, edge_cache_keys(@comments)
     end
