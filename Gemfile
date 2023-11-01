@@ -77,7 +77,7 @@ gem "pg_search", "~> 2.3.6" # PgSearch builds Active Record named scopes that ta
 gem "pghero", "~> 3.1" # Dashboard for Postgres
 gem "puma", "~> 5.6.4" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.2" # Object oriented authorization for Rails applications
-gem "rack-attack", "~> 6.6.1" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.7.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 7.0.7.2" # Ruby on Rails
