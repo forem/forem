@@ -220,13 +220,14 @@ class Billboard < ApplicationRecord
       extracted_process_markdown
     else # raw
       self.processed_html = Html::Parser.new(body_markdown)
-        .prefix_all_images(width: 880, synchronous_detail_detection: true).html
+        .prefix_all_images(width: 880, quality: 95, synchronous_detail_detection: true).html
     end
   end
 
   def extracted_process_markdown
     renderer = ContentRenderer.new(body_markdown || "", source: self)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
+                                                                    quality: 95,
                                                                     synchronous_detail_detection: true }).processed_html
     self.processed_html = processed_html.delete("\n")
   end
