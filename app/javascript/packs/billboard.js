@@ -14,11 +14,14 @@ export async function getBillboard() {
 }
 
 async function generateBillboard(element) {
-  const { asyncUrl } = element.dataset;
-
+  let { asyncUrl } = element.dataset;
+  const currentParams = window.location.href.split('?')[1];
+  if (currentParams && currentParams.includes('bb_test_placement_area')) {
+    asyncUrl = `${asyncUrl}?${currentParams}`;
+  }
   if (asyncUrl) {
     try {
-      const response = await window.fetch(`${asyncUrl}`);
+      const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
 
       const generatedElement = document.createElement('div');
