@@ -14,8 +14,16 @@ module Api
       commentable = params[:a_id] ? Article.find(params[:a_id]) : PodcastEpisode.find(params[:p_id])
 
       per_page = params[:per_page] || DEFAULT_PER_PAGE
-      @comments = Comments::Tree.for_api(commentable, attributes: ATTRIBUTES_FOR_SERIALIZATION,
-                                                      page: params[:page], per_page: per_page)
+
+      @comments = commentable.comments
+        .includes(user: :profile)
+        .select(ATTRIBUTES_FOR_SERIALIZATION)
+        .arrange(order: "id")
+
+      # paginating only if page is passed
+      if params[:page].to_i.positive?
+        @comments = Kaminari.paginate_array(@comments.to_a).page(params[:page]).per(per_page).to_h
+      end
 
       set_surrogate_key_header commentable.record_key, Comment.table_key, edge_cache_keys(@comments)
     end
