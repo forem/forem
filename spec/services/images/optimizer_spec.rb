@@ -73,6 +73,17 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class.call(image_url, fetch_format: "jpg")).to eq(cloudinary_url)
     end
 
+    it "generates adjusted URL when quality is passed" do
+      cloudinary_url = cl_image_path(image_url,
+                                     type: "fetch",
+                                     quality: 81,
+                                     crop: "limit",
+                                     sign_url: true,
+                                     flags: "progressive",
+                                     fetch_format: "jpg")
+      expect(described_class.call(image_url, fetch_format: "jpg", quality: 81)).to eq(cloudinary_url)
+    end
+
     it "generates correct crop with 'crop' passed" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
@@ -137,30 +148,30 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct url with crop default" do
-      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500)
+      imgproxy_url = described_class.imgproxy(image_url, width: 50, height: 50)
       # mb = maximum bytes, defaults to 500_000 bytes
       # ar = autorotate, defaults to "true", serialized as "1"
-      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      expect(imgproxy_url).to match(%r{/rs:fit:50:50/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
 
     it "generates correct crop with 'crop' passed" do
-      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "crop")
-      expect(imgproxy_url).to match(%r{/rs:fill:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      imgproxy_url = described_class.imgproxy(image_url, width: 50, height: 50, crop: "crop")
+      expect(imgproxy_url).to match(%r{/rs:fill:50:50/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
 
     it "generates correct crop with 'crop' passed, and never_imagga" do
-      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "crop", never_imagga: true)
-      expect(imgproxy_url).to match(%r{/rs:fill:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      imgproxy_url = described_class.imgproxy(image_url, width: 50, height: 50, crop: "crop", never_imagga: true)
+      expect(imgproxy_url).to match(%r{/rs:fill:50:50/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
 
     it "generates correct crop with 'limit' passed" do
-      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "limit")
-      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      imgproxy_url = described_class.imgproxy(image_url, width: 50, height: 50, crop: "limit")
+      expect(imgproxy_url).to match(%r{/rs:fit:50:50/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
 
     it "generates correct crop with 'jiberish' passed" do
-      imgproxy_url = described_class.imgproxy(image_url, width: 500, height: 500, crop: "jiberish")
-      expect(imgproxy_url).to match(%r{/rs:fit:500:500/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
+      imgproxy_url = described_class.imgproxy(image_url, width: 50, height: 50, crop: "jiberish")
+      expect(imgproxy_url).to match(%r{/rs:fit:50:50/g:sm/mb:500000/ar:1/aHR0cHM6Ly9pLmlt/Z3VyLmNvbS9mS1lL/Z280LnBuZw})
     end
   end
 
