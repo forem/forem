@@ -15,71 +15,13 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": "An Article",
-            "content": {
-              "application/json": {
-                "example": {
-                  "type_of": "article",
-                  "id": 2046,
-                  "title": "New article",
-                  "description": "New post example",
-                  "readable_publish_date": "Sep 19",
-                  "slug": "new-article-kif",
-                  "path": "/username539/new-article-kif",
-                  "url": "http://forem.test/username539/new-article-kif",
-                  "comments_count": 0,
-                  "public_reactions_count": 0,
-                  "collection_id": 43,
-                  "published_timestamp": "2023-09-19T09:14:37Z",
-                  "positive_reactions_count": 0,
-                  "cover_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
-                  "social_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
-                  "canonical_url": "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
-                  "created_at": "2023-09-19T09:14:37Z",
-                  "edited_at": null,
-                  "crossposted_at": null,
-                  "published_at": "2023-09-19T09:14:37Z",
-                  "last_comment_at": "2023-09-19T09:14:37Z",
-                  "reading_time_minutes": 1,
-                  "tag_list": "",
-                  "tags": [],
-                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
-                  "body_markdown": "**New** body for the article",
-                  "user": {
-                    "name": "Liz \"Rhett\" \\:/ Bednar",
-                    "username": "username539",
-                    "twitter_username": "twitter539",
-                    "github_username": "github539",
-                    "user_id": 4565,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4565/ecb785c8-83ba-4c71-99b3-e4d0bf578787.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4565/ecb785c8-83ba-4c71-99b3-e4d0bf578787.jpeg"
-                  }
-                }
-              }
-            }
+            "description": "An Article"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: article",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -185,56 +127,6 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "article",
-                    "id": 2049,
-                    "title": "Sleep the Brave188",
-                    "description": "Knausgaard bushwick twee asymmetrical shabby chic. Portland offal poutine irony crucifix pop-up...",
-                    "readable_publish_date": "Sep 19",
-                    "slug": "sleep-the-brave188-58km",
-                    "path": "/username543/sleep-the-brave188-58km",
-                    "url": "http://forem.test/username543/sleep-the-brave188-58km",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2023-09-19T09:14:38Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://forem.test/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
-                    "social_image": "http://forem.test/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
-                    "canonical_url": "http://forem.test/username543/sleep-the-brave188-58km",
-                    "created_at": "2023-09-19T09:14:38Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2023-09-19T09:14:38Z",
-                    "last_comment_at": "2023-09-19T09:14:38Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["discuss"],
-                    "tags": "discuss",
-                    "user": {
-                      "name": "Stormy \"Elden\" \\:/ Gottlieb",
-                      "username": "username543",
-                      "twitter_username": "twitter543",
-                      "github_username": "github543",
-                      "user_id": 4569,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4569/ac6fdf2a-367d-4c57-81bb-0820ad14881c.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4569/ac6fdf2a-367d-4c57-81bb-0820ad14881c.jpeg"
-                    },
-                    "organization": {
-                      "name": "McCullough-Howell",
-                      "username": "org79",
-                      "slug": "org79",
-                      "profile_image": "/uploads/organization/profile_image/411/0250f305-2634-42e5-9180-3a6504adf87d.png",
-                      "profile_image_90": "/uploads/organization/profile_image/411/0250f305-2634-42e5-9180-3a6504adf87d.png"
-                    },
-                    "flare_tag": {
-                      "name": "discuss",
-                      "bg_color_hex": "#000000",
-                      "text_color_hex": "#ffffff"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -267,131 +159,6 @@
             "description": "A List of Articles",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "article",
-                    "id": 2052,
-                    "title": "A Passage to India191",
-                    "description": "Deep v vegan disrupt shoreditch whatever sartorial banh mi readymade. Godard ugh craft beer...",
-                    "readable_publish_date": "Sep 19",
-                    "slug": "a-passage-to-india191-529",
-                    "path": "/username546/a-passage-to-india191-529",
-                    "url": "http://forem.test/username546/a-passage-to-india191-529",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2023-09-19T09:14:38Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://forem.test/assets/13-f0e8b5976009c819e9aa46f1be169bdba0f0e3142a6a869981d7868495926c78.png",
-                    "social_image": "http://forem.test/assets/13-f0e8b5976009c819e9aa46f1be169bdba0f0e3142a6a869981d7868495926c78.png",
-                    "canonical_url": "http://forem.test/username546/a-passage-to-india191-529",
-                    "created_at": "2023-09-19T09:14:38Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2023-09-19T09:14:38Z",
-                    "last_comment_at": "2023-09-19T09:14:38Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
-                    "tags": "javascript, html, discuss",
-                    "user": {
-                      "name": "Brandie \"Hal\" \\:/ Kerluke",
-                      "username": "username546",
-                      "twitter_username": "twitter546",
-                      "github_username": "github546",
-                      "user_id": 4572,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4572/d755f2d2-f28c-4acf-94a1-0a3efe84c763.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4572/d755f2d2-f28c-4acf-94a1-0a3efe84c763.jpeg"
-                    },
-                    "flare_tag": {
-                      "name": "discuss",
-                      "bg_color_hex": "#000000",
-                      "text_color_hex": "#ffffff"
-                    }
-                  },
-                  {
-                    "type_of": "article",
-                    "id": 2051,
-                    "title": "The Wings of the Dove190",
-                    "description": "Park shoreditch raw denim put a bird on it taxidermy lumbersexual. Austin gastropub cornhole....",
-                    "readable_publish_date": "Sep 19",
-                    "slug": "the-wings-of-the-dove190-5947",
-                    "path": "/username545/the-wings-of-the-dove190-5947",
-                    "url": "http://forem.test/username545/the-wings-of-the-dove190-5947",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2023-09-19T09:14:38Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://forem.test/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "social_image": "http://forem.test/assets/32-543e7c7f0a939e829c37aab48d705350b855c887dc16dfab30fd9a0825c09291.png",
-                    "canonical_url": "http://forem.test/username545/the-wings-of-the-dove190-5947",
-                    "created_at": "2023-09-19T09:14:38Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2023-09-19T09:14:38Z",
-                    "last_comment_at": "2023-09-19T09:14:38Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
-                    "tags": "javascript, html, discuss",
-                    "user": {
-                      "name": "Pam \"Roma\" \\:/ Effertz",
-                      "username": "username545",
-                      "twitter_username": "twitter545",
-                      "github_username": "github545",
-                      "user_id": 4571,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4571/b2e8dd56-b556-4c24-b65d-b2cefcba6f78.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4571/b2e8dd56-b556-4c24-b65d-b2cefcba6f78.jpeg"
-                    },
-                    "flare_tag": {
-                      "name": "discuss",
-                      "bg_color_hex": "#000000",
-                      "text_color_hex": "#ffffff"
-                    }
-                  },
-                  {
-                    "type_of": "article",
-                    "id": 2050,
-                    "title": "East of Eden189",
-                    "description": "Beard offal echo neutra messenger bag. Kitsch single-origin coffee deep v five dollar toast 8-bit...",
-                    "readable_publish_date": "Sep 19",
-                    "slug": "east-of-eden189-19f5",
-                    "path": "/username544/east-of-eden189-19f5",
-                    "url": "http://forem.test/username544/east-of-eden189-19f5",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2023-09-19T09:14:38Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://forem.test/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
-                    "social_image": "http://forem.test/assets/28-45c03a7ee6bce4cd3ddd541bd942a0c7995fa77e4b680563681529e9dd14a676.png",
-                    "canonical_url": "http://forem.test/username544/east-of-eden189-19f5",
-                    "created_at": "2023-09-19T09:14:38Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2023-09-19T09:14:38Z",
-                    "last_comment_at": "2023-09-19T09:14:38Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
-                    "tags": "javascript, html, discuss",
-                    "user": {
-                      "name": "Twila \"Leigh\" \\:/ Lang",
-                      "username": "username544",
-                      "twitter_username": "twitter544",
-                      "github_username": "github544",
-                      "user_id": 4570,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4570/e6a6070d-5a37-437d-aff4-cf4cf583b954.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4570/e6a6070d-5a37-437d-aff4-cf4cf583b954.jpeg"
-                    },
-                    "flare_tag": {
-                      "name": "discuss",
-                      "bg_color_hex": "#000000",
-                      "text_color_hex": "#ffffff"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -426,49 +193,6 @@
             "description": "An Article",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "article",
-                  "id": 2053,
-                  "title": "Recalled to Life192",
-                  "description": "Tilde viral migas banjo yr yolo chia cred. Park chillwave tousled art party locavore squid.  Schlitz...",
-                  "readable_publish_date": "Sep 19",
-                  "slug": "recalled-to-life192-34i9",
-                  "path": "/username547/recalled-to-life192-34i9",
-                  "url": "http://forem.test/username547/recalled-to-life192-34i9",
-                  "comments_count": 0,
-                  "public_reactions_count": 0,
-                  "collection_id": null,
-                  "published_timestamp": "2023-09-19T09:14:38Z",
-                  "positive_reactions_count": 0,
-                  "cover_image": "http://forem.test/assets/4-dcfcc4d8dd259bc0751c2de24b1cf244b181c789934368ca1cb471f0944b695d.png",
-                  "social_image": "http://forem.test/assets/4-dcfcc4d8dd259bc0751c2de24b1cf244b181c789934368ca1cb471f0944b695d.png",
-                  "canonical_url": "http://forem.test/username547/recalled-to-life192-34i9",
-                  "created_at": "2023-09-19T09:14:38Z",
-                  "edited_at": null,
-                  "crossposted_at": null,
-                  "published_at": "2023-09-19T09:14:38Z",
-                  "last_comment_at": "2023-09-19T09:14:38Z",
-                  "reading_time_minutes": 1,
-                  "tag_list": "discuss",
-                  "tags": ["discuss"],
-                  "body_html": "<p>Tilde viral migas banjo yr yolo chia cred. Park chillwave tousled art party locavore squid.</p>\n\n<p>Schlitz keffiyeh locavore.</p>\n\n",
-                  "body_markdown": "---\ntitle: Recalled to Life192\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nTilde viral migas banjo yr yolo chia cred. Park chillwave tousled art party locavore squid.\n\n\nSchlitz keffiyeh locavore.\n\n",
-                  "user": {
-                    "name": "Marcus \"Lakita\" \\:/ Bayer",
-                    "username": "username547",
-                    "twitter_username": "twitter547",
-                    "github_username": "github547",
-                    "user_id": 4573,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4573/bedf9465-013e-45fc-b970-a62ab6315a1f.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4573/bedf9465-013e-45fc-b970-a62ab6315a1f.jpeg"
-                  },
-                  "flare_tag": {
-                    "name": "discuss",
-                    "bg_color_hex": "#000000",
-                    "text_color_hex": "#ffffff"
-                  }
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -479,15 +203,7 @@
             }
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Article Not Found"
           }
         }
       },
@@ -512,82 +228,16 @@
         ],
         "responses": {
           "200": {
-            "description": "An Article",
-            "content": {
-              "application/json": {
-                "example": {
-                  "type_of": "article",
-                  "id": 2054,
-                  "title": "By Grand Central Station I Sat Down and Wept193",
-                  "description": "Neutra 90's scenester mustache jean shorts. Asymmetrical seitan swag neutra cardigan.  You probably...",
-                  "readable_publish_date": "Sep 19",
-                  "slug": "by-grand-central-station-i-sat-down-and-wept193-39od",
-                  "path": "/username548/by-grand-central-station-i-sat-down-and-wept193-39od",
-                  "url": "http://forem.test/username548/by-grand-central-station-i-sat-down-and-wept193-39od",
-                  "comments_count": 0,
-                  "public_reactions_count": 0,
-                  "collection_id": null,
-                  "published_timestamp": "2023-09-19T09:14:38Z",
-                  "positive_reactions_count": 0,
-                  "cover_image": "http://forem.test/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                  "social_image": "http://forem.test/assets/36-83d24fbff858b9dd4035d1e7d2df14090946ae4fed631055fc1d5862e7018348.png",
-                  "canonical_url": "http://forem.test/username548/by-grand-central-station-i-sat-down-and-wept193-39od",
-                  "created_at": "2023-09-19T09:14:39Z",
-                  "edited_at": "2023-09-19T09:14:39Z",
-                  "crossposted_at": null,
-                  "published_at": "2023-09-19T09:14:38Z",
-                  "last_comment_at": "2023-09-19T09:14:38Z",
-                  "reading_time_minutes": 1,
-                  "tag_list": "",
-                  "tags": [],
-                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
-                  "body_markdown": "**New** body for the article",
-                  "user": {
-                    "name": "Booker \"Rueben\" \\:/ Cremin",
-                    "username": "username548",
-                    "twitter_username": "twitter548",
-                    "github_username": "github548",
-                    "user_id": 4574,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4574/cfe0f9d1-cfba-49fb-905b-883611ade340.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4574/cfe0f9d1-cfba-49fb-905b-883611ade340.jpeg"
-                  }
-                }
-              }
-            }
+            "description": "An Article"
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Article Not Found"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: article",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -631,49 +281,6 @@
             "description": "An Article",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "article",
-                  "id": 2057,
-                  "title": "The Heart Is Deceitful Above All Things196",
-                  "description": "Austin banh mi literally pickled cliche hoodie actually. Venmo flannel cleanse letterpress muggle...",
-                  "readable_publish_date": "Sep 19",
-                  "slug": "the-heart-is-deceitful-above-all-things196-2ban",
-                  "path": "/username552/the-heart-is-deceitful-above-all-things196-2ban",
-                  "url": "http://forem.test/username552/the-heart-is-deceitful-above-all-things196-2ban",
-                  "comments_count": 0,
-                  "public_reactions_count": 0,
-                  "collection_id": null,
-                  "published_timestamp": "2023-09-19T09:14:39Z",
-                  "positive_reactions_count": 0,
-                  "cover_image": "http://forem.test/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
-                  "social_image": "http://forem.test/assets/22-837b6c737e37b6d229b36d73e95ead7f26e0a346e0aa7dfbca74630ae161fb0d.png",
-                  "canonical_url": "http://forem.test/username552/the-heart-is-deceitful-above-all-things196-2ban",
-                  "created_at": "2023-09-19T09:14:39Z",
-                  "edited_at": null,
-                  "crossposted_at": null,
-                  "published_at": "2023-09-19T09:14:39Z",
-                  "last_comment_at": "2023-09-19T09:14:39Z",
-                  "reading_time_minutes": 1,
-                  "tag_list": "discuss",
-                  "tags": ["discuss"],
-                  "body_html": "<p>Austin banh mi literally pickled cliche hoodie actually. Venmo flannel cleanse letterpress muggle magic echo. Thundercats truffaut shabby chic you probably haven't heard of them vinyl microdosing. Biodiesel 3 wolf moon before they sold out echo disrupt tumblr chicharrones.</p>\n\n<p>Skateboard seitan chambray distillery. Phlogiston carry 8-bit shabby chic marfa occupy.</p>\n\n",
-                  "body_markdown": "---\ntitle: The Heart Is Deceitful Above All Things196\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nAustin banh mi literally pickled cliche hoodie actually. Venmo flannel cleanse letterpress muggle magic echo. Thundercats truffaut shabby chic you probably haven't heard of them vinyl microdosing. Biodiesel 3 wolf moon before they sold out echo disrupt tumblr chicharrones.\n\n\nSkateboard seitan chambray distillery. Phlogiston carry 8-bit shabby chic marfa occupy.\n\n",
-                  "user": {
-                    "name": "Filiberto \"Jamey\" \\:/ Schowalter",
-                    "username": "username552",
-                    "twitter_username": "twitter552",
-                    "github_username": "github552",
-                    "user_id": 4578,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4578/45efa5df-294f-4f3b-9ed4-0949a8514092.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4578/45efa5df-294f-4f3b-9ed4-0949a8514092.jpeg"
-                  },
-                  "flare_tag": {
-                    "name": "discuss",
-                    "bg_color_hex": "#000000",
-                    "text_color_hex": "#ffffff"
-                  }
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -684,15 +291,7 @@
             }
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Article Not Found"
           }
         }
       }
@@ -713,21 +312,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -756,21 +346,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -799,21 +380,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -842,21 +414,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A List of the authenticated user's Articles",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -904,26 +467,10 @@
             "description": "Article successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Article Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Article Not Found"
           }
         }
       }
@@ -944,22 +491,6 @@
             "description": "A List of manually managed audience segments",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "id": 198,
-                    "created_at": "2023-09-19T01:14:41.534-08:00",
-                    "type_of": "manual",
-                    "updated_at": "2023-09-19T01:14:41.534-08:00",
-                    "user_count": 1
-                  },
-                  {
-                    "id": 197,
-                    "created_at": "2023-09-19T01:14:41.429-08:00",
-                    "type_of": "manual",
-                    "updated_at": "2023-09-19T01:14:41.429-08:00",
-                    "user_count": 3
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -970,15 +501,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           }
         }
       },
@@ -989,28 +512,10 @@
         "operationId": "createSegment",
         "responses": {
           "201": {
-            "description": "A manually managed audience segment",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 199,
-                  "created_at": "2023-09-19T01:14:42.013-08:00",
-                  "type_of": "manual",
-                  "updated_at": "2023-09-19T01:14:42.013-08:00"
-                }
-              }
-            }
+            "description": "A manually managed audience segment"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           }
         }
       }
@@ -1038,13 +543,6 @@
             "description": "The audience segment",
             "content": {
               "application/json": {
-                "example": {
-                  "id": 200,
-                  "created_at": "2023-09-19T01:14:42.336-08:00",
-                  "type_of": "manual",
-                  "updated_at": "2023-09-19T01:14:42.336-08:00",
-                  "user_count": 3
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1055,26 +553,10 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Audience Segment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Audience Segment Not Found"
           }
         }
       },
@@ -1097,49 +579,16 @@
         ],
         "responses": {
           "200": {
-            "description": "The deleted audience segment",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 204,
-                  "created_at": "2023-09-19T01:14:42.950-08:00",
-                  "type_of": "manual",
-                  "updated_at": "2023-09-19T01:14:42.950-08:00"
-                }
-              }
-            }
+            "description": "The deleted audience segment"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Audience Segment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Audience Segment Not Found"
           },
           "409": {
-            "description": "Audience segment could not be deleted",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "Segments cannot be deleted while in use by any billboards"
-                }
-              }
-            }
+            "description": "Audience segment could not be deleted"
           }
         }
       }
@@ -1170,47 +619,6 @@
             "description": "A List of users in the audience segment",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "user",
-                    "id": 4618,
-                    "username": "username592",
-                    "name": "Rolf \"Myesha\" \\:/ Collins",
-                    "twitter_username": "twitter592",
-                    "github_username": "github592",
-                    "summary": null,
-                    "location": null,
-                    "website_url": null,
-                    "joined_at": "Sep 19, 2023",
-                    "profile_image": "/uploads/user/profile_image/4618/793c29dc-5886-4b9a-be0a-110f43de8191.jpeg"
-                  },
-                  {
-                    "type_of": "user",
-                    "id": 4619,
-                    "username": "username593",
-                    "name": "Annika \"Margret\" \\:/ Windler",
-                    "twitter_username": "twitter593",
-                    "github_username": "github593",
-                    "summary": null,
-                    "location": null,
-                    "website_url": null,
-                    "joined_at": "Sep 19, 2023",
-                    "profile_image": "/uploads/user/profile_image/4619/56a40c6c-a58d-43f3-9c89-83e713baa051.jpeg"
-                  },
-                  {
-                    "type_of": "user",
-                    "id": 4620,
-                    "username": "username594",
-                    "name": "Felice \"Samantha\" \\:/ Russel",
-                    "twitter_username": "twitter594",
-                    "github_username": "github594",
-                    "summary": null,
-                    "location": null,
-                    "website_url": null,
-                    "joined_at": "Sep 19, 2023",
-                    "profile_image": "/uploads/user/profile_image/4620/b0fa8a5c-1190-4acc-af88-8e59db2dac77.jpeg"
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1221,26 +629,10 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Audience Segment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Audience Segment Not Found"
           }
         }
       }
@@ -1265,48 +657,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Result of adding the users to the segment.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "succeeded": [4626, 4627, 4628],
-                  "failed": []
-                }
-              }
-            }
+            "description": "Result of adding the users to the segment."
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Audience Segment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Audience Segment Not Found"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: user_ids",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -1340,48 +700,16 @@
         ],
         "responses": {
           "200": {
-            "description": "Result of removing the users to the segment.",
-            "content": {
-              "application/json": {
-                "example": {
-                  "succeeded": [4645, 4646, 4647],
-                  "failed": []
-                }
-              }
-            }
+            "description": "Result of removing the users to the segment."
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Audience Segment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Audience Segment Not Found"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: user_ids",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -1405,7 +733,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1416,15 +743,7 @@
             }
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       },
@@ -1438,32 +757,6 @@
             "description": "A billboard",
             "content": {
               "application/json": {
-                "example": {
-                  "id": 65,
-                  "approved": true,
-                  "audience_segment_id": null,
-                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
-                  "cached_tag_list": "",
-                  "clicks_count": 0,
-                  "created_at": "2023-09-19T01:14:47.148-08:00",
-                  "creator_id": null,
-                  "display_to": "all",
-                  "exclude_article_ids": "",
-                  "impressions_count": 0,
-                  "name": "Example Billboard",
-                  "organization_id": null,
-                  "placement_area": "post_comments",
-                  "priority": false,
-                  "processed_html": "<h1>  <a href=\"#hi-this-is-ad\" class=\"anchor\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
-                  "published": true,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2023-09-19T01:14:47.148-08:00",
-                  "weight": 1.0,
-                  "audience_segment_type": null,
-                  "tag_list": "",
-                  "target_geolocations": ["US-WA", "CA-BC"]
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1474,26 +767,10 @@
             }
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "422": {
-            "description": "unprocessable",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "Validation failed: Placement area is not included in the list",
-                  "status": 422
-                }
-              }
-            }
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -1531,59 +808,13 @@
         ],
         "responses": {
           "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 66,
-                  "approved": false,
-                  "audience_segment_id": null,
-                  "body_markdown": "Hello _hey_ Hey hey 15",
-                  "cached_tag_list": "",
-                  "clicks_count": 0,
-                  "created_at": "2023-09-19T01:14:47.471-08:00",
-                  "creator_id": null,
-                  "display_to": "all",
-                  "exclude_article_ids": "",
-                  "impressions_count": 0,
-                  "name": "Billboard 66",
-                  "organization_id": 413,
-                  "placement_area": "sidebar_left",
-                  "priority": false,
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 15</p>",
-                  "published": false,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2023-09-19T01:14:47.474-08:00",
-                  "weight": 1.0,
-                  "audience_segment_type": null,
-                  "tag_list": "",
-                  "target_geolocations": []
-                }
-              }
-            }
+            "description": "successful"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "404": {
-            "description": "Unknown Billboard ID",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown Billboard ID"
           }
         }
       },
@@ -1610,32 +841,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": {
-                  "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 16",
-                  "creator_id": null,
-                  "display_to": "all",
-                  "name": "Billboard 67",
-                  "organization_id": 414,
-                  "placement_area": "sidebar_left",
-                  "published": false,
-                  "type_of": "in_house",
-                  "exclude_article_ids": "",
-                  "weight": 1.0,
-                  "audience_segment_id": null,
-                  "priority": false,
-                  "cached_tag_list": "",
-                  "id": 67,
-                  "clicks_count": 0,
-                  "created_at": "2023-09-19T01:14:47.802-08:00",
-                  "impressions_count": 0,
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 16</p>",
-                  "success_rate": 0.0,
-                  "updated_at": "2023-09-19T01:14:47.806-08:00",
-                  "audience_segment_type": null,
-                  "tag_list": "",
-                  "target_geolocations": []
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -1646,26 +851,10 @@
             }
           },
           "404": {
-            "description": "not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "not found"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         },
         "requestBody": {
@@ -1706,26 +895,10 @@
             "description": "no content"
           },
           "404": {
-            "description": "not found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "not found"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       }
@@ -1735,9 +908,15 @@
         "summary": "Comments",
         "security": [],
         "tags": ["comments"],
-        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.",
+        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.\n\nIt supports pagination, each page will contain `50` top level comments (and as many child comments they have) by default.\n\nIf the page parameter is not passed, all comments of an article or podcast will be returned.\n",
         "operationId": "getCommentsByArticleId",
         "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
           {
             "name": "a_id",
             "in": "query",
@@ -1757,6 +936,16 @@
               "type": "string"
             },
             "example": "321"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
           }
         ],
         "responses": {
@@ -1764,25 +953,6 @@
             "description": "A List of Comments",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "comment",
-                    "id_code": "13a",
-                    "created_at": "2023-09-19T09:14:48Z",
-                    "body_html": "<p>Hoodie bespoke xoxo yolo tacos. 8-bit knausgaard banjo. Before they sold out narwhal marfa roof godard.</p>\n\n",
-                    "user": {
-                      "name": "Sheree \"Willian\" \\:/ Turcotte",
-                      "username": "username658",
-                      "twitter_username": "twitter658",
-                      "github_username": "github658",
-                      "user_id": 4684,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4684/dc935d90-5fef-4b3d-9679-41da562ab8be.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4684/dc935d90-5fef-4b3d-9679-41da562ab8be.jpeg"
-                    },
-                    "children": []
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1793,15 +963,7 @@
             }
           },
           "404": {
-            "description": "Resource Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Resource Not Found"
           }
         }
       }
@@ -1827,39 +989,10 @@
         ],
         "responses": {
           "200": {
-            "description": "A List of the Comments",
-            "content": {
-              "application/json": {
-                "example": {
-                  "type_of": "comment",
-                  "id_code": "13c",
-                  "created_at": "2023-09-19T09:14:49Z",
-                  "body_html": "<p>Semiotics williamsburg cornhole. Meh biodiesel microdosing poutine.</p>\n\n",
-                  "user": {
-                    "name": "Sherry \"Genny\" \\:/ Langworth",
-                    "username": "username662",
-                    "twitter_username": "twitter662",
-                    "github_username": "github662",
-                    "user_id": 4688,
-                    "website_url": null,
-                    "profile_image": "/uploads/user/profile_image/4688/a738846f-ed40-47f0-95a2-4500b71298fa.jpeg",
-                    "profile_image_90": "/uploads/user/profile_image/4688/a738846f-ed40-47f0-95a2-4500b71298fa.jpeg"
-                  },
-                  "children": []
-                }
-              }
-            }
+            "description": "A List of the Comments"
           },
           "404": {
-            "description": "Comment Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Comment Not Found"
           }
         }
       }
@@ -1872,32 +1005,12 @@
         "operationId": "getFollowedTags",
         "responses": {
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "200": {
             "description": "A List of followed tags",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "id": 3455,
-                    "name": "tag3",
-                    "points": 1.0
-                  },
-                  {
-                    "id": 3456,
-                    "name": "tag4",
-                    "points": 1.0
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1939,28 +1052,6 @@
             "description": "A List of followers",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "user_follower",
-                    "id": 54,
-                    "created_at": "2023-09-19T09:14:49Z",
-                    "user_id": 4695,
-                    "name": "Austin \"Abdul\" \\:/ Grimes",
-                    "path": "/username669",
-                    "username": "username669",
-                    "profile_image": "/uploads/user/profile_image/4695/81a8b1fe-68b3-4be2-815a-7eca9f4a1601.jpeg"
-                  },
-                  {
-                    "type_of": "user_follower",
-                    "id": 53,
-                    "created_at": "2023-09-19T09:14:49Z",
-                    "user_id": 4693,
-                    "name": "Von \"Tyron\" \\:/ Padberg",
-                    "path": "/username667",
-                    "username": "username667",
-                    "profile_image": "/uploads/user/profile_image/4693/1fba9b09-f9c0-43c5-ac4f-39c52468b367.jpeg"
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -1999,15 +1090,7 @@
             }
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       }
@@ -2034,22 +1117,6 @@
             "description": "An Organization",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "organization",
-                  "id": 419,
-                  "username": "org87",
-                  "name": "Ondricka Inc",
-                  "summary": "Mixtape before they sold out seitan. Organic diy plaid.",
-                  "twitter_username": "org6587",
-                  "github_username": "org5640",
-                  "url": "http://mcglynn.co/aurelio_homenick",
-                  "location": null,
-                  "tech_stack": null,
-                  "tag_line": null,
-                  "story": null,
-                  "joined_at": "2023-09-19T09:14:50Z",
-                  "profile_image": "/uploads/organization/profile_image/419/96a05f9d-ffaf-4090-9b5c-4de87f66875d.png"
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -2060,20 +1127,12 @@
             }
           },
           "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Not Found"
           }
         }
       }
     },
-    "/api/organizations/{username}/users": {
+    "/api/organizations/{organization_id_or_username}/users": {
       "get": {
         "summary": "Organization's users",
         "tags": ["organizations", "users"],
@@ -2082,7 +1141,7 @@
         "operationId": "getOrgUsers",
         "parameters": [
           {
-            "name": "username",
+            "name": "organization_id_or_username",
             "in": "path",
             "required": true,
             "schema": {
@@ -2098,37 +1157,9 @@
         ],
         "responses": {
           "200": {
-            "description": "An Organization's users",
+            "description": "An Organization's users (with ID)",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "user",
-                    "id": 4705,
-                    "username": "username679",
-                    "name": "Kory \"Isaiah\" \\:/ Feil",
-                    "twitter_username": "twitter679",
-                    "github_username": "github679",
-                    "summary": null,
-                    "location": null,
-                    "website_url": null,
-                    "joined_at": "Sep 19, 2023",
-                    "profile_image": "/uploads/user/profile_image/4705/ecb0a753-85c4-42b8-b734-d2211ac795e2.jpeg"
-                  },
-                  {
-                    "type_of": "user",
-                    "id": 4706,
-                    "username": "username680",
-                    "name": "Yvonne \"Teisha\" \\:/ Metz",
-                    "twitter_username": "twitter680",
-                    "github_username": "github680",
-                    "summary": null,
-                    "location": null,
-                    "website_url": null,
-                    "joined_at": "Sep 19, 2023",
-                    "profile_image": "/uploads/user/profile_image/4706/f971253a-d374-464d-bbe0-80304cbf9f45.jpeg"
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2139,20 +1170,12 @@
             }
           },
           "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Not Found"
           }
         }
       }
     },
-    "/api/organizations/{username}/articles": {
+    "/api/organizations/{organization_id_or_username}/articles": {
       "get": {
         "summary": "Organization's Articles",
         "tags": ["organizations", "articles"],
@@ -2161,7 +1184,7 @@
         "operationId": "getOrgArticles",
         "parameters": [
           {
-            "name": "username",
+            "name": "organization_id_or_username",
             "in": "path",
             "required": true,
             "schema": {
@@ -2177,54 +1200,9 @@
         ],
         "responses": {
           "200": {
-            "description": "An Organization's Articles",
+            "description": "An Organization's Articles (with ID)",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "article",
-                    "id": 2069,
-                    "title": "The Needle's Eye208",
-                    "description": "Butcher cleanse everyday diy fingerstache. Pabst lo-fi art party. Deep v twee semiotics blog bitters...",
-                    "readable_publish_date": "Sep 19",
-                    "slug": "the-needles-eye208-4i0d",
-                    "path": "/org91/the-needles-eye208-4i0d",
-                    "url": "http://forem.test/org91/the-needles-eye208-4i0d",
-                    "comments_count": 0,
-                    "public_reactions_count": 0,
-                    "collection_id": null,
-                    "published_timestamp": "2023-09-19T09:14:51Z",
-                    "positive_reactions_count": 0,
-                    "cover_image": "http://forem.test/assets/20-92231c1d2ddb3b707b8c1b5cb711ef17632ff2a64495970a58518ce33c3a4f76.png",
-                    "social_image": "http://forem.test/assets/20-92231c1d2ddb3b707b8c1b5cb711ef17632ff2a64495970a58518ce33c3a4f76.png",
-                    "canonical_url": "http://forem.test/org91/the-needles-eye208-4i0d",
-                    "created_at": "2023-09-19T09:14:51Z",
-                    "edited_at": null,
-                    "crossposted_at": null,
-                    "published_at": "2023-09-19T09:14:51Z",
-                    "last_comment_at": "2023-09-19T09:14:51Z",
-                    "reading_time_minutes": 1,
-                    "tag_list": ["javascript", "html", "discuss"],
-                    "tags": "javascript, html, discuss",
-                    "user": {
-                      "name": "Lauren \"Boyce\" \\:/ Pagac",
-                      "username": "username687",
-                      "twitter_username": "twitter687",
-                      "github_username": "github687",
-                      "user_id": 4713,
-                      "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/4713/7b0bbf54-0b48-4e26-97fd-926be2809bd0.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/4713/7b0bbf54-0b48-4e26-97fd-926be2809bd0.jpeg"
-                    },
-                    "organization": {
-                      "name": "Beer-Sawayn",
-                      "username": "org91",
-                      "slug": "org91",
-                      "profile_image": "/uploads/organization/profile_image/423/cf0141eb-f34a-46c0-8c22-f7bdfc8cebf2.png",
-                      "profile_image_90": "/uploads/organization/profile_image/423/cf0141eb-f34a-46c0-8c22-f7bdfc8cebf2.png"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2235,15 +1213,7 @@
             }
           },
           "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Not Found"
           }
         }
       }
@@ -2268,19 +1238,6 @@
             "description": "A list of all organizations",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "id": 425,
-                    "name": "Torphy, Bruen and Parisian",
-                    "profile_image": {
-                      "url": "/uploads/organization/profile_image/425/a7b3a84c-ff30-4236-a82d-6c72be9ba0af.png"
-                    },
-                    "slug": "org93",
-                    "summary": "Irony readymade trust fund semiotics kale chips phlogiston tofu selfies.",
-                    "tag_line": null,
-                    "url": "http://williamson-towne.org/danyel.jacobi"
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2300,34 +1257,13 @@
         "parameters": [],
         "responses": {
           "201": {
-            "description": "Successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 428,
-                  "name": "New Test Org",
-                  "profile_image": "uploads/organization/profile_image/1/400x400.jpg",
-                  "slug": "org10001",
-                  "summary": "a newly created test org",
-                  "tag_line": "a test org's tagline",
-                  "url": "https://testorg.io"
-                }
-              }
-            }
+            "description": "Successful"
           },
           "401": {
             "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "Validation failed: Name can't be blank, Profile image can't be blank, Slug can't be blank",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -2363,22 +1299,6 @@
             "description": "An Organization",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "organization",
-                  "id": 426,
-                  "username": "org94",
-                  "name": "Reynolds-Kilback",
-                  "summary": "Mixtape salvia marfa master kinfolk. Artisan migas pinterest gentrify. Twee farm-to-table knausgaard.",
-                  "twitter_username": "org437",
-                  "github_username": "org8264",
-                  "url": "http://hansen.org/man",
-                  "location": null,
-                  "tech_stack": null,
-                  "tag_line": null,
-                  "story": null,
-                  "joined_at": "2023-09-19T09:14:51Z",
-                  "profile_image": "/uploads/organization/profile_image/426/c1dcc00d-1091-4b75-9b7a-df9b1738c0c1.png"
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -2389,15 +1309,7 @@
             }
           },
           "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Not Found"
           }
         }
       },
@@ -2421,53 +1333,16 @@
         ],
         "responses": {
           "200": {
-            "description": "An Organization",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 429,
-                  "name": "Spinka-Wolff",
-                  "profile_image": "/uploads/organization/profile_image/429/b7ae8a14-8709-4380-8ad4-b998aa897561.png",
-                  "slug": "org96",
-                  "summary": "An updated summary for the organization.",
-                  "tag_line": null,
-                  "url": "http://strosin-johnston.name/ernesto_kshlerin"
-                }
-              }
-            }
+            "description": "An Organization"
           },
           "404": {
-            "description": "organization Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "organization Not Found"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: organization",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -2500,26 +1375,10 @@
         ],
         "responses": {
           "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "message": "deletion scheduled for organization with ID 433",
-                  "status": 200
-                }
-              }
-            }
+            "description": "successful"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       }
@@ -2535,24 +1394,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "id": 51,
-                    "title": "To Sail Beyond the Sunset",
-                    "slug": "provision_message",
-                    "description": "Ut laboriosam tenetur mollitia.",
-                    "is_top_level_path": false,
-                    "landing_page": false,
-                    "body_html": null,
-                    "body_json": null,
-                    "body_markdown": "Tenetur sunt autem exercitationem.",
-                    "processed_html": "<p>Tenetur sunt autem exercitationem.</p>\n\n",
-                    "social_image": {
-                      "url": null
-                    },
-                    "template": "contained"
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2571,61 +1412,13 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 53,
-                  "title": "Example Page",
-                  "slug": "example1",
-                  "description": "a new page",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
-                  "processed_html": "<h1>\n  <a name=\"hi-this-is-a-new-page\" href=\"#hi-this-is-a-new-page\">\n  </a>\n  Hi, this is a New Page\n</h1>\n\n<p>Yep, it's an a new page</p>\n\n",
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "contained"
-                }
-              }
-            }
+            "description": "successful"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "422": {
-            "description": "unprocessable",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": null,
-                  "title": "Example Page",
-                  "slug": "example1",
-                  "description": "a new page",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
-                  "processed_html": null,
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "moon"
-                }
-              }
-            }
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -2701,22 +1494,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": {
-                  "id": 56,
-                  "title": "A Confederacy of Dunces",
-                  "slug": "doctor-shock",
-                  "description": "Dolor consequuntur at pariatur.",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "Id iusto error maxime.",
-                  "processed_html": "<p>Id iusto error maxime.</p>\n\n",
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "contained"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -2748,22 +1525,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": {
-                  "id": 57,
-                  "title": "New Title",
-                  "slug": "dynamic-widen",
-                  "description": "Corporis dignissimos similique quia.",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "Cum dolor nisi architecto.",
-                  "processed_html": "<p>Cum dolor nisi architecto.</p>\n\n",
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "contained"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -2771,38 +1532,10 @@
             }
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "422": {
-            "description": "unprocessable",
-            "content": {
-              "application/json": {
-                "example": {
-                  "id": 59,
-                  "title": "Cabbages and Kings",
-                  "slug": "diagram-report",
-                  "description": "Corporis voluptatem at ut.",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "Cupiditate quisquam eos tempore.",
-                  "processed_html": "<p>Totam culpa nulla mollitia.</p>\n\n",
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "moon"
-                }
-              }
-            }
+            "description": "unprocessable"
           }
         },
         "requestBody": {
@@ -2838,22 +1571,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": {
-                  "id": 60,
-                  "title": "The Heart Is a Lonely Hunter",
-                  "slug": "exaggerate-thirsty",
-                  "description": "Et cum quia ut.",
-                  "is_top_level_path": false,
-                  "landing_page": false,
-                  "body_html": null,
-                  "body_json": null,
-                  "body_markdown": "Ab eveniet ut et.",
-                  "processed_html": "<p>Ab eveniet ut et.</p>\n\n",
-                  "social_image": {
-                    "url": null
-                  },
-                  "template": "contained"
-                },
                 "schema": {
                   "$ref": "#/components/schemas/Page"
                 }
@@ -2861,31 +1578,10 @@
             }
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           },
           "422": {
-            "description": "unprocessable",
-            "content": {
-              "application/json": {
-                "example": {
-                  "doubled_module": {
-                    "const_name": "Page",
-                    "object": "Page"
-                  },
-                  "__expired": false,
-                  "name": null,
-                  "__sending_message": null
-                }
-              }
-            }
+            "description": "unprocessable"
           }
         }
       }
@@ -2920,21 +1616,6 @@
             "description": "A List of Podcast episodes filtered by username",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "podcast_episodes",
-                    "class_name": "PodcastEpisode",
-                    "id": 48,
-                    "path": "/codenewbie/slug-4",
-                    "title": "18",
-                    "image_url": "/uploads/podcast/image/38/b9395026-6a95-48d8-952c-db3756cdf017.jpeg",
-                    "podcast": {
-                      "title": "90 Minute IPA",
-                      "slug": "codenewbie",
-                      "image_url": "/uploads/podcast/image/38/b9395026-6a95-48d8-952c-db3756cdf017.jpeg"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -2945,15 +1626,7 @@
             }
           },
           "404": {
-            "description": "Unknown Podcast username",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown Podcast username"
           }
         }
       }
@@ -2981,12 +1654,6 @@
             "description": "An object containing profile image details",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "profile_image",
-                  "image_of": "user",
-                  "profile_image": "/uploads/user/profile_image/4737/50120074-eda9-4a99-b4be-3680321207a7.jpeg",
-                  "profile_image_90": "/uploads/user/profile_image/4737/50120074-eda9-4a99-b4be-3680321207a7.jpeg"
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -2997,15 +1664,7 @@
             }
           },
           "404": {
-            "description": "Resource Not Found",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Resource Not Found"
           }
         }
       }
@@ -3052,29 +1711,10 @@
         ],
         "responses": {
           "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "result": "create",
-                  "category": "like",
-                  "id": 52,
-                  "reactable_id": 2071,
-                  "reactable_type": "Article"
-                }
-              }
-            }
+            "description": "successful"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       }
@@ -3121,29 +1761,10 @@
         ],
         "responses": {
           "200": {
-            "description": "successful",
-            "content": {
-              "application/json": {
-                "example": {
-                  "result": "none",
-                  "category": "like",
-                  "id": 54,
-                  "reactable_id": 2073,
-                  "reactable_type": "Article"
-                }
-              }
-            }
+            "description": "successful"
           },
           "401": {
-            "description": "unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "unauthorized"
           }
         }
       }
@@ -3164,21 +1785,12 @@
         ],
         "responses": {
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "200": {
             "description": "A list of articles in the users readinglist",
             "content": {
               "application/json": {
-                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3211,26 +1823,6 @@
             "description": "A List of all tags",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "id": 3487,
-                    "name": "tag5",
-                    "bg_color_hex": null,
-                    "text_color_hex": null
-                  },
-                  {
-                    "id": 3488,
-                    "name": "tag6",
-                    "bg_color_hex": null,
-                    "text_color_hex": null
-                  },
-                  {
-                    "id": 3489,
-                    "name": "tag7",
-                    "bg_color_hex": null,
-                    "text_color_hex": null
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -3268,26 +1860,10 @@
             "description": "User successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Unknown User ID",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown User ID"
           }
         }
       }
@@ -3317,26 +1893,10 @@
             "description": "User successfully limited"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Unknown User ID",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown User ID"
           }
         }
       },
@@ -3364,26 +1924,10 @@
             "description": "User successfully un-limited"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Unknown User ID",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown User ID"
           }
         }
       }
@@ -3399,19 +1943,6 @@
             "description": "successful",
             "content": {
               "application/json": {
-                "example": {
-                  "type_of": "user",
-                  "id": 4767,
-                  "username": "username741",
-                  "name": "Alejandrina \"Regenia\" \\:/ Miller",
-                  "twitter_username": "twitter741",
-                  "github_username": "github741",
-                  "summary": null,
-                  "location": null,
-                  "website_url": null,
-                  "joined_at": "Sep 19, 2023",
-                  "profile_image": "/uploads/user/profile_image/4767/b0fc9e82-bb0f-4df3-9820-d914d340b9ef.jpeg"
-                },
                 "schema": {
                   "type": "object",
                   "items": {
@@ -3422,15 +1953,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           }
         }
       }
@@ -3493,26 +2016,10 @@
             "description": "User's articles and comments successfully unpublished"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "404": {
-            "description": "Unknown User ID (still accepted for async processing)",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "not found",
-                  "status": 404
-                }
-              }
-            }
+            "description": "Unknown User ID (still accepted for async processing)"
           }
         }
       }
@@ -3529,26 +2036,10 @@
             "description": "Successful"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "unauthorized",
-                  "status": 401
-                }
-              }
-            }
+            "description": "Unauthorized"
           },
           "422": {
-            "description": "Unprocessable Entity",
-            "content": {
-              "application/json": {
-                "example": {
-                  "error": "param is missing or the value is empty: email",
-                  "status": 422
-                }
-              }
-            }
+            "description": "Unprocessable Entity"
           }
         },
         "requestBody": {
@@ -3582,34 +2073,6 @@
             "description": "A List of all articles with videos",
             "content": {
               "application/json": {
-                "example": [
-                  {
-                    "type_of": "video_article",
-                    "id": 2076,
-                    "path": "/username761/by-grand-central-station-i-sat-down-and-wept215-5jc",
-                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
-                    "title": "By Grand Central Station I Sat Down and Wept215",
-                    "user_id": 4788,
-                    "video_duration_in_minutes": "00:00",
-                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
-                    "user": {
-                      "name": "Doug \"Lance\" \\:/ Tremblay"
-                    }
-                  },
-                  {
-                    "type_of": "video_article",
-                    "id": 2075,
-                    "path": "/username760/wildfire-at-midnight214-349",
-                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
-                    "title": "Wildfire at Midnight214",
-                    "user_id": 4787,
-                    "video_duration_in_minutes": "00:00",
-                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
-                    "user": {
-                      "name": "Serita \"Carrol\" \\:/ Rosenbaum"
-                    }
-                  }
-                ],
                 "schema": {
                   "type": "array",
                   "items": {
