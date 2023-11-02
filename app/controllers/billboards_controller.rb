@@ -15,6 +15,12 @@ class BillboardsController < ApplicationController
     end
 
     if placement_area
+      if return_test_billboard?
+        @billboard = Billboard.find_by(id: params[:bb_test_id])
+        render layout: false
+        return
+      end
+
       if params[:username].present? && params[:slug].present?
         @article = Article.find_by(slug: params[:slug])
       end
@@ -58,5 +64,9 @@ class BillboardsController < ApplicationController
     else
       request.headers["X-Cacheable-Client-Geo"]
     end
+  end
+
+  def return_test_billboard?
+    params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
   end
 end

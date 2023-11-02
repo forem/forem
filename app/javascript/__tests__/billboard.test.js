@@ -90,6 +90,33 @@ describe('getBillboard', () => {
       expect(script.innerHTML).toEqual('console.log("test")'); // Should retain content
     });
   });
+
+  test('should add current URL parameters to asyncUrl if bb_test_placement_area exists', async () => {
+    // Mocking window.location.href
+    delete window.location;
+    window.location = new URL(
+      'http://example.com?bb_test_placement_area=post_sidebar&bb_test_id=1',
+    );
+
+    document.body.innerHTML = `
+      <div>
+        <div class="js-billboard-container" data-async-url="/billboards/post_sidebar"></div>
+      </div>
+    `;
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        text: () => Promise.resolve('<div>Some HTML content</div>'),
+      }),
+    );
+
+    await getBillboard();
+
+    // Check if the fetch function was called with the modified URL including the parameters
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/billboards/post_sidebar?bb_test_placement_area=post_sidebar&bb_test_id=1',
+    );
+  });
 });
 
 describe('executeBBScripts', () => {
