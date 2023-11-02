@@ -17,15 +17,26 @@ RSpec.describe "Api::V1::Docs::Comments" do
         tags "comments"
         description "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.
 
-It will return the all top level comments with their nested comments as threads. See the format specification for further details."
+It will return the all top level comments with their nested comments as threads. See the format specification for further details.
+
+It supports pagination, each page will contain `50` top level comments (and as many child comments they have) by default.
+
+If the page parameter is not passed, all comments of an article or podcast will be returned.
+"
         operationId "getCommentsByArticleId"
         produces "application/json"
+        parameter "$ref": "#/components/parameters/pageParam"
+        parameter "$ref": "#/components/parameters/perPageParam30to1000"
         parameter name: :a_id, in: :query, required: false,
                   description: "Article identifier.",
                   schema: { type: :string },
                   example: "321"
         parameter name: :p_id, in: :query, required: false,
                   description: "Podcast Episode identifier.",
+                  schema: { type: :string },
+                  example: "321"
+        parameter name: :page, in: :query, required: false,
+                  description: "Page",
                   schema: { type: :string },
                   example: "321"
 
