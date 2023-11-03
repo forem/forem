@@ -676,7 +676,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbs (2.8.4)
-    recaptcha (5.15.0)
+    recaptcha (5.16.0)
     redcarpet (3.6.0)
     redis (4.7.1)
     redis-actionpack (5.3.0)
