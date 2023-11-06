@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Articles::Feeds::VariantQuery, type: :service do
   # We're exercising each named feed variant to ensure that the queries are valid SQL.
-  Rails.root.glob(File.join(Articles::Feeds::VariantAssembler::DIRECTORY, "/*.json")).last(1).each do |pathname|
+  Rails.root.glob(File.join(Articles::Feeds::VariantAssembler::DIRECTORY, "/*.json")).each do |pathname|
     variant = pathname.basename(".json").to_s.to_sym
 
     describe ".build_for with #{variant} variant" do
