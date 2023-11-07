@@ -34,6 +34,30 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).not_to match_array(article)
         end
+
+        it "does not return an article published 27 hours before last page view if last comment at is too old" do
+          create_list(:page_view, 5, user: user) # Recent pageviews
+          article = create(:article)
+          article.update_columns(published_at: 27.hours.ago, last_comment_at: 22.hours.ago)
+          expect(query_call).to be_a(ActiveRecord::Relation)
+          expect(query_call.to_a).not_to include(article)
+        end
+
+        it "does return article published 27 hours before last page view if last comment is within 6 hours" do
+          create_list(:page_view, 5, user: user) # Recent pageviews
+          article = create(:article)
+          article.update_columns(published_at: 27.hours.ago, last_comment_at: 4.hours.ago)
+          expect(query_call).to be_a(ActiveRecord::Relation)
+          expect(query_call.to_a).to include(article)
+        end
+
+        it "does not return article published 38 hours before last page view if last comment is within 6 hours" do
+          create_list(:page_view, 5, user: user) # Recent pageviews
+          article = create(:article)
+          article.update_columns(published_at: 38.hours.ago, last_comment_at: 4.hours.ago)
+          expect(query_call).to be_a(ActiveRecord::Relation)
+          expect(query_call.to_a).not_to include(article)
+        end
       end
 
       describe "#featured_story_and_default_home_feed" do
