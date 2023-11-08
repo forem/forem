@@ -22,7 +22,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # the below token should have repo scope and must be manually added by you in the repository's secret
           # This token is required only if you have configured to store the signatures in a remote repository/organization
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.CLA_PERSONAL_ACCESS_TOKEN }}
         with:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/forem/forem/blob/main/cla.md'
