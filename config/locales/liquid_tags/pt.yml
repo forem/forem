@@ -110,4 +110,4 @@ pt:
       article_not_found: "Não foi possível encontrar o artigo da Wikipedia - %{input}: %{response_detail}"
       invalid_wikipedia_url: URL da Wikipedia inválido
     youtube_tag:
-      invalid_youtube_id: ID YouTube ou URL inválido
+      invalid_youtube_id: ID YouTube ou URL inválido.

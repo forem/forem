@@ -12,7 +12,7 @@ fr:
         icon: Rejoint
         text_html: "Rejoint le\_%{date}"
       location:
-        icon: Lieu
+        icon: Emplacement
       logo: "Photo de profil de %{org}"
       size: Employés
       sponsor:
@@ -21,7 +21,7 @@ fr:
           gold: Or
           silver: Argent
           bronze: Bronze
-          tag: Tag
+          tag: Étiquette
           media: Média
           devrel: Devrel
       stack: Notre pile

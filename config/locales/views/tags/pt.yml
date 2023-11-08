@@ -23,7 +23,7 @@ pt:
         view: "Ver"
         form:
           pretty_name:
-            label: Nome bonito
+            label: Nome agradável
             placeholder: Este é o nome no topo da página de exibição.
           bg_color_hex:
             label: Cor da etiqueta

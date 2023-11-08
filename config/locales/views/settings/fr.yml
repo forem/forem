@@ -3,272 +3,272 @@ fr:
   views:
     settings:
       meta:
-        title: Paramètres
+        title: Settings
       account:
-        connect: Connecter le compte %{provider}
-        emails: Emails du compte
-        primary: Email principal
-        provider_email: "Email %{provider}"
-        provider_profile: "Paramètres du profil %{provider}"
+        connect: Connect %{provider} Account
+        emails: Account emails
+        primary: Primary email
+        provider_email: "%{provider} email"
+        provider_profile: "%{provider} profile settings"
         delete:
-          heading: Supprimer le compte
-          desc1: 'La suppression de votre compte entraînera :'
+          heading: Delete account
+          desc1: 'Deleting your account will:'
           desc1a: |
-            La suppression de votre profil, ainsi que de vos associations d'authentification.
+            Delete your profile, along with your authentication associations.
 
-            Cela n'inclut pas les permissions des applications. Vous devrez les supprimer vous-même :
-          desc1b: Supprimer tout le contenu que vous avez, comme les articles, les commentaires, ou votre liste de lecture.
-          desc1c: Permettre à votre nom d'utilisateur de devenir disponible pour n'importe qui.
-          desc2_html: S'il vous plaît, %{provide} pour supprimer complètement votre compte.
-          provide: fournir un email
-          submit: Supprimer le compte
+            This does not include applications permissions. You will have to remove them yourself:
+          desc1b: Delete any and all content you have, such as articles, comments, or your reading list.
+          desc1c: Allow your username to become available to anyone.
+          desc2_html: Please, %{provide} to fully delete your account.
+          provide: provide an email
+          submit: Delete Account
         export:
-          heading: Exporter le contenu
-          desc: Vous pouvez demander une exportation de tout votre contenu. Actuellement, nous ne supportons que l'exportation de vos publications et commentaires, si vous en avez. Ils seront envoyés par email à votre boîte de réception.
-          label: Demander une exportation de votre contenu
-          requested: Vous avez récemment demandé une exportation de votre contenu. Veuillez vérifier votre email.
-          submit: Soumettre la demande de données
+          heading: Export content
+          desc: You can request an export of all your content. Currently we only support the export of your posts and comments, if you have any. They will be emailed to your inbox.
+          label: Request an export of your content
+          requested: You have recently requested an export of your content. Please check your email.
+          submit: Submit Data Request
         remove:
-          heading: Supprimer les associations OAuth
-          desc1: Vous pouvez supprimer l'une de vos méthodes d'authentification. Nous en aurons toujours besoin d'une pour vous authentifier.
-          desc2: 'La suppression d'une association OAuth entraînera :'
-          desc2a: la suppression de votre capacité à vous connecter avec ce compte
-          desc2b: la suppression de l'URL associée de votre profil
+          heading: Remove OAuth Associations
+          desc1: You can remove one of your authentication methods. We'll still need one to authenticate you.
+          desc2: 'Removing an OAuth association will:'
+          desc2a: remove your ability to sign in with that account
+          desc2b: remove the associated URL from your profile
           desc3: |
-            Notez que cela ne révoque pas l'accès à notre application OAuth ;
-            vous devrez le faire dans vos paramètres pour le fournisseur spécifique :
-          confirm: Êtes-vous absolument sûr de vouloir supprimer votre compte %{provider} ?
-          submit: Supprimer %{provider}
+            Note that this does not revoke our OAuth app access;
+            you will have to do so in your settings for the specific provider:
+          confirm: Are you absolutely sure you want to remove your %{provider} account?
+          submit: Remove %{provider}
           unable_to_remove: Vous ne pouvez pas supprimer l'une de vos méthodes d'authentification car vous avez besoin d'une méthode restante pour vous authentifier. Veuillez ajouter une autre méthode d'authentification ci-dessus avant de continuer.
       billing:
-        heading: Facturation
-        add: Ajouter une carte de crédit
-        another: "+ Ajouter une autre carte de crédit"
-        cards: Vos cartes de crédit
-        exp: Expire %{month} / %{year}
-        label: Ajouter une carte
-        number: "%{brand} se terminant par %{last}"
-        make: Faire primaire
-        primary: primaire
-        remove: Supprimer la carte
-      characters: "Caractères disponibles utilisés : "
+        heading: Billing
+        add: Add Credit Card
+        another: "+ Add Another Credit Card"
+        cards: Your Credit Cards
+        exp: Expires %{month} / %{year}
+        label: Add Card
+        number: "%{brand} ending in %{last}"
+        make: Make primary
+        primary: primary
+        remove: Remove card
+      characters: "Available characters used: "
       complete:
-        heading: Confirmez votre email pour compléter votre profil.
-        desc: Pendant que vous y êtes, allez-y et remplissez tout.
-        github: Connectez également votre compte github pour compléter votre identité.
-        twitter: Connectez également votre compte twitter pour compléter votre identité.
+        heading: Confirm your email to complete your profile.
+        desc: While you're at it, go ahead and fill everything out.
+        github: Connect your github account as well to complete your identity.
+        twitter: Connect your twitter account as well to complete your identity.
       custom:
-        adjacent: Autoriser les sponsors externes à proximité (Lors de la publication)
-        announce: Annonces
-        announce_desc: Les annonces vous informent sur des informations importantes sur l'ensemble du site, comme les mises à jour et les événements.
-        announce_field: Afficher les annonces (Lors de la navigation)
-        appearance: Apparence
-        basic: Markdown de base
-        content: Contenu
-        editor: Version de l'éditeur
-        fixed: Fixé à la fenêtre
-        font: Police de lecture de base
-        level: Quel est votre niveau d'expérience approximatif (1-5) ?
-        level_desc: Cela ne sera pas affiché sur votre profil ou publiquement. Cela aide à déterminer doucement quel contenu vous est montré avec les tags que vous suivez, etc.
-        navbar: Barre de navigation du site
-        rich: Riche + markdown
-        save: Sauvegarder
+        adjacent: Permit Nearby External Sponsors (When publishing)
+        announce: Announcements
+        announce_desc: Announcements inform you on important site-wide information, like updates and events.
+        announce_field: Display Announcements (When browsing)
+        appearance: Appearance
+        basic: Basic markdown
+        content: Content
+        editor: Editor Version
+        fixed: Fixed to window
+        font: Base Reading Font
+        level: What is your approximate experience level (1-5)?
+        level_desc: This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.
+        navbar: Site Navbar
+        rich: Rich + markdown
+        save: Save
         sponsor: Sponsors
-        sponsor_desc_html: Vous avez la possibilité de désactiver les panneaux d'affichage des sponsors externes. Nos merveilleux partenaires aident à soutenir la plateforme, et nous nous efforçons de garantir que leur présence est constructive et précieuse pour la communauté, mais vous êtes libre d'utiliser ce paramètre si vous le souhaitez. Plus de détails dans notre <a href="/billboards">FAQ sur les panneaux d'affichage</a>.
-        sponsor_field: Afficher les sponsors externes (Lors de la navigation)
-        static: Statique en haut de la page
-        theme: Thème du site
-        writing: Écriture
-      danger: Zone de danger
+        sponsor_desc_html: You have the option to disable billboards from external sponsors. Our wonderful partners help sustain the platform, and we strive to ensure that their presence is constructive and valuable to the community, but you are welcome to make use of this setting if you wish. More details in our <a href="/billboards">billboards FAQ</a>.
+        sponsor_field: Display External Sponsors (When browsing)
+        static: Static top of page
+        theme: Site Theme
+        writing: Writing
+      danger: Danger Zone
       destroy:
-        heading: Détruire votre compte
-        desc: 'La suppression de votre compte entraînera :'
-        desc_1_html: supprimer votre profil, ainsi que vos associations Twitter et/ou GitHub. Cela n'inclut pas les permissions des applications. Vous devrez les supprimer vous-même sur %{twitter} et %{github}.
-        desc_2: supprimer tout le contenu que vous avez, comme les articles, les commentaires, ou votre liste de lecture.
-        desc_3: permettre à votre nom d'utilisateur de devenir disponible pour n'importe qui.
-        click: cliquez ici
-        confirm_html: 'Pour confirmation, tapez les mots : <code>%{word}</code>'
-        ghost_html: Si vous souhaitez conserver votre contenu sous le compte %{ghost}, veuillez %{click}
-        github: Paramètres du profil GitHub
-        submit: Supprimer le compte
-        to_delete: 'Pour supprimer votre compte :'
-        twitter: Paramètres du profil Twitter
-        type: Tapez votre nom d'utilisateur
-        username: nom d'utilisateur
-        word: supprimer mon compte
-      email: Vérification de l'email.
+        heading: Destroy your account
+        desc: 'Deleting your account will:'
+        desc_1_html: delete your profile, along with your Twitter and/or GitHub associations. This does not include app permissions. You will have to remove them yourself on %{twitter} and %{github}.
+        desc_2: delete any and all content you have, such as articles, comments, or your reading list.
+        desc_3: allow your username to become available to anyone.
+        click: click here
+        confirm_html: 'For confirmation, type the words: <code>%{word}</code>'
+        ghost_html: If you would like to keep your content under the %{ghost} account, please %{click}
+        github: GitHub profile settings
+        submit: Delete account
+        to_delete: 'To delete your account:'
+        twitter: Twitter profile settings
+        type: Type in your username
+        username: username
+        word: delete my account
+      email: Email verification.
       errors:
         org:
-          one: '1 erreur a empêché la sauvegarde de votre profil d'organisation :'
-          other: "%{count} erreurs ont empêché la sauvegarde de votre profil d'organisation :"
+          one: '1 error prohibited your organization profile from being saved:'
+          other: "%{count} errors prohibited your organization profile from being saved:"
         profile:
-          one: '1 erreur a empêché la sauvegarde de votre profil :'
-          other: "%{count} erreurs ont empêché la sauvegarde de votre profil :"
+          one: '1 error prohibited your profile from being saved:'
+          other: "%{count} errors prohibited your profile from being saved:"
       extensions:
         api:
-          heading: "Clés API %{community}"
-          desc_html: Vous pouvez générer des clés API personnelles pour l'authentification avec l'API %{community}. L'API est encore en phase bêta. La %{doc} contient plus d'informations.
+          heading: "%{community} API Keys"
+          desc_html: You can generate personal API keys to use for authentication with the %{community} API.  The API is still in its beta stage. The %{doc} contains further information.
           active:
-            heading: Clés API actives (ne les partagez jamais !)
-            created: 'Créé : %{time}'
+            heading: Active API keys (never share these!)
+            created: 'Created: %{time}'
           doc: documentation
           gen:
-            heading: Générer une nouvelle clé
+            heading: Generate a new Key
             label: Description
-            text: À quoi sert cette clé API ?
-            placeholder: Nom de mon projet
-            submit: Générer la clé API
-          revoke: Révoquer
+            text: What's this API key for?
+            placeholder: My Project Name
+            submit: Generate API Key
+          revoke: Revoke
         comment:
-          heading: Modèles de commentaires
-          desc_html: Créez et sauvegardez des <strong>modèles de commentaires</strong> que vous pouvez réutiliser.
-          add: Ajouter un nouveau modèle de commentaire
-          confirm: 'Êtes-vous sûr de vouloir supprimer : %{template} ?'
-          create: Créer un nouveau modèle de réponse
-          cue: Indice mémorable pour le modèle
-          edit: Éditer
-          edit_template: Éditer le modèle de commentaire
-          remove: Supprimer
-          save: Sauvegarder le modèle
-          saved: Modèles sauvegardés
-          trusted: Modèles d'utilisateurs de confiance
+          heading: Comment templates
+          desc_html: Create and save <strong>comment templates</strong> that you can reuse.
+          add: Add new comment template
+          confirm: 'Are you sure you want to delete: %{template}?'
+          create: Create a new response template
+          cue: Memorable cue for template
+          edit: Edit
+          edit_template: Edit comment template
+          remove: Remove
+          save: Save template
+          saved: Saved templates
+          trusted: Trusted user templates
         github:
           heading: GitHub
-          desc1: Épinglez vos dépôts GitHub sur votre profil.
-          desc2: Les dépôts disparaîtront de votre profil si vous supprimez l'association OAuth avec GitHub.
+          desc1: Pin your GitHub repositories to your profile.
+          desc2: Repositories will disappear from your profile if you remove the OAuth association with GitHub.
         rss:
-          heading: Publier sur %{community} à partir de RSS
-          desc1_html: Les publications arriveront dans votre %{dashboard} <strong>comme des brouillons</strong>, et vous pourrez ensuite les publier à partir de là.
-          desc2: Le formatage sera généralement bon, mais vous devrez peut-être faire des corrections manuelles. Dans le cas de Medium, vous devrez peut-être corriger manuellement les intégrations.
-          desc3_html: Pour en savoir plus sur la façon dont les brouillons sont créés à partir de votre flux, lisez ce %{guide}.
-          desc4: Votre flux sera récupéré chaque fois que vous soumettez ce formulaire et les mises à jour seront automatiquement récupérées périodiquement par la suite.
-          desc5_html: 'Pour information : les URL des flux RSS de Medium sont <em>https://medium.com/feed/@your_username</em>'
-          desc6: En soumettant l'URL de votre flux RSS, vous acceptez que vous possédez et/ou avez la permission de diffuser le contenu associé.
-          dashboard: tableau de bord
-          fetch: Récupérer le flux maintenant
+          heading: Publishing to %{community} from RSS
+          desc1_html: Posts will land in your %{dashboard} <strong>as drafts</strong>, and then you can publish from there.
+          desc2: Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
+          desc3_html: To find out more about how drafts are created from your feed, read this %{guide}.
+          desc4: Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter.
+          desc5_html: 'FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>'
+          desc6: By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.
+          dashboard: dashboard
+          fetch: Fetch feed now
           guide: guide
-          last_html: 'Dernière récupération : %{time}'
-          mark_canonical_html: Marquer la source RSS comme URL canonique par défaut <p class='crayons-field__description'>Si vous cochez cette case, l'article marquera automatiquement la source du flux comme l'URL canonique.</p>
-          referential_html: Remplacer les liens autoréférentiels par des liens spécifiques à %{community} <p class='crayons-field__description'>Si vous cochez cette case, l'article changera automatiquement toutes les URL incluses dans l'article pour se référer à la version de cet article sur %{community} si elle est disponible. Cela est principalement destiné aux personnes qui migrent leur blog entier sur %{community}.</p>
-          save: Sauvegarder les paramètres du flux
-          submit: Soumettre les paramètres du flux
+          last_html: 'Last Fetched: %{time}'
+          mark_canonical_html: Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>
+          referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
+          save: Save Feed Settings
+          submit: Submit Feed Settings
         web_monetization:
-          header: Monétisation web
-          receive_payments: 'Recevez des micropaiements pour le temps passé à lire vos articles directement. '
-          learn_more: En savoir plus
-          payment_pointer: Pointeur de paiement
-          save_settings: Sauvegarder les paramètres de monétisation web
-      finalize_html: Vous avez demandé un changement à %{email}. Vérifiez votre boîte de réception pour le lien de vérification afin de finaliser le changement.
-      for_html: Paramètres pour %{name}
+          header: Web monetization
+          receive_payments: 'Receive micropayments for time spent reading your posts directly.'
+          learn_more: Learn more
+          payment_pointer: Payment Pointer
+          save_settings: Save Web Monetization Settings
+      finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
+      for_html: Settings for %{name}
       group:
-        user: Utilisateur
-        Basic: Basique
-        Branding: Marque
-        Coding: Codage
-        Work: Travail
-      new_org: Créer ou rejoindre une organisation
+        user: User
+        Basic: Basic
+        Branding: Branding
+        Coding: Coding
+        Work: Work
+      new_org: Create or Join Organization
       notifications:
-        email: Notifications par email
-        general: Notifications générales
-        general_desc_html: Notifications qui n'apparaissent que sur la %{page}.
-        mobile: Notifications mobiles
-        moderator: Notifications du modérateur
-        page: page de notifications
-        save: Sauvegarder
+        email: Email notifications
+        general: General notifications
+        general_desc_html: Notifications that only appear on the %{page}.
+        mobile: Mobile notifications
+        moderator: Moderator notifications
+        page: notifications page
+        save: Save
       org:
         admin:
           admin: Admin
           copy:
             button:
-              aria_label: Copier le code secret de l'organisation dans le presse-papiers
-            icon: Copier dans le presse-papiers
+              aria_label: Copy organization secret code to clipboard
+            icon: Copy to clipboard
             input:
-              aria_label: Secret de l'organisation (à faire tourner régulièrement)
-            text: Copié dans le presse-papiers !
-          cta: Boîte d'appel à l'action
-          cta_desc: Texte personnalisable qui apparaît à droite de chaque publication de votre organisation.
+              aria_label: Organization secret (to be rotated regularly)
+            text: Copied to clipboard!
+          cta: Call-to-action box
+          cta_desc: Customizable text that appears to the right of every post for your organization.
           delete:
-            heading: Supprimer l'organisation
-            confirm: 'Êtes-vous absolument sûr de vouloir supprimer votre organisation : %{name} ?'
+            heading: Delete Organization
+            confirm: 'Are you absolutely sure you want to delete your organization: %{name}?'
             desc_html: |-
-              Vous pouvez supprimer votre organisation si vous :
+              You can delete your organization if you:
               <ul>
-                <li>êtes le seul membre de l'organisation</li>
-                <li>êtes un administrateur de l'organisation</li>
-                <li>l'organisation n'a pas de publications</li>
-                <li>et l'organisation n'a pas de crédits</li>
+                <li>are the only member in the organization</li>
+                <li>are an admin of the organization</li>
+                <li>the organization has no posts</li>
+                <li>and the organization has no credits</li>
               </ul>
-            submit: Supprimer "%{name}"
-            questions_html: Des questions ? Envoyez-nous un email à %{email} pour obtenir de l'aide.
-            unmet: Votre organisation ne répond actuellement pas aux exigences ci-dessus. Veuillez d'abord supprimer tous les autres membres et les publications de l'organisation.
-          details: Détails de l'organisation
+            submit: Delete "%{name}"
+            questions_html: Questions? Email us at %{email} for help.
+            unmet: Your organization currently does not meet the above requirements. Please remove all other members and organization posts first.
+          details: Organization details
           form:
-            slug: "L'URL de votre organisation est : %{slug}"
-            tag_line: Limite de 60 caractères
-            summary: Limite de 250 caractères
-            location: Limite de 64 caractères
-            email: Limite de 64 caractères
-            company_size: Entrez un nombre
-            story: Limite de 640 caractères
-            tech_stack: Limite de 640 caractères
-            cta_body_markdown: 'Markdown limité : _italic_ et **bold** est ok. Les liens, et les en-têtes etc. n'apparaîtront pas. Limite de 256 caractères.'
-            cta_button_text: Limite de 20 caractères
-            submit: Sauvegarder
+            slug: 'Your organization''s URL is: %{slug}'
+            tag_line: Limit of 60 characters
+            summary: Limit of 250 characters
+            location: Limit of 64 characters
+            email: Limit of 64 characters
+            company_size: Enter a number
+            story: Limit of 640 characters
+            tech_stack: Limit of 640 characters
+            cta_body_markdown: 'Limited markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.'
+            cta_button_text: Limit of 20 characters
+            submit: Save
           gen:
-            confirm: Êtes-vous sûr de vouloir générer un nouveau secret ? Tous les secrets en cours seront invalides.
-            text: Vous devriez le faire tourner régulièrement !
-            submit: Générer un nouveau secret
-          grow: Développer l'équipe
-          invite: 'Invitez des coéquipiers en leur envoyant le secret et les instructions suivantes :'
-          inst1_html: Inscrivez-vous sur %{url}
-          inst2_html: Naviguez vers %{url}
-          inst3_html: Collez le code secret ci-dessous et cliquez sur <b>Rejoindre l'organisation</b>
+            confirm: Are you sure you want to generate a new secret? All outstanding secrets will be invalid.
+            text: You should rotate this regularly!
+            submit: Generate new secret
+          grow: Grow the team
+          invite: 'Invite teammates by sending them the secret and the following instructions:'
+          inst1_html: Sign up at %{url}
+          inst2_html: Navigate to %{url}
+          inst3_html: Paste the secret code below and click <b>Join Organization</b>
           make:
-            confirm: Êtes-vous sûr de vouloir donner le statut d'administrateur à %{user} ?
-            title: Faire administrateur
-            text: Faire administrateur
-          members: Membres de l'organisation
+            confirm: Are you sure you want to give %{user} admin status?
+            title: Make admin
+            text: Make admin
+          members: Organization Members
           remove:
-            confirm: Êtes-vous sûr de vouloir supprimer %{user} de l'organisation ?
-            title: Supprimer de l'org
-            text: Supprimer de l'org
+            confirm: Are you sure you want remove %{user} from the organization?
+            title: Remove from org
+            text: Remove from org
           revoke:
-            confirm: Êtes-vous sûr de vouloir retirer le statut d'administrateur à %{user} ?
-            title: Révoquer le statut d'administrateur
-            text: Révoquer le statut d'administrateur
-          secret_code: 'Votre code secret est :'
-          you: Vous
+            confirm: Are you sure you want to take away admin status from %{user}?
+            title: Revoke admin status
+            text: Revoke admin status
+          secret_code: 'Your secret code is:'
+          you: You
         create:
-          heading: Créer une organisation
-          notice: Vous devez avoir l'autorisation de votre organisation pour soumettre ce formulaire. La malhonnêteté peut entraîner une suspension permanente.
-          proof: Il s'agit simplement d'un court texte indiquant ou d'un lien montrant que vous êtes clairement associé à cette organisation.
-          required: Les champs étoilés sont obligatoires
-          slug: L'URL de votre organisation sera %{url}/{username}
-          submit: Créer une organisation
+          heading: Create An Organization
+          notice: You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.
+          proof: This is just a quick blurb indicating or link that shows that you clearly are associated with this organization.
+          required: Starred fields are required
+          slug: Your organization URL will be %{url}/{username}
+          submit: Create Organization
         join:
-          heading: Rejoindre une organisation
-          desc: Fourni par un administrateur de l'organisation
-          label: Code secret
+          heading: Join An Organization
+          desc: Provided to you by an org admin
+          label: Secret code
           placeholder: "..."
-          submit: Rejoindre l'organisation
+          submit: Join Organization
         leave:
-          confirm: Êtes-vous sûr de vouloir quitter cette organisation ?
-          submit: Quitter l'organisation
-        divider: OU
+          confirm: Are you sure you want to leave this organization?
+          submit: Leave Organization
+        divider: OR
       password:
-        heading: Définir un nouveau mot de passe
+        heading: Set new password
         desc_html: |-
-          Si votre compte a été créé en utilisant l'authentification par compte social, vous pouvez préférer ajouter une
-          connexion par email. Si vous vous êtes inscrit avec un compte de média social, <a href="%{path}">
-          veuillez réinitialiser le mot de passe</a> de votre adresse email principale (%{email}) afin
-          de l'activer. Veuillez noter que la connexion par email est en plus de la connexion sociale plutôt que
-          un remplacement pour cela, donc votre compte social authentifié continuera d'être lié à votre
-          compte.
-        current: Mot de passe actuel
-        confirm: Confirmer le nouveau mot de passe
-        new: Mot de passe
-        submit: Définir un nouveau mot de passe
-      previous: Il existe déjà un compte autorisé avec ce compte social.
+          If your account was created using social account authentication, you may prefer to add an email
+          log in. If you signed up with a social media account, <a href="%{path}">
+          please reset the password</a> for your primary email address (%{email}) in
+          order to enable this. Please note that email login is in addition to social login rather than
+          a replacement for it, so your authenticated social account will continue to be linked to your
+          account.
+        current: Current password
+        confirm: Confirm new password
+        new: Password
+        submit: Set New Password
+      previous: There is an existing account authorized with that social account.
       tab:
         Profile: Profil
         Customization: Personnalisation
@@ -277,4 +277,4 @@ fr:
         Billing: Facturation
         Organization: Organisation
         Extensions: Extensions
-      save_profile: Sauvegarder les informations du profil
+      save_profile: Save Profile Information

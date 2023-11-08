@@ -3,10 +3,10 @@ fr:
   views:
     editor:
       meta:
-        title: Éditer le Post
+        title: Éditer la publication
       heading:
-        new: Nouveau Post
-      create: Créer un Post
+        new: Nouvelle publication
+      create: Créer une publication
       close:
         icon: Fermer
         title: Fermer l'éditeur
@@ -14,15 +14,15 @@ fr:
         add: Ajouter une image de couverture
         change: Changer
       edit: Éditer
-      modes: Voir les modes de post
-      new_title: Nouveau titre de post ici...
+      modes: Voir les modes de publication
+      new_title: Nouveau titre de publication ici...
       preview: Aperçu
       video:
         progress:
           heading: "⏳ Transcodage Vidéo en Cours ⏳"
           notice_1: Vous recevrez un e-mail lorsque ce processus sera terminé.
-          notice_2: Ceci est un post non publié ordinaire. Ajoutez le titre/les balises/le corps/etc, puis marquez comme publié une fois le traitement de la vidéo terminé.
+          notice_2: Ceci est un article non publié ordinaire. Ajoutez le titre/les balises/le corps/etc, puis marquez comme publié une fois le traitement de la vidéo terminé.
         submit_image:
           button: Soumettre le changement
-          text: 'URL de l'image d'aperçu: '
-          placeholder: Nouvelle URL de vignette.
+          text: "Prévisualiser l'URL de l'image: "
+          placeholder: Nouvelle URL de miniature

@@ -110,4 +110,4 @@ pt:
       reading_time:
         one: "1 min de leitura"
         other: "%{count} min de leitura"
-      right_nav: Detalhes do autor
+      right_nav: Detalhes do autor.

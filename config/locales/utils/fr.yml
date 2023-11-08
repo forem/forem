@@ -11,4 +11,4 @@ fr:
   mailer:
     adjust: Ajustez vos paramètres de messagerie
     adjust_only_html: Vous ne voulez pas recevoir des e-mails comme celui-ci ? Ajustez vos paramètres de messagerie à %{path}
-    unsubscribe: Se désabonner
+    unsubscribe: Se désabonner.

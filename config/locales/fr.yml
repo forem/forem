@@ -3,22 +3,22 @@ fr:
   contact_prompts:
     if_any_questions_html: <a href="/contact">Contactez-nous</a> si vous avez des questions.
     if_continued_trouble_html: <a href="/contact">Contactez-nous</a> si vous continuez à avoir des problèmes.
-    if_we_can_help_html: <a href="/contact">Contactez-nous</a> s'il y a quelque chose avec lequel nous pouvons vous aider.
+    if_we_can_help_html: <a href="/contact">Contactez-nous</a> si nous pouvons vous aider.
   core:
     add_comment: Ajouter un commentaire
     beta: bêta
     comment: Commentaire
     copy_link: Copier le lien
-    edit_profile: Modifier le profil
-    follow: Suivre # Utilisé sur les boutons de suivi pour suivre les utilisateurs, etc.
-    follow_back: Suivre en retour # Utilisé sur les boutons de suivi pour suivre les utilisateurs, etc.
-    following: Suivant # Utilisé sur les boutons de suivi pour suivre les utilisateurs, etc.
-    like: J'aime # Utilisé sur la réaction "j'aime".
-    loading: chargement...
-    reaction: Réaction # Les réactions sont des cœurs, etc. que les utilisateurs mettent sur les publications
+    edit_profile: Editer le profil
+    follow: Suivre
+    follow_back: Suivre aussi
+    following: Abonné
+    like: Aime
+    loading: Chargement en cours...
+    reaction: Réaction
     report_abuse: Signaler un abus
     search: Recherche
-    success_settings: Paramètres mis à jour avec succès.
+    success_settings: Successfully updated settings.
     counted_organization:
       one: "%{count} organisation"
       other: "%{count} organisations"
@@ -26,61 +26,76 @@ fr:
       one: "%{count} personne"
       other: "%{count} personnes"
     not_following: "Vous ne suivez personne"
-    following_everyone: "Vous suivez %{details} (tout le monde)"
+    following_everyone: "Vous suivez %{details} (toutes)"
     you_are_following: "Vous suivez"
     and: "et"
+  date:
+    abbr_month_names:
+    -
+    - janv
+    - févr
+    - mars
+    - avril
+    - mai
+    - juin
+    - juil
+    - aout
+    - sept
+    - oct
+    - nov
+    - déc
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
-        one: il y a environ 1 heure
+        one: il y a environ une heure
         other: il y a environ %{count} heures
       about_x_months:
-        one: il y a environ 1 mois
+        one: il y a environ un mois
         other: il y a environ %{count} mois
       about_x_years:
         one: il y a environ 1 an
         other: il y a environ %{count} ans
       almost_x_years:
-        one: il y a presque 1 an
+        one: il y a presque un an
         other: il y a presque %{count} ans
       half_a_minute: il y a une demi-minute
       less_than_x_seconds:
-        one: il y a moins d'une seconde
+        one: il y a moins d’1 seconde
         other: il y a moins de %{count} secondes
       less_than_x_minutes:
-        one: il y a moins d'une minute
+        one: il y a moins d’une minute
         other: il y a moins de %{count} minutes
       over_x_years:
-        one: il y a plus d'un an
+        one: il y a plus d’un an
         other: il y a plus de %{count} ans
       x_seconds:
-        one: il y a 1 seconde
+        one: il y a une seconde
         other: il y a %{count} secondes
       x_minutes:
-        one: il y a 1 minute
+        one: il y a une minute
         other: il y a %{count} minutes
       x_days:
-        one: il y a 1 jour
+        one: hier
         other: il y a %{count} jours
       x_months:
-        one: il y a 1 mois
+        one: il y a un mois
         other: il y a %{count} mois
       x_years:
-        one: il y a 1 an
+        one: l’année dernière
         other: il y a %{count} ans
     expired_ago:
       about_x_hours:
         one: Expiré il y a environ 1 heure
         other: Expiré il y a environ %{count} heures
       about_x_months:
-        one: Expiré il y a environ 1 mois
+        one:  Expiré il y a environ 1 mois
         other: Expiré il y a environ %{count} mois
       about_x_years:
-        one: Expiré il y a environ 1 an
+        one:  Expiré il y a environ 1 an
         other: Expiré il y a environ %{count} ans
       almost_x_years:
         one: Expiré il y a presque 1 an
-        other: Expiré il y a presque %{count} ans
+        other: Expiré il y a presque %{count} an
       half_a_minute: Expiré il y a une demi-minute
       less_than_x_seconds:
         one: Expiré il y a moins d'une seconde
@@ -89,20 +104,20 @@ fr:
         one: Expiré il y a moins d'une minute
         other: Expiré il y a moins de %{count} minutes
       over_x_years:
-        one: Expiré il y a plus d'un an
+        one: Expiré il y a plus de 1 an
         other: Expiré il y a plus de %{count} ans
       x_seconds:
-        one: Expiré il y a 1 seconde
+        one: Expiré il y a plus de 1 seconde
         other: Expiré il y a %{count} secondes
       x_minutes:
-        one: Expiré il y a 1 minute
+        one: Expiré il y a plus de 1 minute
         other: Expiré il y a %{count} minutes
       x_days:
         one: Expiré il y a 1 jour
         other: Expiré il y a %{count} jours
       x_months:
         one: Expiré il y a 1 mois
-        other: Expiré il y a %{count} mois
+        other: Expiré %{count} mois auparavant
       x_years:
         one: Expiré il y a 1 an
         other: Expiré il y a %{count} ans
@@ -115,10 +130,10 @@ fr:
         other: Expire dans environ %{count} mois
       about_x_years:
         one: Expire dans environ 1 an
-        other: Expire dans environ %{count} ans
+        other: Expire dans environ %{count} années
       almost_x_years:
         one: Expire dans presque 1 an
-        other: Expire dans presque %{count} ans
+        other: Expire dans presque %{count} années
       half_a_minute: Expire dans une demi-minute
       less_than_x_seconds:
         one: Expire dans moins d'une seconde
@@ -150,45 +165,53 @@ fr:
       aria_label: Basculer le menu déroulant
       icon: Menu déroulant
       manage_preferences: Gérer les préférences
-      what_is_a_billboard: Qu'est-ce qu'un panneau d'affichage?
-      report_billboard: Signaler le panneau d'affichage
+      what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
+      report_billboard: Report billboard
   errors:
     messages:
       accepted: doit être accepté
+      already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       bad_protocol: doit commencer par %{protocols}
       bad_uri: est une URL invalide
       blank: ne peut pas être vide
       confirmation: ne correspond pas à %{attribute}
-      contains_prohibited_characters: contient des caractères non alphanumériques ou interdits
+      confirmation_period_expired: doit être confirmé dans %{period}, veuillez en demander un nouveau
+      contains_prohibited_characters: contient des caractères unicode non alphanumériques ou interdits
       empty: ne peut pas être vide
       equal_to: doit être égal à %{count}
       even: doit être pair
       exclusion: est réservé
-      general: 'Erreur : %{errors}'
+      expired: a expiré, veuillez en demander un nouveau
+      general: 'Error: %{errors}'
       greater_than: doit être supérieur à %{count}
       greater_than_or_equal_to: doit être supérieur ou égal à %{count}
       inclusion: n'est pas inclus dans la liste
       invalid: est invalide
       less_than: doit être inférieur à %{count}
       less_than_or_equal_to: doit être inférieur ou égal à %{count}
-      model_invalid: 'Échec de la validation : %{errors}'
+      model_invalid: 'Échec de la validation: %{errors}'
       not_a_number: n'est pas un nombre
-      not_an_integer: doit être un entier
-      odd: doit être impair
+      not_an_integer: Doit être un entier
+      not_found: pas trouvé
+      not_locked: n'était pas verrouillé
+      not_saved:
+        one: 1 erreur a interdit l'enregistrement de cette %{resource}
+        other: "%{count} erreurs ont interdit l'enregistrement de cette %{resource}:"
+      odd: doit être étrange
       other_than: doit être différent de %{count}
       present: doit être vide
       required: doit exister
       taken: a déjà été pris
       too_long:
-        one: est trop long (maximum est 1 caractère)
-        other: est trop long (maximum est %{count} caractères)
+        one: est trop long (le maximum est de 1 caractère)
+        other: est trop long (le maximum est de %{count} caractères)
       too_short:
-        one: est trop court (minimum est 1 caractère)
-        other: est trop court (minimum est %{count} caractères)
-      try_again_email: 'Une erreur s'est produite. Veuillez réessayer ou envoyer un e-mail à : %{email}'
+        one: est trop court (au moins 1 caractère)
+        other: est trop court (le minimum est de %{count} caractères)
+      try_again_email: "Une erreur s'est produite. Veuillez réessayer ou envoyer un e-mail à: %{email}"
       wrong_length:
-        one: est de la mauvaise longueur (doit être 1 caractère)
-        other: est de la mauvaise longueur (doit être %{count} caractères)
+        one: est la mauvaise longueur (devrait être 1 caractère)
+        other: est la mauvaise longueur (devrait être %{count} caractères)
   time:
     formats:
       admin_user: "%Y-%m-%d, %H:%M"

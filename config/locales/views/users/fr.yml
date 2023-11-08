@@ -93,4 +93,4 @@ fr:
         submit: Envoyer
       social: "Site web %{service}"
       unflag: Annuler le signalement @%{user}
-      website: Site web personnel
+      website: Site web personnel.

@@ -110,4 +110,4 @@ pt:
     users:
       remove_role:
         remove_self: Administradores não podem remover funções de si mesmos.
-        error: Houve um problema ao remover esta função. %{e_message}
+        error: Houve um problema ao remover esta função. %{e_message}.

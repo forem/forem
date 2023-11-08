@@ -38,4 +38,4 @@ pt:
   uploaders:
     base_uploader:
       too_many_frames: GIF contém muitos quadros. O número máximo de quadros permitidos é %{frame_max}.
-      timeout: O processamento de imagem excedeu o tempo limite.
+      timeout: O processamento de imagem excedeu o tempo limite..

@@ -68,4 +68,4 @@ fr:
           rails: Ruby on Rails
         sidebar_desc_html: "%{community}\n%{desc}"
       create_post: Créer un post
-      signout: Se déconnecter
+      signout: Se déconnecter.

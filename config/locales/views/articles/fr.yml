@@ -66,6 +66,10 @@ fr:
         aria_label: "Enregistrer le post %{title} dans la liste de lecture"
         initial: Enregistrer
         success: Enregistré
+      scheduled:
+        subtitle: Post programmé.
+        text: " Cette URL est publique mais secrète, alors partagez à votre discrétion."
+        edit: Cliquez pour modifier
       series:
         subtitle: "%{slug} (%{size})"
         size:
@@ -91,10 +95,6 @@ fr:
         subtitle: Post non publié.
         text: " Cette URL est publique mais secrète, alors partagez à votre discrétion."
         edit: Cliquez pour modifier
-      scheduled:
-        subtitle: Post programmé.
-        text: " Cette URL est publique mais secrète, alors partagez à votre discrétion."
-        edit: Cliquez pour modifier
       co_authors_html: avec %{names}
       crossposted:
         text_html: Initialement publié à %{url} %{on}
@@ -110,4 +110,4 @@ fr:
       reading_time:
         one: "1 min de lecture"
         other: "%{count} min de lecture"
-      right_nav: Détails de l'auteur
+      right_nav: Détails de l'auteur.

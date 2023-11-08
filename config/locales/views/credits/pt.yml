@@ -1,58 +1,58 @@
 ---
-pt:
+en:
   views:
     credits:
       meta:
-        title: Créditos
+        title: Credits
       ledger:
         class:
-          listing: Listagem
-        category: Categoria
+          listing: Listing
+        category: Category
         item: Item
-        cost: Custo (créditos)
-        date: Data
-        misc: Itens diversos
+        cost: Cost (credits)
+        date: Date
+        misc: Miscellaneous items
       listing:
-        create: Criar uma Listagem
-        dashboard: Ir para o Painel de Listagens
+        create: Create a Listing
+        dashboard: Go to Listings Dashboard
       new:
         meta:
-          title: Comprar Créditos
-        heading: Comprar créditos para @%{name}
+          title: Purchase Credits
+        heading: Purchase credits for @%{name}
         hook:
-          text_html: Créditos são usados para %{listings} bem como para produtos e serviços futuros.
-          listings: "listagens de %{community}"
+          text_html: Credits are used for %{listings} as well as upcoming products and services.
+          listings: "%{community} listings"
         form:
           amount:
-            label: Quantidade a Comprar
-            placeholder: Insira qualquer quantidade
+            label: Amount to Purchase
+            placeholder: Enter any amount
           method:
-            label: Método de Pagamento
+            label: Payment Method
             number: "**** **** **** %{last}"
             exp: "%{mm}/%{yy}"
-            add: Adicionar Novo Cartão
-          submit: Finalizar Compra
-          submitting: Enviando...
-          note_org: "*Todos os administradores da organização têm acesso aos créditos pertencentes à organização"
+            add: Add New Card
+          submit: Complete Purchase
+          submitting: Submitting...
+          note_org: "*All org admins have access to credits owned by organization"
         switch:
-          org: Mudar para %{name}
-          user: Mudar para compra pessoal
+          org: Switch to %{name}
+          user: Switch to personal purchase
         status:
           subtitle:
-            org: Quantos créditos %{name} tem?
-            user: Quantos créditos eu tenho atualmente?
+            org: How many credits does %{name} have?
+            user: How many credits do I currently have?
           desc:
-            org: "%{name} tem %{count} créditos."
-            user: Você tem %{count} créditos.
+            org: "%{name} has %{count} credits."
+            user: You have %{count} credits.
         how:
-          subtitle: Como posso ganhar créditos?
-          desc_html: Membros recebem <strong>5 créditos</strong> para cada emblema de perfil que ganham.
-      purchase: Comprar créditos adicionais
+          subtitle: How can I earn credits?
+          desc_html: Members receive <strong>5 credits</strong> for every profile badge you earn.
+      purchase: Purchase additional credits
       tag: 'Tag: %{name}'
       status:
         user:
-          one: "Você tem %{count} crédito pessoal para gastar"
-          other: "Você tem %{count} créditos pessoais para gastar"
+          one: "You have %{count} personal credit to spend"
+          other: "You have %{count} personal credits to spend"
         org_html:
-          one: "%{name} tem %{num} crédito para gastar"
-          other: "%{name} tem %{num} créditos para gastar"
+          one: "%{name} has %{num} credit to spend"
+          other: "%{name} has %{num} credits to spend"

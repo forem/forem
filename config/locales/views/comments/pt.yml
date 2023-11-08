@@ -152,4 +152,4 @@ pt:
         count_html:
           one: "%{count}%{start}\_comentário%{end}"
           other: "%{count}%{start}\_comentários%{end}"
-        title: Comentários
+        title: Comentários.

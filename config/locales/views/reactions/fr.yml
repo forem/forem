@@ -10,7 +10,7 @@ fr:
         thumbsup: Pouce en l'air
         thumbsdown: Pouce en bas
         unicorn: Licorne
-        vomit: Drapeau
+        vomit: Signaler
         lightbulb: Ampoule
         raised_hands: Mains levées
         rocket: Fusée
@@ -30,6 +30,8 @@ fr:
       unicorn:
         title: Licorne
         aria_label: Réagir avec une licorne
+        icon: Bouton licorne
+        text: Licorne
       readingList:
         title: Sauvegarder
         aria_label: Ajouter à la liste de lecture
@@ -39,4 +41,4 @@ fr:
         title: S'abonner aux commentaires
         aria_label: S'abonner aux commentaires
         icon: Bouton sauvegarder
-        text: S'abonner aux commentaires
+        text: S'abonner aux commentaires.

@@ -200,4 +200,4 @@ pt:
         description: Todas as ações do moderador afetam a pontuação. A pontuação geral é uma combinação de ações do moderador e reações do público.
         no_flags: A postagem não tem marcações.
         no_quality_reactions: A postagem não tem reações de qualidade por usuários confiáveis.
-        title: Ações do Moderador
+        title: Ações do Moderador.

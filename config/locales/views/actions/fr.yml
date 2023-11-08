@@ -23,4 +23,4 @@ fr:
           text: Partager sur Twitter
           query: '"%{article}" par %{author}'
         link: Partager le post via...
-        report: Signaler un abus
+        report: Signaler un abus.

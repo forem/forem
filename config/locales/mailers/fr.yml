@@ -30,4 +30,4 @@ fr:
       video_upload: Le téléchargement de votre vidéo est terminé
     verification_mailer:
       from: "%{community} Vérification de l'e-mail <%{email}>"
-      verify_ownership: Vérifiez la propriété de votre compte %{community}
+      verify_ownership: Vérifiez la propriété de votre compte %{community}.

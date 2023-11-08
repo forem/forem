@@ -3,153 +3,153 @@ fr:
   views:
     comments:
       meta:
-        title_root: Discussion sur %{title}
-        description: Un article de la communauté
+        title_root: Discussion of %{title}
+        description: An article from the community
         og:
-          title: Discussion sur %{title}
+          title: Discussion of %{title}
           title_rel: "%{root} — %{site}"
           title_root: "[Discussion] %{title} — %{site}"
-          description: "Commentaire de %{site}"
+          description: "%{site} Comment"
       parent:
-        subtitle_html: "%{start}Discussion sur : %{end}%{title}"
+        subtitle_html: "%{start}Discussion on: %{end}%{title}"
         metadata_html: "%{name}%{on}"
-        date: " le %{date}"
-        full: Discussion complète
-        read: Lire le post complet
-        view: Voir le post
+        date: " on %{date}"
+        full: Full discussion
+        read: Read full post
+        view: Voir la publication
         view_full:
-          one: Voir la discussion complète (%{count} commentaire)
+          one: Voir la discussion complète (%{count} commentaires)
           other: Voir la discussion complète (%{count} commentaires)
-        reply_html: "%{start}Réponses pour :%{end} %{title}"
+        reply_html: "%{start}Replies for:%{end} %{title}"
       delete:
-        heading: Êtes-vous sûr de vouloir supprimer ce commentaire ?
-        desc_html: Vous ne pouvez pas annuler cette action, peut-être voulez-vous simplement %{action} à la place ?
-        action: Éditer
-        submit: Supprimer
-        edit: Éditer
-        cancel: Ignorer
-        comment_deleted: Commentaire supprimé
-      collapse: Réduire
-      edit: Édition du commentaire
+        heading: Are you sure you want to delete this comment?
+        desc_html: You cannot undo this action, perhaps you just want to %{action} instead?
+        action: Edit
+        submit: Delete
+        edit: Edit
+        cancel: Dismiss
+        comment_deleted: Comment deleted
+      collapse: Collapse
+      edit: Editing comment
       edited:
-        text_html: "&bull; Édité le %{date}"
-        short_html: "&bull; Édité"
-      expand: Étendre
+        text_html: "&bull; Edited on %{date}"
+        short_html: "&bull; Edited"
+      expand: Expand
       visible_signed_in:
-        text_html: "Certains commentaires peuvent seulement être visibles par les visiteurs connectés. %{sign_in} pour voir tous les commentaires."
-        sign_in: "Se connecter"
+        text_html: "Some comments may only be visible to logged-in visitors. %{sign_in} to view all comments."
+        sign_in: "Sign in"
       hidden:
-        text_html: Certains commentaires ont été cachés par l'auteur du post - %{info}
-        info: en savoir plus
-        comment_hidden: Commentaire caché par l'auteur du post
+        text_html: Some comments have been hidden by the post's author - %{info}
+        info: find out more
+        comment_hidden: Comment hidden by post author
       hider:
-        description_html: Êtes-vous sûr de vouloir cacher ce commentaire ? Il sera caché dans votre post, mais restera visible via le %{permalink} du commentaire.
-        hide_child: Cacher aussi les commentaires enfants
-        note_html: Pour d'autres actions, vous pouvez envisager de bloquer cette personne et/ou de %{reporting}
-        permalink: permalien
-        reporting: signaler un abus
-        submit: Confirmer
-      locked: La discussion a été verrouillée. De nouveaux commentaires ne peuvent pas être ajoutés.
+        description_html: Are you sure you want to hide this comment? It will become hidden in your post, but will still be visible via the comment's %{permalink}.
+        hide_child: Hide child comments as well
+        note_html: For further actions, you may consider blocking this person and/or %{reporting}
+        permalink: permalink
+        reporting: reporting abuse
+        submit: Confirm
+      locked: The discussion has been locked. New comments can't be added.
       orphan:
-        deleted: "[Commentaire d'un post supprimé]"
+        deleted: "[Comment from a deleted post]"
       re:
         text_html: "%{re}%{title}"
-        re: 'Re : '
+        re: 'Re: '
       settings:
         meta:
-          title: Paramètres de commentaire
-        heading: Paramètres de commentaire
+          title: Comment Settings
+        heading: Comment Settings
         state:
           show:
-            subtitle: Affichage des notifications de fil
-            desc: Vous recevrez toutes les notifications pour ce commentaire et tous vos commentaires dans cette chaîne.
+            subtitle: Showing thread notifications
+            desc: You will receive all notifications for this comment and any of your comments in this chain.
           mute:
-            subtitle: Mise en sourdine des notifications de fil
-            desc: Toutes les notifications pour ce commentaire et tous vos commentaires dans le fil sont actuellement en sourdine.
+            subtitle: Muting thread notifications
+            desc: All notifications for this comment and any of your comments in the thread are currently muted.
         subscribe:
-          subtitle: Abonnement
-          desc: Vous êtes toujours abonné à tous les commentaires dans le fil plus large, ce qui signifie que vous recevrez toujours des notifications pour les réponses à ce commentaire.
-          mute: Mettre les notifications en sourdine
-          unmute: Réactiver les notifications
+          subtitle: Subscription
+          desc: You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.
+          mute: Mute notifications
+          unmute: Unmute notifications
       quality:
-        low: Commentaire marqué comme de faible qualité/non constructif par la communauté.
-        conduct: Voir le Code de Conduite
+        low: Comment marked as low quality/non-constructive by the community.
+        conduct: View Code of Conduct
         hidden:
           icon: Info
           text:
-            visible_in_permalink: Commentaire caché par l'auteur du post - fil uniquement visible dans ce permalien
-            accessible_via_permalink: Commentaire caché par l'auteur du post - fil uniquement accessible via le permalien
+            visible_in_permalink: Comment hidden by post author - thread only visible in this permalink
+            accessible_via_permalink: Comment hidden by post author - thread only accessible via permalink
       write:
         errors:
-          one: '1 erreur a empêché l'enregistrement de ce commentaire :'
-          other: "%{count} erreurs ont empêché l'enregistrement de ce commentaire :"
+          one: '1 error prohibited this comment from being saved:'
+          other: "%{count} errors prohibited this comment from being saved:"
         field:
-          aria_label: Ajouter un commentaire à la discussion
-          placeholder: Ajouter à la discussion
-          submit: Télécharger
-          templates: Modèles
-          upload: Télécharger une image
-          use: Utiliser un modèle de réponse
+          aria_label: Add a comment to the discussion
+          placeholder: Add to the discussion
+          submit: Upload
+          templates: Templates
+          upload: Upload image
+          use: Use a response template
           guide:
-            title: Guide Markdown
-            icon: Guide de l'éditeur
+            title: Markdown Guide
+            icon: Editor guide
         template:
-          article: Ce post est accompagné d'un modèle de commentaire
+          article: This post comes with a comment template
           create:
-            subtitle: Créer un modèle
-            desc: Les modèles vous permettent de répondre rapidement aux FAQ ou de stocker des extraits pour une réutilisation.
-          moderator: Utilisateur de confiance
-          personal: Personnel
-        submit: Soumettre
-        preview: Aperçu
-        cancel: Ignorer
+            subtitle: Create template
+            desc: Templates let you quickly answer FAQs or store snippets for re-use.
+          moderator: Trusted User
+          personal: Personal
+        submit: Submit
+        preview: Preview
+        cancel: Dismiss
       menu:
-        aria_label: Basculer le menu déroulant
-        icon: Menu déroulant
+        aria_label: Toggle dropdown menu
+        icon: Dropdown menu
         copy:
-          aria_label: Copier le lien vers le commentaire de %{user}
+          aria_label: Copy link to %{user}'s comment
           text: Copier le lien
         settings:
-          aria_label: Aller aux paramètres de commentaire de %{user}
+          aria_label: Go to %{user}'s comment settings
         action:
-          aria_label: "%{action} le commentaire de %{user}"
-          hide: Cacher
-          unhide: Montrer
-          hide_text: Cacher
-          unhide_text: Montrer
+          aria_label: "%{action} %{user}'s comment"
+          hide: Hide
+          unhide: Unhide
+          hide_text: Hide
+          unhide_text: Unhide
         moderate:
-          aria_label: Modérer le commentaire de %{user}
+          aria_label: Moderate %{user}'s comment
         report:
-          aria_label: Signaler le commentaire de %{user} comme abusif ou en violation de notre code de conduite et/ou de nos conditions générales
+          aria_label: Report %{user}'s comment as abusive or violating our code of conduct and/or terms and conditions
       footer:
         heart:
-          aria_label: aimer
-          title: Aimer
-          icon: 'Aimer le commentaire : '
+          aria_label: like
+          title: Like
+          icon: 'Like comment: '
           count_html: "%{num}%{likes}"
-          text: Aimer
+          text: Like
         reply:
-          aria_label: Répondre à un commentaire...
-          icon: Bouton de commentaire
-          done: Répondu
+          aria_label: Reply to a comment...
+          icon: Comment button
+          done: Replied
           text: Répondre
-          placeholder: Répondre...
+          placeholder: Reply...
         thread:
-          icon: Fil
-          text: Fil
+          icon: Thread
+          text: Thread
         view:
-          icon: Bouton de vue
-          text: Voir
+          icon: View button
+          text: View
         subscribe:
-          icon: Bouton d'abonnement
-          text: S'abonner aux commentaires
+          icon: Subscribe button
+          text: Subscribe to comments
       count:
-        one: "%{count} commentaire"
-        other: "%{count} commentaires"
-      empty: Nouveau
+        one: "%{count} comment"
+        other: "%{count} comments"
+      empty: New
       add: "Ajouter un commentaire"
       summary:
         count_html:
           one: "%{count}%{start}\_commentaire%{end}"
           other: "%{count}%{start}\_commentaires%{end}"
-        title: Commentaires
+        title: Comments

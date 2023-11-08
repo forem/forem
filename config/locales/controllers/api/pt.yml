@@ -18,4 +18,4 @@ pt:
         redis_connected: Redis conectado
         redis_not_connected: Redis NÃO conectado!
       listings_controller:
-        no_credit: Créditos disponíveis insuficientes
+        no_credit: Créditos disponíveis insuficientes.

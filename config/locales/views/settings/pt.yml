@@ -5,11 +5,11 @@ pt:
       meta:
         title: Configurações
       account:
-        connect: Conectar %{provider} Conta
+        connect: Conectar Conta %{provider}
         emails: Emails da conta
         primary: Email principal
-        provider_email: "%{provider} email"
-        provider_profile: "%{provider} configurações de perfil"
+        provider_email: "Email %{provider}"
+        provider_profile: "Configurações de perfil %{provider}"
         delete:
           heading: Excluir conta
           desc1: 'Excluir sua conta irá:'
@@ -106,7 +106,7 @@ pt:
           other: "%{count} erros impediram que seu perfil fosse salvo:"
       extensions:
         api:
-          heading: "%{community} Chaves API"
+          heading: "Chaves API %{community}"
           desc_html: Você pode gerar chaves API pessoais para usar na autenticação com a API %{community}. A API ainda está em sua fase beta. A %{doc} contém mais informações.
           active:
             heading: Chaves API ativas (nunca compartilhe estas!)
@@ -141,7 +141,7 @@ pt:
           desc1_html: As postagens irão para o seu %{dashboard} <strong>como rascunhos</strong>, e então você pode publicar a partir daí.
           desc2: A formatação geralmente ficará boa, mas você pode ter que fazer correções manuais. No caso do Medium, você pode ter que corrigir manualmente os incorporados.
           desc3_html: Para saber mais sobre como os rascunhos são criados a partir do seu feed, leia este %{guide}.
-          desc4: Seu feed será buscado toda vez que você enviar este formulário e as atualizações serão buscadas automaticamente periodicamente depois disso.
+          desc4: Seu feed será buscado toda vez que você enviar este formulário e as atualizções serão buscadas automaticamente periodicamente depois disso.
           desc5_html: 'FYI: URLs de feed RSS do Medium são <em>https://medium.com/feed/@your_username</em>'
           desc6: Ao enviar a URL do seu Feed RSS, você concorda que possui e/ou tem permissão para sindicar o conteúdo associado.
           dashboard: painel
@@ -277,4 +277,4 @@ pt:
         Billing: Faturamento
         Organization: Organização
         Extensions: Extensões
-      save_profile: Salvar Informações do Perfil
+      save_profile: Salvar Informações do Perfil.

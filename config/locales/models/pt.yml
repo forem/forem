@@ -138,4 +138,4 @@ pt:
         name: '[Usuário Excluído]'
       setting:
         invalid_hex: não é uma cor hex válida
-        invalid_rss: não é um feed RSS/Atom válido
+        invalid_rss: não é um feed RSS/Atom válido.

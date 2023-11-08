@@ -28,7 +28,7 @@ pt:
           subtitle: Confirmar inscrição
           button_text: Confirmar inscrição
           cancel_text: Cancelar
-          text_html: "Você compartilhará seu endereço de e-mail, nome de usuário, nome e URL do perfil %{community} com %{username}. Depois de fazer isso, você não pode desfazer."
+          text_html: "Você compartilhará seu endereço de e-mail, nome de usuário, nome e URL do perfil %{community} com %{username}. Uma vez feito isso, você não poderá desfazer."
         logged_out: "Você deve primeiro entrar em %{community}."
         sign_in: Entrar
         subscribe:

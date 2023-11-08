@@ -4,33 +4,33 @@ fr:
     podcasts:
       meta:
         title: Podcasts
-        description: Découvrez des podcasts techniques pour %{member}
+        description: Discover technical podcasts for %{member}
         og:
-          title: Podcasts sur %{community}
+          title: Podcasts on %{community}
       browse: Parcourir
       heading: Podcasts
       close: "×"
       form:
-        heading: Suggérer un Podcast
+        heading: Suggest a Podcast
         errors:
-          one: '1 erreur lors de la création d'un podcast:'
-          other: "%{count} erreurs lors de la création d'un podcast:"
-        owner: Je suis le propriétaire de ce podcast
-        return: "< retour aux podcasts"
-        suggest: Suggérer
+          one: '1 error while creating a podcast:'
+          other: "%{count} errors while creating a podcast:"
+        owner: I am the owner of this podcast
+        return: "< return to podcasts"
+        suggest: Suggest
       list: podcasts
-      listen: Cliquez ici pour télécharger/écouter
-      source: Source de l'épisode
+      listen: Click here to download/listen
+      source: Episode source
       statuses:
-        ssl_failed: La vérification du certificat SSL a échoué lors de la récupération de l'URL du flux du podcast
-        unparsable: Le RSS du podcast n'a pas pu être analysé
+        ssl_failed: Échec de la vérification du certificat SSL lors de la récupération de feed_url du podcast
+        unparsable: Le rss du podcast n'a pas pu être analysé
         unplayable: Ce podcast peut ne pas être lisible dans le navigateur
-        unreachable: L'URL du flux du podcast n'est pas accessible
+        unreachable: Le feed_url du podcast n'est pas accessible
       speed: 1x
       tag: podcast
-      initializing: initialisation...
-      unsupported: Votre navigateur ne supporte pas l'élément audio.
-      featured_shows: Émissions en vedette
-      latest_episodes: Derniers épisodes
-      suggest_a_podcast: Suggérer un Podcast
+      initializing: initializing...
+      unsupported: Your browser does not support the audio element.
+      featured_shows: Épisodes en vedette
+      latest_episodes: Épisodes Récents
+      suggest_a_podcast: Suggérer un podcast
       view_all_podcasts: Voir tous les podcasts

@@ -120,4 +120,4 @@ pt:
     notifications_settings_updated: As configurações de suas notificações foram atualizadas.
   video_states_controller:
     related_article_not_found: Artigo relacionado não encontrado
-    video_state_updated: Estado do vídeo atualizado
+    video_state_updated: Estado do vídeo atualizado.

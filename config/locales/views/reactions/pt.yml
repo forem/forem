@@ -30,6 +30,8 @@ pt:
       unicorn:
         title: Unicórnio
         aria_label: Reagir com unicórnio
+        icon: Botão de unicórnio
+        text: Unicórnio
       readingList:
         title: Salvar
         aria_label: Adicionar à lista de leitura
@@ -38,5 +40,5 @@ pt:
       subscribe:
         title: Inscrever-se nos Comentários
         aria_label: Inscrever-se nos Comentários
-        icon: Botão de salvar
+        icon: Botão de inscrição
         text: Inscrever-se nos Comentários

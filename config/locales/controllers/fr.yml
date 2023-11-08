@@ -120,4 +120,4 @@ fr:
     notifications_settings_updated: Vos paramètres de notification ont été mis à jour.
   video_states_controller:
     related_article_not_found: Article connexe non trouvé
-    video_state_updated: État de la vidéo mis à jour
+    video_state_updated: État de la vidéo mis à jour.

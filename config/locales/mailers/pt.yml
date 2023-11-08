@@ -30,4 +30,4 @@ pt:
       video_upload: Seu upload de vídeo está completo
     verification_mailer:
       from: "Verificação de Email %{community} <%{email}>"
-      verify_ownership: Verifique a Propriedade da Sua Conta %{community}
+      verify_ownership: Verifique a Propriedade da Sua Conta %{community}.

@@ -138,4 +138,4 @@ fr:
           description: Toutes les vidéos sur %{community}
       heading: "%{community} en vidéo"
       beta_html: "<strong>La vidéo est en bêta:</strong> %{contact}"
-      upload: "🎥 Télécharger un fichier vidéo 🙌".
+      upload: "🎥 Télécharger un fichier vidéo 🙌"

@@ -1,194 +1,194 @@
 ---
-pt:
+en:
   contact_prompts:
-    if_any_questions_html: <a href="/contact">Entre em contato conosco</a> se tiver alguma dúvida.
-    if_continued_trouble_html: <a href="/contact">Entre em contato conosco</a> se continuar tendo problemas.
-    if_we_can_help_html: <a href="/contact">Entre em contato conosco</a> se houver algo com que possamos ajudar.
+    if_any_questions_html: <a href="/contact">Contact us</a> if you have any questions.
+    if_continued_trouble_html: <a href="/contact">Contact us</a> if you continue having trouble.
+    if_we_can_help_html: <a href="/contact">Contact us</a> if there is anything we can help with.
   core:
-    add_comment: Adicionar comentário
+    add_comment: Add comment
     beta: beta
-    comment: Comentário
-    copy_link: Copiar link
-    edit_profile: Editar perfil
-    follow: Seguir # Usado nos botões de seguir para seguir usuários, etc.
-    follow_back: Seguir de volta # Usado nos botões de seguir para seguir usuários, etc.
-    following: Seguindo # Usado nos botões de seguir para seguir usuários, etc.
-    like: Curtir # Usado na reação "curtir".
-    loading: carregando...
-    reaction: Reação # As reações são corações, etc que os usuários colocam nas postagens
-    report_abuse: Denunciar abuso
-    search: Pesquisar
-    success_settings: Configurações atualizadas com sucesso.
+    comment: Comment
+    copy_link: Copy link
+    edit_profile: Edit profile
+    follow: Follow # Used on follow buttons to follow users, etc.
+    follow_back: Follow back # Used on follow buttons to follow users, etc.
+    following: Following # Used on follow buttons to follow users, etc.
+    like: Like # Used on the "like" reaction.
+    loading: loading...
+    reaction: Reaction # Reactions are hearts, etc users put on posts
+    report_abuse: Report abuse
+    search: Search
+    success_settings: Successfully updated settings.
     counted_organization:
-      one: "%{count} organização"
-      other: "%{count} organizações"
+      one: "%{count} organization"
+      other: "%{count} organizations"
     counted_user:
-      one: "%{count} pessoa"
-      other: "%{count} pessoas"
-    not_following: "Você não está seguindo ninguém"
-    following_everyone: "Você está seguindo %{details} (todos)"
-    you_are_following: "Você está seguindo"
-    and: "e"
+      one: "%{count} person"
+      other: "%{count} people"
+    not_following: "You're not following anyone"
+    following_everyone: "You're following %{details} (everyone)"
+    you_are_following: "You're following"
+    and: "and"
   datetime:
     distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
       about_x_hours:
-        one: cerca de 1 hora atrás
-        other: cerca de %{count} horas atrás
+        one: about 1 hour ago
+        other: about %{count} hours ago
       about_x_months:
-        one: cerca de 1 mês atrás
-        other: cerca de %{count} meses atrás
+        one: about 1 month ago
+        other: about %{count} months ago
       about_x_years:
-        one: cerca de 1 ano atrás
-        other: cerca de %{count} anos atrás
+        one: about 1 year ago
+        other: about %{count} years ago
       almost_x_years:
-        one: quase 1 ano atrás
-        other: quase %{count} anos atrás
-      half_a_minute: meio minuto atrás
+        one: almost 1 year ago
+        other: almost %{count} years ago
+      half_a_minute: half a minute ago
       less_than_x_seconds:
-        one: menos de 1 segundo atrás
-        other: menos de %{count} segundos atrás
+        one: less than 1 second ago
+        other: less than %{count} seconds ago
       less_than_x_minutes:
-        one: menos de um minuto atrás
-        other: menos de %{count} minutos atrás
+        one: less than a minute ago
+        other: less than %{count} minutes ago
       over_x_years:
-        one: mais de 1 ano atrás
-        other: mais de %{count} anos atrás
+        one: over 1 year ago
+        other: over %{count} years ago
       x_seconds:
-        one: 1 segundo atrás
-        other: "%{count} segundos atrás"
+        one: 1 second ago
+        other: "%{count} seconds ago"
       x_minutes:
-        one: 1 minuto atrás
-        other: "%{count} minutos atrás"
+        one: 1 minute ago
+        other: "%{count} minutes ago"
       x_days:
-        one: 1 dia atrás
-        other: "%{count} dias atrás"
+        one: 1 day ago
+        other: "%{count} days ago"
       x_months:
-        one: 1 mês atrás
-        other: "%{count} meses atrás"
+        one: 1 month ago
+        other: "%{count} months ago"
       x_years:
-        one: 1 ano atrás
-        other: "%{count} anos atrás"
+        one: 1 year ago
+        other: "%{count} years ago"
     expired_ago:
       about_x_hours:
-        one: Expirou cerca de 1 hora atrás
-        other: Expirou cerca de %{count} horas atrás
+        one: Expired about 1 hour ago
+        other: Expired about %{count} hours ago
       about_x_months:
-        one: Expirou cerca de 1 mês atrás
-        other: Expirou cerca de %{count} meses atrás
+        one: Expired about 1 month ago
+        other: Expired about %{count} months ago
       about_x_years:
-        one: Expirou cerca de 1 ano atrás
-        other: Expirou cerca de %{count} anos atrás
+        one: Expired about 1 year ago
+        other: Expired about %{count} years ago
       almost_x_years:
-        one: Expirou quase 1 ano atrás
-        other: Expirou quase %{count} anos atrás
-      half_a_minute: Expirou meio minuto atrás
+        one: Expired almost 1 year ago
+        other: Expired almost %{count} years ago
+      half_a_minute: Expired half a minute ago
       less_than_x_seconds:
-        one: Expirou menos de 1 segundo atrás
-        other: Expirou menos de %{count} segundos atrás
+        one: Expired less than 1 second ago
+        other: Expired less than %{count} seconds ago
       less_than_x_minutes:
-        one: Expirou menos de um minuto atrás
-        other: Expirou menos de %{count} minutos atrás
+        one: Expired less than a minute ago
+        other: Expired less than %{count} minutes ago
       over_x_years:
-        one: Expirou mais de 1 ano atrás
-        other: Expirou mais de %{count} anos atrás
+        one: Expired over 1 year ago
+        other: Expired over %{count} years ago
       x_seconds:
-        one: Expirou 1 segundo atrás
-        other: Expirou %{count} segundos atrás
+        one: Expired 1 second ago
+        other: Expired %{count} seconds ago
       x_minutes:
-        one: Expirou 1 minuto atrás
-        other: Expirou %{count} minutos atrás
+        one: Expired 1 minute ago
+        other: Expired %{count} minutes ago
       x_days:
-        one: Expirou 1 dia atrás
-        other: Expirou %{count} dias atrás
+        one: Expired 1 day ago
+        other: Expired %{count} days ago
       x_months:
-        one: Expirou 1 mês atrás
-        other: Expirou %{count} meses atrás
+        one: Expired 1 month ago
+        other: Expired %{count} months ago
       x_years:
-        one: Expirou 1 ano atrás
-        other: Expirou %{count} anos atrás
+        one: Expired 1 year ago
+        other: Expired %{count} years ago
     expires_in:
       about_x_hours:
-        one: Expira em cerca de 1 hora
-        other: Expira em cerca de %{count} horas
+        one: Expires in about 1 hour
+        other: Expires in about %{count} hours
       about_x_months:
-        one: Expira em cerca de 1 mês
-        other: Expira em cerca de %{count} meses
+        one: Expires in about 1 month
+        other: Expires in about %{count} months
       about_x_years:
-        one: Expira em cerca de 1 ano
-        other: Expira em cerca de %{count} anos
+        one: Expires in about 1 year
+        other: Expires in about %{count} years
       almost_x_years:
-        one: Expira em quase 1 ano
-        other: Expira em quase %{count} anos
-      half_a_minute: Expira em meio minuto
+        one: Expires in almost 1 year
+        other: Expires in almost %{count} years
+      half_a_minute: Expires in half a minute
       less_than_x_seconds:
-        one: Expira em menos de 1 segundo
-        other: Expira em menos de %{count} segundos
+        one: Expires in less than 1 second
+        other: Expires in less than %{count} seconds
       less_than_x_minutes:
-        one: Expira em menos de um minuto
-        other: Expira em menos de %{count} minutos
+        one: Expires in less than a minute
+        other: Expires in less than %{count} minutes
       over_x_years:
-        one: Expira em mais de 1 ano
-        other: Expira em mais de %{count} anos
+        one: Expires in over 1 year
+        other: Expires in over %{count} years
       x_seconds:
-        one: Expira em 1 segundo
-        other: Expira em %{count} segundos
+        one: Expires in 1 second
+        other: Expires in %{count} seconds
       x_minutes:
-        one: Expira em 1 minuto
-        other: Expira em %{count} minutos
+        one: Expires in 1 minute
+        other: Expires in %{count} minutes
       x_days:
-        one: Expira em 1 dia
-        other: Expira em %{count} dias
+        one: Expires in 1 day
+        other: Expires in %{count} days
       x_months:
-        one: Expira em 1 mês
-        other: Expira em %{count} meses
+        one: Expires in 1 month
+        other: Expires in %{count} months
       x_years:
-        one: Expira em 1 ano
-        other: Expira em %{count} anos
+        one: Expires in 1 year
+        other: Expires in %{count} years
   billboard:
-    promoted: Promovido
+    promoted: Promoted
     menu:
-      aria_label: Alternar menu suspenso
-      icon: Menu suspenso
-      manage_preferences: Gerenciar preferências
-      what_is_a_billboard: O que é um outdoor?
-      report_billboard: Denunciar outdoor
+      aria_label: Toggle dropdown menu
+      icon: Dropdown menu
+      manage_preferences: Manage preferences
+      what_is_a_billboard: What's a billboard?
+      report_billboard: Report billboard
   errors:
     messages:
-      accepted: deve ser aceito
-      bad_protocol: deve começar com %{protocols}
-      bad_uri: é uma url inválida
-      blank: não pode ficar em branco
-      confirmation: não corresponde a %{attribute}
-      contains_prohibited_characters: contém caracteres não alfanuméricos ou unicode proibidos
-      empty: não pode ficar vazio
-      equal_to: deve ser igual a %{count}
-      even: deve ser par
-      exclusion: é reservado
-      general: 'Erro: %{errors}'
-      greater_than: deve ser maior que %{count}
-      greater_than_or_equal_to: deve ser maior ou igual a %{count}
-      inclusion: não está incluído na lista
-      invalid: é inválido
-      less_than: deve ser menor que %{count}
-      less_than_or_equal_to: deve ser menor ou igual a %{count}
-      model_invalid: 'Falha na validação: %{errors}'
-      not_a_number: não é um número
-      not_an_integer: deve ser um número inteiro
-      odd: deve ser ímpar
-      other_than: deve ser diferente de %{count}
-      present: deve estar em branco
-      required: deve existir
-      taken: já foi usado
+      accepted: must be accepted
+      bad_protocol: must start with %{protocols}
+      bad_uri: is an invalid url
+      blank: can't be blank
+      confirmation: doesn't match %{attribute}
+      contains_prohibited_characters: contains non-alphanumeric or prohibited unicode characters
+      empty: can't be empty
+      equal_to: must be equal to %{count}
+      even: must be even
+      exclusion: is reserved
+      general: 'Error: %{errors}'
+      greater_than: must be greater than %{count}
+      greater_than_or_equal_to: must be greater than or equal to %{count}
+      inclusion: is not included in the list
+      invalid: is invalid
+      less_than: must be less than %{count}
+      less_than_or_equal_to: must be less than or equal to %{count}
+      model_invalid: 'Validation failed: %{errors}'
+      not_a_number: is not a number
+      not_an_integer: must be an integer
+      odd: must be odd
+      other_than: must be other than %{count}
+      present: must be blank
+      required: must exist
+      taken: has already been taken
       too_long:
-        one: é muito longo (máximo é 1 caractere)
-        other: é muito longo (máximo é %{count} caracteres)
+        one: is too long (maximum is 1 character)
+        other: is too long (maximum is %{count} characters)
       too_short:
-        one: é muito curto (mínimo é 1 caractere)
-        other: é muito curto (mínimo é %{count} caracteres)
-      try_again_email: 'Ocorreu um erro. Por favor, tente novamente ou envie um email para: %{email}'
+        one: is too short (minimum is 1 character)
+        other: is too short (minimum is %{count} characters)
+      try_again_email: 'An error occurred. Please try again or send an email to: %{email}'
       wrong_length:
-        one: tem o tamanho errado (deve ter 1 caractere)
-        other: tem o tamanho errado (deve ter %{count} caracteres)
+        one: is the wrong length (should be 1 character)
+        other: is the wrong length (should be %{count} characters)
   time:
     formats:
       admin_user: "%Y-%m-%d, %H:%M"

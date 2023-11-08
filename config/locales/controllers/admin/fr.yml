@@ -6,18 +6,18 @@ fr:
       pinned: Article épinglé !
       unpinned: Article désépinglé !
     badge_achievements_controller:
-      deleted: La réalisation du badge a été supprimée !
-      rewarded: Les badges sont en cours de récompense. La tâche se terminera sous peu.
+      deleted: Réalisation du badge supprimée !
+      rewarded: Les badges sont en cours d'attribution. La tâche se terminera sous peu.
       congrats: Félicitations !
-      award: Veuillez choisir un badge à décerner
+      award: Veuillez choisir un badge à attribuer
       wrong: Quelque chose a mal tourné.
     badges_controller:
-      created: Le badge a été créé !
-      updated: Le badge a été mis à jour !
+      created: Badge créé !
+      updated: Badge mis à jour !
     broadcasts_controller:
-      created: La diffusion a été créée !
-      deleted: La diffusion a été supprimée !
-      updated: La diffusion a été mise à jour !
+      created: Diffusion créée !
+      deleted: Diffusion supprimée !
+      updated: Diffusion mise à jour !
       wrong: Quelque chose a mal tourné lors de la suppression de la diffusion.
     bulk_assign_role_controller:
       role_assigment: Rôle %{role} attribué à l'utilisateur.
@@ -29,29 +29,29 @@ fr:
       updated: '%{app} a été mis à jour !'
       wrong: Quelque chose a mal tourné lors de la suppression de %{app}.
     billboards_controller:
-      created: Le panneau d'affichage a été créé !
-      deleted: Le panneau d'affichage a été supprimé !
-      updated: Le panneau d'affichage a été mis à jour !
+      created: Panneau d'affichage créé !
+      deleted: Panneau d'affichage supprimé !
+      updated: Panneau d'affichage mis à jour !
       wrong: Quelque chose a mal tourné lors de la suppression du panneau d'affichage.
     gdpr_delete_requests_controller:
       deleted: Marqué comme supprimé avec succès
     extensions_controller:
-      update_success: Les extensions ont été mises à jour.
+      update_success: Extensions mises à jour.
     html_variants_controller:
       fork: '%{name} FOURCHE-%{rand}'
-      created: La variante HTML a été créée !
-      deleted: La variante HTML a été supprimée !
-      updated: La variante HTML a été mise à jour !
+      created: Variante HTML créée !
+      deleted: Variante HTML supprimée !
+      updated: Variante HTML mise à jour !
       wrong: Quelque chose a mal tourné lors de la suppression de la variante HTML.
     invitations_controller:
-      duplicate: "L'invitation n'a pas été envoyée. Il existe déjà un utilisateur enregistré avec l'e-mail : %{email}"
-      create_success: L'invitation a été envoyée à l'e-mail de l'utilisateur.
+      duplicate: 'Invitation non envoyée. Il existe déjà un utilisateur enregistré avec l''email : %{email}'
+      create_success: L'invitation a été envoyée à l'email de l'utilisateur.
       destroy_success: Invitation annulée pour %{email}.
       resend_success: Invitation renvoyée à %{email}.
     listing_categories_controller:
-      created: La catégorie de l'annonce a été créée !
-      updated: La catégorie de l'annonce a été mise à jour !
-      deleted: La catégorie de l'annonce a été supprimée !
+      created: Catégorie de l'annonce créée !
+      updated: Catégorie de l'annonce mise à jour !
+      deleted: Catégorie de l'annonce supprimée !
     listings_controller:
       updated: Annonce mise à jour avec succès
       destroyed: "'%{title}' a été supprimé avec succès"
@@ -63,19 +63,19 @@ fr:
       created: 'Lien de navigation créé avec succès : %{link}'
       updated: 'Lien de navigation mis à jour avec succès : %{link}'
     organization_memberships_controller:
-      not_exist: "L'organisation #%{org_id} n'existe pas."
+      not_exist: 'Organisation #%{org_id} n''existe pas.'
       wrong: Quelque chose a mal tourné lors de la suppression de l'utilisateur de %{org}
-      added: L'utilisateur a été ajouté avec succès à %{org}
-      removed: L'utilisateur a été supprimé avec succès de %{org}
-      updated: L'utilisateur a été mis à jour avec succès vers %{type}
+      added: Utilisateur ajouté avec succès à %{org}
+      removed: Utilisateur supprimé avec succès de %{org}
+      updated: Utilisateur mis à jour avec succès vers %{type}
     organizations_controller:
       credit_updated: Crédits mis à jour avec succès
-      deletion_scheduled: 'La suppression de l"organisation, "%{organization_name}", est programmée.'
-      error: 'Votre organisation, %{organization_name}, n'a pas pu être supprimée : %{error}.'
+      deletion_scheduled: 'Suppression de l''organisation, "%{organization_name}", programmée.'
+      error: 'Votre organisation, %{organization_name}, n''a pas pu être supprimée : %{error}.'
     pages_controller:
-      updated: La page a été mise à jour avec succès.
-      created: La page a été créée avec succès.
-      deleted: La page a été supprimée avec succès.
+      updated: Page mise à jour avec succès.
+      created: Page créée avec succès.
+      deleted: Page supprimée avec succès.
       code_of_conduct:
         title: Code de conduite
         description: Une page qui décrit comment se comporter sur cette plateforme
@@ -88,7 +88,7 @@ fr:
     podcasts_controller:
       new_owner_added: Nouveau propriétaire ajouté !
       no_such_user: Aucun utilisateur de ce type
-      scheduled: "La récupération des épisodes du podcast a été programmée (%{title}, #%{id})"
+      scheduled: "Récupération des épisodes du podcast programmée (%{title}, #%{id})"
       updated: Podcast mis à jour
     profile_field_groups_controller:
       deleted: Groupe %{group} supprimé
@@ -104,16 +104,16 @@ fr:
       deleted: Le modèle de réponse "%{title}" a été supprimé.
     secrets_controller:
       not_in_vault: Pas dans le coffre-fort
-      updated: Le secret %{key} a été mis à jour avec succès dans le coffre-fort.
+      updated: Secret %{key} mis à jour avec succès dans le coffre-fort.
       value: '%{first8}******'
     settings_controller:
       confirmation: Mon nom d'utilisateur est @%{username} et cette action est 100% sûre et appropriée.
     spaces_controller:
-      update_success: L'espace a été mis à jour.
+      update_success: Espace mis à jour.
     tags:
       moderators_controller:
-        not_found: "L'ID utilisateur #%{user_id} n'a pas été trouvé"
-        not_found_or: "L'ID utilisateur #%{user_id} n'a pas été trouvé, ou son compte a des erreurs : %{errors}"
+        not_found: "ID utilisateur #%{user_id} non trouvé"
+        not_found_or: "ID utilisateur #%{user_id} non trouvé, ou son compte a des erreurs : %{errors}"
         removed: "@%{username} - ID #%{user_id} a été supprimé en tant que modérateur de tag."
         added: "%{username} a été ajouté en tant que modérateur de tag !"
     tags_controller:
@@ -132,16 +132,16 @@ fr:
       full_delete_html: "@%{user} (e-mail : %{email}, user_id : %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
       no_email: pas d'e-mail
       parameter_missing: Le sujet et le corps sont tous deux requis !
-      role_removed: "Le rôle : %{role} a été supprimé avec succès de l'utilisateur !"
+      role_removed: "Rôle : %{role} supprimé avec succès de l'utilisateur !"
       identity_removed: L'identité %{provider} a été supprimée et sauvegardée avec succès.
       the_page: la page
       banished: Cet utilisateur est en train d'être banni en arrière-plan. Le travail sera terminé sous peu.
       unlocked: Compte utilisateur débloqué !
       unpublished: Les messages sont en cours de dépublication en arrière-plan. Le travail sera terminé sous peu.
-      updated: L'utilisateur a été mis à jour
+      updated: Utilisateur mis à jour
       updated_json: Succès ! %{username} a été mis à jour.
-      credits_added: Les crédits ont été ajoutés !
-      credits_removed: Les crédits ont été supprimés.
+      credits_added: Crédits ajoutés !
+      credits_removed: Crédits supprimés.
     welcome_controller:
       thread_content: |
         ---
@@ -155,4 +155,4 @@ fr:
 
         ![BIENVENUE SUR INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
 
-        Laissez un commentaire ci-dessous pour vous présenter à la communauté!✌️
+        Laissez un commentaire ci-dessous pour vous présenter à la communauté!✌️.

@@ -21,5 +21,5 @@ pt:
         year: Ano
         infinity: Infinito
         latest: Mais recentes
-        signin_html: "👋 <a href=\"%{path}\">Entre</a> para ter a capacidade de classificar postagens por <strong>relevante</strong>, <strong>mais recente</strong> ou <strong>top</strong>."
+        signin_html: "👋 <a href=\"%{path}\">Entre</a> para ter a capacidade de classificar postagens por <strong>relevante</strong>, <strong>mais recente</strong> ou <strong>topo</strong>."
         top: Topo

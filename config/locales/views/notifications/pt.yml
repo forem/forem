@@ -1,95 +1,95 @@
 ---
-pt:
+en:
   views:
     notifications:
       meta:
-        description: Caixa de entrada de notificações para %{community}
+        description: Notifications inbox for %{community}
         og:
-          title: Notificações - %{community}
-      heading: Notificações
+          title: Notifications - %{community}
+      heading: Notifications
       article:
-        published_html: "%{user} publicou %{title}"
-        mod_greeting: "Oi %{user} 👋"
-        welcome_html: "%{user} é novo na comunidade. Por favor, confira o post deles e deixe uma resposta legal para fazê-los se sentir bem-vindos!"
-        mod_opt_out: Não quer receber essas notificações?
-        change_settings: Alterar configurações
+        published_html: "%{user} published %{title}"
+        mod_greeting: "Hey %{user} 👋"
+        welcome_html: "%{user} is new to the community. Please check out their post and drop a nice reply to make them feel welcome!"
+        mod_opt_out: Don't want to receive these notifications?
+        change_settings: Change settings
       badge:
-        heading_html: Você recebeu a insígnia %{badge}
-        awarded_html: "Você também ganha %{credits} para usar em %{listings} se tiver algo que gostaria de promover. 🎉"
+        heading_html: You received the %{badge} badge
+        awarded_html: "You also get %{credits} to use for %{listings} if you have anything you'd like to promote. 🎉"
         credits:
-          one: "%{count} novos créditos"
-          other: "%{count} novos créditos"
-        listings: listagens da comunidade
-        more: Mais informações sobre listagens
-        profile: Visite seu perfil
+          one: "%{count} new credits"
+          other: "%{count} new credits"
+        listings: community listings
+        more: More information about listings
+        profile: Visit your profile
       broadcast:
-        visit_html: Visite %{settings} para gerenciar suas notificações.
-        settings: Configurações
+        visit_html: Visit %{settings} to manage your notifications.
+        settings: Settings
       comment:
-        commented_html: "%{user} comentou em %{title}"
-        first_html: "%{user} escreveu seu primeiro comentário em %{title}"
-        first_reply: "Dê a eles sua primeira resposta! 🎉"
-        left_html: "%{user} acabou de deixar um comentário em %{title}."
-        replied_html: "%{user} respondeu a um tópico em %{title}"
-        mod_greeting: "Oi %{user} 👋"
-        welcome_html: "%{user} é novo na comunidade. Por favor, deixe uma resposta legal para fazê-los se sentir bem-vindos."
-        mod_opt_out: Não quer receber essas notificações?
-        change_settings: Alterar configurações
+        commented_html: "%{user} commented on %{title}"
+        first_html: "%{user} wrote their first comment on %{title}"
+        first_reply: "Give them their first reply! 🎉"
+        left_html: "%{user} just left a comment on %{title}."
+        replied_html: "%{user} replied to a thread in %{title}"
+        mod_greeting: "Hey %{user} 👋"
+        welcome_html: "%{user} is new to the community. Please drop a nice reply to make them feel welcome."
+        mod_opt_out: Don't want to receive these notifications?
+        change_settings: Change settings
       error:
-        subtitle: Ocorreu um erro!
-        desc: Isso foi registrado e estamos rastreando.
+        subtitle: An error occurred!
+        desc: This has been logged and we're tracking it.
       follow:
-        and_html: "%{first} e %{second} te seguiram!"
+        and_html: "%{first} and %{second} followed you!"
         and_other_html:
-          one: "%{first} e %{others} te seguiram!"
-          other: "%{first} e %{others} te seguiram!"
+          one: "%{first} and %{others} followed you!"
+          other: "%{first} and %{others} followed you!"
         others:
-          one: "%{count} outros"
-          other: "%{count} outros"
-        single_html: "%{name} te seguiu!"
-      load: Carregar mais
+          one: "%{count} others"
+          other: "%{count} others"
+        single_html: "%{name} followed you!"
+      load: Load More
       mention:
-        article_html: "%{user} mencionou você em um post%{if_org}"
-        comment_html: "%{user} mencionou você em um comentário"
-        article_mobile: "%{user} mencionou você no post %{title}"
-        comment_mobile: "%{user} mencionou você em um comentário em %{title}"
-        if_org_html: " em %{org}"
+        article_html: "%{user} mentioned you in a post%{if_org}"
+        comment_html: "%{user} mentioned you in a comment"
+        article_mobile: "%{user} mentioned you in the post %{title}"
+        comment_mobile: "%{user} mentioned you in a comment on %{title}"
+        if_org_html: " under %{org}"
       milestone:
-        heading_html: Seu post %{title} passou %{type}!
-        check: Verifique seu painel
+        heading_html: Your post %{title} passed %{type}!
+        check: Check your dashboard
         intro: "🎉🎉🎉🎉🎉🎉🎉🎉"
         type:
           View:
-            one: "%{count} visualizações"
-            other: "%{count} visualizações"
+            one: "%{count} views"
+            other: "%{count} views"
           Reaction:
-            one: "%{count} reações"
-            other: "%{count} reações"
+            one: "%{count} reactions"
+            other: "%{count} reactions"
       nav:
-        aria_label: Notificações
-        all: Todas
-        comments: Comentários
+        aria_label: Notifications
+        all: All
+        comments: Comments
         posts: Posts
       new_post:
-        if_org_html: " em %{org}"
-        verb_html: "%{user} fez um novo post%{if_org}"
+        if_org_html: " under %{org}"
+        verb_html: "%{user} made a new post%{if_org}"
       reacted:
-        and_html: "%{first} e %{last}"
+        and_html: "%{first} and %{last}"
         and_other_html:
-          one: "%{first} e %{count} outros"
-          other: "%{first} e %{count} outros"
+          one: "%{first} and %{count} others"
+          other: "%{first} and %{count} others"
         verb_html:
-          one: "%{start}%{actors} reagiram a %{title} com%{end} %{reactions}"
-          other: "%{start}%{actors} reagiram a %{title} com%{end} %{reactions}"
+          one: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
+          other: "%{start}%{actors} reacted to %{title} with%{end} %{reactions}"
         your:
-          article: seu artigo
-          comment: seu comentário
-      settings: Configurações
+          article: your article
+          comment: your comment
+      settings: Settings
       tag:
-        heading: "Oi 👋"
-        add_html: Moderadores adicionaram a tag <strong>%{tag}</strong> ao seu post %{title}. Os mods acharam que essa tag representava seu artigo.
-        check_html: Confira %{other} que pode ser mais apropriado
-        other: outras tags populares
-        reason: 'Motivo da ação:'
-        remove_html: Moderadores removeram a tag <strong>%{tag}</strong> do seu post %{title}. Algumas tags têm diretrizes especiais de envio, e os mods precisam ajustar as tags para melhor se adequar à comunidade.
-        support_html: "Obrigado por fazer parte de %{community}! %{email} 🤗"
+        heading: "Hey there 👋"
+        add_html: Moderators added the <strong>%{tag}</strong> tag to your post %{title}. Mods felt this tag represented your article.
+        check_html: Check out %{other} which may be more appropriate
+        other: other popular tags
+        reason: 'Reason for action:'
+        remove_html: Moderators removed the <strong>%{tag}</strong> tag from your post %{title}. Certain tags have special submission guidelines, and mods need to adjust tags to best fit the community.
+        support_html: "Thanks for being part of %{community}! %{email} 🤗"

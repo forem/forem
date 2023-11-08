@@ -93,4 +93,4 @@ pt:
         submit: Enviar
       social: "Site %{service}"
       unflag: Desmarcar @%{user}
-      website: Site pessoal
+      website: Site pessoal.

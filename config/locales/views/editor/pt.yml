@@ -25,4 +25,4 @@ pt:
         submit_image:
           button: Enviar Alteração
           text: 'URL da Imagem de Pré-visualização: '
-          placeholder: Nova URL de Miniatura
+          placeholder: Nova URL de Miniatura.

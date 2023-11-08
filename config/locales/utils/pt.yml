@@ -11,4 +11,4 @@ pt:
   mailer:
     adjust: Ajuste suas configurações de email
     adjust_only_html: Não quer receber emails como este? Ajuste suas configurações de email em %{path}
-    unsubscribe: Cancelar inscrição
+    unsubscribe: Cancelar inscrição.

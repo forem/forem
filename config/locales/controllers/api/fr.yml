@@ -3,8 +3,8 @@ fr:
   api:
     v0:
       analytics_controller:
-        invalid_date_format: Les paramètres de date 'début' ou 'fin' doivent être au format 'yyyy-mm-dd'
-        start_missing: Le paramètre 'début' requis est manquant
+        invalid_date_format: Les paramètres de date 'start' ou 'end' doivent être au format 'yyyy-mm-dd'
+        start_missing: Le paramètre 'start' requis est manquant
       articles_controller:
         must_be_json: Le paramètre article doit être un objet JSON. Vous avez fourni l'article comme un %{type}
       follows_controller:
@@ -18,4 +18,4 @@ fr:
         redis_connected: Redis connecté
         redis_not_connected: Redis NON connecté !
       listings_controller:
-        no_credit: Pas assez de crédits disponibles
+        no_credit: Pas assez de crédits disponibles.
