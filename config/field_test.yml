@@ -28,6 +28,7 @@
 ################################################################################
 experiments:
   comments_to_display:
+    started_at: 2023-11-09
     variants:
       - top_comments
       - more_inclusive_top_comments
