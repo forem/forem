@@ -119,6 +119,7 @@ group :development do
 
   gem "brakeman", "~> 5.2", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.9" # bundler-audit provides patch-level verification for Bundled apps
+  gem "colorize", "~> 1.0", require: false
   gem "derailed_benchmarks", "~> 2.1", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "easy_translate", "~> 0.5.1" # Google translate tie-in to be used with i18n tasks
   gem "erb_lint", "~> 0.3", require: false # ERB Linter tool
@@ -127,6 +128,7 @@ group :development do
   gem "i18n-tasks", "~> 1.0.11" # Helpers to find and manage missing and unused translations
   gem "listen", "~> 3.7", require: false # Helps 'listen' to file system modifications events (also used by other gems like guard)
   gem "memory_profiler", "~> 1.0", require: false # Memory profiling routines for Ruby 2.3+
+  gem "ruby-openai", "~> 6.0", require: false # AI endpoints
   gem "solargraph", "~> 0.45", require: false # For LSP support (such as symbol renaming, documentation lookup)
   gem "solargraph-rails", "~> 0.3.1", require: false # For LSP support with Rails
   gem "web-console", "~> 4.2" # Rails Console on the Browser

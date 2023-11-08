@@ -1,0 +1,109 @@
+#!/usr/bin/env ruby
+require_relative '../config/environment'
+
+require 'fileutils'
+require 'openai'
+require 'dotenv'
+require 'open3'
+require 'colorize'
+
+Dotenv.load
+
+# Access the environment variable
+
+def translate(source_of_truth, target_source, target_locale)
+  retries ||= 0 # Initialize a retry counter
+  
+  puts "Translating from en to #{target_locale} ...".colorize(:light_magenta)
+  target_instructions = ""
+  messages = []
+  system_content = "You are a script that translates text and updates a rails i18n file. Output ONLY the yml for the target file and no additional text text. Please output THE ENTIRE FINISHED TARGET FILE even if you are only changing one key, or even no keys.. Your output should contain exactly the same number of keys as the english input."
+  target_instructions = "Here is the content for the current version of this locale. Only change things that need to be changed:\n\n#{target_source}.\n\n OUTPUT THE ENTIRE FILE for the translation, even if you are only changing one key, or even no keys." if target_source
+  user_content = "Translate the following content:\n\n#{source_of_truth}\n\ninto #{target_locale}.yml with all the same keys from the en file.\n\n#{target_instructions} If possible keep the character count similar to the english version. OUTPUT THE ENTIRE TARGET FILE YML WITH ALL KEYS AND NO ADDITIONAL TEXT."
+  messages << { role: "system", content: system_content }
+  messages = [{ role: "user", content: user_content}]
+  
+  token = ENV["OPENAI_ACCESS_TOKEN"]
+  response = OpenAI::Client.new(access_token: token, request_timeout: 300).chat(
+      parameters: {
+          model: "gpt-4", # Required.
+          messages: messages, # Required.
+          temperature: 0.1,
+      })
+  output = response.dig("choices", 0, "message", "content")
+  puts "Translated! ... #{output[0...20]} ..."
+  puts "You now have a new version of the #{target_locale}.yml file!".colorize(:green)
+  puts "\n\n"
+  output
+rescue => e
+  retries += 1
+  p "Error: #{e.message}"
+  puts "Retrying ..."
+  retry if retries < 3
+end
+
+def read_file_from_last_commit_if_modified(file_path)
+  return nil unless File.exist?(file_path)
+  # Check if the file has uncommitted changes or is new and untracked
+  status, = Open3.capture2e("git status --porcelain #{file_path}")
+
+  if status.start_with?('??')
+    puts "Reading file from working copy because it is new and not yet tracked in git"
+    content = File.read(file_path)
+  elsif status.empty?
+    puts "Reading file: #{file_path}"
+    # File has no uncommitted changes, read it normally
+    content = File.read(file_path)
+  else
+    puts "Reading file from last commit because it has uncommitted changes which should not be considered."
+    puts "If you want to translate the current working copy, commit the changes first."
+    # File has uncommitted changes, read the file from the last commit
+    begin
+      content, = Open3.capture2e("git show HEAD:#{file_path}")
+    rescue
+      # If the file doesn't exist in the last commit, read the working copy
+      content = File.read(file_path)
+    end
+  end
+
+  content
+end
+
+puts "Kicking off translation...."
+
+pattern = 'config/locales/**/en.yml'
+last_openai_call_at = 9.seconds.ago # Initial last call time "more than 8 seconds ago" to kick us off.
+files = Dir.glob(pattern)
+
+files.each do |file_path|
+  source_content = File.read(file_path)
+  target_locales = ['fr']
+  threads = []
+  locales_finished = []
+
+  # using each_slice to create chunks of 5 locales each
+  target_locales.each do|locale|
+    # Wait up to 8 seconds in order to avoid openai rate limit
+    while last_openai_call_at > 5.seconds.ago
+      sleep(1)
+    end
+    last_openai_call_at = Time.now    
+    threads << Thread.new(locale) do |locale|
+      begin
+
+        puts "Working with #{locale} ..."
+        target_file = file_path.gsub("en", locale)
+        target_content = read_file_from_last_commit_if_modified(target_file)
+        new_content = translate(source_content, target_content, locale)
+        File.open(target_file, 'w') { |file| file.write(new_content) }
+        locales_finished << locale
+        puts "Finished with #{locale}! #{locales_finished.count}/#{target_locales.count} locales finished.".colorize(:green)
+      rescue => e
+        puts "Error: #{e.message}"
+      end
+    end
+  end
+
+  threads.each(&:join)
+end
+
