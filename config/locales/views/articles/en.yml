@@ -3,9 +3,9 @@ en:
   views:
     articles:
       meta:
-        description: An article from the community
+        description: A post from the community
       actions:
-        aria_label: Article actions
+        aria_label: Post actions
       comments:
         aria_label: Add a comment to post - %{title}
         sort:
@@ -21,7 +21,7 @@ en:
         sort_button:
           aria_label: Sort comments
         subtitle:
-          top_html: Top comments %{num}
+          top_html: Top comments %{num} # Showing the comments ordered by "top"
           latest_html: Latest comments %{num}
           oldest_html: Oldest comments %{num}
         num: "(%{num})"
@@ -29,7 +29,7 @@ en:
       conduct:
         aria_label: Conduct controls
         code: Code of Conduct
-        report: Report abuse
+        report: Report abuse # Used on links to get in touch with admins
       delete:
         heading: Are you sure you want to delete this article?
         desc:

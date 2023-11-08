@@ -1,0 +1,21 @@
+---
+pt:
+  api:
+    v0:
+      analytics_controller:
+        invalid_date_format: Os parâmetros de data 'start' ou 'end' devem estar no formato 'aaaa-mm-dd'
+        start_missing: O parâmetro 'start' obrigatório está faltando
+      articles_controller:
+        must_be_json: o parâmetro do artigo deve ser um objeto JSON. Você forneceu o artigo como um %{type}
+      follows_controller:
+        followed:
+          one: seguiu %{count} usuário
+          other: seguiu %{count} usuários
+      health_checks_controller:
+        app_is_up: O aplicativo está funcionando!
+        database_connected: Banco de dados conectado
+        database_not_connected: Banco de dados NÃO conectado!
+        redis_connected: Redis conectado
+        redis_not_connected: Redis NÃO conectado!
+      listings_controller:
+        no_credit: Créditos disponíveis insuficientes

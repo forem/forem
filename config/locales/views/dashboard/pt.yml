@@ -1,0 +1,159 @@
+---
+pt:
+  views:
+    dashboard:
+      meta:
+        title: Painel - %{site}
+      heading: Painel
+      actions: # Estes são links para sub-painéis onde o usuário vê seus dados pessoais
+        mobile:
+          posts: Posts (%{num})
+          followers: Seguidores (%{num})
+          following_tags: Seguindo tags (%{num})
+          following_users: Seguindo usuários (%{num})
+          following_orgs: Seguindo organizações (%{num})
+          following_pods: Seguindo podcasts (%{num})
+          hidden_tags: Tags ocultas (%{num})
+        posts: Posts
+        series: Séries
+        followers: Seguidores
+        following_tags: Seguindo tags
+        following_users: Seguindo usuários
+        following_orgs: Seguindo organizações
+        following_pods: Seguindo podcasts
+        hidden_tags: Tags ocultas
+        listings: Listagens
+        analytics: Análises
+        for_org: Análises para %{org}
+        upload: Carregar um vídeo
+      analytics:
+        meta:
+          title: Análises
+        heading: Painel de Análises para %{name}
+        desc_1: Bem-vindo ao Painel de Análises, a casa das métricas de usuário em profundidade para que os autores possam tomar decisões baseadas em dados sobre o ecossistema %{members}.
+        desc_2: Este painel destaca insights profundos especialmente relevantes para as relações %{members}, autores e blogueiros sérios.
+        back: "👈 Voltar para o Painel Principal"
+        your: Seu Painel
+        org: "Painel de Análises %{org}"
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[Arquivado] "
+        archived: Arquivado
+        published: 'Publicado:'
+        published_html: 'Publicado: %{date}'
+        edited: 'Editado:'
+        edited_html: 'Editado: %{date}'
+        series: 'Série:'
+        series_html: "<strong>Série:</strong> %{series}"
+        draft: Rascunho
+        scheduled: Agendado
+        scheduled_at: 'Agendado:'
+        language: 'Idioma:'
+        reactions:
+          title: Reações
+          icon: Reações
+          text_html:
+            one: "%{num} reação"
+            other: "%{num} reações"
+        comments:
+          title: Comentários
+          icon: Comentários
+          text_html:
+            one: "%{num} comentário"
+            other: "%{num} comentários"
+        views:
+          title: Visualizações
+          icon: Visualizações
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} visualização"
+            other: "%{scale} visualizações"
+          u_25: menos de 25
+        subscriptions:
+          title: Assinaturas
+          icon: Dados
+          number: Assinaturas (%{num})
+        delete: Deletar
+        unpin: Desafixar
+        pin:
+          title: Fixar no perfil
+          button: Fixar no perfil
+          text: Fixar
+        manage:
+          aria_label: 'Gerenciar post: %{title}'
+          text: Gerenciar
+        lock: Bloquear discussão
+        unlock: Desbloquear discussão
+        edit:
+          aria_label: 'Editar post: %{title}'
+          text: Editar
+        more:
+          title: 'Mais opções para o post: %{title}'
+          icon: Mais...
+        stats: Estatísticas
+        archive: Arquivar post
+        unarchive: Desarquivar post
+        author: Autor
+        co_authors: Co-autores
+        series_author_change_warning: Não são permitidas alterações de autor para posts em série.
+        icon: Detalhes
+        author_is: 'AUTOR: '
+        save: Salvar
+        submit: Submeter alteração de autor
+      followers:
+        heading: Painel » Seguidores
+        empty: Você ainda não tem seguidores...
+      following_orgs:
+        heading: Painel » Seguindo organizações
+        empty: Você ainda não segue nenhuma organização...
+      following_pods:
+        heading: Painel » Seguindo podcasts
+        empty: Você ainda não segue nenhum podcast...
+      following_tags:
+        heading: Painel » Seguindo tags
+        empty_html: "<span>Siga tags para personalizar seu feed. Você pode explorar tags populares <a href=%{link}>aqui</a></span>."
+      following_users:
+        heading: Painel » Seguindo usuários
+        empty: Você ainda não segue nenhum usuário...
+      hidden_tags:
+        heading: Painel » Tags ocultas
+        empty_html: "<span>Você não tem nenhuma tag oculta...</span>"
+      tags:
+        following_button: Seguindo
+        options:
+          icon: Opções
+          hide: Ocultar tag
+        unhide_button: Mostrar
+      listings:
+        meta:
+          title: Painel de Listagens
+      posts:
+        heading: Posts
+        archived: Mostrar arquivados
+        option:
+          creation-desc: Recentemente Criados
+          published-desc: Recentemente Publicados
+          views-desc: Mais Visualizados
+          reactions-desc: Mais Reações
+          comments-desc: Mais Comentários
+          aria_label: Ordenar Por
+        org: "%{name} (%{num})"
+        personal: Pessoal
+        empty:
+          desc: Aqui é onde você pode gerenciar seus posts, mas você ainda não escreveu nada.
+          new: Escreva seu primeiro post agora
+      subscriptions:
+        meta:
+          title: Assinaturas %{title}
+        heading: Assinaturas
+        subhead:
+          text_html: "%{for} %{source}"
+          for: para
+        empty: Você ainda não tem nenhum assinante para este %{kind}...
+      summary:
+        reactions: Total de reações ao post
+        views: Total de visualizações do post
+        listings: Listagens criadas
+        credits: Créditos disponíveis
+        lt_500: "< 500"

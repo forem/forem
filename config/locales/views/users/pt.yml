@@ -1,0 +1,96 @@
+---
+pt:
+  views:
+    users:
+      meta:
+        og:
+          title: "%{user} — Perfil em %{community}"
+      comments_locked_cta:
+        title: Quer se conectar com %{user}?
+        description: Crie uma conta para se conectar com %{user}. Você também pode fazer login abaixo para prosseguir se já tiver uma conta.
+        create_account: Criar Conta
+        already_have_an_account: Já tem uma conta?
+        sign_in: Entrar
+      comments:
+        all:
+          one: Todos os %{count} comentários
+          other: Todos os %{count} comentários
+        last:
+          one: Últimos %{count} comentários
+          other: Últimos %{count} comentários
+        recent: Comentários recentes
+        view: Ver toda a atividade
+        view_all:
+          one: Ver todos os %{count} comentários
+          other: Ver todos os %{count} comentários
+        view_last:
+          one: Ver último comentário
+          other: Ver últimos %{count} comentários
+      github:
+        heading: Repositórios GitHub
+        fork: Fork
+        stars:
+          one: 1 estrela
+          other: "%{count} estrelas"
+      pin_icon: Pin
+      pinned: Fixado
+      profile_fields:
+        bio:
+          label: Bio
+          placeholder: Uma breve bio...
+        display_email_on_profile: Exibir email no perfil
+        location:
+          label: Localização
+          placeholder: Halifax, Nova Escócia
+        website:
+          label: URL do site
+          placeholder: https://yoursite.com
+        education: Educação
+        currently learning: Atualmente aprendendo
+        currently hacking on: Atualmente hackeando em
+        available for: Disponível para
+        skills/languages: Habilidades/Idiomas
+        work: Trabalho
+      side:
+        comment:
+          icon: Comentário
+          text:
+            one: 1 comentário escrito
+            other: "%{count} comentários escritos"
+        org: Organizações
+        post:
+          icon: Post
+          text:
+            one: 1 post publicado
+            other: "%{count} posts publicados"
+        tag:
+          icon: Tag
+          text:
+            one: 1 tag seguida
+            other: "%{count} tags seguidas"
+      signout:
+        meta:
+          title: Confirmar Logout - %{community}
+        heading: Tem certeza de que deseja sair?
+        'yes': Sim, sair
+      block: Bloquear @%{user}
+      details: "Detalhes do perfil de %{user}"
+      dropdown: Ações do usuário
+      email_icon: Endereço de email
+      empty: 404 bio não encontrada
+      flag: Sinalizar @%{user}
+      follow: Seguir
+      joined:
+        icon: Ingressou
+        text_html: "Ingressou em\_%{date}"
+      location_icon: Localização
+      logo: "Foto de perfil de %{user}"
+      more: Mais informações sobre @%{user}
+      send_pm:
+        code: código de conduta
+        notice_html: Todas as interações privadas <b>devem</b> seguir o %{code}.
+        placeholder: Digite sua mensagem aqui...
+        submit: Enviar
+      social: "Site %{service}"
+      unflag: Desmarcar @%{user}
+      website: Site pessoal

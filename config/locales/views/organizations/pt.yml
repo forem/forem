@@ -1,0 +1,44 @@
+---
+pt:
+  views:
+    organizations:
+      empty: 404 bio não encontrada
+      external:
+        icon: Ícone de link externo
+      follow: Seguir
+      github:
+        icon: Logo do GitHub
+      joined:
+        icon: Ingressou
+        text_html: "Ingressou em\_%{date}"
+      location:
+        icon: Localização
+      logo: "Foto de perfil de %{org}"
+      size: Funcionários
+      sponsor:
+        text: "Patrocinador da Comunidade %{level} ❤️"
+        level:
+          gold: Ouro
+          silver: Prata
+          bronze: Bronze
+          tag: Tag
+          media: Mídia
+          devrel: Devrel
+      stack: Nossa pilha
+      story: Nossa história
+      side:
+        post:
+            icon: Postar
+            text:
+              one: 1 post publicado
+              other: "%{count} posts publicados"
+        member:
+          icon: Membro
+          text:
+            one: 1 membro
+            other: "%{count} membros"
+      support: Email de suporte
+      team: Conheça a equipe
+      all_members: Ver Todos os Membros
+      twitter:
+        icon: Logo do Twitter

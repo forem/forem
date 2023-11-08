@@ -1,0 +1,429 @@
+---
+pt:
+  views:
+    admin:
+      articles:
+        flags:
+          score: Pontuação afetada por uma bandeira específica
+        priviliged_actions:
+          description: Todas as ações do moderador afetam a pontuação. A pontuação geral é uma combinação de ações do moderador e reações do público.
+          no_flags: O artigo não tem bandeiras.
+          no_quality_reactions: O artigo não tem reações de qualidade por usuários confiáveis.
+          title: Ações do moderador
+      comments:
+        flags:
+          score: Pontuação afetada por uma bandeira específica
+        priviliged_actions:
+          description: Todas as ações do moderador afetam a pontuação. A pontuação geral é uma combinação de ações do moderador e reações do público.
+          no_flags: O comentário não tem bandeiras.
+          no_quality_reactions: O comentário não tem reações de qualidade por usuários confiáveis.
+          title: Ações do moderador
+      shared:
+        flags:
+          actions:
+            mark_as_invalid: Marcar como inválido
+            mark_as_valid: Marcar como válido
+          invalid:
+            title: Bandeira marcada como inválida pelo administrador
+            value: Inválido
+          open:
+            title: Bandeira aberta
+            value: Aberto
+          unidentified:
+            title: Não identificado
+            value: Não identificado
+          valid:
+            title: Bandeira marcada como válida pelo administrador
+            value: Válido
+      users:
+        heading: Membros
+        aria_paginate: Paginar usuários
+        table:
+          compact_subtitle: Membros
+          joined_on: Ingressou em
+          last_activity: Última atividade
+          heading:
+            member: Membro
+            status: Status
+            last_joined: Última atividade & Ingressou em
+            orgs: Organizações
+            actions: Ações
+        empty:
+          text1: Nenhum membro encontrado sob esses filtros.
+          text2: Tente ampliar ou remover os filtros.
+        download:
+          aria_label: Baixar dados do membro
+          heading: Baixar dados do membro
+          desc1: Seus dados serão baixados como um arquivo de Valores Separados por Vírgula (.csv).
+          desc2: Os valores listados são Nome, Nome de usuário, Endereço de e-mail, Status, Data de adesão, Última atividade e Organizações.
+          submit: Baixar
+          cancel: Cancelar
+          name: Nome
+          username: Nome de usuário
+          email: Endereço de e-mail
+          status: Status
+          join: Data de adesão
+          last_activity: Última atividade
+          orgs: Organizações
+        search:
+          aria_expand: Expandir pesquisa
+          aria_field: Pesquisar membro por nome, nome de usuário ou e-mail
+          aria_label: Pesquisar
+          icon: pesquisa
+          placeholder: Pesquisar membro...
+        filters:
+          aria_clear: Limpar todos os filtros
+          aria_label: Filtro
+          aria_remove: "Remover filtro: %{value}"
+          aria_more_roles: Ver mais funções
+          heading: Filtros
+          applied: Filtros aplicados
+          join: Data de adesão
+          creation: Criação da comunidade
+          today: Hoje
+          clear: Limpar tudo
+          clear_filter:
+            aria_roles: Limpar filtro de funções de membro
+            aria_status: Limpar filtro de status
+            aria_orgs: Limpar filtro de organizações
+            text: Limpar filtro
+          clear_filters: Limpar filtros
+          desc: Membros que correspondem a qualquer um dos filtros selecionados serão exibidos
+          summary:
+            roles: Funções de membro
+            status: Status
+            join: Data de adesão
+            orgs: Organizações
+          legend:
+            roles: Funções de membro
+            status: Status
+            orgs: Organizações
+          more_roles: Ver mais funções
+          submit: Aplicar filtros
+          cancel: Cancelar
+        invite:
+          aria_email: "Ações de convite: %{email}"
+          resend: Reenviar convite
+          cancel: Cancelar convite
+        actions:
+          assign_role:
+            text: Atribuir função
+            heading: Adicionar função
+            role: Função
+            select: Selecionar função
+            note: "Adicione uma nota a esta ação:"
+            submit: Adicionar
+            warning: "Delimitado por vírgulas, todas em minúsculas, nenhum símbolo @ necessário na frente dos nomes de usuário Aviso: Os nomes de usuário diferenciam maiúsculas de minúsculas e devem ser todos em minúsculas! Esta tarefa falhará silenciosamente quando fornecida com nomes de usuário incorretos."
+          add_org:
+            text: Adicionar organização
+            heading: Adicionar organização
+            add: Adicionar %{user} a uma organização
+            edit: Editar a função de %{user} em uma organização
+            id: ID da organização
+            role: Função
+            role_desc_html: Você pode atribuir %{user} para ser um administrador ou um membro regular.
+            admin: administrador
+            member: membro
+            submit: Adicionar organização
+          adjust_credit:
+            text: Ajustar saldo de crédito
+            heading: Ajustar saldo
+            desc_html: "%{user} atualmente tem %{credits}."
+            credits_html: "%{amount} créditos"
+            adjust: Ajustar saldo
+            selector_html: "%{action}%{amount}%{credits}"
+            add: Adicionar
+            unit: créditos
+            aria_credits: Quantidade de créditos para adicionar ou remover
+            note: "Adicione uma nota a esta ação:"
+            submit: Ajustar saldo
+          bulk_assign_role:
+            text: Atribuir função em massa
+          copy_email: Copiar endereço de e-mail
+        danger:
+          desc1: Esta ação é irreversível.
+          desc3: Tenha cuidado com esta ação.
+        banish:
+          heading: Banir %{user}
+          desc2_html: Uma vez banido, excluiremos todo o conteúdo criado por %{user} e mudaremos seu nome de usuário para @spam_###.
+          notice_html: Este não é um novo usuário. Apenas Super Admins ou Admins de Suporte têm permissão para banir %{user}.
+          submit_html: Banir %{user}
+        delete:
+          heading: Excluir a conta de %{user}
+          onsubmit: Tem certeza? Esta ação é irreversível.
+          desc2: Uma vez excluído, todos os dados relacionados a %{user} serão removidos de nosso banco de dados.
+          notice: Apenas Super Admins têm permissão para excluir usuários.
+          submit: Excluir agora
+        export:
+          heading: Exportar dados de %{user}
+          desc1_html: Escolha entre enviar os dados exportados para o seu e-mail de contato de administrador, %{contact}, ou para o %{user_email} de %{user} diretamente.
+          desc2: Os dados exportados incluem as postagens e comentários de um usuário.
+          user_email: e-mail do usuário
+          to_admin: Exportar para o administrador
+          to_user: Exportar para o usuário
+          confirm: Tem certeza de que deseja exportar o conteúdo deste usuário para %{email}?
+        merge:
+          heading: Mesclar usuários
+          onsubmit: Tem certeza? Isso é extremamente destrutivo e irreversível. A mesclagem excluirá todo o conteúdo dos outros usuários e o combinará com este usuário
+          desc2_html: Certifique-se de que você está atualmente na página do usuário que deseja <strong>manter</strong>. Uma vez mesclados, a conta inserida abaixo será mesclada e excluída.
+          id: ID do usuário
+          submit: Mesclar e excluir
+        social:
+          heading: Remover contas sociais
+          desc_html: |
+            <p>Às vezes, os usuários encontram problemas de login quando eles....</p>
+            <ol>
+              <li>criam uma conta no %{community} com uma conta social, e</li>
+              <li>removem a conta social original, e</li>
+              <li>tentam fazer login novamente usando a mesma conta social removida.</li>
+            </ol>
+            <p>Se este for o caso, a remoção das contas sociais abaixo pode ajudar a restaurar suas contas sociais. Para verificar se este é o caso, siga as etapas 1 e 2 abaixo. Se verificado, siga todas as etapas para restaurar suas contas sociais.</p>
+          howto:
+            subtitle: Como restaurar uma conta social
+            first_html: "Verifique o UID da conta social deles por meio dessas ferramentas de terceiros: %{twitter_uid} e %{github_uid}"
+            twitter_uid: UID do Twitter
+            github_uid: UID do GitHub
+            second: Verifique se ele corresponde ao UID correspondente abaixo.
+            third: Remova a conta respectiva se não corresponder.
+            fourth: Peça ao usuário para reautorizar sua conta social via %{app}
+          onsubmit: Tem certeza? Isso só deve ser feito como uma solução para o(s) exemplo(s) listado(s).
+          uid: "UID:"
+          username: "Nome de usuário:"
+          no_data: Nenhum dado disponível...
+          submit: Remover
+        unpublish:
+          heading: Despublicar todas as postagens
+          onsubmit: Tem certeza? Todas as postagens ficarão indisponíveis para a comunidade.
+          text1_html: Uma vez despublicadas, todas as postagens de %{username} se tornarão ocultas e acessíveis apenas a eles mesmos.
+          text2_html: Se %{username} não estiver suspenso, ele ainda poderá republicar suas postagens a partir de seu painel.
+          note: "Nota:"
+          note_placeholder: "Texto da nota"
+          submit: Despublicar todas as postagens
+        emails:
+          empty1: Nenhum e-mail anterior encontrado para %{user}.
+          empty2: Qualquer e-mail enviado para %{email} será encontrado aqui.
+          previous: E-mails anteriores (%{num})
+          send: Enviar um e-mail
+          to: "Para: %{user} (%{email})"
+          subject: Assunto
+          subject_placeholder: O que você quer dizer na linha de assunto?
+          body: Corpo
+          body_placeholder: O que você quer dizer?
+          send_submit: Enviar e-mail
+          not_verified:
+            subtitle: E-mail não verificado
+            desc: "O e-mail de %{user} ainda não foi verificado."
+          verify: Verificar endereço de e-mail
+          verified_html: Última verificação em %{time}
+          reverify: Re-verificar
+        flags:
+          empty1: Nenhuma bandeira recebida contra %{user} ainda.
+          empty2: Qualquer bandeira recebida contra %{user} será encontrada aqui.
+          type:
+            article: Post "%{title}"
+            comment: Comentário em "%{title}"
+            profile: Perfil do usuário
+          origin_html: Sinalizado por %{user}
+          score: Pontuação do artigo e comentário afetada por bandeira específica
+          total_score: Pontuação do artigo e comentário afetada por bandeiras do usuário
+        notes:
+          empty1: Nenhuma nota anterior encontrada para %{user}.
+          empty2: Qualquer nota adicionada para %{user} será encontrada aqui.
+          previous: Notas anteriores (%{num})
+          note_by: Nota por %{author} em %{time}
+          reason_by_html: "%{reason} %{by}"
+          by_html: por %{author}
+          write: Escrever uma nota de usuário
+          note: Nota
+          note_placeholder: Adicionar uma nota...
+          submit: Enviar
+          unknown_user: Usuário desconhecido
+          unknown_user_html: |
+            <em>Usuário desconhecido</em>
+        overview:
+          comments: Comentários
+          posts: Postagens
+          reactions: Reações
+          followers: Seguidores
+          following: Seguindo
+          badges: Emblemas
+          learn: Saiba mais
+          credits:
+            subtitle: Créditos
+            aria_learn: Saiba mais sobre créditos
+            icon: Carteira
+            desc: "Conceder/remover créditos para comprar listagens classificadas. "
+            button: Ajustar saldo
+          orgs:
+            subtitle: Organizações
+            aria_edit: Editar a associação da organização %{org}
+            aria_learn: Saiba mais sobre organizações
+            aria_revoke: Revogar a associação da organização %{org}
+            icon: Organizações
+            desc: "Adicione este membro a organizações em sua comunidade. "
+            empty: Ainda não faz parte de nenhuma organização.
+            button: Adicionar organização
+            type:
+              admin: Admin
+              member: Membro
+              guest: Convidado
+            revoke_confirm: Tem certeza de que deseja remover %{user} de %{org}?
+            submit: Enviar
+          roles:
+            subtitle: Funções
+            aria_learn: Saiba mais sobre funções
+            icon: Funções
+            desc: "Conceda a este membro permissões atribuindo uma função. "
+            empty: Nenhuma função atribuída ainda.
+            button: Atribuir função
+            locked: Você não pode remover esta função.
+            remove: "Remover função:"
+            remove_confirm: Tem certeza?
+            remove_confirm_super_admin: Você está removendo o acesso de super administrador desta conta. Faça isso com cuidado e sempre garanta que você mantenha o acesso a uma ou mais contas de super administrador
+            name:
+              admin: Admin
+              codeland_admin: Admin do Codeland
+              comment_suspended: Comentário Suspenso
+              limited: Limitado
+              creator: Criador
+              super_moderator: Super Moderador
+              podcast_admin: Admin do Podcast
+              restricted_liquid_tag: Tag Líquida Restrita
+              single_resource_admin: Admin de Recurso Único
+              resource_admin_article: Admin de Artigo
+              resource_admin_badge: Admin de Emblema
+              resource_admin_badge_achievement: Admin de Conquista de Emblema
+              resource_admin_broadcast: Admin de Transmissão
+              resource_admin_comment: Admin de Comentário
+              resource_admin_config: Admin de Configuração
+              resource_admin_billboard: Admin de Outdoor
+              resource_admin_data_update_script: Admin de Script de Atualização de Dados
+              resource_admin_feedback_message: Admin de Mensagem de Feedback
+              resource_admin_html_variant: Admin de Variante HTML
+              resource_admin_listing_category: Admin de Categoria de Listagem
+              resource_admin_page: Admin de Página
+              resource_admin_tag: Admin de Tag
+              super_admin: Super Admin
+              support_admin: Admin de Suporte
+              suspended: Suspenso
+              tag_moderator: Moderador de Tag
+              tech_admin: Admin de Tecnologia
+              trusted: Confiável
+              warned: Advertido
+          tag_mod:
+            subtitle: Tags
+            aria_learn: Saiba mais sobre moderação de tag
+            icon: Mod
+            desc: "Adicione uma tag que este membro pode moderar. "
+            remove: "Remover tag:"
+            notice_html: Adicionar tags para moderação é atualmente possível apenas por meio de uma %{tag_page} específica, fornecendo o ID do usuário (%{user_id}).
+            tag_page: página da tag
+        priviliged_actions:
+          description: As bandeiras do usuário afetam as pontuações de artigos e comentários. Cada bandeira de usuário válida ou aberta reduz ainda mais a pontuação do artigo e do comentário.
+          no_flags: Nenhuma bandeira recebida contra este usuário ainda.
+          title: Bandeiras recebidas
+        profile:
+          locked:
+            icon: Acesso bloqueado
+            text: Este usuário bloqueou o acesso.
+            unlock: Desbloquear acesso
+          id: ID %{userid}
+          since_html: Membro desde %{time}
+          not_member: O usuário ainda não aceitou seu convite.
+          email: Email
+          github: GitHub
+          twitter: Twitter
+          visit: Visitar perfil
+          options:
+            icon: Opções
+            export: Exportar dados
+            merge: Mesclar usuários
+            unpublish: Despublicar todas as postagens
+            remove_social: Remover contas sociais
+            banish: Banir usuário
+            delete: Excluir usuário
+        reports:
+          subtitle: Relatórios enviados por %{user} (%{num})
+          for_html: Para %{url}
+          empty1: Nenhum comentário ou postagem foi relatado ainda.
+          empty2: Qualquer comentário ou postagem relatado por %{user} será encontrado aqui.
+          category:
+            rude or vulgar: Rude ou vulgar
+            harrassment: Assédio
+            spam: Spam
+            listings: Listagens
+            other: Outro
+          status:
+            Open: Aberto
+            Resolved: Resolvido
+            Invalid: Inválido
+        unpublish_logs:
+          subtitle_html: Despublicado por %{user} em %{time}
+          posts: "Postagens:"
+          edit: Editar
+          republished: (foi republicado)
+          comments: "Comentários:"
+          commentable: comentável
+          created: "Criado em: %{time}"
+        tabs:
+          overview: Visão geral
+          notes: Notas
+          emails: E-mails
+          reports: Relatórios
+          flags: Bandeiras
+          unpublish_logs: Histórico de Despublicação Total
+        status_title: Status atual
+        status_reader: "Status atual:"
+        more_orgs:
+          one: + %{count}
+          other: + %{count}
+        roles:
+          Admin: Admin
+          Tech Admin: Admin de Tecnologia
+          Super Admin: Super Admin
+          Resource Admin: Admin de Recurso
+          "Resource Admin: Article": "Admin de Recurso: Artigo"
+          "Resource Admin: Badge": "Admin de Recurso: Emblema"
+          "Resource Admin: BadgeAchievement": "Admin de Recurso: Conquista de Emblema"
+          "Resource Admin: Broadcast": "Admin de Recurso: Transmissão"
+          "Resource Admin: Comment": "Admin de Recurso: Comentário"
+          "Resource Admin: Config": "Admin de Recurso: Configuração"
+          "Resource Admin: Billboard": "Admin de Recurso: Outdoor"
+          "Resource Admin: DataUpdateScript": "Admin de Recurso: Script de Atualização de Dados"
+          "Resource Admin: FeedbackMessage": "Admin de Recurso: Mensagem de Feedback"
+          "Resource Admin: HtmlVariant": "Admin de Recurso: Variante HTML"
+          "Resource Admin: ListingCategory": "Admin de Recurso: Categoria de Listagem"
+          "Resource Admin: Page": "Admin de Recurso: Página"
+          "Resource Admin: Tag": "Admin de Recurso: Tag"
+          Super Moderator: Super Moderador
+        statuses:
+          Warned: Advertido
+          Comment Suspended: Comentário Suspenso
+          Limited: Limitado
+          Suspended: Suspenso
+          Good Standing: Em Boa Situação
+          Good standing: Em Boa Situação
+          Trusted: Confiável
+        identities:
+          facebook: Facebook
+          github: GitHub
+          twitter: Twitter
+      organizations:
+        profile:
+          id: ID %{organizationid}
+          since_html: Organização desde %{time}
+          email: Email
+          github: GitHub
+          twitter: Twitter
+          visit: Visitar organização
+          total_members: "%{count} membros"
+        delete:
+          heading: Excluir %{organization}
+          onsubmit: Tem certeza? Esta ação é irreversível.
+          desc2: "Nota: Excluir a organização, %{organization}, dissasociará os membros e artigos existentes da organização, mas não os excluirá."
+          role_notice: Apenas Super Admins têm permissão para excluir organizações.
+          credits_notice: Você não pode excluir uma organização que tem créditos associados.
+          submit: Excluir organização agora
+        options:
+          delete: Excluir organização
+          icon: Opções

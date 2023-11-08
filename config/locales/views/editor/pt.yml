@@ -1,0 +1,28 @@
+---
+pt:
+  views:
+    editor:
+      meta:
+        title: Editar Postagem
+      heading:
+        new: Nova Postagem
+      create: Criar Postagem
+      close:
+        icon: Fechar
+        title: Fechar o editor
+      cover_image:
+        add: Adicionar uma imagem de capa
+        change: Alterar
+      edit: Editar
+      modes: Ver modos de postagem
+      new_title: Novo título de postagem aqui...
+      preview: Pré-visualização
+      video:
+        progress:
+          heading: "⏳ Transcodificação de Vídeo em Progresso ⏳"
+          notice_1: Você receberá um email quando este processo terminar.
+          notice_2: Esta é uma postagem comum não publicada. Adicione título/tags/corpo/etc, e então marque como publicado após o vídeo terminar de processar.
+        submit_image:
+          button: Enviar Alteração
+          text: 'URL da Imagem de Pré-visualização: '
+          placeholder: Nova URL de Miniatura

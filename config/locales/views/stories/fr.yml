@@ -3,23 +3,23 @@ fr:
   views:
     stories:
       meta:
-        description_tagged: "%{tag} content on %{name}"
+        description_tagged: "Contenu %{tag} sur %{name}"
         page: " Page %{page}"
-        rss: "%{name} RSS Feed"
-      heading: Posts
-      discuss: "#discuss"
+        rss: "Flux RSS de %{name}"
+      heading: Articles
+      discuss: "#discuter"
       follow: Suivre
       menu:
-        aria_left: nav-button-left
-        aria_right: nav-button-right
+        aria_left: bouton-nav-gauche
+        aria_right: bouton-nav-droite
       sort:
-        aria_label: View posts by
-        aria_tagged: View tagged posts by
+        aria_label: Voir les articles par
+        aria_tagged: Voir les articles tagués par
         relevant: Pertinent
         week: Semaine
         month: Mois
         year: Année
         infinity: Infini
         latest: Récent
-        signin_html: "👋 <a href=\"%{path}\">Sign in</a> for the ability to sort posts by <strong>relevant</strong>, <strong>latest</strong>, or <strong>top</strong>."
+        signin_html: "👋 <a href=\"%{path}\">Connectez-vous</a> pour pouvoir trier les articles par <strong>pertinence</strong>, <strong>récent</strong>, ou <strong>top</strong>."
         top: Top

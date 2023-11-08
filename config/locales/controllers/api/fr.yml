@@ -3,16 +3,16 @@ fr:
   api:
     v0:
       analytics_controller:
-        invalid_date_format: Les paramètres de date "début" ou "fin" doivent être au format "yyyy-mm-dd"
+        invalid_date_format: Les paramètres de date 'début' ou 'fin' doivent être au format 'yyyy-mm-dd'
         start_missing: Le paramètre 'début' requis est manquant
       articles_controller:
-        must_be_json: Le paramètre article doit être un objet JSON. Vous avez fourni l'article comme %{type}
+        must_be_json: Le paramètre article doit être un objet JSON. Vous avez fourni l'article comme un %{type}
       follows_controller:
         followed:
           one: a suivi %{count} utilisateur
           other: a suivi %{count} utilisateurs
       health_checks_controller:
-        app_is_up: L'application est en place !
+        app_is_up: L'application est en marche !
         database_connected: Base de données connectée
         database_not_connected: Base de données NON connectée !
         redis_connected: Redis connecté

@@ -1,0 +1,80 @@
+---
+pt:
+  views:
+    auth:
+      background: fundo forem
+      create:
+        aria_label: Criar nova conta
+        text: Criar conta
+      creator:
+        text1: Vamos começar sua jornada Forem!
+        text2: Crie sua conta de administrador primeiro.
+        text3: Depois, vamos guiá-lo através da configuração do seu Forem.
+        hint:
+          aria_label: Editar nome de usuário
+          icon: Editar nome de usuário
+          text_html: "%{start}Seu nome de usuário será\_%{end}%{button}"
+        submit: Criar minha conta
+      already_have_an_account: Já tem uma conta?
+      sign_in: Entrar
+      login:
+        aria_label: Entrar
+        text: Entrar
+        forgot: Esqueceu a senha?
+      provider:
+        text: "%{action} com %{provider}"
+        login: Continuar
+        signup: Inscrever-se
+        email:
+          icon: email
+          text: Inscrever-se com Email
+      register:
+        errors:
+          one: Ops, encontramos %{count} problema
+          other: Ops, encontramos %{count} problemas
+        allow:
+          one_html: Registro restrito a emails <strong>@%{domain}</strong>.
+          list: Registro restrito aos seguintes emails
+        create: Crie sua conta
+        field:
+          name:
+            aria_label: Nome
+            label: Nome
+          username:
+            aria_label: Nome de usuário
+            desc: Um nome de usuário só pode conter letras, números e sublinhados. O comprimento máximo do nome de usuário pode ser de 30 caracteres.
+            label: Nome de usuário
+          email:
+            aria_label: Email
+            label: Email
+            placeholder: john@example.com
+          password:
+            aria_label: Senha
+            desc: Mínimo de 8 caracteres
+            label: Senha
+            placeholder: "••••••••"
+            hide: Ocultar senha
+            show: Mostrar senha
+          confirm:
+            aria_label: Confirmação de senha
+            label: Confirmação de senha
+          required: "* - obrigatório"
+        secret:
+          label: Novo segredo Forem
+          placeholder: Conforme fornecido pelo seu host Forem
+          hide: Ocultar novo segredo Forem
+          show: Mostrar novo segredo Forem
+        submit: Inscrever-se
+      wizard:
+        meta:
+          title: Vamos começar com o Forem
+        heading: Vamos começar sua jornada Forem
+        step_1: Crie uma conta. Será a primeira conta de super administrador.
+        step_2_html: Depois de se inscrever abaixo, você pode configurar sua comunidade em %{path}.
+        step_3: Há muito que você pode fazer como administrador, mas há uma curva de aprendizado.
+        step_4: Por favor, entre em contato com a equipe Forem se tiver dúvidas sobre qualquer coisa!
+        step_5: "Para Empoderar a Comunidade 🌱"
+      tagline: Somos um lugar onde os programadores compartilham, se atualizam e desenvolvem suas carreiras.
+      title:
+        text_html: "%{name} é uma comunidade de %{maybe_size}incríveis %{label}"
+        size: "%{num} "

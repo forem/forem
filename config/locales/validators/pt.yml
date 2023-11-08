@@ -1,0 +1,23 @@
+---
+pt:
+  validators:
+    bytesize_validator:
+      non_negative: ":maximum deve ser um número inteiro não negativo"
+    color_contrast_validator:
+      must_be_darker: deve ser mais escuro para acessibilidade
+    emoji_only_validator:
+      invalid_emoji: contém caracteres não emoji ou emoji inválido
+    existing_published_article_id_validator:
+      default: deve ser um identificador de Artigo publicado válido
+    profile_validator:
+      bio_too_long: Bio é muito longa
+    cross_model_slug_validator:
+      is_taken: já foi usado
+      is_invalid: é inválido
+      is_reserved: é reservado
+    valid_domain_csv_validator:
+      invalid_list_format: deve ser uma lista separada por vírgulas de domínios válidos
+    iso3166_hash_validator:
+      is_blank: deve ser fornecido
+      invalid_key: contém um código ISO 3166 inválido
+      invalid_value: deve ter valores `:with_regions` ou `:without_regions`

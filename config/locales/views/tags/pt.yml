@@ -1,0 +1,65 @@
+---
+pt:
+  views:
+    tags:
+      meta:
+        title: Etiquetas
+        description: Etiquetas para seguir em %{community}
+        og:
+          description: "%{community} é ótimo!"
+      heading:
+        default: Etiquetas
+        search_results: Resultados da pesquisa para %{q}
+      search:
+        aria_labels:
+          search_input: Termo de pesquisa de etiqueta
+          submit: Pesquisar etiquetas
+        placeholder: Pesquisar por etiqueta
+      edit:
+        meta:
+          title: Editar %{tag}
+        admin: "Administrador"
+        help: "Ajuda"
+        view: "Ver"
+        form:
+          pretty_name:
+            label: Nome bonito
+            placeholder: Este é o nome no topo da página de exibição.
+          bg_color_hex:
+            label: Cor da etiqueta
+          short_summary:
+            label: Resumo curto
+            placeholder: Breve visão geral do que esta etiqueta é.
+          wiki_body_markdown:
+            label: Wiki corpo markdown
+            placeholder: Esta é uma seção 'sobre'. Sinta-se à vontade para adicionar um FAQ, recursos adicionais, etc.
+          rules_markdown:
+            label: Regras markdown
+            placeholder: Opcional - Pode ser usado para desafios, ou seja, diretrizes de submissão.
+          submit: Salvar
+      follow: Seguir
+      hide: Esconder
+      aria_labels:
+        follow: "Seguir etiqueta: %{tag_name}"
+        hide: "Esconder etiqueta: %{tag_name}"
+      following_tags: Seguindo etiquetas
+      hidden_tags: Etiquetas escondidas
+      moderator:
+        text_html: "separado por vírgulas, espaço é opcional. Exemplo: %{code}"
+        code: 123
+        placeholder: "separado por vírgulas, espaço é opcional. Exemplo: 1,2,3"
+      published:
+        one: 1 postagem
+        other: "%{count} postagens"
+      sidebar:
+        about: 'sobre #%{tag}'
+        admin: Administrador
+        edit: Editar
+        guidelines: diretrizes de submissão
+        moderate: Moderar
+        mods: moderadores de etiquetas
+        new: Criar postagem
+        older: 'Postagens mais antigas #%{tag}'
+        published:
+          one: 1 Postagem Publicada
+          other: "%{count} Postagens Publicadas"

@@ -4,93 +4,93 @@ fr:
     users:
       meta:
         og:
-          title: "%{user} — %{community} Profile"
+          title: "%{user} — Profil %{community}"
       comments_locked_cta:
-        title: Want to connect with %{user}?
-        description: Create an account to connect with %{user}. You can also sign in below to proceed if you already have an account.
-        create_account: Create Account
-        already_have_an_account: Already have an account?
-        sign_in: Sign in
+        title: Vous voulez vous connecter avec %{user}?
+        description: Créez un compte pour vous connecter avec %{user}. Vous pouvez également vous connecter ci-dessous pour continuer si vous avez déjà un compte.
+        create_account: Créer un compte
+        already_have_an_account: Vous avez déjà un compte?
+        sign_in: Se connecter
       comments:
         all:
-          one: All %{count} comments
-          other: All %{count} comments
+          one: Tous les %{count} commentaires
+          other: Tous les %{count} commentaires
         last:
-          one: Last %{count} comments
-          other: Last %{count} comments
-        recent: Recent comments
-        view: View all activity
+          one: Derniers %{count} commentaires
+          other: Derniers %{count} commentaires
+        recent: Commentaires récents
+        view: Voir toute l'activité
         view_all:
-          one: View all %{count} comments
-          other: View all %{count} comments
+          one: Voir tous les %{count} commentaires
+          other: Voir tous les %{count} commentaires
         view_last:
-          one: View last 1 Comment
-          other: View last %{count} Comments
+          one: Voir le dernier commentaire
+          other: Voir les %{count} derniers commentaires
       github:
-        heading: GitHub Repositories
-        fork: Fork
+        heading: Dépôts GitHub
+        fork: Fourche
         stars:
-          one: 1 star
-          other: "%{count} stars"
-      pin_icon: Pin
-      pinned: Pinned
+          one: 1 étoile
+          other: "%{count} étoiles"
+      pin_icon: Épingle
+      pinned: Épinglé
       profile_fields:
         bio:
           label: Bio
-          placeholder: A short bio...
-        display_email_on_profile: Display email on profile
+          placeholder: Une courte bio...
+        display_email_on_profile: Afficher l'email sur le profil
         location:
-          label: Location
-          placeholder: Halifax, Nova Scotia
+          label: Lieu
+          placeholder: Halifax, Nouvelle-Écosse
         website:
-          label: Website URL
-          placeholder: https://yoursite.com
-        education: Education
-        currently learning: Currently learning
-        currently hacking on: Currently hacking on
-        available for: Available for
-        skills/languages: Skills/Languages
-        work: Work
+          label: URL du site web
+          placeholder: https://votresite.com
+        education: Éducation
+        currently learning: En train d'apprendre
+        currently hacking on: Actuellement en train de travailler sur
+        available for: Disponible pour
+        skills/languages: Compétences/Langues
+        work: Travail
       side:
         comment:
-          icon: Comment
+          icon: Commentaire
           text:
-            one: 1 comment written
-            other: "%{count} comments written"
-        org: Organizations
+            one: 1 commentaire écrit
+            other: "%{count} commentaires écrits"
+        org: Organisations
         post:
-          icon: Post
+          icon: Poste
           text:
-            one: 1 post published
-            other: "%{count} posts published"
+            one: 1 poste publié
+            other: "%{count} postes publiés"
         tag:
-          icon: Tag
+          icon: Étiquette
           text:
-            one: 1 tag followed
-            other: "%{count} tags followed"
+            one: 1 étiquette suivie
+            other: "%{count} étiquettes suivies"
       signout:
         meta:
-          title: Confirm Signout - %{community}
-        heading: Are you sure you want to sign out?
-        'yes': Yes, sign out
-      block: Block @%{user}
-      details: "%{user} profile details"
-      dropdown: User actions
-      email_icon: Email address
-      empty: 404 bio not found
-      flag: Flag @%{user}
+          title: Confirmer la déconnexion - %{community}
+        heading: Êtes-vous sûr de vouloir vous déconnecter?
+        'yes': Oui, se déconnecter
+      block: Bloquer @%{user}
+      details: "Détails du profil de %{user}"
+      dropdown: Actions de l'utilisateur
+      email_icon: Adresse e-mail
+      empty: 404 bio non trouvée
+      flag: Signaler @%{user}
       follow: Suivre
       joined:
         icon: Rejoint
         text_html: "Rejoint le\_%{date}"
       location_icon: Lieu
-      logo: "%{user} profile picture"
-      more: More info about @%{user}
+      logo: "Photo de profil de %{user}"
+      more: Plus d'info sur @%{user}
       send_pm:
-        code: code of conduct
-        notice_html: All private interactions <b>must</b> abide by the %{code}.
-        placeholder: Enter your message here...
-        submit: Send
-      social: "%{service} website"
-      unflag: Unflag @%{user}
-      website: Personal website
+        code: code de conduite
+        notice_html: Toutes les interactions privées <b>doivent</b> respecter le %{code}.
+        placeholder: Entrez votre message ici...
+        submit: Envoyer
+      social: "Site web %{service}"
+      unflag: Annuler le signalement @%{user}
+      website: Site web personnel

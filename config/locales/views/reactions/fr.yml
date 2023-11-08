@@ -3,40 +3,40 @@ fr:
   views:
     reactions:
       category:
-        hands: Hands
-        like: Like
-        readinglist: Reading list
-        thinking: Thinking
-        thumbsup: Thumbs up
-        thumbsdown: Thumbs down
-        unicorn: Unicorn
-        vomit: Flag
-        lightbulb: Lightbulb
-        raised_hands: Raised hands
-        rocket: Rocket
-        exploding_head: Exploding head
-        fire: Fire
-      drawer_button: Add reaction
+        hands: Mains
+        like: J'aime
+        readinglist: Liste de lecture
+        thinking: Réflexion
+        thumbsup: Pouce en l'air
+        thumbsdown: Pouce en bas
+        unicorn: Licorne
+        vomit: Drapeau
+        lightbulb: Ampoule
+        raised_hands: Mains levées
+        rocket: Fusée
+        exploding_head: Tête explosante
+        fire: Feu
+      drawer_button: Ajouter une réaction
       summary:
         count_html:
           one: "%{count}%{start}\_réaction%{end}"
           other: "%{count}%{start}\_réactions%{end}"
-        title: Reactions
+        title: Réactions
       like:
-        title: Like
-        aria_label: Like
-        icon: Favorite heart button
-        text: Like
+        title: J'aime
+        aria_label: J'aime
+        icon: Bouton cœur favori
+        text: J'aime
       unicorn:
         title: Licorne
-        aria_label: React with unicorn
+        aria_label: Réagir avec une licorne
       readingList:
-        title: Sauver
-        aria_label: Add to reading list
-        icon: Save button
-        text: Save
+        title: Sauvegarder
+        aria_label: Ajouter à la liste de lecture
+        icon: Bouton sauvegarder
+        text: Sauvegarder
       subscribe:
-        title: Subscribe to Comments
-        aria_label: Subscribe to Comments
-        icon: Save button
-        text: Subscribe to Comments
+        title: S'abonner aux commentaires
+        aria_label: S'abonner aux commentaires
+        icon: Bouton sauvegarder
+        text: S'abonner aux commentaires

@@ -1,0 +1,25 @@
+---
+pt:
+  views:
+    stories:
+      meta:
+        description_tagged: "Conteúdo de %{tag} em %{name}"
+        page: " Página %{page}"
+        rss: "Feed RSS de %{name}"
+      heading: Postagens
+      discuss: "#discutir"
+      follow: Seguir
+      menu:
+        aria_left: botão-de-navegação-esquerdo
+        aria_right: botão-de-navegação-direito
+      sort:
+        aria_label: Ver postagens por
+        aria_tagged: Ver postagens marcadas por
+        relevant: Relevante
+        week: Semana
+        month: Mês
+        year: Ano
+        infinity: Infinito
+        latest: Mais recentes
+        signin_html: "👋 <a href=\"%{path}\">Entre</a> para ter a capacidade de classificar postagens por <strong>relevante</strong>, <strong>mais recente</strong> ou <strong>top</strong>."
+        top: Topo

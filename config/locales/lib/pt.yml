@@ -1,0 +1,224 @@
+---
+pt:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: Restringir o registro apenas a certos e-mails? (lista separada por vírgulas)
+            placeholder: dev.to, forem.com, codenewbie.org
+          apple_client:
+            description: O código "App Bundle" para o Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_key:
+            description: O "Key ID" do Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_pem:
+            description: A chave "PEM" do Serviço de Autenticação configurado no Portal do Desenvolvedor Apple
+          apple_team:
+            description: O "Team ID" da sua Conta de Desenvolvedor Apple
+          blocked:
+            description: Bloquear o registro de domínios específicos? (lista separada por vírgulas)
+          display_list:
+            description: Você deseja exibir a lista de domínios permitidos ou mantê-la privada?
+          facebook_key:
+            description: A parte "App ID" da seção Configurações Básicas da página do Aplicativo no Portal do Desenvolvedor Facebook
+          facebook_secret:
+            description: A parte "App Secret" da seção Configurações Básicas da página do Aplicativo no Portal do Desenvolvedor Facebook
+          forem_key:
+            description: Chave Forem
+          forem_secret:
+            description: Segredo Forem
+          github_key:
+            description: A parte "Client ID" do portal GitHub Oauth Apps
+          github_secret:
+            description: A parte "Client Secret" do portal GitHub Oauth Apps
+          google_key:
+            description: A parte "Client ID" da página OAuth 2.0 no portal Google Cloud Platform
+          google_secret:
+            description: A parte "Client Secret" da página OAuth 2.0 no portal Google Cloud Platform
+          invite_only:
+            description: Apenas usuários convidados por e-mail podem participar desta comunidade.
+          new_user_status:
+            description: Que status você deseja aplicar aos novos usuários?
+            placeholder: Boa reputação
+          providers:
+            description: Como os usuários podem fazer login?
+          recaptcha_secret:
+            description: Adicione a chave secreta do Google reCAPTCHA, que é usada para denunciar abusos
+            placeholder: Qual é a chave secreta do Google reCAPTCHA?
+          recaptcha_site:
+            description: Adicione a chave do site do Google reCAPTCHA, que é usada para denunciar abusos
+            placeholder: Qual é a chave do site do Google reCAPTCHA?
+          require_recaptcha:
+            description: As pessoas serão obrigadas a preencher um captcha ao criar uma nova conta em sua comunidade
+          twitter_key:
+            description: A parte "API key" das chaves do consumidor no portal do desenvolvedor do Twitter.
+          twitter_secret:
+            description: A parte "API secret key" das chaves do consumidor no portal do desenvolvedor do Twitter.
+        campaign:
+          articles_approval:
+            placeholder: As histórias da campanha aparecem na barra lateral com aprovação?
+          articles_expiry:
+            description: Define o tempo de expiração para os artigos (em semanas) a serem exibidos na barra lateral da campanha
+          call_to_action:
+            description: Este texto preenche o botão de chamada para ação na barra lateral da campanha
+            placeholder: Compartilhe seu projeto
+          display_name:
+            description: Este texto é exibido em referência à campanha em títulos, etc.
+            placeholder: Minha grande campanha
+          featured:
+            description: Postagens com quais tags serão apresentadas na barra lateral da campanha (separadas por vírgulas, apenas letras)
+            placeholder: 'Lista de tags da campanha: separadas por vírgulas, apenas letras, por exemplo, shecoded,theycoded'
+          hero_html:
+            description: Nome do Hero HtmlVariant
+          sidebar_enabled:
+            placeholder: Barra lateral da campanha ativada ou não
+          sidebar_image:
+            placeholder: Usado no topo da barra lateral da campanha
+          url:
+            description: https://url.com/lander
+            placeholder: URL para a qual a imagem da barra lateral da campanha irá linkar
+        community:
+          copyright:
+            description: Usado para marcar o ano em que este forem foi iniciado.
+          description:
+            description: Usado em tags de descrição de meta etc.
+            placeholder: Uma fabulosa comunidade de pessoas gentis e acolhedoras.
+          emoji:
+            description: Usado nas tags de título em todo o site ao lado do nome da comunidade
+          member:
+            description: Usado para determinar como um membro será chamado, por exemplo, desenvolvedor, hobbyista etc.
+            placeholder: usuário
+          name:
+            description: Usado como o nome principal para o seu Forem, por exemplo, DEV, DEV Community, The DEV Community, etc.
+            placeholder: Novo Forem
+          staff:
+            description: Conta que atua como 'staff' automatizado - usado principalmente para thread de boas-vindas.
+          tagline:
+            description: Usado no modal de inscrição.
+            placeholder: Somos um lugar onde os programadores compartilham, se atualizam e desenvolvem suas carreiras.
+        general:
+          ahoy_tracking:
+            description: Rastrear visitas e eventos - os dados são armazenados em seu banco de dados. Uma reinicialização é necessária para que as alterações nesta configuração entrem em vigor.
+          billboard_enabled_countries:
+            description: Países que podem ser segmentados por geolocalização por outdoors. Clique em um país selecionado para alternar a segmentação em um nível subpaís.
+          contact_email:
+            description: Usado para links de contato. Forneça um endereço de e-mail onde os usuários possam entrar em contato com você ou sua equipe.
+          credit:
+            large:
+              description: Preço para compra de crédito grande (100 - 999 créditos).
+            medium:
+              description: Preço para compra de crédito médio (10 - 99 créditos).
+            small:
+              description: Preço para compra de crédito pequeno (<10 créditos).
+            xlarge:
+              description: Preço para compra de crédito extra grande (1000 créditos ou mais).
+          favicon:
+            description: Usado como o favicon do site
+          ga_tracking:
+            description: ID de Rastreamento do Google Universal Analytics, por exemplo, UA-XXXXXXXX-1
+          ga_analytics_4:
+            description: ID de Medição do Google Analytics 4, por exemplo, G-XXXXXXXXX
+          hashtag:
+            description: Usado como a hashtag do twitter da comunidade
+            placeholder: '#DEVCommunity'
+          health:
+            description: Usado para autenticar com seus pontos finais de verificação de saúde.
+            placeholder: um token seguro
+          logo_png:
+            description: Usado como um logotipo secundário em lugares como os modais de login, integração, ícones de toque da Apple. Recomendado mínimo de 512x512px
+          logo_svg:
+            description: Este é o logotipo atualmente usado no canto superior esquerdo do seu Forem. No entanto, após o lançamento, será descontinuado em favor do Logotipo acima.
+          mailchimp_api:
+            description: Chave API usada para conectar a conta Mailchimp. Encontrado no backend do Mailchimp
+          mailchimp_mod:
+            description: ID do Boletim Informativo dos Moderadores da Comunidade
+          mailchimp_news:
+            description: ID principal do Boletim Informativo, também conhecido como ID do Público
+          mailchimp_tag_mod:
+            description: ID do Boletim Informativo dos Moderadores de Tags
+          main_social:
+            description: Usado como a imagem principal nas redes sociais e OpenGraph. Proporção de aspecto recomendada de 16:9 (600x337px,1200x675px)
+          mascot_image:
+            description: Usado como a imagem do mascote.
+          mascot_user:
+            description: A conta do Mascote
+          meta_keywords:
+            description: 'Lista de palavras-chave válidas: separadas por vírgulas, apenas letras, por exemplo, engenharia, desenvolvimento'
+          onboarding_newsletter_content:
+            description: "Use este campo para definir o título e o subtítulo para a etapa de oferta do seu boletim informativo. Mantenha-o conciso."
+            placeholder: "Você pode configurar imagem, título e subtítulo via markdown"
+          onboarding_newsletter_opt_in_head:
+            description: "Título da caixa de seleção do boletim informativo"
+            placeholder: "Por exemplo, Sim, inscreva-me no boletim informativo semanal"
+          onboarding_newsletter_opt_in_subhead:
+            description: "Subtítulo da caixa de seleção do boletim informativo"
+            placeholder: "Por exemplo, Fique tranquilo, respeitamos sua privacidade. Seu e-mail será usado apenas para nosso boletim informativo e não será compartilhado com outras pessoas."
+          payment:
+            description: 'Usado para a monetização da web em todo o site. Veja: https://github.com/forem/forem/pull/6345'
+          periodic:
+            description: Determina com que frequência os resumos de e-mail periódicos são enviados (em dias)
+          sidebar:
+            description: Determina quais tags são mostradas na barra lateral direita da página inicial
+            placeholder: Lista de tags válidas, separadas por vírgulas, por exemplo, help,discuss,explainlikeimfive,meta
+          stripe_api:
+            description: 'Chave secreta Stripe para receber pagamentos. Veja: https://stripe.com/docs/keys'
+          stripe_key:
+            description: 'Chave pública Stripe para receber pagamentos. Veja: https://stripe.com/docs/keys'
+          tags:
+            description: Determina quais tags são sugeridas aos novos usuários durante a integração (separadas por vírgulas, apenas letras)
+            placeholder: 'Lista de tags válidas: separadas por vírgulas, apenas letras, por exemplo, beginners,javascript,ruby,swift,kotlin'
+          video:
+            description: Chave secreta usada para permitir a codificação de vídeo AWS através do VideoStatesController
+        rate_limit:
+          new_days:
+            description: O número de dias em que um usuário é considerado novo. O padrão são 3 dias, mas você pode desativar isso completamente inserindo 0.
+          spam:
+            description: Frases individuais (não diferencia maiúsculas de minúsculas) que acionam alertas de spam, separadas por vírgulas.
+            placeholder: carros usados perto de você, hack pokemon go
+        smtp:
+          address:
+            description: Endereço do servidor de correio remoto
+            placeholder: por exemplo, smtp.gmail.com
+          authentication:
+            description: Se o seu servidor de correio requer autenticação, você precisa especificar o tipo de autenticação aqui
+            placeholder: por exemplo, plain, login, ou cram_md5
+          domain:
+            description: Se você precisa especificar um domínio HELO, você pode fazer isso aqui
+          password:
+            description: Se o seu servidor de correio requer autenticação, copie a senha do seu servidor
+          port:
+            description: A porta em que seu servidor de correio está rodando
+            placeholder: '25'
+          user_name:
+            description: Se o seu servidor de correio requer autenticação, copie o nome de usuário do seu servidor
+          from_email:
+            description: O endereço de e-mail do qual os e-mails devem ser enviados
+          reply_to:
+            description: O endereço de e-mail para o qual os usuários podem responder
+        user_experience:
+          default_font:
+            description: Determina a fonte de leitura padrão (usuários registrados podem alterar isso em suas configurações de UX)
+          default_locale:
+            description: Determina o idioma e a localização padrão para o Forem (atualmente em beta experimental)
+          feed_strategy:
+            description: 'Determina a principal abordagem do algoritmo de feed que o aplicativo adota: básico ou large_forem_experimental (que deve ser usado apenas para comunidades com mais de 10 mil membros)'
+            placeholder: básico
+          feed_style:
+            description: Determina qual feed padrão os usuários veem (conteúdo rico, mais minimalista, etc.)
+            placeholder: básico, rico, ou compacto
+          cover_image_height:
+            description: Determina a altura das imagens de capa, em relação a uma largura de 1000px
+            placeholder: '420'
+          cover_image_fit:
+            description: Determina a estratégia de corte para imagens de capa
+            placeholder: crop, limit
+          home_feed:
+            description: Pontuação mínima necessária para uma postagem aparecer na página inicial não autenticada.
+          index_minimum_date:
+            description: Data mínima necessária para uma postagem ser indexada pelos motores de busca (Timestamp Unix).
+          index_minimum_score:
+            description: Pontuação mínima necessária para uma postagem ser indexada pelos motores de busca.
+          primary_hex:
+            description: Determina o fundo/borda dos botões etc. Deve ser escuro o suficiente para contrastar com o texto branco.
+          tag_feed:
+            description: Pontuação mínima necessária para uma postagem aparecer na página de tag padrão.

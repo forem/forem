@@ -1,0 +1,41 @@
+---
+pt:
+  create_mascot:
+    name: Mascote
+    error: Mascote já definido
+  broadcast:
+    welcome:
+      ask_question: "Sloan aqui! 👋 Notei que você ainda não <a href='https://dev.to/t/explainlikeimfive'>fez uma pergunta</a> ainda. Fazer uma pergunta é fácil; basta clicar em 'Criar Postagem' na barra lateral da página de tags para começar!"
+      customize_experience: "Sloan aqui! 👋 Você sabia que pode personalizar sua experiência no DEV? Tente mudar <a href='settings/customization'>sua fonte e tema</a> e encontre o melhor estilo para você!"
+      customize_feed: "Oi, sou eu de novo! 👋 Agora que você faz parte da comunidade DEV, vamos nos concentrar em personalizar seu conteúdo. Você pode começar <a href='/tags'>seguindo algumas tags</a> para ajudar a personalizar seu feed! 🎉"
+      discuss_and_ask: "Sloan aqui! 👋 Notei que você ainda não <a href='https://dev.to/t/explainlikeimfive'>fez uma pergunta</a> ou <a href='https://dev.to/t/discuss'>iniciou uma discussão</a> ainda. É fácil fazer ambas as coisas; basta clicar em 'Criar Postagem' na barra lateral da página de tags para começar!"
+      download_app: "Sloan aqui, com uma última dica! 👋 Você já baixou o aplicativo móvel DEV? Considere <a href='https://dev.to/downloads'>baixá-lo</a> para que você possa acessar todo o seu conteúdo DEV favorito em qualquer lugar!"
+      set_up_profile: "Bem-vindo ao DEV! 👋 Eu sou Sloan, o mascote da comunidade e estou aqui para ajudá-lo a começar. Vamos começar <a href='/settings'>configurando seu perfil</a>!"
+      start_discussion: "Sloan aqui! 👋 Notei que você ainda não <a href='https://dev.to/t/discuss'>iniciou uma discussão</a> ainda. Iniciar uma discussão é fácil; basta clicar em 'Criar Postagem' na barra lateral da página de tags para começar!"
+      welcome_thread: "Sloan aqui de novo! 👋 DEV é uma comunidade amigável. Por que não se apresentar deixando um comentário em <a href='/welcome'>o tópico de boas-vindas</a>!"
+    connect:
+      apple: "Você está indo bem! 🎉 Você tem uma conta Apple? Considere <a href='/settings'>conectá-la</a>."
+      facebook: "Você está indo bem! 🎉 Você tem uma conta no Facebook? Considere <a href='/settings'>conectá-la</a>."
+      forem: "Você está indo bem! 🎉 Você tem uma conta Forem? Considere <a href='/settings'>conectá-la</a>."
+      github: "Você está indo bem! 🎉 Você tem uma conta no GitHub? Considere <a href='/settings'>conectá-la</a> para que você possa fixar qualquer um dos seus repositórios no seu perfil."
+      google: "Você está indo bem! 🎉 Você tem uma conta Google? Considere <a href='/settings'>conectá-la</a>."
+      twitter: "Você está indo bem! 🎉 Você tem uma conta no Twitter? Considere <a href='/settings'>conectá-la</a> para que possamos mencioná-lo se compartilharmos sua postagem através da nossa conta no Twitter <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+  errors:
+    authentication:
+      errors:
+        suspended: Parece que sua conta anterior no %{community_name} foi suspensa. Como tal, tomamos medidas para impedir que você crie uma nova conta com %{community_name} e sua comunidade. Se você acha que houve um erro, por favor nos envie um e-mail para %{community_email}, e daremos outra olhada.
+    fastly_config:
+      must_be_array: 'configs: deve ser um Array de Strings'
+      invalid_config: Configuração Fastly inválida - %{invalid_config}. Apenas %{valid_configs_join} são válidos.
+  policies:
+    application_policy:
+      must_be_logged_in: deve estar logado
+      you_must_be_logged_in: Você deve estar logado
+      your_account_is_suspended: Sua conta está suspensa
+    liquid_tag_policy:
+      no_user_found: Nenhum usuário encontrado
+      not_permitted: O usuário não tem permissão para usar esta tag líquida
+  uploaders:
+    base_uploader:
+      too_many_frames: GIF contém muitos quadros. O número máximo de quadros permitidos é %{frame_max}.
+      timeout: O processamento de imagem excedeu o tempo limite.

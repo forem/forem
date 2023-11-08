@@ -3,23 +3,23 @@ fr:
   views:
     manager:
       meta:
-        title: Manage %{title}
+        title: Gérer %{title}
       error:
         pins: "Uh Oh! %{error} 😬"
       tools:
-        heading: 'Tools:'
-        subtitle: 'Experience Level of Post:'
-        text_html: "Is your post written more for a beginner or an advanced audience? Adjust this level as a <em>gentle</em> indicator which will help show the post to the people who will benefit the most."
+        heading: 'Outils:'
+        subtitle: 'Niveau d’expérience du poste:'
+        text_html: "Votre publication est-elle plus destinée à un public débutant ou avancé? Ajustez ce niveau comme un indicateur <em>doux</em> qui aidera à montrer le poste aux personnes qui en bénéficieront le plus."
       nav:
-        dashboard: Dashboard
-        text: "👉 Manage Your Post"
+        dashboard: Tableau de bord
+        text: "👉 Gérer votre publication"
       rating:
-        heading: Experience Level of Post
-        text: Who is this post most relevant for?
-        lower: "👈 Beginner"
+        heading: Niveau d’expérience du poste
+        text: Pour qui ce poste est-il le plus pertinent?
+        lower: "👈 Débutant"
         higher: "Expert 👉"
       tips:
-        heading: 'Tips:'
-        text_1: Write your own tweet about the post, describing personally why you wrote it or why people might find it useful. We may retweet you.
-        text_2_html: 'Share to link aggregators such as <a href="https://www.reddit.com">Reddit</a>. Try to choose the most topic-specific subreddits, such as <a href="https://www.reddit.com/r/javascript">/r/javascript</a> or <a href="https://www.reddit.com/r/python">/r/python</a>, etc. <em>Warning: jerks and trolls may be lurking.</em>'
-        text_3: Share with your co-workers or local communities. Ask people to leave questions for you in the comments. It's a great way to spark additional discussion.
+        heading: 'Conseils:'
+        text_1: Rédigez votre propre tweet sur le poste, décrivant personnellement pourquoi vous l'avez écrit ou pourquoi les gens pourraient le trouver utile. Nous pourrions vous retweeter.
+        text_2_html: 'Partagez sur des agrégateurs de liens tels que <a href="https://www.reddit.com">Reddit</a>. Essayez de choisir les subreddits les plus spécifiques au sujet, tels que <a href="https://www.reddit.com/r/javascript">/r/javascript</a> ou <a href="https://www.reddit.com/r/python">/r/python</a>, etc. <em>Attention: des imbéciles et des trolls peuvent se cacher.</em>'
+        text_3: Partagez avec vos collègues ou vos communautés locales. Demandez aux gens de vous laisser des questions dans les commentaires. C'est un excellent moyen de susciter une discussion supplémentaire.

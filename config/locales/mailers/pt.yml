@@ -1,0 +1,33 @@
+---
+pt:
+  mailers:
+    digest_mailer:
+      from: Resumo
+      more_top_posts: mais principais %{community} posts
+      more_top_posts_based: mais principais %{community} posts baseados nos seus interesses
+      more_top_posts_from: mais principais leituras da comunidade
+      more_trending_posts: mais %{community} posts em alta
+      more_trending_posts_picked: mais %{community} posts em alta escolhidos para você
+      other_posts: outros posts que você pode gostar
+      other_community_posts: outros %{community} posts que você pode gostar
+      other_top_posts: outros principais %{community} posts
+      other_trending_posts: outros %{community} posts em alta
+    notify_mailer:
+      account_deleted: "%{community} - Confirmação de Exclusão de Conta"
+      deletion_requested: "%{community} - Exclusão de Conta Solicitada"
+      trusted: Parabéns! Você agora é um usuário "confiável" em %{community}!
+      moderator: "Parabéns! Você agora é um moderador para #%{tag_name}"
+      new_follower: acabou de seguir você em %{community}
+      new_mention: "%{name} acabou de mencionar você em seu %{type}"
+      org_deleted: "%{community} - Confirmação de Exclusão de Organização"
+      new_reply: "%{name} respondeu ao seu %{type}"
+      feedback: Obrigado por sua denúncia em %{community}
+      export: A exportação do seu conteúdo está pronta
+      unread_notifications:
+        one: "🔥 Você tem %{count} notificações não lidas em %{community}"
+        other: "🔥 Você tem %{count} notificações não lidas em %{community}"
+      new_badge: Você acabou de receber uma insígnia
+      video_upload: Seu upload de vídeo está completo
+    verification_mailer:
+      from: "Verificação de Email %{community} <%{email}>"
+      verify_ownership: Verifique a Propriedade da Sua Conta %{community}

@@ -1,0 +1,71 @@
+---
+pt:
+  views:
+    main:
+      aria_home: "%{community} Início"
+      header:
+        create_account: Criar conta
+        login: Entrar
+        nav:
+          aria_label: Menu de navegação
+        moderation:
+          aria_label: Moderação
+          icon: Moderação
+        notifications:
+          aria_label: Notificações
+          icon: Notificações
+        skip: Pular para o conteúdo
+      modal:
+        create_account:
+          aria_label: Criar nova conta
+          text: Criar conta
+        login:
+          aria_label: Entrar
+          text: Entrar
+      nav:
+        admin: Admin
+        dashboard: Painel
+        placeholder: "..."
+        list: Lista de leitura
+        moderator_center: Centro do Moderador
+        other: Outro
+        settings: Configurações
+      nav_name:
+        About: Sobre
+        Code of Conduct: Código de Conduta
+        Contact: Contato
+        FAQ: FAQ
+        Home: Início
+        Listings: Listagens
+        Podcasts: Podcasts
+        Privacy Policy: Política de Privacidade
+        Reading List: Lista de Leitura
+        Tags: Tags
+        Terms of use: Termos de uso
+        Videos: Vídeos
+      side:
+        listings:
+          heading: Listagens
+          all: Ver tudo
+          new: Criar uma Listagem
+        trend: guias/recursos em alta
+        recent: consultados recentemente
+      tags:
+        aria_label: Personalizar prioridade de tag
+        follow: Seguir
+        my_tags: Minhas Tags
+        popular_tags: Tags Populares
+      footer:
+        built:
+          text_html: Construído no %{forem} — o software %{opensource} que alimenta %{dev} e outras comunidades inclusivas.
+          forem: Forem
+          opensource: código aberto
+          dev: DEV
+        desc_html: "%{community} — %{desc}"
+        logo: Logo Forem
+        powered:
+          text_html: Feito com amor e %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+        sidebar_desc_html: "%{community}\n%{desc}"
+      create_post: Criar Postagem
+      signout: Sair

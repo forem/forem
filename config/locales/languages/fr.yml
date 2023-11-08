@@ -3,111 +3,111 @@ fr:
   languages:
     display_name:
       af: Afrikaans
-      am: Amharic
-      ar: Arabic
-      az: Azerbaijani
-      be: Belarusian
-      bg: Bulgarian
-      bg-Latn: Bulgarian (Latin)
-      bn: Bangla
-      bs: Bosnian
+      am: Amharique
+      ar: Arabe
+      az: Azéri
+      be: Biélorusse
+      bg: Bulgare
+      bg-Latn: Bulgare (Latin)
+      bn: Bengali
+      bs: Bosniaque
       ca: Catalan
       ceb: Cebuano
-      co: Corsican
-      cs: Czech
-      cy: Welsh
-      da: Danish
-      de: German
-      el: Greek
-      el-Latn: Greek (Latin)
-      en: English
-      eo: Esperanto
-      es: Spanish
-      et: Estonian
+      co: Corse
+      cs: Tchèque
+      cy: Gallois
+      da: Danois
+      de: Allemand
+      el: Grec
+      el-Latn: Grec (Latin)
+      en: Anglais
+      eo: Espéranto
+      es: Espagnol
+      et: Estonien
       eu: Basque
-      fa: Persian
-      fi: Finnish
+      fa: Persan
+      fi: Finnois
       fil: Filipino
-      fr: French
-      fy: Western Frisian
-      ga: Irish
-      gd: Scottish Gaelic
-      gl: Galician
+      fr: Français
+      fy: Frison occidental
+      ga: Irlandais
+      gd: Gaélique écossais
+      gl: Galicien
       gu: Gujarati
-      ha: Hausa
-      haw: Hawaiian
+      ha: Haoussa
+      haw: Hawaïen
       hi: Hindi
       hi-Latn: Hindi (Latin)
       hmn: Hmong
-      hr: Croatian
-      ht: Haitian Creole
-      hu: Hungarian
-      hy: Armenian
-      id: Indonesian
+      hr: Croate
+      ht: Créole haïtien
+      hu: Hongrois
+      hy: Arménien
+      id: Indonésien
       ig: Igbo
-      is: Icelandic
-      it: Italian
-      iw: Hebrew
-      ja: Japanese
-      ja-Latn: Japanese (Latin)
-      jv: Javanese
-      ka: Georgian
+      is: Islandais
+      it: Italien
+      iw: Hébreu
+      ja: Japonais
+      ja-Latn: Japonais (Latin)
+      jv: Javanais
+      ka: Géorgien
       kk: Kazakh
       km: Khmer
       kn: Kannada
-      ko: Korean
-      ku: Kurdish
-      ky: Kyrgyz
+      ko: Coréen
+      ku: Kurde
+      ky: Kirghize
       la: Latin
-      lb: Luxembourgish
-      lo: Lao
-      lt: Lithuanian
-      lv: Latvian
-      mg: Malagasy
-      mi: Māori
-      mk: Macedonian
+      lb: Luxembourgeois
+      lo: Laotien
+      lt: Lituanien
+      lv: Letton
+      mg: Malgache
+      mi: Maori
+      mk: Macédonien
       ml: Malayalam
-      mn: Mongolian
+      mn: Mongol
       mr: Marathi
-      ms: Malay
-      mt: Maltese
-      my: Burmese
-      ne: Nepali
-      nl: Dutch
-      "no": Norwegian
+      ms: Malais
+      mt: Maltais
+      my: Birman
+      ne: Népalais
+      nl: Néerlandais
+      "no": Norvégien
       ny: Nyanja
-      pa: Punjabi
-      pl: Polish
-      ps: Pashto
-      pt: Portuguese
-      ro: Romanian
-      ru: Russian
-      ru-Latn: Russian (Latin)
+      pa: Pendjabi
+      pl: Polonais
+      ps: Pachto
+      pt: Portugais
+      ro: Roumain
+      ru: Russe
+      ru-Latn: Russe (Latin)
       sd: Sindhi
-      si: Sinhala
-      sk: Slovak
-      sl: Slovenian
+      si: Cinghalais
+      sk: Slovaque
+      sl: Slovène
       sm: Samoan
       sn: Shona
       so: Somali
-      sq: Albanian
-      sr: Serbian
-      st: Southern Sotho
-      su: Sundanese
-      sv: Swedish
+      sq: Albanais
+      sr: Serbe
+      st: Sotho du Sud
+      su: Soundanais
+      sv: Suédois
       sw: Swahili
-      ta: Tamil
-      te: Telugu
-      tg: Tajik
-      th: Thai
-      tr: Turkish
-      uk: Ukrainian
-      ur: Urdu
-      uz: Uzbek
-      vi: Vietnamese
+      ta: Tamoul
+      te: Télougou
+      tg: Tadjik
+      th: Thaï
+      tr: Turc
+      uk: Ukrainien
+      ur: Ourdou
+      uz: Ouzbek
+      vi: Vietnamien
       xh: Xhosa
       yi: Yiddish
       yo: Yoruba
-      zh: Chinese
-      zh-Latn: Chinese (Latin)
-      zu: Zulu
+      zh: Chinois
+      zh-Latn: Chinois (Latin)
+      zu: Zoulou

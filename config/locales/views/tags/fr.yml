@@ -3,64 +3,63 @@ fr:
   views:
     tags:
       meta:
-        title: Sujets
-        description: Sujets dans %{community}
+        title: Tags
+        description: Tags à suivre sur %{community}
         og:
-          description: "%{community} est super"
+          description: "%{community} est génial!"
       heading:
         default: Tags
-        search_results: Search results for %{q}
+        search_results: Résultats de recherche pour %{q}
       search:
         aria_labels:
-          search_input: Tag search term
-          submit: Search tags
-        placeholder: Search for tag
+          search_input: Terme de recherche de tag
+          submit: Rechercher des tags
+        placeholder: Rechercher un tag
       edit:
         meta:
-          title: Edit %{tag}
+          title: Modifier %{tag}
         admin: "Admin"
-        help: "Help"
-        view: "View"
+        help: "Aide"
+        view: "Voir"
         form:
           pretty_name:
-            label: Pretty name
-            placeholder: This is the name at the top of the show page.
+            label: Joli nom
+            placeholder: C'est le nom en haut de la page de présentation.
           bg_color_hex:
-            label: Tag color
+            label: Couleur du tag
           short_summary:
-            label: Short summary
-            placeholder: Brief overview of what this tag is all about.
+            label: Bref résumé
+            placeholder: Bref aperçu de ce qu'est ce tag.
           wiki_body_markdown:
-            label: Wiki body markdown
-            placeholder: This is an 'about' section. Feel free to add an FAQ, additional resources, etc.
+            label: Wiki corps markdown
+            placeholder: C'est une section 'à propos'. N'hésitez pas à ajouter une FAQ, des ressources supplémentaires, etc.
           rules_markdown:
-            label: Rules markdown
-            placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
-          submit: Save
-        markdown_html: "%{tag} is the name of the tag used in Markdown."
+            label: Règles markdown
+            placeholder: Facultatif - Peut être utilisé pour des défis, c'est-à-dire des directives de soumission.
+          submit: Enregistrer
       follow: Suivre
+      hide: Cacher
       aria_labels:
-        follow: "Follow tag: %{tag_name}"
-        hide: "Hide tag: %{tag_name}"
-      hide: Hide
-      following_tags: Sujets suivis
-      hidden_tags: Hidden tags
+        follow: "Suivre le tag: %{tag_name}"
+        hide: "Cacher le tag: %{tag_name}"
+      following_tags: Tags suivis
+      hidden_tags: Tags cachés
       moderator:
-        text_html: "comma separated, space is optional. Example: %{code}"
+        text_html: "séparés par des virgules, l'espace est facultatif. Exemple: %{code}"
         code: 123
-        placeholder: "comma separated, space is optional. Example: 1,2,3"
+        placeholder: "séparés par des virgules, l'espace est facultatif. Exemple: 1,2,3"
       published:
-        one: 1 post
-        other: "%{count} posts"
+        one: 1 publication
+        other: "%{count} publications"
       sidebar:
-        about: 'about #%{tag}'
+        about: 'à propos de #%{tag}'
         admin: Admin
-        edit: Edit
-        guidelines: submission guidelines
-        moderate: Moderate
-        mods: tag moderators
-        new: Create Post
-        older: 'Older #%{tag} posts'
+        edit: Modifier
+        guidelines: directives de soumission
+        moderate: Modérer
+        mods: modérateurs de tag
+        new: Créer un post
+        older: 'Anciens posts #%{tag}'
         published:
-          one: 1 Post Published
-          other: "%{count} Posts Published"
+          one: 1 Post publié
+          other: "%{count} Posts publiés"

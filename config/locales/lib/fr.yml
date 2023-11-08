@@ -5,220 +5,220 @@ fr:
       settings:
         authentication:
           allowed:
-            description: Restrict registration to only certain emails? (comma-separated list)
+            description: Restreindre l'inscription à certains e-mails uniquement ? (liste séparée par des virgules)
             placeholder: dev.to, forem.com, codenewbie.org
           apple_client:
-            description: The "App Bundle" code for the Authentication Service configured in the Apple Developer Portal
+            description: Le code "App Bundle" pour le service d'authentification configuré dans le portail développeur Apple
           apple_key:
-            description: The "Key ID" from the Authentication Service configured in the Apple Developer Portal
+            description: Le "Key ID" du service d'authentification configuré dans le portail développeur Apple
           apple_pem:
-            description: The "PEM" key from the Authentication Service configured in the Apple Developer Portal
+            description: La clé "PEM" du service d'authentification configuré dans le portail développeur Apple
           apple_team:
-            description: The "Team ID" of your Apple Developer Account
+            description: Le "Team ID" de votre compte développeur Apple
           blocked:
-            description: Block registration from specified domains?  (comma-separated list)
+            description: Bloquer l'inscription à partir de domaines spécifiés ? (liste séparée par des virgules)
           display_list:
-            description: Do you want to display the list of allowed domains, or keep it private?
+            description: Voulez-vous afficher la liste des domaines autorisés, ou la garder privée ?
           facebook_key:
-            description: The "App ID" portion of the Basic Settings section of the App page on the Facebook Developer Portal
+            description: La partie "App ID" de la section Paramètres de base de la page App sur le portail développeur Facebook
           facebook_secret:
-            description: The "App Secret" portion of the Basic Settings section of the App page on the Facebook Developer Portal
+            description: La partie "App Secret" de la section Paramètres de base de la page App sur le portail développeur Facebook
           forem_key:
-            description: Forem key
+            description: Clé Forem
           forem_secret:
-            description: Forem secret
+            description: Secret Forem
           github_key:
-            description: The "Client ID" portion of the GitHub Oauth Apps portal
+            description: La partie "Client ID" du portail des applications Oauth GitHub
           github_secret:
-            description: The "Client Secret" portion of the GitHub Oauth Apps portal
+            description: La partie "Client Secret" du portail des applications Oauth GitHub
           google_key:
-            description: The "Client ID" portion of the OAuth 2.0 page on the Google Cloud Platform portal
+            description: La partie "Client ID" de la page OAuth 2.0 sur le portail Google Cloud Platform
           google_secret:
-            description: The "Client Secret" portion of the OAuth 2.0 page on the Google Cloud Platform portal
+            description: La partie "Client Secret" de la page OAuth 2.0 sur le portail Google Cloud Platform
           invite_only:
-            description: Only users invited by email can join this community.
+            description: Seuls les utilisateurs invités par e-mail peuvent rejoindre cette communauté.
           new_user_status:
-            description: What status do you want to apply to new users?
-            placeholder: Good standing
+            description: Quel statut voulez-vous appliquer aux nouveaux utilisateurs ?
+            placeholder: En règle
           providers:
-            description: How can users sign in?
+            description: Comment les utilisateurs peuvent-ils se connecter ?
           recaptcha_secret:
-            description: Add the secret key for Google reCAPTCHA, which is used for reporting abuse
-            placeholder: What is the Google reCAPTCHA secret key?
+            description: Ajoutez la clé secrète de Google reCAPTCHA, qui est utilisée pour signaler les abus
+            placeholder: Quelle est la clé secrète de Google reCAPTCHA ?
           recaptcha_site:
-            description: Add the site key for Google reCAPTCHA, which is used for reporting abuse
-            placeholder: What is the Google reCAPTCHA site key?
+            description: Ajoutez la clé de site de Google reCAPTCHA, qui est utilisée pour signaler les abus
+            placeholder: Quelle est la clé de site de Google reCAPTCHA ?
           require_recaptcha:
-            description: People will be required to fill out a captcha when they're creating a new account in your community
+            description: Les personnes devront remplir un captcha lorsqu'elles créeront un nouveau compte dans votre communauté
           twitter_key:
-            description: The "API key" portion of consumer keys in the Twitter developer portal.
+            description: La partie "API key" des clés de consommateur dans le portail développeur Twitter.
           twitter_secret:
-            description: The "API secret key" portion of consumer keys in the Twitter developer portal.
+            description: La partie "API secret key" des clés de consommateur dans le portail développeur Twitter.
         campaign:
           articles_approval:
-            placeholder: Campaign stories show up on sidebar with approval?
+            placeholder: Les histoires de campagne apparaissent sur la barre latérale avec approbation ?
           articles_expiry:
-            description: Sets the expiry time for articles (in weeks) to be displayed in campaign sidebar
+            description: Définit le délai d'expiration des articles (en semaines) à afficher dans la barre latérale de la campagne
           call_to_action:
-            description: This text populates the call to action button on the campaign sidebar
-            placeholder: Share your project
+            description: Ce texte remplit le bouton d'appel à l'action sur la barre latérale de la campagne
+            placeholder: Partagez votre projet
           display_name:
-            description: This text is displayed in reference to the campaign in titles, etc.
-            placeholder: My great campaign
+            description: Ce texte est affiché en référence à la campagne dans les titres, etc.
+            placeholder: Ma grande campagne
           featured:
-            description: Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)
-            placeholder: 'List of campaign tags: comma separated, letters only e.g. shecoded,theycoded'
+            description: Les publications avec quels tags seront mises en avant dans la barre latérale de la campagne (séparées par des virgules, lettres uniquement)
+            placeholder: 'Liste des tags de campagne : séparés par des virgules, lettres uniquement par exemple shecoded,theycoded'
           hero_html:
-            description: Hero HtmlVariant name
+            description: Nom du Hero HtmlVariant
           sidebar_enabled:
-            placeholder: Campaign sidebar enabled or not
+            placeholder: Barre latérale de la campagne activée ou non
           sidebar_image:
-            placeholder: Used at the top of the campaign sidebar
+            placeholder: Utilisé en haut de la barre latérale de la campagne
           url:
             description: https://url.com/lander
-            placeholder: URL campaign sidebar image will link to
+            placeholder: URL vers laquelle l'image de la barre latérale de la campagne liera
         community:
           copyright:
-            description: Used to mark the year this forem was started.
+            description: Utilisé pour marquer l'année de création de ce forem.
           description:
-            description: Used in meta description tags etc.
-            placeholder: A fabulous community of kind and welcoming people.
+            description: Utilisé dans les balises de description meta, etc.
+            placeholder: Une fabuleuse communauté de personnes gentilles et accueillantes.
           emoji:
-            description: Used in the title tags across the site alongside the community name
+            description: Utilisé dans les balises de titre sur le site à côté du nom de la communauté
           member:
-            description: Used to determine what a member will be called e.g developer, hobbyist etc.
-            placeholder: user
+            description: Utilisé pour déterminer comment un membre sera appelé par exemple développeur, amateur, etc.
+            placeholder: utilisateur
           name:
-            description: Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.
-            placeholder: New Forem
+            description: Utilisé comme nom principal pour votre Forem, par exemple DEV, DEV Community, The DEV Community, etc.
+            placeholder: Nouveau Forem
           staff:
-            description: Account which acts as automated 'staff'— used principally for welcome thread.
+            description: Compte qui agit comme 'staff' automatisé - utilisé principalement pour le fil de bienvenue.
           tagline:
-            description: Used in signup modal.
-            placeholder: We're a place where coders share, stay up-to-date and grow their careers.
+            description: Utilisé dans la fenêtre d'inscription.
+            placeholder: Nous sommes un endroit où les codeurs partagent, restent à jour et développent leur carrière.
         general:
           ahoy_tracking:
-            description: Track visits and events - data is stored in your database. A restart is required for changes to this configuration to take effect.
+            description: Suivre les visites et les événements - les données sont stockées dans votre base de données. Un redémarrage est nécessaire pour que les modifications de cette configuration prennent effet.
           billboard_enabled_countries:
-            description: Countries that can be geotargeted by billboards. Click on a selected country to toggle targeting on a sub-country level.
+            description: Pays qui peuvent être ciblés par des panneaux d'affichage. Cliquez sur un pays sélectionné pour basculer le ciblage à un niveau de sous-pays.
           contact_email:
-            description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
+            description: Utilisé pour les liens de contact. Veuillez fournir une adresse e-mail où les utilisateurs peuvent entrer en contact avec vous ou votre équipe.
           credit:
             large:
-              description: Price for large credit purchase (100 - 999 credits).
+              description: Prix pour l'achat de crédits en grande quantité (100 - 999 crédits).
             medium:
-              description: Price for medium credit purchase (10 - 99 credits).
+              description: Prix pour l'achat de crédits en quantité moyenne (10 - 99 crédits).
             small:
-              description: Price for small credit purchase (<10 credits).
+              description: Prix pour l'achat de petits crédits (<10 crédits).
             xlarge:
-              description: Price for extra large credit purchase (1000 credits or more).
+              description: Prix pour l'achat de crédits en très grande quantité (1000 crédits ou plus).
           favicon:
-            description: Used as the site favicon
+            description: Utilisé comme favicon du site
           ga_tracking:
-            description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
+            description: ID de suivi Google Universal Analytics, par exemple UA-XXXXXXXX-1
           ga_analytics_4:
-            description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
+            description: ID de mesure Google Analytics 4, par exemple G-XXXXXXXXX
           hashtag:
-            description: Used as the twitter hashtag of the community
+            description: Utilisé comme le hashtag twitter de la communauté
             placeholder: '#DEVCommunity'
           health:
-            description: Used to authenticate with your health check endpoints.
-            placeholder: a secure token
+            description: Utilisé pour s'authentifier avec vos points de terminaison de vérification de santé.
+            placeholder: un jeton sécurisé
           logo_png:
-            description: Used as a secondary logo in places like the sign in modals, onboarding, Apple touch icons. Recommended minimum of 512x512px
+            description: Utilisé comme logo secondaire dans des endroits comme les modales de connexion, l'intégration, les icônes tactiles Apple. Minimum recommandé de 512x512px
           logo_svg:
-            description: This is the logo currently used on the upper left-hand corner of your Forem. However, after the release it will be deprecated in favor of the Logo above.
+            description: C'est le logo actuellement utilisé dans le coin supérieur gauche de votre Forem. Cependant, après la sortie, il sera déprécié en faveur du Logo ci-dessus.
           mailchimp_api:
-            description: API key used to connect Mailchimp account. Found in Mailchimp backend
+            description: Clé API utilisée pour connecter le compte Mailchimp. Trouvé dans le backend Mailchimp
           mailchimp_mod:
-            description: Community Moderators Newsletter ID
+            description: ID de la newsletter des modérateurs de la communauté
           mailchimp_news:
-            description: Main Newsletter ID, also known as Audience ID
+            description: ID de la newsletter principale, également connue sous le nom d'ID de l'audience
           mailchimp_tag_mod:
-            description: Tag Moderators Newsletter ID
+            description: ID de la newsletter des modérateurs de tags
           main_social:
-            description: Used as the main image in social networks and OpenGraph. Recommended aspect ratio of 16:9 (600x337px,1200x675px)
+            description: Utilisé comme image principale dans les réseaux sociaux et OpenGraph. Ratio d'aspect recommandé de 16:9 (600x337px,1200x675px)
           mascot_image:
-            description: Used as the mascot image.
+            description: Utilisé comme image de la mascotte.
           mascot_user:
-            description: The Mascot account
+            description: Le compte Mascotte
           meta_keywords:
-            description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
+            description: 'Liste de mots-clés valides : séparés par des virgules, lettres uniquement par exemple ingénierie, développement'
           onboarding_newsletter_content:
-            description: "Use this field to set the title and subtitle for your newsletter offering step. Keep it concise."
-            placeholder: "You can configure image, title and subtitle via markdown"
+            description: "Utilisez ce champ pour définir le titre et le sous-titre de votre étape d'offre de newsletter. Soyez concis."
+            placeholder: "Vous pouvez configurer l'image, le titre et le sous-titre via markdown"
           onboarding_newsletter_opt_in_head:
-            description: "Newsletter checkbox heading"
-            placeholder: "E.g., Yes, subscribe me to the weekly newsletter"
+            description: "En-tête de la case à cocher de la newsletter"
+            placeholder: "Par exemple, Oui, abonnez-moi à la newsletter hebdomadaire"
           onboarding_newsletter_opt_in_subhead:
-            description: "Newsletter checkbox subheading"
-            placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+            description: "Sous-titre de la case à cocher de la newsletter"
+            placeholder: "Par exemple, Soyez assuré, nous respectons votre vie privée. Votre e-mail ne sera utilisé que pour notre newsletter et ne sera pas partagé avec d'autres."
           payment:
-            description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
+            description: 'Utilisé pour la monétisation web à l'échelle du site. Voir : https://github.com/forem/forem/pull/6345'
           periodic:
-            description: Determines how often periodic email digests are sent (in days)
+            description: Détermine à quelle fréquence les digests de courrier électronique périodiques sont envoyés (en jours)
           sidebar:
-            description: Determines which tags are shown on the homepage right-hand sidebar
-            placeholder: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
+            description: Détermine quels tags sont affichés sur la barre latérale droite de la page d'accueil
+            placeholder: Liste de tags valides, séparés par des virgules par exemple help,discuss,explainlikeimfive,meta
           stripe_api:
-            description: 'Secret Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+            description: 'Clé secrète Stripe pour recevoir des paiements. Voir : https://stripe.com/docs/keys'
           stripe_key:
-            description: 'Public Stripe key for receiving payments. See: https://stripe.com/docs/keys'
+            description: 'Clé publique Stripe pour recevoir des paiements. Voir : https://stripe.com/docs/keys'
           tags:
-            description: Determines which tags are suggested to new users during onboarding (comma separated, letters only)
-            placeholder: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
+            description: Détermine quels tags sont suggérés aux nouveaux utilisateurs lors de l'intégration (séparés par des virgules, lettres uniquement)
+            placeholder: 'Liste de tags valides : séparés par des virgules, lettres uniquement par exemple beginners,javascript,ruby,swift,kotlin'
           video:
-            description: Secret key used to allow AWS video encoding through the VideoStatesController
+            description: Clé secrète utilisée pour permettre l'encodage vidéo AWS via le VideoStatesController
         rate_limit:
           new_days:
-            description: The number of days a user is considered new. The default is 3 days, but you can disable this entirely by inputting 0.
+            description: Le nombre de jours pendant lesquels un utilisateur est considéré comme nouveau. La valeur par défaut est de 3 jours, mais vous pouvez désactiver cela entièrement en entrant 0.
           spam:
-            description: Individual (case insensitive) phrases that trigger spam alerts, comma separated.
-            placeholder: used cars near you, pokemon go hack
+            description: Phrases individuelles (insensibles à la casse) qui déclenchent des alertes de spam, séparées par des virgules.
+            placeholder: voitures d'occasion près de chez vous, hack pokemon go
         smtp:
           address:
-            description: Address of the remote mail server
-            placeholder: i.e. smtp.gmail.com
+            description: Adresse du serveur de messagerie distant
+            placeholder: par exemple smtp.gmail.com
           authentication:
-            description: If your mail server requires authentication, you need to specify the authentication type here
-            placeholder: i.e. plain, login, or cram_md5
+            description: Si votre serveur de messagerie nécessite une authentification, vous devez spécifier le type d'authentification ici
+            placeholder: par exemple plain, login, ou cram_md5
           domain:
-            description: If you need to specify a HELO domain, you can do it here
+            description: Si vous devez spécifier un domaine HELO, vous pouvez le faire ici
           password:
-            description: If your mail server requires authentication, copy the password from your server
+            description: Si votre serveur de messagerie nécessite une authentification, copiez le mot de passe de votre serveur
           port:
-            description: The port that your mail server runs on
+            description: Le port sur lequel votre serveur de messagerie fonctionne
             placeholder: '25'
           user_name:
-            description: If your mail server requires authentication, copy the username from your server
+            description: Si votre serveur de messagerie nécessite une authentification, copiez le nom d'utilisateur de votre serveur
           from_email:
-            description: The email address that emails should be sent from
+            description: L'adresse e-mail à partir de laquelle les e-mails doivent être envoyés
           reply_to:
-            description: The email address that users can reply to
+            description: L'adresse e-mail à laquelle les utilisateurs peuvent répondre
         user_experience:
           default_font:
-            description: Determines the default reading font (registered users can change this in their UX settings)
+            description: Détermine la police de lecture par défaut (les utilisateurs enregistrés peuvent modifier cela dans leurs paramètres UX)
           default_locale:
-            description: Determines the default language and localization for the Forem (currently in experimental beta)
+            description: Détermine la langue et la localisation par défaut pour le Forem (actuellement en version bêta expérimentale)
           feed_strategy:
-            description: 'Determines the main feed algorithm approach the app takes: basic or large_forem_experimental (which should only be used for 10k+ member communities)'
+            description: 'Détermine l'approche principale de l'algorithme de flux que l'application prend : basic ou large_forem_experimental (qui ne devrait être utilisé que pour les communautés de plus de 10k membres)'
             placeholder: basic
           feed_style:
-            description: Determines which default feed the users sees (rich content, more minimal, etc.)
-            placeholder: basic, rich, or compact
+            description: Détermine quel flux par défaut les utilisateurs voient (contenu riche, plus minimal, etc.)
+            placeholder: basic, rich, ou compact
           cover_image_height:
-            description: Determines the height of cover images, relative to a width of 1000px
+            description: Détermine la hauteur des images de couverture, par rapport à une largeur de 1000px
             placeholder: '420'
           cover_image_fit:
-            description: Determines the cropping strategy for cover images
+            description: Détermine la stratégie de recadrage pour les images de couverture
             placeholder: crop, limit
           home_feed:
-            description: Minimum score needed for a post to show up on the unauthenticated home page.
+            description: Score minimum nécessaire pour qu'un post apparaisse sur la page d'accueil non authentifiée.
           index_minimum_date:
-            description: Minimum date needed for a post to be indexed by search engines (Unix Timestamp).
+            description: Date minimum nécessaire pour qu'un post soit indexé par les moteurs de recherche (Timestamp Unix).
           index_minimum_score:
-            description: Minimum score needed for a post to be indexed by search engines.
+            description: Score minimum nécessaire pour qu'un post soit indexé par les moteurs de recherche.
           primary_hex:
-            description: Determines background/border of buttons etc. Must be dark enough to contrast with white text.
+            description: Détermine le fond/bordure des boutons, etc. Doit être assez foncé pour contraster avec le texte blanc.
           tag_feed:
-            description: Minimum score needed for a post to show up on default tag page.
+            description: Score minimum nécessaire pour qu'un post apparaisse sur la page de tag par défaut.

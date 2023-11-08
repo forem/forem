@@ -1,0 +1,155 @@
+---
+pt:
+  views:
+    comments:
+      meta:
+        title_root: Discussão de %{title}
+        description: Um artigo da comunidade
+        og:
+          title: Discussão de %{title}
+          title_rel: "%{root} — %{site}"
+          title_root: "[Discussão] %{title} — %{site}"
+          description: "Comentário de %{site}"
+      parent:
+        subtitle_html: "%{start}Discussão sobre: %{end}%{title}"
+        metadata_html: "%{name}%{on}"
+        date: " em %{date}"
+        full: Discussão completa
+        read: Ler post completo
+        view: Ver post
+        view_full:
+          one: Ver discussão completa (%{count} comentário)
+          other: Ver discussão completa (%{count} comentários)
+        reply_html: "%{start}Respostas para:%{end} %{title}"
+      delete:
+        heading: Tem certeza de que deseja excluir este comentário?
+        desc_html: Você não pode desfazer esta ação, talvez você queira apenas %{action} em vez disso?
+        action: Editar
+        submit: Excluir
+        edit: Editar
+        cancel: Descartar
+        comment_deleted: Comentário excluído
+      collapse: Recolher
+      edit: Editando comentário
+      edited:
+        text_html: "&bull; Editado em %{date}"
+        short_html: "&bull; Editado"
+      expand: Expandir
+      visible_signed_in:
+        text_html: "Alguns comentários podem ser visíveis apenas para visitantes logados. %{sign_in} para ver todos os comentários."
+        sign_in: "Entrar"
+      hidden:
+        text_html: Alguns comentários foram ocultados pelo autor do post - %{info}
+        info: saiba mais
+        comment_hidden: Comentário ocultado pelo autor do post
+      hider:
+        description_html: Tem certeza de que deseja ocultar este comentário? Ele ficará oculto em seu post, mas ainda será visível através do %{permalink} do comentário.
+        hide_child: Ocultar comentários filhos também
+        note_html: Para outras ações, você pode considerar bloquear esta pessoa e/ou %{reporting}
+        permalink: link permanente
+        reporting: denunciar abuso
+        submit: Confirmar
+      locked: A discussão foi bloqueada. Novos comentários não podem ser adicionados.
+      orphan:
+        deleted: "[Comentário de um post excluído]"
+      re:
+        text_html: "%{re}%{title}"
+        re: 'Re: '
+      settings:
+        meta:
+          title: Configurações de Comentário
+        heading: Configurações de Comentário
+        state:
+          show:
+            subtitle: Mostrando notificações de thread
+            desc: Você receberá todas as notificações para este comentário e qualquer um dos seus comentários nesta cadeia.
+          mute:
+            subtitle: Silenciando notificações de thread
+            desc: Todas as notificações para este comentário e qualquer um dos seus comentários no thread estão atualmente silenciadas.
+        subscribe:
+          subtitle: Inscrição
+          desc: Você ainda está inscrito em todos os comentários no thread mais amplo, o que significa que ainda receberá notificações para respostas a este comentário.
+          mute: Silenciar notificações
+          unmute: Ativar notificações
+      quality:
+        low: Comentário marcado como de baixa qualidade/não construtivo pela comunidade.
+        conduct: Ver Código de Conduta
+        hidden:
+          icon: Info
+          text:
+            visible_in_permalink: Comentário ocultado pelo autor do post - thread visível apenas neste link permanente
+            accessible_via_permalink: Comentário ocultado pelo autor do post - thread acessível apenas via link permanente
+      write:
+        errors:
+          one: '1 erro impediu que este comentário fosse salvo:'
+          other: "%{count} erros impediram que este comentário fosse salvo:"
+        field:
+          aria_label: Adicione um comentário à discussão
+          placeholder: Adicione à discussão
+          submit: Enviar
+          templates: Modelos
+          upload: Enviar imagem
+          use: Use um modelo de resposta
+          guide:
+            title: Guia de Markdown
+            icon: Guia do editor
+        template:
+          article: Este post vem com um modelo de comentário
+          create:
+            subtitle: Criar modelo
+            desc: Os modelos permitem que você responda rapidamente às perguntas frequentes ou armazene trechos para reutilização.
+          moderator: Usuário Confiável
+          personal: Pessoal
+        submit: Enviar
+        preview: Pré-visualizar
+        cancel: Descartar
+      menu:
+        aria_label: Alternar menu suspenso
+        icon: Menu suspenso
+        copy:
+          aria_label: Copiar link para o comentário de %{user}
+          text: Copiar link
+        settings:
+          aria_label: Ir para as configurações de comentário de %{user}
+        action:
+          aria_label: "%{action} comentário de %{user}"
+          hide: Ocultar
+          unhide: Mostrar
+          hide_text: Ocultar
+          unhide_text: Mostrar
+        moderate:
+          aria_label: Moderar comentário de %{user}
+        report:
+          aria_label: Denunciar comentário de %{user} como abusivo ou violando nosso código de conduta e/ou termos e condições
+      footer:
+        heart:
+          aria_label: curtir
+          title: Curtir
+          icon: 'Curtir comentário: '
+          count_html: "%{num}%{likes}"
+          text: Curtir
+        reply:
+          aria_label: Responder a um comentário...
+          icon: Botão de comentário
+          done: Respondido
+          text: Responder
+          placeholder: Responder...
+        thread:
+          icon: Thread
+          text: Thread
+        view:
+          icon: Botão de visualização
+          text: Ver
+        subscribe:
+          icon: Botão de inscrição
+          text: Inscrever-se nos comentários
+      count:
+        one: "%{count} comentário"
+        other: "%{count} comentários"
+      empty: Novo
+      add: "Adicionar\_Comentário"
+      summary:
+        count_html:
+          one: "%{count}%{start}\_comentário%{end}"
+          other: "%{count}%{start}\_comentários%{end}"
+        title: Comentários

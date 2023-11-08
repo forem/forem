@@ -3,7 +3,7 @@ fr:
   helpers:
     label:
       listing:
-        body_markdown: Body Markdown
+        body_markdown: Corps Markdown
         expires_at: Date d'expiration personnalisée
         location: Emplacement
         organization_id: Publier sous une organisation
@@ -12,18 +12,18 @@ fr:
       organization:
         name: Nom
         slug: Nom d'utilisateur
-        profile_image: Image du profil
+        profile_image: Image de profil
         twitter_username: Nom d'utilisateur Twitter
-        github_username: nom d'utilisateur GitHub
+        github_username: Nom d'utilisateur GitHub
         url: URL du site web
-        tag_line: Ligne de présentation
+        tag_line: Slogan
         summary: Résumé
         location: Emplacement
-        email: Email du support
+        email: Email de support
         company_size: Taille de l'organisation
         story: Notre histoire
-        tech_stack: Notre tech stack
-        cta_body_markdown: Corps du texte
+        tech_stack: Notre pile technologique
+        cta_body_markdown: Texte du corps
         cta_button_text: Texte du lien
         cta_button_url: URL du lien
         proof: Preuve
@@ -32,9 +32,9 @@ fr:
         description: Description
         feed_url: URL du flux
         image: Image
-        itunes_url: URL Itunes
+        itunes_url: URL iTunes
         main_color_hex: Couleur principale hex
-        overcast_url: Overcast url
+        overcast_url: URL Overcast
         pattern_image: Image du motif
         slug: Slug
         soundcloud_url: URL Soundcloud
@@ -50,19 +50,19 @@ fr:
         username: Nom d'utilisateur
         profile_image: Image de profil
       users_notification_setting:
-        email_newsletter: Envoyez-moi une newsletter hebdomadaire
-        email_digest_periodic: Envoyez-moi un condensé périodique des meilleurs messages de mes tags
-        email_tag_mod_newsletter: Envoyez-moi des e-mails de newsletter pour les modérateurs de tags
-        email_community_mod_newsletter: Envoyez-moi les e-mails de la newsletter des modérateurs de communauté
-        email_comment_notifications: Envoyez-moi un e-mail lorsque quelqu'un me répond dans un fil de commentaires
-        email_follower_notifications: Envoyez-moi un e-mail lorsque quelqu'un me suit
-        email_mention_notifications: Envoyez-moi un e-mail lorsque quelqu'un me mentionne
-        email_badge_notifications: Envoyez-moi un e-mail lorsque je reçois un badge
-        email_unread_notifications: Envoyez-moi des rappels occasionnels lorsque j'ai des notifications non lues sur %{community}
-        mobile_mention_notifications: Envoyez-moi une notification push lorsque quelqu'un me mentionne
-        mobile_comment_notifications: Envoyez-moi une notification push lorsque quelqu'un me répond dans un fil de commentaires
-        welcome_notifications: Envoyez-moi de temps en temps des conseils pour améliorer mon expérience sur %{community}
-        reaction_notifications: Envoyer des notifications lorsque quelqu'un réagit à mon contenu, comme des commentaires ou des messages
+        email_newsletter: Envoyez-moi des emails de newsletter hebdomadaires
+        email_digest_periodic: Envoyez-moi un résumé périodique des meilleurs articles de mes tags
+        email_tag_mod_newsletter: Envoyez-moi des emails de newsletter pour les modérateurs de tags
+        email_community_mod_newsletter: Envoyez-moi des emails de newsletter pour les modérateurs de communauté
+        email_comment_notifications: Envoyez-moi un email quand quelqu'un me répond dans un fil de commentaires
+        email_follower_notifications: Envoyez-moi un email quand quelqu'un me suit
+        email_mention_notifications: Envoyez-moi un email quand quelqu'un me mentionne
+        email_badge_notifications: Envoyez-moi un email quand je reçois un badge
+        email_unread_notifications: Envoyez-moi des rappels occasionnels que j'ai des notifications non lues sur %{community}
+        mobile_mention_notifications: Envoyez-moi une notification push quand quelqu'un me mentionne
+        mobile_comment_notifications: Envoyez-moi une notification push quand quelqu'un me répond dans un fil de commentaires
+        welcome_notifications: Envoyez-moi des conseils occasionnels sur comment améliorer mon expérience sur %{community}
+        reaction_notifications: Envoyez des notifications quand quelqu'un réagit à mon contenu, comme des commentaires ou des articles
         mod_roundrobin_notifications: Envoyez-moi des notifications sur l'activité des nouveaux membres
       users_setting:
         feed_url: URL du flux RSS
@@ -77,8 +77,8 @@ fr:
         story: "..."
         tech_stack: "..."
         cta_body_markdown: "..."
-        cta_button_text: Visiter le site Acme 
-        cta_button_url: https://votresite.com
+        cta_button_text: Visitez le site Acme
+        cta_button_url: https://exemple.com
         proof: "..."
       response_template:
         title: "..."
@@ -91,10 +91,10 @@ fr:
       app_logo: Logo de l'application
       follow:
         aria_label:
-          Organization: "Suivre l'organisation: %{name}"
-          Tag: 'Suivre le tag: %{name}'
-          User: "Suivre L'utilisateur : %{name}"
-          default: "Suivre %{type}: %{name}"
+          Organization: 'Suivre l'organisation : %{name}'
+          Tag: 'Suivre le tag : %{name}'
+          User: 'Suivre l'utilisateur : %{name}'
+          default: 'Suivre %{type} : %{name}'
         text:
           Organization: Suivre
           Tag: Suivre
@@ -102,63 +102,62 @@ fr:
           default: Suivre
       required: Requis
       subtitle:
-        week: Les meilleurs articles de cette semaine
-        month: Les meilleurs articles de ce mois
-        year: Les meilleurs articles de cette année
-        infinity: Tous les messages
-        latest: Derniers messages
+        week: Meilleurs articles de la semaine
+        month: Meilleurs articles du mois
+        year: Meilleurs articles de l'année
+        infinity: Tous les articles
+        latest: Derniers articles
       title_text: "%{title} - %{timeframe}"
     articles_helper:
-      logo: "%{service_name} logo"
-      most_comments: Le plus de commentaires
-      most_reactions: Le plus de réactions
-      most_views: Le plus de vues
+      logo: "Logo %{service_name}"
+      most_comments: Plus de commentaires
+      most_reactions: Plus de réactions
+      most_views: Plus de vues
       recently_created: Récemment créé
       recently_published: Récemment publié
     authentication_helper:
-      any_of_those: n'importe lequel de ces éléments
+      any_of_those: n'importe lequel de ceux-ci
       email_password: Email et mot de passe
-      reminder:  'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité'
+      reminder: 'Rappel : vous avez utilisé %{method} pour authentifier votre compte, veuillez donc utiliser %{dem} pour vous connecter si vous y êtes invité.'
       that: que
-      invite_only: Vous ne pouvez pas faire cela tant que vous n'avez pas désactivé le mode "Invite Only".
+      invite_only: Vous ne pouvez pas faire cela tant que vous n'avez pas désactivé le mode "Invitation uniquement".
     comments_helper:
       ama: ama
       ask_me_anything: Demandez-moi n'importe quoi
       author: Auteur
       nbsp_likes_html:
-        one: "&nbsp;like"
-        other: "&nbsp;likes"
+        one: "&nbsp;j'aime"
+        other: "&nbsp;j'aime"
     feedback_messages_helper:
       offender:
         body: |
           Bonjour,
 
-          Il a été porté à notre attention que vous avez violé le %{community} Code de conduite et/ou conditions d'utilisation.
+          Il a été porté à notre attention que vous avez violé le Code de conduite de %{community} et/ou les Conditions d'utilisation.
 
-          Si ce comportement persiste, nous devrons peut-être suspendre votre compte %{community}.
+          Si ce comportement continue, nous devrons peut-être suspendre votre compte %{community}.
 
-          Si vous pensez qu'il s'agit d'une erreur, veuillez répondre à cet e-mail et nous réexaminerons la situation.
+          Si vous pensez qu'il y a eu une erreur, veuillez répondre à cet email et nous examinerons à nouveau la situation.
 
           L'équipe %{community}
-        subject: "Violation du code de conduite de %{community}"
+        subject: "Violation du Code de conduite de %{community}"
       reporter:
         body: |
           Bonjour,
-          Merci de signaler un contenu qui pourrait être en violation du %{community} Code de conduite et/ou nos conditions d'utilisation. Nous examinons votre rapport et prendrons les mesures appropriées.
-          Nous apprécions votre aide car nous nous efforçons de favoriser un environnement positif et inclusif pour tous !
+          Merci d'avoir signalé un contenu qui pourrait être en violation du Code de conduite de %{community} et/ou de nos Conditions d'utilisation. Nous examinons votre rapport et prendrons les mesures appropriées.
+          Nous apprécions votre aide alors que nous nous efforçons de créer un environnement positif et inclusif pour tous !
           L'équipe %{community}
-        subject: "Reporter %{community}"
+        subject: "Rapport %{community}"
       affected:
         body: |
           Bonjour,
 
-          Nous avons remarqué que certains commentaires (faits par d'autres personnes) sur votre message violent le %{community} Code de conduite et/ou nos conditions d'utilisation. Nous avons une tolérance zéro pour de tels comportements et nous
-          et nous prenons les mesures appropriées.
+          Nous avons remarqué certains commentaires (faits par d'autres) sur votre publication qui violent le Code de conduite de %{community} et/ou nos Conditions d'utilisation. Nous avons une tolérance zéro pour ce type de comportement et prenons les mesures appropriées.
 
-          Merci d'avoir été génial, et n'hésitez pas à nous envoyer un e-mail pour toute question ! Tous les commentaires et idées sont les bienvenus pour continuer à favoriser une communauté ouverte et inclusive.
+          Merci d'être génial, et n'hésitez pas à nous envoyer un email avec toutes vos questions ! Nous accueillons tous les commentaires et idées alors que nous continuons à travailler pour créer une communauté ouverte et inclusive.
 
           L'équipe %{community}
-        subject: Avis de courtoisie de %{community}
+        subject: "Avis de courtoisie de %{community}"
     listing_helper:
       option:
         one: "%{cl_name} (%{count} Crédit)"
@@ -169,55 +168,55 @@ fr:
       day:
         one: jour
         other: jours
-      general: Combien de %{thing} un nouveau membre (%{timeframe} ou moins) peut-il créer sur une période de 5 minutes ?
+      general: Combien de %{thing} un nouveau membre (%{timeframe} ou moins) peut-il créer dans une période de 5 minutes ?
       published:
-        title: Limiter le nombre de postes créés
-        description: Combien de messages peut-on créer sur une période de 30 secondes ?
+        title: Limiter le nombre de publications créées
+        description: Combien de publications peut-on créer dans une période de 30 secondes ?
       antispam:
-        title: Limiter le nombre de postes créés par un nouveau membre
+        title: Limiter le nombre de publications créées par un nouveau membre
       update:
-        title: Limiter le nombre de mises à jour d'un article
-        description: Combien de mises à jour peut-on faire sur une période de 30 secondes ? Mettre à jour la documentation de l'API en cas de modification.
+        title: Limiter le nombre de mises à jour d'une publication
+        description: Combien de mises à jour peut-on faire dans une période de 30 secondes ? Mettre à jour la documentation de l'API lorsqu'elle est modifiée.
       upload:
         title: Limiter le nombre d'images téléchargées
-        description: Combien d'images peut-on télécharger sur une période de 30 secondes ?
+        description: Combien d'images peut-on télécharger dans une période de 30 secondes ?
       user:
         title: Limiter le nombre de modifications qu'une personne peut apporter à son compte
-        description: Combien de changements une personne peut-elle apporter à son compte utilisateur sur une période de 30 secondes ?
+        description: Combien de modifications peut-on apporter à son compte utilisateur dans une période de 30 secondes ?
       follow:
-        title: Limiter le nombre de followers qu'une personne peut suivre par jour
+        title: Limiter le nombre de personnes qu'une personne peut suivre par jour
         description: Combien de personnes peut-on suivre en une journée ?
       reaction:
-        title: Limiter le nombre de réactions à un message ou à un commentaire
-        description: Combien de fois une personne peut-elle réagir à un message ou à un commentaire sur une période de 30 secondes ?
+        title: Limiter le nombre de réactions à une publication ou à un commentaire
+        description: Combien de fois peut-on réagir à une publication ou à un commentaire dans une période de 30 secondes ?
       feedback:
-        title: Limiter le nombre de fois où une personne peut signaler un abus
-        description: Combien de fois une personne peut-elle signaler un abus sur une période de 5 minutes ?
+        title: Limiter le nombre de fois qu'une personne peut signaler un abus
+        description: Combien de fois peut-on signaler un abus dans une période de 5 minutes ?
       comment:
         title: Limiter le nombre de commentaires créés
-        description: Combien de commentaires une personne peut-elle créer dans une période de 30 secondes ?
+        description: Combien de commentaires peut-on créer dans une période de 30 secondes ?
       comment_antispam:
-        title: Limiter le nombre de commentaires créés par un nouveau utilisateur
+        title: Limiter le nombre de commentaires créés par un nouveau membre
       mention:
-        title: Limiter le nombre de @-mentions dans un message ou un commentaire
-        description: Combien de fois une personne peut-elle @-mentionner d'autres utilisateurs dans un message ou un commentaire ?
+        title: Limiter le nombre de @-mentions dans une publication ou un commentaire
+        description: Combien de fois peut-on @-mentionner d'autres utilisateurs dans une publication ou un commentaire ?
       listing:
-        title: Limiter le nombre de listings créés
-        description: Combien d'annonces peuvent être créées pendant une période d'une minute ?
+        title: Limiter le nombre de listes créées
+        description: Combien de listes peut-on créer dans une période d'une minute ?
       organization:
         title: Limiter le nombre d'organisations créées
-        description: Combien d'organisations une personne peut-elle créer sur une période de 5 minutes ?
+        description: Combien d'organisations peut-on créer dans une période de 5 minutes ?
       subscription:
         title: Limiter le nombre de fois qu'une personne peut s'abonner à une liste de diffusion tag liquide
-        description: Combien de fois une personne peut-elle s'abonner à une liste de diffusion sur une période de 30 secondes ?
+        description: Combien de fois peut-on s'abonner à une liste de diffusion dans une période de 30 secondes ?
       recipient:
         title: Limiter le nombre d'e-mails généraux que nous envoyons
-        description: Combien d'emails pouvons-nous envoyer à une personne dans une période de 2 minutes ?
+        description: Combien d'e-mails pouvons-nous envoyer à une personne dans une période de 2 minutes ?
       confirmation:
         title: Limiter le nombre d'e-mails de confirmation que nous envoyons
-        description: Combien de fois pouvons-nous envoyer un email de confirmation à quelqu'un dans une période de 2 minutes ?
+        description: Combien de fois pouvons-nous envoyer un e-mail de confirmation à une personne dans une période de 2 minutes ?
       thing:
-        posts: articles
+        posts: publications
         comments: commentaires
     settings_helper:
       advanced: Avancé
@@ -229,9 +228,9 @@ fr:
       n_a: N/A
     admin:
       user_helper:
-        today: Today, %{date}
-        yesterday: Yesterday, %{date}
+        today: Aujourd'hui, %{date}
+        yesterday: Hier, %{date}
         org_join: ", "
         org_overflow:
-          one: "%{orgs} & %{count} other"
-          other: "%{orgs} & %{count} others"
+          one: "%{orgs} & %{count} autre"
+          other: "%{orgs} & %{count} autres"

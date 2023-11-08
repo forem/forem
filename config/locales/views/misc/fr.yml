@@ -5,137 +5,137 @@ fr:
       meta:
         title: Badges
       all:
-        one: Show one badge
-        other: Show all %{count} badges
+        one: Afficher un badge
+        other: Afficher tous les %{count} badges
       heading: Badges
-      desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
-      icon_close: Close
-      gotit: Got it
+      desc: Recevez des badges pour être génial ! Cliquez sur un badge pour voir comment vous pouvez l'obtenir.
+      icon_close: Fermer
+      gotit: Compris
     campaign:
-      subtitle: Stories (%{count})
-      view: See all posts
+      subtitle: Histoires (%{count})
+      view: Voir tous les posts
     deep_links:
-      subtitle: Opening the mobile app...
+      subtitle: Ouverture de l'application mobile...
       alert:
-        subtitle: Whoops! Did you get stuck trying to open the mobile app?
-        desc_html: Make sure it's installed and try again. If the problem persists contact %{email}
-        back: Take me back
-        again: Try again
-        install: Install the app
+        subtitle: Oups ! Avez-vous eu des difficultés à ouvrir l'application mobile ?
+        desc_html: Assurez-vous qu'elle est installée et essayez à nouveau. Si le problème persiste, contactez %{email}
+        back: Ramenez-moi
+        again: Essayez à nouveau
+        install: Installer l'application
     email_subscriptions:
       unsubscribe:
-        heading: "You have been unsubscribed from %{type}. 😔"
-        description_html: You will no longer receive emails like this. If you'd like to re-subscribe or manage your full email preferences, please %{link}.
-        link: click here
+        heading: "Vous avez été désabonné de %{type}. 😔"
+        description_html: Vous ne recevrez plus d'e-mails comme celui-ci. Si vous souhaitez vous réabonner ou gérer vos préférences d'e-mail, veuillez %{link}.
+        link: cliquez ici
       invalid:
-        heading: Token expired or invalid
-        description_html: Please %{signin} to manage your email preferences.
-        signin: sign-in
+        heading: Jeton expiré ou invalide
+        description_html: Veuillez %{signin} pour gérer vos préférences d'e-mail.
+        signin: connectez-vous
     hamburger:
-      icon: Navigation menu
-      icon_close: Close
-      icon_left: Left menu
-      icon_right: Right menu
+      icon: Menu de navigation
+      icon_close: Fermer
+      icon_left: Menu gauche
+      icon_right: Menu droit
     logo:
       color_1:
-        label: Brand color 1
-        description: Used for backgrounds, borders etc.
+        label: Couleur de la marque 1
+        description: Utilisé pour les arrière-plans, les bordures, etc.
       color_2:
-        label: Brand color 2
-        description_html: Used for texts (usually put on <em>Brand color 1</em>).
+        label: Couleur de la marque 2
+        description_html: Utilisé pour les textes (généralement placé sur <em>Couleur de la marque 1</em>).
       preview:
-        icon: App logo
-        text: 'Preview:'
+        icon: Logo de l'application
+        text: 'Aperçu:'
     mailers:
-      contact_mailto_html: Contactez-nous à l'adresse <a href="mailto:%{contact_email}">%{contact_email}</a> si nous pouvons vous aider davantage.
+      contact_mailto_html: Contactez-nous à <a href="mailto:%{contact_email}">%{contact_email}</a> si nous pouvons vous aider davantage.
     onboardings:
       meta:
-        title: Welcome to %{community}
-      heading: You're now a part of the community!
-      subtitle: SUGGESTED THINGS YOU CAN DO
-      close: Close Welcome Message
-      settings_html: "<span class=\"emoji\">💅🏼</span>Customize your profile"
-      welcome_html: "<span class=\"emoji\">😊</span>Join the Welcome thread"
-      write_html: "<span class=\"emoji\">✍🏾</span>Write your first %{community} post"
+        title: Bienvenue à %{community}
+      heading: Vous faites maintenant partie de la communauté !
+      subtitle: CHOSES SUGGÉRÉES QUE VOUS POUVEZ FAIRE
+      close: Fermer le message de bienvenue
+      settings_html: "<span class=\"emoji\">💅🏼</span>Personnalisez votre profil"
+      welcome_html: "<span class=\"emoji\">😊</span>Rejoignez le fil de bienvenue"
+      write_html: "<span class=\"emoji\">✍🏾</span>Écrivez votre premier post %{community}"
     pins:
       article: Épinglé
-      pinned: "📌 Pinned! (pinned posts display chronologically, 5 max)"
-      removed: "🗑 Pin removed"
-      error: You can only have five pins
+      pinned: "📌 Épinglé ! (les posts épinglés s'affichent chronologiquement, 5 max)"
+      removed: "🗑 Épingle retirée"
+      error: Vous ne pouvez avoir que cinq épingles
     profile:
       color:
-        label: Brand color
-        description: Used for backgrounds, borders etc.
+        label: Couleur de la marque
+        description: Utilisé pour les arrière-plans, les bordures, etc.
     reading_list:
       meta:
-        title: Reading List
-        description: My saved posts.
+        title: Liste de lecture
+        description: Mes posts sauvegardés.
         og:
-          title: Reading List - %{community}
+          title: Liste de lecture - %{community}
     search:
-      heading: Search results%{for}
-      for: " for %{query}"
+      heading: Résultats de recherche%{for}
+      for: " pour %{query}"
       placeholder: Recherche...
       icon:
-        aria_label: Search
-        title: Search
+        aria_label: Recherche
+        title: Recherche
       nav:
         posts: Posts
         podcasts: Podcasts
-        people: People
-        comments: Comments
-        my_posts: My posts only
-        organizations: Organizations
+        people: Personnes
+        comments: Commentaires
+        my_posts: Mes posts uniquement
+        organizations: Organisations
         tags: Tags
       sort:
-        aria_label: Search result sort options
-        relevance: Most Relevant
-        newest: Newest
-        oldest: Oldest
+        aria_label: Options de tri des résultats de recherche
+        relevance: Plus pertinent
+        newest: Plus récent
+        oldest: Plus ancien
       meta:
-        title: Search Results%{for}
-        for: " for %{query}"
-        description: "%{site} => Search Results"
+        title: Résultats de recherche%{for}
+        for: " pour %{query}"
+        description: "%{site} => Résultats de recherche"
     series:
       meta:
-        description: View %{title} on %{site}
-      heading: "%{user}'s Series"
-      empty: This user doesn't have any series
+        description: Voir %{title} sur %{site}
+      heading: "Séries de %{user}"
+      empty: Cet utilisateur n'a aucune série
       list:
-        heading: "%{series} Series' Articles"
-        back: Back to %{user}'s Series
-        empty: This series doesn't have any articles
+        heading: "Articles de la série %{series}"
+        back: Retour aux séries de %{user}
+        empty: Cette série n'a aucun article
     stats:
       meta:
-        title: Stats for Your Article
-      heading_html: Stats for "%{article}"
+        title: Statistiques pour votre article
+      heading_html: Statistiques pour "%{article}"
       period:
-        aria_label: Analytics period
-        week: Week
-        month: Month
-        infinity: Infinity
-      readers: Readers Summary
-      followers: New Followers Summary
-      reactions: "Reactions Summary ❤🦄🔖"
-      comments: "Comments Summary 💬"
+        aria_label: Période d'analyse
+        week: Semaine
+        month: Mois
+        infinity: Infini
+      readers: Résumé des lecteurs
+      followers: Résumé des nouveaux abonnés
+      reactions: "Résumé des réactions ❤🦄🔖"
+      comments: "Résumé des commentaires 💬"
       traffic:
-        text: "Traffic Source Summary 🚦"
+        text: "Résumé des sources de trafic 🚦"
         source: Source
-        views: Views
+        views: Vues
     sticky:
       joined: Rejoint
-      default_cta: Learn more
+      default_cta: En savoir plus
       email: Email
-      hot: Hot
+      hot: Populaire
       location: Lieu
-      more_from_html: Plus de la part de %{actor}
-      no_summary: Posts in this tag
-      trending_html: Populaire sur %{app}
+      more_from_html: Plus de %{actor}
+      no_summary: Posts dans ce tag
+      trending_html: Tendance sur %{app}
     videos:
       meta:
-        title: Videos
+        title: Vidéos
         og:
-          description: All videos on %{community}
-      heading: "%{community} en Vidéo"
-      beta_html: "<strong>Vidéo est en bêta:</strong> %{contact}"
-      upload: "🎥 Télécharger un fichier vidéo 🙌"
+          description: Toutes les vidéos sur %{community}
+      heading: "%{community} en vidéo"
+      beta_html: "<strong>La vidéo est en bêta:</strong> %{contact}"
+      upload: "🎥 Télécharger un fichier vidéo 🙌".

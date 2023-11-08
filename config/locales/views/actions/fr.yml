@@ -3,11 +3,11 @@ fr:
   views:
     actions:
       copy:
-        text: Copied to Clipboard
+        text: Copié dans le Presse-papiers
         button: Copier le lien
       more:
-        title: More...
-        aria_label: Share post options
+        title: Plus...
+        aria_label: Options de partage de publication
       share:
         facebook:
           text: Partager sur Facebook
@@ -21,6 +21,6 @@ fr:
           text: Partager sur Reddit
         twitter:
           text: Partager sur Twitter
-          query: '"%{article}" by %{author}'
-        link: Share Post via...
-        report: Report Abuse
+          query: '"%{article}" par %{author}'
+        link: Partager le post via...
+        report: Signaler un abus

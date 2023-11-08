@@ -1,0 +1,5 @@
+---
+pt:
+  decorators:
+    article_decorator:
+      tagged_with: " Marcado com %{cached_tag_list}."

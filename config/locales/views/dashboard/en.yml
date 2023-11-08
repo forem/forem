@@ -5,7 +5,7 @@ en:
       meta:
         title: Dashboard - %{site}
       heading: Dashboard
-      actions:
+      actions: # These are links to sub-dashboards where a user sees their personal data
         mobile:
           posts: Posts (%{num})
           followers: Followers (%{num})

@@ -2,79 +2,79 @@
 fr:
   views:
     auth:
-      background: forem background
+      background: arrière-plan forem
       create:
-        aria_label: Create new account
-        text: Créer un profil
+        aria_label: Créer un nouveau compte
+        text: Créer un compte
       creator:
-        text1: Let's start your Forem journey!
-        text2: Create your admin account first.
-        text3: Then we'll walk you through your Forem setup.
+        text1: Commençons votre voyage Forem !
+        text2: Créez d'abord votre compte administrateur.
+        text3: Ensuite, nous vous guiderons à travers votre configuration Forem.
         hint:
-          aria_label: Edit username
-          icon: Edit username
-          text_html: "%{start}Your username will be\_%{end}%{button}"
-        submit: Create my account
-      already_have_an_account: Already have an account?
-      sign_in: Sign in
+          aria_label: Modifier le nom d'utilisateur
+          icon: Modifier le nom d'utilisateur
+          text_html: "%{start}Votre nom d'utilisateur sera\_%{end}%{button}"
+        submit: Créer mon compte
+      already_have_an_account: Vous avez déjà un compte ?
+      sign_in: Se connecter
       login:
-        aria_label: Log in
+        aria_label: Se connecter
         text: Se connecter
-        forgot: Forgot password?
+        forgot: Mot de passe oublié ?
       provider:
-        text: "%{action} with %{provider}"
-        login: Continue
-        signup: Sign up
+        text: "%{action} avec %{provider}"
+        login: Continuer
+        signup: S'inscrire
         email:
           icon: email
-          text: Sign up with Email
+          text: S'inscrire avec Email
       register:
         errors:
-          one: Whoops, we found %{count} problem
-          other: Whoops, we found %{count} problems
+          one: Oups, nous avons trouvé %{count} problème
+          other: Oups, nous avons trouvé %{count} problèmes
         allow:
-          one_html: Registration restricted to <strong>@%{domain}</strong> emails.
-          list: Registration restricted to the following emails
-        create: Create your account
+          one_html: Inscription restreinte aux e-mails <strong>@%{domain}</strong>.
+          list: Inscription restreinte aux e-mails suivants
+        create: Créer votre compte
         field:
           name:
-            aria_label: Name
-            label: Name
+            aria_label: Nom
+            label: Nom
           username:
-            aria_label: Username
-            desc: A username can only contain letters, numbers and underscores. The maximum username length can be 30 characters.
-            label: Username
+            aria_label: Nom d'utilisateur
+            desc: Un nom d'utilisateur ne peut contenir que des lettres, des chiffres et des tirets bas. La longueur maximale du nom d'utilisateur peut être de 30 caractères.
+            label: Nom d'utilisateur
           email:
             aria_label: Email
             label: Email
             placeholder: john@example.com
           password:
-            aria_label: Password
-            desc: Minimum 8 characters
-            label: Password
+            aria_label: Mot de passe
+            desc: Minimum 8 caractères
+            label: Mot de passe
             placeholder: "••••••••"
-            hide: Hide password
-            show: Show password
+            hide: Masquer le mot de passe
+            show: Afficher le mot de passe
           confirm:
-            aria_label: Password Confirmation
-            label: Password Confirmation
-          required: "* - required"
+            aria_label: Confirmation du mot de passe
+            label: Confirmation du mot de passe
+          required: "* - requis"
         secret:
-          label: New Forem Secret
-          placeholder: As provided by your Forem host
-          hide: Hide new Forem secret
-          show: Show new Forem secret
-        submit: Sign up
+          label: Nouveau secret Forem
+          placeholder: Fourni par votre hôte Forem
+          hide: Masquer le nouveau secret Forem
+          show: Afficher le nouveau secret Forem
+        submit: S'inscrire
       wizard:
         meta:
-          title: Let's get started with Forem
-        heading: Let's start your Forem journey
-        step_1: Create an account. It will be the first super admin account.
-        step_2_html: Once you sign up below, you can configure your community at %{path}.
-        step_3: There is lots you can do as an admin, but there is a learning curve.
-        step_4: Please reach out to the Forem team if you are unsure about anything!
-        step_5: "For Empowering Community 🌱"
-      tagline: We are a place where coders share, stay up-to-date and grow their careers.
+          title: Commençons avec Forem
+        heading: Commençons votre voyage Forem
+        step_1: Créez un compte. Ce sera le premier compte super administrateur.
+        step_2_html: Une fois que vous vous êtes inscrit ci-dessous, vous pouvez configurer votre communauté à %{path}.
+        step_3: Il y a beaucoup de choses que vous pouvez faire en tant qu'administrateur, mais il y a une courbe d'apprentissage.
+        step_4: N'hésitez pas à contacter l'équipe Forem si vous avez des doutes sur quoi que ce soit !
+        step_5: "Pour une communauté émancipatrice 🌱"
+      tagline: Nous sommes un lieu où les codeurs partagent, restent à jour et développent leur carrière.
       title:
-        text_html: "%{name} is a community of %{maybe_size}amazing %{label}"
+        text_html: "%{name} est une communauté de %{maybe_size}incroyables %{label}"
         size: "%{num} "

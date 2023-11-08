@@ -3,42 +3,42 @@ fr:
   views:
     liquids:
       github:
-        view: View on GitHub
+        view: Voir sur GitHub
       medium:
-        logo: Medium Logo
+        logo: Logo Medium
       poll:
-        show_results: Just show me the results
+        show_results: Montrez-moi simplement les résultats
       reddit:
-        author: 'Author: %{author}'
-        see: See Full Post
+        author: 'Auteur: %{author}'
+        see: Voir le post complet
       stackexchange:
         answer:
           text_html: "%{answer} re: %{title}"
-          answer: answer
-        answers: 'Answers: %{count}'
-        comments: 'Comments: %{count}'
+          answer: réponse
+        answers: 'Réponses: %{count}'
+        comments: 'Commentaires: %{count}'
         open:
-          answer: Open Full Answer
-          article: Open Full Article
-          question: Open Full Question
+          answer: Ouvrir la réponse complète
+          article: Ouvrir l'article complet
+          question: Ouvrir la question complète
       twitter:
-        view: View on Twitter
+        view: Voir sur Twitter
       user_subscription:
         confirm:
-          subtitle: Confirm subscribe
-          button_text: Confirm subscription
-          cancel_text: Cancel
-          text_html: "You'll share your email address, username, name, and %{community} profile URL with %{username}. Once you do this, you cannot undo this."
-        logged_out: "You must first sign in to %{community}."
-        sign_in: Sign In
+          subtitle: Confirmer l'abonnement
+          button_text: Confirmer l'abonnement
+          cancel_text: Annuler
+          text_html: "Vous partagerez votre adresse e-mail, votre nom d'utilisateur, votre nom et l'URL de votre profil %{community} avec %{username}. Une fois que vous faites cela, vous ne pouvez pas annuler cela."
+        logged_out: "Vous devez d'abord vous connecter à %{community}."
+        sign_in: Se connecter
         subscribe:
           apple:
-            button: Subscribe
-            desc_html: "Hey, there! It looks like when you created your %{community} account you signed up with Apple using a private relay email address. If you'd like to subscribe, please %{update} first to a different email address."
-            update: update your email address in Settings
-          button: Subscribe
-          desc_html: "You'll subscribe with the email address associated with your %{community} account. To use a different email address, you can %{update}."
-          update: update your email address in Settings
+            button: S'abonner
+            desc_html: "Hey, là! Il semble que lorsque vous avez créé votre compte %{community}, vous vous êtes inscrit avec Apple en utilisant une adresse e-mail de relais privée. Si vous souhaitez vous abonner, veuillez d'abord %{update} à une autre adresse e-mail."
+            update: mettez à jour votre adresse e-mail dans les paramètres
+          button: S'abonner
+          desc_html: "Vous vous abonnerez avec l'adresse e-mail associée à votre compte %{community}. Pour utiliser une adresse e-mail différente, vous pouvez %{update}."
+          update: mettez à jour votre adresse e-mail dans les paramètres
       wikipedia:
-        logo: Wikipedia Logo
-        view: View on Wikipedia
+        logo: Logo Wikipedia
+        view: Voir sur Wikipedia

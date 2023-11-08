@@ -2,25 +2,25 @@
 fr:
   views:
     main:
-      aria_home: "%{community} Home"
+      aria_home: "Accueil %{community}"
       header:
-        create_account: Créer un profil
+        create_account: Créer un compte
         login: Se connecter
         nav:
-          aria_label: Navigation menu
+          aria_label: Menu de navigation
         moderation:
-          aria_label: Moderation
-          icon: Moderation
+          aria_label: Modération
+          icon: Modération
         notifications:
           aria_label: Notifications
           icon: Notifications
-        skip: Skip to content
+        skip: Aller au contenu
       modal:
         create_account:
-          aria_label: Create new account
-          text: Créer un profil
+          aria_label: Créer un nouveau compte
+          text: Créer un compte
         login:
-          aria_label: Log in
+          aria_label: Se connecter
           text: Se connecter
       nav:
         admin: Admin
@@ -28,44 +28,44 @@ fr:
         placeholder: "..."
         list: Liste de lecture
         moderator_center: Centre de modération
-        other: Other
+        other: Autre
         settings: Paramètres
       nav_name:
-        About: About
-        Code of Conduct: Code of Conduct
+        About: À propos
+        Code of Conduct: Code de conduite
         Contact: Contact
         FAQ: FAQ
-        Home: Page D'Accueil
-        Listings: Listings
+        Home: Accueil
+        Listings: Annonces
         Podcasts: Podcasts
-        Privacy Policy: Privacy Policy
-        Reading List: Reading List
+        Privacy Policy: Politique de confidentialité
+        Reading List: Liste de lecture
         Tags: Tags
-        Terms of use: Terms of use
-        Videos: Videos
+        Terms of use: Conditions d'utilisation
+        Videos: Vidéos
       side:
         listings:
-          heading: Listings
-          all: Tout voir
-          new: Create a Listing
-        trend: trending guides/resources
-        recent: recently queried
+          heading: Annonces
+          all: Voir tout
+          new: Créer une annonce
+        trend: guides/ressources tendances
+        recent: récemment interrogé
       tags:
-        aria_label: Customize tag priority
+        aria_label: Personnaliser la priorité des tags
         follow: Suivre
-        my_tags: Mes sujets
-        popular_tags: Sujets populaires
+        my_tags: Mes tags
+        popular_tags: Tags populaires
       footer:
         built:
-          text_html: Built on %{forem} — the %{opensource} software that powers %{dev} and other inclusive communities.
+          text_html: Construit sur %{forem} — le logiciel %{opensource} qui alimente %{dev} et d'autres communautés inclusives.
           forem: Forem
           opensource: open source
           dev: DEV
         desc_html: "%{community} — %{desc}"
-        logo: Forem logo
+        logo: Logo Forem
         powered:
-          text_html: Made with love and %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          text_html: Fait avec amour et %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
           rails: Ruby on Rails
         sidebar_desc_html: "%{community}\n%{desc}"
-      create_post: Créer une publication
+      create_post: Créer un post
       signout: Se déconnecter

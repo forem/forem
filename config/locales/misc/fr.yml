@@ -5,21 +5,21 @@ fr:
     error: Mascotte déjà prête
   broadcast:
     welcome:
-      ask_question: "C'est Sloan ! 👋 J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/explainlikeimfive'>demandé une question</a>. Il est facile de poser une question ; il suffit de cliquer sur 'Créer un message' dans la barre latérale de la page des tags pour commencer !"
-      customize_experience: "C'est Sloan ! 👋 Saviez-vous que vous pouvez personnaliser votre expérience DEV ? Essayez de changer <a href='settings/customization'>votre police et votre thème</a> et trouver le meilleur style pour vous !"
-      customize_feed: "Salut, c'est encore moi! 👋 Maintenant que vous faites partie de la communauté DEV, concentrons-nous sur la personnalisation de votre contenu. Vous pouvez commencer par <a href='/tags'>suivre quelques tags</a> pour vous aider à personnaliser votre flux ! 🎉"
-      discuss_and_ask: "C'est Sloan ! 👋  J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/explainlikeimfive'>demandé une question</a> ou <a href='https://dev.to/t/discuss'>commencer une discussion</a>. Il est facile de faire ces deux choses ; il suffit de cliquer sur 'Créer un article' dans la barre latérale de la page des tags pour commencer !"
+      ask_question: "C'est Sloan ! 👋 J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/explainlikeimfive'>posé une question</a>. Poser une question est facile ; il suffit de cliquer sur 'Créer un post' dans la barre latérale de la page des tags pour commencer !"
+      customize_experience: "C'est Sloan ! 👋 Saviez-vous que vous pouvez personnaliser votre expérience DEV ? Essayez de changer <a href='settings/customization'>votre police et votre thème</a> et trouvez le meilleur style pour vous !"
+      customize_feed: "Salut, c'est encore moi! 👋 Maintenant que vous faites partie de la communauté DEV, concentrons-nous sur la personnalisation de votre contenu. Vous pouvez commencer par <a href='/tags'>suivre quelques tags</a> pour personnaliser votre flux ! 🎉"
+      discuss_and_ask: "C'est Sloan ! 👋  J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/explainlikeimfive'>posé une question</a> ou <a href='https://dev.to/t/discuss'>commencé une discussion</a>. Il est facile de faire ces deux choses ; il suffit de cliquer sur 'Créer un post' dans la barre latérale de la page des tags pour commencer !"
       download_app: "C'est Sloan, avec un dernier conseil ! 👋 Avez-vous déjà téléchargé l'application mobile DEV ? Pensez à <a href='https://dev.to/downloads'>la télécharger</a> afin que vous puissiez accéder à tous vos contenus DEV préférés lors de vos déplacements !"
       set_up_profile: "Bienvenue sur DEV ! 👋 Je suis Sloan, la mascotte de la communauté et je suis là pour vous aider à démarrer. Commençons par <a href='/settings'>configurer votre profil</a> !"
-      start_discussion: "C'est Sloan ! 👋  J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/discuss'>commencé une discussion</a>. Il est facile de lancer une discussion ; il suffit de cliquer sur 'Créer un message' dans la barre latérale de la page des tags pour commencer !"
+      start_discussion: "C'est Sloan ! 👋  J'ai remarqué que vous n'avez pas encore <a href='https://dev.to/t/discuss'>commencé une discussion</a>. Commencer une discussion est facile ; il suffit de cliquer sur 'Créer un post' dans la barre latérale de la page des tags pour commencer !"
       welcome_thread: "C'est encore Sloan ! 👋 DEV est une communauté amicale. Pourquoi ne pas vous présenter en laissant un commentaire dans <a href='/welcome'>le fil de bienvenue</a> !"
     connect:
       apple: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte Apple ? Pensez à <a href='/settings'>le connecter</a>."
       facebook: "Vous êtes sur une lancée ! 🎉 Avez-vous un compte Facebook ? Pensez à <a href='/settings'>le connecter</a>."
       forem: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte Forem ? Pensez à <a href='/settings'>le connecter</a>."
-      github: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte GitHub ? Pensez à <a href='/settings'>le connecter</a> afin que vous puissiez épingler n'importe lequel de vos dépôts à votre profil."
-      google: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte google ? Pensez à <a href='/settings'>le connecter</a>."
-      twitter: "Vous êtes sur une lancée ! 🎉 Avez-vous un compte Twitter ? Pensez à <a href='/settings'>le connecter</a> pour que nous puissions vous @mentionner si nous partageons votre article via notre compte Twitter. <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
+      github: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte GitHub ? Pensez à <a href='/settings'>le connecter</a> pour que vous puissiez épingler n'importe lequel de vos dépôts à votre profil."
+      google: "Vous êtes sur une lancée ! 🎉  Avez-vous un compte Google ? Pensez à <a href='/settings'>le connecter</a>."
+      twitter: "Vous êtes sur une lancée ! 🎉 Avez-vous un compte Twitter ? Pensez à <a href='/settings'>le connecter</a> pour que nous puissions vous @mentionner si nous partageons votre post via notre compte Twitter <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>."
   errors:
     authentication:
       errors:
@@ -38,4 +38,4 @@ fr:
   uploaders:
     base_uploader:
       too_many_frames: Le GIF contient trop d'images. Le nombre maximal d'images autorisé est %{frame_max}.
-      timeout: Le traitement de l'image a été interrompu.
+      timeout: Le traitement de l'image a expiré.

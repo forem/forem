@@ -10,12 +10,12 @@ en:
     comment: Comment
     copy_link: Copy link
     edit_profile: Edit profile
-    follow: Follow
-    follow_back: Follow back
-    following: Following
-    like: Like
+    follow: Follow # Used on follow buttons to follow users, etc.
+    follow_back: Follow back # Used on follow buttons to follow users, etc.
+    following: Following # Used on follow buttons to follow users, etc.
+    like: Like # Used on the "like" reaction.
     loading: loading...
-    reaction: Reaction
+    reaction: Reaction # Reactions are hearts, etc users put on posts
     report_abuse: Report abuse
     search: Search
     success_settings: Successfully updated settings.

@@ -2,13 +2,13 @@
 fr:
   xml:
     opensearch:
-      short_name: "%{community} Recherche"
-      description: Retrouvez les messages de %{community}.
+      short_name: "Recherche %{community}"
+      description: Trouvez des publications de %{community}.
     user:
-      image: "%{user} image de profil"
+      image: "Image de profil de %{user}"
   json:
-    author: Auteur actif de la %{community}
+    author: Auteur actif de %{community}
   mailer:
     adjust: Ajustez vos paramètres de messagerie
-    adjust_only_html: Vous ne voulez pas recevoir d'e-mails comme celui-ci ? Réglez vos paramètres de messagerie à l'adresse %{path}
+    adjust_only_html: Vous ne voulez pas recevoir des e-mails comme celui-ci ? Ajustez vos paramètres de messagerie à %{path}
     unsubscribe: Se désabonner

@@ -1,0 +1,42 @@
+---
+pt:
+  views:
+    reactions:
+      category:
+        hands: Mãos
+        like: Curtir
+        readinglist: Lista de leitura
+        thinking: Pensando
+        thumbsup: Polegar para cima
+        thumbsdown: Polegar para baixo
+        unicorn: Unicórnio
+        vomit: Sinalizar
+        lightbulb: Lâmpada
+        raised_hands: Mãos levantadas
+        rocket: Foguete
+        exploding_head: Cabeça explodindo
+        fire: Fogo
+      drawer_button: Adicionar reação
+      summary:
+        count_html:
+          one: "%{count}%{start}\_reação%{end}"
+          other: "%{count}%{start}\_reações%{end}"
+        title: Reações
+      like:
+        title: Curtir
+        aria_label: Curtir
+        icon: Botão de coração favorito
+        text: Curtir
+      unicorn:
+        title: Unicórnio
+        aria_label: Reagir com unicórnio
+      readingList:
+        title: Salvar
+        aria_label: Adicionar à lista de leitura
+        icon: Botão de salvar
+        text: Salvar
+      subscribe:
+        title: Inscrever-se nos Comentários
+        aria_label: Inscrever-se nos Comentários
+        icon: Botão de salvar
+        text: Inscrever-se nos Comentários

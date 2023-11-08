@@ -9,12 +9,12 @@ require 'colorize'
 
 Dotenv.load
 
-# Access the environment variable
+# This file requires a token to access GPT-4 and/or gpt-4-32k — it likely only needs to be run by core team members.
 
-def translate(source_of_truth, target_source, target_locale)
+def translate(source_of_truth, target_source, target_locale, target_file)
   retries ||= 0 # Initialize a retry counter
   
-  puts "Translating from en to #{target_locale} ...".colorize(:light_magenta)
+  puts "Translating from en to #{target_locale} ..., targeting the #{target_file} file".colorize(:light_magenta)
   target_instructions = ""
   messages = []
   system_content = "You are a script that translates text and updates a rails i18n file. Output ONLY the yml for the target file and no additional text text. Please output THE ENTIRE FINISHED TARGET FILE even if you are only changing one key, or even no keys.. Your output should contain exactly the same number of keys as the english input."
@@ -24,9 +24,17 @@ def translate(source_of_truth, target_source, target_locale)
   messages = [{ role: "user", content: user_content}]
   
   token = ENV["OPENAI_ACCESS_TOKEN"]
-  response = OpenAI::Client.new(access_token: token, request_timeout: 300).chat(
+  timeout = 480 # 8 minutes for timeout ***plenty of time: Shouldn't legitimately hit this.***
+  source_char_count = source_of_truth.size
+  model = if source_char_count > 7000
+            puts "Large file — switching to gpt-4-32k. This is less efficient, consider refactoring your files to be smaller.".colorize(:red)
+            "gpt-4-32k"
+          else
+            "gpt-4"
+          end
+  response = OpenAI::Client.new(access_token: token, request_timeout: timeout).chat(
       parameters: {
-          model: "gpt-4", # Required.
+          model: model, # Required.
           messages: messages, # Required.
           temperature: 0.1,
       })
@@ -74,36 +82,34 @@ puts "Kicking off translation...."
 pattern = 'config/locales/**/en.yml'
 last_openai_call_at = 9.seconds.ago # Initial last call time "more than 8 seconds ago" to kick us off.
 files = Dir.glob(pattern)
+files_finished = []
+threads = []
+target_locales = ['fr', 'pt']
+
+puts "Let's kick this off!".colorize(:green)
+puts "We are about to translate #{files.size * target_locales.size} total locale files.".colorize(:green)
 
 files.each do |file_path|
   source_content = File.read(file_path)
-  target_locales = ['fr']
-  threads = []
-  locales_finished = []
 
   # using each_slice to create chunks of 5 locales each
   target_locales.each do|locale|
     # Wait up to 8 seconds in order to avoid openai rate limit
-    while last_openai_call_at > 5.seconds.ago
-      sleep(1)
-    end
-    last_openai_call_at = Time.now    
     threads << Thread.new(locale) do |locale|
       begin
-
-        puts "Working with #{locale} ..."
-        target_file = file_path.gsub("en", locale)
+        target_file = file_path.gsub("en.yml", "#{locale}.yml")
+        puts "Starting #{target_file}..."
         target_content = read_file_from_last_commit_if_modified(target_file)
-        new_content = translate(source_content, target_content, locale)
+        new_content = translate(source_content, target_content, locale, target_file)
         File.open(target_file, 'w') { |file| file.write(new_content) }
-        locales_finished << locale
-        puts "Finished with #{locale}! #{locales_finished.count}/#{target_locales.count} locales finished.".colorize(:green)
+        files_finished << locale
+        puts "Finished #{target_file}!!"
+        puts "#{files_finished.size} files finished!".colorize(:green)
       rescue => e
         puts "Error: #{e.message}"
       end
     end
   end
-
-  threads.each(&:join)
 end
 
+threads.each(&:join)

@@ -1,0 +1,123 @@
+---
+pt:
+  api_secrets_controller:
+    generated: 'Sua chave de API foi gerada: %{secret}'
+    revoked: Sua chave de API foi revogada.
+  application_controller:
+    bad_request: 'Erro: Solicitação inválida'
+    not_authorized: 'Erro: não autorizado'
+    please_sign_in: Por favor, faça login
+  articles_controller:
+    deleted: Artigo excluído com sucesso.
+  comments_controller:
+    create:
+      success: criado
+      failure: comentário já existe
+      authorization_error: Seus privilégios foram suspensos.
+    delete:
+      error: Algo deu errado; Comentário NÃO excluído.
+      notice: Comentário excluído com sucesso.
+    markdown: 'Houve um erro em seu markdown: %{error}'
+    markdown_html: "<p>😔 Houve um erro em seu markdown</p><hr><p>%{error}</p>"
+    moderated: Não permitido devido à ação de moderação
+  confirmations_controller:
+    email_sent: Email enviado! Entre em contato com o suporte em %{email} se estiver com problemas para receber suas instruções de confirmação.
+  credits_controller:
+    done:
+      one: "%{count} novos créditos comprados!"
+      other: "%{count} novos créditos comprados!"
+  devices_controller:
+    not_found: Não encontrado
+  discussion_locks_controller:
+    locked: Discussão bloqueada com sucesso!
+    unlocked: Discussão desbloqueada com sucesso!
+  email_subscriptions_controller:
+    badge_notifications: notificações de emblemas
+    comment_notifications: notificações de comentários
+    digest_emails: "emails de resumo %{community}"
+    follower_notifications: notificações de seguidores
+    mention_notifications: notificações de menções
+    this_list: esta lista
+    unread_notifications: notificações não lidas
+  feedback_messages_controller:
+    error_fill: "Certifique-se de que os formulários estão preenchidos. 🤖 Outros possíveis erros: %{errors}"
+    n_a: N/A
+    submitted: Seu relatório foi enviado
+  follows_controller:
+    already_followed: já seguido
+    daily_limit: Limite diário de seguimento de contas atingido!
+    followed: seguido
+    unfollowed: deixou de seguir
+  github_repos_controller:
+    repo_not_found: Repositório do GitHub não encontrado
+    github_unauthorized: 'GitHub não autorizado: %{e_message}'
+  image_uploads_controller:
+    server_error: Ocorreu um erro no servidor!
+  listings_controller:
+    deleted: Listagem excluída com sucesso.
+    no_credit: Créditos disponíveis insuficientes
+  omniauth_callbacks_controller:
+    log_in_error: 'Erro de login: %{e}'
+    username_taken: nome de usuário já foi usado
+  organizations_controller:
+    secret_updated: Seu segredo de organização foi atualizado
+    deletion_scheduled: 'Sua organização: "%{organization_name}" está programada para ser excluída. Você será notificado quando for excluída.'
+    not_deleted: Sua organização não foi excluída; você deve ser um administrador, o único membro da organização e não ter nenhum artigo vinculado à organização.
+    created: Sua organização foi criada com sucesso e você é um administrador.
+    updated: Sua organização foi atualizada com sucesso.
+  podcasts_controller:
+    podcast_suggested: Podcast sugerido
+  profiles_controller:
+    updated: Seu perfil foi atualizado
+  rating_votes_controller:
+    not_upserted_successfully: Não inserido com sucesso
+  registrations_controller:
+    error:
+      recaptcha: Você deve completar o recaptcha ✅
+      domain: não está incluído nos domínios permitidos.
+  response_templates_controller:
+    response_template_error: 'Erro no modelo de resposta: %{errors}'
+    created: Seu modelo de resposta "%{title}" foi criado.
+    deleted: Seu modelo de resposta "%{title}" foi excluído.
+    updated: Seu modelo de resposta "%{title}" foi atualizado.
+  social_previews_controller:
+    fonts: Roboto|Roboto+Condensed
+  stories:
+    pinned_articles_controller:
+      not_found: não encontrado
+  stories_controller:
+    404_bio_not_found: 404 biografia não encontrada
+    searching: "...procurando"
+  stripe_active_cards_controller:
+    cannot_remove: Não é possível remover o cartão se você tiver uma associação ativa. Por favor, cancele sua associação primeiro.
+    cannot_update: Houve um problema ao atualizar suas informações de cobrança.
+    updated: Suas informações de cobrança foram atualizadas
+    removed: Seu cartão foi removido com sucesso.
+  tag_adjustments_controller:
+    failure: 'Falha: %{errors}'
+    destroyed: Ajuste de tag destruído
+  tags_controller:
+    tag_successfully_updated: "Tag atualizada com sucesso! 👍 "
+  users_controller:
+    removed_admin: "%{name} não é mais um administrador."
+    removed_member: "%{name} não faz mais parte de sua organização."
+    added_admin: "%{name} agora é um administrador."
+    provide_email: Por favor, forneça um email para excluir sua conta.
+    provide_email_delete: Por favor, forneça um email para excluir sua conta
+    send_export: " O export será enviado para você em breve."
+    invalid_secret: O segredo da organização fornecido era inválido.
+    username_blank: O nome de usuário não pode estar em branco
+    deletion_in_progress: Você já solicitou a exclusão da conta. Por favor, verifique seu email para obter mais instruções.
+    joined_org: Você ingressou na organização %{organization_name}.
+    left_org: Você deixou sua organização.
+    deletion_requested: Você solicitou a exclusão da conta. Por favor, verifique seu email para obter mais instruções.
+    log_in_to_delete: Você deve estar logado para prosseguir com a exclusão da conta.
+    deletion_scheduled: A exclusão de sua conta está programada. Você será notificado quando for excluída.
+    removed_identity: Sua conta %{provider} foi removida com sucesso.
+    updated_config: Sua configuração foi atualizada. Atualize para ver todas as alterações.
+    updated_profile: Seu perfil foi atualizado com sucesso.
+    token_expired: Seu token expirou, por favor solicite um novo. Os tokens só duram 12 horas após a iniciação da exclusão da conta.
+    notifications_settings_updated: As configurações de suas notificações foram atualizadas.
+  video_states_controller:
+    related_article_not_found: Artigo relacionado não encontrado
+    video_state_updated: Estado do vídeo atualizado

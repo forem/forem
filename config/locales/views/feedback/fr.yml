@@ -3,18 +3,18 @@ fr:
   views:
     feedback:
       meta:
-        title: Feedback
-      heading: Thank you for your report.
-      home: Return to home page
+        title: Retour
+      heading: Merci pour votre rapport.
+      home: Retour à la page d'accueil
       form:
-        rude_or_vulgar: Rude or vulgar
-        harassment: Harassment or hate speech
-        spam: Spam or copyright issue
-        listings: Inappropriate listings message/category
-        other: Other
-        url: Reported URL
+        rude_or_vulgar: Grossier ou vulgaire
+        harassment: Harcèlement ou discours de haine
+        spam: Spam ou problème de droit d'auteur
+        listings: Message/catégorie d'annonces inappropriées
+        other: Autre
+        url: URL signalée
         message:
           subtitle: Message
-          description: Please provide any additional information or context that will help us understand and handle the situation.
+          description: Veuillez fournir toute information ou contexte supplémentaire qui nous aidera à comprendre et à gérer la situation.
           placeholder: "..."
-        submit: Send Feedback
+        submit: Envoyer le retour

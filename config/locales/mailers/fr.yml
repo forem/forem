@@ -4,30 +4,30 @@ fr:
     digest_mailer:
       from: Digest
       more_top_posts: plus de meilleurs articles de %{community}
-      more_top_posts_based: plus de meilleurs articles de %{community} basé sur vos intérêts
-      more_top_posts_from: d'autres lectures de la communauté
-      more_trending_posts: plus de d'articles tendances sur %{community} 
-      more_trending_posts_picked: plus de d'articles tendances sur %{community} choisie pour vous
+      more_top_posts_based: plus de meilleurs articles de %{community} basés sur vos intérêts
+      more_top_posts_from: plus de meilleures lectures de la communauté
+      more_trending_posts: plus d'articles tendances de %{community}
+      more_trending_posts_picked: plus d'articles tendances de %{community} choisis pour vous
       other_posts: autres articles que vous pourriez aimer
-      other_community_posts: d'autres posts de la %{community} que vous pourriez aimer
-      other_top_posts: d'autres articles tendance de la %{community}
-      other_trending_posts: d'autres articles tendance de la %{community}.
+      other_community_posts: autres articles de %{community} que vous pourriez aimer
+      other_top_posts: autres meilleurs articles de %{community}
+      other_trending_posts: autres articles tendances de %{community}
     notify_mailer:
       account_deleted: "%{community} - Confirmation de la suppression du compte"
-      deletion_requested: "%{community} - Suppression du compte demandée"
+      deletion_requested: "%{community} - Demande de suppression du compte"
       trusted: Félicitations ! Vous êtes maintenant un utilisateur "de confiance" sur %{community} !
-      moderator: "Congrats! You're now a moderator for #%{tag_name}"
-      new_follower: vous suit sur %{community}
-      new_mention: "%{name} vient de vous mentionner sur %{type}"
+      moderator: "Félicitations ! Vous êtes maintenant un modérateur pour #%{tag_name}"
+      new_follower: vient de vous suivre sur %{community}
+      new_mention: "%{name} vient de vous mentionner dans leur %{type}"
       org_deleted: "%{community} - Confirmation de la suppression de l'organisation"
       new_reply: "%{name} a répondu à votre %{type}"
-      feedback: Merci pour votre rapport sur %{community}
+      feedback: Merci pour votre signalement sur %{community}
       export: L'exportation de votre contenu est prête
       unread_notifications:
         one: "🔥 Vous avez %{count} notification non lue sur %{community}"
-        other: "🔥 Vous avez %{count} notifications non lues sur  %{community}"
+        other: "🔥 Vous avez %{count} notifications non lues sur %{community}"
       new_badge: Vous venez de recevoir un badge
       video_upload: Le téléchargement de votre vidéo est terminé
     verification_mailer:
       from: "%{community} Vérification de l'e-mail <%{email}>"
-      verify_ownership: Vérifiez la propriété de votre compte %{community}.
+      verify_ownership: Vérifiez la propriété de votre compte %{community}

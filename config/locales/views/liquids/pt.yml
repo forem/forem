@@ -1,0 +1,44 @@
+---
+pt:
+  views:
+    liquids:
+      github:
+        view: Ver no GitHub
+      medium:
+        logo: Logo do Medium
+      poll:
+        show_results: Apenas me mostre os resultados
+      reddit:
+        author: 'Autor: %{author}'
+        see: Ver Post Completo
+      stackexchange:
+        answer:
+          text_html: "%{answer} re: %{title}"
+          answer: resposta
+        answers: 'Respostas: %{count}'
+        comments: 'Comentários: %{count}'
+        open:
+          answer: Abrir Resposta Completa
+          article: Abrir Artigo Completo
+          question: Abrir Pergunta Completa
+      twitter:
+        view: Ver no Twitter
+      user_subscription:
+        confirm:
+          subtitle: Confirmar inscrição
+          button_text: Confirmar inscrição
+          cancel_text: Cancelar
+          text_html: "Você compartilhará seu endereço de e-mail, nome de usuário, nome e URL do perfil %{community} com %{username}. Depois de fazer isso, você não pode desfazer."
+        logged_out: "Você deve primeiro entrar em %{community}."
+        sign_in: Entrar
+        subscribe:
+          apple:
+            button: Inscrever-se
+            desc_html: "Ei, aí! Parece que quando você criou sua conta %{community}, você se inscreveu com a Apple usando um endereço de e-mail de retransmissão privado. Se você gostaria de se inscrever, por favor %{update} primeiro para um endereço de e-mail diferente."
+            update: atualize seu endereço de e-mail nas Configurações
+          button: Inscrever-se
+          desc_html: "Você se inscreverá com o endereço de e-mail associado à sua conta %{community}. Para usar um endereço de e-mail diferente, você pode %{update}."
+          update: atualize seu endereço de e-mail nas Configurações
+      wikipedia:
+        logo: Logo da Wikipedia
+        view: Ver na Wikipedia

@@ -1,0 +1,113 @@
+---
+pt:
+  views:
+    articles:
+      meta:
+        description: Uma postagem da comunidade
+      actions:
+        aria_label: Ações da postagem
+      comments:
+        aria_label: Adicione um comentário à postagem - %{title}
+        sort:
+          heading: "Ordenar discussão: "
+          title:
+            top: Topo
+            latest: Mais recentes
+            oldest: Mais antigos
+          desc:
+            top: Os comentários mais votados e relevantes serão os primeiros
+            latest: Os comentários mais recentes serão os primeiros
+            oldest: Os comentários mais antigos serão os primeiros
+        sort_button:
+          aria_label: Ordenar comentários
+        subtitle:
+          top_html: Comentários top %{num} # Mostrando os comentários ordenados por "topo"
+          latest_html: Comentários mais recentes %{num}
+          oldest_html: Comentários mais antigos %{num}
+        num: "(%{num})"
+        subscribe: Inscrever-se
+      conduct:
+        aria_label: Controles de conduta
+        code: Código de Conduta
+        report: Denunciar abuso # Usado em links para entrar em contato com os administradores
+      delete:
+        heading: Tem certeza de que deseja excluir este artigo?
+        desc:
+          text_html: Você não pode desfazer esta ação, talvez você queira apenas %{action} em vez disso?
+          edit: editar
+          unpublish: despublicar
+        action:
+          button: Excluir
+          cancel: Descartar
+          edit: Editar
+          unpublish: Despublicar
+      jump_to_comments:
+        aria_label: Ir para Comentários
+        label: Ir para Comentários
+      lock:
+        meta:
+          title: Confirmar Bloqueio de Discussão
+        heading: Tem certeza de que deseja bloquear a discussão nesta postagem?
+        desc_html: Os usuários não poderão adicionar novos comentários. Isso <em class="fw-bold">não</em> removerá os comentários existentes. Você pode desbloquear a discussão a qualquer momento para permitir que os usuários deixem comentários novamente.
+        cancel: Cancelar
+        notes:
+          label: Notas (opcional) - isso só é visível para você e os administradores
+          placeholder: Mais detalhes sobre por que você bloqueou a discussão.
+        reason:
+          label: Motivo para bloquear a discussão (opcional) - isso será exibido publicamente
+          placeholder: O motivo pelo qual você está bloqueando esta discussão.
+        submit: Bloquear discussão
+      preview_discuss_html:
+        zero: Nova Discussão!
+        one: '#discuss <img src="%{image}" />%{count}'
+        other: '#discuss <img src="%{image}" />%{count}'
+      save:
+        title: "Salvar postagem %{title} na lista de leitura"
+        aria_label: "Salvar postagem %{title} na lista de leitura"
+        initial: Salvar
+        success: Salvo
+      scheduled:
+        subtitle: Postagem Agendada.
+        text: " Este URL é público, mas secreto, então compartilhe a seu critério."
+        edit: Clique para editar
+      series:
+        subtitle: "%{slug} (%{size})"
+        size:
+          one: "%{count} Parte da Série"
+          other: "%{count} Partes da Série"
+        published: Publicado %{date}
+        inbetween:
+          num: "..."
+          text:
+            one: mais uma parte...
+            other: "%{count} partes restantes..."
+          title: Ver mais
+      unlock:
+        meta:
+          title: Confirmar Desbloqueio de Discussão
+        heading: Tem certeza de que deseja desbloquear a discussão nesta postagem?
+        desc: Os usuários poderão adicionar novos comentários. Você pode bloquear a discussão a qualquer momento para impedir que os usuários deixem comentários novamente.
+        cancel: Cancelar
+        notes: 'Notas de quando esta discussão foi bloqueada (visível apenas para você e administradores):'
+        reason: 'Motivo pelo qual esta discussão foi bloqueada (visível ao público):'
+        submit: Desbloquear discussão
+      unpublished:
+        subtitle: Postagem Não Publicada.
+        text: " Este URL é público, mas secreto, então compartilhe a seu critério."
+        edit: Clique para editar
+      co_authors_html: com %{names}
+      crossposted:
+        text_html: Originalmente publicado em %{url} %{on}
+        on_html: em %{date}
+      edited: Atualizado em %{date}
+      edited_html: Atualizado em %{date}
+      for_org_html: "%{start} para %{end}%{org}"
+      missing: Artigo Não Disponível
+      published_html: Postado em %{date}
+      scheduled_html: Agendado para %{date}
+      sign_in_for_full_latest_html: Algumas postagens mais recentes só são visíveis para membros. <a href="%{link}">Faça login</a> para ver todas as últimas.
+      read_next: Leia a seguir
+      reading_time:
+        one: "1 min de leitura"
+        other: "%{count} min de leitura"
+      right_nav: Detalhes do autor
