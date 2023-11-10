@@ -28,7 +28,7 @@
       "onAutoForward": "silent"
     }
   },
-  "updateContentCommand": "bin/setup",
+  "updateContentCommand": "bin/setup && bin/rails db:test:prepare RAILS_ENV=test",
   "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {
