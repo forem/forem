@@ -4,6 +4,7 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
       <%= billboard.processed_html.html_safe %>
   </div>
@@ -13,6 +14,7 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
     <div class="crayons-story__body">
       <div class="crayons-story__top">
@@ -31,6 +33,7 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
     <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
     <div class="p-1 text-styles text-styles--billboard">
@@ -43,6 +46,7 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
     <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
     <div class="p-1 pt-3 text-styles text-styles--billboard">
