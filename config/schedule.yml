@@ -87,8 +87,8 @@ award_community_wellness_badges:
     - award_community_wellness
     - ""
 award_thumbs_up_badges:
-  description: "Awards 'Community Wellness' badges to users (runs every 5 minutes)"
-  cron: "*/5 * * * *"
+  description: "Awards Thumbs Up Milestone badge to users (runs daily at 01:00 UTC) "
+  cron: "0 1 * * *"
   class: "BadgeAchievements::BadgeAwardWorker"
   args:
     - ""

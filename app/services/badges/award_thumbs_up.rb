@@ -1,17 +1,21 @@
 module Badges
   class AwardThumbsUp
     THUMBS_UP_BADGES = {
-      1 => "100 Thumbs Up Milestone",
-      2 => "500 Thumbs Up Milestone",
-      3 => "1,000 Thumbs Up Milestone",
-      4 => "5,000 Thumbs Up Milestone",
-      5 => "10,000 Thumbs Up Milestone"
+      100 => "100 Thumbs Up Milestone",
+      500 => "500 Thumbs Up Milestone",
+      1000 => "1,000 Thumbs Up Milestone",
+      5000 => "5,000 Thumbs Up Milestone",
+      10_000 => "10,000 Thumbs Up Milestone"
     }.freeze
 
     MIN_THRESHOLD = THUMBS_UP_BADGES.keys.min
 
     def self.call
       badge_ids = fetch_badge_ids
+
+      # Early return if any badge is not found
+      return if badge_ids.values.any?(&:nil?)
+
       user_thumbsup_counts = Reaction
         .where(category: "thumbsup", reactable_type: "Article")
         .group(:user_id)
