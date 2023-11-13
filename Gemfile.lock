@@ -160,7 +160,7 @@ GEM
     cgi (0.3.6)
     chartkick (4.2.1)
     cld3 (3.6.0)
-    cloudinary (1.27.0)
+    cloudinary (1.28.0)
       aws_cf_signer
       rest-client (>= 2.0.0)
     coderay (1.1.3)
@@ -915,7 +915,7 @@ GEM
     unaccent (0.4.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.8.2)
+    unf_ext (0.0.9)
     unicode-display_width (2.5.0)
     uniform_notifier (1.16.0)
     validate_url (1.0.15)
