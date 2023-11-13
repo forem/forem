@@ -80,11 +80,11 @@ GEM
       activerecord (>= 6.1, < 7.2)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
-    ahoy_email (2.1.3)
-      actionmailer (>= 5)
+    ahoy_email (2.2.0)
+      actionmailer (>= 6.1)
       addressable (>= 2.3.2)
       nokogiri
-      safely_block (>= 0.1.1)
+      safely_block (>= 0.4)
     ahoy_matey (4.2.1)
       activesupport (>= 5.2)
       device_detector
@@ -190,7 +190,7 @@ GEM
     dante (0.2.0)
     datadog-ci (0.2.0)
       msgpack
-    date (3.3.3)
+    date (3.3.4)
     ddtrace (1.15.0)
       datadog-ci (~> 0.2.0)
       debase-ruby_core_source (= 3.2.2)
@@ -221,7 +221,7 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    devise_invitable (2.0.8)
+    devise_invitable (2.0.9)
       actionmailer (>= 5.0)
       devise (>= 4.6)
     diff-lcs (1.5.0)
@@ -248,7 +248,6 @@ GEM
       rainbow
       rubocop
       smart_properties
-    errbase (0.2.2)
     erubi (1.12.0)
     et-orbi (1.2.7)
       tzinfo
@@ -340,8 +339,8 @@ GEM
     gibbon (3.5.0)
       faraday (>= 1.0)
       multi_json (>= 1.11.0)
-    globalid (1.1.0)
-      activesupport (>= 5.0)
+    globalid (1.2.1)
+      activesupport (>= 6.1)
     google-protobuf (3.24.0)
     google-protobuf (3.24.0-arm64-darwin)
     google-protobuf (3.24.0-x86_64-darwin)
@@ -510,7 +509,7 @@ GEM
     mini_histogram (0.3.1)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.4)
+    mini_portile2 (2.8.5)
     minitest (5.20.0)
     modis (4.0.1)
       activemodel (>= 5.2)
@@ -530,14 +529,14 @@ GEM
       connection_pool (~> 2.2)
     net-http2 (0.18.4)
       http-2 (~> 0.11)
-    net-imap (0.3.7)
+    net-imap (0.4.4)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
-    net-protocol (0.2.1)
+    net-protocol (0.2.2)
       timeout
-    net-smtp (0.3.3)
+    net-smtp (0.4.0)
       net-protocol
     netrc (0.11.0)
     nio4r (2.5.9)
@@ -620,7 +619,7 @@ GEM
     pundit-matchers (1.9.0)
       rspec-rails (>= 3.0.0)
     raabro (1.4.0)
-    racc (1.7.1)
+    racc (1.7.3)
     rack (2.2.8)
     rack-attack (6.7.0)
       rack (>= 1.0, < 4)
@@ -667,7 +666,7 @@ GEM
       thor (~> 1.0)
       zeitwerk (~> 2.5)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.1.0)
     ransack (3.2.1)
       activerecord (>= 6.1.5)
       activesupport (>= 6.1.5)
@@ -797,8 +796,7 @@ GEM
       jquery-fileupload-rails (~> 0.4.1)
       rails (>= 3.1)
       sass-rails (>= 3.1)
-    safely_block (0.3.0)
-      errbase (>= 0.1.1)
+    safely_block (0.4.0)
     sanitize (6.0.2)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -898,7 +896,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.3.0)
     timecop (0.9.8)
-    timeout (0.4.0)
+    timeout (0.4.1)
     twitter (7.0.0)
       addressable (~> 2.3)
       buftok (~> 0.2.0)
@@ -977,7 +975,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 10.0)
   acts_as_follower!
   addressable (~> 2.8)
-  ahoy_email (~> 2.1.3)
+  ahoy_email (~> 2.2.0)
   ahoy_matey (~> 4.1)
   amazing_print (~> 1.4)
   ancestry (~> 4.2)
