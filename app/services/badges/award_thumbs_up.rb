@@ -16,12 +16,7 @@ module Badges
       # Early return if any badge is not found
       return if badge_ids.values.any?(&:nil?)
 
-      user_thumbsup_counts = Reaction
-        .where(category: "thumbsup", reactable_type: "Article")
-        .group(:user_id)
-        .having("COUNT(*) >= ?", MIN_THRESHOLD)
-        .order(Arel.sql("COUNT(*) DESC"))
-        .count
+      user_thumbsup_counts = get_user_thumbsup_counts
 
       user_thumbsup_counts.each do |user_id, count|
         THUMBS_UP_BADGES.each do |threshold, _|
@@ -37,6 +32,14 @@ module Badges
           )
         end
       end
+    end
+
+    def self.get_user_thumbsup_counts
+      Reaction.where(category: "thumbsup", reactable_type: "Article")
+        .group(:user_id)
+        .having("COUNT(*) >= ?", MIN_THRESHOLD)
+        .order(Arel.sql("COUNT(*) DESC"))
+        .count
     end
 
     def self.fetch_badge_ids
