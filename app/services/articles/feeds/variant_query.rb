@@ -136,6 +136,7 @@ module Articles
         # goodness of scopes (e.g., limited_column_select) and eager includes.
         scope = Article.joins(join_fragment)
           .limited_column_select
+          .includes(top_comments: :user)
           .includes(:distinct_reaction_categories)
           .order(config.order_by.to_sql)
 
