@@ -31,6 +31,7 @@ fr:
         first: Merci de participer à une conversation constructive ! Vous avez posté deux commentaires ou plus cette semaine. Continuez comme ça pour poursuivre la série !
         longest: 32 semaines ! Vous avez atteint la plus longue période possible pour l'insigne du bien-être communautaire. Vous avez fait un travail remarquable en vous engageant dans la communauté et continuez à apporter votre contribution à notre communauté !
         other: Félicitations pour avoir atteint une série de %{weeks} semaines pour l'insigne du bien-être communautaire ! Continuez à envoyer des commentaires constructifs pour que la série continue !
+      thumbs_up: Merci pour vos efforts en examinant les messages et en obtenant %{count} réactions positives!
     broadcasts:
       welcome_notification:
         generator:
