@@ -4,6 +4,9 @@ on:
     types: [created]
   pull_request_target:
     types: [opened,closed,synchronize]
+  merge_group:
+    branches:
+      - main
 
 permissions:
   actions: write
