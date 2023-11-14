@@ -7,7 +7,6 @@ RSpec.describe Articles::Updater, type: :service do
   let(:draft) { create(:article, user: user, published: false, published_at: nil) }
 
   before do
-    allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true)
     allow(SegmentedUserRefreshWorker).to receive(:perform_async)
   end
 

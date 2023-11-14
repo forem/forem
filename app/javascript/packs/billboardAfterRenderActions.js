@@ -18,6 +18,30 @@ export function initializeBillboardVisibility() {
   });
 }
 
+export function executeBBScripts(el) {
+  const scriptElements = el.getElementsByTagName('script');
+  let originalElement, copyElement, parentNode, nextSibling, i;
+
+  for (i = 0; i < scriptElements.length; i++) {
+    originalElement = scriptElements[i];
+    if (!originalElement) {
+      continue;
+    }
+    copyElement = document.createElement('script');
+    for (let j = 0; j < originalElement.attributes.length; j++) {
+      copyElement.setAttribute(
+        originalElement.attributes[j].name,
+        originalElement.attributes[j].value,
+      );
+    }
+    copyElement.textContent = originalElement.textContent;
+    parentNode = originalElement.parentNode;
+    nextSibling = originalElement.nextSibling;
+    parentNode.removeChild(originalElement);
+    parentNode.insertBefore(copyElement, nextSibling);
+  }
+}
+
 export function observeBillboards() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -64,6 +88,7 @@ function trackAdImpression(adBox) {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
+      article_id: adBox.dataset.articleId,
     },
   };
 

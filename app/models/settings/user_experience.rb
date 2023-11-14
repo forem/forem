@@ -40,5 +40,6 @@ module Settings
     setting :tag_feed_minimum_score, type: :integer, default: 0
     setting :default_locale, type: :string, default: "en"
     setting :display_in_directory, type: :boolean, default: true
+    setting :award_tag_minimum_score, type: :integer, default: 100
   end
 end

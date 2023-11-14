@@ -58,7 +58,11 @@ module Articles
           user: @user,
           days_since_published: config.max_days_since_published,
         )
-        @query_parameters = { oldest_published_at: oldest_published_at }
+        @query_parameters = {
+          oldest_published_at: oldest_published_at,
+          conditional_lookback: oldest_published_at - 12.hours,
+          conditional_comment_timeframe: 6.hours.ago
+        }
         configure!
       end
 
@@ -261,14 +265,13 @@ module Articles
       end
 
       def build_sql_with_where_clauses(only_featured:, must_have_main_image:, omit_article_ids:)
-        where_clauses = "articles.published = true AND articles.published_at > :oldest_published_at"
-        # See Articles.published scope discussion regarding the query planner
+        # Hardcode the values for lookback_hours and comment_hours.
+        where_clauses = "articles.published = true"
         where_clauses += " AND articles.published_at < :now"
-        where_clauses += " AND articles.score >= 0" # We only want positive values here.
-
-        # Without the compact, if we have `omit_article_ids: [nil]` we
-        # have the following SQL clause: `articles.id NOT IN (NULL)`
-        # which will immediately omit EVERYTHING from the query.
+        where_clauses += " AND articles.score >= 0"
+        where_clauses += " AND ((articles.published_at > :oldest_published_at)
+          OR (articles.published_at > :conditional_lookback
+          AND articles.last_comment_at > :conditional_comment_timeframe))"
         where_clauses += " AND articles.id NOT IN (:omit_article_ids)" unless omit_article_ids.compact.empty?
         where_clauses += " AND articles.featured = true" if only_featured
         where_clauses += " AND articles.main_image IS NOT NULL" if must_have_main_image

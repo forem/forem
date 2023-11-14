@@ -478,22 +478,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
-      processed_content.has_front_matter?
-    else
-      original_has_frontmatter?
-    end
-  end
-
-  def original_has_frontmatter?
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
-    begin
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError, Psych::DisallowedClass
-      # if frontmatter is invalid, still render editor with errors instead of 500ing
-      true
-    end
+    processed_content.has_front_matter?
   end
 
   def class_name
@@ -687,14 +672,6 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
-      extracted_evaluate_markdown
-    else
-      original_evaluate_markdown
-    end
-  end
-
-  def extracted_evaluate_markdown
     content_renderer = processed_content
     return unless content_renderer
 
@@ -713,24 +690,6 @@ class Article < ApplicationRecord
 
     self.description = processed_description if description.blank?
   rescue ContentRenderer::ContentParsingError => e
-    errors.add(:base, ErrorMessages::Clean.call(e.message))
-  end
-
-  def original_evaluate_markdown
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
-    self.reading_time = parsed_markdown.calculate_reading_time
-    self.processed_html = parsed_markdown.finalize
-
-    if parsed.front_matter.any?
-      evaluate_front_matter(parsed.front_matter)
-    elsif tag_list.any?
-      set_tag_list(tag_list)
-    end
-
-    self.description = processed_description if description.blank?
-  rescue StandardError => e
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
