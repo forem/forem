@@ -115,11 +115,11 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindex (0.8.1)
-    blazer (2.6.5)
-      activerecord (>= 5)
-      chartkick (>= 3.2)
-      railties (>= 5)
-      safely_block (>= 0.1.1)
+    blazer (3.0.1)
+      activerecord (>= 6.1)
+      chartkick (>= 5)
+      railties (>= 6.1)
+      safely_block (>= 0.4)
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     brakeman (5.4.1)
@@ -157,7 +157,7 @@ GEM
       carrierwave
       fastimage
     cgi (0.3.6)
-    chartkick (4.2.1)
+    chartkick (5.0.4)
     cld3 (3.6.0)
     cloudinary (1.28.0)
       aws_cf_signer
@@ -475,7 +475,7 @@ GEM
     listen (3.8.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
-    loofah (2.21.4)
+    loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     lumberjack (1.2.9)
@@ -978,7 +978,7 @@ DEPENDENCIES
   amazing_print (~> 1.4)
   ancestry (~> 4.2)
   better_errors (~> 2.9)
-  blazer (~> 2.6)
+  blazer (~> 3.0)
   bootsnap (>= 1.1.0)
   brakeman (~> 5.2)
   bullet (~> 7.0)
