@@ -153,6 +153,12 @@ RSpec.describe "Billboards" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).to include "crayons-sponsorship__header relative"
       end
+
+      it "includes custom_display_label if set" do
+        billboard.update_column(:custom_display_label, "My great custom label")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "My great custom label"
+      end
     end
 
     context "when billboard template is plain" do
