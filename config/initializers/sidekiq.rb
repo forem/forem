@@ -28,7 +28,7 @@ Sidekiq.configure_server do |config|
   # every 30 seconds which the gem defaults to
   Sidekiq.options[:poll_interval] = 10
 
-  if File.exist?(schedule_file) && Rails.env.production?
+  if File.exist?(schedule_file)
     Sidekiq::Cron::Job.load_from_hash!(YAML.load_file(schedule_file))
   end
 
