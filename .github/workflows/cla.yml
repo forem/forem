@@ -7,6 +7,7 @@ on:
   merge_group:
     branches:
       - main
+  workflow_call:
 
 permissions:
   actions: write
