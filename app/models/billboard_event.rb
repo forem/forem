@@ -4,6 +4,8 @@
 class BillboardEvent < ApplicationRecord
   belongs_to :billboard, class_name: "Billboard", foreign_key: :display_ad_id, inverse_of: :billboard_events
   belongs_to :user, optional: true
+  # We also have an article_id param, but not belongs_to because it is not indexed and not designed to be
+  # consistently referenced within the application.
 
   self.table_name = "display_ad_events"
 

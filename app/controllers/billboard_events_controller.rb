@@ -37,6 +37,18 @@ class BillboardEventsController < ApplicationMetalController
     # keeping while we may receive data in the "old" format from cached js
     billboard_id = event_params.delete(:display_ad_id)
     event_params[:billboard_id] ||= billboard_id
-    event_params.slice(:context_type, :category, :billboard_id)
+    event_params[:article_id] = params[:article_id] if params[:article_id].present?
+    event_params[:geolocation] = client_geolocation
+    event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation)
+  end
+
+  def client_geolocation
+    # Copied here instead of re-used due to this controller
+    # inhereting from ApplicationMetalController instead of ApplicationController
+    if session_current_user_id
+      request.headers["X-Client-Geo"]
+    else
+      request.headers["X-Cacheable-Client-Geo"]
+    end
   end
 end

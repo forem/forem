@@ -14,7 +14,7 @@ gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to
 gem "acts-as-taggable-on", "~> 10.0" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
 gem "acts_as_follower", github: "forem/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.8" # A replacement for the URI implementation that is part of Ruby's standard library
-gem "ahoy_email", "~> 2.1.3" # Email analytics for Rails
+gem "ahoy_email", "~> 2.2.0" # Email analytics for Rails
 gem "ahoy_matey", "~> 4.1" # Tracking analytics for Rails
 gem "ancestry", "~> 4.2" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "blazer", "~> 2.6" # Allows admins to query data
