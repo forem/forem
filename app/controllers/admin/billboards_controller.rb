@@ -17,6 +17,7 @@ module Admin
 
     def edit
       @billboard = Billboard.find(params[:id])
+      @test_article = Article.last
     end
 
     def create

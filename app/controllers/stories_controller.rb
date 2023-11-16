@@ -36,6 +36,9 @@ class StoriesController < ApplicationController
     @story_show = true
     path = "/#{params[:username].downcase}/#{params[:slug]}"
     if (@article = Article.includes(:user).find_by(path: path)&.decorate)
+      @bb_test_id = params[:bb_test_id]
+      @bb_test_placement_area = params[:bb_test_placement_area]
+
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect

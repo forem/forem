@@ -35,6 +35,16 @@
     <div class="crayons-field">
       <%= label_tag :placement_area, "Placement Area:", class: "crayons-field__label" %>
       <%= select_tag :placement_area, options_for_select(billboards_placement_area_options_array, selected: @billboard.placement_area), include_blank: "Select...", class: "crayons-select js-placement-area" %>
+      <%= link_to "Test placement on the post",
+                  story_show_path(
+                    username: @test_article.username,
+                    slug: @test_article.slug,
+                    bb_test_id: @billboard.id,
+                    bb_test_placement_area: @billboard.placement_area,
+                  ),
+                  target: "_blank",
+                  rel: "noopener",
+                  id: "test_link" %>
     </div>
 
     <div class="crayons-field">
@@ -153,3 +163,26 @@
 </div>
 
 <%= javascript_packs_with_chunks_tag "admin/billboards", defer: true %>
+<script>
+const placementAreaSelect = document.getElementById("placement_area");
+const testPlacementAreaLink = document.getElementById("test_link");
+
+updateTestLinkVisibility();
+
+let previouslySelecetedPlacementAreaValue = placementAreaSelect.value;
+placementAreaSelect.addEventListener("change", () => {
+  updateTestLinkVisibility();
+
+  const newlySelecetedPlacementAreaValue = placementAreaSelect.value;
+  testPlacementAreaLink.href = testPlacementAreaLink.href.replaceAll(previouslySelecetedPlacementAreaValue, newlySelecetedPlacementAreaValue);
+
+  previouslySelecetedPlacementAreaValue = newlySelecetedPlacementAreaValue;
+});
+
+function updateTestLinkVisibility() {
+  const postPlacementAreas = ['post_comments', 'post_sidebar'];
+
+  const value = placementAreaSelect.value;
+  testPlacementAreaLink.hidden = (value === '') || (postPlacementAreas.indexOf(value) === -1);
+}
+</script>
