@@ -196,7 +196,7 @@ RSpec.describe Billboard do
       options = { http_header: { "User-Agent" => "DEV(local) (http://forem.test)" }, timeout: 10 }
       expect(FastImage).to have_received(:size).with(image_url, options)
       # width is billboard.prefix_width
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 95)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
       # Images::Optimizer.call(source, width: width)
     end
 
@@ -206,7 +206,7 @@ RSpec.describe Billboard do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_sidebar")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::SIDEBAR_WIDTH, quality: 95)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::SIDEBAR_WIDTH, quality: 100)
     end
 
     it "uses post width for feed location" do
@@ -215,7 +215,7 @@ RSpec.describe Billboard do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "feed_second")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 95)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
     end
 
     it "keeps the same processed_html if markdown was not changed" do

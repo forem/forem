@@ -18,6 +18,11 @@
     </div>
 
     <div class="crayons-field">
+      <%= label_tag :custom_display_label, "Custom author display name:", class: "crayons-field__label" %>
+      <%= text_field_tag :custom_display_label, @billboard.custom_display_label, size: "100x5", class: "crayons-textfield", autocomplete: "off" %>
+    </div>
+
+    <div class="crayons-field">
       <%= label_tag :body_markdown, "Body Content:", class: "crayons-field__label" %>
       <%= text_area_tag :body_markdown, @billboard.body_markdown, size: "100x5", class: "crayons-textfield" %>
     </div>

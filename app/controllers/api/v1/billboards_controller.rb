@@ -51,6 +51,7 @@ module Api
                       :name, :organization_id, :placement_area, :published,
                       :tag_list, :type_of, :exclude_article_ids, :weight,
                       :audience_segment_type, :audience_segment_id, :priority,
+                      :custom_display_label, :template, :render_mode,
                       # Permitting twice allows both comma-separated string and array values
                       :target_geolocations, target_geolocations: []
       end

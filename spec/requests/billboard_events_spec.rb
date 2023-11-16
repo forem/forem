@@ -68,6 +68,33 @@ RSpec.describe "BillboardEvents" do
         expect(BillboardEvent.last.user_id).to eq(user.id)
       end
 
+      it "assigns event to passed article_id" do
+        article = create(:article)
+        post "/billboard_events", params: {
+          billboard_event: {
+            billboard_id: billboard.id,
+            context_type: BillboardEvent::CONTEXT_TYPE_HOME,
+            category: BillboardEvent::CATEGORY_IMPRESSION,
+            article_id: article.id
+          }
+        }
+        expect(BillboardEvent.last.article_id)
+          .to eq(article.id)
+      end
+
+      it "assigns event to passed current geolocation" do
+        article = create(:article)
+        post "/billboard_events", params: {
+          billboard_event: {
+            billboard_id: billboard.id,
+            context_type: BillboardEvent::CONTEXT_TYPE_HOME,
+            category: BillboardEvent::CATEGORY_IMPRESSION,
+            article_id: article.id
+          }
+        }, headers: { "X-Client-Geo" => "CA-AB", "X-Cacheable-Client-Geo" => "CA" }
+        expect(BillboardEvent.last.geolocation).to eq("CA-AB")
+      end
+
       it "uses a ThrottledCall for data updates" do
         post "/billboard_events", params: {
           billboard_event: {
