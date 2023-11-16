@@ -38,7 +38,9 @@
         "Shopify.ruby-lsp",
         "KoichiSasada.vscode-rdbg",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "MateuszDrewniak.ruby-test-runner",
+        "firsttris.vscode-jest-runner"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh"
