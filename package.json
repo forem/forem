@@ -117,7 +117,7 @@
     "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^5.4.1",
     "@honeybadger-io/webpack": "^1.5.1",
-    "@hotwired/stimulus": "3.1.0",
+    "@hotwired/stimulus": "3.2.2",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "7.1.1",
     "@rails/webpacker": "5.4.4",
