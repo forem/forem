@@ -24,9 +24,9 @@ module Badges
 
           badge_id = badge_ids[threshold]
           next unless badge_id
-          next unless (user = User.find_by(id: user_id))
 
-          user.badge_achievements.create(
+          BadgeAchievement.create(
+            user_id: user_id,
             badge_id: badge_id,
             rewarding_context_message_markdown: generate_message(threshold: threshold),
           )
@@ -43,8 +43,8 @@ module Badges
     end
 
     def self.fetch_badge_ids
-      THUMBS_UP_BADGES.transform_values do |title|
-        Badge.find_by(title: title)&.id
+      Badge.where(title: THUMBS_UP_BADGES.values).each_with_object({}) do |badge, hash|
+        hash[THUMBS_UP_BADGES.key(badge.title)] = badge[:id]
       end
     end
 
