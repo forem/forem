@@ -1,0 +1,25 @@
+---
+es:
+  views:
+    stories:
+      meta:
+        description_tagged: Contenido de %{tag} en %{name}
+        page: " Página %{page}"
+        rss: Feed RSS de %{name}
+      heading: Publicaciones
+      discuss: "#discutir"
+      follow: Seguir
+      menu:
+        aria_left: botón de navegación izquierdo
+        aria_right: botón de navegación derecho
+      sort:
+        aria_label: Ver publicaciones por
+        aria_tagged: Ver publicaciones etiquetadas por
+        relevant: Relevante
+        week: Semana
+        month: Mes
+        year: Año
+        infinity: Infinito
+        latest: Último
+        signin_html: "👋 <a href=\"%{path}\">Inicia sesión</a> para poder ordenar las publicaciones por <strong>relevancia</strong>, <strong>últimas</strong> o <strong>mejores</strong>."
+        top: Mejores

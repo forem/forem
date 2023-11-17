@@ -1,0 +1,58 @@
+---
+es:
+  views:
+    credits:
+      meta:
+        title: Créditos
+      ledger:
+        class:
+          listing: Anuncio
+        category: Categoría
+        item: Elemento
+        cost: Costo (créditos)
+        date: Fecha
+        misc: Artículos varios
+      listing:
+        create: Crear un anuncio
+        dashboard: Ir al panel de anuncios
+      new:
+        meta:
+          title: Comprar créditos
+        heading: Compra créditos para @%{name}
+        hook:
+          text_html: Los créditos se utilizan para %{listings}, así como para productos y servicios próximos.
+          listings: "%{anuncios} de la comunidad"
+        form:
+          amount:
+            label: Monto a comprar
+            placeholder: Ingresa cualquier cantidad
+          method:
+            label: Método de pago
+            number: "**** **** **** %{last}"
+            exp: "%{mm}/%{yy}"
+            add: Agregar nueva tarjeta
+          submit: Completar compra
+          submitting: Enviando...
+          note_org: "*Todos los administradores de la organización tienen acceso a los créditos de la organización"
+        switch:
+          org: Cambiar a %{name}
+          user: Cambiar a compra personal
+        status:
+          subtitle:
+            org: ¿Cuántos créditos tiene %{name}?
+            user: ¿Cuántos créditos tengo actualmente?
+          desc:
+            org: "%{name} tiene %{count} créditos."
+            user: Tienes %{count} créditos.
+        how:
+          subtitle: ¿Cómo puedo ganar créditos?
+          desc_html: Los miembros reciben <strong>5 créditos</strong> por cada distintivo de perfil que obtengan.
+      purchase: Comprar créditos adicionales
+      tag: 'Etiqueta: %{name}'
+      status:
+        user:
+          one: "Tienes %{count} crédito personal para gastar"
+          other: "Tienes %{count} créditos personales para gastar"
+        org_html:
+          one: "%{name} tiene %{num} crédito para gastar"
+          other: "%{name} tiene %{num} créditos para gastar"

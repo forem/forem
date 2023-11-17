@@ -1,0 +1,96 @@
+---
+es:
+  views:
+    users:
+      meta:
+        og:
+          title: "%{user} — Perfil de %{community}"
+      comments_locked_cta:
+        title: ¿Quieres conectarte con %{user}?
+        description: Crea una cuenta para conectarte con %{user}. También puedes iniciar sesión a continuación para continuar si ya tienes una cuenta.
+        create_account: Crear cuenta
+        already_have_an_account: ¿Ya tienes una cuenta?
+        sign_in: Iniciar sesión
+      comments:
+        all:
+          one: Todos los comentarios %{count}
+          other: Todos los comentarios %{count}
+        last:
+          one: Últimos %{count} comentarios
+          other: Últimos %{count} comentarios
+        recent: Comentarios recientes
+        view: Ver toda la actividad
+        view_all:
+          one: Ver todos los %{count} comentarios
+          other: Ver todos los %{count} comentarios
+        view_last:
+          one: Ver último 1 comentario
+          other: Ver últimos %{count} comentarios
+      github:
+        heading: Repositorios de GitHub
+        fork: Bifurcar
+        stars:
+          one: 1 estrella
+          other: "%{count} estrellas"
+      pin_icon: Fijar
+      pinned: Fijado
+      profile_fields:
+        bio:
+          label: Biografía
+          placeholder: Una breve biografía...
+        display_email_on_profile: Mostrar correo electrónico en el perfil
+        location:
+          label: Ubicación
+          placeholder: Halifax, Nueva Escocia
+        website:
+          label: URL del sitio web
+          placeholder: https://tusitio.com
+        education: Educación
+        currently learning: Actualmente aprendiendo
+        currently hacking on: Actualmente trabajando en
+        available for: Disponible para
+        skills/languages: Habilidades/Idiomas
+        work: Trabajo
+      side:
+        comment:
+          icon: Comentario
+          text:
+            one: 1 comentario escrito
+            other: "%{count} comentarios escritos"
+        org: Organizaciones
+        post:
+          icon: Publicación
+          text:
+            one: 1 publicación
+            other: "%{count} publicaciones"
+        tag:
+          icon: Etiqueta
+          text:
+            one: 1 etiqueta seguida
+            other: "%{count} etiquetas seguidas"
+      signout:
+        meta:
+          title: Confirmar cierre de sesión - %{community}
+        heading: ¿Estás seguro de que quieres cerrar sesión?
+        'yes': Sí, cerrar sesión
+      block: Bloquear a @%{user}
+      details: Detalles del perfil de %{user}
+      dropdown: Acciones de usuario
+      email_icon: Dirección de correo electrónico
+      empty: 404 bio no encontrada
+      flag: Marcar a @%{user}
+      follow: Seguir
+      joined:
+        icon: Unido
+        text_html: "Unido el\_%{date}"
+      location_icon: Ubicación
+      logo: Foto de perfil de %{user}
+      more: Más información sobre @%{user}
+      send_pm:
+        code: código de conducta
+        notice_html: Todas las interacciones privadas <b>deben</b> cumplir con el %{code}.
+        placeholder: Ingresa tu mensaje aquí...
+        submit: Enviar
+      social: Sitio web de %{service}
+      unflag: Desmarcar a @%{user}
+      website: Sitio web personal

@@ -1,0 +1,113 @@
+---
+es:
+  liquid_tags:
+    asciinema_tag:
+      invalid_asciinema_id: 'ID de Asciinema no válido: %{id}'
+    blogcast_tag:
+      invalid_blogcast_id: ID de Blogcast no válido
+    codepen_tag:
+      invalid_codepen_url: URL de CodePen no válida
+      invalid_options: Opciones no válidas
+    codesandbox_tag:
+      invalid_id: 'Error de CodeSandbox: ID no válido'
+    comment_tag:
+      invalid_comment: ID de comentario o URL no válidos
+    dotnet_fiddle_tag:
+      invalid_dotnetfiddle_url: URL de DotnetFiddle no válida
+    gist_tag:
+      invalid_filename: Nombre de archivo no válido
+      invalid_format: 'Enlace de Gist no válido: %{link} Los enlaces deben seguir este formato: https://gist.github.com/username/id-del-gist'
+      invalid_gist_link: 'Enlace de Gist no válido: Debes proporcionar un enlace de Gist'
+    git_pitch_tag:
+      invalid_gitpitch_url: URL de GitPitch no válida
+    github_tag:
+      github_issue_tag:
+        comment_for: Comentario para
+        commented_on: comentado en
+        invalid_github_issue_pull: Enlace no válido de problema, solicitud de extracción o comentario de GitHub
+        posted_on: publicado en
+      github_readme_tag:
+        invalid_options: 'Etiqueta de GitHub: opciones no válidas: %{invalid} | opciones admitidas: %{valid}'
+        invalid_github_repository: Ruta o URL no válida del repositorio de GitHub
+    glitch_tag:
+      invalid_glitch_id: ID de Glitch no válido
+      invalid_options: Opciones no válidas
+    instagram_tag:
+      invalid_instagram_id: ID de Instagram no válido
+    js_fiddle_tag:
+      invalid_jsfiddle_url: URL de JSFiddle no válida
+      invalid_options: Opciones no válidas
+    jsitor_tag:
+      invalid_jsitor_link: Enlace de JSitor no válido. Por favor, lee la guía del editor para obtener más información
+    kotlin_tag:
+      invalid_kotlin_playground: URL de Kotlin Playground no válida
+    link_tag:
+      not_exist: "El artículo que estás buscando no existe: %{slug}"
+      not_exist_link: "El artículo que estás buscando no existe: {% link %{slug} %}"
+    liquid_tag_base:
+      invalid_context: Contexto no válido. Esta etiqueta líquida solo se puede usar en %{valid}.
+      no_source_found: No se encontró fuente
+    listing_tag:
+      invalid_url_or_slug: URL o slug no válido. Listado no encontrado.
+    loom_tag:
+      invalid_loom_url: URL de Loom no válida.
+    medium_tag:
+      invalid_link_url: URL de enlace no válida o la URL de enlace no existe
+    next_tech_tag:
+      invalid_url: URL de Next Tech no válida
+    null_tag:
+      liquid_tag_is_disabled: La etiqueta Liquid#%{tag_name} está deshabilitada
+    organization_tag:
+      invalid_slug: Slug de organización no válido
+      invalid_url: URL de organización no válida
+    parler_tag:
+      invalid_parler_url: URL de Parler no válida
+    podcast_tag:
+      invalid_podcast_link: Enlace de podcast no válido
+    reddit_tag:
+      invalid_reddit_link: 'Enlace de Reddit no válido: %{url}'
+    replit_tag:
+      invalid_replit_id: URL de Replit o @usuario/slug no válido
+    runkit_tag:
+      runkit_tag_is_invalid: La etiqueta Runkit no es válida
+    slideshare_tag:
+      invalid_slideshare_key: Clave de SlideShare no válida
+    soundcloud_tag:
+      invalid_soundcloud_url: "URL de Soundcloud no válida - intenta quitar cualquier parámetro de URL: '?algo=valor'"
+    speakerdeck_tag:
+      invalid_speakerdeck_id: ID de Speakerdeck no válido
+    spotify_tag:
+      invalid_spotify_uri: URI o URL de Spotify no válidos.
+    stackblitz_tag:
+      invalid_options: Opciones no válidas
+      invalid_stackblitz_id: ID de Stackblitz no válido
+    stackery_tag:
+      missing_argument: Stackery - Falta el argumento del nombre del propietario y/o del repositorio
+    stackexchange_tag:
+      post_not_found: "No se pudo encontrar una publicación con ese ID: {% %{tag} %{input} %}"
+      invalid_id: 'ID de Stack Exchange no válido: {% %{tag} %{input} %}'
+      invalid_site: 'Sitio de Stack Exchange no válido: {% %{tag} %{input} %}'
+    tag_tag:
+      invalid_tag_name: nombre de etiqueta no válido
+    tweet_tag:
+      invalid_twitter_id: ID de Twitter o URL no válidos
+    twitch_tag:
+      invalid_twitch_id: ID, Slug o URL de Twitch no válidos
+    twitter_timeline_tag:
+      invalid_url: URL de la línea de tiempo de Twitter no válida
+    unified_embed:
+      tag:
+        invalid_url: La URL proporcionada puede tener un error tipográfico o error; por favor, verifica e inténtalo de nuevo
+        not_found: La URL proporcionada no se encontró; por favor, verifica e inténtalo de nuevo
+        listings_disabled: Las listas están desactivadas en este Forem; no se puede incrustar una URL de lista
+        too_many_redirects: El enlace incrustado se redirigió demasiadas veces.
+    user_subscription_tag:
+      submit: Enviar
+      submitting: Enviando...
+      subscribed: Ya estás suscrito.
+    wikipedia_tag:
+      section_not_found: No se pudo encontrar la sección del artículo de Wikipedia - %{input}
+      article_not_found: "No se pudo encontrar el artículo de Wikipedia - %{input}: %{response_detail}"
+      invalid_wikipedia_url: URL de Wikipedia no válida
+    youtube_tag:
+      invalid_youtube_id: ID o URL de YouTube no válidos

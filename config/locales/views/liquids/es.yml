@@ -1,0 +1,44 @@
+---
+es:
+  views:
+    liquids:
+      github:
+        view: Ver en GitHub
+      medium:
+        logo: Logotipo de Medium
+      poll:
+        show_results: Solo muéstrame los resultados
+      reddit:
+        author: 'Autor: %{author}'
+        see: Ver publicación completa
+      stackexchange:
+        answer:
+          text_html: "%{answer} re: %{title}"
+          answer: respuesta
+        answers: 'Respuestas: %{count}'
+        comments: 'Comentarios: %{count}'
+        open:
+          answer: Abrir respuesta completa
+          article: Abrir artículo completo
+          question: Abrir pregunta completa
+      twitter:
+        view: Ver en Twitter
+      user_subscription:
+        confirm:
+          subtitle: Confirmar suscripción
+          button_text: Confirmar suscripción
+          cancel_text: Cancelar
+          text_html: "Compartirás tu dirección de correo electrónico, nombre de usuario, nombre y URL del perfil de %{community} con %{username}. Una vez que lo hagas, no podrás deshacer esto."
+        logged_out: "Debes iniciar sesión primero en %{community}."
+        sign_in: Iniciar sesión
+        subscribe:
+          apple:
+            button: Suscribirse
+            desc_html: "¡Hola! Parece que cuando creaste tu cuenta de %{community} te registraste con Apple usando una dirección de correo electrónico privada. Si deseas suscribirte, por favor %{update} primero a una dirección de correo electrónico diferente."
+            update: actualizar tu dirección de correo electrónico en Configuración
+          button: Suscribirse
+          desc_html: "Te suscribirás con la dirección de correo electrónico asociada a tu cuenta de %{community}. Para usar una dirección de correo electrónico diferente, puedes %{update}."
+          update: actualizar tu dirección de correo electrónico en Configuración
+      wikipedia:
+        logo: Logotipo de Wikipedia
+        view: Ver en Wikipedia

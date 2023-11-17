@@ -1,0 +1,114 @@
+---
+es:
+  services:
+    analytics_service:
+      no_stats: No puedes ver las estadísticas de este artículo.
+    article_with_video_creation_service:
+      unpublished_video: Video no publicado ~ %{rand}
+    authentication:
+      authenticator:
+        not_allowed: Lo siento, pero el dominio de tu dirección de correo electrónico no está permitido. Este Forem puede tener el registro limitado solo a dominios de correo electrónico especificados o bloquear este dominio específico de unirse.
+      providers:
+        apple:
+          name: "%{first} %{last}"
+        not_available: ¡Proveedor %{name} no disponible!
+        not_enabled: ¡Proveedor %{name} no habilitado!
+    badges:
+      award_beloved_comment:
+        message: "¡Eres famoso! [Este es el comentario](%{comment}) por el que estás siendo reconocido. 😄"
+      award_streak:
+        longest: ¡16 semanas! Has logrado la racha de escritura más larga posible. Esto te hace elegible para misiones especiales en el futuro. ¡Sigue con las increíbles contribuciones a nuestra comunidad!
+        message:
+          one: "¡Felicidades por lograr esta racha! Es difícil escribir consistentemente. La próxima insignia de racha que puedes obtener es la Insignia de %{count} Semanas. 😉"
+          other: "¡Felicidades por lograr esta racha! Es difícil escribir consistentemente. La próxima insignia de racha que puedes obtener es la Insignia de %{count} Semanas. 😉"
+      award_yearly_club:
+        message:
+          one: ¡Feliz cumpleaños %{community}! ¿Puedes creer que ya han pasado %{count} año?!
+          other: ¡Feliz cumpleaños %{community}! ¿Puedes creer que ya han pasado %{count} años?!
+      congrats: ¡Felicidades!
+      thank_you: ¡Muchas gracias por tus contribuciones!
+      community_wellness:
+        first: ¡Gracias por participar en la conversación constructiva! Publicaste dos o más comentarios esta semana. ¡Sigue así para continuar la racha!
+        longest: ¡32 semanas! Has logrado la racha más larga posible para la insignia de Bienestar de la Comunidad. Increíble trabajo participando en la comunidad y sigue con tus increíbles contribuciones a nuestra comunidad.
+        other: ¡Felicidades por lograr una racha de %{weeks} semanas para la Insignia de Bienestar de la Comunidad! ¡Sigue fluyendo con los comentarios constructivos para continuar la racha!
+      thumbs_up: ¡Gracias por tus esfuerzos al revisar publicaciones y alcanzar %{count} reacciones de pulgares arriba!
+    broadcasts:
+      welcome_notification:
+        generator:
+          welcome: 'Notificación de Bienvenida: %{key}'
+    error_messages:
+      clean:
+        parse_error: Hubo un problema al analizar el YAML del encabezado. Tal vez necesitas escapar una comilla o dos puntos o algo así. Envía un correo electrónico a %{email} si tienes problemas.
+    html:
+      parser:
+        enter_fullscreen_mode: Entrar en modo de pantalla completa
+        exit_fullscreen_mode: Salir del modo de pantalla completa
+    markdown_processor:
+      parser:
+        invalid_markdown_detected: ¡Markdown no válido detectado!
+    moderator:
+      banish_user:
+        spam_account: cuenta de spam
+      manage_activity_and_roles:
+        need_super: Necesitas tener estatus de superadmin para realizar esta acción.
+      merge_user:
+        duplicate: El usuario tiene métodos de autenticación duplicados en las dos cuentas. Por favor, verifica y elimina la identidad que el usuario ya no está utilizando. Por lo general, esta es la cuenta social ya eliminada o el método de autenticación vinculado al usuario a eliminar.
+        multiple: El usuario que se está eliminando ya tiene dos o más métodos de autenticación. ¿Estás seguro de que este es el usuario correcto para eliminar? Si es así, un superadmin deberá hacerlo desde la consola para estar seguro.
+        same_user: No puedes fusionar los mismos dos IDs de usuario.
+    notifications:
+      new_comment:
+        new: "💬 Nuevo Comentario"
+      new_mention:
+        new: "🗣️ Nueva Mención"
+    payments:
+      customer:
+        usd: USD
+      errors:
+        select_payment_method: "Por favor, selecciona un método de pago."
+      process_credit_purchase:
+        charge:
+          one: Compra de %{count} crédito.
+          other: Compra de %{count} créditos.
+    rate_limit_checker:
+      invalid_key: 'Clave de caché no válida: no hay un componente único presente.'
+      limit_reached:
+        one: Límite de velocidad alcanzado, vuelve a intentarlo en %{count} segundos.
+        other: Límite de velocidad alcanzado, vuelve a intentarlo en %{count} segundos.
+    slack:
+      messengers:
+        article_fetched_feed:
+          body: |
+            Nuevo Artículo Recuperado a través de RSS: %{title}
+            %{url}
+        article_published:
+          body: |
+            Nuevo Artículo Publicado: %{title}
+            %{url}
+        feedback:
+          anonymous_report: "*Informe anónimo:"
+          final_message: |-
+            %{user_detail}
+            Categoría: %{category}
+            Informe interno: %{reports_url}
+            *_ URL informada: %{reported_url} _*
+            -----
+            *Mensaje:* %{message}
+          body: |
+            *Usuario conectado:*
+            reportero: %{username} - %{url}
+            correo electrónico: <mailto:%{email}|%{email}>
+        potential_spammer:
+          body: '¡Posible usuario de spam! %{url}
+
+            '
+    spam:
+      article_handler:
+        suspended_too_many: Usuario suspendido por demasiados artículos de spam, desencadenado por autovomit.
+    user_subscriptions:
+      create_from_controller_params:
+        source_not_found: Fuente no encontrada.
+        email_mismatch: Desajuste de correo electrónico del suscriptor.
+    users:
+      remove_role:
+        remove_self: Los administradores no pueden quitarse roles a sí mismos.
+        error: Hubo un problema al eliminar este rol. %{e_message}

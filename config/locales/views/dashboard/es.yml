@@ -1,0 +1,159 @@
+---
+es:
+  views:
+    dashboard:
+      meta:
+        title: Panel - %{site}
+      heading: Panel
+      actions:
+        mobile:
+          posts: Publicaciones (%{num})
+          followers: Seguidores (%{num})
+          following_tags: Siguiendo etiquetas (%{num})
+          following_users: Siguiendo usuarios (%{num})
+          following_orgs: Siguiendo organizaciones (%{num})
+          following_pods: Siguiendo podcasts (%{num})
+          hidden_tags: Etiquetas ocultas (%{num})
+        posts: Publicaciones
+        series: Series
+        followers: Seguidores
+        following_tags: Siguiendo etiquetas
+        following_users: Siguiendo usuarios
+        following_orgs: Siguiendo organizaciones
+        following_pods: Siguiendo podcasts
+        hidden_tags: Etiquetas ocultas
+        listings: Listados
+        analytics: Analíticas
+        for_org: Analíticas para %{org}
+        upload: Subir un video
+      analytics:
+        meta:
+          title: Analíticas
+        heading: Panel de Analíticas para %{name}
+        desc_1: Bienvenido al Panel de Analíticas, el hogar de métricas de usuarios detalladas para que los autores puedan tomar decisiones basadas en datos sobre el ecosistema %{members}.
+        desc_2: Este panel destaca información profunda especialmente relevante para las relaciones %{members}, autores y blogueros serios.
+        back: "👈 Volver al Panel Principal"
+        your: Tu Panel
+        org: "Panel de Analíticas para %{org}"
+      article:
+        heading:
+          text_html: "%{archived}%{title}"
+          archived: "[Archivado] "
+        archived: Archivado
+        published: 'Publicado:'
+        published_html: 'Publicado: %{date}'
+        edited: 'Editado:'
+        edited_html: 'Editado: %{date}'
+        series: 'Series:'
+        series_html: "<strong>Series:</strong> %{series}"
+        draft: Borrador
+        scheduled: Programado
+        scheduled_at: 'Programado:'
+        language: 'Idioma:'
+        reactions:
+          title: Reacciones
+          icon: Reacciones
+          text_html:
+            one: "%{num} reacción"
+            other: "%{num} reacciones"
+        comments:
+          title: Comentarios
+          icon: Comentarios
+          text_html:
+            one: "%{num} comentario"
+            other: "%{num} comentarios"
+        views:
+          title: Vistas
+          icon: Vistas
+          lt_25: "< 25"
+          text_html:
+            one: "%{scale} vista"
+            other: "%{scale} vistas"
+          u_25: menos de 25
+        subscriptions:
+          title: Suscripciones
+          icon: Datos
+          number: Suscripciones (%{num})
+        delete: Borrar
+        unpin: Desanclar
+        pin:
+          title: Anclar al perfil
+          button: Anclar al perfil
+          text: Anclar
+        manage:
+          aria_label: 'Administrar publicación: %{title}'
+          text: Administrar
+        lock: Bloquear discusión
+        unlock: Desbloquear discusión
+        edit:
+          aria_label: 'Editar publicación: %{title}'
+          text: Editar
+        more:
+          title: 'Más opciones para publicación: %{title}'
+          icon: Más...
+        stats: Estadísticas
+        archive: Archivar publicación
+        unarchive: Desarchivar publicación
+        author: Autor
+        co_authors: Coautores
+        series_author_change_warning: No se permiten cambios de autor para publicaciones de series.
+        icon: Detalles
+        author_is: 'AUTOR: '
+        save: Guardar
+        submit: Enviar cambio de autor
+      followers:
+        heading: Panel » Seguidores
+        empty: Todavía no tienes seguidores...
+      following_orgs:
+        heading: Panel » Siguiendo organizaciones
+        empty: Todavía no sigues ninguna organización...
+      following_pods:
+        heading: Panel » Siguiendo podcasts
+        empty: Todavía no sigues ningún podcast...
+      following_tags:
+        heading: Panel » Siguiendo etiquetas
+        empty_html: "<span>Sigue etiquetas para personalizar tu feed. Puedes explorar etiquetas populares <a href=%{link}>aquí</a></span>."
+      following_users:
+        heading: Panel » Siguiendo usuarios
+        empty: Todavía no sigues a ningún usuario...
+      hidden_tags:
+        heading: Panel » Etiquetas ocultas
+        empty_html: "<span>No tienes etiquetas ocultas...</span>"
+      tags:
+        following_button: Siguiendo
+        options:
+          icon: Opciones
+          hide: Ocultar etiqueta
+        unhide_button: Mostrar
+      listings:
+        meta:
+          title: Panel de Listados
+      posts:
+        heading: Publicaciones
+        archived: Mostrar archivadas
+        option:
+          creation-desc: Recientemente creadas
+          published-desc: Recientemente publicadas
+          views-desc: Más vistas
+          reactions-desc: Más reacciones
+          comments-desc: Más comentarios
+          aria_label: Ordenar por
+        org: "%{name} (%{num})"
+        personal: Personal
+        empty:
+          desc: Aquí es donde puedes gestionar tus publicaciones, pero aún no has escrito nada.
+          new: Escribe tu primera publicación ahora
+      subscriptions:
+        meta:
+          title: Suscripciones %{title}
+        heading: Suscripciones
+        subhead:
+          text_html: "%{for} %{source}"
+          for: para
+        empty: Todavía no tienes suscriptores para este(a) %{kind}...
+      summary:
+        reactions: Total de reacciones a publicaciones
+        views: Total de vistas de publicaciones
+        listings: Listados creados
+        credits: Créditos disponibles
+        lt_500: "< 500"
