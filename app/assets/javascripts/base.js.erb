@@ -724,6 +724,7 @@ var instantClick
   });
 
   Honeybadger.beforeNotify(function(notice) {
+    if (!notice || typeof notice.message !== 'string') return true
     const ignorePatterns = [/ResizeObserver/i, /MetaMask/i, /MtPopUpList/i, /ChunkLoadError/i]
     return !(ignorePatterns.some((pattern) => pattern.test(notice.message)));
   });
