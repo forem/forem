@@ -7,6 +7,7 @@ import { axe } from 'jest-axe';
 import { ProfileForm } from '../ProfileForm';
 
 global.fetch = fetch;
+global.Honeybadger = { notify: jest.fn() };
 
 describe('ProfileForm', () => {
   const renderProfileForm = () =>
@@ -231,7 +232,10 @@ describe('ProfileForm', () => {
         communityConfig={{ communityName: 'Community' }}
       />,
     );
-    fetch.mockReject('Fake Error');
+    fetch.mockResponse(async () => {
+      const body = JSON.stringify({ errors: 'Fake Error' });
+      return new Response(body, { status: 422 });
+    });
 
     const submitButton = getByRole('button', { name: 'Continue' });
     submitButton.click();
