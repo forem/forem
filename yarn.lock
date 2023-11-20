@@ -1724,6 +1724,14 @@
     "@babel/helper-create-class-features-plugin" "^7.22.5"
     "@babel/helper-plugin-utils" "^7.22.5"
 
+"@babel/plugin-transform-private-methods@^7.23.3":
+  version "7.23.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-private-methods/-/plugin-transform-private-methods-7.23.3.tgz#b2d7a3c97e278bfe59137a978d53b2c2e038c0e4"
+  integrity sha512-UzqRcRtWsDMTLrRWFvUBDwmw06tCQH9Rl1uAjfh6ijMSmGYQ+fpdB+cnqRC8EMh5tuuxSv0/TejGL+7vyj+50g==
+  dependencies:
+    "@babel/helper-create-class-features-plugin" "^7.22.15"
+    "@babel/helper-plugin-utils" "^7.22.5"
+
 "@babel/plugin-transform-private-property-in-object@^7.22.11":
   version "7.22.11"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-private-property-in-object/-/plugin-transform-private-property-in-object-7.22.11.tgz#ad45c4fc440e9cb84c718ed0906d96cf40f9a4e1"
