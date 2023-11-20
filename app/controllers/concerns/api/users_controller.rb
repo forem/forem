@@ -19,9 +19,7 @@ module Api
       not_found unless @user.registered
     end
 
-    def me
-      render :show
-    end
+    def me; end
 
     def unpublish
       authorize(@user, :unpublish_all_articles?)
