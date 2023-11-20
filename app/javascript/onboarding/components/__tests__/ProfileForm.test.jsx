@@ -220,4 +220,23 @@ describe('ProfileForm', () => {
 
     expect(getByText(/continue/i)).toBeInTheDocument();
   });
+
+  it('should render an error message if the request failed', async () => {
+    const { getByRole, findByText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+    fetch.mockReject('Fake Error');
+
+    const submitButton = getByRole('button', { name: 'Continue' });
+    submitButton.click();
+
+    const errorMessage = await findByText('An error occurred: Fake Error');
+    expect(errorMessage).toBeInTheDocument();
+  });
 });
