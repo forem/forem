@@ -25,7 +25,7 @@
     <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
     <%= render "articles/sidebar_listings" if Listing.feature_enabled? %>
 
-    <% @featured_tags.each do |tag| %>
+    <% Tag.where(name: Settings::General.sidebar_tags).find_each do |tag| %>
       <section class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
           <h3 class="crayons-subtitle-2"><a href="/t/<%= tag.name %>" class="crayons-link">#<%= tag.name %></a></h3>
