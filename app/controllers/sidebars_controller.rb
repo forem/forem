@@ -3,6 +3,7 @@ class SidebarsController < ApplicationController
 
   def show
     get_latest_campaign_articles
+    @featured_tags = Tag.where(name: Settings::General.sidebar_tags)
     return unless user_signed_in?
 
     tag_names = current_user.cached_followed_tag_names
@@ -16,7 +17,6 @@ class SidebarsController < ApplicationController
       .order("last_comment_at DESC")
       .limit(5)
       .pluck(:path, :title, :comments_count, :created_at)
-    @featured_tags = Tag.where(name: Settings::General.sidebar_tags)
   end
 
   private
