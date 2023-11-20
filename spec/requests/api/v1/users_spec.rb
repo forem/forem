@@ -59,6 +59,7 @@ RSpec.describe "Api::V1::Users" do
 
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
       expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+      expect(response_user["badge_ids"]).to eq(user.badge_ids)
     end
 
     it "includes email if display_email_on_profile is set to true" do
@@ -73,6 +74,14 @@ RSpec.describe "Api::V1::Users" do
       response_user = response.parsed_body
       expect(response_user.key?("email")).to be true
       expect(response_user["email"]).to be_nil
+    end
+
+    it "includes badge_ids" do
+      achievement = create(:badge_achievement, user: user)
+      badge_ids = [achievement.badge_id]
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user["badge_ids"]).to eq(badge_ids)
     end
   end
 
@@ -95,6 +104,8 @@ RSpec.describe "Api::V1::Users" do
       let(:user) { api_secret.user }
 
       it "returns the correct json representation of the user", :aggregate_failures do
+        create(:badge_achievement, user: user)
+
         get me_api_users_path, headers: auth_headers
 
         expect(response).to have_http_status(:ok)
@@ -113,6 +124,8 @@ RSpec.describe "Api::V1::Users" do
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+
+        expect(response_user["badge_ids"]).to eq(user.badge_ids)
       end
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
