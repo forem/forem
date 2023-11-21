@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_14_154619) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_20_184553) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -207,7 +207,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_14_154619) do
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
+  create_table "badge_categories", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_badge_categories_on_name", unique: true
+  end
+
   create_table "badges", force: :cascade do |t|
+    t.bigint "badge_category_id"
     t.string "badge_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false

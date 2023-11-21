@@ -2,6 +2,8 @@ class Badge < ApplicationRecord
   mount_uploader :badge_image, BadgeUploader
   resourcify
 
+  belongs_to :badge_category
+
   has_many :badge_achievements, dependent: :restrict_with_error
   has_many :tags, dependent: :restrict_with_error
   has_many :users, through: :badge_achievements
