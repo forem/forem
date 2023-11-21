@@ -2,7 +2,7 @@
 <h1 class="crayons-title mb-6">Edit Billboard:</h1>
 <div class="crayons-card p-6">
   <%= form_for([:admin, @billboard], url: admin_billboard_path(@billboard), method: :patch) do %>
-    <%= render "form" %>
+    <%= render "form", test_placement_area_link: true %>
     <%= submit_tag "Update Billboard", class: "c-btn c-btn--primary" %>
   <% end %>
 </div>
