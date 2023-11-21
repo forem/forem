@@ -81,6 +81,7 @@ namespace :admin do
       end
     end
 
+    resources :badge_categories
     resources :badges, only: %i[index edit update new create]
     resources :badge_achievements, only: %i[index destroy]
     get "/badge_achievements/award_badges", to: "badge_achievements#award"
