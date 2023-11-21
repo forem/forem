@@ -52,8 +52,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "weight", "target_geolocations",
-                          "render_mode", "template")
+                          "custom_display_label", "template", "render_mode",
+                          "priority", "weight", "target_geolocations")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -72,8 +72,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "weight", "target_geolocations",
-                          "render_mode", "template")
+                          "custom_display_label", "template", "render_mode",
+                          "priority", "weight", "target_geolocations")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -138,8 +138,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "priority", "weight", "target_geolocations",
-                          "render_mode", "template")
+                          "custom_display_label", "template", "render_mode",
+                          "priority", "weight", "target_geolocations")
       end
 
       it "also accepts target geolocations as an array" do
