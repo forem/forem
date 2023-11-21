@@ -2727,10 +2727,10 @@
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.3.tgz#555193ab2e3bb3b6adc3d551c9c030d9e860daf6"
   integrity sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==
 
-"@github/time-elements@3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-3.1.2.tgz#cc36d7a34ff2033d7f0b216f1a724405b8fbc201"
-  integrity sha512-YVtZVLBikP6I7na22kfB9PKIseISwX41MFJ7lPuNz1VVH2IR5cpRRU6F1X6kcchPChljuvMUR4OiwMWHOJQ8kQ==
+"@github/time-elements@4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@github/time-elements/-/time-elements-4.0.0.tgz#ca6aec5e9fbc18348d3fc980610b79c244b1b81f"
+  integrity sha512-oTPpERR/FylYCyUdVjufmF5MmlrIZ7gYzN59xe5mF3aQA+zn5IWiNj+5/D/6NgQWFNXoRB84DILnP/YlkETKhg==
 
 "@honeybadger-io/core@^5.2.0":
   version "5.2.0"
