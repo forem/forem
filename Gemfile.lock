@@ -830,7 +830,7 @@ GEM
       fugit (~> 1.8)
       globalid (>= 1.0.1)
       sidekiq (>= 6)
-    sidekiq-unique-jobs (7.1.30)
+    sidekiq-unique-jobs (7.1.31)
       brpoplpush-redis_script (> 0.1.1, <= 2.0.0)
       concurrent-ruby (~> 1.0, >= 1.0.5)
       redis (< 5.0)
