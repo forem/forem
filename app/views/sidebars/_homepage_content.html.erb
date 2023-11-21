@@ -1,4 +1,4 @@
-<aside class="side-bar sidebar-additional showing grid gap-4 relative" id="sidebar-additional">
+<aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
   <% @sidebar_billboard = Billboard.for_display(area: "sidebar_right", user_signed_in: user_signed_in?) %>
   <% if @sidebar_billboard %>
     <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
