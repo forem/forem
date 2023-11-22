@@ -1,7 +1,6 @@
 class RecommendedArticlesList < ApplicationRecord
   belongs_to :user
   validates :name, presence: true, length: { maximum: 120 }
-  validates :user_id
 
   enum placement_area: { main_feed: 0 } # Only main feed for now, could be used in Digest, trending, etc.
 

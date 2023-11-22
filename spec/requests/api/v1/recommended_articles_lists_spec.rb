@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Api::V1::RecommendedArticlesLists" do
   let!(:v1_headers) { { "content-type" => "application/json", "Accept" => "application/vnd.forem.api-v1+json" } }
 
-  let(:ist_params) do
+  let(:list_params) do
     {
       name: "Sample List",
       placement_area: "main_feed",
