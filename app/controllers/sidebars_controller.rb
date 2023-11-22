@@ -16,6 +16,7 @@ class SidebarsController < ApplicationController
   def get_active_discussions
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
+    languages = [I18n.default_locale.to_s] if languages.empty?
     @active_discussions = Article.published
       .where("published_at > ?", 1.week.ago)
       .where("comments_count > ?", 0)
