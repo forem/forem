@@ -15,7 +15,7 @@ RSpec.describe "Sidebars" do
       let(:tag) { create(:tag, name: "testmagoo") }
       let(:user) { create(:user) }
       let!(:article) do
-        create(:article, tag_list: tag.name, last_comment_at: 1.day.ago,
+        create(:article, tag_list: tag.name, last_comment_at: 1.day.ago, language: "en",
                          score: 10, comments_count: 5, created_at: 3.days.ago)
       end
 
@@ -42,7 +42,7 @@ RSpec.describe "Sidebars" do
       end
 
       it "does not include non-featured non-tagg-followed article" do
-        second_article = create(:article)
+        second_article = create(:article, language: "en")
         sign_in user
         get "/sidebars/home"
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))

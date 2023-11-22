@@ -15,11 +15,14 @@ class SidebarsController < ApplicationController
 
   def get_active_discussions
     tag_names = current_user.cached_followed_tag_names
+    languages = current_user.languages.pluck(:language)
+    languages = [I18n.default_locale.to_s] if languages.empty?
     @active_discussions = Article.published
       .where("published_at > ?", 1.week.ago)
       .where("comments_count > ?", 0)
       .with_at_least_home_feed_minimum_score
       .cached_tagged_with_any(tag_names)
+      .where(language: languages)
       .or(Article.featured.published.where("published_at > ?", 1.week.ago)
         .with_at_least_home_feed_minimum_score)
       .order("last_comment_at DESC")
