@@ -15,7 +15,6 @@
 <table class="crayons-table" width="100%">
   <thead>
     <tr>
-      <th scope="col">ID</th>
       <th scope="col">Name</th>
       <th scope="col">Description</th>
       <th scope="col">Badges</th>
@@ -24,8 +23,7 @@
   <tbody class="crayons-card">
     <% @badge_categories.each do |category| %>
         <tr>
-          <td><%= link_to category.id, edit_admin_badge_category_path(category) %></td>
-          <td><%= category.name %></td>
+          <td><%= link_to category.name, edit_admin_badge_category_path(category) %></td>
           <td><%= category.description %></td>
           <td><%= category.badges.size %></td>
           <td><%= link_to "Edit", edit_admin_badge_category_path(category), class: "crayons-btn" %></td>

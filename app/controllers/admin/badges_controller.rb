@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @badges = Badge.all
+      @badges = Badge.includes(:badge_category)
     end
 
     def new

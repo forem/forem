@@ -1,4 +1,9 @@
-<h1 class="crayons-title mb-6">Make a new Badge Category:</h1>
+<header class="flex justify-between mb-4 items-center">
+  <h1 class="crayons-title">Make a new Badge Category</h1>
+
+  <%= link_to "Back to All Badge Categories", admin_badge_categories_path, class: "c-link c-link--block" %>
+</header>
+
 <div class="crayons-card p-6">
   <%= form_with url: admin_badge_categories_path, model: @badge_category, local: true do |form| %>
     <%= render partial: "form", locals: { form: } %>

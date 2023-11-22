@@ -10,6 +10,7 @@
     <tr>
       <th scope="col">Title</th>
       <th scope="col">Slug</th>
+      <th scope="col">Category</th>
       <th scope="col">Badge Image</th>
     </tr>
   </thead>
@@ -18,6 +19,7 @@
       <tr>
         <td><%= link_to badge.title, edit_admin_badge_path(badge.id) %></td>
         <td class="justify-center"><%= badge.slug %></td>
+        <td class="justify-center"><%= badge.badge_category.name %></td>
         <td class="justify-center">
           <img class="mx-auto mt-3" width="40" height="40" src="<%= badge.badge_image %>" alt="badge image" loading="lazy" />
         </td>
