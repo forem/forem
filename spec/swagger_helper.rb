@@ -382,15 +382,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               summary: { type: :string, nullable: true },
               twitter_username: { type: :string },
               github_username: { type: :string },
-              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil"},
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
               website_url: { type: :string, nullable: true },
               location: { type: :string, nullable: true },
               joined_at: { type: :string },
               profile_image: { type: :string },
               badge_ids: { type: :array,
                            items: { type: :integer },
-                           description: "ids of the badges awarded to the user"
-                         }
+                           description: "ids of the badges awarded to the user" }
             }
           },
           MyUser: {
@@ -404,15 +403,14 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               summary: { type: :string, nullable: true },
               twitter_username: { type: :string },
               github_username: { type: :string },
-              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil"},
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
               website_url: { type: :string, nullable: true },
               location: { type: :string, nullable: true },
               joined_at: { type: :string },
               profile_image: { type: :string },
               badge_ids: { type: :array,
-                          items: { type: :integer },
-                          description: "ids of the badges awarded to the user"
-                         },
+                           items: { type: :integer },
+                           description: "ids of the badges awarded to the user" },
               followers_count: { type: :integer }
             }
           },
