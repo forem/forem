@@ -11,6 +11,10 @@ fr:
       congrats: Félicitations !
       award: Veuillez choisir un badge à décerner
       wrong: Quelque chose a mal fonctionné.
+    badge_categories_controller:
+      created: La catégorie de badges a été créée!
+      updated: La catégorie de badge a été mise à jour!
+      deleted: La catégorie de badge a été supprimée!
     badges_controller:
       created: Le badge a été créé !
       updated: Le badge a été mis à jour !

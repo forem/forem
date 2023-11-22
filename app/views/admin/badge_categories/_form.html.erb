@@ -1,0 +1,9 @@
+<div class="crayons-field">
+  <%= form.label :name, class: "crayons-field__label" %>
+  <%= form.text_field :name, class: "crayons-textfield", required: true %>
+</div>
+
+<div class="crayons-field mt-3">
+  <%= form.label :description, class: "crayons-field__label" %>
+  <%= form.text_area :description, required: true, size: "40x3", class: "crayons-textfield" %>
+</div>

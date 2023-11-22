@@ -1,0 +1,8 @@
+<h1 class="crayons-title mb-6">Make a new Badge Category:</h1>
+<div class="crayons-card p-6">
+  <%= form_with url: admin_badge_categories_path, model: @badge_category, local: true do |form| %>
+    <%= render partial: "form", locals: { form: } %>
+
+    <%= form.submit "Create Badge Category", class: "crayons-btn crayons-btn--primary mt-4" %>
+  <% end %>
+</div>

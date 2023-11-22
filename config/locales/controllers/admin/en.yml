@@ -11,6 +11,10 @@ en:
       congrats: Congrats!
       award: Please choose a badge to award
       wrong: Something went wrong.
+    badge_categories_controller:
+      created: Badge Category has been created!
+      updated: Badge Category has been updated!
+      deleted: Badge Category has been deleted!
     badges_controller:
       created: Badge has been created!
       updated: Badge has been updated!
