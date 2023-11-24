@@ -5,7 +5,7 @@ require Rails.root.join(
 
 describe DataUpdateScripts::FillBadgeCategoryForBadges do
   let(:badge_category_with_default_category_name) do
-    create(:badge_category, name: BadgeCategory::DEFAULT_CATEGORY_NAME)
+    create(:badge_category, name: Constants::BadgeCategory::DEFAULT_CATEGORY_NAME)
   end
   let(:uncoupled_badge) { make_uncoupled_badge }
 
@@ -23,7 +23,7 @@ describe DataUpdateScripts::FillBadgeCategoryForBadges do
     expect { described_class.new.run }
       .to change { uncoupled_badge&.reload&.badge_category&.name }
       .from(nil)
-      .to(BadgeCategory::DEFAULT_CATEGORY_NAME)
+      .to(Constants::BadgeCategory::DEFAULT_CATEGORY_NAME)
   end
 
   it "updates badges counter of Badge Category'" do
