@@ -1,7 +1,7 @@
-<% title @organization.name %>
+<% title sanitize(@organization.name) %>
 <div class="blank-space"></div>
 <main class="org-member-page crayons-layout px-4 m:px-9 gap-0">
-  <h1 class="crayons-title"><%= @organization.name %> (<%= @members.count %>)</h1>
+  <h1 class="crayons-title"><%= sanitize(@organization.name) %> (<%= @members.count %>)</h1>
   <div class="mt-4 l:mt-7 grid gap-4 grid-cols-1 s:grid-cols-1 m:grid-cols-2 l:grid-cols-3 xl:grid-cols-4 mb-6">
     <% @members.each_with_index do |member, index| %>
       <div class="crayons-card member-item">

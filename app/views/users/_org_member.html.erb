@@ -1,5 +1,5 @@
 <div>
-  <h2><%= @organization.name %></h2>
+  <h2><%= sanitize(@organization.name) %></h2>
   <div class="grid gap-2">
     <% @organization.users.each do |user| %>
       <div class="crayons-card crayons-card--secondary p-4">

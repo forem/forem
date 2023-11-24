@@ -13,7 +13,7 @@
 <%= form_tag(admin_listings_path, method: "get", role: "search", class: "crayons-card crayons-card--secondary p-4 flex items-center") do %>
   <div class="mr-4">
     <%= label_tag(:search, "Keyword", class: "mb-0") %>
-    <%= text_field_tag(:search, params[:search]) %>
+    <%= text_field_tag(:search, params[:search], autocomplete: "off") %>
     <% if params[:state].present? %>
       <%= hidden_field_tag(:state, params[:state]) %>
     <% end %>
@@ -52,7 +52,7 @@
       <tr>
         <td><%= link_to listing.title, edit_admin_listing_path(listing.id), rel: "noopener" %></td>
         <td><%= link_to listing.user.username, admin_user_path(listing.user.id) %></td>
-        <td><%= link_to listing.organization.name, admin_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
+        <td><%= link_to sanitize(listing.organization.name), admin_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
         <td><%= listing.category %></td>
         <td><%= listing.cached_tag_list %></td>
         <td><%= listing.published ? "Yes" : "No" %></td>

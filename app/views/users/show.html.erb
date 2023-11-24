@@ -60,7 +60,7 @@
         <div class="profile-header__details" data-url="<%= user_path(@user, format: "json") %>">
           <div class="items-center js-username-container mb-2">
             <h1 class="crayons-title lh-tight">
-              <%= @user.name %>
+              <%= sanitize @user.name %>
             </h1>
           </div>
 

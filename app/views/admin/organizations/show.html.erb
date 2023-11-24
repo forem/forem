@@ -8,7 +8,7 @@
       <div class="s:flex items-center gap-5">
         <div class="flex flex-1 items-center">
           <h1 class="crayons-title lh-tight">
-            <%= @organization.name %>
+            <%= sanitize(@organization.name) %>
           </h1>
         </div>
         <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">

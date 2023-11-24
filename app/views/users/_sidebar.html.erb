@@ -13,7 +13,7 @@
               <span class="crayons-logo crayons-logo--l mr-2 shrink-0">
                 <img src="<%= organization.profile_image_url_for(length: 90) %>" alt="<%= organization.name %> profile image" class="crayons-logo__image" loading="lazy" />
               </span>
-              <h4 class="fs-base fw-medium"><%= organization.name %></h4>
+              <h4 class="fs-base fw-medium"><%= sanitize(organization.name) %></h4>
             </a>
           <% end %>
         </div>

@@ -6,7 +6,7 @@
       <% else %>
         <a href="<%= billboard.organization.path %>" target="_blank" rel="noopener" class="flex">
           <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= billboard.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-          <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= billboard.organization.name %></div>
+          <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= sanitize(billboard.organization.name) %></div>
         </a>
       <% end %>
       <% if billboard.type_of == "external" %>

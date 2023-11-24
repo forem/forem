@@ -26,7 +26,7 @@
         </a>
         <h3 class="crayons-subtitle-2">
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
-            <%= org_membership.organization.name %>
+            <%= sanitize(org_membership.organization.name) %>
           </a>
           <span class="opacity-50">&bull;</span> <%= t("views.admin.users.overview.orgs.type.#{org_membership.type_of_user}") %></span>
         </h3>
