@@ -1,6 +1,6 @@
 {
   "max_days_since_published": 15,
-  "description": "Built off 20231023-variant-b but light addition of recommended articles.",
+  "description": "Built off 20231017-variant-b but with much steeper daily decay.",
   "order_by": "final_order_by_feed_success_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
@@ -129,13 +129,6 @@
       "fallback": 1.0
     },
     "language_match": {
-      "cases": [
-        [0, 0.1],
-        [1, 1]
-      ],
-      "fallback": 1
-    },
-    "recommended_articles_match": {
       "cases": [
         [0, 0.1],
         [1, 1]
