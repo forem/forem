@@ -139,6 +139,10 @@ RSpec.describe "ArticlesShow" do
       it "does not render json ld" do
         expect(response.body).not_to include "application/ld+json"
       end
+
+      it "renders comment sort button" do
+        expect(response.body).to include "toggle-comments-sort-dropdown"
+      end
     end
   end
 
@@ -150,6 +154,10 @@ RSpec.describe "ArticlesShow" do
     describe "GET /:slug (user)" do
       it "does not render json ld" do
         expect(response.body).to include "application/ld+json"
+      end
+
+      it "does not render comment sort button" do
+        expect(response.body).not_to include "toggle-comments-sort-dropdown"
       end
     end
   end
