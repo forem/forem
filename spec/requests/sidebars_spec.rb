@@ -20,6 +20,7 @@ RSpec.describe "Sidebars" do
       end
 
       before do
+        article.update_columns(language: "en")
         user.follow(tag)
       end
 
