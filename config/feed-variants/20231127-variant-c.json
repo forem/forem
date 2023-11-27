@@ -1,6 +1,6 @@
 {
   "max_days_since_published": 15,
-  "description": "Built off 20231023-variant-b but light addition of recommended articles.",
+  "description": "Built off 20231023-variant-b but heavy addition of recommended articles and lower on tag.",
   "order_by": "final_order_by_feed_success_score",
   "reseed_randomizer_on_each_request": false,
   "levers": {
@@ -88,7 +88,7 @@
     },
     "matching_positive_tags_intersection_points": {
       "cases": [
-        [0, 0.001],
+        [0, 0.01],
         [1, 0.45],
         [2, 0.5],
         [3, 0.7],
@@ -137,7 +137,7 @@
     },
     "recommended_articles_match": {
       "cases": [
-        [0, 0.1],
+        [0, 0.001],
         [1, 1]
       ],
       "fallback": 1
