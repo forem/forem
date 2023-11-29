@@ -7,31 +7,35 @@
             <%= t("views.articles.comments.subtitle.#{@comments_order}_html",
                   num: tag.span(t("views.articles.comments.num", num: @article.comments_count), class: "js-comments-count", data: { comments_count: @article.comments_count })) %>
           </h2>
-          <button class="c-btn c-btn--ghost crayons-btn--icon-left" id="toggle-comments-sort-dropdown" aria-controls="comments-sort-dropdown-container" aria-expanded="false" aria-label="<%= t("views.articles.comments.sort_button.aria_label") %>" aria-haspopup="true">
-            <%= inline_svg_tag("expand.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon"), class: "mt-2") %>
-          </button>
+          <% if user_signed_in? %>
+            <button class="c-btn c-btn--ghost crayons-btn--icon-left" id="toggle-comments-sort-dropdown" aria-controls="comments-sort-dropdown-container" aria-expanded="false" aria-label="<%= t("views.articles.comments.sort_button.aria_label") %>" aria-haspopup="true">
+              <%= inline_svg_tag("expand.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon"), class: "mt-2") %>
+            </button>
+          <% end %>
         </div>
 
-        <nav class="crayons-dropdown p-4" id="comments-sort-dropdown-container" aria-labelledby="comments-sort-title">
-            <h3 id="comments-sort-title" class="mb-3"><%= t("views.articles.comments.sort.heading") %></h3>
-            <ul class="comments-sort-dropdown__list">
-              <%= render "comments/sort_option",
-                         sort_order: "top",
-                         sort_title: t("views.articles.comments.sort.title.top"),
-                         sort_description: t("views.articles.comments.sort.desc.top"),
-                         show_selected: @comments_order == "top" %>
-              <%= render "comments/sort_option",
-                         sort_order: "latest",
-                         sort_title: t("views.articles.comments.sort.title.latest"),
-                         sort_description: t("views.articles.comments.sort.desc.latest"),
-                         show_selected: @comments_order == "latest" %>
-              <%= render "comments/sort_option",
-                         sort_order: "oldest",
-                         sort_title: t("views.articles.comments.sort.title.oldest"),
-                         sort_description: t("views.articles.comments.sort.desc.oldest"),
-                         show_selected: @comments_order == "oldest" %>
-            </ul>
-        </nav>
+        <% if user_signed_in? %>
+          <nav class="crayons-dropdown p-4" id="comments-sort-dropdown-container" aria-labelledby="comments-sort-title">
+              <h3 id="comments-sort-title" class="mb-3"><%= t("views.articles.comments.sort.heading") %></h3>
+              <ul class="comments-sort-dropdown__list">
+                <%= render "comments/sort_option",
+                           sort_order: "top",
+                           sort_title: t("views.articles.comments.sort.title.top"),
+                           sort_description: t("views.articles.comments.sort.desc.top"),
+                           show_selected: @comments_order == "top" %>
+                <%= render "comments/sort_option",
+                           sort_order: "latest",
+                           sort_title: t("views.articles.comments.sort.title.latest"),
+                           sort_description: t("views.articles.comments.sort.desc.latest"),
+                           show_selected: @comments_order == "latest" %>
+                <%= render "comments/sort_option",
+                           sort_order: "oldest",
+                           sort_title: t("views.articles.comments.sort.title.oldest"),
+                           sort_description: t("views.articles.comments.sort.desc.oldest"),
+                           show_selected: @comments_order == "oldest" %>
+              </ul>
+          </nav>
+        <% end %>
 
         <div id="comment-subscription" class="print-hidden">
           <div class="crayons-btn-group">
