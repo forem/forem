@@ -92,6 +92,7 @@ Rails.application.configure do
   end
 
   config.hosts << "www.example.com"
+  config.hosts << /[a-zA-Z0-9\-]+\.preview\.app\.github\.dev\z/
 
   config.app_domain = ENV.fetch("APP_DOMAIN", "localhost:3000")
 

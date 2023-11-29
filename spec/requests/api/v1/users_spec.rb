@@ -60,6 +60,7 @@ RSpec.describe "Api::V1::Users" do
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
       expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
       expect(response_user["badge_ids"]).to eq(user.badge_ids)
+      expect(response_user.key?("followers_count")).to be false
     end
 
     it "includes email if display_email_on_profile is set to true" do
@@ -109,7 +110,6 @@ RSpec.describe "Api::V1::Users" do
         get me_api_users_path, headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-
         response_user = response.parsed_body
 
         expect(response_user["type_of"]).to eq("user")
@@ -126,6 +126,7 @@ RSpec.describe "Api::V1::Users" do
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
 
         expect(response_user["badge_ids"]).to eq(user.badge_ids)
+        expect(response_user["followers_count"]).to eq(user.followers_count)
       end
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
@@ -146,6 +147,13 @@ RSpec.describe "Api::V1::Users" do
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+      end
+
+      it "returns followers_count" do
+        create(:follow, followable: user)
+        get me_api_users_path, headers: auth_headers
+        response_user = response.parsed_body
+        expect(response_user["followers_count"]).to eq(1)
       end
     end
   end

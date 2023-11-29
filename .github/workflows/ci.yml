@@ -434,7 +434,7 @@ jobs:
             directory: coverage/simplecov
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 30000
+          attempt_delay: 60000
       - uses: Wandalen/wretry.action@master
         with:
           action: codecov/codecov-action@v3
@@ -443,7 +443,7 @@ jobs:
             directory: coverage/jest
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 30000
+          attempt_delay: 60000
       - uses: Wandalen/wretry.action@master
         with:
           action: codecov/codecov-action@v3
@@ -452,7 +452,7 @@ jobs:
             directory: coverage/cypress
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
-          attempt_delay: 30000
+          attempt_delay: 60000
 
   CI-status-report:
     runs-on: ubuntu-latest

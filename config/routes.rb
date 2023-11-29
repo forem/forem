@@ -50,6 +50,8 @@ Rails.application.routes.draw do
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
+        resources :recommended_articles_lists, only: %i[index show create update]
+
         resources :billboards, only: %i[index show create update] do
           put "unpublish", on: :member
         end

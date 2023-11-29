@@ -355,7 +355,7 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
             }
           },
           User: {
-            description: "The representation of a user",
+            description: "The representation of a user returned in a list",
             type: :object,
             properties: {
               type_of: { type: :string },
@@ -369,6 +369,49 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
               location: { type: :string, nullable: true },
               joined_at: { type: :string },
               profile_image: { type: :string }
+            }
+          },
+          ExtendedUser: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string },
+              badge_ids: { type: :array,
+                           items: { type: :integer },
+                           description: "ids of the badges awarded to the user" }
+            }
+          },
+          MyUser: {
+            description: "The representation of a user when accessed by themselves",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string },
+              badge_ids: { type: :array,
+                           items: { type: :integer },
+                           description: "ids of the badges awarded to the user" },
+              followers_count: { type: :integer }
             }
           },
           SharedPodcast: {
