@@ -210,7 +210,6 @@ end
 
 Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
-
 ##############################################################################
 
 seeder.create_if_none(BadgeCategory) do
