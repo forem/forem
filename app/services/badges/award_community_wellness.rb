@@ -1,6 +1,6 @@
 module Badges
   class AwardCommunityWellness
-    REWARD_STREAK_WEEKS = [1, 2, 4, 8, 16, 32].freeze
+    REWARD_STREAK_WEEKS = [1, 2, 4, 8, 16, 24, 32].freeze
 
     def self.call
       # These are the users 'eligible' to be awarded the badge

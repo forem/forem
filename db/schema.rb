@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_08_153011) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_21_140731) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -475,6 +475,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_153011) do
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
+    t.string "custom_display_label"
     t.integer "display_to", default: 0, null: false
     t.integer "exclude_article_ids", default: [], array: true
     t.integer "impressions_count", default: 0
@@ -997,6 +998,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_153011) do
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
   end
 
+  create_table "recommended_articles_lists", force: :cascade do |t|
+    t.integer "article_ids", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "name"
+    t.integer "placement_area", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_ids"], name: "index_recommended_articles_lists_on_article_ids", using: :gin
+    t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
+    t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
+    t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
+  end
+
   create_table "response_templates", force: :cascade do |t|
     t.text "content", null: false
     t.string "content_type", null: false
@@ -1464,6 +1479,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_08_153011) do
   add_foreign_key "rating_votes", "articles", on_delete: :cascade
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
+  add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"

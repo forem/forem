@@ -100,6 +100,7 @@ class User < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :segmented_users, dependent: :destroy
   has_many :audience_segments, through: :segmented_users
+  has_many :recommended_articles_lists, dependent: :destroy
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify

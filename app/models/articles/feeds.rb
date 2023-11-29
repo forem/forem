@@ -355,6 +355,7 @@ module Articles
                       user_required: false,
                       select_fragment: "articles.score",
                       group_by_fragment: "articles.score")
+
       relevancy_lever(:language_match,
                       label: "Weight to give based on whether the language matches any of the user's languages",
                       range: "[0..1]", # 0 for no match, 1 for match
@@ -367,7 +368,26 @@ module Articles
                       joins_fragments: ["LEFT OUTER JOIN user_languages
                                          ON user_languages.user_id = :user_id"],
                       group_by_fragment: "articles.language")
+
+      relevancy_lever(:recommended_articles_match,
+                      label: "Weight to give based on whether the article is in the first non-expired recommendations",
+                      range: "[0..1]", # 0 for no match, 1 for match
+                      user_required: true,
+                      select_fragment: "CASE
+                                         WHEN COUNT(first_matching_list.id) = 0 THEN 0
+                                         WHEN articles.id = ANY(array_agg(first_matching_list.article_ids)) THEN 1
+                                         ELSE 0
+                                        END",
+                      joins_fragments: ["LEFT OUTER JOIN
+                                          (SELECT * FROM recommended_articles_lists
+                                           WHERE expires_at > CURRENT_TIMESTAMP
+                                           AND placement_area = 0
+                                           ORDER BY created_at ASC
+                                           LIMIT 1) AS first_matching_list
+                                        ON first_matching_list.user_id = :user_id"],
+                      group_by_fragment: "articles.id")
     end
+
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength
   end
