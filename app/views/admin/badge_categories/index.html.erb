@@ -1,7 +1,7 @@
 <nav class="flex mb-4" aria-label="Badge Category navigation">
   <%= form_tag(admin_badge_categories_path, method: "get") do %>
-    <%= text_field_tag(:search, params[:search], autocomplete: "off", aria: { label: "Search" }, class: "top-bar--search-input crayons-textfield",
-                                                 placeholder: "Search by name") %>
+    <%= text_field_tag(:search, params[:search], autocomplete: "off", aria: { label: "Search" },
+                                                 class: "top-bar--search-input crayons-textfield", placeholder: "Search by name") %>
   <% end %>
   <div class="ml-auto">
     <div class="justify-end">
@@ -25,7 +25,7 @@
         <tr>
           <td><%= link_to category.name, edit_admin_badge_category_path(category) %></td>
           <td><%= category.description %></td>
-          <td><%= category.badges.size %></td>
+          <td><%= category.badges_count %></td>
           <td><%= link_to "Edit", edit_admin_badge_category_path(category), class: "crayons-btn" %></td>
           <td><%= link_to "Destroy", admin_badge_category_path(category), class: "crayons-btn crayons-btn--danger", method: :delete, data: { confirm: "Are you sure?" } %></td>
         </tr>
