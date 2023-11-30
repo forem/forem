@@ -207,6 +207,7 @@ class ArticlesController < ApplicationController
   def stats
     authorize @article
     @organization_id = @article.organization_id
+    @reactions = @article.reactions.public_category.order(created_at: :desc).limit(500).includes(:user)
   end
 
   def admin_unpublish

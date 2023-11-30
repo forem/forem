@@ -1,9 +1,14 @@
 <% num_views = @page_views_count %>
 
-<div class="grid grid-cols-2 m:grid-cols-4 gap-2 m:gap-4 pt-3">
+<div class="grid grid-cols-2 m:grid-cols-3 gap-2 m:gap-4 pt-3">
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
     <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@reactions_count, delimiter: ",") %></strong>
     <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.reactions") %></span>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary p-3 m:p-6">
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= number_with_delimiter(@comments_count, delimiter: ",") %></strong>
+    <span class="color-base-60 block fs-base"><%= t("views.dashboard.summary.comments") %></span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
