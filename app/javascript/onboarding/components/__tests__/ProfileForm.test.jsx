@@ -7,6 +7,7 @@ import { axe } from 'jest-axe';
 import { ProfileForm } from '../ProfileForm';
 
 global.fetch = fetch;
+global.Honeybadger = { notify: jest.fn() };
 
 describe('ProfileForm', () => {
   const renderProfileForm = () =>
@@ -219,5 +220,27 @@ describe('ProfileForm', () => {
     const { getByText } = renderProfileForm();
 
     expect(getByText(/continue/i)).toBeInTheDocument();
+  });
+
+  it('should render an error message if the request failed', async () => {
+    const { getByRole, findByText } = render(
+      <ProfileForm
+        prev={jest.fn()}
+        next={jest.fn()}
+        slidesCount={3}
+        currentSlideIndex={1}
+        communityConfig={{ communityName: 'Community' }}
+      />,
+    );
+    fetch.mockResponse(async () => {
+      const body = JSON.stringify({ errors: 'Fake Error' });
+      return new Response(body, { status: 422 });
+    });
+
+    const submitButton = getByRole('button', { name: 'Continue' });
+    submitButton.click();
+
+    const errorMessage = await findByText('An error occurred: Fake Error');
+    expect(errorMessage).toBeInTheDocument();
   });
 });
