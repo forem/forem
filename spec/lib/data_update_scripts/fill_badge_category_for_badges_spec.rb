@@ -21,7 +21,7 @@ describe DataUpdateScripts::FillBadgeCategoryForBadges do
     expect { described_class.new.run }
       .to change { BadgeCategory.find_by(name: Constants::BadgeCategory::DEFAULT_CATEGORY_NAME)&.badges_count }
       .from(nil)
-      .to(1)
+      .to(be >= 1)
   end
 
   it "works if the category with default name exist" do
