@@ -118,7 +118,6 @@ function drawCharts(data, timeRangeLabel) {
   const likes = parsedData.map((date) => date.reactions.like);
   const readingList = parsedData.map((date) => date.reactions.readinglist);
   const unicorns = parsedData.map((date) => date.reactions.unicorn);
-  const followers = parsedData.map((date) => date.follows.total);
   const readers = parsedData.map((date) => date.page_views.total);
 
   // When timeRange is "Infinity" we hide the points to avoid over-crowding the UI
@@ -183,23 +182,6 @@ function drawCharts(data, timeRangeLabel) {
   });
 
   drawChart({
-    id: 'followers-chart',
-    showPoints,
-    title: `New Followers ${timeRangeLabel}`,
-    labels,
-    datasets: [
-      {
-        label: 'Followers',
-        data: followers,
-        fill: false,
-        borderColor: 'rgb(10, 133, 255)',
-        backgroundColor: 'rgb(10, 133, 255)',
-        lineTension: 0.1,
-      },
-    ],
-  });
-
-  drawChart({
     id: 'readers-chart',
     showPoints,
     title: `Reads ${timeRangeLabel}`,
@@ -252,12 +234,7 @@ function removeCardElements() {
 }
 
 function showErrorsOnCharts() {
-  const target = [
-    'reactions-chart',
-    'comments-chart',
-    'followers-chart',
-    'readers-chart',
-  ];
+  const target = ['reactions-chart', 'comments-chart', 'readers-chart'];
   target.forEach((id) => {
     const el = document.getElementById(id);
     el.outerHTML = `<p class="m-5" id="${id}">Failed to fetch chart data. If this error persists for a minute, you can try to disable adblock etc. on this page or site.</p>`;
