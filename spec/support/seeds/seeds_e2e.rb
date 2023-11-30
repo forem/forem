@@ -1013,16 +1013,26 @@ end
 
 ##############################################################################
 
+seeder.create_if_none(BadgeCategory) do
+  BadgeCategory.create!(
+    name: "community Badges",
+    description: Faker::Lorem.sentence,
+  )
+end
+
+##############################################################################
+
 seeder.create_if_none(Badge) do
   7.times do |t|
     Badge.create!(
       title: "#{Faker::Lorem.word} #{rand(100)} #{t}",
       description: "#{Faker::Lorem.sentence} #{rand(100)}",
       badge_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+      badge_category_id: BadgeCategory.first.id,
     )
   end
 
-  Badge.all.each do |badge|
+  Badge.find_each do |badge|
     admin_user.badge_achievements.create!(
       badge: badge,
       rewarding_context_message_markdown: Faker::Markdown.random,
