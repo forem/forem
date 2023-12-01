@@ -408,11 +408,12 @@ export class ArticleForm extends Component {
     }
   };
 
-  switchHelpContext = ({ target }) => {
+  switchHelpContext = (event, override = null) => {
+    const id = override || event.target.id;
     this.setState({
       ...this.setCommonProps({
-        helpFor: target.id,
-        helpPosition: target.getBoundingClientRect().y,
+        helpFor: id,
+        helpPosition: event.target.getBoundingClientRect().y,
       }),
     });
   };
