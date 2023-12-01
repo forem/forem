@@ -5,6 +5,7 @@ import { ArticleFormTitle } from './ArticleFormTitle';
 import { TagInput } from './TagInput';
 import { BasicEditor } from './BasicEditor';
 import { EditorFormattingHelp } from './EditorFormattingHelp';
+import { ArticleTips } from './ArticleTips';
 import { Modal } from '@crayons';
 
 const renderModal = (onClose, title, selector) => {
@@ -62,6 +63,7 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
         >
           {helpFor === 'article-form-title' && <ArticleFormTitle />}
           {helpFor === 'tag-input' && <TagInput />}
+          {helpFor === 'editor-actions' && <ArticleTips />}
 
           {version === 'v1' && <BasicEditor openModal={openModal} />}
 

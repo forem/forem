@@ -18,6 +18,7 @@ export const EditorActions = ({
   onConfigChange,
   submitting,
   previewLoading,
+  switchHelpContext,
 }) => {
   const isVersion1 = version === 'v1';
   const isVersion2 = version === 'v2';
@@ -60,7 +61,11 @@ export const EditorActions = ({
   }
 
   return (
-    <div className="crayons-article-form__footer">
+    <div
+      id="editor-actions"
+      className="crayons-article-form__footer"
+      onMouseEnter={switchHelpContext}
+    >
       <Button
         variant="primary"
         className="mr-2 whitespace-nowrap"

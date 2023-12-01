@@ -75,7 +75,14 @@ export class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop } = this.props;
+    const {
+      article,
+      version,
+      siteLogo,
+      schedulingEnabled,
+      coverImageHeight,
+      coverImageCrop,
+    } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
@@ -493,7 +500,7 @@ export class ArticleForm extends Component {
             switchHelpContext={this.switchHelpContext}
             coverImageHeight={coverImageHeight}
             coverImageCrop={coverImageCrop}
-            />
+          />
         )}
 
         <Help
@@ -538,6 +545,7 @@ export class ArticleForm extends Component {
           onConfigChange={this.handleConfigChange}
           submitting={submitting}
           previewLoading={previewLoading}
+          switchHelpContext={this.switchHelpContext}
         />
 
         <KeyboardShortcuts
