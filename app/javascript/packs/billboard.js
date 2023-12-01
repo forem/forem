@@ -31,7 +31,7 @@ async function generateBillboard(element) {
       element.appendChild(generatedElement);
       element.querySelectorAll('img').forEach((img) => {
         img.onerror = function () {
-          this.style.display = 'none'; // or replace with a placeholder image
+          this.style.display = 'none';
         };
       });
       executeBBScripts(element);
