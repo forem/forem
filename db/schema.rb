@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_21_154642) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["user_visit_context_id"], name: "index_ahoy_visits_on_user_visit_context_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+    t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
   end
 
   create_table "announcements", force: :cascade do |t|
