@@ -54,7 +54,6 @@ jobs:
       - uses: actions/setup-node@v3
         if: steps.cache.outputs.cache-hit != 'true'
         with:
-          node-version: 16
           cache: yarn
       - run: yarn install --immutable
         if: steps.cache.outputs.cache-hit != 'true'
@@ -91,7 +90,6 @@ jobs:
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: yarn install --immutable
@@ -111,7 +109,6 @@ jobs:
           bundler-cache: true
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -175,7 +172,6 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -222,7 +218,6 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
@@ -254,7 +249,6 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - run: yarn build-storybook
 
@@ -306,7 +300,6 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -360,7 +353,6 @@ jobs:
           restore-keys: ${{ runner.os }}-node-modules-
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
           cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
