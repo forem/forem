@@ -20,6 +20,7 @@ env:
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
+  NODE_OPTIONS: '--openssl-legacy-provider'
 
 jobs:
   bundle_install:
