@@ -29,6 +29,11 @@ async function generateBillboard(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
+      element.querySelectorAll('img').forEach((img) => {
+        img.onerror = function () {
+          this.style.display = 'none';
+        };
+      });
       executeBBScripts(element);
       setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.
