@@ -13,7 +13,8 @@
     "test": "test"
   },
   "resolutions": {
-    "glob-parent": "^6.0.1"
+    "glob-parent": "^6.0.1",
+    "terser-webpack-plugin": "^5.3.9"
   },
   "scripts": {
     "prepare": "husky install",
