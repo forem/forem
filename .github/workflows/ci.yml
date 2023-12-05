@@ -81,7 +81,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - run: yarn install --immutable
-      - run: bundle exec rails assets:precompile
+      - run: NODE_OPTIONS=--openssl-legacy-provider bundle exec rails assets:precompile
 
   audit:
     runs-on: ubuntu-latest
