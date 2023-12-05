@@ -16,6 +16,10 @@ It does not appear to be the default with webpacker 4.
 environment.splitChunks((config) => {
   return {
     ...config,
+    output: {
+      ...config.output,
+      hashFunction: 'sha256',
+    },
     resolve: {
       ...config.resolve,
       alias: {
