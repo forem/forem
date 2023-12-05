@@ -96,8 +96,7 @@ jobs:
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: yarn install --immutable
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - run: export NODE_OPTIONS=--openssl-legacy-provider
-      - run: bundle exec rails assets:precompile
+      - run: NODE_OPTIONS=--openssl-legacy-provider bundle exec rails assets:precompile
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
 
   audit:
@@ -313,7 +312,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails assets:precompile
+      - run: NODE_OPTIONS=--openssl-legacy-provider bundle exec rails assets:precompile
       - run: RAILS_ENV=test bin/test-console-check
 
   cypress:

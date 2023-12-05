@@ -16,10 +16,6 @@ It does not appear to be the default with webpacker 4.
 environment.splitChunks((config) => {
   return {
     ...config,
-    output: {
-      ...config.output,
-      hashFunction: 'sha256',
-    },
     resolve: {
       ...config.resolve,
       alias: {
@@ -38,6 +34,8 @@ environment.splitChunks((config) => {
     },
   };
 });
+
+environment.config.output.hashFunction = 'sha256';
 
 // We don't want babel-loader running on the node_modules folder.
 environment.loaders.delete('nodeModules');
