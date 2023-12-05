@@ -224,17 +224,15 @@ export class FollowTags extends Component {
                 <fieldset>
                   <ul>
                     <li className="checkbox-item">
-                      <label htmlFor="email_digest_periodic">
-                        <input
-                          type="checkbox"
-                          id="email_digest_periodic"
-                          name="email_digest_periodic"
-                          checked={email_digest_periodic}
-                          onChange={this.handleChange}
-                          onClick={this.handleCheckboxClick}
-                          tabIndex="-1"
-                        />
-                      </label>
+                      <input
+                        type="checkbox"
+                        id="email_digest_periodic"
+                        name="email_digest_periodic"
+                        checked={email_digest_periodic}
+                        onChange={this.handleChange}
+                        onClick={this.handleCheckboxClick}
+                        tabIndex="-1"
+                      />
                     </li>
                   </ul>
                 </fieldset>
