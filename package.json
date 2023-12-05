@@ -14,7 +14,7 @@
   },
   "resolutions": {
     "glob-parent": "^6.0.1",
-    "terser-webpack-plugin": "^5.3.9"
+    "terser-webpack-plugin": "^2.3.7"
   },
   "scripts": {
     "prepare": "husky install",
