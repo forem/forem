@@ -279,6 +279,10 @@
   --indicator-bg: rgb(var(--grey-600));
   --indicator-color: rgb(var(--grey-200));
 
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-700));
+  --indicator-subtle-color: rgb(var(--grey-200));  
+
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-700));
   --indicator-success-color: rgb(var(--green-50));
