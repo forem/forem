@@ -7,7 +7,7 @@ module DataUpdateScripts
         description: "Stay up-to-date with the latest achievements",
       )
 
-      Badge.where.missing(:badge_category).each do |badge|
+      Badge.where(badge_category: nil).find_each do |badge|
         badge.update!(badge_category_id: category.id)
       end
     end
