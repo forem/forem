@@ -1,7 +1,10 @@
 import { setupBillboardDropdown } from '../utilities/billboardDropdown';
-import { observeBillboards } from './billboardAfterRenderActions';
+import {
+  observeBillboards,
+  executeBBScripts,
+} from './billboardAfterRenderActions';
 
-async function getBillboard() {
+export async function getBillboard() {
   const placeholderElements = document.getElementsByClassName(
     'js-billboard-container',
   );
@@ -11,11 +14,14 @@ async function getBillboard() {
 }
 
 async function generateBillboard(element) {
-  const { asyncUrl } = element.dataset;
-
+  let { asyncUrl } = element.dataset;
+  const currentParams = window.location.href.split('?')[1];
+  if (currentParams && currentParams.includes('bb_test_placement_area')) {
+    asyncUrl = `${asyncUrl}?${currentParams}`;
+  }
   if (asyncUrl) {
     try {
-      const response = await window.fetch(`${asyncUrl}`);
+      const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
 
       const generatedElement = document.createElement('div');
@@ -23,6 +29,12 @@ async function generateBillboard(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
+      element.querySelectorAll('img').forEach((img) => {
+        img.onerror = function () {
+          this.style.display = 'none';
+        };
+      });
+      executeBBScripts(element);
       setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
@@ -38,5 +50,3 @@ async function generateBillboard(element) {
 }
 
 getBillboard();
-
-export { getBillboard };

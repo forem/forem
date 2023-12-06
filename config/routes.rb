@@ -47,8 +47,12 @@ Rails.application.routes.draw do
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
+        get "/users/search", to: "users#search"
+
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
+
+        resources :recommended_articles_lists, only: %i[index show create update]
 
         resources :billboards, only: %i[index show create update] do
           put "unpublish", on: :member

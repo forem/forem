@@ -51,7 +51,7 @@ RSpec.describe "Api::V0::FollowsController" do
         [tag1, tag2].each { |tag| user.follow(tag) }
       end
 
-      it "returns only the tags the user follows", aggregate_failures: true do
+      it "returns only the tags the user follows", :aggregate_failures do
         get "/api/follows/tags"
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to include(tag1_json)

@@ -23,28 +23,19 @@ describe('UserStore', () => {
     expect(subject.users).toStrictEqual([]);
   });
 
-  test('initializes unfetched', () => {
-    const subject = new UserStore();
-    expect(subject.wasFetched).toBeFalsy();
+  test('initializes with a user list', () => {
+    const users = [{ name: 'Bob', username: 'bob', id: 2 }];
+    const subject = new UserStore(users);
+    expect(subject.users).toStrictEqual(users);
   });
 
-  test('fetch from a given url', () => {
-    new UserStore().fetch('/path/to/the/users');
+  test('fetch from a given url', async () => {
+    await UserStore.fetch('/path/to/the/users');
     expect(fetch).toHaveBeenCalledWith('/path/to/the/users');
   });
 
-  test('only fetches once', async () => {
-    const subject = new UserStore();
-    await subject.fetch('/path/to/the/users');
-    expect(subject.wasFetched).toBeTruthy();
-    await subject.fetch('/path/to/the/users');
-    await subject.fetch('/path/to/the/users');
-    expect(fetch).toHaveBeenCalledTimes(1);
-  });
-
   test('return a sub-set of users matching given IDs', async () => {
-    const subject = new UserStore();
-    await subject.fetch('/path/to/the/users');
+    const subject = await UserStore.fetch('/path/to/the/users');
     expect(subject.matchingIds(['1', '4'])).toStrictEqual([
       { name: 'Alice', username: 'alice', id: 1 },
       { name: 'Almost Alice', username: 'almostalice', id: 4 },
@@ -56,8 +47,7 @@ describe('UserStore', () => {
   });
 
   test('return a sub-set of users matching search term', async () => {
-    const subject = new UserStore();
-    await subject.fetch('/path/to/the/users');
+    const subject = await UserStore.fetch('/path/to/the/users');
     expect(subject.search('alice')).toStrictEqual([
       { name: 'Alice', username: 'alice', id: 1 },
       { name: 'Almost Alice', username: 'almostalice', id: 4 },
@@ -69,8 +59,7 @@ describe('UserStore', () => {
   });
 
   test('search with an exception', async () => {
-    const subject = new UserStore();
-    await subject.fetch('/path/to/the/users');
+    const subject = await UserStore.fetch('/path/to/the/users');
     expect(subject.search('a', { except: '3' })).toStrictEqual([
       { name: 'Alice', username: 'alice', id: 1 },
       { name: 'Almost Alice', username: 'almostalice', id: 4 },

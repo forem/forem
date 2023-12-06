@@ -1,7 +1,8 @@
 <% title t("views.stats.meta.title") %>
 
-<main id="main-content">
-  <h1 class="fs-4xl fw-medium align-center my-5"><%= t("views.stats.heading_html", article: link_to(@article.title, @article.current_state_path, id: "article", data: { "article-id" => @article.id, "organization-id" => @organization_id })) %></h1>
+<main class="dashboard-container analytics-container crayons-layout" id="main-content">
+  <h1 class="fs-4xl fw-bold mt-5 mx-5">
+    <%= link_to(@article.title, @article.current_state_path, id: "article", data: { "article-id" => @article.id, "organization-id" => @organization_id }) %></h1>
 
   <%= render "shared/stats" %>
 </main>

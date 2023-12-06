@@ -31,6 +31,7 @@ en:
         first: Thank you for participating in constructive conversation! You posted two or more comments this week. Keep it up to continue the streak!
         longest: 32 weeks! You've achieved the longest streak possible for the Community Wellness badge. Amazing job engaging in the community and keep up your amazing contributions to our community!
         other: Congrats on achieving a %{weeks} week streak for the Community Wellness Badge! Keep the constructive comments flowing to continue the streak!
+      thumbs_up: Thank you for your efforts reviewing posts on and reaching %{count} thumbs-up reactions!
     broadcasts:
       welcome_notification:
         generator:

@@ -150,6 +150,13 @@
   &::-ms-clear {
     display: none;
   }
+
+  &.disabled {
+    background-color: #f2f2f2;
+    color: #888888;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
 
 ///////////////////////////////////////////////////
@@ -168,6 +175,10 @@
 
     + .crayons-field__description {
       margin-top: 0;
+    }
+
+    &.required:after {
+      content: '*';
     }
   }
 
@@ -216,7 +227,7 @@
   }
 }
 
-input[type=file]::file-selector-button {
+input[type='file']::file-selector-button {
   @extend .crayons-btn;
   @extend .crayons-btn--secondary;
 }

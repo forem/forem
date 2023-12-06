@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render, waitFor, within } from '@testing-library/preact';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import {
   DateRangePicker,
   MONTH_UNTIL_TODAY,

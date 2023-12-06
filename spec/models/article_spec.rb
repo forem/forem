@@ -7,8 +7,6 @@ RSpec.describe Article do
     article
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
-
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
@@ -85,11 +83,10 @@ RSpec.describe Article do
     end
 
     describe "#body_markdown" do
-      it "is unique scoped for user_id and title", :aggregate_failures do
+      it "is not unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
 
-        expect(art2).not_to be_valid
-        expect(art2.errors_as_sentence).to match("markdown has already been taken")
+        expect(art2).to be_valid
       end
 
       # using https://unicode-table.com/en/11A15/ multibyte char

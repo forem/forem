@@ -23,7 +23,7 @@ RSpec.describe "/admin/customization/profile_field_groups" do
     it "creates a profile_field_group" do
       expect do
         post admin_profile_field_groups_path, params: { profile_field_group: new_profile_field_group }
-      end.to change { ProfileFieldGroup.all.count }.by(1)
+      end.to change(ProfileFieldGroup, :count).by(1)
 
       last_profile_field_record = ProfileFieldGroup.last
       expect(last_profile_field_record.name).to eq(new_profile_field_group[:name])

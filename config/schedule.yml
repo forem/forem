@@ -86,6 +86,14 @@ award_community_wellness_badges:
     - ""
     - award_community_wellness
     - ""
+award_thumbs_up_badges:
+  description: "Awards Thumbs Up Milestone badge to users (runs daily at 01:00 UTC) "
+  cron: "0 1 * * *"
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_thumbs_up
+    - ""
 resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"

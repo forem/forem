@@ -346,8 +346,8 @@ RSpec.describe "/admin/member_manager/users" do
 
     it "unpublishes users comments and posts" do
       # User's articles are published and comments exist
-      expect(target_articles.map(&:published?)).to match_array([true, true, true])
-      expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+      expect(target_articles.map(&:published?)).to contain_exactly(true, true, true)
+      expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
 
       sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
         post unpublish_all_articles_admin_user_path(target_user.id)
@@ -355,8 +355,8 @@ RSpec.describe "/admin/member_manager/users" do
 
       # Ensure article's aren't published and comments deleted
       # (with boolean attribute so they can be reverted if needed)
-      expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
-      expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
+      expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false, false)
+      expect(target_comments.map { |c| c.reload.deleted? }).to contain_exactly(true, true, true)
     end
 
     it "creates a log record" do

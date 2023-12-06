@@ -34,11 +34,16 @@ interaction:
 
   # A shortcut to run RSpec (which overrides the RAILS_ENV)
   rspec:
-    description: Run RSpec commands
+    description: Run Rails unit tests
     service: rails
     environment:
       RAILS_ENV: test
-    command: bundle exec rspec
+    command: bundle exec rspec --exclude-pattern 'system/**/*_spec.rb'
+    subcommands:
+      system:
+        description: Run Rails system tests
+        service: rspec_system
+        command: bundle exec rspec --pattern 'system/**/*_spec.rb'
 
   rails:
     description: Run Rails commands

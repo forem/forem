@@ -8,7 +8,8 @@ module Api
     ].freeze
 
     def show
-      relation = User.joins(:profile).select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+      attributes_for_select = SHOW_ATTRIBUTES_FOR_SERIALIZATION + %i[display_email_on_profile email]
+      relation = User.joins(:profile).joins(:setting).select(attributes_for_select)
 
       @user = if params[:id] == "by_username"
                 relation.find_by!(username: params[:url])
@@ -18,8 +19,20 @@ module Api
       not_found unless @user.registered
     end
 
-    def me
-      render :show
+    def me; end
+
+    def search
+      authorize(User, :search_by_email?)
+
+      not_found unless params[:email]
+
+      @user = User.find_by(email: params[:email])
+
+      if @user
+        render :show
+      else
+        not_found
+      end
     end
 
     def unpublish

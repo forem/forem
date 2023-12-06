@@ -2,12 +2,12 @@
 
 <%= form_with(model: podcast, local: true) do |form| %>
   <div>
-    <header class="mb-4">
+    <header class="mb-4 flex flex-col">
       <a href="/pod" class="crayons-link crayons-link--secondary fs-s"><%= t("views.podcasts.form.return") %></a>
       <h1 class="crayons-title"><%= t("views.podcasts.form.heading") %></h1>
     </header>
     <% if podcast.errors.any? %>
-      <div class="podcast-errors">
+      <div class="mb-4 crayons-notice crayons-notice--danger">
         <h2><%= t("views.podcasts.form.errors", count: podcast.errors.count) %></h2>
         <ul>
         <% podcast.errors.full_messages.each do |message| %>
@@ -22,7 +22,7 @@
         <%= label_tag :i_am_owner, t("views.podcasts.form.owner"), class: "crayons-field__label" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :title, class: "crayons-field__label" %>
+        <%= form.label :title, class: "crayons-field__label required" %>
         <%= form.text_field :title, placeholder: "Code Newbie", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
@@ -34,7 +34,7 @@
         <%= form.text_field :website_url, class: "crayons-textfield", placeholder: "https://codenewbie.org/podcast" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :feed_url, class: "crayons-field__label" %>
+        <%= form.label :feed_url, class: "crayons-field__label required" %>
         <%= form.text_field :feed_url, class: "crayons-textfield", placeholder: "http://feeds.codenewbie.org/cnpodcast.xml" %>
       </div>
       <div class="crayons-field">
@@ -42,15 +42,15 @@
         <%= form.text_field :twitter_username, class: "crayons-textfield", placeholder: "CodeNewbies" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :slug, class: "crayons-field__label" %>
+        <%= form.label :slug, class: "crayons-field__label required" %>
         <%= form.text_field :slug, class: "crayons-textfield", placeholder: "podcast-title" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :main_color_hex, class: "crayons-field__label" %>
+        <%= form.label :main_color_hex, class: "crayons-field__label required" %>
         <%= form.text_field :main_color_hex, placeholder: "FF00FF", class: "crayons-textfield" %>
       </div>
       <div class="crayons-field">
-        <%= form.label :image, class: "crayons-field__label" %>
+        <%= form.label :image, class: "crayons-field__label required" %>
         <%= form.file_field :image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
       <div class="crayons-field">

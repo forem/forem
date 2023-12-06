@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { render, waitFor } from '@testing-library/preact';
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 import { FocusTrap } from '../focusTrap';
 

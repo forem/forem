@@ -143,5 +143,83 @@ RSpec.describe "Billboards" do
         )
       end
     end
+
+    context "when billboard template is authorship_box" do
+      before do
+        billboard.update_column(:template, "authorship_box")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "crayons-sponsorship__header relative"
+      end
+
+      it "includes custom_display_label if set" do
+        billboard.update_column(:custom_display_label, "My great custom label")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "My great custom label"
+      end
+    end
+
+    context "when billboard template is plain" do
+      before do
+        billboard.update_column(:template, "plain")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).not_to include "crayons-sponsorship__header relative"
+      end
+    end
+
+    context "when requesting test billboard" do
+      let(:admin) { create(:user, :admin) }
+      let!(:test_billboard) { create_billboard(id: 123, placement_area: "post_sidebar", approved: false) }
+
+      before do
+        sign_in admin
+      end
+
+      it "returns the test billboard when proper parameters are provided" do
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(test_billboard.processed_html)
+      end
+
+      it "does not return the test billboard when parameters are missing" do
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(test_billboard.processed_html)
+      end
+
+      it "does not return the test billboard for non-admin users" do
+        sign_out admin
+        sign_in create(:user)
+
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(test_billboard.processed_html)
+      end
+    end
   end
 end

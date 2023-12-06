@@ -1,32 +1,15 @@
 export class UserStore {
-  constructor() {
-    this.users = [];
-    this.wasFetched = false;
+  constructor(users = []) {
+    this.users = users;
   }
 
-  fetch(url) {
-    const myStore = this;
-    return new Promise((resolve, _reject) => {
-      if (myStore.wasFetched) {
-        resolve();
-      } else {
-        window
-          .fetch(url)
-          .then((res) => res.json())
-          .then((data) => {
-            myStore.users = data.reduce((array, aUser) => {
-              array.push(aUser);
-              return array;
-            }, []);
-            myStore.wasFetched = true;
-            resolve();
-          })
-          .catch((error) => {
-            Honeybadger.notify(error);
-            resolve();
-          });
-      }
-    });
+  static async fetch(url) {
+    try {
+      const res = await window.fetch(url);
+      return new UserStore(await res.json());
+    } catch (error) {
+      Honeybadger.notify(error);
+    }
   }
 
   matchingIds(arrayOfIds) {

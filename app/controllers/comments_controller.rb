@@ -187,14 +187,8 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[current_user])
-        renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
-        processed_html = renderer.process.processed_html
-      else
-        fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
-        parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
-        processed_html = parsed_markdown.finalize
-      end
+      renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
+      processed_html = renderer.process.processed_html
     rescue StandardError => e
       processed_html = I18n.t("comments_controller.markdown_html", error: e)
     end
@@ -223,7 +217,7 @@ class CommentsController < ApplicationController
     if success
       @comment&.commentable&.update_column(:any_comments_hidden, true)
       if params[:hide_children] == "1"
-        @comment.descendants.includes(:user, :commentable).each do |c|
+        @comment.descendants.includes(:user, :commentable).find_each do |c|
           c.update(hidden_by_commentable_user: true)
         end
       end

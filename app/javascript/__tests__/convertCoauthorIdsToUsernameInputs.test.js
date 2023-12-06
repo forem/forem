@@ -1,10 +1,14 @@
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 
 import { convertCoauthorIdsToUsernameInputs } from '../packs/dashboards/convertCoauthorIdsToUsernameInputs';
 
 global.fetch = fetch;
+
+jest.mock('@utilities/debounceAction', () => ({
+  debounceAction: fn => fn
+}));
 
 function fakeFetchResponseJSON() {
   return JSON.stringify([
