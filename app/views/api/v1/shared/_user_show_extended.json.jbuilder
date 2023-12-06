@@ -17,3 +17,4 @@ end
 
 json.joined_at     I18n.l(user.created_at, format: :json)
 json.profile_image user.profile_image_url_for(length: 320)
+json.badge_ids     user.badge_ids

@@ -19,8 +19,20 @@ module Api
       not_found unless @user.registered
     end
 
-    def me
-      render :show
+    def me; end
+
+    def search
+      authorize(User, :search_by_email?)
+
+      not_found unless params[:email]
+
+      @user = User.find_by(email: params[:email])
+
+      if @user
+        render :show
+      else
+        not_found
+      end
     end
 
     def unpublish
