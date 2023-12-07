@@ -158,6 +158,64 @@ RSpec.describe "Api::V1::Users" do
     end
   end
 
+  describe "GET /api/users/search", :aggregate_failures do
+    let!(:user) { create(:user) }
+
+    context "when unauthenticated" do
+      it "returns unauthorized" do
+        get api_users_search_path(email: user.email),
+            headers: headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when unauthorized" do
+      it "returns unauthorized if api key is invalid" do
+        get api_users_search_path(email: user.email),
+            headers: headers.merge({ "api-key" => "invalid api key" })
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns unauthorized if api key belongs to non-admin user" do
+        get api_users_search_path(email: user.email),
+            headers: auth_headers
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "when request is authenticated" do
+      before { api_secret.user.add_role(:super_admin) }
+
+      it "returns 200 when finds a user" do
+        get api_users_search_path(email: user.email), headers: auth_headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "finds a user" do
+        get api_users_search_path(email: user.email), headers: auth_headers
+
+        response_user = response.parsed_body
+        expect(response_user["type_of"]).to eq("user")
+        %w[id username name twitter_username github_username].each do |attr|
+          expect(response_user[attr]).to eq(user.public_send(attr))
+        end
+      end
+
+      it "returns not found when no email is passed" do
+        get api_users_search_path, headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found when user is not found" do
+        get api_users_search_path(email: "hello@hello.edu"), headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe "PUT /api/users/:id/unpublish", :aggregate_failures do
     let(:target_user) { create(:user) }
     let!(:target_articles) { create_list(:article, 3, user: target_user, published: true) }

@@ -11,6 +11,9 @@
       <%= f.label :reporter_username_cont, "Reporter", class: "crayons-field__label m-1 screen-reader-only" %>
       <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "crayons-textfield w-auto m-1" %>
       <%= f.select(:status_eq, options_for_select(%w[Open Invalid Resolved], params[:status] || "Open"), { include_blank: true }, class: "crayons-select w-auto m-1") %>
+     <%= f.label :category_eq, "Category", class: "crayons-field__label m-1 screen-reader-only" %>
+<%= f.select :category_eq, options_for_select(FeedbackMessage::CATEGORIES, params[:category]), { include_blank: true }, class: "crayons-select w-auto m-1" %>
+
       <%= f.submit "Search", class: "crayons-btn crayons-btn--secondary m-1" %>
     <% end %>
 

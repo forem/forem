@@ -121,10 +121,15 @@ module Admin
     end
 
     def reconcile_ransack_params
-      if (params[:q] && params.dig(:q, :status_eq).blank?) && params[:status].present?
+      params[:q] ||= {}
+      if params.dig(:q, :status_eq).blank? && params[:status].present?
         params[:q][:status_eq] = params[:status]
       end
-      params[:status] = params[:q][:status_eq] if params[:q].present? # ransack
+      if params.dig(:q, :category_eq).blank? && params[:category].present?
+        params[:q][:category_eq] = params[:category]
+      end
+      params[:status] = params[:q][:status_eq] if params[:q].present?
+      params[:category] = params[:q][:category_eq] if params[:q].present?
     end
   end
 end
