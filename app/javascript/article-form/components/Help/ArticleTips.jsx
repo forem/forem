@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 export const ArticleTips = () => (
   <div
-    data-testid="basic-tag-input-help"
+    data-testid="article-publishing-tips"
     className="crayons-article-form__help crayons-article-form__help--tags"
   >
     <h4 className="mb-2 fs-l">Publishing Tips</h4>
