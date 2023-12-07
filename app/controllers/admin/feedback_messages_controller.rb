@@ -7,7 +7,7 @@ module Admin
       @q = FeedbackMessage.includes(:reporter, :offender, :affected)
         .order(created_at: :desc)
         .ransack(params[:q])
-      @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+      @feedback_messages = @q.result.page(params[:page] || 1).per(10)
       @feedback_messages = if params[:status] == "Resolved"
                              @feedback_messages.where(status: "Resolved")
                            elsif params[:status] == "Invalid"
@@ -124,14 +124,12 @@ module Admin
 
     def reconcile_ransack_params
       params[:q] ||= {}
-      if params.dig(:q, :status_eq).blank? && params[:status].present?
-        params[:q][:status_eq] = params[:status]
+      if params[:status].blank? && params.dig(:q, :status_eq).present?
+        params[:status] = params[:q][:status_eq]
       end
-      if params.dig(:q, :category_eq).blank? && params[:category].present?
-        params[:q][:category_eq] = params[:category]
+      if params[:category].blank? && params.dig(:q, :category_eq).present? # rubocop:disable Style/GuardClause
+        params[:category] = params[:q][:category_eq]
       end
-      params[:status] = params[:q][:status_eq] if params[:q].present?
-      params[:category] = params[:q][:category_eq] if params[:q].present?
     end
   end
 end
