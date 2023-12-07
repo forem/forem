@@ -113,7 +113,7 @@ services:
       interval: 5s
 
   redis:
-    image: redis:6.2-alpine
+    image: redis:7.0-alpine
     volumes:
       - redis:/data
     ports:

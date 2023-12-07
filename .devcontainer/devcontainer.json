@@ -40,7 +40,8 @@
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
         "MateuszDrewniak.ruby-test-runner",
-        "firsttris.vscode-jest-runner"
+        "firsttris.vscode-jest-runner",
+        "eamodio.gitlens"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh"
