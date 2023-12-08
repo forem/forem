@@ -108,20 +108,22 @@ class Billboard < ApplicationRecord
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
+    target_id = target_article_id.present? ? target_article_id.to_id : nil
+    condition = target_id.blank? ? "FALSE" : "#{target_id} = ANY(preferred_article_ids)"
     query = <<-SQL
       WITH base AS (#{base_query}),
       weighted AS (
         SELECT *,
           CASE
-            WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+            WHEN #{condition} THEN weight * 10
             ELSE weight
           END AS adjusted_weight,
         SUM(CASE
-              WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              WHEN #{condition} THEN weight * 10
               ELSE weight
             END) OVER () AS total_weight,
         SUM(CASE
-              WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              WHEN #{condition} THEN weight * 10
               ELSE weight
             END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
         FROM base
