@@ -113,15 +113,15 @@ class Billboard < ApplicationRecord
       weighted AS (
         SELECT *,
           CASE
-            WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+            WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
             ELSE weight
           END AS adjusted_weight,
         SUM(CASE
-              WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
               ELSE weight
             END) OVER () AS total_weight,
         SUM(CASE
-              WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              WHEN #{target_article_id.blank? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
               ELSE weight
             END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
         FROM base
