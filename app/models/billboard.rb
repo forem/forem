@@ -108,8 +108,7 @@ class Billboard < ApplicationRecord
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
-    target_id = target_article_id.present? ? target_article_id.to_id : nil
-    condition = target_id.blank? ? "FALSE" : "#{target_id} = ANY(preferred_article_ids)"
+    condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
     query = <<-SQL
       WITH base AS (#{base_query}),
       weighted AS (
