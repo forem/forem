@@ -92,7 +92,7 @@ class Billboard < ApplicationRecord
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation) || billboards_for_display.sample
+      weighted_random_selection(relation, article) || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -105,16 +105,25 @@ class Billboard < ApplicationRecord
     end
   end
 
-  def self.weighted_random_selection(relation)
+  def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
-
     query = <<-SQL
       WITH base AS (#{base_query}),
       weighted AS (
-        SELECT *, weight,
-        SUM(weight) OVER () AS total_weight,
-        SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+        SELECT *,
+          CASE
+            WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+            ELSE weight
+          END AS adjusted_weight,
+        SUM(CASE
+              WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              ELSE weight
+            END) OVER () AS total_weight,
+        SUM(CASE
+              WHEN #{target_article_id.nil? ? 'FALSE' : "#{target_article_id} = ANY(preferred_article_ids)"} THEN weight * 10
+              ELSE weight
+            END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
         FROM base
       )
       SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
