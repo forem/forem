@@ -4,15 +4,17 @@
   <% feedback_message_emails = @email_messages.select { |email| email.feedback_message_id == feedback_message.id } %>
 <% end %>
 
-<details open class="crayons-card" id="accordion-<%= feedback_message.id %>">
+<details class="crayons-card" id="accordion-<%= feedback_message.id %>">
   <summary class="p-5">
     <span id="header<%= feedback_message.id %>">
       <span id="collapse__header__link-<%= feedback_message.id %>">
         Report #<%= feedback_message.id %> - Submitted: <%= time_ago_in_words feedback_message.created_at %> ago
       </span>
       <div class="float-right">
+       <span class="c-indicator c-indicator--warning crayons-subtitle-2"><%= feedback_message.category.titleize %></span>
         ✉️ Emails Sent: <%= feedback_message_emails.size %> |
         <%= link_to "Link to Report #{feedback_message.id}", admin_report_path(feedback_message.id) %>
+
       </div>
     </span>
   </summary>
@@ -60,11 +62,6 @@
           <% end %>
         </div>
 
-        <div class="w-25 max-w-25 px-4">
-          <h3 class="crayons-subtitle-2 report__tags">
-            <span class="c-indicator c-indicator--warning float-right"><%= feedback_message.category.titleize %></span>
-          </h3>
-        </div>
         <div class="w-100 max-w-100 px-4">
           <% if feedback_message.offender %>
             <h3 class="crayons-subtitle-2">

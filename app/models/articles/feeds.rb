@@ -375,7 +375,8 @@ module Articles
                       user_required: true,
                       select_fragment: "CASE
                                          WHEN COUNT(first_matching_list.id) = 0 THEN 0
-                                         WHEN articles.id = ANY(array_agg(first_matching_list.article_ids)) THEN 1
+                                         WHEN articles.id = ANY(array_agg(first_matching_list.article_ids)
+                                         FILTER (WHERE first_matching_list.article_ids IS NOT NULL)) THEN 1
                                          ELSE 0
                                         END",
                       joins_fragments: ["LEFT OUTER JOIN

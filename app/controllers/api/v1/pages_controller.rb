@@ -40,7 +40,7 @@ module Api
 
       def permitted_params
         params.permit(*%i[title slug description is_top_level_path
-                          body_json body_markdown social_image template])
+                          body_json body_markdown body_html social_image template])
       end
     end
   end
