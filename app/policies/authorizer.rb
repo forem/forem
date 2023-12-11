@@ -133,6 +133,10 @@ module Authorizer
       has_role?(:suspended)
     end
 
+    def spam?
+      has_role?(:spam)
+    end
+
     def tag_moderator?(tag: nil)
       # Note a fan of "peeking" into the roles table, which in a way
       # circumvents the rolify gem.  But this was the past implementation.
