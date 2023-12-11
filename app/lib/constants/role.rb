@@ -5,6 +5,7 @@ module Constants
       "Comment Suspended" => { name: "comment_suspended", resource_type: nil },
       "Limited" => { name: "limited", resource_type: nil },
       "Suspended" => { name: "suspended", resource_type: nil },
+      "Spam" => { name: "spam", resource_type: nil },
       # This "role" is a weird amalgamation of multiple roles.
       "Good standing" => :good_standing,
       "Trusted" => { name: "trusted", resource_type: nil }
