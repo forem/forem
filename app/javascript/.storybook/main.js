@@ -5,9 +5,11 @@ const renderer = new marked.Renderer();
 const prettierConfig = require('../../../.prettierrc.json');
 
 module.exports = {
+  core: {
+    builder: 'webpack5',
+  },
   // https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#correct-globs-in-mainjs
   stories: ['../**/__stories__/*.stories.@(mdx|jsx)'],
-
   addons: [
     '@storybook/addon-controls',
     '@storybook/addon-knobs',
@@ -31,9 +33,7 @@ module.exports = {
         sourceLoaderOptions: null,
       },
     },
-    '@storybook/addon-mdx-gfm',
   ],
-
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
       test: /\.scss$/,
@@ -82,7 +82,6 @@ module.exports = {
 
     return config;
   },
-
   babel: async (options) => ({
     ...options,
     plugins: [
@@ -106,13 +105,4 @@ module.exports = {
       ],
     ],
   }),
-
-  framework: {
-    name: '@storybook/preact-webpack5',
-    options: {},
-  },
-
-  docs: {
-    autodocs: true,
-  },
 };

@@ -4,7 +4,7 @@ module.exports = {
     browser: true,
     es6: true,
   },
-  extends: ['eslint:recommended', 'prettier', 'plugin:storybook/recommended'],
+  extends: ['eslint:recommended', 'prettier'],
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',

@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs';
 import { jsxDecorator } from 'storybook-addon-jsx';
 import cssVariablesTheme from '@etchteam/storybook-addon-css-variables-theme';
@@ -13,11 +14,9 @@ import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
-export const decorators = [
-  jsxDecorator,
-  (Story) => <Story />,
-  cssVariablesTheme,
-];
+addDecorator(jsxDecorator);
+addDecorator((Story) => <Story />);
+addDecorator(cssVariablesTheme);
 
 addParameters({
   options: {
