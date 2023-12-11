@@ -278,5 +278,32 @@ RSpec.describe "Moderations" do
         end.to change(AuditLog, :count).by(1)
       end
     end
+
+    context "when adding the spam role to the user" do
+      it "creates a note on a user when note content is provided" do
+        note_content = "Spam acount"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam", note_for_current_role: note_content } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(note_content)
+      end
+
+      it "creates a default note on a user when note content isn't provided" do
+        expected_note = "#{super_mod.username} updated #{article.user.username}"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam" } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(expected_note)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam", new_note: "Test note" } }
+        end.to change(AuditLog, :count).by(1)
+      end
+    end
   end
 end

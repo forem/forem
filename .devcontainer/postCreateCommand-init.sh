@@ -14,4 +14,5 @@ if [ -n "$CODESPACE_NAME" ]; then
     echo "Updating .env file with codespace specific values"
     echo APP_DOMAIN="${CODESPACE_NAME}-3000.app.github.dev" >> .env
     echo APP_PROTOCOL=https:// >> .env
+    echo COMMUNITY_NAME="DEV(codespace)" >> .env
 fi
