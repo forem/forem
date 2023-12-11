@@ -312,7 +312,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: NODE_OPTIONS=--openssl-legacy-provider bundle exec rails assets:precompile
+      - run: bundle exec rails assets:precompile
       - run: RAILS_ENV=test bin/test-console-check
 
   cypress:

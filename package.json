@@ -13,9 +13,7 @@
     "test": "test"
   },
   "resolutions": {
-    "glob-parent": "^6.0.1",
-    "terser-webpack-plugin": "^2.3.7",
-    "compression-webpack-plugin": "^5.0.0"
+    "glob-parent": "^6.0.1"
   },
   "scripts": {
     "prepare": "husky install",
@@ -142,7 +140,6 @@
     "he": "^1.2.0",
     "i18n-js": "^4.3.2",
     "intersection-observer": "^0.12.2",
-    "isomorphic-fetch": "^3.0.0",
     "jest-junit": "^14.0.1",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
