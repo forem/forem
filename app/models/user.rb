@@ -447,6 +447,7 @@ class User < ApplicationRecord
     :super_admin?,
     :support_admin?,
     :suspended?,
+    :spam?,
     :tag_moderator?,
     :tech_admin?,
     :trusted?,

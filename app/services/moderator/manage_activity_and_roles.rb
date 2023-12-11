@@ -57,6 +57,7 @@ module Moderator
       )
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def handle_user_status(role, note)
       case role
       when "Admin"
@@ -68,6 +69,9 @@ module Moderator
         limited
       when "Suspended" || "Spammer"
         user.add_role(:suspended)
+        remove_privileges
+      when "Spam"
+        user.add_role(:spam)
         remove_privileges
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
@@ -95,6 +99,7 @@ module Moderator
       end
       create_note(role, note)
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def assign_elevated_role_to_user(user, role)
       check_super_admin
@@ -129,13 +134,15 @@ module Moderator
 
     def warned
       user.add_role(:warned)
-      user.remove_role(:suspended)
+      user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       remove_privileges
     end
 
     def remove_negative_roles
       user.remove_role(:limited) if user.limited?
       user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
