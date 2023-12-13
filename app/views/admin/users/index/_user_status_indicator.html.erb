@@ -1,13 +1,15 @@
 <% if user.suspended? %>
-    <%= render "admin/users/index/status_indicator", status: "Suspended" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
+<% elsif user.spam? %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% elsif user.warned? %>
-    <%= render "admin/users/index/status_indicator", status: "Warned" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% elsif user.comment_suspended? %>
-    <%= render "admin/users/index/status_indicator", status: "Comment Suspended" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% elsif user.limited? %>
-    <%= render "admin/users/index/status_indicator", status: "Limited" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% elsif user.trusted? %>
-    <%= render "admin/users/index/status_indicator", status: "Trusted" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% else %>
-    <%= render "admin/users/index/status_indicator", status: "Good standing" %>
+    <%= render "admin/users/index/status_indicator", status: nil %>
 <% end %>

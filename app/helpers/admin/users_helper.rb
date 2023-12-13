@@ -99,7 +99,7 @@ module Admin
     # Returns a string hex code representing the indicator color for the given status (also known as BASE_ROLE)
     def status_to_indicator_color(status)
       case status
-      when "Suspended"
+      when "Suspended", "Spam"
         "#DC2626"
       when "Warned"
         "#F59E0B"
