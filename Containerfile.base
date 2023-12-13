@@ -2,14 +2,16 @@ ARG RUBY_VERSION=3.2.0
 ARG DEBIAN_VERSION=bullseye
 FROM public.ecr.aws/docker/library/ruby:${RUBY_VERSION}-slim-${DEBIAN_VERSION} AS ruby-upstream
 
+ARG NODE_MAJOR=20
+ARG YARN_VERSION=1
 RUN apt update && \
     apt install -y \
         curl \
+        software-properties-common \
         gnupg2 \
         && \
-    curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - && \
+    echo "deb https://deb.nodesource.com/node_${NODE_MAJOR}.x $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/nodesource.list && \
     apt update && \
     apt install -y \
         imagemagick \
@@ -19,8 +21,9 @@ RUN apt update && \
         postgresql-client \
         tzdata \
         nodejs \
-        yarn \
         && \
     apt clean
+
+RUN npm install -g yarn@$YARN_VERSION
 
 CMD [ "/usr/local/bin/irb" ]
