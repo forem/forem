@@ -199,7 +199,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
 
 # Installing overmind
-ADD https://github.com/DarthSim/hivemind/releases/download/v1.1.0/hivemind-v1.1.0-linux-amd64.gz /usr/local/bin
+ADD https://github.com/DarthSim/hivemind/releases/download/v1.1.0/hivemind-v1.1.0-linux-${TARGETARCH}.gz /usr/local/bin
 RUN gunzip /usr/local/bin/hivemind-v1.1.0-linux-amd64.gz
 RUN chmod +x /usr/local/bin/hivemind-v1.1.0-linux-amd64
 RUN mv /usr/local/bin/hivemind-v1.1.0-linux-amd64 /usr/local/bin/hivemind
