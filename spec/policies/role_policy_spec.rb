@@ -10,8 +10,8 @@ describe RolePolicy do
   let(:admin_user) { build(:user, :admin) }
 
   permissions :remove_role? do
-    it "denies access if current role is suspended" do
-      expect(role).not_to permit(super_admin_user, role_suspended)
+    it "allows access for super_admin if the role is suspended" do
+      expect(role).to permit(super_admin_user, role_suspended)
     end
 
     it "grants access if user is super admin" do

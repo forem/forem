@@ -5,7 +5,7 @@ module Api
 
       # 'suspended' is also known as 'suspend' for historical reasons
       SUSPEND_MODE = %w[suspend suspended].freeze
-      ROLES = (SUSPEND_MODE + %w[limited]).freeze
+      ROLES = (SUSPEND_MODE + %w[limited spam]).freeze
 
       before_action :check_role
       before_action :set_target_user
@@ -24,7 +24,7 @@ module Api
       end
 
       def destroy
-        # This mechanism for removing roles is pretty specific to limited & suspended,
+        # This mechanism for removing roles is pretty specific to limited, suspended and spam,
         # where they revert to "Good standing" — we would need a different approach,
         # possibly a whole different service object — to remove *any* roles
         remove_role_from_target_user

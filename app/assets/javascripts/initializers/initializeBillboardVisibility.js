@@ -33,6 +33,7 @@ function trackAdImpression(adBox) {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
+      article_id: adBox.dataset.articleId,
     },
   };
 
