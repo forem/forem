@@ -7,7 +7,7 @@ module Admin
       @q = FeedbackMessage.includes(:reporter, :offender, :affected)
         .order(created_at: :desc)
         .ransack(params[:q])
-      @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+      @feedback_messages = @q.result.page(params[:page] || 1).per(10)
       @feedback_messages = if params[:status] == "Resolved"
                              @feedback_messages.where(status: "Resolved")
                            elsif params[:status] == "Invalid"
@@ -20,6 +20,7 @@ module Admin
       @status = params[:status].presence || "Open"
 
       @email_messages = EmailMessage.find_for_reports(@feedback_messages)
+      @notes = Note.find_for_reports(@feedback_messages)
 
       @vomits = get_vomits
     end
@@ -36,6 +37,7 @@ module Admin
     def show
       @feedback_message = FeedbackMessage.find_by(id: params[:id])
       @email_messages = EmailMessage.find_for_reports(@feedback_message.id)
+      @notes = Note.find_for_reports(@feedback_messages)
     end
 
     def send_email
@@ -87,7 +89,7 @@ module Admin
         .where(category: "vomit", status: status)
         .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
-        .order(updated_at: :desc)
+        .order(Arel.sql("CASE reactable_type WHEN 'User' THEN 0 ELSE 1 END, reactions.updated_at DESC"))
         .limit(limit)
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
@@ -122,14 +124,12 @@ module Admin
 
     def reconcile_ransack_params
       params[:q] ||= {}
-      if params.dig(:q, :status_eq).blank? && params[:status].present?
-        params[:q][:status_eq] = params[:status]
+      if params[:status].blank? && params.dig(:q, :status_eq).present?
+        params[:status] = params[:q][:status_eq]
       end
-      if params.dig(:q, :category_eq).blank? && params[:category].present?
-        params[:q][:category_eq] = params[:category]
+      if params[:category].blank? && params.dig(:q, :category_eq).present? # rubocop:disable Style/GuardClause
+        params[:category] = params[:q][:category_eq]
       end
-      params[:status] = params[:q][:status_eq] if params[:q].present?
-      params[:category] = params[:q][:category_eq] if params[:q].present?
     end
   end
 end
