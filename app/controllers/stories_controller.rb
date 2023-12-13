@@ -184,7 +184,7 @@ class StoriesController < ApplicationController
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
-    if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
+    if !user_signed_in? && (@user.spam_or_suspended? && @user.has_no_published_content?)
       not_found
     end
     assign_user_comments

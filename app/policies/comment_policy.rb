@@ -10,7 +10,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_suspended? && !user.comment_suspended?
+    !user.spam_or_suspended? && !user.comment_suspended?
   end
 
   alias new? create?
