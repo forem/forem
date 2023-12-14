@@ -10,6 +10,7 @@
 
       <%= f.label :reporter_username_cont, "Reporter", class: "crayons-field__label m-1 screen-reader-only" %>
       <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "crayons-textfield w-auto m-1" %>
+      <%= f.label :status_eq, "Status", class: "crayons-field__label m-1 screen-reader-only" %>
       <%= f.select(:status_eq, options_for_select(%w[Open Invalid Resolved], params[:status] || "Open"), { include_blank: true }, class: "crayons-select w-auto m-1") %>
      <%= f.label :category_eq, "Category", class: "crayons-field__label m-1 screen-reader-only" %>
 <%= f.select :category_eq, options_for_select(FeedbackMessage::CATEGORIES, params[:category]), { include_blank: true }, class: "crayons-select w-auto m-1" %>
@@ -17,11 +18,14 @@
       <%= f.submit "Search", class: "crayons-btn crayons-btn--secondary m-1" %>
     <% end %>
 
-    <div class="pt-4 px-2 pb-4">
-      <strong>Sort:</strong>
-      <%= tag.span(sort_link(@q, :reporter_username, "Reporter"), class: "mx-2") %>
-      <%= tag.span(sort_link(@q, :reported_url, "Reported URL"), class: "mx-2") %>
-      <%= tag.span(sort_link(@q, :created_at, "Creation Date"), class: "ml-2") %>
+    <div class="flex flex-wrap justify-between">
+      <div class="pt-4 px-2 pb-4">
+        <strong>Sort:</strong>
+        <%= tag.span(sort_link(@q, :reporter_username, "Reporter"), class: "mx-2") %>
+        <%= tag.span(sort_link(@q, :reported_url, "Reported URL"), class: "mx-2") %>
+        <%= tag.span(sort_link(@q, :created_at, "Creation Date"), class: "ml-2") %>
+      </div>
+      <button id="toggleAll" class="crayons-btn crayons-btn--secondary m-1">Expand All</button>
     </div>
 
     <%= paginate @feedback_messages %>
@@ -37,3 +41,17 @@
 </div>
 
 <%= paginate @feedback_messages %>
+
+<script>
+  document.getElementById('toggleAll').addEventListener('click', function() {
+    // Select only details elements with ids starting with 'accordion-'
+    const detailsElements = document.querySelectorAll('details[id^="accordion-"]');
+    const shouldExpand = this.textContent.includes('Expand');
+
+    detailsElements.forEach(details => {
+      details.open = shouldExpand;
+    });
+
+    this.textContent = shouldExpand ? 'Collapse All' : 'Expand All';
+  });
+</script>
