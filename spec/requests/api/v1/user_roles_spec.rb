@@ -322,9 +322,8 @@ RSpec.describe "Api::V1::UserRoles" do
       it "is successful in assigning the trusted role to a user", :aggregate_failures do
         expect do
           put api_user_add_role_path(target_user, "trusted"), headers: auth_headers
-
           expect(response).to have_http_status(:no_content)
-          expect(target_user.reload.trusted?).to be true
+          expect(target_user.reload.has_trusted_role?).to be true
           expect(Note.last.content).to match(/username\d+ updated username\d+/)
         end.to change(Note, :count).by(1)
       end
@@ -334,7 +333,7 @@ RSpec.describe "Api::V1::UserRoles" do
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
-        expect(log.data["action"]).to eq("api_user_trust")
+        expect(log.data["action"]).to eq("api_user_trusted")
         expect(log.data["target_user_id"]).to eq(target_user.id)
         expect(log.user_id).to eq(api_secret.user.id)
       end
@@ -377,7 +376,7 @@ RSpec.describe "Api::V1::UserRoles" do
           delete api_user_remove_role_path(target_user, "trusted"), headers: auth_headers
 
           expect(response).to have_http_status(:no_content)
-          expect(target_user.reload.trusted?).to be false
+          expect(target_user.reload.has_trusted_role?).to be false
           expect(target_user.roles).to eq([])
           expect(Note.last.content).to match(/username\d+ updated username\d+/)
         end.to change(Note, :count).by(1)
@@ -388,7 +387,7 @@ RSpec.describe "Api::V1::UserRoles" do
 
         log = AuditLog.last
         expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
-        expect(log.data["action"]).to eq("api_user_remove_trust")
+        expect(log.data["action"]).to eq("api_user_remove_trusted")
         expect(log.data["target_user_id"]).to eq(target_user.id)
         expect(log.user_id).to eq(api_secret.user.id)
       end

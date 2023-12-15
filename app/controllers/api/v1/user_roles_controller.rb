@@ -25,8 +25,8 @@ module Api
 
       def destroy
         # This mechanism for removing roles is specific to limited, suspended, spam and trusted.
-        # where they revert to "Good standing" — we would need a different approach,
-        # possibly a whole different service object — to remove *any* roles
+        # We revert them to "Good standing". We would need a different approach,
+        # (possibly a whole different service object) to remove *any* roles
         remove_role_from_target_user
 
         render json: { success: "okay" }, status: :no_content # rubocop:disable Rails/UnusedRenderContent - adding this as it's been part of the API for a while
