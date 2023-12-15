@@ -4,8 +4,6 @@ x-app: &app
     context: .
     args:
       PG_MAJOR: '13'
-      NODE_MAJOR: '16'
-      YARN_VERSION: '1.22.18'
   image: ghcr.io/forem/forem:development
   environment: &env
     NODE_ENV: ${NODE_ENV:-development}
