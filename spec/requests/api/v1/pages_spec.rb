@@ -70,16 +70,55 @@ RSpec.describe "Api::V1::Pages" do
     let(:post_params) do
       attributes_for(:page)
     end
+    let(:body_html) { "<div>hi, folks</div>" }
 
     it "can create a new page via post" do
       post api_pages_path, params: post_params.to_json, headers: auth_header
       expect(response).to have_http_status(:success)
     end
 
+    it "creates a page with body_html" do
+      post_params[:body_html] = body_html
+      post_params[:body_markdown] = ""
+      post api_pages_path, params: post_params.to_json, headers: auth_header
+      page = Page.find_by(title: post_params[:title])
+      expect(page.processed_html).to eq(body_html)
+    end
+
+    it "creates a page when both body_html and markdown are passed" do
+      post_params[:body_html] = body_html
+      post_params[:body_markdown] = "other"
+      post api_pages_path, params: post_params.to_json, headers: auth_header
+      page = Page.find_by(title: post_params[:title])
+      expect(page.processed_html).to include("other")
+    end
+
+    it "doesn't create a page when no html or md are passed" do
+      post_params[:body_html] = nil
+      post_params[:body_markdown] = nil
+      post api_pages_path, params: post_params.to_json, headers: auth_header
+      page = Page.find_by(title: post_params[:title])
+      expect(page).to be_nil
+    end
+
     it "can update an existing page via put" do
       put api_page_path(page.id), params: page.attributes.merge(title: "Brand New Title").to_json, headers: auth_header
       expect(response).to have_http_status(:success)
       expect(page.reload.title).to eq("Brand New Title")
+    end
+
+    it "updates an existing page via put with body_html" do
+      post_params = page.attributes.merge(body_html: body_html, body_markdown: nil)
+      put api_page_path(page.id), params: post_params.to_json, headers: auth_header
+      expect(response).to have_http_status(:success)
+      expect(page.reload.processed_html).to eq(body_html)
+    end
+
+    it "updates an existing page via put when both body_html and body_markdown are passed" do
+      post_params = page.attributes.merge(body_html: body_html, body_markdown: "other")
+      put api_page_path(page.id), params: post_params.to_json, headers: auth_header
+      expect(response).to have_http_status(:success)
+      expect(page.reload.processed_html).to include("other")
     end
 
     it "can destroy an existing page via delete" do

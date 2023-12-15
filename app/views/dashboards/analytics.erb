@@ -1,7 +1,7 @@
 <% title t("views.dashboard.analytics.meta.title") %>
 
 <main class="dashboard-container analytics-container crayons-layout" id="main-content">
-  <nav aria-label="Dashboards">
+  <nav aria-label="Dashboards" class="mx-5">
     <ul class="list-none">
       <li>
         <a href="<%= dashboard_path %>" class="rounded-btn crayons-link--block rounded-btn--transparent"><%= t("views.dashboard.analytics.back") %></a>
@@ -30,11 +30,7 @@
     </nav>
       
 
-  <div class="crayons-card p-3 mt-5">
-    <h1 class="fs-4xl fw-medium"><%= t("views.dashboard.analytics.heading", name: @user_or_org.name) %></h1>
-    <p><%= t("views.dashboard.analytics.desc_1", members: Settings::Community.member_label) %></p>
-    <p><%= t("views.dashboard.analytics.desc_2", members: Settings::Community.member_label) %></p>
-  </div>
+  <h1 class="fs-4xl fw-bold mx-5"><%= t("views.dashboard.analytics.heading", name: @user_or_org.name) %></h1>
 
   <%= render "shared/stats" %>
 </main>

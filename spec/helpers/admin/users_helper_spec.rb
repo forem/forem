@@ -121,6 +121,12 @@ describe Admin::UsersHelper do
       expect(status).to eq "Suspended"
     end
 
+    it "renders the proper status for a user that is spam" do
+      spam_user = create(:user, :spam)
+      status = helper.user_status(spam_user)
+      expect(status).to eq "Spam"
+    end
+
     it "renders the proper status for a user that is warned" do
       warned_user = create(:user, :warned)
       status = helper.user_status(warned_user)

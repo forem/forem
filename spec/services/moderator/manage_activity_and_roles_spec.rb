@@ -46,6 +46,16 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
       end
     end
 
+    context "when user is in spam role" do
+      before { user.add_role(:spam) }
+
+      it "adding #{status} also removes the spam role" do
+        expect(user.roles.pluck(:name)).to include("spam") # confirm assumptions
+        manage_roles_for user, user_status: status
+        expect(user.roles.pluck(:name)).not_to include("spam") # confirm assumptions
+      end
+    end
+
     context "when user is in comment_suspended role" do
       before { user.add_role(:comment_suspended) }
 
@@ -138,16 +148,23 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   it_behaves_like "elevated role", "Tech Admin"
 
   it_behaves_like "negative role", "Suspended"
+  it_behaves_like "negative role", "Spam"
   it_behaves_like "negative role", "Limited"
   it_behaves_like "negative role", "Warned"
 
   context "when user is in suspended role" do
-    before { user.add_role(:suspended) }
-
     it "adding warned removes the suspended role" do
+      user.add_role(:suspended)
       expect(user.roles.pluck(:name)).to include("suspended") # confirm assumptions
       manage_roles_for user, user_status: "Warned"
       expect(user.roles.pluck(:name)).not_to include("suspended") # confirm assumptions
+    end
+
+    it "adding warned removes the spam role" do
+      user.add_role(:spam)
+      expect(user.roles.pluck(:name)).to include("spam")
+      manage_roles_for user, user_status: "Warned"
+      expect(user.roles.pluck(:name)).not_to include("spam")
     end
   end
 

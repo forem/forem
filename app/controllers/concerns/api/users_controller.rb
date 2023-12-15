@@ -21,6 +21,20 @@ module Api
 
     def me; end
 
+    def search
+      authorize(User, :search_by_email?)
+
+      not_found unless params[:email]
+
+      @user = User.find_by(email: params[:email])
+
+      if @user
+        render :show
+      else
+        not_found
+      end
+    end
+
     def unpublish
       authorize(@user, :unpublish_all_articles?)
 
