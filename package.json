@@ -4,7 +4,7 @@
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
     "yarn": "1.22.18",
-    "node": "16.x"
+    "node": "20.x"
   },
   "main": "index.js",
   "directories": {
@@ -137,7 +137,6 @@
     "he": "^1.2.0",
     "i18n-js": "^4.3.2",
     "intersection-observer": "^0.12.2",
-    "isomorphic-fetch": "^3.0.0",
     "jest-junit": "^14.0.1",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
