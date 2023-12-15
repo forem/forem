@@ -108,31 +108,46 @@ class Billboard < ApplicationRecord
   def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
-    condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
-    query = <<-SQL
-      WITH base AS (#{base_query}),
-      weighted AS (
-        SELECT *,
-          CASE
-            WHEN #{condition} THEN weight * 10
-            ELSE weight
-          END AS adjusted_weight,
-        SUM(CASE
+    if FeatureFlag.enabled?(:article_id_adjusted_weight)
+      condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *,
+            CASE
               WHEN #{condition} THEN weight * 10
               ELSE weight
-            END) OVER () AS total_weight,
-        SUM(CASE
-              WHEN #{condition} THEN weight * 10
-              ELSE weight
-            END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-        FROM base
-      )
-      SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-      WHERE running_weight >= ? * total_weight
-      ORDER BY running_weight ASC
-      LIMIT 1
-    SQL
-
+            END AS adjusted_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER () AS total_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    else
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *, weight,
+          SUM(weight) OVER () AS total_weight,
+          SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    end
     relation.find_by_sql([query, random_val, random_val]).first
   end
 

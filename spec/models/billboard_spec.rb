@@ -590,6 +590,7 @@ RSpec.describe Billboard do
 
     context "when a target_article_id is provided" do
       it "favors records containing the target_article_id" do
+        allow(FeatureFlag).to receive(:enabled?).with(:article_id_adjusted_weight).and_return(true)
         described_class.delete_all
         target_article_id = 123
         favored_weight_multiplier = 10
