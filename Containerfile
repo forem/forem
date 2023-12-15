@@ -190,10 +190,12 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 # Installing hivemind
 ARG TARGETARCH
-ADD https://github.com/DarthSim/hivemind/releases/download/v1.1.0/hivemind-v1.1.0-linux-${TARGETARCH}.gz /usr/local/bin
-RUN gunzip /usr/local/bin/hivemind-v1.1.0-linux-amd64.gz
-RUN chmod +x /usr/local/bin/hivemind-v1.1.0-linux-amd64
-RUN mv /usr/local/bin/hivemind-v1.1.0-linux-amd64 /usr/local/bin/hivemind
+ENV HIVEMIND_VERSION=v1.1.0
+ADD https://github.com/DarthSim/hivemind/releases/download/${HIVEMIND_VERSION}/hivemind-${HIVEMIND_VERSION}-linux-${TARGETARCH}.gz /tmp/hivemind.gz
+RUN gunzip /tmp/hivemind.gz && \
+    chmod +x /tmp/hivemind && \
+    mv /tmp/hivemind /usr/local/bin/hivemind && \
+    rm -rf /tmp/*
 
 # Configure bundler
 ENV LANG=C.UTF-8 \
