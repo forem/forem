@@ -37,7 +37,7 @@ module Admin
     def show
       @feedback_message = FeedbackMessage.find_by(id: params[:id])
       @email_messages = EmailMessage.find_for_reports(@feedback_message.id)
-      @notes = Note.find_for_reports(@feedback_messages)
+      @notes = Note.find_for_reports(@feedback_message)
     end
 
     def send_email
