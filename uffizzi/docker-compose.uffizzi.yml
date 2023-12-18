@@ -1,6 +1,9 @@
 version: "3"
 
 x-uffizzi:
+  build:
+    target: uffizzi
+    dockerfile: ../dockerfile
   ingress:
     service: rails
     port: 3000
