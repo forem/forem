@@ -73,11 +73,11 @@ Rails.application.routes.draw do
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited|spam/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited|spam/) do
+          constraints(role: /limited|spam|trusted/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end

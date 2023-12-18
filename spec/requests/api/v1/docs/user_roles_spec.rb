@@ -293,6 +293,112 @@ notify them."
         end
       end
     end
+
+    describe "PUT /users/:id/trusted" do
+      before do
+        user.add_role(:admin)
+      end
+
+      path "/api/users/{id}/trusted" do
+        put "Add trusted role for a User" do
+          tags "users"
+          description "This endpoint allows the client to add the trusted role to a user.
+          The user associated with the API key must have an 'admin' or 'moderator' role.
+          The specified user will be assigned the 'trusted' role. Adding the trusted role to a user
+          allows them to upvote and downvote posts and flag content that needs investigating by admins.
+          Users are notified of this change in the UI, and by email."
+          operationId "trustUser"
+          produces "application/json"
+          parameter name: :id, in: :path, required: true,
+                    description: "The ID of the user to assign the trusted role.",
+                    schema: {
+                      type: :integer,
+                      format: :int32,
+                      minimum: 1
+                    },
+                    example: 1
+
+          response "204", "Trusted role assigned to the user successfully" do
+            let(:"api-key") { api_secret.secret }
+            let(:id) { user.id }
+            add_examples
+
+            run_test!
+          end
+
+          response "401", "Unauthorized" do
+            let(:regular_user) { create(:user) }
+            let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+            let(:"api-key") { low_security_api_secret.secret }
+            let(:id) { user.id }
+            add_examples
+
+            run_test!
+          end
+
+          response "404", "Unknown User ID" do
+            let(:"api-key") { api_secret.secret }
+            let(:id) { 10_000 }
+            add_examples
+
+            run_test!
+          end
+        end
+      end
+    end
+
+    describe "DELETE /users/:id/trusted" do
+      before do
+        user.add_role(:admin)
+      end
+
+      path "/api/users/{id}/trusted" do
+        delete "Remove trusted role from a User" do
+          tags "users"
+          description "This endpoint allows the client to remove the trusted role for a user.
+          The user associated with the API key must have an 'admin' or 'moderator' role.
+          The specified user will be restored to 'general' status. Users are not notified
+          of removing their trusted role in the UI, so if you want them to know about this, you must
+          notify them."
+          operationId "unTrustUser"
+          produces "application/json"
+          parameter name: :id, in: :path, required: true,
+                    description: "The ID of the user to remove the trusted role from.",
+                    schema: {
+                      type: :integer,
+                      format: :int32,
+                      minimum: 1
+                    },
+                    example: 1
+
+          response "204", "Successfully removed the trusted role from a user" do
+            let(:"api-key") { api_secret.secret }
+            let(:id) { user.id }
+            add_examples
+
+            run_test!
+          end
+
+          response "401", "Unauthorized" do
+            let(:regular_user) { create(:user) }
+            let(:low_security_api_secret) { create(:api_secret, user: regular_user) }
+            let(:"api-key") { low_security_api_secret.secret }
+            let(:id) { user.id }
+            add_examples
+
+            run_test!
+          end
+
+          response "404", "Unknown User ID" do
+            let(:"api-key") { api_secret.secret }
+            let(:id) { 10_000 }
+            add_examples
+
+            run_test!
+          end
+        end
+      end
+    end
   end
 end
 # rubocop:enable RSpec/VariableName
