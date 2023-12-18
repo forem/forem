@@ -146,6 +146,31 @@ ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
+FROM builder AS uffizzi
+
+USER "${APP_USER}"
+
+COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
+COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
+
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+      bundle config --delete without && \
+      BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
+      find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
+      find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+
+# Replacement for volume
+COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
+## Bund install
+RUN ./scripts/bundle.sh
+## Yarn install
+RUN bash -c yarn install --dev
+
+# Document that we're going to expose port 3000
+EXPOSE 3000
+# Use Bash as the default command
+CMD ["/usr/bin/bash"]
+
 ## Development
 FROM base AS development
 
