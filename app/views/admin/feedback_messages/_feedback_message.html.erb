@@ -97,18 +97,18 @@
     <% case feedback_message.status %>
     <% when 'Open' %>
       <div class="flex">
-        <%= button_tag "✅ Resolved", type: "button", data: { status: "Resolved", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2" %>
-        <%= button_tag "❌ Invalid", type: "button", data: { status: "Invalid", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3" %>
+        <%= button_tag "✅ Resolved", type: "button", data: { status: "Resolved", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2 status-button" %>
+        <%= button_tag "❌ Invalid", type: "button", data: { status: "Invalid", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 status-button" %>
       </div>
     <% when 'Invalid' %>
       <div class="flex">
-        <%= button_tag "❔ Open", type: "button", data: { status: "Open", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2" %>
-        <%= button_tag "✅ Resolved", type: "button", data: { status: "Resolved", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3" %>
+        <%= button_tag "❔ Open", type: "button", data: { status: "Open", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2 status-button" %>
+        <%= button_tag "✅ Resolved", type: "button", data: { status: "Resolved", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 status-button" %>
       </div>
     <% when 'Resolved' %>
       <div class="flex">
-        <%= button_tag "❔Open", type: "button", data: { status: "Open", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2" %>
-        <%= button_tag "❌ Invalid", type: "button", data: { status: "Invalid", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3" %>
+        <%= button_tag "❔Open", type: "button", data: { status: "Open", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 mr-2 status-button" %>
+        <%= button_tag "❌ Invalid", type: "button", data: { status: "Invalid", id: feedback_message.id }, class: "c-btn c-btn--primary block mt-3 status-button" %>
       </div>
     <% end %>
         <div class="mt-2 fs-italic hidden" id="update_message__<%= feedback_message.id %>">You have marked this as Resolved</div>
@@ -286,7 +286,7 @@
  }
 
 document.getElementById('accordion-<%= feedback_message.id %>').addEventListener('click', function(event) {
-  if (event.target.classList.contains('c-btn')) {
+  if (event.target.classList.contains('status-button')) {
     var status = event.target.dataset.status;
     var id = event.target.dataset.id;
     saveStatus(id, status);
