@@ -15,7 +15,7 @@ chdir APP_ROOT do
   # Foreman .env load behavior is at odds with dotenv
   # https://github.com/ddollar/foreman/issues/702#issuecomment-1227334155
 
-  if system `command -v hivemind &> /dev/null`
+  if system("which hivemind > /dev/null")
     system! "hivemind Procfile.dev"
   else
     system! "foreman start -f Procfile.dev --env=/dev/null"
