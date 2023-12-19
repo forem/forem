@@ -18,7 +18,7 @@
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <%= javascript_include_tag "application", "baseInitializers", "Search", "runtimeBanner", "baseTracking", defer: true %>
+      <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "runtimeBanner", "baseTracking", defer: true %>
       <% if user_signed_in? %>
         <%= javascript_include_tag "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>

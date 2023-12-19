@@ -13,6 +13,9 @@ esbuild.build({
   bundle: true,
   sourcemap: true,
   outdir: 'app/assets/builds',
+  define: {
+    'global': 'window',
+  },
 }).catch(() => process.exit(1))
 
 
