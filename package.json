@@ -26,7 +26,9 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets",
     "e2e": "bin/e2e",
-    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed",
+    "build": "node esbuild.config.js",
+    "build-old": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets"
   },
   "nyc": {
     "report-dir": "coverage/cypress"
@@ -102,8 +104,7 @@
     "sass-loader": "^13.3.2",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
-    "svgo": "2.8.0",
-    "webpack-dev-server": "^3.11.3"
+    "svgo": "2.8.0"
   },
   "dependencies": {
     "@babel/core": "^7.23.3",
@@ -120,7 +121,6 @@
     "@hotwired/stimulus": "3.2.2",
     "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "7.1.2",
-    "@rails/webpacker": "5.4.4",
     "ahoy.js": "^0.4.3",
     "autoprefixer": "^10.4.16",
     "babel-plugin-inline-react-svg": "^2.0.2",
@@ -130,6 +130,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "3",
+    "esbuild": "^0.19.10",
     "file-loader": "^6.2.0",
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",
