@@ -98,7 +98,7 @@
         data-commentable-id="<%= @episode.id %>"
         data-commentable-type="PodcastEpisode"
         data-follow-button-container="true">
-        <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
+        <%= javascript_include_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
                    commentable_type: "PodcastEpisode" %>
@@ -115,4 +115,4 @@
 </main>
 
 <%= render "podcast_episodes/podcast_bar", podcast: @podcast, episode: @episode %>
-<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+<%= javascript_include_tag "followButtons", defer: true %>

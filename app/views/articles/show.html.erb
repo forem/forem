@@ -8,9 +8,9 @@
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
+  <%= javascript_include_tag "webShare", "articlePage", "articleModerationTools", "commentDropdowns", defer: true %>
 <% else %>
-  <%= javascript_packs_with_chunks_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
+  <%= javascript_include_tag "webShare", "articlePage", "commentDropdowns", defer: true %>
 <% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
@@ -236,7 +236,7 @@
 <%= render "moderations/modals/unflag_user_modal" %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
-<%= javascript_packs_with_chunks_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
+<%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>
 
 <script>
   <%# we consider these scripts safe for embedding as they come from our code %>

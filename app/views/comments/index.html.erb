@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "postCommentsPage", defer: true %>
+<%= javascript_include_tag "postCommentsPage", defer: true %>
 <% if @root_comment.present? %>
   <% title(@root_comment.title.to_s) %>
 <% else %>
@@ -44,7 +44,7 @@
 <% end %>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "commentDropdowns", "followButtons", defer: true %>
+<%= javascript_include_tag "commentDropdowns", "followButtons", defer: true %>
 
 <div class="crayons-layout crayons-layout--limited-l gap-0" data-follow-button-container="true">
   <% if @commentable && @commentable.class.name == "Article" %>
@@ -89,7 +89,7 @@
     </article>
   <% else %>
     <div id="response-templates-data" class="hidden"></div>
-    <%= javascript_packs_with_chunks_tag "commentsDisplay", defer: true %>
+    <%= javascript_include_tag "commentsDisplay", defer: true %>
     <header class="p-2 pb-4 m:p-6 m:pb-6 crayons-card crayons-card--secondary crayons-layout__content s:mx-2 m:mx-4 -mb-1 z-0">
       <% if @commentable %>
       <h1 class="crayons-subtitle-1 mb-4">
