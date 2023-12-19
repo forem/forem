@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
     "baseUrl": ".",
+    // "target": "ES3",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
     "paths": {
       "@crayons*": ["./app/javascript/crayons/*"],
       "@utilities/*": ["./app/javascript/utilities/*"],
       "@images*": ["./app/assets/images/*"],
       "@components*": ["./app/javascript/shared/components/*"],
       "@admin*": ["./app/javascript/admin/*"],
+      "react": ["./node_modules/preact/compat/"],
+      "react-dom": ["./node_modules/preact/compat/"]
     }
   },
   "include": ["./app/javascript/**/*"],
