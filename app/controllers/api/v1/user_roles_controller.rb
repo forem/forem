@@ -5,7 +5,7 @@ module Api
 
       # 'suspended' is also known as 'suspend' for historical reasons
       SUSPEND_MODE = %w[suspend suspended].freeze
-      ROLES = (SUSPEND_MODE + %w[limited spam]).freeze
+      ROLES = (SUSPEND_MODE + %w[limited spam trusted]).freeze
 
       before_action :check_role
       before_action :set_target_user
@@ -20,16 +20,16 @@ module Api
           add_role_to_target_user
         end
 
-        render json: { success: "okay" }, status: :no_content
+        render json: { success: "okay" }, status: :no_content # rubocop:disable Rails/UnusedRenderContent - adding this as it's been part of the API for a while
       end
 
       def destroy
-        # This mechanism for removing roles is pretty specific to limited, suspended and spam,
-        # where they revert to "Good standing" — we would need a different approach,
-        # possibly a whole different service object — to remove *any* roles
+        # This mechanism for removing roles is specific to limited, suspended, spam and trusted.
+        # We revert them to "Good standing". We would need a different approach,
+        # (possibly a whole different service object) to remove *any* roles
         remove_role_from_target_user
 
-        render json: { success: "okay" }, status: :no_content
+        render json: { success: "okay" }, status: :no_content # rubocop:disable Rails/UnusedRenderContent - adding this as it's been part of the API for a while
       end
 
       private
