@@ -9,5 +9,6 @@
       "@components*": ["./app/javascript/shared/components/*"]
     }
   },
-  "include": ["./app/javascript/**/*"]
+  "include": ["./app/javascript/**/*"],
+  "exclude": ["node_modules"]
 }
