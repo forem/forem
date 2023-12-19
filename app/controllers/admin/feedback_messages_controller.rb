@@ -89,7 +89,14 @@ module Admin
         .where(category: "vomit", status: status)
         .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
-        .order(Arel.sql("CASE reactable_type WHEN 'User' THEN 0 ELSE 1 END, reactions.updated_at DESC"))
+        .order(Arel.sql("
+          CASE reactable_type
+            WHEN 'User' THEN 0
+            WHEN 'Article' THEN 1
+            WHEN 'Comment' THEN 2
+            ELSE 3
+          END,
+          reactions.reactable_id ASC"))
         .limit(limit)
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
