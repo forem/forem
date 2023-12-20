@@ -1,5 +1,5 @@
 module Constants
   module BadgeCategory
-    DEFAULT_CATEGORY_NAME = "Badges".freeze
+    DEFAULT_CATEGORY_NAME = "Primary".freeze
   end
 end
