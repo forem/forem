@@ -35,9 +35,10 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ./uffizzi/Dockerfile
+          file: ./Dockerfile
+          target: uffizzi
           cache-from: type=gha
-          cache-to: type=gha,mode=max          
+          cache-to: type=gha,mode=max
 
   render-compose-file:
     name: Render Docker Compose File
