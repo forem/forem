@@ -1,6 +1,5 @@
 import * as esbuild from 'esbuild'
-import glob from 'glob'
-import path from 'path'
+import { glob} from 'glob'
 
 let ctx = {
   loader: {
@@ -9,7 +8,12 @@ let ctx = {
     '.png': 'file',
     '.svg': 'file',
   },
-  entryPoints: glob.sync("app/javascript/packs/*.js*"),
+  entryPoints: glob.sync([
+    "app/javascript/packs/*.js*",
+    "app/javascript/packs/**/*.js*",
+  ]),
+  jsxFactory: 'h',
+  jsxFragment: 'Fragment',
   bundle: true,
   sourcemap: true,
   outdir: 'app/assets/builds',

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Close } from './Close';
+import Close from './Close';
 import { Tabs } from './Tabs';
 import { PageTitle } from './PageTitle';
 
