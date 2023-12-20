@@ -42,6 +42,7 @@ jobs:
             });
             let fs = require('fs');
             fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/preview-spec.zip`, Buffer.from(download.data));
+
       - name: 'Accept event from first stage'
         run: unzip preview-spec.zip event.json
 
@@ -54,9 +55,12 @@ jobs:
 
       - name: Hash Rendered Compose File
         id: hash
-        # If the previous workflow was triggered by a PR close event, we will not have a manifests file artifact.
+        # If the previous workflow was triggered by a PR close event, we will not have a compose file artifact.
         if: ${{ steps.event.outputs.ACTION != 'closed' }}
-        run: echo "COMPOSE_FILE_HASH=$(md5sum docker-compose.rendered.yml | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+        run: |
+          unzip preview-spec.zip docker-compose.rendered.yml
+          echo "COMPOSE_FILE_HASH=$(md5sum docker-compose.rendered.yml | awk '{ print $1 }')" >> $GITHUB_OUTPUT
+
       - name: Cache Rendered Compose File
         if: ${{ steps.event.outputs.ACTION != 'closed' }}
         uses: actions/cache@v3
