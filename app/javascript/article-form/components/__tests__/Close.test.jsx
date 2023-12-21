@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import '@testing-library/jest-dom';
-import Close from '../Close';
+import { Close } from '../Close';
 
 describe('<Close />', () => {
   it('should have no a11y violations', async () => {

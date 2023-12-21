@@ -28,6 +28,5 @@ if (process.argv.includes('--watch')) {
   ctx = await esbuild.context(ctx)
   await ctx.watch()
 } else {
-  // build normally
   await esbuild.build(ctx)
 }
