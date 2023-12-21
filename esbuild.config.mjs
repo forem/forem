@@ -13,7 +13,7 @@ let ctx = {
   jsxFragment: 'Fragment',
   bundle: true,
   minify: true,
-  sourcemap: true,
+  sourcemap: false,
   outdir: 'app/assets/builds',
   logLevel: 'info',
   define: {
