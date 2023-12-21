@@ -215,15 +215,15 @@ Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 seeder.create_if_none(BadgeCategory) do
   categories = [
     {
-      name: "community Badges",
+      name: "Community",
       description: Faker::Lorem.sentence
     },
     {
-      name: "Coding Badges",
+      name: "Coding",
       description: Faker::Lorem.sentence
     },
     {
-      name: "Participation Badges",
+      name: "Participation",
       description: Faker::Lorem.sentence
     },
   ].freeze
