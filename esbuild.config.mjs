@@ -19,6 +19,10 @@ let ctx = {
   define: {
     'global': 'window',
   },
+  alias: {
+    'react': 'preact/compat',
+    'react-dom': 'preact/compat',
+  },
   plugins: [svgr({
     jsxRuntime: 'classic-preact',
   })],
