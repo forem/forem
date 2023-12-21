@@ -8,10 +8,11 @@ let ctx = {
     '.jsx': 'jsx',
     '.png': 'file',
   },
-  entryPoints: glob.sync("app/javascript/packs/**/*.js*"),
+  entryPoints: glob.sync("app/javascript/packs/*.*"),
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   bundle: true,
+  minify: true,
   sourcemap: true,
   outdir: 'app/assets/builds',
   logLevel: 'info',
@@ -30,5 +31,3 @@ if (process.argv.includes('--watch')) {
   // build normally
   await esbuild.build(ctx)
 }
-
-

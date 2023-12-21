@@ -6,8 +6,8 @@
       "@utilities/*": ["./app/javascript/utilities/*"],
       "@images*": ["./app/assets/images/*"],
       "@components*": ["./app/javascript/shared/components/*"],
-      "@admin*": ["./app/javascript/admin/*"],
-    },
+      "@admin*": ["./app/javascript/admin/*"]
+    }
   },
   "include": ["./app/javascript/**/*"],
   "exclude": ["node_modules", "public"]

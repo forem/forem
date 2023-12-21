@@ -27,8 +27,7 @@
     "postcss": "postcss public/assets/*.css -d public/assets",
     "e2e": "bin/e2e",
     "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed",
-    "build": "node esbuild.config.mjs",
-    "build-old": "esbuild app/javascript/*.* --bundle --sourcemap --outdir=app/assets/builds --public-path=/assets"
+    "build": "node esbuild.config.mjs"
   },
   "nyc": {
     "report-dir": "coverage/cypress"
