@@ -14411,11 +14411,6 @@ react-dom@16.14.0:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-"react-dom@npm:@preact/compat", "react@npm:@preact/compat":
-  version "17.1.2"
-  resolved "https://registry.yarnpkg.com/@preact/compat/-/compat-17.1.2.tgz#928756713b07af6faf7812f6a56840d8ce6fed37"
-  integrity sha512-7pOZN9lMDDRQ+6aWvjwTp483KR8/zOpfS83wmOo3zfuLKdngS8/5RLbsFWzFZMGdYlotAhX980hJ75bjOHTwWg==
-
 react-element-to-jsx-string@^14.3.1:
   version "14.3.4"
   resolved "https://registry.yarnpkg.com/react-element-to-jsx-string/-/react-element-to-jsx-string-14.3.4.tgz#709125bc72f06800b68f9f4db485f2c7d31218a8"
