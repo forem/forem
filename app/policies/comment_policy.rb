@@ -1,6 +1,6 @@
 class CommentPolicy < ApplicationPolicy
   def edit?
-    return false if user_suspended?
+    return false if user.spam_or_suspended?
 
     user_author?
   end
