@@ -65,7 +65,7 @@ describe('Analytics navigation', () => {
     it('should navigate to correct organization analytics dashboard', () => {
       cy.findByText('Bachmanity Analytics Dashboard').click();
 
-      cy.contains('h1', 'Analytics Dashboard for Bachmanity');
+      cy.contains('h1', 'Analytics for Bachmanity');
     });
   });
 });

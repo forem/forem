@@ -47,8 +47,12 @@ Rails.application.routes.draw do
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
+        get "/users/search", to: "users#search"
+
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
+
+        resources :recommended_articles_lists, only: %i[index show create update]
 
         resources :billboards, only: %i[index show create update] do
           put "unpublish", on: :member
@@ -69,11 +73,11 @@ Rails.application.routes.draw do
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited/) do
+          constraints(role: /limited|spam|trusted/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end

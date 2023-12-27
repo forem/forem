@@ -92,7 +92,7 @@ class Billboard < ApplicationRecord
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation) || billboards_for_display.sample
+      weighted_random_selection(relation, article&.id) || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -105,24 +105,49 @@ class Billboard < ApplicationRecord
     end
   end
 
-  def self.weighted_random_selection(relation)
+  def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
-
-    query = <<-SQL
-      WITH base AS (#{base_query}),
-      weighted AS (
-        SELECT *, weight,
-        SUM(weight) OVER () AS total_weight,
-        SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-        FROM base
-      )
-      SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-      WHERE running_weight >= ? * total_weight
-      ORDER BY running_weight ASC
-      LIMIT 1
-    SQL
-
+    if FeatureFlag.enabled?(:article_id_adjusted_weight)
+      condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *,
+            CASE
+              WHEN #{condition} THEN weight * 10
+              ELSE weight
+            END AS adjusted_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER () AS total_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    else
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *, weight,
+          SUM(weight) OVER () AS total_weight,
+          SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    end
     relation.find_by_sql([query, random_val, random_val]).first
   end
 
@@ -196,12 +221,18 @@ class Billboard < ApplicationRecord
   end
   # rubocop:enable Style/OptionHash
 
-  # exclude_article_ids is an integer array, web inputs are comma-separated strings
+  # exclude_article_ids and preferred_article_ids are integer arrays, web inputs are comma-separated strings
   # ActiveRecord normalizes these in a bad way, so we are intervening
   def exclude_article_ids=(input)
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :exclude_article_ids, (adjusted_input || [])
+  end
+
+  def preferred_article_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :preferred_article_ids, (adjusted_input || [])
   end
 
   private

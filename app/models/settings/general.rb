@@ -102,6 +102,7 @@ module Settings
     setting :twitter_hashtag, type: :string
 
     # Tags
+    setting :display_sidebar_active_discussions, type: :boolean, default: true
     setting :sidebar_tags, type: :array, default: %w[]
 
     # Broadcast
