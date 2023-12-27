@@ -51,6 +51,8 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:super_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:support_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:spam?).to(:authorizer) }
+    it { is_expected.to delegate_method(:spam_or_suspended?).to(:authorizer) }
     it { is_expected.to delegate_method(:tag_moderator?).to(:authorizer) }
     it { is_expected.to delegate_method(:tech_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:trusted?).to(:authorizer) }

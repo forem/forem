@@ -1,6 +1,6 @@
 class OrganizationPolicy < ApplicationPolicy
   def create?
-    !user.suspended?
+    !user.spam_or_suspended?
   end
 
   def update?
