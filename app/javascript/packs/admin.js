@@ -1,6 +1,5 @@
 import { Application } from '@hotwired/stimulus';
 import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers';
-import { LocalTimeElement } from '@github/time-elements'; // eslint-disable-line no-unused-vars
 import Rails from '@rails/ujs';
 import 'focus-visible';
 
