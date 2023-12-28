@@ -448,6 +448,7 @@ class User < ApplicationRecord
     :support_admin?,
     :suspended?,
     :spam?,
+    :spam_or_suspended?,
     :tag_moderator?,
     :tech_admin?,
     :trusted?,

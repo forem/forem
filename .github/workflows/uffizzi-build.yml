@@ -17,13 +17,13 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Generate UUID image name
         id: uuid
-        run: echo "UUID_TAG_APP=$(uuidgen)" >> $GITHUB_ENV
+        run: echo "UUID_TAG_APP=forem-$(uuidgen --time)" >> $GITHUB_ENV
       - name: Docker metadata
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: registry.uffizzi.com/${{ env.UUID_TAG_APP }}
-          tags: type=raw,value=60d
+          tags: type=raw,value=30d
       - uses: actions/checkout@master
       - name: Create the .env file
         run: |
@@ -35,7 +35,8 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          file: ./uffizzi/Dockerfile
+          file: ./Dockerfile
+          target: uffizzi
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

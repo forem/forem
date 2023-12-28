@@ -16,6 +16,13 @@ RSpec.describe Users::SuspendedUsername do
       expect(described_class.previously_suspended?(user.username)).to be true
     end
 
+    it "returns true if the user has been previously assigned a spam roles" do
+      user = create(:user, :spam)
+      described_class.create_from_user(user)
+
+      expect(described_class.previously_suspended?(user.username)).to be true
+    end
+
     it "returns false if the user has not been previously_suspended" do
       user = create(:user)
 
