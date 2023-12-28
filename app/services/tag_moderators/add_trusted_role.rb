@@ -1,7 +1,7 @@
 module TagModerators
   class AddTrustedRole
     def self.call(user)
-      return if user.has_trusted_role? || user.suspended?
+      return if user.has_trusted_role? || user.spam_or_suspended?
 
       user.add_role(:trusted)
       user.notification_setting.update(email_community_mod_newsletter: true)

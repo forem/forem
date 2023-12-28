@@ -66,7 +66,7 @@ class UserPolicy < ApplicationPolicy
   alias onboarding_notifications_checkbox_update? onboarding_update?
 
   def update?
-    edit? && !user_suspended?
+    edit? && !user.spam_or_suspended?
   end
 
   alias destroy? edit?
@@ -78,7 +78,7 @@ class UserPolicy < ApplicationPolicy
   alias request_destroy? edit?
 
   def join_org?
-    !user_suspended?
+    !user.spam_or_suspended?
   end
 
   def leave_org?
@@ -99,7 +99,7 @@ class UserPolicy < ApplicationPolicy
   alias search_by_email? elevated_user?
 
   def moderation_routes?
-    (user.has_trusted_role? || elevated_user?) && !user.suspended?
+    (user.has_trusted_role? || elevated_user?) && !user.spam_or_suspended?
   end
 
   def permitted_attributes
