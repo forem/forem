@@ -2883,11 +2883,6 @@
     node-fetch "^2.6.1"
     verror "^1.6.1"
 
-"@hotwired/stimulus-webpack-helpers@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@hotwired/stimulus-webpack-helpers/-/stimulus-webpack-helpers-1.0.1.tgz#4cd74487adeca576c9865ac2b9fe5cb20cef16dd"
-  integrity sha512-wa/zupVG0eWxRYJjC1IiPBdt3Lruv0RqGN+/DTMmUWUyMAEB27KXmVY6a8YpUVTM7QwVuaLNGW4EqDgrS2upXQ==
-
 "@hotwired/stimulus@3.2.2":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@hotwired/stimulus/-/stimulus-3.2.2.tgz#071aab59c600fed95b97939e605ff261a4251608"
@@ -8462,6 +8457,11 @@ es6-shim@^0.35.5:
   version "0.35.6"
   resolved "https://registry.yarnpkg.com/es6-shim/-/es6-shim-0.35.6.tgz#d10578301a83af2de58b9eadb7c2c9945f7388a0"
   integrity sha512-EmTr31wppcaIAgblChZiuN/l9Y7DPyw8Xtbg7fIVngn6zMW+IEBJDJngeKC3x6wr0V/vcA2wqeFnaw1bFJbDdA==
+
+esbuild-plugin-stimulus@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/esbuild-plugin-stimulus/-/esbuild-plugin-stimulus-0.1.5.tgz#6e4ba834ed8fcf9d662f1df8f709e05328b6b92c"
+  integrity sha512-ANav+mJxDJCIMuKfj4h7F2BemA1BcIaE5VmmGd6qDVQEaFEH3YeVRAHOWjgiUhGJBFi6wI8Q7RtZIZkNvbckZg==
 
 esbuild-plugin-svgr@^2.1.0:
   version "2.1.0"

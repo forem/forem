@@ -1,6 +1,7 @@
 import * as esbuild from 'esbuild'
 import glob from 'glob'
 import svgr from 'esbuild-plugin-svgr'
+import { stimulusPlugin } from 'esbuild-plugin-stimulus'
 
 let ctx = {
   loader: {
@@ -23,9 +24,10 @@ let ctx = {
     'react': 'preact/compat',
     'react-dom': 'preact/compat',
   },
-  plugins: [svgr({
-    jsxRuntime: 'classic-preact',
-  })],
+  plugins: [
+    svgr({jsxRuntime: 'classic-preact' }),
+    stimulusPlugin(),
+  ],
 }
 
 if (process.argv.includes('--watch')) {

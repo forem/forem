@@ -8,7 +8,7 @@ export default class SnackbarController extends Controller {
     const [{ h, render }, { Snackbar }] = await Promise.all([
       import('preact'),
       // eslint-disable-next-line import/no-unresolved
-      import('Snackbar'),
+      import('../../Snackbar'),
     ]);
 
     render(<Snackbar lifespan="3" />, this.snackZoneTarget);
@@ -25,7 +25,7 @@ export default class SnackbarController extends Controller {
     const { message, addCloseButton = false } = event.detail;
 
     // eslint-disable-next-line import/no-unresolved
-    const { addSnackbarItem } = await import('Snackbar');
+    const { addSnackbarItem } = await import('../../Snackbar');
     addSnackbarItem({ message, addCloseButton });
   }
 }
