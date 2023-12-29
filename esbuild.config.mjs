@@ -8,7 +8,7 @@ let ctx = {
     '.jsx': 'jsx',
     '.png': 'file',
   },
-  entryPoints: glob.sync("app/javascript/packs/*.*"),
+  entryPoints: glob.sync("app/javascript/packs/**/*.*"),
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   bundle: true,
