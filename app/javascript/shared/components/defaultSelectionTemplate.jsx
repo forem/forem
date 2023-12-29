@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import PropTypes from 'prop-types';
 import { Icon, ButtonNew as Button } from '@crayons';
 import Close from '@images/x.svg';
