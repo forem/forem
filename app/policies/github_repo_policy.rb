@@ -1,6 +1,6 @@
 class GithubRepoPolicy < ApplicationPolicy
   def index?
-    !user_suspended? && user.authenticated_through?(:github)
+    !user.spam_or_suspended? && user.authenticated_through?(:github)
   end
 
   alias update_or_create? index?

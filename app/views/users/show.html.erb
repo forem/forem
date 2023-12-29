@@ -5,7 +5,7 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
-  <% if @user.score.negative? || @user.suspended? %>
+  <% if @user.score.negative? || @user.spam_or_suspended? %>
     <meta name="robots" content="noindex">
     <meta name="robots" content="nofollow">
   <% end %>
