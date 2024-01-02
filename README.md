@@ -47,7 +47,7 @@ within our community. ❤️
 - [Community](#community)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
-  - [Installation Documentation](#installation-documentation)
+- [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
