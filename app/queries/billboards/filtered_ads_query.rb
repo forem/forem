@@ -28,7 +28,7 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
-      @filtered_billboards = cookies_allowed_ads if !@cookies_allowed
+      @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
 
       if @article_id.present?
         if @article_tags.any?
