@@ -79,7 +79,7 @@ class Billboard < ApplicationRecord
       user_id: user_id,
       user_tags: user_tags,
       location: location,
-      cookies_allowed: cookies_allowed
+      cookies_allowed: cookies_allowed,
     )
 
     case rand(99) # output integer from 0-99

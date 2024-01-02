@@ -339,19 +339,4 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       end
     end
   end
-
-  # Helper methods for setting up test data (if not already defined)
-  def create_billboard(**options)
-    defaults = {
-      billboards: Billboard, area: placement_area, user_signed_in: false, requires_cookies: false
-    }
-    create(:billboard, **options.reverse_merge(defaults))
-  end
-
-  def filter_billboards(**options)
-    defaults = {
-      billboards: Billboard, area: placement_area, user_signed_in: false, requires_cookies: false
-    }
-    described_class.call(**options.reverse_merge(defaults))
-  end
 end
