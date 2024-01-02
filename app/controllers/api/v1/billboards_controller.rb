@@ -53,7 +53,7 @@ module Api
                       :audience_segment_type, :audience_segment_id, :priority,
                       :custom_display_label, :template, :render_mode, :preferred_article_ids,
                       # Permitting twice allows both comma-separated string and array values
-                      :target_geolocations, target_geolocations: []
+                      :target_geolocations, target_geolocations: [], :requires_cookies
       end
     end
   end
