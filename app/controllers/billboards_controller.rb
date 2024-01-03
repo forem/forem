@@ -31,6 +31,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         user_tags: user_tags,
+        cookies_allowed: cookies_allowed?,
         location: client_geolocation,
       )
 
@@ -68,5 +69,9 @@ class BillboardsController < ApplicationController
 
   def return_test_billboard?
     params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+  end
+
+  def cookies_allowed?
+    params[:cookies_allowed] == "true"
   end
 end
