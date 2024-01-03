@@ -160,3 +160,28 @@
     }
   }
 }
+
+
+.cookie-consent-modal {
+  background: white;
+  position: fixed;
+  padding: var(--su-5);
+  bottom: var(--su-2);
+  left: var(--su-3);
+  right: var(--su-3);
+  margin: 0 auto;
+  max-width: 700px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+  text-align: center;
+  z-index: var(--z-modal);
+  p {
+    font-size: var(--fs-base);
+    color: var(--text-color);
+    margin-bottom: var(--su-2);
+  }
+  .cookie-consent-modal__actions button {
+    font-size: var(--fs-base);
+    margin: var(--su-2);
+  }
+}
