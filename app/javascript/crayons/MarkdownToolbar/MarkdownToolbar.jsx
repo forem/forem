@@ -242,7 +242,7 @@ export const MarkdownToolbar = ({
       } else {
         document.execCommand('insertText', false, replaceSelectionWith);
       }
-    } catch (e) {
+    } catch {
       // In the event of any error using execCommand, we make sure the text area updates (but undo queue will not)
       textArea.value = getNewTextAreaValueWithEdits({
         textAreaValue: textArea.value,

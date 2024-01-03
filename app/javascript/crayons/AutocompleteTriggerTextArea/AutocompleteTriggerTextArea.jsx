@@ -342,7 +342,7 @@ export const AutocompleteTriggerTextArea = forwardRef(
           false,
           `${triggerCharacter}${suggestion.value} `,
         );
-      } catch (e) {
+      } catch {
         // In the event of any error using execCommand, we make sure the text area updates (but undo queue will not)
         const { value: currentValue } = currentInput;
         const newTextAreaValue = `${currentValue.substring(
