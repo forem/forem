@@ -1,5 +1,5 @@
 import { Application } from '@hotwired/stimulus';
-import { definitions } from 'stimulus:../admin/controllers';
+import { definitions } from 'stimulus:../admin/controllers'; // eslint-disable-line import/no-unresolved
 import Rails from '@rails/ujs';
 import 'focus-visible';
 
