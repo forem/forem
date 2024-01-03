@@ -1,6 +1,7 @@
 //= require_tree ./initializers
 //= require_tree ./utilities
 //= require lib/xss
+//= require lib/pulltorefresh
 //= require initializePage
 //= require utilities/getImageForLink
 //= require @honeybadger-io/js/dist/browser/honeybadger.js
@@ -673,7 +674,10 @@ var instantClick
     }
 
     var script = document.createElement('script');
-    script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
+    // do something about this
+    // script.src = "<%= javascript_path 'lib/pulltorefresh.js' %>";
+    script.src = pullToRefreshPath;
+
     document.head.appendChild(script);
     var waitingOnPTR = setInterval(function(){
       if (typeof PullToRefresh !== 'undefined') {
@@ -719,7 +723,7 @@ var instantClick
 
   Honeybadger.configure({
     apiKey: document.body.dataset.honeybadgerKey,
-    environment: "<%= Rails.env %>",
+    // environment: process.env.NODE_ENV,
     revision: document.body.dataset.releaseFootprint,
   });
 

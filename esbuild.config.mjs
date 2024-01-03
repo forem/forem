@@ -10,7 +10,10 @@ let ctx = {
     '.png': 'file',
   },
   target: ['es2019'],
-  entryPoints: glob.sync("app/javascript/packs/**/*.*"),
+  entryPoints: [
+    ...glob.sync("app/javascript/packs/**/*.*"),
+    ...glob.sync("app/assets/javascripts/**/*.*"),
+  ],
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   bundle: true,
