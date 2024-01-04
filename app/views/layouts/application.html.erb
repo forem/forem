@@ -108,6 +108,7 @@
   <% cache("footer-and-signup-modal-#{user_signed_in?}-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
     <%= render "layouts/footer" %>
     <%= render "layouts/signup_modal" unless user_signed_in? %>
+    <div id="cookie-consent"></div>
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   <%= render "articles/reaction_category_resources" %>
