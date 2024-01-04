@@ -75,8 +75,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -165,8 +165,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -340,8 +340,8 @@ jobs:
             public/assets
             public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
