@@ -9,10 +9,8 @@ let ctx = {
     '.jsx': 'jsx',
     '.png': 'file',
   },
-  entryPoints: [
-    ...glob.sync("app/javascript/packs/**/*.*"),
-    ...glob.sync("app/assets/javascripts/**/*.*"),
-  ],
+  target: ['es2019'],
+  entryPoints: glob.sync("app/javascript/packs/**/*.*"),
   jsxFactory: 'h',
   jsxFragment: 'Fragment',
   bundle: true,
