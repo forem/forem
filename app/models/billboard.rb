@@ -65,7 +65,7 @@ class Billboard < ApplicationRecord
 
   self.table_name = "display_ads"
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil, cookies_allowed: false)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -79,6 +79,7 @@ class Billboard < ApplicationRecord
       user_id: user_id,
       user_tags: user_tags,
       location: location,
+      cookies_allowed: cookies_allowed,
     )
 
     case rand(99) # output integer from 0-99
