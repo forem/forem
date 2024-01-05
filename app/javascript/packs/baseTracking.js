@@ -1,6 +1,7 @@
 /*eslint-disable prefer-rest-params*/
 
 function initializeBaseTracking() {
+  showCookieConsentBanner();
   trackGoogleAnalytics3();
   trackGoogleAnalytics4();
   trackCustomImpressions();
@@ -176,6 +177,47 @@ function trackCustomImpressions() {
     }
 
   }, 1800)
+}
+
+function showCookieConsentBanner() {
+  // if current url includes ?cookietest=true
+  if (window.location.href.includes('cookietest=true')) {
+    // show modal with cookie consent
+    const cookieDiv = document.getElementById('cookie-consent');
+
+    if (cookieDiv && localStorage.getItem('cookie_status') !== 'allowed' && localStorage.getItem('cookie_status') !== 'dismissed') {
+      cookieDiv.innerHTML = `
+        <div class="cookie-consent-modal">
+          <div class="cookie-consent-modal__content">
+            <p>
+              <strong>Some content on our site requires cookies for personalization and analytics.</strong>
+            </p>
+            <p>
+              Read our full <a href="/privacy">privacy policy</a> to learn more.
+            </p>
+            <div class="cookie-consent-modal__actions">
+              <button class="c-btn c-btn--secondary" id="cookie-dismiss">
+                Dismiss
+              </button>
+              <button class="c-btn c-btn--primary" id="cookie-accept">
+                Accept Cookies
+              </button>
+            </div
+          </div>
+        </div>
+      `;
+
+      document.getElementById('cookie-accept').onclick = (() => {
+        localStorage.setItem('cookie_status', 'allowed');
+        cookieDiv.style.display = 'none';
+      });
+
+      document.getElementById('cookie-dismiss').onclick = (() => {
+        localStorage.setItem('cookie_status', 'dismissed');
+        cookieDiv.style.display = 'none';
+      });
+    }
+  }
 }
 
 function trackPageView(dataBody, csrfToken) {
