@@ -555,7 +555,9 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    spam_adjustment = user.spam? ? -100 : 0
+    negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),

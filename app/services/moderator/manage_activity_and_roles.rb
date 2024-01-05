@@ -73,6 +73,7 @@ module Moderator
       when "Spam"
         user.add_role(:spam)
         remove_privileges
+        user.articles.map(&:async_score_calc)
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
