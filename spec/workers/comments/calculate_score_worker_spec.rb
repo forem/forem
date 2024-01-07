@@ -21,6 +21,14 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(comment.score).to be(7)
       end
 
+      it "updates the score with a penalty if the user is a spammer" do
+        comment.user.add_role(:spam)
+        worker.perform(comment.id)
+
+        comment.reload
+        expect(comment.score).to be(-493)
+      end
+
       it "calls save on the root comment when given a descendant comment" do
         child_comment = double
         root_comment = double
