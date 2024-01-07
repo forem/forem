@@ -55,7 +55,7 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         allow(root_comment).to receive(:update_columns)
         allow(root_comment).to receive(:is_root?).and_return(true)
         allow(root_comment).to receive(:root).and_return(root_comment)
-        allow(child_comment).to receive(:user).and_return(double(spam?: false))
+        allow(root_comment).to receive(:user).and_return(double(spam?: false))
         allow(Comment).to receive(:find_by).with(id: 1).and_return(root_comment)
 
         worker.perform(1)
