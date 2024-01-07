@@ -73,7 +73,6 @@ module Moderator
       when "Spam"
         user.add_role(:spam)
         remove_privileges
-        user.articles.map(&:async_score_calc)
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
@@ -99,6 +98,7 @@ module Moderator
         warned
       end
       create_note(role, note)
+      user.articles.published.find_each(&:async_score_calc) if role == "Spam" # Extra final step to re-calculate scores
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 
