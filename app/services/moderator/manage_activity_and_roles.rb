@@ -98,7 +98,6 @@ module Moderator
         warned
       end
       create_note(role, note)
-      return unless role == "Spam" # Extra final step to re-calculate scores for spam
 
       user.articles.published.find_each(&:async_score_calc)
       user.comments.find_each(&:calculate_score)
