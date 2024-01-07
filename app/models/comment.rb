@@ -202,6 +202,10 @@ class Comment < ApplicationRecord
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end
 
+  def calculate_score
+    Comments::CalculateScoreWorker.perform_async(id)
+  end
+
   private_class_method :build_sort_query
 
   private
@@ -264,10 +268,6 @@ class Comment < ApplicationRecord
       anchor.inner_html = anchor.inner_html.sub(/#{Regexp.escape(anchor.content)}/, anchor_content)
     end
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
-  end
-
-  def calculate_score
-    Comments::CalculateScoreWorker.perform_async(id)
   end
 
   def after_create_checks
