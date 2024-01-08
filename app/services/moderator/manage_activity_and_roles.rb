@@ -98,6 +98,9 @@ module Moderator
         warned
       end
       create_note(role, note)
+
+      user.articles.published.find_each(&:async_score_calc)
+      user.comments.find_each(&:calculate_score)
     end
     # rubocop:enable Metrics/CyclomaticComplexity
 

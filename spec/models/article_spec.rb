@@ -1389,6 +1389,12 @@ RSpec.describe Article do
 
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
+
+    it "includes user marked as spam punishment" do
+      article.user.add_role(:spam)
+      article.update_score
+      expect(article.reload.score).to eq(-500)
+    end
   end
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do

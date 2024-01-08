@@ -555,7 +555,9 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    spam_adjustment = user.spam? ? -500 : 0
+    negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
@@ -607,6 +609,12 @@ class Article < ApplicationRecord
 
   def ordered_tag_adjustments
     tag_adjustments.includes(:user).order(:created_at).reverse
+  end
+
+  def async_score_calc
+    return if !published? || destroyed?
+
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   private
@@ -698,12 +706,6 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def async_score_calc
-    return if !published? || destroyed?
-
-    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration
