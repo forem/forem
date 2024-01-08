@@ -92,7 +92,15 @@ module Articles
       order_by_lever(:final_order_by_feed_success_score,
                      label: "Order by feed success score",
                      order_by_fragment: "articles.feed_success_score DESC")
-
+      order_by_lever(:final_order_by_feed_success_score_minus_clickbait_score,
+                     label: "Order by feed success score minus clickbait score",
+                     order_by_fragment: "articles.feed_success_score - articles.clickbait_score DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_half_of_clickbait_score,
+                     label: "Order by feed success score minus half of clickbait score",
+                     order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 2) DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_one_tenth_of_clickbait_score,
+                     label: "Order by feed success score minus one tenth of clickbait score",
+                     order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 10) DESC")
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
                      label: "Order by feed success score and primary score",
                      order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")

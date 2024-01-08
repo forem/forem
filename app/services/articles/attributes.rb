@@ -1,7 +1,7 @@
 module Articles
   class Attributes
     ATTRIBUTES = %i[archived body_markdown canonical_url description
-                    edited_at main_image organization_id user_id published
+                    edited_at main_image organization_id user_id published clickbait_score
                     title video_thumbnail_url published_at co_author_ids_list].freeze
 
     attr_reader :attributes, :article_user

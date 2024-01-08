@@ -982,6 +982,21 @@ RSpec.describe "Api::V1::Articles" do
         expect(response).to have_http_status(:ok)
       end
 
+      it "lets a super admin update an article's clickbait_score" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", clickbait_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.clickbait_score).to eq(0.3)
+      end
+
+      it "does not update clickbait_score for non super-admins" do
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", clickbait_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.clickbait_score).not_to eq(0.3)
+      end
+
       it "does not update title if only given a title because the article has a front matter" do
         put_article(title: Faker::Book.title)
         expect(response).to have_http_status(:ok)
