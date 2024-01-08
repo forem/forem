@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "target": "es5",
     "baseUrl": ".",
     "paths": {
       "@crayons*": ["./app/javascript/crayons/*"],
