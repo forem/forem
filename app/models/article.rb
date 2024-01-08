@@ -194,6 +194,7 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :remove_prohibited_unicode_characters
+  before_validation :remove_invalid_published_at
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -847,7 +848,7 @@ class Article < ApplicationRecord
 
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
-    return if !published || published_at > 15.minutes.ago
+    return if !published || published_at.blank? || published_at > 15.minutes.ago
 
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
@@ -999,6 +1000,14 @@ class Article < ApplicationRecord
 
     bidi_stripped = title.gsub(BIDI_CONTROL_CHARACTERS, "")
     self.title = bidi_stripped if bidi_stripped.blank? # title only contains BIDI characters = blank title
+  end
+
+  # Sometimes published_at is set to a date *way way too far in the future*, likely a parsing mistake. Let's nullify.
+  # Do this instead of invlidating the record, because we want to allow the user to fix the date and publish as needed.
+  def remove_invalid_published_at
+    return if published_at.blank?
+
+    self.published_at = nil if published_at > 5.years.from_now
   end
 
   def record_field_test_event
