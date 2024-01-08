@@ -61,6 +61,7 @@ RSpec.describe Follow do
 
     it "sends an email notification" do
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+      user.update_column(:badge_achievements_count, 1)
       user_2.notification_setting.update(email_follower_notifications: true)
       expect do
         Sidekiq::Testing.inline! do
