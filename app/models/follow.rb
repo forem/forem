@@ -62,6 +62,7 @@ class Follow < ApplicationRecord
   end
 
   def send_email_notification
+    return if follower&.badge_achievements_count&.zero? # Only email if follower is active enough to have received badge
     return unless followable.instance_of?(User) && followable.email?
 
     Follows::SendEmailNotificationWorker.perform_async(id)

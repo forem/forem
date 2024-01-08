@@ -35,9 +35,16 @@ RSpec.describe Follow do
 
   context "when enqueuing jobs" do
     it "enqueues send notification worker" do
+      user.update_column(:badge_achievements_count, 3)
       expect do
         described_class.create(follower: user, followable: user_2)
       end.to change(Follows::SendEmailNotificationWorker.jobs, :size).by(1)
+    end
+
+    it "does not enqueue send notification worker if user has no badge achievements" do
+      expect do
+        described_class.create(follower: user, followable: user_2)
+      end.not_to change(Follows::SendEmailNotificationWorker.jobs, :size)
     end
   end
 
