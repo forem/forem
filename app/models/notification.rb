@@ -33,7 +33,7 @@ class Notification < ApplicationRecord
 
       follow_data = Notifications::NewFollower::FollowData.coerce(follow).to_h
       follower = User.find_by(id: follow.follower_id)
-      if follower.registered_at > 48.hours.ago # Delay the job 30 minutes to check for spam users if new user
+      if follower.registered_at > 48.hours.ago # Delay the job 60 minutes to check for spam users if new user
         Notifications::NewFollowerWorker.perform_in(1.hour, follow_data, is_read)
       else
         Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
