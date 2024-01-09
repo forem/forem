@@ -540,7 +540,7 @@ GEM
     net-smtp (0.4.0)
       net-protocol
     netrc (0.11.0)
-    nio4r (2.5.9)
+    nio4r (2.7.0)
     nokogiri (1.16.0)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -616,7 +616,7 @@ GEM
     psych (5.1.2)
       stringio
     public_suffix (5.0.4)
-    puma (5.6.7)
+    puma (5.6.8)
       nio4r (~> 2.0)
     pundit (2.3.1)
       activesupport (>= 3.0.0)
