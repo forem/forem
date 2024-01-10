@@ -106,6 +106,7 @@ RSpec.describe Notification do
           .with(60.minutes, anything, anything)
         described_class.send_new_follower_notification(user_follows_user2)
         expect(Notifications::NewFollowerWorker).to have_received(:perform_in)
+          .with(60.minutes, anything, anything)
       end
 
       it "sends as perform_async if follower is not new" do
