@@ -100,7 +100,7 @@ RSpec.describe Notification do
         end.to change(user2.notifications, :count).by(1)
       end
 
-      it "sends as perform_in 30 minutes if follower is new" do
+      it "sends as perform_in 60 minutes if follower is new" do
         user.update_column(:registered_at, 1.day.ago)
         allow(Notifications::NewFollowerWorker).to receive(:perform_in)
           .with(60.minutes, anything, anything)
