@@ -129,6 +129,16 @@ RSpec.describe "ArticlesShow" do
     end
   end
 
+  context "when author has spam role" do
+    it "renders 404" do
+      expect do
+        article.user.add_role(:spam)
+        get article.path
+      end.to raise_error(ActiveRecord::RecordNotFound)
+      # expect(response).to have_http_status(:not_found)
+    end
+  end
+
   context "when user signed in" do
     before do
       sign_in user
