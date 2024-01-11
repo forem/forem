@@ -45,6 +45,14 @@ module Constants
             description: I18n.t("lib.constants.settings.general.ga_analytics_4.description"),
             placeholder: ""
           },
+          cookie_banner_user_context: {
+            description: I18n.t("lib.constants.settings.general.cookie_banner_user_context.description"),
+            placeholder: "off"
+          },
+          coolie_banner_platform_context: {
+            description: I18n.t("lib.constants.settings.general.coolie_banner_platform_context.description"),
+            placeholder: "off"
+          },
           health_check_token: {
             description: I18n.t("lib.constants.settings.general.health.description"),
             placeholder: I18n.t("lib.constants.settings.general.health.placeholder")
