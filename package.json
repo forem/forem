@@ -114,7 +114,6 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^5.4.1",
     "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.2.2",
