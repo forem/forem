@@ -48,6 +48,13 @@
         <% end %>
         <%= form.text_area :body_json, rows: 10, class: "crayons-textfield" %>
       </div>
+            <div class="crayons-field optional css">
+        <%= form.label :body_css, class: "crayons-field__label" do %>
+          Body CSS
+          <p class="crayons-field__description">For use with template type <code>css</code></p>
+        <% end %>
+        <%= form.text_area :body_css, rows: 10, class: "crayons-textfield" %>
+      </div>
       <div class="crayons-field">
         <% if @page.social_image_url %>
           <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
@@ -128,6 +135,8 @@ function showBodyFields() {
     document.querySelectorAll("select").forEach(el => {
       if (el.options[el.selectedIndex].value == "json") {
         document.querySelectorAll('.json').forEach(el => el.style.display = 'block');
+      } else if (el.options[el.selectedIndex].value == "css") {
+        document.querySelectorAll('.css').forEach(el => el.style.display = 'block');
       } else {
         document.querySelectorAll('.html').forEach(el => el.style.display = 'block');
       }

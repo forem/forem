@@ -71,6 +71,7 @@ RSpec.describe "Api::V1::Pages" do
       attributes_for(:page)
     end
     let(:body_html) { "<div>hi, folks</div>" }
+    let(:body_css) { "h1 {font-size: 120px}" }
 
     it "can create a new page via post" do
       post api_pages_path, params: post_params.to_json, headers: auth_header
@@ -119,6 +120,32 @@ RSpec.describe "Api::V1::Pages" do
       put api_page_path(page.id), params: post_params.to_json, headers: auth_header
       expect(response).to have_http_status(:success)
       expect(page.reload.processed_html).to include("other")
+    end
+
+    it "creates a page with body_css" do
+      post_params[:template] = "css"
+      post_params[:body_css] = body_css
+      post_params[:body_markdown] = ""
+      post api_pages_path, params: post_params.to_json, headers: auth_header
+      page = Page.find_by(title: post_params[:title])
+      expect(page.body_css).to eq(body_css)
+    end
+
+    it "doesn't create a page when no html or md or css are passed" do
+      post_params[:template] = "css"
+      post_params[:body_html] = nil
+      post_params[:body_markdown] = nil
+      post_params[:body_css] = nil
+      post api_pages_path, params: post_params.to_json, headers: auth_header
+      page = Page.find_by(title: post_params[:title])
+      expect(page).to be_nil
+    end
+
+    it "updates an existing page via put with body_css" do
+      post_params = page.attributes.merge(body_css: body_css, body_markdown: nil, template: "css")
+      put api_page_path(page.id), params: post_params.to_json, headers: auth_header
+      expect(response).to have_http_status(:success)
+      expect(page.reload.body_css).to eq(body_css)
     end
 
     it "can destroy an existing page via delete" do
