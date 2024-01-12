@@ -32,11 +32,12 @@ RSpec.describe Page do
   end
 
   describe "#validations" do
-    it "requires either body_markdown, body_html, or body_json" do
+    it "requires either body_markdown, body_html, body_json or body_css" do
       page = build(:page)
       page.body_html = nil
       page.body_markdown = nil
       page.body_json = nil
+      page.body_css = nil
       expect(page).not_to be_valid
     end
 
