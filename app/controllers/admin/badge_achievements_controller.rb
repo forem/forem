@@ -33,7 +33,7 @@ module Admin
 
       usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
       message = permitted_params[:message_markdown].presence ||
-        I18n.t("admin.badge_achievements_controller.congrats", community: Settings::Community.community_name)
+        I18n.t("admin.badge_achievements_controller.congrats", community: ::Settings::Community.community_name)
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
       flash[:success] = I18n.t("admin.badge_achievements_controller.rewarded")
