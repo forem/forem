@@ -189,7 +189,6 @@ function trackCustomImpressions() {
 
 function showCookieConsentBanner() {
   // if current url includes ?cookietest=true
-  console.log('yolo')
   if (shouldShowCookieBanner()) {
     // show modal with cookie consent
     const cookieDiv = document.getElementById('cookie-consent');
@@ -259,15 +258,11 @@ function shouldShowCookieBanner() {
                              (userStatus !== 'logged-in' && cookieBannerUserContext !== 'off');
 
   // Check based on platform context
-  console.log(cookieBannerUserContext)
-  console.log(cookieBannerPlatformContext)
   const showForPlatformContext = (cookieBannerPlatformContext === 'all') ||
                                  (cookieBannerPlatformContext === 'all_web' && ['desktop_web', 'mobile_web'].includes(actualPlatformContext)) ||
                                  (cookieBannerPlatformContext === actualPlatformContext);
 
   // Return true if both user context and platform context conditions are met
-  console.log(showForUserContext)
-  console.log(showForPlatformContext)
   return showForUserContext && showForPlatformContext;
 }
 
