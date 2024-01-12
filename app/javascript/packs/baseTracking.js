@@ -8,6 +8,7 @@ function initializeBaseTracking() {
   trackCustomImpressions();
 }
 
+// Google Anlytics 3 is deprecated, and mostly not supported, but some sites may still be using it for now.
 function trackGoogleAnalytics3() {
   let wait = 0;
   let addedGA = false;
@@ -63,9 +64,13 @@ function trackGoogleAnalytics4() {
         window['gtag'] = window['gtag'] || function () {
           window.dataLayer.push(arguments)
         }
-
+        const consent = localStorage.getItem('cookie_status') === 'allowed' ? 'granted' : 'denied';
         gtag('js', new Date());
         gtag('config', ga4MeasurementCode, { 'anonymize_ip': true });
+        gtag('consent', 'default', {
+          'ad_storage': consent,
+          'analytics_storage': consent
+        });
         clearInterval(waitingOnGA4);
       }
       if (wait > 85) {
@@ -184,6 +189,7 @@ function trackCustomImpressions() {
 
 function showCookieConsentBanner() {
   // if current url includes ?cookietest=true
+  console.log('yolo')
   if (shouldShowCookieBanner()) {
     // show modal with cookie consent
     const cookieDiv = document.getElementById('cookie-consent');
@@ -213,6 +219,12 @@ function showCookieConsentBanner() {
       document.getElementById('cookie-accept').onclick = (() => {
         localStorage.setItem('cookie_status', 'allowed');
         cookieDiv.style.display = 'none';
+        if (window.gtag) {
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+          });
+        }
       });
 
       document.getElementById('cookie-dismiss').onclick = (() => {
@@ -224,14 +236,9 @@ function showCookieConsentBanner() {
 }
 
 function shouldShowCookieBanner() {
-  // return true;
-  // BANNER_USER_CONFIGS = ['off', 'logged_out_only', 'all'].freeze
-  // BANNER_PLATFORM_CONFIGS = ['off', 'all', 'all_web', 'desktop_web', 'mobile_web', 'mobile_app'].freeze
-
   const { userStatus, cookieBannerUserContext, cookieBannerPlatformContext } = document.body.dataset;
-
   function determineActualPlatformContext() {
-    if (navigator.userAgent.contains('DEV-Native')) {
+    if (navigator.userAgent.includes('DEV-Native')) {
       return 'mobile_app'
     } else if (isTouchDevice()) {
       return 'mobile_web'
@@ -252,11 +259,15 @@ function shouldShowCookieBanner() {
                              (userStatus !== 'logged-in' && cookieBannerUserContext !== 'off');
 
   // Check based on platform context
+  console.log(cookieBannerUserContext)
+  console.log(cookieBannerPlatformContext)
   const showForPlatformContext = (cookieBannerPlatformContext === 'all') ||
                                  (cookieBannerPlatformContext === 'all_web' && ['desktop_web', 'mobile_web'].includes(actualPlatformContext)) ||
                                  (cookieBannerPlatformContext === actualPlatformContext);
 
   // Return true if both user context and platform context conditions are met
+  console.log(showForUserContext)
+  console.log(showForPlatformContext)
   return showForUserContext && showForPlatformContext;
 }
 
