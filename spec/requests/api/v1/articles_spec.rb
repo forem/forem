@@ -1051,6 +1051,27 @@ RSpec.describe "Api::V1::Articles" do
         end.to change(article, :body_markdown) && change(article, :cached_tag_list)
       end
 
+      it "does not update the tags if not included in the request" do
+        article.update_column(:cached_tag_list, "meta, discussion")
+        expect do
+          put_article(
+            body_markdown: "something here",
+          )
+          article.reload
+        end.not_to change(article, :cached_tag_list)
+      end
+
+      it "does update the tags if empty string is provided" do
+        article.update_column(:cached_tag_list, "meta, discussion")
+        expect do
+          put_article(
+            body_markdown: "something here",
+            tags: %w[],
+          )
+          article.reload
+        end.to change(article, :cached_tag_list)
+      end
+
       it "assigns the article to a new series belonging to the user" do
         expect do
           put_article(
