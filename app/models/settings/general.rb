@@ -1,5 +1,8 @@
 module Settings
   class General < Base
+    BANNER_USER_CONFIGS = %w[off logged_out_only all].freeze
+    BANNER_PLATFORM_CONFIGS = %w[off all all_web desktop_web mobile_web mobile_app].freeze
+
     self.table_name = "site_configs"
     SOCIAL_MEDIA_SERVICES = %w[
       twitter facebook github instagram twitch mastodon
@@ -24,9 +27,15 @@ module Settings
     setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
     setting :periodic_email_digest, type: :integer, default: 2
 
-    # Google Analytics Tracking ID, e.g. UA-71991000-1
+    # Analytics and tracking
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
     setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+    setting :cookie_banner_user_context, type: :string, default: "off", validates: {
+      inclusion: { in: BANNER_USER_CONFIGS }
+    }
+    setting :coolie_banner_platform_context, type: :string, default: "off", validates: {
+      inclusion: { in: BANNER_PLATFORM_CONFIGS }
+    }
 
     # Ahoy Tracking
     setting :ahoy_tracking, type: :boolean, default: false
