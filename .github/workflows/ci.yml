@@ -73,7 +73,6 @@ jobs:
           fail-on-cache-miss: false
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
@@ -163,7 +162,6 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
@@ -338,7 +336,6 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
@@ -384,15 +381,6 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
-      # - name: rename folder
-      #   run: |
-      #     rm -rf coverage/cypress/lcov-report
-      #     mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
-      # - name: Upload test coverage result
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: coverage
-      #     path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
