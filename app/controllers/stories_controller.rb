@@ -262,6 +262,7 @@ class StoriesController < ApplicationController
   def assign_article_show_variables
     not_found if permission_denied?
     not_found unless @article.user
+    not_found if @article.user.spam?
 
     @pinned_article_id = PinnedArticle.id
 

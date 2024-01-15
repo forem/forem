@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_03_223627) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_11_144401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -783,6 +783,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_03_223627) do
   end
 
   create_table "pages", force: :cascade do |t|
+    t.text "body_css"
     t.text "body_html"
     t.jsonb "body_json"
     t.text "body_markdown"
