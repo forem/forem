@@ -25,7 +25,7 @@ fr:
         message:
           one: Joyeux anniversaire %{community} ! Pouvez-vous croire que cela fait déjà %{count} année ?!
           other: Joyeux anniversaire %{community} ! Pouvez-vous croire que cela fait déjà %{count} années ?!
-      congrats: Félicitations pour votre réussite ! 🎉 Et merci d'être un élément si essentiel de la communauté %{community} !
+      congrats: Félicitations pour votre réussite ! 🎉 Et merci d'être un élément essentiel de la %{communauté} !
       thank_you: Merci beaucoup pour vos contributions !
       community_wellness:
         first: Merci de participer à une conversation constructive ! Vous avez posté deux commentaires ou plus cette semaine. Continuez comme ça pour poursuivre la série !
