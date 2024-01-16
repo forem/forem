@@ -226,3 +226,9 @@ en:
             description: Determines background/border of buttons etc. Must be dark enough to contrast with white text.
           tag_feed:
             description: Minimum score needed for a post to show up on default tag page.
+          head_content:
+            description: Content that will be appended to the bottom of the head tag on every page (WARNING — This will cache within the page request unevenly. Proceed with care).
+            placeholder: 'Leave empty if you do not want to add anything.'
+          bottom_of_body_content:
+            description: Content that will be appended to the bottom of the body tag on every page (WARNING — This will cache within the page request unevenly. Proceed with care).
+            placeholder: 'Leave empty if you do not want to add anything.'
