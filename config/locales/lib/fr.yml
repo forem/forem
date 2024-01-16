@@ -118,6 +118,10 @@ fr:
             description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
           ga_analytics_4:
             description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
+          cookie_banner_user_context:
+            description: Used to determine whether the cookie banner should be shown based on user context (i.e. logged in or not)
+          coolie_banner_platform_context:
+            description: Used to determine whether the cookie banner should be shown based on platform (i.e. web/mobile)
           hashtag:
             description: Used as the twitter hashtag of the community
             placeholder: '#DEVCommunity'

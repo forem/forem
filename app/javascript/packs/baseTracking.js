@@ -1,4 +1,5 @@
 /*eslint-disable prefer-rest-params*/
+/* global isTouchDevice */
 
 function initializeBaseTracking() {
   showCookieConsentBanner();
@@ -7,11 +8,12 @@ function initializeBaseTracking() {
   trackCustomImpressions();
 }
 
+// Google Anlytics 3 is deprecated, and mostly not supported, but some sites may still be using it for now.
 function trackGoogleAnalytics3() {
   let wait = 0;
   let addedGA = false;
   const gaTrackingCode = document.body.dataset.gaTracking;
-  if (gaTrackingCode) {
+  if (gaTrackingCode && localStorage.getItem('cookie_status') === 'allowed') {
     const waitingOnGA = setInterval(() => {
       if (!addedGA) {
         (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -33,6 +35,8 @@ function trackGoogleAnalytics3() {
       }
     }, 25);
     eventListening();
+  } else if (gaTrackingCode) {
+    fallbackActivityRecording();
   }
 }
 
@@ -60,9 +64,13 @@ function trackGoogleAnalytics4() {
         window['gtag'] = window['gtag'] || function () {
           window.dataLayer.push(arguments)
         }
-
+        const consent = localStorage.getItem('cookie_status') === 'allowed' ? 'granted' : 'denied';
         gtag('js', new Date());
         gtag('config', ga4MeasurementCode, { 'anonymize_ip': true });
+        gtag('consent', 'default', {
+          'ad_storage': consent,
+          'analytics_storage': consent
+        });
         clearInterval(waitingOnGA4);
       }
       if (wait > 85) {
@@ -181,7 +189,7 @@ function trackCustomImpressions() {
 
 function showCookieConsentBanner() {
   // if current url includes ?cookietest=true
-  if (window.location.href.includes('cookietest=true')) {
+  if (shouldShowCookieBanner()) {
     // show modal with cookie consent
     const cookieDiv = document.getElementById('cookie-consent');
 
@@ -190,7 +198,7 @@ function showCookieConsentBanner() {
         <div class="cookie-consent-modal">
           <div class="cookie-consent-modal__content">
             <p>
-              <strong>Some content on our site requires cookies for personalization and analytics.</strong>
+              <strong>Some content on our site requires cookies for personalization.</strong>
             </p>
             <p>
               Read our full <a href="/privacy">privacy policy</a> to learn more.
@@ -210,6 +218,12 @@ function showCookieConsentBanner() {
       document.getElementById('cookie-accept').onclick = (() => {
         localStorage.setItem('cookie_status', 'allowed');
         cookieDiv.style.display = 'none';
+        if (window.gtag) {
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+          });
+        }
       });
 
       document.getElementById('cookie-dismiss').onclick = (() => {
@@ -218,6 +232,38 @@ function showCookieConsentBanner() {
       });
     }
   }
+}
+
+function shouldShowCookieBanner() {
+  const { userStatus, cookieBannerUserContext, cookieBannerPlatformContext } = document.body.dataset;
+  function determineActualPlatformContext() {
+    if (navigator.userAgent.includes('DEV-Native')) {
+      return 'mobile_app'
+    } else if (isTouchDevice()) {
+      return 'mobile_web'
+    }
+    return 'desktop_web'
+  }
+
+  // Determine the actual platform context
+  const actualPlatformContext = determineActualPlatformContext();
+
+  // Check if either user or platform context is set to 'off'
+  if (cookieBannerUserContext === 'off' || cookieBannerPlatformContext === 'off') {
+    return false;
+  }
+
+  // Check based on user status
+  const showForUserContext = (userStatus === 'logged-in' && cookieBannerUserContext === 'all') ||
+                             (userStatus !== 'logged-in' && cookieBannerUserContext !== 'off');
+
+  // Check based on platform context
+  const showForPlatformContext = (cookieBannerPlatformContext === 'all') ||
+                                 (cookieBannerPlatformContext === 'all_web' && ['desktop_web', 'mobile_web'].includes(actualPlatformContext)) ||
+                                 (cookieBannerPlatformContext === actualPlatformContext);
+
+  // Return true if both user context and platform context conditions are met
+  return showForUserContext && showForPlatformContext;
 }
 
 function trackPageView(dataBody, csrfToken) {
