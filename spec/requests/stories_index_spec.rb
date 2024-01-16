@@ -27,7 +27,6 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("bottom of body content")
     end
 
-
     it "renders page with article list and proper attributes", :aggregate_failures do
       article = create(:article, featured: true)
       navigation_link = create(:navigation_link)
