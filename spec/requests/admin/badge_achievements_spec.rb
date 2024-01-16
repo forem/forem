@@ -26,7 +26,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     let(:usernames_array) { [user.username, user2.username] }
     let(:expected_message) do
       "Congrats on your achievement! 🎉 And thank you for being " \
-        "such a vital part of the #{Settings::Community.community_name} Community!"
+        "such a vital part of #{Settings::Community.community_name}!"
     end
 
     before do
