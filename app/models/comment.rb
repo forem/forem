@@ -317,9 +317,8 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_spam_score_check
-    return unless Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
-
-    self.score = -1 # ensure notification is not sent if possibly spammy
+    self.score = -3 if user.registered_at > 48.hours.ago && body_markdown.include?("http")
+    self.score = -5 if Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
   end
 
   def create_conditional_autovomits
@@ -332,6 +331,7 @@ class Comment < ApplicationRecord
       parent_user != user &&
       parent_user.notification_setting.email_comment_notifications &&
       parent_user.email &&
+      user&.badge_achievements_count&.positive? &&
       parent_or_root_article.receive_notifications
   end
 
