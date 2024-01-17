@@ -15,6 +15,18 @@ RSpec.describe "StoriesIndex" do
     let(:user) { create(:user) }
     let(:org) { create(:organization) }
 
+    it "renders head content if present" do
+      allow(Settings::UserExperience).to receive(:head_content).and_return("head content")
+      get "/"
+      expect(response.body).to include("head content")
+    end
+
+    it "renders bottom of body content if present" do
+      allow(Settings::UserExperience).to receive(:bottom_of_body_content).and_return("bottom of body content")
+      get "/"
+      expect(response.body).to include("bottom of body content")
+    end
+
     it "renders page with article list and proper attributes", :aggregate_failures do
       article = create(:article, featured: true)
       navigation_link = create(:navigation_link)

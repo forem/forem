@@ -43,6 +43,7 @@
       <meta property="forem:logo" content="<%= optimized_image_url(Settings::General.logo_png, width: 512, fetch_format: "png") %>" />
       <meta property="forem:domain" content="<%= Settings::General.app_domain %>" />
     <% end %>
+    <%= Settings::UserExperience.head_content.html_safe %>
   </head>
   <% unless internal_navigation? %>
     <% cache(release_adjusted_cache_key("top-html-and-config--#{user_signed_in?}")) do %>
@@ -114,6 +115,7 @@
   <% end %>
   <div id="i18n-translations" data-translations="<%= { I18n.locale.to_sym => { core: I18n::JS.translations[I18n.locale.to_sym][:core] } }.to_json %>"></div>
   <%= render "articles/reaction_category_resources" %>
+  <%= Settings::UserExperience.bottom_of_body_content.html_safe %>
   </body>
   </html>
 <% end %>
