@@ -447,7 +447,7 @@ RSpec.describe Comment do
 
       expect do
         child_comment.save!
-      end.to_not change(Comments::SendEmailNotificationWorker.jobs, :size)
+      end.not_to change(Comments::SendEmailNotificationWorker.jobs, :size)
     end
 
 
