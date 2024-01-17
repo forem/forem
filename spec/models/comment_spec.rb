@@ -450,7 +450,6 @@ RSpec.describe Comment do
       end.not_to change(Comments::SendEmailNotificationWorker.jobs, :size)
     end
 
-
     it "enqueues a worker to bust comment cache" do
       expect do
         comment.save
