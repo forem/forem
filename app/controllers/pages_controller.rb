@@ -7,7 +7,12 @@ class PagesController < ApplicationController
     not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
 
     set_surrogate_key_header "show-page-#{params[:slug]}"
-    render json: @page.body_json if @page.template == "json"
+    case @page.template
+    when "json"
+      render json: @page.body_json
+    when "css"
+      render plain: @page.body_css, content_type: "text/css"
+    end
   end
 
   def about

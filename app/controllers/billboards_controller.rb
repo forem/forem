@@ -1,7 +1,7 @@
 class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
-  CACHE_EXPIRY_FOR_BILLBOARDS = 15.minutes.to_i.freeze
+  CACHE_EXPIRY_FOR_BILLBOARDS = 3.minutes.to_i.freeze
   RANDOM_USER_TAG_RANGE_MIN = 5
   RANDOM_USER_TAG_RANGE_MAX = 32
 

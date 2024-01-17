@@ -4,7 +4,7 @@ RSpec.describe "Billboards" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
 
-  let(:max_age) { 15.minutes.to_i }
+  let(:max_age) { 3.minutes.to_i }
   let(:stale_if_error) { 26_400 }
 
   def create_billboard(**options)

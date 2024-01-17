@@ -4,11 +4,8 @@ RSpec.describe Follow do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:user_2) { create(:user) }
-  let(:suspended_user) { create(:user) }
-
-  before do
-    suspended_user.add_role(:suspended)
-  end
+  let(:suspended_user) { create(:user, :suspended) }
+  let(:spam_user) { create(:user, :spam) }
 
   describe "validations" do
     subject { user.follow(user_2) }
@@ -77,15 +74,17 @@ RSpec.describe Follow do
         user.follow(user_2)
         user.follow(tag)
         suspended_user.follow(user_2)
+        spam_user.follow(user_2)
       end
 
-      it "excludes suspended users from the result" do
+      it "excludes suspended users from the result", :aggregate_failures do
         result = described_class.non_suspended(user_2.class.name, user_2.id)
         expect(result.map(&:follower)).to include(user)
         expect(result.map(&:follower)).not_to include(suspended_user)
+        expect(result.map(&:follower)).not_to include(spam_user)
       end
 
-      it "filters by followable type and id" do
+      it "filters by followable type and id", :aggregate_failures do
         result = described_class.non_suspended("ActsAsTaggableOn::Tag", tag.id)
         expect(result.map(&:follower)).to include(user)
         expect(result.map(&:follower)).not_to include(user_2)
