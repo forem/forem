@@ -22,7 +22,7 @@ module Admin
     end
 
     def award
-      @all_badges = Badge.all.select(:title, :slug).order(title: :asc)
+      @all_badges = Badge.select(:title, :slug).order(title: :asc)
     end
 
     def award_badges
@@ -32,7 +32,8 @@ module Admin
       end
 
       usernames = permitted_params[:usernames].downcase.split(/\s*,\s*/)
-      message = permitted_params[:message_markdown].presence || I18n.t("admin.badge_achievements_controller.congrats")
+      message = permitted_params[:message_markdown].presence ||
+        I18n.t("admin.badge_achievements_controller.congrats", community: ::Settings::Community.community_name)
       BadgeAchievements::BadgeAwardWorker.perform_async(usernames, permitted_params[:badge], message)
 
       flash[:success] = I18n.t("admin.badge_achievements_controller.rewarded")

@@ -17,7 +17,7 @@ en:
       award_beloved_comment:
         message: "You're famous! [This is the comment](%{comment}) for which you're being recognized. 😄"
       award_streak:
-        longest: 16 weeks! You've achieved the longest writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!
+        longest: 16 weeks! You've achieved the longest writing streak possible. Keep up the amazing contributions to our community!
         message:
           one: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
           other: "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the %{count} Week Badge. 😉"
@@ -25,13 +25,13 @@ en:
         message:
           one: Happy %{community} birthday! Can you believe it's been %{count} year already?!
           other: Happy %{community} birthday! Can you believe it's been %{count} years already?!
-      congrats: Congrats!!!
+      congrats: Congrats on your achievement! 🎉 And thank you for being such a vital part of %{community}!
       thank_you: Thank you so much for your contributions!
       community_wellness:
         first: Thank you for participating in constructive conversation! You posted two or more comments this week. Keep it up to continue the streak!
-        longest: 32 weeks! You've achieved the longest streak possible for the Community Wellness badge. Amazing job engaging in the community and keep up your amazing contributions to our community!
+        longest: 32 weeks! You've achieved the longest streak possible for the Community Wellness badge. Amazing job engaging in the community. Keep up your amazing contributions to our community!
         other: Congrats on achieving a %{weeks} week streak for the Community Wellness Badge! Keep the constructive comments flowing to continue the streak!
-      thumbs_up: Thank you for your efforts reviewing posts on and reaching %{count} thumbs-up reactions!
+      thumbs_up: Thank you for your efforts reviewing posts and reaching %{count} thumbs-up reactions!
     broadcasts:
       welcome_notification:
         generator:
