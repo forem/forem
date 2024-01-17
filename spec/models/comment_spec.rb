@@ -526,7 +526,6 @@ RSpec.describe Comment do
     end
   end
 
-
   describe "#privileged_reaction_counts" do
     it "contains correct vomit count" do
       user = create(:user, :trusted)
