@@ -100,7 +100,7 @@ fr:
           unsuspend_user: Retirer la suspension %{username}
           unsuspend_modal_text: Une fois la suspension levée, %{username} pourra à nouveau commenter et publier des messages.
           unsuspend_modal_button: Soumettre et lever la suspension
-        suspicious: Suspicieux
+        flag: Signaler
         tag:
           subtitle: Ajustements des étiquettes
           add: Ajouter
