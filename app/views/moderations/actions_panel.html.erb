@@ -333,9 +333,9 @@
         data-modal-size="small"
         data-modal-content-selector="#<%= @author_flagged ? "unflag" : "flag" %>-user-modal-content">
         <% if @author_flagged %>
-          <%= t("views.moderations.actions.unflag", username: author_username) %>
+          <%= t("views.moderations.actions.unflag_user", username: author_username) %>
         <% else %>
-          <%= t("views.moderations.actions.flag", username: author_username) %>
+          <%= t("views.moderations.actions.flag_user", username: author_username) %>
         <% end %>
       </button>
       <% if policy(@moderatable).can_perform_moderator_actions? %>

@@ -75,8 +75,8 @@ fr:
           subtitle: Actions de modération pour %{user}
           aria_label: Ouvrir les actions d'administration
           icon: Couronne
-        flag: Signaler %{username}
-        unflag: Retirer le signalement de %{username}
+        flag_user: Signaler %{username}
+        unflag_user: Retirer le signalement de %{username}
         how: Comment cela fonctionne-t-il ?
         hidden:
           subtitle: Commentaires cachés
