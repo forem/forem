@@ -135,7 +135,7 @@ module Images
       return false unless cloudflare_enabled?
       return false unless FeatureFlag.enabled?(:cloudflare_preferred_for_hosted_images)
 
-      img_src&.start_with?("https://#{ApplicationConfig["AWS_BUCKET_NAME"]}.s3.amazonaws.com")
+      img_src&.start_with?("https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com")
     end
   end
 end
