@@ -54,7 +54,7 @@ RSpec.describe Images::Optimizer, type: :service do
         allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
         allow(described_class).to receive(:cloudflare)
       end
-  
+
       it "prefers cloudflare over other services" do
         described_class.call(image_url)
         expect(described_class).to have_received(:cloudflare)
@@ -354,7 +354,7 @@ RSpec.describe Images::Optimizer, type: :service do
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
       end
     end
-  
+
     context "when cloudflare is disabled" do
       before do
         allow(described_class).to receive(:cloudflare_enabled?).and_return(false)
@@ -365,17 +365,17 @@ RSpec.describe Images::Optimizer, type: :service do
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
       end
     end
-  
+
     context "when feature flag is off" do
       before do
         allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:cloudflare_preferred_for_hosted_images).and_return(false)
       end
-  
+
       it "returns false regardless of image source" do
         expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(false)
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
       end
     end
-  end  
+  end
 end
