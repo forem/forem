@@ -18,7 +18,7 @@ module CommentsHelper
     @article_comment_tree ||= begin
       collection = Comment.tree_for(article, count, order)
       # hide low-score for all, hide all negative for signed out
-      collection.reject! { |comment| comment.decorate.low_quality || (comment.score.negative? && !user_signed_in?) }
+      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
       collection
     end
   end
