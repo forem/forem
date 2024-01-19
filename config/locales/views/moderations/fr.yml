@@ -200,3 +200,10 @@ fr:
         no_flags: L'article n'a pas de drapeaux.
         no_quality_reactions: L'article n'a pas de réactions de qualité par des utilisateurs de confiance
         title: Actions privilégiées
+      members:
+        all: Tous les membres
+        new: Nouveaux membres
+        established: Membres établis
+        filter: Filtrer par membres
+        label: 'Membres'
+
