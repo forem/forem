@@ -17,8 +17,8 @@ module CommentsHelper
   def article_comment_tree(article, count, order)
     @article_comment_tree ||= begin
       collection = Comment.tree_for(article, count, order)
-      # hide low-score < -50 for all, hide all negative for signed out
-      collection.reject! { |comment| comment.score < -50 || (comment.score.negative? && !user_signed_in?) }
+      # hide low-score for all, hide all negative for signed out
+      collection.reject! { |comment| comment.decorate.low_quality || (comment.score.negative? && !user_signed_in?) }
       collection
     end
   end
