@@ -181,6 +181,52 @@ RSpec.describe "ArticlesShow" do
     end
   end
 
+  context "with comments" do
+    before do
+      create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
+      create(:comment, score: -10, commentable: article, body_markdown: "Bad comment")
+      create(:comment, score: -55, commentable: article, body_markdown: "Spam comment")
+    end
+
+    context "when user signed in" do
+      before do
+        sign_in user
+      end
+
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "shows comments with score from -50 to 0" do
+        get article.path
+        expect(response.body).to include("Bad comment")
+      end
+
+      it "hides comments with score < 50" do
+        get article.path
+        expect(response.body).not_to include("Spam comment")
+      end
+    end
+
+    context "when user not signed in" do
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "hides comments with score from -50 to 0" do
+        get article.path
+        expect(response.body).not_to include("Bad comment")
+      end
+
+      it "hides comments with score < 50" do
+        get article.path
+        expect(response.body).not_to include("Spam comment")
+      end
+    end
+  end
+
   context "when user not signed in but internal nav triggered" do
     before do
       get "#{article.path}?i=i"
