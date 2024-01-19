@@ -26,7 +26,7 @@
     data-content-user-id="<%= comment_user_id_unless_deleted comment %>">
     <a name="comment-<%= comment.id_code %>" style="position: absolute; top: -8px;">&nbsp;</a>
     <%= render("comments/comment_proper",
-               comment: comment.decorate,
+               comment: comment,
                commentable: commentable,
                is_view_root: is_view_root,
                is_childless: is_childless,
