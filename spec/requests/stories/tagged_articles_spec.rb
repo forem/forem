@@ -105,6 +105,14 @@ RSpec.describe "Stories::TaggedArticlesIndex" do
           expect(response.body).to include(tag.name)
         end
 
+        it "displays articles with score > -20 on top/week", :aggregate_failures do
+          article
+          bad_article = create(:article, tags: tag.name, score: -30)
+          get "/t/#{tag.name}/top/week"
+          expect(response.body).to include(CGI.escapeHTML(article.title))
+          expect(response.body).not_to include(CGI.escapeHTML(bad_article.title))
+        end
+
         it "renders tag after alias change" do
           tag2 = create(:tag, alias_for: tag.name)
           get "/t/#{tag2.name}"
