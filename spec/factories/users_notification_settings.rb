@@ -15,5 +15,6 @@ FactoryBot.define do
     mod_roundrobin_notifications { true }
     reaction_notifications { true }
     welcome_notifications { true }
+    new_post_notifications { true }
   end
 end

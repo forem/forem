@@ -11,6 +11,8 @@ module Users
 
     alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
     alias_attribute :subscribed_to_email_follower_notifications?, :email_follower_notifications
+    # TODO: add subscribed_to_new_post_notifications
+    alias_attribute :subscribed_to_new_post_notifications?, :new_post_notifications
 
     after_commit :subscribe_to_mailchimp_newsletter
 

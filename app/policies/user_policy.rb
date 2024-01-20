@@ -36,6 +36,7 @@ class UserPolicy < ApplicationPolicy
     mobile_comment_notifications
     mod_roundrobin_notifications
     welcome_notifications
+    new_post_notifications
     name
     password
     password_confirmation

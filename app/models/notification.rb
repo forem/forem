@@ -14,6 +14,7 @@ class Notification < ApplicationRecord
 
   # TODO: scope related to new_post notifications for published
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :no_published_articles, -> { where.not(notifiable_type: "Article") }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
   scope :for_mentions, -> { where(notifiable_type: "Mention") }
 
