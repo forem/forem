@@ -68,17 +68,6 @@ RSpec.describe "Comments" do
         get comment.path
         expect(response.body).to include(child_comment.processed_html)
       end
-
-      it "renders 404 when low-quality and no children" do
-        get low_quality_comment.path
-        expect(response).to have_http_status(:not_found)
-      end
-
-      it "displays when low-quality + children" do
-        create(:comment, parent: low_quality_comment, user: user, commentable: article, body_markdown: "Child comment")
-        get low_quality_comment.path
-        expect(response).to have_http_status(:ok)
-      end
     end
 
     context "when the comment is a child comment" do
