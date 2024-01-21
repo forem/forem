@@ -65,7 +65,6 @@
 
   <div class="crayons-card crayons-card--content-rows">
     <header>
-      <!-- TODO Add Notification setting for new page published notification-->
       <h2 class="crayons-subtitle-1">
         <%= t("views.settings.notifications.general") %>
       </h2>
@@ -80,6 +79,10 @@
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :reaction_notifications, class: "crayons-checkbox" %>
       <%= f.label :reaction_notifications, t("helpers.label.users_notification_setting.reaction_notifications"), class: "crayons-field__label" %>
+    </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :new_post_notifications, class: "crayons-checkbox" %>
+      <%= f.label :new_post_notifications, t("helpers.label.users_notification_setting.new_post_notifications"), class: "crayons-field__label" %>
     </div>
   </div>
 
