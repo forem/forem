@@ -48,6 +48,8 @@ module Admin
     def user_status(user)
       if user.suspended?
         I18n.t("views.admin.users.statuses.Suspended")
+      elsif user.spam?
+        I18n.t("views.admin.users.statuses.Spam")
       elsif user.warned?
         I18n.t("views.admin.users.statuses.Warned")
       elsif user.comment_suspended?
@@ -97,7 +99,7 @@ module Admin
     # Returns a string hex code representing the indicator color for the given status (also known as BASE_ROLE)
     def status_to_indicator_color(status)
       case status
-      when "Suspended"
+      when "Suspended", "Spam"
         "#DC2626"
       when "Warned"
         "#F59E0B"

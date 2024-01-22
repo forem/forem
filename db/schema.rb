@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_29_135338) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_11_144401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -94,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_29_135338) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
+    t.float "clickbait_score", default: 0.0
     t.bigint "co_author_ids", default: [], array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
@@ -483,10 +484,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_29_135338) do
     t.string "name"
     t.bigint "organization_id"
     t.string "placement_area"
+    t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
+    t.boolean "requires_cookies", default: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
     t.integer "template", default: 0
@@ -496,6 +499,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_29_135338) do
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
   end
 
@@ -779,6 +783,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_29_135338) do
   end
 
   create_table "pages", force: :cascade do |t|
+    t.text "body_css"
     t.text "body_html"
     t.jsonb "body_json"
     t.text "body_markdown"

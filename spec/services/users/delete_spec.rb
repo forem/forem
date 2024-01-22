@@ -169,4 +169,13 @@ RSpec.describe Users::Delete, type: :service do
       end.to change(Users::SuspendedUsername, :count).by(1)
     end
   end
+
+  context "when the user was a spammer" do
+    it "stores a hash of the username so the user can't sign up again" do
+      user = create(:user, :spam)
+      expect do
+        described_class.call(user)
+      end.to change(Users::SuspendedUsername, :count).by(1)
+    end
+  end
 end

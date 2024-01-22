@@ -617,6 +617,20 @@ RSpec.describe Article do
         frontmatter_scheduled_article.reload
         expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
       end
+
+      it "nullifies published_at when way too far in future" do
+        scheduled_time = 8.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_nil
+      end
+
+      it "does not nullify published_at when only slightly in future" do
+        scheduled_time = 4.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_within(1.minute).of(scheduled_time)
+      end
     end
 
     context "when publishing on update (draft => published)" do
@@ -1388,6 +1402,12 @@ RSpec.describe Article do
       create(:thumbsdown_reaction, reactable: article, user: user)
 
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
+    end
+
+    it "includes user marked as spam punishment" do
+      article.user.add_role(:spam)
+      article.update_score
+      expect(article.reload.score).to eq(-500)
     end
   end
 

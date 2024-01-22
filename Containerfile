@@ -1,4 +1,4 @@
-FROM ghcr.io/forem/ruby:3.1.4@sha256:d072fde5b0bb0f1374e308f7fcf1283e379e2a28a61f6e56df87b25a7dfdd5bf as base
+FROM ghcr.io/forem/ruby:3.2.0@sha256:fdf9539f1da2ec74043e588328f2cbac33cbb2dfddbcc499087ab6e615ffe7d4 as base
 
 FROM base as builder
 
@@ -146,6 +146,31 @@ ENTRYPOINT ["./scripts/entrypoint.sh"]
 
 CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0", "-p", "3000"]
 
+FROM builder AS uffizzi
+
+USER "${APP_USER}"
+
+COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
+COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
+
+RUN bundle config --local build.sassc --disable-march-tune-native && \
+      bundle config --delete without && \
+      BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
+      find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
+      find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+
+# Replacement for volume
+COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
+## Bund install
+RUN ./scripts/bundle.sh
+## Yarn install
+RUN bash -c yarn install --dev
+
+# Document that we're going to expose port 3000
+EXPOSE 3000
+# Use Bash as the default command
+CMD ["/usr/bin/bash"]
+
 ## Development
 FROM base AS development
 
@@ -179,16 +204,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     libpq-dev \
     postgresql-client
 
-ARG NODE_MAJOR
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-  --mount=type=cache,target=/var/lib/apt,sharing=locked \
-  --mount=type=tmpfs,target=/var/log \
-  mkdir -p -- /etc/apt/keyrings \
-  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
-  echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
-  DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -yq --no-install-recommends \
-    nodejs
-
 # Application dependencies, for Cypress, node-canvas
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -197,6 +212,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
       build-essential \
       libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb \
       libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
+
+# Installing hivemind
+ARG TARGETARCH
+ENV HIVEMIND_VERSION=v1.1.0
+ADD https://github.com/DarthSim/hivemind/releases/download/${HIVEMIND_VERSION}/hivemind-${HIVEMIND_VERSION}-linux-${TARGETARCH}.gz /tmp/hivemind.gz
+RUN gunzip /tmp/hivemind.gz && \
+    chmod +x /tmp/hivemind && \
+    mv /tmp/hivemind /usr/local/bin/hivemind && \
+    rm -rf /tmp/*
 
 # Configure bundler
 ENV LANG=C.UTF-8 \

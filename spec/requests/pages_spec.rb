@@ -45,6 +45,20 @@ RSpec.describe "Pages" do
     end
   end
 
+  describe "GET /:slug.txt" do
+    it "renders proper text file when template is txt" do
+      page = create(:page, title: "Text page", body_html: "This is a test", template: "txt")
+      get "/#{page.slug}.txt"
+      expect(response.body).to include(page.processed_html)
+      expect(response.media_type).to eq("text/plain")
+    end
+
+    it "renders not found when .txt request does not have txt template" do
+      page = create(:page, title: "Text page", body_html: "This is a test", template: "contained")
+      expect { get "/#{page.slug}.txt" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"

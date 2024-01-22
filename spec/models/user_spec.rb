@@ -51,6 +51,8 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:super_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:support_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:suspended?).to(:authorizer) }
+    it { is_expected.to delegate_method(:spam?).to(:authorizer) }
+    it { is_expected.to delegate_method(:spam_or_suspended?).to(:authorizer) }
     it { is_expected.to delegate_method(:tag_moderator?).to(:authorizer) }
     it { is_expected.to delegate_method(:tech_admin?).to(:authorizer) }
     it { is_expected.to delegate_method(:trusted?).to(:authorizer) }
@@ -731,6 +733,14 @@ RSpec.describe User do
 
       user.calculate_score
       expect(user.score).to eq(30)
+    end
+
+    it "calculates a score of -500 if spam" do
+      user.add_role(:spam)
+      user.update_column(:badge_achievements_count, 3)
+
+      user.calculate_score
+      expect(user.score).to eq(-470)
     end
   end
 

@@ -1,6 +1,6 @@
 class StripeActiveCardPolicy < ApplicationPolicy
   def create?
-    !user_suspended?
+    !user.spam_or_suspended?
   end
 
   alias update? create?

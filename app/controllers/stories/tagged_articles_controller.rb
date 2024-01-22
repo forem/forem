@@ -81,6 +81,7 @@ module Stories
     def stories_by_timeframe(stories:)
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
         stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
+          .where(score: -20..)
           .order(public_reactions_count: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)

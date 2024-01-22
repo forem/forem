@@ -205,7 +205,7 @@ class ApplicationController < ActionController::Base
 
   # @deprecated This is a policy related question and should be part of an ApplicationPolicy
   def check_suspended
-    return unless current_user&.suspended?
+    return unless current_user&.spam_or_suspended?
 
     respond_with_user_suspended
   end

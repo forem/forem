@@ -6,4 +6,8 @@ class Note < ApplicationRecord
   belongs_to :noteable, polymorphic: true, touch: true
 
   validates :content, :reason, presence: true
+
+  def self.find_for_reports(feedback_message_ids)
+    includes(:author).where(noteable_id: feedback_message_ids).order(:created_at)
+  end
 end

@@ -73,11 +73,11 @@ Rails.application.routes.draw do
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited/) do
+          constraints(role: /limited|spam|trusted/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end
@@ -394,8 +394,10 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:username", to: "stories#index", as: "user_profile"
-
+    get "/:username", to: "stories#index", as: "user_profile", # No txt format
+                      constraints: { format: /html/ }
+    get "/:slug", to: "pages#show",
+                  constraints: { format: /txt/ }
     root "stories#index"
   end
 end

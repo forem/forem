@@ -47,9 +47,25 @@ RSpec.describe Images::Optimizer, type: :service do
       expect(described_class).not_to have_received(:cloudinary)
       expect(described_class).to have_received(:imgproxy)
     end
+
+    context "when cloudflare is contextually preferred" do
+      before do
+        allow(described_class).to receive(:cloudflare_contextually_preferred?).and_return(true)
+        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(described_class).to receive(:cloudflare)
+      end
+
+      it "prefers cloudflare over other services" do
+        described_class.call(image_url)
+        expect(described_class).to have_received(:cloudflare)
+        expect(described_class).not_to have_received(:cloudinary)
+        expect(described_class).not_to have_received(:imgproxy)
+      end
+    end
   end
 
   describe "#cloudinary", :cloudinary do
+
     it "performs exactly like cl_image_path" do
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
@@ -118,6 +134,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set" do
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
       cloudinary_url = cl_image_path(image_url,
                                      type: "fetch",
@@ -130,6 +147,7 @@ RSpec.describe Images::Optimizer, type: :service do
     end
 
     it "generates correct crop when CROP_WITH_IMAGGA_SCALE is set but never_imagga: true is passed" do
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return(nil)
       allow(ApplicationConfig).to receive(:[]).with("CROP_WITH_IMAGGA_SCALE").and_return("true")
       cl_url = cl_image_path(image_url,
                              type: "fetch",
@@ -310,6 +328,54 @@ RSpec.describe Images::Optimizer, type: :service do
     it "sets resizing_type to fit if crop: jiberish is provided" do
       options = { width: 100, height: 100, crop: "jiberish" }
       expect(described_class.translate_cloudinary_options(options)).to include(resizing_type: "fit")
+    end
+  end
+
+  describe "#cloudflare_contextually_preferred?" do
+    let(:aws_bucket_name) { "mybucket" }
+    let(:hosted_image_url) { "https://#{aws_bucket_name}.s3.amazonaws.com/path/to/image.jpg" }
+    let(:non_hosted_image_url) { "https://example.com/path/to/image.jpg" }
+  
+    before do
+      allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return(aws_bucket_name)
+    end
+  
+    context "when cloudflare is enabled and feature flag is on" do
+      before do
+        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:cloudflare_preferred_for_hosted_images).and_return(true)
+      end
+  
+      it "returns true for hosted images" do
+        expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(true)
+      end
+  
+      it "returns false for non-hosted images" do
+        expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
+      end
+    end
+
+    context "when cloudflare is disabled" do
+      before do
+        allow(described_class).to receive(:cloudflare_enabled?).and_return(false)
+      end
+  
+      it "returns false regardless of image source" do
+        expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(false)
+        expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
+      end
+    end
+
+    context "when feature flag is off" do
+      before do
+        allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
+        allow(FeatureFlag).to receive(:enabled?).with(:cloudflare_preferred_for_hosted_images).and_return(false)
+      end
+
+      it "returns false regardless of image source" do
+        expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(false)
+        expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
+      end
     end
   end
 end
