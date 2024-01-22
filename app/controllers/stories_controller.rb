@@ -41,6 +41,8 @@ class StoriesController < ApplicationController
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    elsif @page = Page.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true)
+      handle_page_display
     else
       not_found
     end

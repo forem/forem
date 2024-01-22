@@ -59,6 +59,49 @@ RSpec.describe "Pages" do
     end
   end
 
+  describe "GET /slug/slug/slug/etc." do
+    it "renders proper page when slug has one subdirectory" do
+      page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has two subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has three subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has four subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has five subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug/sixth-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "returns not found when five directories, but no page" do
+      # 6+ directories will be a non-valid page, so just further testing routing error
+      expect { get "/heyhey/hey/hey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+
+    it "returns routing error when 7+ directories" do
+      # 6+ directories will be a non-valid page, so just further testing routing error
+      expect { get "/heyhey/hey/hey/hey/hey/hey/hey" }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
