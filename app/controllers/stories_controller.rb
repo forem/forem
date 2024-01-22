@@ -26,7 +26,6 @@ class StoriesController < ApplicationController
 
   def index
     @page = (params[:page] || 1).to_i
-
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
     handle_base_index
@@ -184,7 +183,8 @@ class StoriesController < ApplicationController
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
-    if !user_signed_in? && (@user.spam_or_suspended? && @user.has_no_published_content?)
+    not_found if @user.spam?
+    if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
       not_found
     end
     assign_user_comments
