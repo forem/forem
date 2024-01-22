@@ -85,7 +85,8 @@ RSpec.describe "Pages" do
     end
 
     it "renders proper page when slug has five subdirectories" do
-      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug/sixth-slug", is_top_level_path: true)
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug/sixth-slug",
+                           is_top_level_path: true)
       get "/#{page.slug}"
       expect(response.body).to include(CGI.escapeHTML(page.title))
     end
@@ -94,7 +95,6 @@ RSpec.describe "Pages" do
       # 6+ directories will be a non-valid page, so just further testing routing error
       expect { get "/heyhey/hey/hey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
     end
-
 
     it "returns routing error when 7+ directories" do
       # 6+ directories will be a non-valid page, so just further testing routing error
