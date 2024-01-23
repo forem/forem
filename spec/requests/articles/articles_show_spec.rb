@@ -224,12 +224,12 @@ RSpec.describe "ArticlesShow" do
         expect(response.body).to include("Good comment")
       end
 
-      it "hides comments with score from -50 to 0" do
+      it "hides comments with score from -75 to 0" do
         get article.path
         expect(response.body).not_to include("Bad comment")
       end
 
-      it "hides comments with score < 50" do
+      it "hides comments with score < -75" do
         get article.path
         expect(response.body).not_to include("Spam comment")
       end
