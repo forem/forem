@@ -180,11 +180,31 @@ RSpec.describe "UserProfiles" do
 
     # rubocop:disable RSpec/NestedGroups
     describe "not found and no index behaviour" do
+      let(:spam_user) { create(:user, :spam) }
+      let(:admin_user) { create(:user, :admin) }
+
       it "raises not found for banished users" do
         banishable_user = create(:user)
         Moderator::BanishUser.call(admin: user, user: banishable_user)
         expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
         expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed in" do
+        sign_in current_user
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed out" do
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "renders spammer users for admins", skip: "to implement later" do
+        sign_in admin_user
+        get spam_user.path
+        expect(response).to be_successful
       end
 
       context "when a user is signed in" do

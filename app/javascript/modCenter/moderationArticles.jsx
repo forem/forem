@@ -53,6 +53,7 @@ export class ModerationArticles extends Component {
             path,
             cached_tag_list: cachedTagList,
             published_at: publishedAt,
+            nth_published_by_author: nthPublishedByAuthor,
             user,
           } = article;
           return (
@@ -63,6 +64,7 @@ export class ModerationArticles extends Component {
               cachedTagList={cachedTagList}
               key={id}
               publishedAt={publishedAt}
+              nthPublishedByAuthor={nthPublishedByAuthor}
               user={user}
               articleOpened={id === prevSelectedArticleId}
               toggleArticle={this.toggleArticle}

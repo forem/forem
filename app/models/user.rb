@@ -307,6 +307,7 @@ class User < ApplicationRecord
     # mass re-calculation is needed.
     user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
   end
 

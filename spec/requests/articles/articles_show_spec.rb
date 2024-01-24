@@ -129,6 +129,25 @@ RSpec.describe "ArticlesShow" do
     end
   end
 
+  context "when author has spam role" do
+    before do
+      article.user.add_role(:spam)
+    end
+
+    it "renders 404" do
+      expect do
+        get article.path
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders 404 for authorized user" do
+      sign_in user
+      expect do
+        get article.path
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   context "when user signed in" do
     before do
       sign_in user
@@ -158,6 +177,67 @@ RSpec.describe "ArticlesShow" do
 
       it "does not render comment sort button" do
         expect(response.body).not_to include "toggle-comments-sort-dropdown"
+      end
+    end
+  end
+
+  context "with comments" do
+    let!(:spam_comment) { create(:comment, score: -80, commentable: article, body_markdown: "Spam comment") }
+
+    before do
+      create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
+      create(:comment, score: -10, commentable: article, body_markdown: "Bad comment")
+    end
+
+    context "when user signed in" do
+      before do
+        sign_in user
+      end
+
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "shows comments with score from -75 (low quality threshold) to 0" do
+        get article.path
+        expect(response.body).to include("Bad comment")
+      end
+
+      it "hides comments with score < -75 and no comment deleted message" do
+        get article.path
+        expect(response.body).not_to include("Spam comment")
+        expect(response.body).not_to include("Comment deleted")
+      end
+
+      it "displays children of a low-quality comment and comment deleted message" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("Child comment")
+        expect(response.body).to include("Comment deleted") # instead of the low quality one
+      end
+    end
+
+    context "when user not signed in" do
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "hides comments with score from -75 to 0" do
+        get article.path
+        expect(response.body).not_to include("Bad comment")
+      end
+
+      it "hides comments with score < -75" do
+        get article.path
+        expect(response.body).not_to include("Spam comment")
+      end
+
+      it "doesn't show children of a low-quality comment" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).not_to include("Child comment")
       end
     end
   end

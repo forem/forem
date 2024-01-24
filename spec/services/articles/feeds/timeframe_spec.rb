@@ -11,7 +11,12 @@ RSpec.describe Articles::Feeds::Timeframe, type: :service do
   it "returns correct articles ordered by score", :aggregate_failures do
     result = described_class.call("week")
     expect(result.slice(0, 2)).to eq [hot_article, moderately_high_scoring_article]
-    expect(result.last).to eq low_scoring_article
+    expect(result).not_to include(low_scoring_article)
     expect(result).not_to include(month_old_article)
+  end
+
+  it "returns low scoring articles if lower score is passed" do
+    result = described_class.call("week", minimum_score: -1001)
+    expect(result).to include(low_scoring_article)
   end
 end
