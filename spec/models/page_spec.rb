@@ -72,6 +72,17 @@ RSpec.describe Page do
       page = build(:page, slug: "code-of-conduct")
       expect(page).to be_valid
     end
+
+    it "allows / in slug" do
+      page = build(:page, slug: "heyhey/hey")
+      expect(page).to be_valid
+    end
+
+    it "disallows 6+ directories via /" do
+      page = build(:page, slug: "heyhey/hey/hey/hey/hey/hey/hey")
+      expect(page).not_to be_valid
+      expect(page.errors[:slug].to_s.include?("subdirectories")).to be true
+    end
   end
 
   context "when callbacks are triggered before save" do
