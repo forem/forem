@@ -1,5 +1,5 @@
 import { Application } from '@hotwired/stimulus';
-import { definitionsFromContext } from '@hotwired/stimulus-webpack-helpers';
+import { definitions } from 'stimulus:../admin/controllers'; // eslint-disable-line import/no-unresolved
 import Rails from '@rails/ujs';
 import 'focus-visible';
 
@@ -11,5 +11,4 @@ Rails.start();
 // section of the application.
 
 const application = Application.start();
-const context = require.context('admin/controllers', true, /.js$/);
-application.load(definitionsFromContext(context));
+application.load(definitions);

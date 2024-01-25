@@ -73,10 +73,9 @@ jobs:
           fail-on-cache-miss: false
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -163,10 +162,9 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -288,16 +286,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Restore compiled assets
-        uses: actions/cache/restore@v3
-        with:
-          fail-on-cache-miss: true
-          path: |
-            public/assets
-            public/packs-test
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -348,10 +336,9 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            public/packs-test
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v2-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v2-
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
@@ -394,15 +381,6 @@ jobs:
           path: |
             tmp/cypress_screenshots
             cypress/logs
-      - name: rename folder
-        run: |
-          rm -rf coverage/cypress/lcov-report
-          mv coverage/cypress coverage/cypress-${{ matrix.ci_node_index }}
-      - name: Upload test coverage result
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage
-          path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -424,7 +402,6 @@ jobs:
       - run: |
           mkdir coverage coverage/simplecov coverage/cypress
           mv simplecov-* coverage/simplecov
-          mv cypress-* coverage/cypress
           mv jest coverage/jest
       - uses: Wandalen/wretry.action@master
         with:
@@ -441,15 +418,6 @@ jobs:
           with: |
             flags: jest, javascript
             directory: coverage/jest
-            fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
-          attempt_limit: 5
-          attempt_delay: 60000
-      - uses: Wandalen/wretry.action@master
-        with:
-          action: codecov/codecov-action@v3
-          with: |
-            flags: cypress, javascript
-            directory: coverage/cypress
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
           attempt_limit: 5
           attempt_delay: 60000

@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/config/smtp", defer: true %>
+<%= javascript_include_tag "admin/config/smtp", defer: true %>
 
 <%= form_for(Settings::SMTP.new,
              url: admin_settings_smtp_settings_path,

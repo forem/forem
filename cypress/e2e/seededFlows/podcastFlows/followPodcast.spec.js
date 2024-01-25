@@ -18,16 +18,20 @@ describe('Follow podcast', () => {
       'followButton',
     );
 
+    cy.intercept('/follows').as('followRequest');
+    cy.get('@followButton').should('have.text', 'Follow');
     cy.get('@followButton').click();
     // Inner text should now be following
+    cy.wait('@followRequest');
     cy.get('@followButton').should('have.text', 'Following');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check that state is persisted on refresh
-    cy.visitAndWaitForUserSideEffects('/developeronfire');
+    cy.reload()
     cy.findByRole('button', { name: 'Follow podcast: Developer on Fire' }).as(
       'followButton',
     );
+    cy.get('@followButton').should('have.text', 'Following');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');
 
     // Check it reverts back to Follow on click
