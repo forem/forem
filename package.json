@@ -44,7 +44,7 @@
   "homepage": "https://github.com/forem/forem#readme",
   "devDependencies": {
     "@babel/eslint-parser": "^7.22.15",
-    "@babel/plugin-proposal-decorators": "^7.23.3",
+    "@babel/plugin-proposal-decorators": "^7.23.7",
     "@cypress/code-coverage": "^3.12.1",
     "@etchteam/storybook-addon-css-variables-theme": "^1.5.1",
     "@faker-js/faker": "^7.6.0",
@@ -106,13 +106,13 @@
     "svgo": "2.8.0"
   },
   "dependencies": {
-    "@babel/core": "^7.23.3",
+    "@babel/core": "^7.23.7",
     "@babel/plugin-proposal-class-properties": "^7.16.0",
     "@babel/plugin-proposal-export-default-from": "^7.23.3",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/plugin-transform-react-jsx": "^7.22.15",
-    "@babel/preset-env": "^7.23.3",
+    "@babel/preset-env": "^7.23.7",
     "@babel/preset-typescript": "^7.23.3",
     "@honeybadger-io/js": "^5.4.1",
     "@hotwired/stimulus": "3.2.2",
