@@ -17,7 +17,7 @@ RSpec.describe CommentDecorator, type: :decorator do
   end
 
   describe "#low_quality" do
-    let(:threshold) { CommentDecorator::LOW_QUALITY_THRESHOLD }
+    let(:threshold) { Comment::LOW_QUALITY_THRESHOLD }
     let(:comment) { build(:comment) }
 
     it "returns true if the comment is low quality" do

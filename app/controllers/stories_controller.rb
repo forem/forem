@@ -307,7 +307,7 @@ class StoriesController < ApplicationController
     @comments = []
     return unless user_signed_in? && @user.comments_count.positive?
 
-    @comments = @user.comments.where(deleted: false)
+    @comments = @user.comments.good_quality.where(deleted: false)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)

@@ -9,6 +9,8 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
+  LOW_QUALITY_THRESHOLD = -75
+
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
 
   URI_REGEXP = %r{
@@ -84,6 +86,7 @@ class Comment < ApplicationRecord
                   }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
+  scope :good_quality, -> { where("score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
 
