@@ -198,7 +198,14 @@
       </article>
 
       <div class="pb-4 crayons-layout__comments-billboard">
-        <div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments) %>"></div>
+        <div class="js-billboard-container pb-4 crayons-layout__comments-billboard"
+             data-async-url="<%= article_billboard_path(
+                                   username: @article.username,
+                                   slug: @article.slug,
+                                   placement_area: :post_comments,
+                                   bb_test_id: @bb_test_id,
+                                   bb_test_placement_area: @bb_test_placement_area,
+                                 ) %>"></div>
       </div>
 
       <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 18.hours) do %>
