@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import glob from 'glob'
+import * as glob from 'glob'
 import svgr from 'esbuild-plugin-svgr'
 import { stimulusPlugin } from 'esbuild-plugin-stimulus'
 

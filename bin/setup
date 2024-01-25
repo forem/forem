@@ -23,7 +23,7 @@ FileUtils.chdir APP_ROOT do
   system! "gem list \"^foreman$\" -i --silent || gem install foreman"
 
   # Install JavaScript dependencies if using Yarn
-  system("bin/yarn")
+  system("pnpm install")
 
   puts "\n== Copying sample files =="
   unless File.exist?("config/database.yml")
