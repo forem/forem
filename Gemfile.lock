@@ -171,9 +171,9 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.2.3)
     connection_pool (2.4.1)
-    counter_culture (3.5.0)
+    counter_culture (3.5.1)
       activerecord (>= 4.2)
       activesupport (>= 4.2)
     countries (5.7.1)
@@ -511,7 +511,7 @@ GEM
     mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.5)
-    minitest (5.20.0)
+    minitest (5.21.2)
     modis (4.0.1)
       activemodel (>= 5.2)
       activesupport (>= 5.2)
