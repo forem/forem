@@ -42,14 +42,14 @@ jobs:
         with:
           lookup-only: true
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
         if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         if: steps.cache.outputs.cache-hit != 'true'
@@ -85,8 +85,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
@@ -116,8 +116,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - name: rubocop
         uses: reviewdog/action-rubocop@v2
         with:
@@ -169,8 +169,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -216,8 +216,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -248,8 +248,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -290,8 +290,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -343,8 +343,8 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'

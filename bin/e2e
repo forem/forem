@@ -15,7 +15,7 @@ if [ $? -eq 1 ]; then
    exit;
 fi
 
-yarn install # ensure npm packages are up to date
+pnpm i # ensure npm packages are up to date
 
 if [ $? -eq 1 ]; then
    echo "Unable to launch end to end tests. An error occurred while running yarn install."
