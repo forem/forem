@@ -102,7 +102,7 @@ module Articles
                      label: "Order by feed success score minus one tenth of clickbait score",
                      order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 10) DESC")
       order_by_lever(:final_order_by_feed_success_score_minus_clickbait_score_with_randomness,
-                     label: "Order by feed success score minus clickbait score",
+                     label: "Order by feed success score minus clickbait score with a randomization factor",
                      order_by_fragment:
                       "(articles.feed_success_score - articles.clickbait_score) *
                       article_relevancies.randomized_value DESC")
