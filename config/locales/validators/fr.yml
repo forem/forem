@@ -15,6 +15,7 @@ fr:
       is_taken: est déjà pris
       is_invalid: est invalide
       is_reserved: est réservé
+      too_many_subdirectories: a trop de sous-répertoires
     valid_domain_csv_validator:
       invalid_list_format: doit être une liste de domaines valides, séparés par des virgules.
     iso3166_hash_validator:

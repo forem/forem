@@ -4,7 +4,7 @@
   <style>
     <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
   </style>
-  <%= javascript_packs_with_chunks_tag "confirmationEmail", defer: true %>
+  <%= javascript_include_tag "confirmationEmail", defer: true %>
 
   <div class="flex flex-1 flex-col items-center justify-center relative z-elevate align-center">
     <%= render "devise/shared/error_messages", resource: resource %>

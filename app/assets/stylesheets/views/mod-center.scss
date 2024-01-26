@@ -169,3 +169,21 @@
   margin-top: var(--su-6);
   margin-left: var(--su-3);
 }
+
+.mod-filter {
+  display: grid;
+  gap: var(--layout-gap);
+  grid-template-columns: var(--layout);
+  padding-top: var(--layout-padding);
+  padding-bottom: var(--layout-padding);
+
+  &__item {
+    display: flex;
+    align-items: center;
+  }
+
+  &__label {
+    font-weight: var(--fw-medium);
+    margin-right: var(--su-3);
+  }
+}

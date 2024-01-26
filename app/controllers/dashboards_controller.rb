@@ -42,6 +42,7 @@ class DashboardsController < ApplicationController
     end
 
     @reactions_count = @articles.sum(&:public_reactions_count)
+    @comments_count = @articles.sum(&:comments_count)
     @page_views_count = @articles.sum(&:page_views_count)
 
     @articles = @articles.includes(:collection).sorting(params[:sort]).decorate

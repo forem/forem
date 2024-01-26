@@ -88,6 +88,7 @@ function trackAdImpression(adBox) {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
+      article_id: adBox.dataset.articleId,
     },
   };
 
@@ -124,6 +125,7 @@ function trackAdClick(adBox) {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryClick,
+      article_id: adBox.dataset.articleId,
     },
   };
 

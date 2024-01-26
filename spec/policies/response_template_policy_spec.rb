@@ -62,6 +62,6 @@ RSpec.describe ResponseTemplatePolicy, type: :policy do
     let(:response_template) { create(:response_template, type_of: "mod_comment", user: nil) }
 
     it { is_expected.to permit_actions(%i[moderator_index moderator_create]) }
-    it { is_expected.not_to permit_actions(%i[create update destroy]) }
+    it { is_expected.to forbid_actions(%i[admin_create update destroy]) }
   end
 end

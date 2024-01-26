@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { useCallback } from 'preact/hooks';
 import { ButtonNew as Button, Icon } from '@crayons';
-import { Close } from '@images/x.svg';
+import Close from '@images/x.svg';
 
 /**
  * Higher-order component that returns a template responsible for the layout of

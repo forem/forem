@@ -1,26 +1,45 @@
 <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
-    <% @sidebar_billboard = Billboard.for_display(area: "sidebar_right", user_signed_in: user_signed_in?) %>
-    <% if @sidebar_billboard %>
-      <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+  <% @sidebar_billboard = Billboard.for_display(area: "sidebar_right", user_signed_in: user_signed_in?) %>
+  <% if @sidebar_billboard %>
+    <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+  <% end %>
+  <% if user_signed_in? && @active_discussions.any? %>
+    <% if Settings::General.display_sidebar_active_discussions %>
+      <section class="crayons-card crayons-card--secondary crayons-layout__content" id="active-discussions">
+        <header class="crayons-card__header">
+          <h3 class="crayons-subtitle-2">
+            <%= t("views.main.side.active_discussions") %>
+          </h3>
+        </header>
+        <div>
+          <% @active_discussions.each do |plucked_article| %>
+            <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+          <% end %>
+        </div>
+      </section>
     <% end %>
+  <% end %>
+
+  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
 
     <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
     <%= render "articles/sidebar_listings" if Listing.feature_enabled? %>
 
-    <% Settings::General.sidebar_tags.each do |tag| %>
+    <% Tag.where(name: Settings::General.sidebar_tags).find_each do |tag| %>
       <section class="crayons-card crayons-card--secondary crayons-layout__content">
         <header class="crayons-card__header">
-          <h3 class="crayons-subtitle-2"><a href="/t/<%= tag %>" class="crayons-link">#<%= tag %></a></h3>
+          <h3 class="crayons-subtitle-2"><a href="/t/<%= tag.name %>" class="crayons-link">#<%= tag.name %></a></h3>
+          <div class="fs-xs color-base-70">
+            <%= tag.short_summary %>
+          </div>
         </header>
-
         <div>
-          <% if tag == "help" %>
+          <% if tag.name == "help" %>
             <% Article.active_help.limit(5).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% else %>
-            <% active_threads(tags: [tag], time_ago: Timeframe.datetime(params[:timeframe]), count: 5).each do |plucked_article| %>
+            <% active_threads(tags: [tag.name], time_ago: Timeframe.datetime(params[:timeframe]), count: 5).each do |plucked_article| %>
               <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
             <% end %>
           <% end %>

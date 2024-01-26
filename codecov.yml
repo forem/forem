@@ -1,6 +1,7 @@
 # NB: Run the following command to verify this file is valid
 # > cat codecov.yml | curl --data-binary @- https://codecov.io/validate
 
+comment: false
 codecov:
   ci:
     - "!buildkite"

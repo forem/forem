@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_11_144401) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
     t.index ["user_visit_context_id"], name: "index_ahoy_visits_on_user_visit_context_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+    t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
   end
 
   create_table "announcements", force: :cascade do |t|
@@ -93,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
+    t.float "clickbait_score", default: 0.0
     t.bigint "co_author_ids", default: [], array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
@@ -454,11 +456,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
   end
 
   create_table "display_ad_events", force: :cascade do |t|
+    t.integer "article_id"
     t.string "category"
     t.string "context_type"
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
+    t.string "geolocation"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
@@ -473,16 +477,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.integer "creator_id"
+    t.string "custom_display_label"
     t.integer "display_to", default: 0, null: false
     t.integer "exclude_article_ids", default: [], array: true
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
     t.string "placement_area"
+    t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
+    t.boolean "requires_cookies", default: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
     t.integer "template", default: 0
@@ -492,6 +499,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
   end
 
@@ -775,6 +783,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
   end
 
   create_table "pages", force: :cascade do |t|
+    t.text "body_css"
     t.text "body_html"
     t.jsonb "body_json"
     t.text "body_markdown"
@@ -993,6 +1002,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
     t.index ["status"], name: "index_reactions_on_status"
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
+  end
+
+  create_table "recommended_articles_lists", force: :cascade do |t|
+    t.integer "article_ids", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "name"
+    t.integer "placement_area", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_ids"], name: "index_recommended_articles_lists_on_article_ids", using: :gin
+    t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
+    t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
+    t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
   end
 
   create_table "response_templates", force: :cascade do |t|
@@ -1462,6 +1485,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_26_152356) do
   add_foreign_key "rating_votes", "articles", on_delete: :cascade
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
+  add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
   add_foreign_key "segmented_users", "audience_segments"
   add_foreign_key "segmented_users", "users"

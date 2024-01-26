@@ -92,7 +92,20 @@ module Articles
       order_by_lever(:final_order_by_feed_success_score,
                      label: "Order by feed success score",
                      order_by_fragment: "articles.feed_success_score DESC")
-
+      order_by_lever(:final_order_by_feed_success_score_minus_clickbait_score,
+                     label: "Order by feed success score minus clickbait score",
+                     order_by_fragment: "articles.feed_success_score - articles.clickbait_score DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_half_of_clickbait_score,
+                     label: "Order by feed success score minus half of clickbait score",
+                     order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 2) DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_one_tenth_of_clickbait_score,
+                     label: "Order by feed success score minus one tenth of clickbait score",
+                     order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 10) DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_clickbait_score_with_randomness,
+                     label: "Order by feed success score minus clickbait score with a randomization factor",
+                     order_by_fragment:
+                      "(articles.feed_success_score - articles.clickbait_score) *
+                      article_relevancies.randomized_value DESC")
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
                      label: "Order by feed success score and primary score",
                      order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")
@@ -355,6 +368,7 @@ module Articles
                       user_required: false,
                       select_fragment: "articles.score",
                       group_by_fragment: "articles.score")
+
       relevancy_lever(:language_match,
                       label: "Weight to give based on whether the language matches any of the user's languages",
                       range: "[0..1]", # 0 for no match, 1 for match
@@ -367,7 +381,27 @@ module Articles
                       joins_fragments: ["LEFT OUTER JOIN user_languages
                                          ON user_languages.user_id = :user_id"],
                       group_by_fragment: "articles.language")
+
+      relevancy_lever(:recommended_articles_match,
+                      label: "Weight to give based on whether the article is in the first non-expired recommendations",
+                      range: "[0..1]", # 0 for no match, 1 for match
+                      user_required: true,
+                      select_fragment: "CASE
+                                         WHEN COUNT(first_matching_list.id) = 0 THEN 0
+                                         WHEN articles.id = ANY(array_agg(first_matching_list.article_ids)
+                                         FILTER (WHERE first_matching_list.article_ids IS NOT NULL)) THEN 1
+                                         ELSE 0
+                                        END",
+                      joins_fragments: ["LEFT OUTER JOIN
+                                          (SELECT * FROM recommended_articles_lists
+                                           WHERE expires_at > CURRENT_TIMESTAMP
+                                           AND placement_area = 0
+                                           ORDER BY created_at ASC
+                                           LIMIT 1) AS first_matching_list
+                                        ON first_matching_list.user_id = :user_id"],
+                      group_by_fragment: "articles.id")
     end
+
     private_constant :LEVER_CATALOG
     # rubocop:enable Metrics/BlockLength
   end

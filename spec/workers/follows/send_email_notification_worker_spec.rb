@@ -19,6 +19,7 @@ RSpec.describe Follows::SendEmailNotificationWorker, type: :worker do
     context "with follow" do
       it "sends a new_follower_email" do
         user2.notification_setting.update(email_follower_notifications: true)
+        user.update_column(:badge_achievements_count, 1)
         follow = user.follow(user2)
 
         sidekiq_perform_enqueued_jobs(only: described_class)

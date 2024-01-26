@@ -1,7 +1,7 @@
 class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
-  CACHE_EXPIRY_FOR_BILLBOARDS = 15.minutes.to_i.freeze
+  CACHE_EXPIRY_FOR_BILLBOARDS = 3.minutes.to_i.freeze
   RANDOM_USER_TAG_RANGE_MIN = 5
   RANDOM_USER_TAG_RANGE_MAX = 32
 
@@ -31,6 +31,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         user_tags: user_tags,
+        cookies_allowed: cookies_allowed?,
         location: client_geolocation,
       )
 
@@ -68,5 +69,9 @@ class BillboardsController < ApplicationController
 
   def return_test_billboard?
     params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+  end
+
+  def cookies_allowed?
+    params[:cookies_allowed] == "true"
   end
 end

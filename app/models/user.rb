@@ -100,6 +100,7 @@ class User < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :segmented_users, dependent: :destroy
   has_many :audience_segments, through: :segmented_users
+  has_many :recommended_articles_lists, dependent: :destroy
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify
@@ -306,6 +307,7 @@ class User < ApplicationRecord
     # mass re-calculation is needed.
     user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
   end
 
@@ -446,6 +448,8 @@ class User < ApplicationRecord
     :super_admin?,
     :support_admin?,
     :suspended?,
+    :spam?,
+    :spam_or_suspended?,
     :tag_moderator?,
     :tech_admin?,
     :trusted?,

@@ -16,9 +16,15 @@ export async function getBillboard() {
 async function generateBillboard(element) {
   let { asyncUrl } = element.dataset;
   const currentParams = window.location.href.split('?')[1];
+  const cookieStatus = localStorage.getItem('cookie_status');
   if (currentParams && currentParams.includes('bb_test_placement_area')) {
     asyncUrl = `${asyncUrl}?${currentParams}`;
   }
+
+  if (cookieStatus === 'allowed') {
+    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'  }cookies_allowed=true`;
+  }
+
   if (asyncUrl) {
     try {
       const response = await window.fetch(asyncUrl);
@@ -29,6 +35,11 @@ async function generateBillboard(element) {
 
       element.innerHTML = '';
       element.appendChild(generatedElement);
+      element.querySelectorAll('img').forEach((img) => {
+        img.onerror = function () {
+          this.style.display = 'none';
+        };
+      });
       executeBBScripts(element);
       setupBillboardDropdown();
       // This is called here because the ad is loaded asynchronously.

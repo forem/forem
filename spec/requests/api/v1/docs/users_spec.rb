@@ -28,7 +28,7 @@ RSpec.describe "Api::V1::Docs::Users" do
         response 200, "successful" do
           let(:"api-key") { api_secret.secret }
           schema type: :object,
-                 items: { "$ref": "#/components/schemas/User" }
+                 items: { "$ref": "#/components/schemas/MyUser" }
           add_examples
           run_test!
         end
@@ -58,7 +58,7 @@ For complete documentation, see the v0 API docs: https://developers.forem.com/ap
           let(:"api-key") { api_secret.secret }
           let(:id) { user.id }
           schema type: :object,
-                 items: { "$ref": "#/components/schemas/User" }
+                 items: { "$ref": "#/components/schemas/ExtendedUser" }
 
           run_test!
         end

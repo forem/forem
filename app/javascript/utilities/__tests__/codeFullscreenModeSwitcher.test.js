@@ -1,9 +1,11 @@
-const importModule = () => import('@utilities/codeFullscreenModeSwitcher');
+import {
+  addFullScreenModeControl,
+  getFullScreenModeStatus,
+  onPressEscape,
+  onPopstate,
+} from '@utilities/codeFullscreenModeSwitcher';
 
 describe('CodeFullScreenModeSwitcher Utility', () => {
-  let addFullScreenModeControl, getFullScreenModeStatus;
-  let onPressEscape, onPopstate;
-
   const getFullScreenElements = () =>
     ['.js-fullscreen-code.is-open', '.js-code-highlight.is-fullscreen'].map(
       (selector) => document.body.querySelector(selector),
@@ -40,17 +42,7 @@ describe('CodeFullScreenModeSwitcher Utility', () => {
       </div>
       <div class="js-fullscreen-code"></div>
     `;
-  });
-
-  beforeAll(async () => {
-    ({ addFullScreenModeControl, getFullScreenModeStatus } =
-      await importModule());
     addFullScreenModeControl(getEnterFullScreenButtons());
-  });
-
-  beforeAll(async () => {
-    // eventListener functions
-    ({ onPressEscape, onPopstate } = await importModule());
   });
 
   // Assertions are called within the `testNonFullScreen` function.

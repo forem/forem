@@ -431,7 +431,7 @@ RSpec.describe Comment do
     # rubocop:disable RSpec/ExampleLength
     it "enqueues a worker to send email" do
       comment.save!
-      child_comment_user = create(:user)
+      child_comment_user = create(:user, badge_achievements_count: 1)
       child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
 
       expect do
@@ -439,6 +439,16 @@ RSpec.describe Comment do
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
     end
     # rubocop:enable RSpec/ExampleLength
+
+    it "does not send email notification if commenter has no badges" do
+      comment.save!
+      child_comment_user = create(:user, badge_achievements_count: 0)
+      child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
+
+      expect do
+        child_comment.save!
+      end.not_to change(Comments::SendEmailNotificationWorker.jobs, :size)
+    end
 
     it "enqueues a worker to bust comment cache" do
       expect do
@@ -491,6 +501,28 @@ RSpec.describe Comment do
       allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
       comment.save
       expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+    end
+
+    it "marks score as negative 3 if new user and comment includes htttp" do
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save!
+      expect(comment.score).to eq(-3)
+    end
+
+    it "does not mark as negative 3 if not new user" do
+      user.update_column(:registered_at, 5.days.ago)
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save
+      expect(comment.score).to eq(0)
+    end
+
+    it "marks score as negative 5 if spam trigger is called" do
+      # Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
+      allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+      comment = create(:comment, user: user, commentable: article)
+      expect(comment.score).to eq(-5)
     end
   end
 

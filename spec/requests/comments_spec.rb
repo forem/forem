@@ -161,6 +161,27 @@ RSpec.describe "Comments" do
       end
     end
 
+    context "when the comment is low quality" do
+      let(:low_comment) do
+        create(:comment, commentable: article, user: user, score: -1000, body_markdown: "low-comment")
+      end
+
+      it "raises 404 when no children" do
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is displayed as deleted when has children", :aggregate_failures do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        get low_comment.path
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include("Comment deleted")
+        expect(response.body).to include("child of a low-quality comment")
+      end
+    end
+
     context "when the comment is for a podcast's episode" do
       it "is successful" do
         podcast_comment = create(:comment, commentable: podcast_episode, user: user)

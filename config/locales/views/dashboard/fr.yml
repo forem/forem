@@ -30,9 +30,7 @@ fr:
         meta:
           title: Analytics
         heading: Analytics Dashboard for %{name}
-        desc_1: Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the %{members} ecosystem.
-        desc_2: This dashboard highlights deep insights especially relevant to %{members} relations, authors, and serious bloggers.
-        back: "👈 Back to Main Dashboard"
+        back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
       article:

@@ -4,7 +4,7 @@ RSpec.describe "Billboards" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
 
-  let(:max_age) { 15.minutes.to_i }
+  let(:max_age) { 3.minutes.to_i }
   let(:stale_if_error) { 26_400 }
 
   def create_billboard(**options)
@@ -152,6 +152,12 @@ RSpec.describe "Billboards" do
       it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
         expect(response.body).to include "crayons-sponsorship__header relative"
+      end
+
+      it "includes custom_display_label if set" do
+        billboard.update_column(:custom_display_label, "My great custom label")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "My great custom label"
       end
     end
 

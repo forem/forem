@@ -70,7 +70,7 @@ class ApplicationPolicy
   def self.require_user_in_good_standing!(user:)
     require_user!(user: user)
 
-    return true unless user.suspended?
+    return true unless user.spam_or_suspended?
 
     raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
   end

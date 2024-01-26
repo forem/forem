@@ -214,6 +214,7 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
+  validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -229,6 +230,7 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :remove_prohibited_unicode_characters
+  before_validation :remove_invalid_published_at
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -590,7 +592,9 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    spam_adjustment = user.spam? ? -500 : 0
+    negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
@@ -642,6 +646,12 @@ class Article < ApplicationRecord
 
   def ordered_tag_adjustments
     tag_adjustments.includes(:user).order(:created_at).reverse
+  end
+
+  def async_score_calc
+    return if !published? || destroyed?
+
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   private
@@ -733,12 +743,6 @@ class Article < ApplicationRecord
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def async_score_calc
-    return if !published? || destroyed?
-
-    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration
@@ -882,7 +886,7 @@ class Article < ApplicationRecord
 
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
-    return if !published || published_at > 15.minutes.ago
+    return if !published || published_at.blank? || published_at > 15.minutes.ago
 
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
@@ -1034,6 +1038,14 @@ class Article < ApplicationRecord
 
     bidi_stripped = title.gsub(BIDI_CONTROL_CHARACTERS, "")
     self.title = bidi_stripped if bidi_stripped.blank? # title only contains BIDI characters = blank title
+  end
+
+  # Sometimes published_at is set to a date *way way too far in the future*, likely a parsing mistake. Let's nullify.
+  # Do this instead of invlidating the record, because we want to allow the user to fix the date and publish as needed.
+  def remove_invalid_published_at
+    return if published_at.blank?
+
+    self.published_at = nil if published_at > 5.years.from_now
   end
 
   def record_field_test_event

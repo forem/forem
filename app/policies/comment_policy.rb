@@ -1,6 +1,6 @@
 class CommentPolicy < ApplicationPolicy
   def edit?
-    return false if user_suspended?
+    return false if user.spam_or_suspended?
 
     user_author?
   end
@@ -10,7 +10,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_suspended? && !user.comment_suspended?
+    !user.spam_or_suspended? && !user.comment_suspended?
   end
 
   alias new? create?

@@ -44,6 +44,14 @@ module Constants
           tag_feed_minimum_score: {
             description: I18n.t("lib.constants.settings.user_experience.tag_feed.description"),
             placeholder: "0"
+          },
+          head_content: {
+            description: I18n.t("lib.constants.settings.user_experience.head_content.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.head_content.placeholder")
+          },
+          bottom_of_body_content: {
+            description: I18n.t("lib.constants.settings.user_experience.bottom_of_body_content.description"),
+            placeholder: I18n.t("lib.constants.settings.user_experience.bottom_of_body_content.placeholder")
           }
         }
       end
