@@ -31,7 +31,7 @@ jobs:
         with:
           bundler-cache: true
 
-  yarn_install:
+  node_install:
     runs-on: ubuntu-latest
 
     steps:
@@ -42,21 +42,21 @@ jobs:
         with:
           lookup-only: true
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - name: Cache node_modules
         uses: actions/cache@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
         if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         if: steps.cache.outputs.cache-hit != 'true'
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
+          cache: pnpm
+      - run: pnpm install --immutable
         if: steps.cache.outputs.cache-hit != 'true'
 
   precompile_assets:
@@ -74,7 +74,7 @@ jobs:
           path: |
             public/assets
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -85,22 +85,22 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
+          cache: pnpm
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
-      - run: yarn install --immutable
+      - run: pnpm install
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install]
+    needs: [bundle_install, node_install]
 
     steps:
       - uses: actions/checkout@v4
@@ -111,12 +111,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
+          cache: pnpm
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - name: rubocop
         uses: reviewdog/action-rubocop@v2
@@ -124,12 +124,12 @@ jobs:
           rubocop_version: gemfile
           rubocop_extensions: rubocop-performance:gemfile rubocop-rails:gemfile rubocop-rspec:gemfile rubocop-capybara:gemfile
           reporter: github-pr-review # Default is github-pr-check
-      - run: yarn lint:frontend
+      - run: pnpm lint:frontend
       - run: bundle exec bundle-audit check --update --ignore CVE-2023-26141
 
   rspec:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle_install, node_install, precompile_assets]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -163,18 +163,18 @@ jobs:
           path: |
             public/assets
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
+          cache: pnpm
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -207,7 +207,7 @@ jobs:
 
   jest:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [node_install]
     timeout-minutes: 20
 
     steps:
@@ -216,13 +216,13 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
+          cache: pnpm
+      - run: pnpm test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -240,7 +240,7 @@ jobs:
 
   storybook:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [node_install]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -248,17 +248,17 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn build-storybook
+          cache: pnpm
+      - run: pnpm build-storybook
 
   build_test:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle_install, node_install, precompile_assets]
     timeout-minutes: 20
     env:
       RAILS_ENV: production
@@ -290,12 +290,12 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
+          cache: pnpm
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -306,7 +306,7 @@ jobs:
   cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [bundle_install, yarn_install, precompile_assets]
+    needs: [bundle_install, node_install, precompile_assets]
     env:
       E2E: true
 
@@ -337,18 +337,18 @@ jobs:
           path: |
             public/assets
             tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
-          cache: yarn
+          cache: pnpm
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -358,8 +358,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-binary-${{ hashFiles('**/yarn.lock') }}
-      - run: yarn cypress install
+          key: ${{ runner.os }}-cypress-binary-${{ hashFiles('**/pnpm-lock.yaml') }}
+      - run: pnpm cypress install
       - name: cypress
         env:
           CYPRESS_RAILS_HOST: localhost
