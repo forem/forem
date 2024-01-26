@@ -51,16 +51,16 @@ jobs:
           key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
         if: steps.cache.outputs.cache-hit != 'true'
-      - uses: actions/setup-node@v4
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          node-version-file: '.nvmrc'
-          cache: pnpm
       - uses: pnpm/action-setup@v2
         name: Install pnpm
         with:
           version: 8
           run_install: false
+      - uses: actions/setup-node@v4
+        if: steps.cache.outputs.cache-hit != 'true'
+        with:
+          node-version-file: '.nvmrc'
+          cache: pnpm
       - run: pnpm install
         if: steps.cache.outputs.cache-hit != 'true'
 
