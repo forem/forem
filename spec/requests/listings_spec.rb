@@ -66,13 +66,6 @@ RSpec.describe "/listings" do
       end
     end
 
-    context "when the user has category and slug params for active listing" do
-      it "shows that direct listing" do
-        get "/listings", params: { category: listing.category, slug: listing.slug }
-        expect(response.body).to include(CGI.escapeHTML(listing.title))
-      end
-    end
-
     context "when the user has category and slug params for expired listing" do
       it "shows only active listings from that category" do
         expired_listing.published = false

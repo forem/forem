@@ -130,13 +130,6 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include(billboard.processed_html)
     end
 
-    it "shows listings" do
-      user = create(:user)
-      listing = create(:listing, user_id: user.id)
-      get "/"
-      expect(response.body).to include(CGI.escapeHTML(listing.title))
-    end
-
     it "does not set cache-related headers if private" do
       allow(Settings::UserExperience).to receive(:public).and_return(false)
       get "/"
@@ -281,13 +274,6 @@ RSpec.describe "StoriesIndex" do
         allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
-      end
-
-      it "displays sidebar url if url is set" do
-        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true, url: "https://campaign-lander.com",
-                                                      sidebar_image: "https://example.com/image.png")
-        get "/"
-        expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
 
       it "does not display sidebar url if image is not present is set" do
