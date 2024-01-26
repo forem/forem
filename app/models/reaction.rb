@@ -176,6 +176,14 @@ class Reaction < ApplicationRecord
     ReactionCategory[category.to_sym]
   end
 
+  def readable_date
+    if created_at.year == Time.current.year
+      I18n.l(created_at, format: :short)
+    else
+      I18n.l(created_at, format: :short_with_yy)
+    end
+  end
+
   private
 
   def update_reactable

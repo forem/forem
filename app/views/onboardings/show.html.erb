@@ -17,7 +17,7 @@
   data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"
   data-community-background-color="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:light] %>"
   data-community-background-color2="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:dark] %>">
-  <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
+  <%= javascript_include_tag "Onboarding", defer: true %>
 </div>
 
 <div id="terms" style="display: none;">

@@ -6,7 +6,7 @@
   </style>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+<%= javascript_include_tag "actionsPanel", defer: true %>
 
 <% author_suspended = @moderatable.user.suspended? %>
 <% author_username = @moderatable.username %>
@@ -47,7 +47,7 @@
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
-      <%= crayons_icon_tag("twemoji/suspicious", native: true, class: "mr-1", title: "Suspicious...") %>
+      <%= crayons_icon_tag("twemoji/flag", native: true, class: "mr-1", title: "Flag") %>
       <span></span>
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
@@ -333,9 +333,9 @@
         data-modal-size="small"
         data-modal-content-selector="#<%= @author_flagged ? "unflag" : "flag" %>-user-modal-content">
         <% if @author_flagged %>
-          <%= t("views.moderations.actions.unflag", username: author_username) %>
+          <%= t("views.moderations.actions.unflag_user", username: author_username) %>
         <% else %>
-          <%= t("views.moderations.actions.flag", username: author_username) %>
+          <%= t("views.moderations.actions.flag_user", username: author_username) %>
         <% end %>
       </button>
       <% if policy(@moderatable).can_perform_moderator_actions? %>

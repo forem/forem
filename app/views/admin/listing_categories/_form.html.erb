@@ -29,4 +29,4 @@
     <%= text_area_tag :social_preview_description, @listing_category.social_preview_description, size: "100x10", class: "crayons-textfield" %>
   </div>
 </div>
-<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>

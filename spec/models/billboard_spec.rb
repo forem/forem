@@ -553,36 +553,79 @@ RSpec.describe Billboard do
   end
 
   describe ".weighted_random_selection" do
-    it "samples with weights correctly" do
-      described_class.delete_all
-      bb1 = create(:billboard, weight: 5)
-      bb2 = create(:billboard, weight: 1)
-      bb3 = create(:billboard, weight: 1)
-      bb4 = create(:billboard, weight: 2)
-      bb5 = create(:billboard, weight: 1)
+    context "when no target_article_id is provided" do
+      it "samples with weights correctly" do
+        described_class.delete_all
+        bb1 = create(:billboard, weight: 5)
+        bb2 = create(:billboard, weight: 1)
+        bb3 = create(:billboard, weight: 1)
+        bb4 = create(:billboard, weight: 2)
+        bb5 = create(:billboard, weight: 1)
 
-      total_weight = 5 + 1 + 1 + 2 + 1 # 10
-      expected_probabilities = {
-        bb1.id => 5.0 / total_weight,
-        bb2.id => 1.0 / total_weight,
-        bb3.id => 1.0 / total_weight,
-        bb4.id => 2.0 / total_weight,
-        bb5.id => 1.0 / total_weight
-      }
+        total_weight = 5 + 1 + 1 + 2 + 1 # 10
+        expected_probabilities = {
+          bb1.id => 5.0 / total_weight,
+          bb2.id => 1.0 / total_weight,
+          bb3.id => 1.0 / total_weight,
+          bb4.id => 2.0 / total_weight,
+          bb5.id => 1.0 / total_weight
+        }
 
-      counts = Hash.new(0)
-      num_trials = 5_000
+        counts = Hash.new(0)
+        num_trials = 5_000
 
-      num_trials.times do
-        id = described_class.weighted_random_selection(described_class.all).id
-        counts[id] += 1
+        num_trials.times do
+          id = described_class.weighted_random_selection(described_class.all).id
+          counts[id] += 1
+        end
+
+        counts.each do |id, count|
+          observed_probability = count.to_f / num_trials
+          expected_probability = expected_probabilities[id]
+
+          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        end
       end
+    end
 
-      counts.each do |id, count|
-        observed_probability = count.to_f / num_trials
-        expected_probability = expected_probabilities[id]
+    context "when a target_article_id is provided" do
+      it "favors records containing the target_article_id" do
+        allow(FeatureFlag).to receive(:enabled?).with(:article_id_adjusted_weight).and_return(true)
+        described_class.delete_all
+        target_article_id = 123
+        favored_weight_multiplier = 10
 
-        expect(observed_probability).to be_within(0.025).of(expected_probability)
+        # Create billboards with different weights and article_ids
+        bb1 = create(:billboard, weight: 5, preferred_article_ids: [target_article_id])
+        bb2 = create(:billboard, weight: 1, preferred_article_ids: [])
+        bb3 = create(:billboard, weight: 1, preferred_article_ids: [target_article_id])
+        bb4 = create(:billboard, weight: 2, preferred_article_ids: [])
+        bb5 = create(:billboard, weight: 1, preferred_article_ids: [])
+
+        # Adjusted total weight accounting for the favored records
+        total_weight = (5 * favored_weight_multiplier) + 1 + (1 * favored_weight_multiplier) + 2 + 1
+        expected_probabilities = {
+          bb1.id => (5.0 * favored_weight_multiplier) / total_weight,
+          bb2.id => 1.0 / total_weight,
+          bb3.id => (1.0 * favored_weight_multiplier) / total_weight,
+          bb4.id => 2.0 / total_weight,
+          bb5.id => 1.0 / total_weight
+        }
+
+        counts = Hash.new(0)
+        num_trials = 5_000
+
+        num_trials.times do
+          id = described_class.weighted_random_selection(described_class.all, target_article_id).id
+          counts[id] += 1
+        end
+
+        counts.each do |id, count|
+          observed_probability = count.to_f / num_trials
+          expected_probability = expected_probabilities[id]
+
+          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        end
       end
     end
   end

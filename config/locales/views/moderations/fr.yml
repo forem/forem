@@ -75,8 +75,8 @@ fr:
           subtitle: Actions de modération pour %{user}
           aria_label: Ouvrir les actions d'administration
           icon: Couronne
-        flag: Signaler %{username}
-        unflag: Retirer le signalement de %{username}
+        flag_user: Signaler %{username}
+        unflag_user: Retirer le signalement de %{username}
         how: Comment cela fonctionne-t-il ?
         hidden:
           subtitle: Commentaires cachés
@@ -100,7 +100,7 @@ fr:
           unsuspend_user: Retirer la suspension %{username}
           unsuspend_modal_text: Une fois la suspension levée, %{username} pourra à nouveau commenter et publier des messages.
           unsuspend_modal_button: Soumettre et lever la suspension
-        suspicious: Suspicieux
+        flag: Signaler
         tag:
           subtitle: Ajustements des étiquettes
           add: Ajouter
@@ -200,3 +200,10 @@ fr:
         no_flags: L'article n'a pas de drapeaux.
         no_quality_reactions: L'article n'a pas de réactions de qualité par des utilisateurs de confiance
         title: Actions privilégiées
+      members:
+        all: Tous les membres
+        new: Nouveaux membres
+        established: Membres établis
+        filter: Filtrer par membres
+        label: 'Membres'
+

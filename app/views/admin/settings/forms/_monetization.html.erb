@@ -47,7 +47,7 @@
                              autocomplete: "off",
                              data: { all_countries: billboard_all_countries_for_editing } %>
           </div>
-          <%= javascript_packs_with_chunks_tag "admin/billboardEnabledCountries", defer: true %>
+          <%= javascript_include_tag "admin/billboardEnabledCountries", defer: true %>
         <% end %>
       </fieldset>
       <%= render "update_setting_button", f: f %>

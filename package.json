@@ -4,7 +4,7 @@
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
     "yarn": "1.22.18",
-    "node": "16.x"
+    "node": "20.x"
   },
   "main": "index.js",
   "directories": {
@@ -26,7 +26,8 @@
     "test:watch": "jest app/javascript/ bin/ --watch",
     "postcss": "postcss public/assets/*.css -d public/assets",
     "e2e": "bin/e2e",
-    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed"
+    "e2e:creator-onboarding-seed": "yarn run e2e --creator-onboarding-seed",
+    "build": "node esbuild.config.mjs"
   },
   "nyc": {
     "report-dir": "coverage/cypress"
@@ -102,8 +103,7 @@
     "sass-loader": "^13.3.2",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
-    "svgo": "2.8.0",
-    "webpack-dev-server": "^3.11.3"
+    "svgo": "2.8.0"
   },
   "dependencies": {
     "@babel/core": "^7.23.3",
@@ -114,22 +114,21 @@
     "@babel/plugin-transform-react-jsx": "^7.22.15",
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-typescript": "^7.23.3",
-    "@github/time-elements": "3.1.2",
     "@honeybadger-io/js": "^5.4.1",
-    "@honeybadger-io/webpack": "^1.5.1",
     "@hotwired/stimulus": "3.2.2",
-    "@hotwired/stimulus-webpack-helpers": "1.0.1",
     "@rails/ujs": "7.1.2",
-    "@rails/webpacker": "5.4.4",
     "ahoy.js": "^0.4.3",
     "autoprefixer": "^10.4.16",
     "babel-plugin-inline-react-svg": "^2.0.2",
-    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-module-resolver": "^5.0.0",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.11.0",
     "chart.js": "^3.9.1",
     "classnames": "^2.3.2",
     "core-js": "3",
+    "esbuild": "^0.19.10",
+    "esbuild-plugin-stimulus": "^0.1.5",
+    "esbuild-plugin-svgr": "^2.1.0",
     "file-loader": "^6.2.0",
     "focus-trap": "^6.9.4",
     "focus-visible": "^5.2.0",
@@ -137,13 +136,13 @@
     "he": "^1.2.0",
     "i18n-js": "^4.3.2",
     "intersection-observer": "^0.12.2",
-    "isomorphic-fetch": "^3.0.0",
     "jest-junit": "^14.0.1",
     "linkstate": "^2.0.1",
     "lodash.debounce": "4.0.8",
     "moment": "^2.29.4",
     "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
+    "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^7.8.2",
     "postscribe": "^2.0.8",

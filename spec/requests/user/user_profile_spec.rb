@@ -93,6 +93,26 @@ RSpec.describe "UserProfiles" do
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
     end
 
+    context "when has comments" do
+      before do
+        create(:comment, user: user, body_markdown: "nice_comment")
+        create(:comment, user: user, score: Comment::LOW_QUALITY_THRESHOLD - 50, body_markdown: "bad_comment")
+      end
+
+      it "displays only good standing comments comments", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("nice_comment")
+        expect(response.body).not_to include("bad_comment")
+      end
+
+      it "doesn't display any comments for not signed in user", :aggregate_failures do
+        get user.path
+        expect(response.body).not_to include("nice_comment")
+        expect(response.body).not_to include("bad_comment")
+      end
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
@@ -180,11 +200,31 @@ RSpec.describe "UserProfiles" do
 
     # rubocop:disable RSpec/NestedGroups
     describe "not found and no index behaviour" do
+      let(:spam_user) { create(:user, :spam) }
+      let(:admin_user) { create(:user, :admin) }
+
       it "raises not found for banished users" do
         banishable_user = create(:user)
         Moderator::BanishUser.call(admin: user, user: banishable_user)
         expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
         expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed in" do
+        sign_in current_user
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed out" do
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "renders spammer users for admins", skip: "to implement later" do
+        sign_in admin_user
+        get spam_user.path
+        expect(response).to be_successful
       end
 
       context "when a user is signed in" do

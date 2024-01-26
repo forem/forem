@@ -14,6 +14,7 @@ RSpec.describe "Api::V1::Billboards" do
       type_of: "community",
       published: true,
       approved: true,
+      requires_cookies: false,
       target_geolocations: "US-WA, CA-BC"
     }
   end
@@ -52,8 +53,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "custom_display_label", "template", "render_mode",
-                          "priority", "weight", "target_geolocations")
+                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "priority", "weight", "target_geolocations", "requires_cookies")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -72,8 +73,8 @@ RSpec.describe "Api::V1::Billboards" do
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids",
                           "audience_segment_type", "audience_segment_id",
-                          "custom_display_label", "template", "render_mode",
-                          "priority", "weight", "target_geolocations")
+                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
+                          "priority", "weight", "target_geolocations", "requires_cookies")
         expect(response.parsed_body["target_geolocations"]).to contain_exactly("US-WA", "CA-BC")
       end
 
@@ -136,9 +137,9 @@ RSpec.describe "Api::V1::Billboards" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id", "exclude_article_ids",
+                          "creator_id", "exclude_article_ids", "requires_cookies",
                           "audience_segment_type", "audience_segment_id",
-                          "custom_display_label", "template", "render_mode",
+                          "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations")
       end
 

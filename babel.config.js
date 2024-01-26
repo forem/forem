@@ -37,7 +37,6 @@ module.exports = function (api) {
     plugins: [
       isEndToEnd && ['istanbul'],
       '@babel/plugin-syntax-dynamic-import',
-      isTestEnv && 'babel-plugin-dynamic-import-node',
       isTestEnv && '@babel/plugin-transform-modules-commonjs',
       '@babel/plugin-transform-destructuring',
       [
@@ -54,7 +53,7 @@ module.exports = function (api) {
         },
       ],
       [
-        '@babel/plugin-proposal-private-property-in-object',
+        '@babel/plugin-transform-private-property-in-object',
         {
           loose: true,
         },

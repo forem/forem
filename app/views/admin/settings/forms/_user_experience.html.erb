@@ -115,10 +115,26 @@
             </p>
           </div>
         </div>
+        <div class="crayons-field">
+          <%= admin_config_label :head_content, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:head_content][:description] %>
+          <%= f.text_area :head_content,
+                          class: "crayons-textfield",
+                          value: Settings::UserExperience.head_content,
+                          placeholder: Constants::Settings::UserExperience.details[:head_content][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :bottom_of_body_content, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:bottom_of_body_content][:description] %>
+          <%= f.text_area :bottom_of_body_content,
+                          class: "crayons-textfield",
+                          value: Settings::UserExperience.bottom_of_body_content,
+                          placeholder: Constants::Settings::UserExperience.details[:bottom_of_body_content][:placeholder] %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
   </details>
 <% end %>
 </div>
-<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>

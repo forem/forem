@@ -57,6 +57,13 @@ RSpec.describe ReCaptcha::CheckEnabled, type: :request do
         expect(described_class.call(older_user)).to be(true)
         older_user.remove_role(:suspended)
       end
+
+      it "marks ReCaptcha as enabled when a spam user is logged in" do
+        older_user.add_role(:spam)
+        sign_in older_user
+        expect(described_class.call(older_user)).to be(true)
+        older_user.remove_role(:spam)
+      end
     end
   end
 end

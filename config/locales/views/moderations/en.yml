@@ -75,8 +75,8 @@ en:
           subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
-        flag: Flag %{username}
-        unflag: Unflag %{username}
+        flag_user: Flag %{username}
+        unflag_user: Unflag %{username}
         how: How does this work?
         hidden:
           subtitle: Hidden Comments
@@ -101,7 +101,7 @@ en:
           unsuspend_user: Unsuspend %{username}
           unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
           unsuspend_modal_button: Submit & Unsuspend
-        suspicious: Suspicious
+        flag: Flag
         tag:
           subtitle: Tag Adjustments
           add: Add
@@ -201,3 +201,9 @@ en:
         no_flags: Article has no flags.
         no_quality_reactions: Article has no quality reactions by trusted users.
         title: Moderator actions
+      members:
+        all: All
+        new: New
+        established: Established
+        filter: Filter by Members
+        label: 'Members'

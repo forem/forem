@@ -1,7 +1,7 @@
 module Articles
   class Attributes
     ATTRIBUTES = %i[archived body_markdown canonical_url description
-                    edited_at main_image organization_id user_id published
+                    edited_at main_image organization_id user_id published clickbait_score
                     title video_thumbnail_url published_at co_author_ids_list].freeze
 
     attr_reader :attributes, :article_user
@@ -15,7 +15,7 @@ module Articles
       hash = attributes.slice(*ATTRIBUTES)
       # don't reset the collection when no series was passed
       hash[:collection] = collection if attributes.key?(:series)
-      hash[:tag_list] = tag_list
+      hash[:tag_list] = tag_list if !attributes[:tag_list].nil? || !attributes[:tags].nil?
       hash[:edited_at] = Time.current if update_edited_at
       hash[:published_at] = hash[:published_at].to_datetime if hash[:published_at]
       hash

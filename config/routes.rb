@@ -47,6 +47,8 @@ Rails.application.routes.draw do
         put "/articles/:id/unpublish", to: "articles#unpublish", as: :article_unpublish
         put "/users/:id/unpublish", to: "users#unpublish", as: :user_unpublish
 
+        get "/users/search", to: "users#search"
+
         post "/reactions", to: "reactions#create"
         post "/reactions/toggle", to: "reactions#toggle"
 
@@ -71,11 +73,11 @@ Rails.application.routes.draw do
         resources :organizations, only: %i[index create update destroy]
 
         scope("/users/:id") do
-          constraints(role: /suspend|suspended|limited/) do
+          constraints(role: /suspend|suspended|limited|spam|trusted/) do
             put "/:role", to: "user_roles#update", as: "user_add_role"
           end
 
-          constraints(role: /limited/) do
+          constraints(role: /limited|spam|trusted/) do
             delete "/:role", to: "user_roles#destroy", as: "user_remove_role"
           end
         end
@@ -392,8 +394,15 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:username", to: "stories#index", as: "user_profile"
-
+    get "/:username", to: "stories#index", as: "user_profile", # No txt format
+                      constraints: { format: /html/ }
+    get "/:slug", to: "pages#show",
+                  constraints: { format: /txt/ }
+    get "/:slug_0/:slug_1", to: "pages#show", as: :page_0_1
+    get "/:slug_0/:slug_1/:slug_2", to: "pages#show", as: :page_0_1_2
+    get "/:slug_0/:slug_1/:slug_2/:slug_3", to: "pages#show", as: :page_0_1_2_3
+    get "/:slug_0/:slug_1/:slug_2/:slug_3/:slug_4", to: "pages#show", as: :page_0_1_2_3_4
+    get "/:slug_0/:slug_1/:slug_2/:slug_3/:slug_4/:slug_5", to: "pages#show", as: :page_0_1_2_3_4_5
     root "stories#index"
   end
 end

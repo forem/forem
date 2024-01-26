@@ -28,7 +28,7 @@
       "onAutoForward": "silent"
     }
   },
-  "updateContentCommand": "bin/setup",
+  "updateContentCommand": "bin/setup && bin/rails db:test:prepare RAILS_ENV=test",
   "postCreateCommand": ".devcontainer/postCreateCommand-init.sh",
   "postAttachCommand": ".devcontainer/postAttachCommand-init.sh",
   "customizations": {
@@ -38,7 +38,10 @@
         "Shopify.ruby-lsp",
         "KoichiSasada.vscode-rdbg",
         "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "MateuszDrewniak.ruby-test-runner",
+        "firsttris.vscode-jest-runner",
+        "eamodio.gitlens"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "zsh"

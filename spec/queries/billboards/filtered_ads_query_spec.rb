@@ -318,4 +318,25 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       end
     end
   end
+
+  context "when considering cookie requirements" do
+    let!(:requires_cookies_ad) { create_billboard(requires_cookies: true) }
+    let!(:no_cookies_required_ad) { create_billboard(requires_cookies: false) }
+
+    context "when cookies are allowed" do
+      it "includes ads that require cookies" do
+        filtered = filter_billboards(cookies_allowed: true)
+        expect(filtered).to include(requires_cookies_ad)
+        expect(filtered).to include(no_cookies_required_ad)
+      end
+    end
+
+    context "when cookies are not allowed" do
+      it "excludes ads that require cookies" do
+        filtered = filter_billboards(cookies_allowed: false)
+        expect(filtered).not_to include(requires_cookies_ad)
+        expect(filtered).to include(no_cookies_required_ad)
+      end
+    end
+  end
 end
