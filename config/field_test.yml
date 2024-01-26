@@ -60,7 +60,7 @@ experiments:
       - 20240104-variant-a
       - 20240104-variant-c
     ended_at: 2024-01-26
-    winnder: 20240104-variant-a
+    winner: 20240104-variant-a
     weights:
       - 68
       - 8
