@@ -6,11 +6,13 @@ class Billboard < ApplicationRecord
   belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third home_hero post_sidebar post_comments].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right sidebar_right_second sidebar_right_third feed_first feed_second feed_third home_hero post_sidebar post_comments].freeze
   # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
-                                            "Sidebar Right (Home)",
+                                            "Sidebar Right (Home first position)",
+                                            "Sidebar Right (Home second position)",
+                                            "Sidebar Right (Home third position)",
                                             "Home Feed First",
                                             "Home Feed Second",
                                             "Home Feed Third",

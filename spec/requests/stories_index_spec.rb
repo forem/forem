@@ -79,8 +79,24 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders billboards when published and approved" do
+    it "renders billboards when published and approved for sidebar right (first position)" do
       ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards when published and approved for sidebar right (second position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_second",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards when published and approved for sidebar right (third position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_third",
                               organization: org)
 
       get "/"
