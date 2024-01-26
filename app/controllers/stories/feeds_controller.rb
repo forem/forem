@@ -4,7 +4,7 @@ module Stories
 
     def show
       @page = (params[:page] || 1).to_i
-      @comments_variant = field_test(:comments_to_display, participant: @user)
+      @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
 
       @stories = assign_feed_stories
 
@@ -57,24 +57,8 @@ module Stories
         # weighted strategy has not.  I also don't want to alter the
         # weighted query implementation as it returns a lovely
         # ActiveRecord::Relation.  So this is a compromise.
-        scope = feed.more_comments_minimal_weight_randomized
 
-        scope = case @comments_variant
-                when "top_comments"
-                  scope.includes(top_comments: :user)
-                when "more_inclusive_top_comments"
-                  scope.includes(more_inclusive_top_comments: :user)
-                when "recent_good_comments"
-                  scope.includes(recent_good_comments: :user)
-                when "more_inclusive_recent_good_cmments"
-                  scope.includes(more_inclusive_recent_good_cmments: :user)
-                when "most_inclusive_recent_good_comments"
-                  scope.includes(most_inclusive_recent_good_comments: :user)
-                else
-                  # Apply the default scope or an additional variant
-                  scope
-                end
-        scope.to_a
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
       end
     end
 

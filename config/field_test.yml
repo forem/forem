@@ -27,8 +27,8 @@
 ################################################################################
 ################################################################################
 experiments:
-  comments_to_display:
-    started_at: 2023-11-09
+  comments_to_display_20240129:
+    started_at: 2024-01-29
     variants:
       - top_comments
       - more_inclusive_top_comments
