@@ -56,7 +56,12 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
-      - run: pnpm install --immutable
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
+      - run: pnpm install
         if: steps.cache.outputs.cache-hit != 'true'
 
   precompile_assets:
@@ -93,6 +98,11 @@ jobs:
           node-version-file: '.nvmrc'
           cache: pnpm
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
       - run: pnpm install
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
