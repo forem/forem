@@ -16,6 +16,11 @@ class CommentsController < ApplicationController
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
+    # hide low quality comments w/o children
+    if @root_comment && @root_comment.decorate.low_quality && !@root_comment.has_children?
+      not_found
+    end
+
     if @podcast
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes

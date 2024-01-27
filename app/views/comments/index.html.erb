@@ -1,5 +1,5 @@
 <%= javascript_include_tag "postCommentsPage", defer: true %>
-<% if @root_comment.present? %>
+<% if @root_comment.present? && !@root_comment.decorate.low_quality %>
   <% title(@root_comment.title.to_s) %>
 <% else %>
   <% title(t("views.comments.meta.title_root", title: @commentable.title)) %>
