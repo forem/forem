@@ -16,7 +16,7 @@
     "glob-parent": "^6.0.1"
   },
   "scripts": {
-    "prepare": "husky install",
+    "prepare": "husky || true",
     "generate-storybook-themes": "sass -q app/assets/stylesheets/themes:app/javascript/storybook-static/themes && bin/generate-css-utility-classes-docs.js",
     "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet && yarn generate-storybook-themes",
     "prestorybook": "rm -rf app/javascript/storybook-static && yarn generate-storybook-themes",
