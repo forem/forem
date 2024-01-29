@@ -58,6 +58,19 @@ RSpec.describe Articles::Feeds::VariantQuery, type: :service do
           expect(query_call).to be_a(ActiveRecord::Relation)
           expect(query_call.to_a).not_to include(article)
         end
+
+        it "returns proper scope when passed the different test values" do
+          # rubocop:disable Performance/CollectionLiteralInLoop
+          %w[top_comments
+             more_inclusive_top_comments
+             recent_good_comments
+             more_inclusive_recent_good_comments
+             most_inclusive_recent_good_comments].each do |test_value|
+            expect(variant_query.call(comments_variant: test_value).includes_values)
+              .to include(:distinct_reaction_categories, { test_value.to_sym => :user })
+          end
+          # rubocop:enable Performance/CollectionLiteralInLoop
+        end
       end
 
       describe "#featured_story_and_default_home_feed" do
