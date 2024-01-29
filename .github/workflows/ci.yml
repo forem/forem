@@ -20,6 +20,7 @@ env:
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
+  HUSKY: 0
 
 jobs:
   bundle_install:
