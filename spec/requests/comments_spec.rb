@@ -161,7 +161,7 @@ RSpec.describe "Comments" do
       end
     end
 
-    context "when the comment is low quality" do
+    context "when the comment is low quality and below hiding threshold" do
       let(:low_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "low-comment")
       end
@@ -172,7 +172,22 @@ RSpec.describe "Comments" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "is displayed as deleted when has children", :aggregate_failures do
+      it "raises 404 when has children and not signed in" do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 when no children + user signed in" do
+        sign_in user
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is displayed as deleted when has children + user signed in", :aggregate_failures do
         create(:comment, commentable: article, user: user, parent: low_comment,
                          body_markdown: "child of a low-quality comment")
         get low_comment.path
@@ -182,12 +197,46 @@ RSpec.describe "Comments" do
       end
     end
 
-    context "when the comment is for a podcast's episode" do
-      it "is successful" do
-        podcast_comment = create(:comment, commentable: podcast_episode, user: user)
+    context "when the comment is low quality and above hiding threshold" do
+      let(:low_comment) do
+        create(:comment, commentable: article, user: user, score: -100, body_markdown: "low-comment")
+      end
 
+      it "raises 404 when no children + not signed in" do
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 when has children and not signed in" do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is displayed with a low quality marker when user signed in" do
+        sign_in user
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low quality")
+      end
+    end
+
+    context "when the comment is for a podcast's episode" do
+      let!(:podcast_comment) { create(:comment, commentable: podcast_episode, user: user) }
+
+      it "is successful" do
         get podcast_comment.path
         expect(response).to have_http_status(:ok)
+      end
+
+      it "raises 404 when low quality" do
+        podcast_comment.update_column(:score, -500)
+        expect do
+          get podcast_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 
