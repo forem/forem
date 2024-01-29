@@ -10,6 +10,7 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
   LOW_QUALITY_THRESHOLD = -75
+  HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
 

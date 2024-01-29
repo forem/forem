@@ -5,7 +5,7 @@ RSpec.describe "rendering locals in a partial" do
     it "renders the comment with low-quality marker" do
       allow(Settings::General).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
       article = create(:article)
-      comment = create(:comment, processed_html: "hi", score: -100, article: article)
+      comment = create(:comment, processed_html: "hi", score: -100, commentable: article)
 
       render "comments/comment",
              comment: comment,

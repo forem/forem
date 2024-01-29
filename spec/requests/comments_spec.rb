@@ -190,6 +190,7 @@ RSpec.describe "Comments" do
       it "is displayed as deleted when has children + user signed in", :aggregate_failures do
         create(:comment, commentable: article, user: user, parent: low_comment,
                          body_markdown: "child of a low-quality comment")
+        sign_in user
         get low_comment.path
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment deleted")

@@ -100,11 +100,11 @@ RSpec.describe "UserProfiles" do
         create(:comment, user: user, score: -401, body_markdown: "bad_comment")
       end
 
-      it "displays good standing and low quality (but not too low) comments", :aggregate_failures do
+      it "displays good standing comments", :aggregate_failures do
         sign_in current_user
         get user.path
         expect(response.body).to include("nice_comment")
-        expect(response.body).to include("low_comment")
+        expect(response.body).not_to include("low_comment")
         expect(response.body).not_to include("bad_comment")
       end
 

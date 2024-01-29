@@ -1,4 +1,4 @@
 <% comment, sub_comments = comment_node %>
-<% unless comment.decorate.low_quality && sub_comments.empty? %>
+<% unless comment.decorate.super_low_quality && sub_comments.empty? %>
   <%= nested_comments(tree: { comment => sub_comments }, commentable: @article, is_view_root: true) %>
 <% end %>
