@@ -33,7 +33,7 @@ experiments:
       - top_comments
       - more_inclusive_top_comments
       - recent_good_comments
-      - more_inclusive_recent_good_cmments
+      - more_inclusive_recent_good_comments
       - most_inclusive_recent_good_comments
     weights:
       - 60

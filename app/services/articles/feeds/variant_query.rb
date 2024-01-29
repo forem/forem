@@ -146,8 +146,8 @@ module Articles
                   scope.includes(more_inclusive_top_comments: :user)
                 when "recent_good_comments"
                   scope.includes(recent_good_comments: :user)
-                when "more_inclusive_recent_good_cmments"
-                  scope.includes(more_inclusive_recent_good_cmments: :user)
+                when "more_inclusive_recent_good_comments"
+                  scope.includes(more_inclusive_recent_good_comments: :user)
                 when "most_inclusive_recent_good_comments"
                   scope.includes(most_inclusive_recent_good_comments: :user)
                 else
