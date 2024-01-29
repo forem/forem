@@ -30,9 +30,6 @@ export const parameters = {
     container: DocsContainer,
     page: DocsPage,
   },
-};
-
-export const parameters = {
   controls: { expanded: true },
   jsx: {
     filterProps: (val) => val !== undefined,

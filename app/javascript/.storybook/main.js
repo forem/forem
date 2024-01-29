@@ -18,7 +18,6 @@ module.exports = {
     '@storybook/addon-backgrounds',
     '@etchteam/storybook-addon-css-variables-theme',
     'storybook-addon-jsx',
-    '@whitespace/storybook-addon-html',
     {
       name: '@storybook/addon-storysource',
       loaderOptions: {
