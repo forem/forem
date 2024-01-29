@@ -1,5 +1,4 @@
 import { h } from 'preact';
-import { addDecorator, addParameters } from '@storybook/preact';
 import { DocsPage, DocsContainer } from '@storybook/addon-docs';
 import { jsxDecorator } from 'storybook-addon-jsx';
 import cssVariablesTheme from '@etchteam/storybook-addon-css-variables-theme';
@@ -14,23 +13,24 @@ import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
-addDecorator(jsxDecorator);
-addDecorator((Story) => <Story />);
-addDecorator(cssVariablesTheme);
+export const decorators = [
+  jsxDecorator,
+  (Story) => <Story />,
+  cssVariablesTheme,
+];
 
-addParameters({
+export const parameters = {
   options: {
     storySort: (a, b) =>
       a[1].kind === b[1].kind
         ? 0
         : a[1].id.localeCompare(b[1].id, undefined, { numeric: true }),
   },
-
   docs: {
     container: DocsContainer,
     page: DocsPage,
   },
-});
+};
 
 export const parameters = {
   controls: { expanded: true },
