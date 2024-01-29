@@ -252,7 +252,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: pnpm
-      - run: pnpm test --colors --ci --reporters="jest-junit" --reporters="default"
+      - run: pnpm run test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
         uses: Workshop64/buildpulse-action@master
@@ -340,6 +340,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: pnpm install
       - run: bundle exec rails assets:precompile
       - run: RAILS_ENV=test bin/test-console-check
 
