@@ -164,7 +164,7 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  has_many :more_inclusive_recent_good_cmments,
+  has_many :more_inclusive_recent_good_comments,
            lambda {
              where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
                .order("comments.created_at" => :desc)
