@@ -225,6 +225,7 @@ export class FollowTags extends Component {
                   <ul>
                     <li className="checkbox-item">
                       <label htmlFor="email_digest_periodic">
+                        Email me a periodic digest of top posts
                         <input
                           type="checkbox"
                           id="email_digest_periodic"
