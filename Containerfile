@@ -40,6 +40,7 @@ ENV BUNDLER_VERSION=2.4.17 \
     BUNDLE_SILENCE_DEPRECATIONS=true
 
 RUN gem install -N bundler:"${BUNDLER_VERSION}"
+RUN corepack enable pnpm
 
 ENV APP_USER=forem APP_UID=1000 APP_GID=1000 APP_HOME=/opt/apps/forem \
     LD_PRELOAD=libjemalloc.so.2
@@ -79,16 +80,10 @@ COPY --chown=${APP_UID}:${APP_GID} . "${APP_HOME}"
 
 RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 
-# While it's relatively rare for bare metal builds to hit the default
-# timeout, QEMU-based ones (as is the case with Docker BuildX for
-# cross-compiling) quite often can. This increased timeout should help
-# reduce false-negatives when building multiarch images.
-RUN echo 'network-timeout 300000' >> ~/.yarnrc
-
 # This is one giant step now because previously, removing node_modules to save
 # layer space was done in a later step, which is invalid in at least some
 # Docker storage drivers (resulting in Directory Not Empty errors).
-RUN NODE_ENV=production yarn install && \
+RUN NODE_ENV=production pnpm install && \
     RAILS_ENV=production NODE_ENV=production bundle exec rake assets:precompile && \
     rm -rf node_modules
 
@@ -154,17 +149,17 @@ COPY --chown="${APP_USER}":"${APP_USER}" ./spec "${APP_HOME}"/spec
 COPY --from=builder /usr/local/bin/dockerize /usr/local/bin/dockerize
 
 RUN bundle config --local build.sassc --disable-march-tune-native && \
-      bundle config --delete without && \
-      BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
-      find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
-      find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
+    bundle config --delete without && \
+    BUNDLE_FROZEN=true bundle install --deployment --jobs 4 --retry 5 && \
+    find "${APP_HOME}"/vendor/bundle -name "*.c" -delete && \
+    find "${APP_HOME}"/vendor/bundle -name "*.o" -delete
 
 # Replacement for volume
 COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
 ## Bund install
 RUN ./scripts/bundle.sh
 ## Yarn install
-RUN bash -c yarn install --dev
+RUN bash -c pnpm install
 
 # Document that we're going to expose port 3000
 EXPOSE 3000
@@ -236,6 +231,8 @@ ENV BUNDLE_APP_CONFIG=.bundle
 # Upgrade RubyGems and install the latest Bundler version
 RUN gem update --system && \
     gem install bundler
+
+RUN corepack enable pnpm
 
 # Create a directory for the app code
 RUN mkdir -p /app
