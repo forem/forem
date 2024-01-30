@@ -31,6 +31,46 @@ RSpec.describe "Comments" do
       expect(response.body).not_to include "author-payment-pointer"
     end
 
+    context "when there are comments with different score" do
+      let!(:spam_comment) do
+        create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spam-comment")
+      end
+
+      before do
+        create(:comment, commentable: article, user: user, score: -50, body_markdown: "mediocre-comment")
+        create(:comment, commentable: article, user: user, score: -100, body_markdown: "bad-comment")
+        create(:comment, commentable: article, user: user, score: 10, body_markdown: "good-comment")
+      end
+
+      it "displays all comments except for below -400 score", :aggregate_failures do
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).to include("mediocre-comment")
+        expect(response.body).to include("low quality")
+        expect(response.body).to include("bad-comment")
+        expect(response.body).to include("good-comment")
+        expect(response.body).not_to include("spam-comment")
+      end
+
+      it "displays deleted message and children of a spam comment for signed in", :aggregate_failures do
+        create(:comment, user: user, parent: spam_comment, commentable: article,
+                         body_markdown: "child-of-a-spam-comment")
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("spam-comment")
+        expect(response.body).to include("Comment deleted")
+        expect(response.body).to include("child-of-a-spam-comment")
+      end
+
+      it "displays only good and mediocre comments for signed out user", :aggregate_failures do
+        get "#{article.path}/comments"
+        expect(response.body).to include("mediocre-comment")
+        expect(response.body).not_to include("bad-comment")
+        expect(response.body).to include("good-comment")
+        expect(response.body).not_to include("spam-comment")
+      end
+    end
+
     context "when the comment is a root" do
       it "displays the comment hidden message if the comment is hidden" do
         comment.update(hidden_by_commentable_user: true)
