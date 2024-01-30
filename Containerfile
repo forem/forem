@@ -159,7 +159,7 @@ COPY --from=builder --chown="${APP_USER}":"${APP_USER}" ${APP_HOME} ${APP_HOME}
 ## Bund install
 RUN ./scripts/bundle.sh
 ## Yarn install
-RUN bash -c pnpm install
+RUN pnpm install
 
 # Document that we're going to expose port 3000
 EXPOSE 3000
