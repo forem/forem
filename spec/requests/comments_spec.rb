@@ -33,7 +33,7 @@ RSpec.describe "Comments" do
 
     context "when there are comments with different score" do
       let!(:spam_comment) do
-        create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spam-comment")
+        create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
       end
 
       before do
@@ -49,7 +49,7 @@ RSpec.describe "Comments" do
         expect(response.body).to include("low quality")
         expect(response.body).to include("bad-comment")
         expect(response.body).to include("good-comment")
-        expect(response.body).not_to include("spam-comment")
+        expect(response.body).not_to include("spammer-comment")
       end
 
       it "displays deleted message and children of a spam comment for signed in", :aggregate_failures do
@@ -57,7 +57,7 @@ RSpec.describe "Comments" do
                          body_markdown: "child-of-a-spam-comment")
         sign_in user
         get "#{article.path}/comments"
-        expect(response.body).not_to include("spam-comment")
+        expect(response.body).not_to include("spammer-comment")
         expect(response.body).to include("Comment deleted")
         expect(response.body).to include("child-of-a-spam-comment")
       end
@@ -67,7 +67,7 @@ RSpec.describe "Comments" do
         expect(response.body).to include("mediocre-comment")
         expect(response.body).not_to include("bad-comment")
         expect(response.body).to include("good-comment")
-        expect(response.body).not_to include("spam-comment")
+        expect(response.body).not_to include("spammer-comment")
       end
     end
 

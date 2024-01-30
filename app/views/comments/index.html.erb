@@ -143,8 +143,10 @@
         <% end %>
       <% else %>
         <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
-          <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-            <%= tree_for(comment, sub_comments, @commentable) %>
+         <% unless comment.decorate.super_low_quality && sub_comments.empty? %>
+            <% cache ["comment_root_#{user_signed_in?}", comment] do %>
+              <%= tree_for(comment, sub_comments, @commentable) %>
+            <% end %>
           <% end %>
         <% end %>
       <% end %>
