@@ -79,8 +79,7 @@ jobs:
           fail-on-cache-miss: false
           path: |
             public/assets
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: setup ruby
         uses: ruby/setup-ruby@v1
@@ -183,8 +182,7 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
@@ -378,8 +376,7 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-            tmp/cache/webpacker
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', '**/package.json', '**/pnpm-lock.yaml', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
         uses: actions/cache/restore@v3
