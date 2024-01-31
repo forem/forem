@@ -8,6 +8,8 @@ class AudienceSegmentRefreshAllWorker
       .distinct(:audience_segment_id)
       .pluck(:audience_segment_id).compact
 
-    AudienceSegmentRefreshWorker.perform_bulk([ids])
+    ids.each do |id|
+      AudienceSegmentRefreshWorker.perform_async(id)
+    end
   end
 end
