@@ -146,6 +146,42 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
+  has_many :more_inclusive_top_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :recent_good_comments,
+           lambda {
+             where(comments: { score: 8.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :more_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :most_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 3.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
   validates :body_markdown, bytesize: {
     maximum: 800.kilobytes,
     too_long: proc { I18n.t("models.article.is_too_long") }
