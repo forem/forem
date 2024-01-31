@@ -10,7 +10,7 @@ RSpec.describe AudienceSegmentRefreshAllWorker, type: :worker do
   end
 
   before do
-    allow(AudienceSegmentRefreshWorker).to receive(:perform_bulk)
+    allow(AudienceSegmentRefreshWorker).to receive(:perform_async)
     create(:billboard,
            approved: false,
            published: true,
@@ -35,7 +35,7 @@ RSpec.describe AudienceSegmentRefreshAllWorker, type: :worker do
   it "refreshes all active ads' segments" do
     worker.perform
     # NOTE: `perform_bulk` takes an array of arrays as argument.
-    expect(AudienceSegmentRefreshWorker).to have_received(:perform_bulk)
-      .with([[approved_and_published_ad.audience_segment_id]])
+    expect(AudienceSegmentRefreshWorker).to have_received(:perform_async)
+      .with(approved_and_published_ad.audience_segment_id)
   end
 end
