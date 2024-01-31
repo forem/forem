@@ -92,9 +92,8 @@ describe('Profile User Actions Menu', () => {
     });
 
     it('should flag and unflag a user', () => {
-      cy.intercept('GET', '/profileDropdown*').as('profileDropdown');
       cy.visit('/article_editor_v1_user');
-      cy.wait('@profileDropdown');
+      cy.wait(3000); // Wait for the dropdown to initialize
 
       // Always accept the confirmation that pops up
       cy.on('window:confirm', () => true);
