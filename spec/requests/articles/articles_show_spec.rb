@@ -187,6 +187,7 @@ RSpec.describe "ArticlesShow" do
     before do
       create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
       create(:comment, score: -99, commentable: article, body_markdown: "Bad comment")
+      create(:comment, score: -10, commentable: article, body_markdown: "Mediocre comment")
     end
 
     context "when user signed in" do
@@ -224,14 +225,11 @@ RSpec.describe "ArticlesShow" do
         expect(response.body).to include("Good comment")
       end
 
-      it "hides comments with score from -400 to -75" do
+      it "hides all negative comments", :aggregate_failures do
         get article.path
         expect(response.body).not_to include("Bad comment")
-      end
-
-      it "hides comments with score < -400" do
-        get article.path
         expect(response.body).not_to include("Spam comment")
+        expect(response.body).not_to include("Mediocre comment")
       end
 
       it "doesn't show children of a low-quality comment" do

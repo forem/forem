@@ -139,13 +139,13 @@
     <div class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
         <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= tree_for(@root_comment, @root_comment.subtree.includes(user: %i[setting profile]).arrange[@root_comment], @commentable) %>
+          <%= nested_comments(tree: Comments::Tree.for_root_comment(@root_comment, user_signed_in?), commentable: @commentable, is_view_root: true) %>
         <% end %>
       <% else %>
-        <% Comment.tree_for(@commentable).each do |comment, sub_comments| %>
+        <% Comments::Tree.for_comments_page(@commentable, user_signed_in?).each do |comment, sub_comments| %>
          <% unless comment.decorate.super_low_quality && sub_comments.empty? %>
             <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, sub_comments, @commentable) %>
+              <%= nested_comments(tree: { comment => sub_comments }, commentable: @commentable, is_view_root: true) %>
             <% end %>
           <% end %>
         <% end %>

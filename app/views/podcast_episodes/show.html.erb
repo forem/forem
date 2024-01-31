@@ -105,7 +105,7 @@
         <div class="comment-trees" id="comment-trees-container">
           <% podcast_comment_tree(@episode).each do |comment, sub_comments| %>
             <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, sub_comments, @episode) %>
+              <%= nested_comments(tree: { comment => sub_comments }, commentable: @episode, is_view_root: true) %>
             <% end %>
           <% end %>
         </div>

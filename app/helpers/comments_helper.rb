@@ -15,24 +15,16 @@ module CommentsHelper
   end
 
   def article_comment_tree(article, count, order)
-    @article_comment_tree ||= begin
-      collection = Comment.tree_for(article, count, order)
-      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
-      collection
-    end
+    Comments::Tree.for_article(article, count, order, user_signed_in?)
   end
 
   def podcast_comment_tree(episode)
-    @podcast_comment_tree ||= begin
-      collection = Comment.tree_for(episode, 12)
-      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
-      collection
-    end
+    Comments::Tree.for_episode(episode, user_signed_in?)
   end
 
-  def tree_for(comment, sub_comments, commentable)
-    nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
-  end
+  # def tree_for(comment, sub_comments, commentable)
+  #   nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
+  # end
 
   def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root

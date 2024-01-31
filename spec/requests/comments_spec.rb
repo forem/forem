@@ -35,18 +35,20 @@ RSpec.describe "Comments" do
       let!(:spam_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
       end
+      let!(:mediocre_comment) do
+        create(:comment, commentable: article, user: user, score: -50, body_markdown: "mediocre-comment")
+      end
 
       before do
-        create(:comment, commentable: article, user: user, score: -50, body_markdown: "mediocre-comment")
         create(:comment, commentable: article, user: user, score: -100, body_markdown: "bad-comment")
         create(:comment, commentable: article, user: user, score: 10, body_markdown: "good-comment")
       end
 
-      it "displays all comments except for below -400 score", :aggregate_failures do
+      it "displays all comments except for below -400 score for signed in", :aggregate_failures do
         sign_in user
         get "#{article.path}/comments"
         expect(response.body).to include("mediocre-comment")
-        expect(response.body).to include("low quality")
+        expect(response.body).to include("low quality") # marker
         expect(response.body).to include("bad-comment")
         expect(response.body).to include("good-comment")
         expect(response.body).not_to include("spammer-comment")
@@ -62,12 +64,19 @@ RSpec.describe "Comments" do
         expect(response.body).to include("child-of-a-spam-comment")
       end
 
-      it "displays only good and mediocre comments for signed out user", :aggregate_failures do
+      it "displays only comments with positive score for signed out user", :aggregate_failures do
         get "#{article.path}/comments"
-        expect(response.body).to include("mediocre-comment")
+        expect(response.body).not_to include("mediocre-comment")
         expect(response.body).not_to include("bad-comment")
         expect(response.body).to include("good-comment")
         expect(response.body).not_to include("spammer-comment")
+      end
+
+      it "doesn't display children of negative comments for signed out user" do
+        create(:comment, user: user, parent: mediocre_comment, commentable: article,
+                         body_markdown: "child-of-a-negative-comment")
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("child-of-a-negative-comment")
       end
     end
 
@@ -235,6 +244,13 @@ RSpec.describe "Comments" do
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment deleted")
         expect(response.body).to include("child of a low-quality comment")
+      end
+
+      it "hides negative children for signed out" do
+        create(:comment, commentable: article, user: user, score: -10, parent: comment,
+                         body_markdown: "low-child of a comment")
+        get comment.path
+        expect(response.body).not_to include("low-child of a comment")
       end
     end
 
