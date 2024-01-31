@@ -14,7 +14,6 @@ describe('Billboards Form', () => {
 
     describe('Targeted Tags field', () => {
       [
-        'Sidebar Right (Home)',
         'Sidebar Left (First Position)',
         'Sidebar Left (Second Position)',
         'Home Hero',

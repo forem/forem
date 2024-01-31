@@ -144,6 +144,9 @@ document.ready.then(() => {
   const targetedTagPlacements = [
     'post_comments',
     'post_sidebar',
+    'sidebar_right',
+    'sidebar_right_second',
+    'sidebar_right_third',
     'feed_first',
     'feed_second',
     'feed_third',
