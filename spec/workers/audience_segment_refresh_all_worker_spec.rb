@@ -18,10 +18,10 @@ RSpec.describe AudienceSegmentRefreshAllWorker, type: :worker do
 
   include_examples "#enqueues_on_correct_queue", "low_priority"
 
-  it "refreshes all active ads' segments", sidekiq: :inline do
-    allow(AudienceSegment).to receive(:find).and_call_original
-    segment = approved_and_published_ad.audience_segment
-    worker.perform
-    expect(AudienceSegment).to have_received(:find).with(segment.id).once
+  it "queues up the jobs correctly" do
+    expect do
+      worker.perform
+    end.to change(AudienceSegmentRefreshWorker.jobs, :size).by(1)
+    expect(AudienceSegmentRefreshWorker.jobs.last["args"]).to eq([approved_and_published_ad.audience_segment.id])
   end
 end
