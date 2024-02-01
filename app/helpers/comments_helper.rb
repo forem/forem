@@ -14,17 +14,13 @@ module CommentsHelper
     !(commentable.any_comments_hidden || any_hidden_negative_comments?(commentable))
   end
 
-  def article_comment_tree(article, count, order)
-    Comments::Tree.for_article(article, count, order, user_signed_in?)
+  def article_comment_tree(article, limit, order)
+    Comments::Tree.for_commentable(article, limit: limit, order: order, signed_in: user_signed_in?)
   end
 
   def podcast_comment_tree(episode)
-    Comments::Tree.for_episode(episode, user_signed_in?)
+    Comments::Tree.for_commentable(episode, signed_in: user_signed_in?, limit: 12)
   end
-
-  # def tree_for(comment, sub_comments, commentable)
-  #   nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
-  # end
 
   def comment_class(comment, is_view_root: false)
     if comment.root? || is_view_root
