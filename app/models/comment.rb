@@ -190,8 +190,6 @@ class Comment < ApplicationRecord
     Comments::CalculateScoreWorker.perform_async(id)
   end
 
-  # private_class_method :build_sort_query
-
   private
 
   def remove_notifications?

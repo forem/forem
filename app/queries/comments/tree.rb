@@ -1,6 +1,5 @@
 module Comments
   module Tree
-
     module_function
 
     def for_commentable(commentable, limit: 0, order: nil, include_negative: false)
@@ -29,5 +28,7 @@ module Comments
         "score DESC"
       end
     end
+
+    private_class_method :build_sort_query
   end
 end
