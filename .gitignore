@@ -117,6 +117,3 @@ doc/
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
-
-# pnpm store when using devcontainer
-.pnpm-store

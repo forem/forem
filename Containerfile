@@ -232,7 +232,9 @@ ENV BUNDLE_APP_CONFIG=.bundle
 RUN gem update --system && \
     gem install bundler
 
-RUN corepack enable pnpm
+ENV PNPM_HOME="/pnpm"
+RUN corepack enable pnpm && \
+    pnpm set store-dir "${PNPM_HOME}/store"
 
 # Create a directory for the app code
 RUN mkdir -p /app
