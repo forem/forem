@@ -1,0 +1,235 @@
+---
+ua:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: Обмежити реєстрацію лише для певних електронних адрес? (список, розділений комами)
+            placeholder: dev.to, forem.com, codenewbie.org
+          apple_client:
+            description: Код "App Bundle" для служби автентифікації, налаштованої в Порталі розробників Apple
+          apple_key:
+            description: "Key ID" від служби автентифікації, налаштованої в Порталі розробників Apple
+          apple_pem:
+            description: Ключ "PEM" від служби автентифікації, налаштованої в Порталі розробників Apple
+          apple_team:
+            description: "Team ID" вашого облікового запису розробника Apple
+          blocked:
+            description: Блокувати реєстрацію з вказаних доменів? (список, розділений комами)
+          display_list:
+            description: Чи хочете ви відображати список дозволених доменів, або зберігати його в таємниці?
+          facebook_key:
+            description: Частина "App ID" в розділі основних налаштувань сторінки додатка на Порталі розробників Facebook
+          facebook_secret:
+            description: Частина "App Secret" в розділі основних налаштувань сторінки додатка на Порталі розробників Facebook
+          forem_key:
+            description: Ключ Forem
+          forem_secret:
+            description: Forem secret
+          github_key:
+            description: Частина "Client ID" на порталі GitHub Oauth Apps
+          github_secret:
+            description: Частина "Client Secret" на порталі GitHub Oauth Apps
+          google_key:
+            description: Частина "Client ID" на сторінці OAuth 2.0 на порталі Google Cloud Platform
+          google_secret:
+            description: Частина "Client Secret" на сторінці OAuth 2.0 на порталі Google Cloud Platform
+          invite_only:
+            description: Тільки користувачі, запрошені по електронній пошті, можуть приєднатися до цієї спільноти.
+          new_user_status:
+            description: Який статус ви хочете застосувати до нових користувачів?
+            placeholder: Добре стояння
+          providers:
+            description: Як користувачі можуть увійти в систему?
+          recaptcha_secret:
+            description: Додайте секретний ключ для Google reCAPTCHA, який використовується для повідомлення про зловживання
+            placeholder: Який секретний ключ Google reCAPTCHA?
+          recaptcha_site:
+            description: Додайте ключ сайту для Google reCAPTCHA, який використовується для повідомлення про зловживання
+            placeholder: Який ключ сайту Google reCAPTCHA?
+          require_recaptcha:
+            description: Людям доведеться заповнити captcha, коли вони створюють новий обліковий запис у вашій спільноті
+          twitter_key:
+            description: Частина "API key" від споживчих ключів на порталі розробників Twitter.
+          twitter_secret:
+            description: Частина "API secret key" від споживчих ключів на порталі розробників Twitter.
+        campaign:
+          articles_approval:
+            placeholder: Історії кампанії з'являються на бічній панелі з підтвердженням?
+          articles_expiry:
+            description: Встановлює час закінчення терміну дії статей (в тижнях) для відображення на бічній панелі кампанії
+          call_to_action:
+            description: Цей текст заповнює кнопку заклику до дії на бічній панелі кампанії
+            placeholder: Поділіться своїм проектом
+          display_name:
+            description: Цей текст відображається у відношенні до кампанії в заголовках тощо.
+            placeholder: Моя велика кампанія
+          featured:
+            description: Пости з якими тегами будуть висвітлені на бічній панелі кампанії (розділені комами, лише літери)
+            placeholder: 'Список тегів кампанії: розділені комами, лише літери, наприклад, shecoded,theycoded'
+          hero_html:
+            description: Назва Hero HtmlVariant
+          sidebar_enabled:
+            placeholder: Бічна панель кампанії включена чи ні
+          sidebar_image:
+            placeholder: Використовується вгорі бічної панелі кампанії
+          url:
+            description: https://url.com/lander
+            placeholder: URL, до якого буде вести зображення бічної панелі кампанії
+        community:
+          copyright:
+            description: Використовується для позначення року створення цього форуму.
+          description:
+            description: Використовується в мета-тегах опису тощо.
+            placeholder: Чудова спільнота добрих та гостинних людей.
+          emoji:
+            description: Використовується в тегах заголовків по всьому сайту поряд з назвою спільноти
+          member:
+            description: Використовується для визначення того, як буде називатися учасник, наприклад, розробник, любитель тощо.
+            placeholder: користувач
+          name:
+            description: Використовується як основне ім'я для вашого Forem, наприклад, DEV, DEV Community, The DEV Community тощо.
+            placeholder: Новий Forem
+          staff:
+            description: Обліковий запис, який виступає як автоматизований 'персонал' - в основному використовується для привітального потоку.
+          tagline:
+            description: Використовується в модальному вікні реєстрації.
+            placeholder: Ми - місце, де автомобілісти діляться, слідкують за новинами та розвиваються
+        general:
+          ahoy_tracking:
+            description: Відстежуйте візити та події - дані зберігаються у вашій базі даних. Для вступу в силу змін цієї конфігурації потрібен перезапуск.
+          billboard_enabled_countries:
+            description: Країни, які можуть бути геоорієнтовані на білбордах. Клацніть на вибрану країну, щоб перемкнути цільове встановлення на рівні підкраїни.
+          contact_email:
+            description: Використовується для контактних посилань. Будь ласка, надайте електронну адресу, за якою користувачі можуть зв'язатися з вами або вашою командою.
+          credit:
+            large:
+              description: Ціна за велику покупку кредитів (100 - 999 кредитів).
+            medium:
+              description: Ціна за середню покупку кредитів (10 - 99 кредитів).
+            small:
+              description: Ціна за малу покупку кредитів (<10 кредитів).
+            xlarge:
+              description: Ціна за дуже велику покупку кредитів (1000 кредитів або більше).
+          favicon:
+            description: Використовується як піктограма вкладки браузера.
+          ga_tracking:
+            description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
+          ga_analytics_4:
+            description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
+          cookie_banner_user_context:
+            description: Використовується для визначення того, чи слід відображати банер з інформацією про файли cookie на основі контексту користувача (тобто ввійшов в систему чи ні)
+          cookie_banner_platform_context:
+            description: Використовується для визначення того, чи слід відображати банер з інформацією про файли cookie на основі платформи (тобто веб або мобільний)
+          hashtag:
+            description: Використовується як хештег у спільноті Twitter
+            placeholder: '#DEVCommunity'
+          health:
+            description: Використовується для автентифікації на ваших контрольних точках перевірки здоров'я.
+            placeholder: безпечний токен
+          logo_png:
+            description: Використовується як додатковий логотип на місцях, таких як модальні вікна входу, онбординг, значки Apple touch. Рекомендований мінімальний розмір 512x512px
+          logo_svg:
+            description: Це логотип, який в даний час використовується в верхньому лівому куті вашого Forem. Однак після випуску він буде застарілий на користь логотипу вище.
+          mailchimp_api:
+            description: Ключ API, який використовується для підключення облікового запису Mailchimp. Знаходиться в бекенді Mailchimp
+          mailchimp_mod:
+            description: Ідентифікатор розсилки для модераторів спільноти
+          mailchimp_news:
+            description: Основний ідентифікатор розсилки, також відомий як ідентифікатор аудиторії
+          mailchimp_tag_mod:
+            description: Ідентифікатор розсилки для модераторів тегів
+          main_social:
+            description: Використовується як основне зображення в соціальних мережах та OpenGraph. Рекомендований відношення сторін 16:9 (600x337px,1200x675px)
+          mascot_image:
+            description: Використовується як зображення маскота.
+          mascot_user:
+            description: Обліковий запис маскота
+          meta_keywords:
+            description: 'Список дійсних ключових слів: розділені комою, лише букви, наприклад, інженерія, розробка'
+          onboarding_newsletter_content:
+            description: "Використовуйте це поле, щоб встановити заголовок і підзаголовок для кроку пропозиції розсилки вашого листа. Утримуйтеся від застосування зайвих деталей."
+            placeholder: "Ви можете налаштувати зображення, заголовок та підзаголовок через markdown"
+          onboarding_newsletter_opt_in_head:
+            description: "Заголовок прапорця розсилки новинного листа"
+            placeholder: "Наприклад, Так, підпишіть мене на щотижневий новинний лист"
+          onboarding_newsletter_opt_in_subhead:
+            description: "Підзаголовок прапорця розсилки новинного листа"
+            placeholder: "Наприклад, Будьте впевнені, ми поважаємо вашу конфіденційність. Ваша електронна пошта буде використана лише для нашого новинного листа та не буде надана іншим особам."
+          payment:
+            description: 'Використовується для веб-монетизації на всьому сайті. Див .: https://github.com/forem/forem/pull/6345'
+          periodic:
+            description: Визначає, як часто надсилати періодичні електронні дайджести (у днях)
+          sidebar:
+            description: Визначає, які теги показуються у правій бічній панелі головної сторінки
+            placeholder: Список дійсних, розділених комами тегів, наприклад, help,discuss,explainlikeimfive,meta
+          stripe_api:
+            description: 'Секретний ключ Stripe для отримання платежів. Див .: https://stripe.com/docs/keys'
+          stripe_key:
+            description: 'Публічний ключ Stripe для отримання платежів. Див .: https://stripe.com/docs/keys'
+          tags:
+            description: Визначає, які теги пропонуються новим користувачам під час онбордингу (розділені комами, лише букви)
+            placeholder: 'Список дійсних тегів: розділені комами, лише букви, наприклад, beginners,javascript,ruby,swift,kotlin'
+          video:
+            description: Secret key used to allow AWS video encoding through the VideoStatesController
+        rate_limit:
+          new_days:
+            description: Кількість днів, протягом яких користувач вважається новим. За замовчуванням - 3 дні, але ви можете повністю вимкнути це, введучи 0.
+          spam:
+            description: Індивідуальні (без врахування регістру) фрази, які спричиняють сповіщення про спам, розділені комами.
+            placeholder: вживані автомобілі поруч з вами, чіткий бонус pokemon
+        smtp:
+          address:
+            description: Адреса віддаленого поштового сервера
+            placeholder: наприклад, smtp.gmail.com
+          authentication:
+            description: Якщо ваш поштовий сервер вимагає аутентифікації, вам потрібно вказати тип аутентифікації тут
+            placeholder: наприклад, простий, логін або cram_md5
+          domain:
+            description: Якщо вам потрібно вказати домен HELO, ви можете зробити це тут
+          password:
+            description: Якщо ваш поштовий сервер вимагає аутентифікації, скопіюйте пароль з вашого сервера
+          port:
+            description: Порт, на якому працює ваш поштовий сервер
+            placeholder: '25'
+          user_name:
+            description: Якщо ваш поштовий сервер вимагає аутентифікації, скопіюйте ім'я користувача з вашого сервера
+          from_email:
+            description: Адреса електронної пошти, з якої мають бути надіслані листи
+          reply_to:
+            description: Адреса електронної пошти, на яку користувачі можуть відповісти
+        user_experience:
+          default_font:
+            description: Визначає шрифт за замовчуванням для читання (зареєстровані користувачі можуть змінити його в налаштуваннях UX)
+          default_locale:
+            description: Визначає мову та локалізацію за замовчуванням для Forem (наразі в експериментальній бета-версії)
+          feed_strategy:
+            description: 'Визначає основний алгоритм стратегії новин, яку використовує додаток: basic або large_forem_experimental (який слід використовувати лише для спільнот з 10 000 членів і більше)'
+            placeholder: basic
+          feed_style:
+            description: Визначає, який тип стрічки новин бачать користувачі за замовчуванням (з багатим вмістом, більш мінімальний тощо)
+            placeholder: basic, rich або compact
+          cover_image_height:
+            description: Визначає висоту обкладинки зображення, відносно ширини 1000px
+            placeholder: '420'
+          cover_image_fit:
+            description: Визначає стратегію обрізки обкладинки зображення
+            placeholder: crop, limit
+          home_feed:
+            description: Мінімальний рейтинг, необхідний для того, щоб повідомлення з'являлося на неавторизованій домашній сторінці.
+          index_minimum_date:
+            description: Мінімальна дата, необхідна для того, щоб повідомлення індексувалося пошуковими системами (Unix Timestamp).
+          index_minimum_score:
+            description: Мінімальний рейтинг, необхідний для того, щоб повідомлення індексувалося пошуковими системами.
+          primary_hex:
+            description: Визначає фон/рамку кнопок тощо. Має бути достатньо темним, щоб контрастувати з білим текстом.
+          tag_feed:
+            description: Мінімальний рейтинг, необхідний для того, щоб повідомлення з'являлося на сторінці тегу за замовчуванням.
+          head_content:
+            description: Контент, який буде додано в кінець тега head на кожній сторінці (ПОПЕРЕДЖЕННЯ — Це буде нерівномірно кешуватися протягом запиту сторінки. Дійте обережно).
+            placeholder: 'Залиште порожнім, якщо не бажаєте додавати нічого.'
+          bottom_of_body_content:
+            description: Контент, який буде додано в кінець тега body на кожній сторінці (ПОПЕРЕДЖЕННЯ — Це буде нерівномірно кешуватися протягом запиту сторінки. Дійте обережно).
+            placeholder: 'Залиште порожнім, якщо не бажаєте додавати нічого.'
+

@@ -1,0 +1,230 @@
+---
+ua:
+  contact_prompts:
+    if_any_questions_html: <a href="/contact">Зв'яжіться з нами</a>, якщо у вас є питання.
+    if_continued_trouble_html: <a href="/contact">Зв'яжіться з нами</a>, якщо у вас продовжуються проблеми.
+    if_we_can_help_html: <a href="/contact">Зв'яжіться з нами</a>, якщо ми можемо допомогти з чимось.
+  core:
+    add_comment: Додати коментар
+    beta: бета
+    comment: Коментар
+    copy_link: Скопіювати посилання
+    edit_profile: Редагувати профіль
+    follow: Слідкувати
+    follow_back: Підписатися назад
+    following: Підписки
+    like: Подобається
+    loading: завантаження...
+    reaction: Реакція
+    report_abuse: Повідомити про зловживання
+    search: Пошук
+    success_settings: Налаштування успішно оновлені.
+    counted_organization:
+      one: "%{count} організація"
+      few: "%{count} організації"
+      many: "%{count} організацій"
+      other: "%{count} організацій"
+    counted_user:
+      one: "%{count} особа"
+      few: "%{count} особи"
+      many: "%{count} осіб"
+      other: "%{count} осіб"
+    not_following: "Ви не підписані на нікого"
+    following_everyone: "Ви підписані на %{details} (всіх)"
+    you_are_following: "Ви підписані на"
+    and: "і"
+  datetime:
+    distance_in_words_ago: # https://github.com/openstreetmap/openstreetmap-website/issues/2255
+      about_x_hours:
+        one: близько 1 години тому
+        few: близько %{count} годин тому
+        many: близько %{count} годин тому
+        other: близько %{count} годин тому
+      about_x_months:
+        one: близько 1 місяця тому
+        few: близько %{count} місяців тому
+        many: близько %{count} місяців тому
+        other: близько %{count} місяців тому
+      about_x_years:
+        one: близько 1 року тому
+        few: близько %{count} років тому
+        many: близько %{count} років тому
+        other: близько %{count} років тому
+      almost_x_years:
+        one: майже 1 рік тому
+        few: майже %{count} роки тому
+        many: майже %{count} років тому
+        other: майже %{count} років тому
+      half_a_minute: півхвилини тому
+      less_than_x_seconds:
+        one: менше ніж 1 секунда тому
+        other: менше ніж %{count} секунд тому
+      less_than_x_minutes:
+        one: менше ніж 1 хвилина тому
+        other: менше ніж %{count} хвилин тому
+      over_x_years:
+        one: більше 1 року тому
+        few: більше %{count} років тому
+        many: більше %{count} років тому
+        other: більше %{count} років тому
+      x_seconds:
+        one: 1 секунда тому
+        few: %{count} секунди тому
+        many: %{count} секунд тому
+        other: %{count} секунд тому
+      x_minutes:
+        one: 1 хвилина тому
+        few: %{count} хвилини тому
+        many: %{count} хвилин тому
+        other: %{count} хвилин тому
+      x_days:
+        one: 1 день тому
+        few: %{count} дні тому
+        many: %{count} днів тому
+        other: %{count} днів тому
+      x_months:
+        one: 1 місяць тому
+        few: %{count} місяці тому
+        many: %{count} місяців тому
+        other: %{count} місяців тому
+      x_years:
+        one: 1 рік тому
+        few: %{count} роки тому
+        many: %{count} років тому
+        other: %{count} років тому
+    expired_ago:
+      about_x_hours:
+        one: "Закінчився близько 1 годину тому"
+        other: "Закінчився близько %{count} годин тому"
+      about_x_months:
+        one: "Закінчився близько 1 місяць тому"
+        other: "Закінчився близько %{count} місяців тому"
+      about_x_years:
+        one: "Закінчився близько 1 рік тому"
+        other: "Закінчився близько %{count} років тому"
+      almost_x_years:
+        one: "Закінчився майже 1 рік тому"
+        other: "Закінчився майже %{count} років тому"
+      half_a_minute: "Закінчився півхвилини тому"
+      less_than_x_seconds:
+        one: "Закінчився менше ніж 1 секунду тому"
+        other: "Закінчився менше ніж %{count} секунд тому"
+      less_than_x_minutes:
+        one: "Закінчився менше ніж за хвилину тому"
+        other: "Закінчився менше ніж за %{count} хвилин тому"
+      over_x_years:
+        one: "Закінчився більше 1 року тому"
+        other: "Закінчився більше %{count} років тому"
+      x_seconds:
+        one: "Закінчився 1 секунду тому"
+        other: "Закінчився %{count} секунд тому"
+      x_minutes:
+        one: "Закінчився 1 хвилину тому"
+        other: "Закінчився %{count} хвилин тому"
+      x_days:
+        one: "Закінчився 1 день тому"
+        other: "Закінчився %{count} днів тому"
+      x_months:
+        one: "Закінчився 1 місяць тому"
+        other: "Закінчився %{count} місяців тому"
+      x_years:
+        one: "Закінчився 1 рік тому"
+        other: "Закінчився %{count} років тому"
+    expires_in:
+      about_x_hours:
+        one: Закінчується приблизно через 1 годину
+        other: Закінчується приблизно через %{count} годин
+      about_x_months:
+        one: Закінчується приблизно через 1 місяць
+        other: Закінчується приблизно через %{count} місяці
+      about_x_years:
+        one: Закінчується приблизно через 1 рік
+        other: Закінчується приблизно через %{count} років
+      almost_x_years:
+        one: Закінчується майже через 1 рік
+        other: Закінчується майже через %{count} років
+      half_a_minute: Закінчується через півхвилини
+      less_than_x_seconds:
+        one: Закінчується менше ніж за 1 секунду
+        other: Закінчується менше ніж за %{count} секунд
+      less_than_x_minutes:
+        one: Закінчується менше ніж за хвилину
+        other: Закінчується менше ніж за %{count} хвилин
+      over_x_years:
+        one: Закінчується через більше 1 року
+        other: Закінчується через більше %{count} років
+      x_seconds:
+        one: Закінчується за 1 секунду
+        other: Закінчується за %{count} секунд
+      x_minutes:
+        one: Закінчується за 1 хвилину
+        other: Закінчується за %{count} хвилин
+      x_days:
+        one: Закінчується за 1 день
+        other: Закінчується за %{count} днів
+      x_months:
+        one: Закінчується за 1 місяць
+        other: Закінчується за %{count} місяців
+      x_years:
+        one: Закінчується за 1 рік
+        other: Закінчується за %{count} років
+  billboard:
+    promoted: Продвигнуто
+    menu:
+      aria_label: Перемикання випадаючого меню
+      icon: Меню зі списком
+      manage_preferences: Управління налаштуваннями
+      what_is_a_billboard: Що таке рекламна дошка?
+      report_billboard: Повідомити про рекламну дошку
+  errors:
+    messages:
+      accepted: повинно бути прийнято
+      bad_protocol: повинно починатися з %{protocols}
+      bad_uri: є недійсним URL
+      blank: не може бути порожнім
+      confirmation: не співпадає з %{attribute}
+      contains_prohibited_characters: містить неалфавітно-цифрові або заборонені символи Юнікоду
+      empty: не може бути порожнім
+      equal_to: повинно бути рівним %{count}
+      even: повинно бути парним
+      exclusion: зарезервоване
+      general: 'Помилка: %{errors}'
+      greater_than: повинно бути більше ніж %{count}
+      greater_than_or_equal_to: повинно бути більше або рівне %{count}
+      inclusion: не включено в список
+      invalid: є недійсним
+      less_than: повинно бути менше ніж %{count}
+      less_than_or_equal_to: повинно бути менше або рівне %{count}
+      model_invalid: 'Валідація не вдалася: %{errors}'
+      not_a_number: не є числом
+      not_an_integer: повинно бути цілим числом
+      odd: повинно бути непарним
+      other_than: повинно бути відмінним від %{count}
+      present: повинно бути порожнім
+      required: повинно існувати
+      taken: вже зайнято
+      too_long:
+        one: занадто довге (максимум 1 символ)
+        other: занадто довге (максимум %{count} символів)
+      too_short:
+        one: занадто коротке (мінімум 1 символ)
+        other: занадто коротке (мінімум %{count} символів)
+      try_again_email: 'Сталася помилка. Будь ласка, спробуйте ще раз або надішліть електронного листа за адресою: %{email}'
+      wrong_length:
+        one: має неправильну довжину (повинен бути 1 символ)
+        other: має неправильну довжину (повинен бути %{count} символів)
+  time:
+    formats:
+      admin_user: "%Y-%m-%d, %H:%M"
+      comment: "%B %d, %Y"
+      email_verified: "%b %e '%y, %H:%M"
+      github: "%b %d, %Y"
+      json: "%b %e, %Y"
+      medium: "%b %-d, %Y"
+      members: "%d %b"
+      members_with_year: "%d %b, %Y"
+      reddit: "%b %e '%y"
+      short: "%b %-e"
+      short_with_yy: "%b %-d '%y"
+      short_with_year: "%b %-e, %Y"
+      stackexchange: "%b %e '%y"

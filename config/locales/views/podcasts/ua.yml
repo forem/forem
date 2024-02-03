@@ -1,0 +1,37 @@
+---
+ua:
+  views:
+    podcasts:
+      podcasts:
+        meta:
+          title: Подкасти
+          description: Відкрийте для себе технічні подкасти для %{member}
+          og:
+            title: Подкасти на %{community}
+        browse: Перегляд
+        heading: Подкасти
+        close: "×"
+        form:
+          heading: Запропонувати Подкаст
+          errors:
+            one: '1 помилка при створенні подкаста:'
+            other: "%{count} помилок при створенні подкаста:"
+          owner: Я є власником цього подкасту
+          return: "< повернутися до подкастів"
+          suggest: Запропонувати
+        list: подкасти
+        listen: Натисніть тут, щоб завантажити/прослухати
+        source: Джерело випуску
+        statuses:
+          ssl_failed: Помилка перевірки SSL-сертифіката під час отримання feed_url подкасту
+          unparsable: RSS подкасту не вдалося розібрати
+          unplayable: Цей подкаст може бути непридатним для програвання у браузері
+          unreachable: feed_url подкасту недоступний
+        speed: 1x
+        tag: подкаст
+        initializing: ініціалізація...
+        unsupported: Ваш браузер не підтримує елемент аудіо.
+        featured_shows: Рекомендовані шоу
+        latest_episodes: Найновіші епізоди
+        suggest_a_podcast: Запропонувати Подкаст
+        view_all_podcasts: Переглянути всі подкасти

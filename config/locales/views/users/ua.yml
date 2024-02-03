@@ -1,0 +1,97 @@
+---
+ua:
+  views:
+    users:
+      meta:
+        og:
+          title: "%{user} — Профіль %{community}"
+      comments_locked_cta:
+        title: Хочете зв'язатися з %{user}?
+        description: Створіть обліковий запис, щоб зв'язатися з %{user}. Ви також можете увійти нижче, якщо вже маєте обліковий запис.
+        create_account: Створити обліковий запис
+        already_have_an_account: Вже маєте обліковий запис?
+        sign_in: Увійти
+      comments:
+        all:
+          one: Всі %{count} коментар
+          other: Всі %{count} коментарів
+        last:
+          one: Останній %{count} коментар
+          other: Останні %{count} коментарів
+        recent: Недавні коментарі
+        view: Переглянути всю активність
+        view_all:
+          one: Переглянути всі %{count} коментар
+          other: Переглянути всі %{count} коментарів
+        view_last:
+          one: Переглянути останній 1 коментар
+          other: Переглянути останні %{count} коментарів
+      github:
+        heading: Репозиторії GitHub
+        fork: Форкнути
+        stars:
+          one: 1 зірка
+          other: "%{count} зірок"
+      pin_icon: Pin
+      pinned: Закріплено
+      profile_fields:
+        bio:
+          label: Біографія
+          placeholder: Коротка біографія...
+        display_email_on_profile: Показувати електронну адресу в профілі
+        location:
+          label: Місцезнаходження
+          placeholder: Галифакс, Нова Шотландія
+        website:
+          label: URL веб-сайту
+          placeholder: https://вашсайт.com
+        education: Освіта
+        currently learning: Вивчає зараз
+        currently hacking on: Зараз штовхає
+        available for: Доступно для
+        skills/languages: Навички/Мови програмування
+        work: Робота
+      side:
+        comment:
+          icon: Comment
+          text:
+            one: 1 коментар написаний
+            other: "%{count} коментарів написано"
+        org: Організації
+        post:
+          icon: Пост
+          text:
+            one: 1 пост опубліковано
+            other: "%{count} постів опубліковано"
+        tag:
+          icon: Тег
+          text:
+            one: 1 тег відстежено
+            other: "%{count} тегів відстежено"
+      signout:
+        meta:
+          title: Підтвердження виходу - %{community}
+        heading: Ви впевнені, що хочете вийти?
+        'yes': Так, вийти
+      block: Заблокувати @%{user}
+      details: Деталі профілю %{user}
+      dropdown: Дії користувача
+      email_icon: Адреса електронної пошти
+      empty: 404 біо не знайдено
+      flag: Позначити як спам @%{user}
+      follow: Слідкувати
+      joined:
+        icon: Приєднався
+        text_html: "Приєднався %{date}"
+      location_icon: Місцезнаходження
+      logo: Фото профілю %{user}
+      more: Додаткова інформація про @%{user}
+      send_pm:
+        code: Кодекс поведінки
+        notice_html: Усі приватні взаємодії <b>повинні</b> дотримуватися %{code}.
+        placeholder: Введіть ваше повідомлення тут...
+        submit: Надіслати
+      social: Сайт %{service}
+      unflag: Відмінити позначку @%{user}
+      website: Особистий веб-сайт
+

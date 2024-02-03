@@ -1,0 +1,5 @@
+---
+ua:
+  decorators:
+    article_decorator:
+      tagged_with: " Позначено тегами %{cached_tag_list}."

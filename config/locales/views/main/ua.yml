@@ -1,0 +1,73 @@
+---
+ua:
+  views:
+    main:
+      aria_home: "%{community} Головна"
+      header:
+        create_account: Створити обліковий запис
+        login: Увійти
+        nav:
+          aria_label: Меню навігації
+        moderation:
+          aria_label: Модерація
+          icon: Модерація
+        notifications:
+          aria_label: Сповіщення
+          icon: Сповіщення
+        skip: Перейти до контенту
+      modal:
+        create_account:
+          aria_label: Створити новий обліковий запис
+          text: Створити обліковий запис
+        login:
+          aria_label: Увійти
+          text: Увійти
+      nav:
+        admin: Адміністратор
+        dashboard: Панель керування
+        placeholder: "..."
+        list: Список для читання
+        moderator_center: Центр модерації
+        other: Інше
+        settings: Налаштування
+      nav_name:
+        About: Про нас
+        Code of Conduct: Кодекс поведінки
+        Contact: Контакти
+        FAQ: Часті питання
+        Home: Головна
+        Listings: Оголошення
+        Podcasts: Подкасти
+        Privacy Policy: Політика конфіденційності
+        Reading List: Список для читання
+        Tags: Теги
+        Terms of use: Умови використання
+        Videos: Відео
+      side:
+        active_discussions: "Активні обговорення"
+        listings:
+          heading: Оголошення
+          all: Переглянути всі
+          new: Створити оголошення
+        trend: Трендові матеріали/ресурси
+        recent: Останні запити
+      tags:
+        aria_label: Налаштування пріоритету тегів
+        follow: Підписатися
+        my_tags: Мої теги
+        popular_tags: Популярні теги
+      footer:
+        built:
+          text_html: Побудовано на %{forem} — відкритому %{opensource} програмному забезпеченні, яке приводить у дію %{dev} та інші спільноти.
+          forem: Forem
+          opensource: відкритому вихідному коді
+          dev: DEV
+        desc_html: "%{community} — %{desc}"
+        logo: Логотип Forem
+        powered:
+          text_html: Зроблено з любов'ю та %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: Ruby on Rails
+        sidebar_desc_html: "%{community}\n%{desc}"
+      create_post: Створити публікацію
+      signout: Вийти
+

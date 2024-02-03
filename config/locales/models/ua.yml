@@ -1,0 +1,141 @@
+---
+ua:
+  models:
+    api_secret:
+      api_limit_reached: Досягнуто обмеження API-секрету у 10 запитів на користувача
+    application_record:
+      uninferrable: Не вдалося визначити декоратор для %{class}.
+    article:
+      a_post_by: Публікація від %{user_name}
+      video_unpermitted: не може бути додане учасником без дозволу
+      video_processing: не може бути встановлено true, якщо відео ще обробляється
+      cannot_search_tags_for: 'Не вдається знайти теги для: %{tag}'
+      cannot_search_tags_for_tags: 'Не вдається знайти теги для: %{tags}'
+      unique_coauthor: ID співавтора має бути унікальним
+      too_many_tags: перевищено максимальну кількість тегів (4)
+      is_too_long: занадто довгий.
+      invalid_date: має бути введений у форматі DD/MM/YYYY з поточною або минулою датою
+      series_unpermitted: має бути однією, до якої у вас є дозвіл на публікацію
+      invalid_coauthor: повинні бути дійсні ідентифікатори користувачів
+      same_author: не повинно бути тим самим користувачем, що і автор
+      must_not_have_spaces: не повинно містити пробіли
+      published: Опубліковано
+      unique_url: вже зайнято. Зверніться за додатковою інформацією на електронну адресу %{email}.
+      future_or_current_published_at: дозволено лише майбутнє або поточне значення published_at
+      immutable_published_at: оновлення published_at для статей, які вже були опубліковані, не допускається
+      mention_too_many:
+        one: Ви не можете відмічати більше %{count} користувача у публікації!
+        other: Ви не можете відмічати більше %{count} користувачів у публікації!
+    audience_segment:
+      type_ofs:
+        manual: Керований в іншому місці
+        trusted: Повірені
+        posted: Мають принаймні один пост
+        no_posts_yet: Ще не публікували пости
+        dark_theme: Увімкнено темний режим
+        light_theme: Увімкнено світлий режим
+        no_experience: Не встановлено рівень досвіду
+        experience1: Рівень досвіду: 1
+        experience2: Рівень досвіду: 2
+        experience3: Рівень досвіду: 3
+        experience4: Рівень досвіду: 4
+        experience5: Рівень досвіду: 5
+    billboard:
+      invalid_location: '%{location} не є включеною цільовою кодом ISO 3166-2'
+    broadcast:
+      single_active: У вас може бути лише одне активне оголошення вітальний вітальність
+    comment:
+      deleted: '[видалено]'
+      has_been_deleted: '%{type} було видалено.'
+      hidden: '[приховано автором поста]'
+      image_only: '[зображення]'
+      is_not_valid: недійсний.
+      locked: обговорення заблоковано для цього поста
+      published_article: не є опублікованою статтею
+      type:
+        Article: Стаття
+        item: елемент
+        PodcastEpisode: Випуск подкасту
+      suspended_too_many: Користувача заблоковано за занадто багато спамових взаємодій, викликаних автоматичною видачею.
+      mention_too_many:
+        one: Ви не можете згадати більше %{count} користувачів у коментарі!
+        other: Ви не можете згадати більше %{count} користувачів у коментарі!
+    feedback_message:
+      reported: '(ви) раніше повідомили про цей URL.'
+    github_issue:
+      issue_comment_not_found: Коментар до проблеми %{issue_id} не знайдено
+      issue_not_found: Проблема %{issue_id} не знайдена
+    html_variant:
+      no_edits: не можна змінити після публікації та схвалення
+    identity:
+      no_email_msg: Електронна адреса не знайдена. Будь ласка, пов'яжіть свій обліковий запис %{provider}, щоб уникнути помилок.
+    listing:
+      too_many_tags: перевищує максимум з 8 тегів
+      too_many_linebreaks: має занадто багато переносів рядка. Дозволено не більше 12.
+      image_not_allowed: не може містити зображень.
+      liquid_not_allowed: не може містити спеціальних тегів.
+    mention:
+      is_not_valid: недійсний.
+    organization:
+      integer_only: Лише цілі числа. Знаки не дозволяються.
+      reserved_word: '%<value>s є зарезервованим словом. Зверніться до адміністраторів сайту, щоб отримати допомогу з реєстрацією вашої організації.'
+    page:
+      body_must_exist: має існувати, якщо body_html або body_json не існує.
+    podcast_episode_appearance:
+      provided_role_is_not_valid: вказана роль не є дійсною
+    poll_skip:
+      cannot_vote_more_than_once: не можна голосувати більше одного разу в одному опитуванні
+    poll_vote:
+      cannot_vote_more_than_once: не можна голосувати більше одного разу в одному опитуванні
+    profile_pin:
+      only_five: не може мати більше, ніж п'ять загальних закріплених повідомлень
+      pin_unpermitted: треба мати відповідні дозволи для закріплення
+    rating_vote:
+      not_permitted: не має дозволу на здійснення цієї дії.
+    reaction:
+      is_not_valid: не валід.
+    response_template:
+      user_nil_only: не може мати пов'язаного ідентифікатора користувача.
+      comment_markdown: Шаблони коментарів повинні використовувати Markdown як тип вмісту.
+      email_text: Шаблони електронної пошти повинні використовувати простий текст або HTML як тип вмісту.
+      limit_reached: Досягнуто ліміту відповідей, 30 на користувача.
+    settings:
+      campaign:
+        share_your_project: Поділіться своїм проектом
+      community:
+        message: не може містити символи "<" чи ">"
+        new_forem: Новий Forem
+        user: користувач
+      general:
+        community_sponsors: Спонсори спільноти
+        the_community_mascot: Маскот спільноти
+      user_experience:
+        message: 'повинен бути 3 або 6 символів HEX формату (починається з #)'
+    tag:
+      alias_for: псевдонім повинен посилатися на існуючий тег
+    tag_adjustment:
+      too_many_tags: максимум 4 теги на статтю.
+      unpermitted: бракує долзволу на редагування цих тегів
+      not_live: обраний для видалення не є поточним активним тегом.
+      unique: не може бути вже налаштованим тегом
+    tweet:
+      tweet_not_found: Твіт не знайдено
+      authentication_error: Помилка автентифікації; будь ласка, зв'яжіться з вашим адміністратором щодо можливого відсутності ключів Twitter
+    user:
+      could_not_send: не вдалося відправити підтвердження %{e_message}
+      password_not_matched: не відповідає підтвердженню пароля
+      has_been_banished: був вигнаний.
+      user_could_not_be_saved: Користувача не вдалося зберегти. %{e_message}
+    user_block:
+      cant_be_the_same: не може бути таким самим, як blocked_id
+    user_subscription:
+      non_apple: Неможливо підписатися з приватним профілем Apple. Будь ласка, оновіть електронну адресу.
+      source_not_found: Джерело не знайдено. Будь ласка, переконайтеся, що ваш %{source} активний!
+      not_enabled: Підписки користувачів не увімкнені для цього джерела.
+    users:
+      deleted_user:
+        name: '[Видалений користувач]'
+      setting:
+        invalid_hex: не є дійсним hex кольором
+        invalid_rss: не є дійсним RSS/Atom стрічкою
+

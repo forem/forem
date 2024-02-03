@@ -1,0 +1,27 @@
+---
+ua:
+  views:
+    actions:
+      copy:
+        text: Скопійовано в буфер обміну
+        button: Скопіювати посилання
+      more:
+        title: Більше...
+        aria_label: Опції для обміну
+      share:
+        facebook:
+          text: Поділитися на Facebook
+        hackernews:
+          text: Поділитися на Hacker News
+        linkedin:
+          text: Поділитися на LinkedIn
+        mastodon:
+          text: Поділитися на Mastodon
+        reddit:
+          text: Поділитися на Reddit
+        twitter:
+          text: Поділитися на Twitter
+          query: '"%{article}" від %{author}'
+        link: Поділитися...
+        report: Повідомити про порушення
+

@@ -1,0 +1,10 @@
+---
+ua:
+  views:
+    pagination:
+      aria_next: "Наступна сторінка"
+      aria_previous: "Попередня сторінка"
+  helpers:
+    page_entries_info:
+      more_pages:
+        display_entries: "%{first}&nbsp;-&nbsp;%{last} з %{total}"

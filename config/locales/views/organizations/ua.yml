@@ -1,0 +1,44 @@
+---
+ua:
+  views:
+    organizations:
+      empty: 404 біографія не знайдена
+      external:
+        icon: Значок зовнішнього посилання
+      follow: Підписатися
+      github:
+        icon: Логотип GitHub
+      joined:
+        icon: Приєднався
+        text_html: "Приєднався %{date}"
+      location:
+        icon: Місцезнаходження
+      logo: Зображення профілю %{org}
+      size: Співробітники
+      sponsor:
+        text: "%{level} Спонсор Спільноти ❤️"
+        level:
+          gold: Золото
+          silver: Срібло
+          bronze: Бронза
+          tag: Тег
+          media: Медіа
+          devrel: Devrel
+      stack: Наш стек
+      story: Наша історія
+      side:
+        post:
+          icon: Пост
+          text:
+            one: Опубліковано 1 пост
+            other: Опубліковано %{count} постів
+        member:
+          icon: Учасник
+          text:
+            one: 1 учасник
+            other: %{count} учасників
+      support: Email підтримки
+      team: Зустрічайте команду
+      all_members: Переглянути всіх учасників
+      twitter:
+        icon: Логотип Twitter

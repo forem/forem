@@ -1,0 +1,42 @@
+---
+ua:
+  views:
+    reactions:
+      category:
+        hands: Руки
+        like: Подобається
+        readinglist: Читати пізніше
+        thinking: Міркує
+        thumbsup: Палець догори
+        thumbsdown: Палець вниз
+        unicorn: Єдиноріг
+        vomit: Прапорець
+        lightbulb: Лампочка
+        raised_hands: Підняті руки
+        rocket: Ракета
+        exploding_head: Вибух голови
+        fire: Вогонь
+      drawer_button: Додати реакцію
+      summary:
+        count_html:
+          one: "%{count}%{start}\_реакція%{end}"
+          other: "%{count}%{start}\_реакції%{end}"
+        title: Реакції
+      like:
+        title: Подобається
+        aria_label: Подобається
+        icon: Кнопка серця
+        text: Подобається
+      unicorn:
+        title: Єдиноріг
+        aria_label: Зреагуйте із єдинорогом
+      readingList:
+        title: Зберегти
+        aria_label: Додати до списку читання
+        icon: Кнопка збереження
+        text: Зберегти
+      subscribe:
+        title: Підписатися на коментарі
+        aria_label: Підписатися на коментарі
+        icon: Кнопка збереження
+        text: Підписатися на коментарі

@@ -1,0 +1,33 @@
+---
+ua:
+  devise:
+    failure:
+      invited: У вас є невиконане запрошення, прийміть його, щоб завершити створення вашого облікового запису.
+    invitations:
+      edit:
+        header: Встановіть ваш пароль
+        submit_button: Давайте Почнемо
+      invitation_removed: Ваше запрошення було видалено.
+      invitation_token_invalid: Наданий токен запрошення недійсний!
+      new:
+        header: Надіслати запрошення
+        submit_button: Надіслати запрошення
+      no_invitations_remaining: Запрошень не залишилось
+      send_instructions: Електронний лист з запрошенням було відправлено на %{email}.
+      updated: Ваш пароль успішно встановлено.
+      updated_not_active: Ваш пароль успішно встановлено.
+    mailer:
+      invitation_instructions:
+        accept_instructions: Ви можете прийняти запрошення, перейшовши за цим посиланням
+        accept: Прийняти запрошення
+        accept_until: Це запрошення закінчиться %{due_date}.
+        hello: Привіт
+        ignore: Якщо ви не хочете приймати запрошення, проігноруйте цей електронний лист. Ваш обліковий запис не буде створено, поки ви не перейдете за посиланням вище та не встановите свій пароль.
+        someone_invited_you: Вас запрошено приєднатися до спільноти %{community_name} за адресою %{url}.
+        subject: Інструкції щодо запрошення
+  time:
+    formats:
+      devise:
+        mailer:
+          invitation_instructions:
+            accept_until_format: "%B %d, %Y %I:%M %p"

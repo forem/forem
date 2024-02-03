@@ -1,0 +1,66 @@
+---
+ua:
+  views:
+    tags:
+      meta:
+        title: Теги
+        description: Теги для стеження на %{community}
+        og:
+          description: "%{community} - це чудово!"
+      heading:
+        default: Теги
+        search_results: Результати пошуку для %{q}
+      search:
+        aria_labels:
+          search_input: Термін пошуку тегів
+          submit: Пошук тегів
+        placeholder: Пошук тега
+      edit:
+        meta:
+          title: Редагувати %{tag}
+        admin: "Адмін"
+        help: "Допомога"
+        view: "Перегляд"
+        form:
+          pretty_name:
+            label: Приємне ім'я
+            placeholder: Це назва вгорі сторінки тегу.
+          bg_color_hex:
+            label: Колір тегу
+          short_summary:
+            label: Короткий опис
+            placeholder: Короткий огляд того, що це за тег.
+          wiki_body_markdown:
+            label: Тіло вікі markdown
+            placeholder: Це розділ 'про'. Ви можете додати FAQ, додаткові ресурси тощо.
+          rules_markdown:
+            label: Правила markdown
+            placeholder: Необов'язково - можна використовувати для викликів, наприклад, правила подання.
+          submit: Зберегти
+      follow: Слідкувати
+      hide: Приховати
+      aria_labels:
+        follow: "Слідкувати за тегом: %{tag_name}"
+        hide: "Приховати тег: %{tag_name}"
+      following_tags: Слідковані теги
+      hidden_tags: Приховані теги
+      moderator:
+        text_html: "розділений комами, пробіл не обов'язковий. Приклад: %{code}"
+        code: 123
+        placeholder: "розділений комами, пробіл не обов'язковий. Приклад: 1,2,3"
+      published:
+        one: 1 пост
+        other: "%{count} пости"
+      sidebar:
+        about: Про #%{tag}
+        admin: Адміністратор
+        edit: Редагувати
+        guidelines: правила подання
+        moderate: Модерувати
+        mods: модератори тегу
+        new: Створити Пост
+        older: 'Старі пости #%{tag}'
+        published:
+          one: 1 Опублікований Пост
+          other: "%{count} Опублікованих Постів"
+
