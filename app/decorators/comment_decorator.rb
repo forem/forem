@@ -3,6 +3,10 @@ class CommentDecorator < ApplicationDecorator
     score < Comment::LOW_QUALITY_THRESHOLD
   end
 
+  def super_low_quality
+    score < Comment::HIDE_THRESHOLD
+  end
+
   def published_timestamp
     return "" if created_at.nil?
 
