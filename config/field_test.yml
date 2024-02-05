@@ -55,8 +55,8 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
 
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
-  feed_strategy_starting_20240405:
-    started_at: 2024-04-05
+  feed_strategy_starting_20240205:
+    started_at: 2024-02-05
     variants:
       - 20240126-variant-c
       - 20240205-variant-a
@@ -86,7 +86,7 @@ experiments:
       - 20240126-variant-a
       - 20240126-variant-b
       - 20240126-variant-c
-    ended_at: 2024-04-05
+    ended_at: 2024-02-05
     winner: 20240126-variant-c
     weights:
       - 67
