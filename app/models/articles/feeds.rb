@@ -12,7 +12,8 @@ module Articles
     #       into an administrative setting.  Hence, I want to keep it
     #       a scalar to ease the implementation details of the admin
     #       setting.
-    NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS = 18
+    NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS =
+      (ApplicationConfig["NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS"] || 18).to_i
 
     DEFAULT_USER_EXPERIENCE_LEVEL = 5
     DEFAULT_NEGATIVE_REACTION_THRESHOLD = -10
@@ -47,7 +48,7 @@ module Articles
       time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
       return days_since_published.days.ago unless time_of_second_latest_page_view
 
-      time_of_second_latest_page_view - NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS.hours
+      time_of_second_latest_page_view - number_of_hours_to_offset_users_latest_article_views.hours
     end
 
     # Get the properly configured feed for the given user (and other parameters).
@@ -76,6 +77,10 @@ module Articles
     # @return [Articles::Feeds::LeverCatalogBuilder]
     def self.lever_catalog
       LEVER_CATALOG
+    end
+
+    def self.number_of_hours_to_offset_users_latest_article_views
+      (ApplicationConfig["NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS"] || 18).to_i
     end
 
     # rubocop:disable Metrics/BlockLength
