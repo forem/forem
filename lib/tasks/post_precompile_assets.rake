@@ -5,11 +5,12 @@ end
 
 task install_pnpm: :environment do
   system("corepack enable pnpm")
+  system("pnpm --version")
 end
 
-if ENV["HEROKU_APP_NAME"]
-  Rake::Task["javascript:install"].enhance(["install_pnpm"])
-end
+# if ENV["HEROKU_APP_NAME"]
+Rake::Task["javascript:install"].enhance(["install_pnpm"])
+# end
 
 Rake::Task["assets:precompile"].enhance do
   Rake::Task["after_assets_precompile"].execute
