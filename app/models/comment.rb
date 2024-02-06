@@ -10,6 +10,7 @@ class Comment < ApplicationRecord
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
   LOW_QUALITY_THRESHOLD = -75
+  HIDE_THRESHOLD = -400 # hide comments below this threshold
 
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
 
@@ -90,14 +91,6 @@ class Comment < ApplicationRecord
 
   alias touch_by_reaction save
 
-  def self.tree_for(commentable, limit = 0, order = nil)
-    commentable.comments
-      .includes(user: %i[setting profile])
-      .arrange(order: build_sort_query(order))
-      .to_a[0..limit - 1]
-      .to_h
-  end
-
   def self.title_deleted
     I18n.t("models.comment.deleted")
   end
@@ -112,17 +105,6 @@ class Comment < ApplicationRecord
 
   def self.build_comment(params, &blk)
     includes(user: :profile).new(params, &blk)
-  end
-
-  def self.build_sort_query(order)
-    case order
-    when "latest"
-      "created_at DESC"
-    when "oldest"
-      "created_at ASC"
-    else
-      "score DESC"
-    end
   end
 
   def search_id
@@ -207,8 +189,6 @@ class Comment < ApplicationRecord
   def calculate_score
     Comments::CalculateScoreWorker.perform_async(id)
   end
-
-  private_class_method :build_sort_query
 
   private
 
