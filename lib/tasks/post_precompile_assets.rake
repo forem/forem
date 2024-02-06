@@ -4,13 +4,12 @@ task after_assets_precompile: :environment do
 end
 
 task install_pnpm: :environment do
-  # print out HEROKU_SLUG_COMMIT to see if it's available
-  puts "HEROKU_SLUG_COMMIT: #{ENV.fetch('HEROKU_SLUG_COMMIT', nil)}"
-  puts "HEROKU_APP_NAME: #{ENV.fetch('HEROKU_APP_NAME', nil)}"
-  system("pnpm --version > /dev/null 2>&1") || system("corepack enable pnpm")
+  system("corepack enable pnpm")
 end
 
-Rake::Task["javascript:install"].enhance(["install_pnpm"])
+if ENV["HEROKU_APP_NAME"]
+  Rake::Task["javascript:install"].enhance(["install_pnpm"])
+end
 
 Rake::Task["assets:precompile"].enhance do
   Rake::Task["after_assets_precompile"].execute
