@@ -7,6 +7,14 @@ class DigestMailer < ApplicationMailer
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
 
     subject = generate_title
+
+    # set sendgrid category in the header using smtp api
+    # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header
+    if ForemInstance.sendgrid_enabled?
+      smtpapi_header = { category: ["Digest Email"] }.to_json
+      headers["X-SMTPAPI"] = smtpapi_header
+    end
+
     mail(to: @user.email, subject: subject)
   end
 
