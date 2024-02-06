@@ -2,6 +2,9 @@
   "name": "dev.to",
   "version": "1.0.0",
   "description": "Where programmers share ideas and help each other grow",
+  "engines": {
+    "node": "20.x"
+  },
   "packageManager": "pnpm@8.15.0",
   "main": "index.js",
   "directories": {
