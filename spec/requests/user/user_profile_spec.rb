@@ -96,13 +96,15 @@ RSpec.describe "UserProfiles" do
     context "when has comments" do
       before do
         create(:comment, user: user, body_markdown: "nice_comment")
-        create(:comment, user: user, score: Comment::LOW_QUALITY_THRESHOLD - 50, body_markdown: "bad_comment")
+        create(:comment, user: user, score: -100, body_markdown: "low_comment")
+        create(:comment, user: user, score: -401, body_markdown: "bad_comment")
       end
 
-      it "displays only good standing comments comments", :aggregate_failures do
+      it "displays good standing comments", :aggregate_failures do
         sign_in current_user
         get user.path
         expect(response.body).to include("nice_comment")
+        expect(response.body).not_to include("low_comment")
         expect(response.body).not_to include("bad_comment")
       end
 
@@ -235,7 +237,8 @@ RSpec.describe "UserProfiles" do
           suspended_user.add_role(:suspended)
           create(:article, user_id: user.id, published: false, published_at: Date.tomorrow)
 
-          expect { get "/#{suspended_user.username}" }.not_to raise_error(ActiveRecord::RecordNotFound)
+          get "/#{suspended_user.username}"
+          expect(response).to be_successful
         end
       end
 
