@@ -336,11 +336,21 @@ RSpec.describe "Dashboards" do
     end
 
     context "when logged in" do
-      it "renders the current user's followers" do
+      let(:spam_user) { create(:user, :spam) }
+      let(:suspended_user) { create(:user, :suspended) }
+
+      before do
         second_user.follow user
+        spam_user.follow user
+        suspended_user.follow user
         sign_in user
+      end
+
+      it "only includes good standing users as followers (not spam or suspended)", :aggregated_failures do
         get "/dashboard/user_followers"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(spam_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(suspended_user.name)
       end
     end
   end
