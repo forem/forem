@@ -68,7 +68,9 @@ class BillboardsController < ApplicationController
   end
 
   def return_test_billboard?
-    params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+    present_and_admin = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+    present_and_live = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && Billboard.approved_and_published.where(id: params[:bb_test_id]).any?
+    present_and_admin || present_and_live
   end
 
   def cookies_allowed?
