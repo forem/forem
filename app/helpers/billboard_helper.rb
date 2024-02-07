@@ -43,6 +43,6 @@ module BillboardHelper
     billboards = []
     billboards << Billboard.for_display(**common_params, area: "sidebar_right")
     billboards << Billboard.for_display(**common_params, area: "sidebar_right_second")
-    billboards << Billboard.for_display(**common_params, area: "sidebar_right_second")
+    billboards << Billboard.for_display(**common_params, area: "sidebar_right_third")
   end
 end
