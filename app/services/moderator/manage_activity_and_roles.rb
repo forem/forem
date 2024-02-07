@@ -33,6 +33,10 @@ module Moderator
       remove_tag_moderator_role
     end
 
+    def remove_notifications
+      Notifications::RemoveBySpammerWorker.perform_async(user.id)
+    end
+
     def remove_mod_roles
       @user.remove_role(:trusted)
       @user.remove_role(:tag_moderator)
@@ -73,6 +77,7 @@ module Moderator
       when "Spam"
         user.add_role(:spam)
         remove_privileges
+        remove_notifications
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
