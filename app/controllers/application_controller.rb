@@ -271,6 +271,14 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def client_geolocation
+    if session_current_user_id
+      request.headers["X-Client-Geo"]
+    else
+      request.headers["X-Cacheable-Client-Geo"]
+    end
+  end
+
   def forward_to_app_config_domain
     # Let's only redirect get requests for this purpose.
     return unless request.get? &&
