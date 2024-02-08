@@ -94,6 +94,14 @@ award_thumbs_up_badges:
     - ""
     - award_thumbs_up
     - ""
+award_first_post_badges:
+  description: "Awards First Post badges to users (runs daily at 02:00 UTC) "
+  cron: "0 2 * * *"
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_first_post
+    - ""
 resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"
