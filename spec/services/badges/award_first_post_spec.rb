@@ -33,6 +33,14 @@ RSpec.describe Badges::AwardFirstPost do
         Timecop.return
         expect { described_class.call }.to change(BadgeAchievement, :count).by(1)
       end
+
+      it "does not award the badge if the article score is less than zero" do
+        Timecop.freeze(2.days.ago) do
+          create(:article, user: create(:user), score: -1)
+        end
+        Timecop.return
+        expect { described_class.call }.not_to change(BadgeAchievement, :count)
+      end
     end
 
     context "when the user has a spam or suspended role" do
