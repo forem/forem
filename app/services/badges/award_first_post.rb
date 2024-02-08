@@ -8,6 +8,7 @@ module Badges
       Article.joins(:user)
         .where("articles.published_at > ?", 1.week.ago)
         .where("articles.published_at < ?", 1.hour.ago)
+        .where("articles.score >= ?", 0)
         .where(nth_published_by_author: 1)
         .where.not(users: { id: User.with_role(:spam).or(User.with_role(:suspended)) })
         .find_each do |article|
