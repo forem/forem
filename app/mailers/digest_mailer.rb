@@ -11,7 +11,7 @@ class DigestMailer < ApplicationMailer
     # set sendgrid category in the header using smtp api
     # https://docs.sendgrid.com/for-developers/sending-email/building-an-x-smtpapi-header
     if ForemInstance.sendgrid_enabled?
-      smtpapi_header = { category: ["Digest Email"] }.to_json
+      smtpapi_header = { category: "Digest Email" }.to_json
       headers["X-SMTPAPI"] = smtpapi_header
     end
 
