@@ -405,20 +405,22 @@ jobs:
           mv jest coverage/jest
       - uses: Wandalen/wretry.action@master
         with:
-          action: codecov/codecov-action@v3
+          action: codecov/codecov-action@v4
           with: |
             flags: ruby
             directory: coverage/simplecov
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
+            token: ${{ secrets.CODECOV_TOKEN }}
           attempt_limit: 5
           attempt_delay: 60000
       - uses: Wandalen/wretry.action@master
         with:
-          action: codecov/codecov-action@v3
+          action: codecov/codecov-action@v4
           with: |
             flags: jest, javascript
             directory: coverage/jest
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
+            token: ${{ secrets.CODECOV_TOKEN }}
           attempt_limit: 5
           attempt_delay: 60000
 
