@@ -35,6 +35,7 @@ class Follow < ApplicationRecord
       .where(followable_type: followable_type, followable_id: followable_id)
       .where("follows.follower_type = 'User'")
       .where("roles.name NOT IN (?) OR roles.name IS NULL", %w[suspended spam])
+      .distinct
   }
 
   counter_culture :follower, column_name: proc { |follow| COUNTER_CULTURE_COLUMN_NAME_BY_TYPE[follow.followable_type] },

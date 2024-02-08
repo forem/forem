@@ -262,6 +262,10 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def good_standing_followers_count
+    Follow.non_suspended("User", id).count
+  end
+
   def tag_line
     profile.summary
   end

@@ -76,7 +76,7 @@ class DashboardsController < ApplicationController
 
   def followers
     fetch_and_authorize_user
-    @follows = Follow.followable_user(@user.id)
+    @follows = Follow.non_suspended("User", @user.id)
       .includes(:follower).order(created_at: :desc).limit(follows_limit)
     @collections_count = collections_count(@user)
   end
