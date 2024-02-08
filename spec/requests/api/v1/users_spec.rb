@@ -155,6 +155,14 @@ RSpec.describe "Api::V1::Users" do
         response_user = response.parsed_body
         expect(response_user["followers_count"]).to eq(1)
       end
+
+      it "doesn't include spammers in followers_count" do
+        follower = create(:user, :spam)
+        create(:follow, followable: user, follower: follower)
+        get me_api_users_path, headers: auth_headers
+        response_user = response.parsed_body
+        expect(response_user["followers_count"]).to eq(0)
+      end
     end
   end
 

@@ -10,7 +10,7 @@ module Api
     private_constant :USERS_ATTRIBUTES_FOR_SERIALIZATION
 
     def users
-      @follows = Follow.followable_user(@user.id)
+      @follows = Follow.non_suspended("User", @user.id)
         .includes(:follower)
         .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
         .order(order_criteria)

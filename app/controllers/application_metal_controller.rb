@@ -15,4 +15,12 @@ class ApplicationMetalController < ActionController::Metal
   def logger
     ActionController::Base.logger
   end
+
+  def client_geolocation
+    if session_current_user_id
+      request.headers["X-Client-Geo"]
+    else
+      request.headers["X-Cacheable-Client-Geo"]
+    end
+  end
 end
