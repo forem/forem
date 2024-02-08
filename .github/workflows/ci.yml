@@ -225,7 +225,7 @@ jobs:
       DATABASE_NAME: Forem_prod_test
       APP_PROTOCOL: http://
       APP_DOMAIN: localhost:3000
-      HEROKU_APP_URL: practicaldev.herokuapp.com
+      HEROKU_APP_URL: example.herokuapp.com
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
