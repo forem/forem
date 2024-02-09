@@ -38,14 +38,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Look up if node_module cache exist
         id: cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           lookup-only: true
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v2-
       - name: Cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Look up if compiled assets exist
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: precompiled-asset
         with:
           fail-on-cache-miss: false
@@ -82,7 +82,7 @@ jobs:
           bundler-cache: true
         if: steps.precompiled-asset.outputs.cache-hit != 'true'
       - name: Cache node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -113,7 +113,7 @@ jobs:
           node-version-file: '.nvmrc'
           cache: yarn
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -157,7 +157,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: |
@@ -166,7 +166,7 @@ jobs:
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -213,7 +213,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -245,7 +245,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -287,7 +287,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -331,7 +331,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Restore compiled assets
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           fail-on-cache-miss: true
           path: |
@@ -340,7 +340,7 @@ jobs:
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', 'config/webpack/**', 'config/webpacker.yml', '**/package.json', '**/yarn.lock', '**/babel.config.js') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Restore node_modules
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
@@ -355,7 +355,7 @@ jobs:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
       - name: Cache cypress binary
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
           key: ${{ runner.os }}-cypress-binary-${{ hashFiles('**/yarn.lock') }}
@@ -405,20 +405,22 @@ jobs:
           mv jest coverage/jest
       - uses: Wandalen/wretry.action@master
         with:
-          action: codecov/codecov-action@v3
+          action: codecov/codecov-action@v4
           with: |
             flags: ruby
             directory: coverage/simplecov
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
+            token: ${{ secrets.CODECOV_TOKEN }}
           attempt_limit: 5
           attempt_delay: 60000
       - uses: Wandalen/wretry.action@master
         with:
-          action: codecov/codecov-action@v3
+          action: codecov/codecov-action@v4
           with: |
             flags: jest, javascript
             directory: coverage/jest
             fail_ci_if_error: ${{  github.ref != 'refs/heads/main' }}
+            token: ${{ secrets.CODECOV_TOKEN }}
           attempt_limit: 5
           attempt_delay: 60000
 
