@@ -278,6 +278,7 @@ class ApplicationController < ActionController::Base
       request.headers["X-Cacheable-Client-Geo"]
     end
   end
+  helper_method :client_geolocation
 
   def forward_to_app_config_domain
     # Let's only redirect get requests for this purpose.

@@ -23,4 +23,5 @@ class ApplicationMetalController < ActionController::Metal
       request.headers["X-Cacheable-Client-Geo"]
     end
   end
+  helper_method :client_geolocation
 end
