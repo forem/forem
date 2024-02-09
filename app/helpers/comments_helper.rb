@@ -14,20 +14,12 @@ module CommentsHelper
     !(commentable.any_comments_hidden || any_hidden_negative_comments?(commentable))
   end
 
-  def article_comment_tree(article, count, order)
-    @article_comment_tree ||= begin
-      collection = Comment.tree_for(article, count, order)
-      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
-      collection
-    end
+  def article_comment_tree(article, limit, order)
+    Comments::Tree.for_commentable(article, limit: limit, order: order, include_negative: user_signed_in?)
   end
 
   def podcast_comment_tree(episode)
-    @podcast_comment_tree ||= begin
-      collection = Comment.tree_for(episode, 12)
-      collection.reject! { |comment| comment.score.negative? } unless user_signed_in?
-      collection
-    end
+    Comments::Tree.for_commentable(episode, include_negative: user_signed_in?, limit: 12)
   end
 
   def comment_class(comment, is_view_root: false)
@@ -56,10 +48,6 @@ module CommentsHelper
     else
       I18n.t("helpers.comments_helper.author")
     end
-  end
-
-  def tree_for(comment, sub_comments, commentable)
-    nested_comments(tree: { comment => sub_comments }, commentable: commentable, is_view_root: true)
   end
 
   def should_be_hidden?(comment, root_comment)
