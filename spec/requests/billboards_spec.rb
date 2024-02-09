@@ -205,6 +205,21 @@ RSpec.describe "Billboards" do
         expect(response.body).not_to include(test_billboard.processed_html)
       end
 
+      it "does return live billboards for non-admin contexts" do
+        # Create a few live billboards which should not be returned
+        create_list(:billboard, 8, placement_area: "post_sidebar", approved: true, published: true)
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(billboard.processed_html)
+      end
+
       it "does not return the test billboard for non-admin users" do
         sign_out admin
         sign_in create(:user)

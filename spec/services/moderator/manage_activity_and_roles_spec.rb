@@ -250,6 +250,29 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     end
   end
 
+  describe "removes notifications when adding the spam role" do
+    let(:nice_article) { create(:article, user: user) }
+    let(:spam_user) { create(:user) }
+    let(:spam_article) { create(:article, user: spam_user) }
+    let(:spam_follow) { create(:follow, follower: spam_user, followable: user) }
+    let(:spam_comment) { create(:comment, user: spam_user, commentable: nice_article) }
+
+    before do
+      create(:notification, notifiable: spam_comment, user: user)
+      create(:notification, notifiable: spam_article, action: "Published", user: user)
+      create(:notification, notifiable: spam_follow, user: user)
+    end
+
+    it "removes notifications related to the spammer" do
+      expect(Notification.count).to eq(3)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          manage_roles_for(spam_user, user_status: "Spam")
+        end
+      end.to change(Notification, :count).by(-3)
+    end
+  end
+
   context "when not super admin" do
     before do
       admin.remove_role(:super_admin)
