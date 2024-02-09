@@ -94,12 +94,14 @@ module CommentsHelper
   private
 
   def nested_comments(tree:, commentable:, is_view_root: false)
-    comments = tree.map do |comment, sub_comments|
-      render("comments/comment", comment: comment, commentable: commentable,
-                                 is_view_root: is_view_root, is_childless: sub_comments.empty?,
-                                 subtree_html: nested_comments(tree: sub_comments, commentable: commentable))
+    comments = tree.filter_map do |comment, sub_comments|
+      is_childless = sub_comments.empty?
+      unless comment.decorate.super_low_quality && is_childless
+        render("comments/comment", comment: comment, commentable: commentable,
+                                   is_view_root: is_view_root, is_childless: is_childless,
+                                   subtree_html: nested_comments(tree: sub_comments, commentable: commentable))
+      end
     end
-
     safe_join(comments)
   end
 end

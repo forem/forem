@@ -144,9 +144,7 @@
       <% else %>
         <% Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?).each do |comment, sub_comments| %>
           <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-            <% unless comment.decorate.super_low_quality && sub_comments.empty? %>
-              <%= nested_comments(tree: { comment => sub_comments }, commentable: @commentable, is_view_root: true) %>
-            <% end %>
+            <%= nested_comments(tree: { comment => sub_comments }, commentable: @commentable, is_view_root: true) %>
           <% end %>
         <% end %>
       <% end %>
