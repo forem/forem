@@ -79,8 +79,24 @@ RSpec.describe "StoriesIndex" do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders billboards when published and approved" do
+    it "renders billboards when published and approved for sidebar right (first position)" do
       ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards when published and approved for sidebar right (second position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_second",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards when published and approved for sidebar right (third position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_third",
                               organization: org)
 
       get "/"
@@ -112,13 +128,6 @@ RSpec.describe "StoriesIndex" do
       billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
       get "/"
       expect(response.body).to include(billboard.processed_html)
-    end
-
-    it "shows listings" do
-      user = create(:user)
-      listing = create(:listing, user_id: user.id)
-      get "/"
-      expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
     it "does not set cache-related headers if private" do
@@ -212,72 +221,6 @@ RSpec.describe "StoriesIndex" do
 
         get root_path
         expect(response.body).not_to include(hero_html.html)
-      end
-    end
-
-    context "with campaign_sidebar" do
-      before do
-        allow(Settings::Campaign).to receive(:featured_tags).and_return("mytag,yourtag")
-        allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(7)
-
-        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
-        create(:article, approved: true, body_markdown: a_body, score: 1)
-        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
-        create(:article, approved: false, body_markdown: u_body, score: 1)
-      end
-
-      it "displays display name when it is set" do
-        allow(Settings::Campaign).to receive(:display_name).and_return("Backstreet is back")
-        get "/"
-        expect(response.body).not_to include("Backstreet is back (0)")
-      end
-
-      it "displays Stories fallback when display name is not set" do
-        allow(Settings::Campaign).to receive(:display_name).and_return("")
-        get "/"
-        expect(response.body).not_to include("Stories (0)")
-      end
-
-      it "doesn't display posts with the campaign tags when sidebar is disabled" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
-      end
-
-      it "doesn't display unapproved posts" do
-        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
-                                                      sidebar_image: "https://example.com/image.png",
-                                                      articles_require_approval: true)
-        Article.last.update_column(:score, -2)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
-      end
-
-      it "displays unapproved post if approval is not required" do
-        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true,
-                                                      sidebar_image: "https://example.com/image.png",
-                                                      articles_require_approval: false)
-        get "/"
-        expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
-      end
-
-      it "displays only approved posts with the campaign tags" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
-      end
-
-      it "displays sidebar url if url is set" do
-        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true, url: "https://campaign-lander.com",
-                                                      sidebar_image: "https://example.com/image.png")
-        get "/"
-        expect(response.body).to include('<a href="https://campaign-lander.com"')
-      end
-
-      it "does not display sidebar url if image is not present is set" do
-        allow(Settings::Campaign).to receive_messages(sidebar_enabled: true, url: "https://campaign-lander.com")
-        get "/"
-        expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
     end
 
