@@ -650,7 +650,7 @@ export const MultiSelectAutocomplete = ({
         </div>
         {showMaxSelectionsReached ? (
           <div className="c-autocomplete--multi__popover">
-            <span className="p-3">Only {maxSelections} selections allowed</span>
+            <span style="display:block" className="p-3">Only {maxSelections} selection allowed</span>
           </div>
         ) : null}
         {suggestions.length > 0 && allowSelections ? (
