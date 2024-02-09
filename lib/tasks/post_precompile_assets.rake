@@ -4,8 +4,9 @@ task after_assets_precompile: :environment do
 end
 
 task install_pnpm: :environment do
-  system("corepack enable pnpm")
+  system("npm install -g pnpm@8.15.0")
   system("pnpm --version")
+  system("echo 'pnpm installed'")
 end
 
 # if ENV["HEROKU_APP_NAME"]
