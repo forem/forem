@@ -118,6 +118,7 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v3-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v3-
+      - run: yarn install --immutable
       - name: rubocop
         uses: reviewdog/action-rubocop@v2
         with:
@@ -222,6 +223,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
+      - run: yarn install --immutable
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
