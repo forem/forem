@@ -1,6 +1,6 @@
 import { initializeDropdown } from './dropdownUtils';
 
-export function setupBillboardDropdown() {
+export function setupBillboardInteractivity() {
   const sponsorshipDropdownButtons = document.querySelectorAll(
     'button[id^=sponsorship-dropdown-trigger-]',
   );
@@ -23,6 +23,22 @@ export function setupBillboardDropdown() {
       }
     });
   }
+  const sponsorshipCloseButtons = document.querySelectorAll(
+    'button[id^=sponsorship-close-trigger-]',
+  );
+  if (sponsorshipCloseButtons.length) {
+    sponsorshipCloseButtons.forEach((sponsorshipCloseButton) => {
+      sponsorshipCloseButton.addEventListener('click', () => {
+        sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+      });
+      document.addEventListener('click', (event) => {
+        if (!event.target.closest('.js-billboard')) {
+          sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+        }
+      });
+    });
+  }
+
 }
 
 /**

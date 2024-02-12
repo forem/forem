@@ -53,6 +53,21 @@
   display: block;
 }
 
+.popover-billboard {
+  z-index: var(--z-popover);
+  animation: popoverEnter 0.5s;
+  box-shadow: 0 0 100px 60px rgba(0, 0, 0, 0.2) !important;
+  .text-styles {
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
+    font-size: 1.2em;
+  }
+  .sponsorship-dropdown {
+    top: auto;
+    bottom: var(--su-8);
+  }
+}
+
 .hero-billboard {
   margin: var(--su-2) 0 0;
   h1,
@@ -98,4 +113,16 @@
 .crayons-story.billboard .ltag_cta {
   padding-right: var(--su-7);
   padding-left: var(--su-7);
+}
+
+// fadeIn
+@keyframes popoverEnter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

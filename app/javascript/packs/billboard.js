@@ -1,7 +1,8 @@
-import { setupBillboardDropdown } from '../utilities/billboardDropdown';
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import {
   observeBillboards,
   executeBBScripts,
+  implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 
 export async function getBillboard() {
@@ -32,7 +33,6 @@ async function generateBillboard(element) {
 
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
-
       element.innerHTML = '';
       element.appendChild(generatedElement);
       element.querySelectorAll('img').forEach((img) => {
@@ -40,8 +40,9 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+      implementSpecialBehavior(element);
       executeBBScripts(element);
-      setupBillboardDropdown();
+      setupBillboardInteractivity();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.
