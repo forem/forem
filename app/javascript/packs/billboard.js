@@ -30,7 +30,6 @@ async function generateBillboard(element) {
     try {
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
-
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
       element.innerHTML = '';
@@ -40,8 +39,8 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
-      implementSpecialBehavior(element);
       executeBBScripts(element);
+      implementSpecialBehavior(element);
       setupBillboardInteractivity();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
