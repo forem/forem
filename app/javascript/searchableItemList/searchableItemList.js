@@ -19,7 +19,8 @@ export function onSearchBoxType(event) {
 export function selectTag(event) {
   event.preventDefault();
   const { value, dataset } = event.target;
-  const selectedTag = value ?? dataset.tag;
+  const selectedTagOrAll = value ?? dataset.tag;
+  const selectedTag = selectedTagOrAll?.match(/all tags/i) ? null : selectedTagOrAll;
   const component = this;
   const { query, statusView } = component.state;
 
