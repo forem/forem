@@ -80,6 +80,16 @@ RSpec.describe "Comments" do
       end
     end
 
+    context "when there are child spam comments" do
+      it "hides child spam comment if it has no children" do
+        create(:comment, commentable: article, score: -500, body_markdown: "child-spam-comment", parent: comment)
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("child-spam-comment")
+        expect(response.body).not_to include("Comment deleted")
+      end
+    end
+
     context "when the comment is a root" do
       it "displays the comment hidden message if the comment is hidden" do
         comment.update(hidden_by_commentable_user: true)

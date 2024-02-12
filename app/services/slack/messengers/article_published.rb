@@ -10,6 +10,7 @@ module Slack
       end
 
       def call
+        return if ENV["DISABLE_SLACK_NOTIFICATIONS"] == "true"
         return unless article.published && article.published_at > 10.minutes.ago
 
         message = I18n.t(

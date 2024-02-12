@@ -1,6 +1,6 @@
 module Badges
   class AwardFirstPost
-    BADGE_SLUG = "first-post".freeze
+    BADGE_SLUG = "writing-debut".freeze
 
     def self.call
       return unless (badge_id = Badge.id_for_slug(BADGE_SLUG))
