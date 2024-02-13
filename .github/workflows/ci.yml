@@ -180,7 +180,7 @@ jobs:
       - name: RSpec
         run: bin/knapsack_pro_rspec
       - name: Upload RSpec artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: rspec-artifacts
@@ -188,7 +188,7 @@ jobs:
       - name: Rename folder
         run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
@@ -230,7 +230,7 @@ jobs:
           key: ${{ secrets.BUILDPULSE_ACCESS_KEY_ID }}
           secret: ${{ secrets.BUILDPULSE_SECRET_ACCESS_KEY }}
       - name: Upload test coverage result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: coverage/
@@ -370,7 +370,7 @@ jobs:
         run: CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows E2E=true bin/rails cypress:run
         if: ${{ matrix.ci_node_index == 'non-seed' }}
       - name: Upload Cypress artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-artifacts
