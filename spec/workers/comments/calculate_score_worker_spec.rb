@@ -21,12 +21,13 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(comment.score).to be(7)
       end
 
-      it "updates the score with a penalty if the user is a spammer" do
+      it "updates the score and updated_at with a penalty if the user is a spammer", :aggregate_failures do
         comment.user.add_role(:spam)
+        comment.update_column(:updated_at, 1.day.ago)
         worker.perform(comment.id)
-
         comment.reload
         expect(comment.score).to be(-493)
+        expect(comment.updated_at).to be_within(1.minute).of(Time.current)
       end
 
       it "calls save on the root comment when given a descendant comment" do
