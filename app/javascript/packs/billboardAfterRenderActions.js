@@ -43,7 +43,7 @@ export function executeBBScripts(el) {
 }
 
 export function implementSpecialBehavior(element) {
-  if (element.querySelector('.js-billboard').dataset.special === 'delayed') {
+  if (element.querySelector('.js-billboard') && element.querySelector('.js-billboard').dataset.special === 'delayed') {
     element.classList.add('hidden');    
     const observerOptions = {
       root: null,
