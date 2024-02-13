@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_11_144401) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -490,6 +490,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_11_144401) do
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
     t.boolean "requires_cookies", default: false
+    t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
     t.integer "template", default: 0

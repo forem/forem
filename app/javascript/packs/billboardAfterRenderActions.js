@@ -42,6 +42,22 @@ export function executeBBScripts(el) {
   }
 }
 
+export function implementSpecialBehavior(element) {
+  if (element.querySelector('.js-billboard') && element.querySelector('.js-billboard').dataset.special === 'delayed') {
+    element.classList.add('hidden');    
+    const observerOptions = {
+      root: null,
+      rootMargin: '-150px',
+      threshold: 0.2
+    };
+    
+    const observer = new IntersectionObserver(showDelayed, observerOptions);
+    
+    const target = document.getElementById('comments');
+    observer.observe(target);    
+  }
+}
+
 export function observeBillboards() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -66,7 +82,20 @@ export function observeBillboards() {
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
     observer.observe(ad);
     ad.removeEventListener('click', trackAdClick, false);
-    ad.addEventListener('click', () => trackAdClick(ad));
+    ad.addEventListener('click', () => trackAdClick(ad, event));
+  });
+}
+
+function showDelayed(entries) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // The target element has come into the viewport
+      // Place the behavior you want to trigger here
+      // query for data-special "delayed"
+      document.querySelectorAll("[data-special='delayed']").forEach((el) => {
+        el.closest('.hidden').classList.remove('hidden');
+      });
+    }
   });
 }
 
@@ -107,7 +136,10 @@ function trackAdImpression(adBox) {
   adBox.dataset.impressionRecorded = true;
 }
 
-function trackAdClick(adBox) {
+function trackAdClick(adBox, event) {
+  if (!event.target.closest('a')) {
+    return;
+  }
   const isBot =
     /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
       navigator.userAgent,
