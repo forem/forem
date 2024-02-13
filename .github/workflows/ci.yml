@@ -183,14 +183,14 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rspec-artifacts
+          name: rspec-artifacts-${{ matrix.runs-on }}
           path: tmp/capybara
       - name: Rename folder
         run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-rspec-${{ matrix.runs-on }}
           path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -232,7 +232,7 @@ jobs:
       - name: Upload test coverage result
         uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage-jest
           path: coverage/
 
   storybook:
@@ -373,7 +373,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-artifacts
+          name: cypress-artifacts-${{ matrix.runs-on }}
           path: |
             tmp/cypress_screenshots
             cypress/logs
@@ -392,9 +392,10 @@ jobs:
     needs: [rspec, jest, cypress]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: coverage
+          pattern: coverage-*
+          merge-multiple: true
       - run: |
           mkdir coverage coverage/simplecov coverage/cypress
           mv simplecov-* coverage/simplecov
