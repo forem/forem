@@ -183,14 +183,14 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rspec-artifacts-${{ matrix.runs-on }}
+          name: rspec-artifacts-${{ matrix.ci_node_index }}
           path: tmp/capybara
       - name: Rename folder
         run: mv coverage/simplecov coverage/simplecov-${{ matrix.ci_node_index }}
       - name: Upload test coverage result
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-rspec-${{ matrix.runs-on }}
+          name: coverage-rspec-${{ matrix.ci_node_index }}
           path: coverage/
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -373,7 +373,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-artifacts-${{ matrix.runs-on }}
+          name: cypress-artifacts-${{ matrix.ci_node_index }}
           path: |
             tmp/cypress_screenshots
             cypress/logs
