@@ -172,6 +172,22 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is post_fixed_bottom" do
+      it "contains close button" do
+        billboard = create_billboard(placement_area: "post_fixed_bottom")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is post_sidebar" do
+      it "does not contain close button" do
+        billboard = create_billboard(placement_area: "post_sidebar")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
     context "when requesting test billboard" do
       let(:admin) { create(:user, :admin) }
       let!(:test_billboard) { create_billboard(id: 123, placement_area: "post_sidebar", approved: false) }
