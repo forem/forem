@@ -116,7 +116,7 @@
     "@babel/preset-typescript": "^7.23.3",
     "@honeybadger-io/js": "^5.4.1",
     "@hotwired/stimulus": "3.2.2",
-    "@rails/ujs": "7.1.2",
+    "@rails/ujs": "7.1.3",
     "ahoy.js": "^0.4.3",
     "autoprefixer": "^10.4.16",
     "babel-plugin-inline-react-svg": "^2.0.2",
