@@ -257,7 +257,7 @@ jobs:
 
   build_test:
     runs-on: ubuntu-latest
-    needs: [precompile_assets]
+    needs: [bundle_install, yarn_install]
     timeout-minutes: 20
     env:
       RAILS_ENV: production
