@@ -69,7 +69,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Look up if compiled assets exist
         uses: actions/cache@v4
-        id: precompiled-asset
+        id: cache
         with:
           fail-on-cache-miss: false
           path: |
@@ -80,21 +80,21 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
       - name: Cache node_modules
         uses: actions/cache/restore@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
-        if: steps.precompiled-asset.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
 
   audit:
     runs-on: ubuntu-latest
