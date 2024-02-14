@@ -6,7 +6,17 @@ class Billboard < ApplicationRecord
   belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right sidebar_right_second sidebar_right_third feed_first feed_second feed_third home_hero post_sidebar post_comments].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
+                               sidebar_left_2
+                               sidebar_right
+                               sidebar_right_second
+                               sidebar_right_third
+                               feed_first feed_second
+                               feed_third
+                               home_hero
+                               post_fixed_bottom
+                               post_sidebar
+                               post_comments].freeze
   # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
@@ -17,6 +27,7 @@ class Billboard < ApplicationRecord
                                             "Home Feed Second",
                                             "Home Feed Third",
                                             "Home Hero",
+                                            "Fixed Bottom (Individual Post)",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
@@ -34,6 +45,7 @@ class Billboard < ApplicationRecord
   enum type_of: { in_house: 0, community: 1, external: 2 }
   enum render_mode: { forem_markdown: 0, raw: 1 }
   enum template: { authorship_box: 0, plain: 1 }
+  enum :special_behavior, { nothing: 0, delayed: 1 }
 
   belongs_to :organization, optional: true
   has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy

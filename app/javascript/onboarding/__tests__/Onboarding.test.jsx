@@ -37,12 +37,68 @@ describe('<Onboarding />', () => {
     document.body.setAttribute('data-user', getUserData());
     const csrfToken = 'this-is-a-csrf-token';
     global.getCsrfToken = async () => csrfToken;
+
+    // Mock localStorage
+    const localStorageMock = (function () {
+      let store = {};
+      return {
+        getItem(key) {
+          return store[key] || null;
+        },
+        setItem(key, value) {
+          store[key] = value.toString();
+        },
+        removeItem(key) {
+          delete store[key];
+        },
+        clear() {
+          store = {};
+        },
+      };
+    })();
+
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+    });
   });
 
   it('should have no a11y violations', async () => {
     const { container } = renderOnboarding();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it('should record billboard conversion correctly', async () => {
+    const fakeBillboardData = {
+      billboard_event: { someData: 'test', category: 'signup' },
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(fakeBillboardData),
+    );
+
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for the billboard event
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for any subsequent fetch calls, if necessary
+
+    renderOnboarding();
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        '/billboard_events',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': expect.any(String),
+          }),
+          body: JSON.stringify(fakeBillboardData),
+        }),
+      );
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
   });
 
   it('should render the ProfileForm first', () => {
