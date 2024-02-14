@@ -7509,10 +7509,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"classnames@npm:^2.3.2":
-  version: 2.3.2
-  resolution: "classnames@npm:2.3.2"
-  checksum: 10c0/cd50ead57b4f97436aaa9f9885c6926323efc7c2bea8e3d4eb10e4e972aa6a1cfca1c7a0e06f8a199ca7498d4339e30bb6002e589e61c9f21248cbf3e8b0b18d
+"classnames@npm:^2.5.1":
+  version: 2.5.1
+  resolution: "classnames@npm:2.5.1"
+  checksum: 10c0/afff4f77e62cea2d79c39962980bf316bacb0d7c49e13a21adaadb9221e1c6b9d3cdb829d8bb1b23c406f4e740507f37e1dcf506f7e3b7113d17c5bab787aa69
   languageName: node
   linkType: hard
 
@@ -8837,7 +8837,7 @@ __metadata:
     babel-preset-preact: "npm:^2.0.0"
     canvas: "npm:^2.11.0"
     chart.js: "npm:^3.9.1"
-    classnames: "npm:^2.3.2"
+    classnames: "npm:^2.5.1"
     core-js: "npm:3"
     css-loader: "npm:^5.2.7"
     cssom: "npm:^0.5.0"
