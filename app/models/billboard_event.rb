@@ -8,7 +8,7 @@ class BillboardEvent < ApplicationRecord
   # consistently referenced within the application.
 
   validate :unique_on_user_if_signup_conversion, on: :create
-  validate :only_recent_registrations
+  validate :only_recent_registrations, on: :create
 
   self.table_name = "display_ad_events"
 
