@@ -60,7 +60,7 @@
     "@storybook/builder-webpack5": "^6.5.16",
     "@storybook/manager-webpack5": "^6.5.16",
     "@storybook/preact": "^6.5.16",
-    "@testing-library/cypress": "^10.0.1",
+    "@testing-library/cypress": "^8.0.3",
     "@testing-library/dom": "^8.20.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/preact": "^2.0.1",
