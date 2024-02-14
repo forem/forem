@@ -53,7 +53,7 @@ export function implementSpecialBehavior(element) {
     
     const observer = new IntersectionObserver(showDelayed, observerOptions);
     
-    const target = document.getElementById('comments');
+    const target = document.getElementById('new_comment');
     observer.observe(target);    
   }
 }
