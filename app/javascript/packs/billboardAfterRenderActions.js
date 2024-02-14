@@ -43,18 +43,21 @@ export function executeBBScripts(el) {
 }
 
 export function implementSpecialBehavior(element) {
-  if (element.querySelector('.js-billboard') && element.querySelector('.js-billboard').dataset.special === 'delayed') {
-    element.classList.add('hidden');    
+  if (
+    element.querySelector('.js-billboard') &&
+    element.querySelector('.js-billboard').dataset.special === 'delayed'
+  ) {
+    element.classList.add('hidden');
     const observerOptions = {
       root: null,
       rootMargin: '-150px',
-      threshold: 0.2
+      threshold: 0.2,
     };
-    
+
     const observer = new IntersectionObserver(showDelayed, observerOptions);
-    
+
     const target = document.getElementById('comments');
-    observer.observe(target);    
+    observer.observe(target);
   }
 }
 
@@ -87,7 +90,7 @@ export function observeBillboards() {
 }
 
 function showDelayed(entries) {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     if (entry.isIntersecting) {
       // The target element has come into the viewport
       // Place the behavior you want to trigger here
@@ -160,6 +163,10 @@ function trackAdClick(adBox, event) {
       article_id: adBox.dataset.articleId,
     },
   };
+
+  if (localStorage) {
+    localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
+  }
 
   window.fetch('/billboard_events', {
     method: 'POST',
