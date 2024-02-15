@@ -55,6 +55,30 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
 
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20240214:
+    started_at: 2024-02-14
+    variants:
+      - 20240205-variant-c
+      - 20240214-variant-a
+      - 20240214-variant-b
+      - 20240214-variant-c
+    weights:
+      - 67
+      - 11
+      - 11
+      - 11
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
   feed_strategy_starting_20240205:
     started_at: 2024-02-05
     variants:
@@ -62,6 +86,8 @@ experiments:
       - 20240205-variant-a
       - 20240205-variant-b
       - 20240205-variant-c
+    ended_at: 2024-02-14
+    winner: 20240205-variant-c
     weights:
       - 67
       - 11
