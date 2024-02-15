@@ -9,6 +9,8 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
     context "with comment" do
       let(:article) { create(:article) }
       let(:comment) { create(:comment, commentable: article) }
+      let(:root_comment) { instance_double(Comment) }
+      let(:user) { instance_double(User, spam?: false) }
 
       before do
         allow(BlackBox).to receive(:comment_quality_score).and_return(7)
@@ -21,24 +23,22 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(comment.score).to be(7)
       end
 
-      it "updates the score with a penalty if the user is a spammer" do
+      it "updates the score and updated_at with a penalty if the user is a spammer", :aggregate_failures do
         comment.user.add_role(:spam)
+        comment.update_column(:updated_at, 1.day.ago)
         worker.perform(comment.id)
-
         comment.reload
         expect(comment.score).to be(-493)
+        expect(comment.updated_at).to be_within(1.minute).of(Time.current)
       end
 
       it "calls save on the root comment when given a descendant comment" do
-        child_comment = double
-        root_comment = double
+        child_comment = instance_double(Comment)
 
         allow(root_comment).to receive(:save!)
         allow(child_comment).to receive(:update_columns)
-        allow(child_comment).to receive(:is_root?).and_return(false)
-        allow(child_comment).to receive(:root_exists?).and_return(true)
-        allow(child_comment).to receive(:root).and_return(root_comment)
-        allow(child_comment).to receive(:user).and_return(double(spam?: false))
+        allow(child_comment).to receive_messages(is_root?: false, root_exists?: true, root: root_comment,
+                                                 user: user)
         allow(Comment).to receive(:find_by).with(id: 1).and_return(child_comment)
 
         worker.perform(1)
@@ -49,13 +49,9 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
       end
 
       it "does not call save on the root comment" do
-        root_comment = double
-
         allow(root_comment).to receive(:save)
         allow(root_comment).to receive(:update_columns)
-        allow(root_comment).to receive(:is_root?).and_return(true)
-        allow(root_comment).to receive(:root).and_return(root_comment)
-        allow(root_comment).to receive(:user).and_return(double(spam?: false))
+        allow(root_comment).to receive_messages(is_root?: true, root: root_comment, user: user)
         allow(Comment).to receive(:find_by).with(id: 1).and_return(root_comment)
 
         worker.perform(1)

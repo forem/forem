@@ -164,6 +164,7 @@ fr:
     menu:
       aria_label: Basculer le menu déroulant
       icon: Menu déroulant
+      close: Fermer
       manage_preferences: Gérer les préférences
       what_is_a_billboard: Qu'est-ce qu'un panneau publicitaire?
       report_billboard: Report billboard

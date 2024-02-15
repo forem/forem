@@ -111,6 +111,11 @@ module Articles
                      order_by_fragment:
                       "(articles.feed_success_score - articles.clickbait_score) *
                       article_relevancies.randomized_value DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_half_of_clickbait_score_with_small_randomness,
+                     label: "Order by feed success score minus half of clickbait score with a randomization factor",
+                     order_by_fragment:
+                       "(articles.feed_success_score - (articles.clickbait_score / 2)) +
+                       (article_relevancies.randomized_value / 3) DESC")
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
                      label: "Order by feed success score and primary score",
                      order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")

@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
-import { setupBillboardDropdown } from '../utilities/billboardDropdown';
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
 import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
@@ -159,7 +159,7 @@ getCsrfToken().then(async () => {
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
-setupBillboardDropdown();
+setupBillboardInteractivity();
 initializeUserSubscriptionLiquidTagContent();
 focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls

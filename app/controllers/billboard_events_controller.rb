@@ -1,5 +1,6 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
+  SIGNUP_SUCCESS_MODIFIER = 10 # One signup is worth 10 clicks
   # No policy needed. All views are for all users
 
   def create
@@ -22,7 +23,8 @@ class BillboardEventsController < ApplicationMetalController
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
-      rate = num_clicks.to_f / num_impressions
+      signup_success = @billboard.billboard_events.signups.sum(:counts_for) * SIGNUP_SUCCESS_MODIFIER
+      rate = (num_clicks + signup_success).to_f / num_impressions
 
       @billboard.update_columns(
         success_rate: rate,

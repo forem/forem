@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Badges::AwardFirstPost do
   describe ".call" do
     before do
-      create(:badge, title: "First Post")
+      create(:badge, title: "Writing Debut")
     end
 
     after do
