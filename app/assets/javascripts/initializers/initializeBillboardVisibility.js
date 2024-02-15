@@ -52,7 +52,10 @@ function trackAdImpression(adBox) {
   adBox.dataset.impressionRecorded = true;
 }
 
-function trackAdClick(adBox) {
+function trackAdClick(adBox, event) {
+  if (event && !event.target.closest('a')) {
+    return;
+  }
   var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
     navigator.userAgent,
   ); // is crawler
@@ -111,7 +114,7 @@ function observeBillboards() {
     observer.observe(ad);
     ad.removeEventListener('click', trackAdClick, false);
     ad.addEventListener('click', function (e) {
-      trackAdClick(ad);
+      trackAdClick(ad, e);
     });
   });
 }

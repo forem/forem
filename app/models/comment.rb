@@ -9,6 +9,9 @@ class Comment < ApplicationRecord
 
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
 
+  LOW_QUALITY_THRESHOLD = -75
+  HIDE_THRESHOLD = -400 # hide comments below this threshold
+
   VALID_SORT_OPTIONS = %w[top latest oldest].freeze
 
   URI_REGEXP = %r{
@@ -65,7 +68,6 @@ class Comment < ApplicationRecord
 
   after_create_commit :record_field_test_event
   after_create_commit :send_email_notification, if: :should_send_email_notification?
-  after_create_commit :send_to_moderator
 
   after_commit :calculate_score, on: %i[create update]
 
@@ -85,16 +87,9 @@ class Comment < ApplicationRecord
                   }
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
+  scope :good_quality, -> { where("score > ?", LOW_QUALITY_THRESHOLD) }
 
   alias touch_by_reaction save
-
-  def self.tree_for(commentable, limit = 0, order = nil)
-    commentable.comments
-      .includes(user: %i[setting profile])
-      .arrange(order: build_sort_query(order))
-      .to_a[0..limit - 1]
-      .to_h
-  end
 
   def self.title_deleted
     I18n.t("models.comment.deleted")
@@ -110,17 +105,6 @@ class Comment < ApplicationRecord
 
   def self.build_comment(params, &blk)
     includes(user: :profile).new(params, &blk)
-  end
-
-  def self.build_sort_query(order)
-    case order
-    when "latest"
-      "created_at DESC"
-    when "oldest"
-      "created_at ASC"
-    else
-      "score DESC"
-    end
   end
 
   def search_id
@@ -202,7 +186,9 @@ class Comment < ApplicationRecord
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end
 
-  private_class_method :build_sort_query
+  def calculate_score
+    Comments::CalculateScoreWorker.perform_async(id)
+  end
 
   private
 
@@ -266,10 +252,6 @@ class Comment < ApplicationRecord
     self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
-  def calculate_score
-    Comments::CalculateScoreWorker.perform_async(id)
-  end
-
   def after_create_checks
     create_id_code
     touch_user
@@ -318,9 +300,8 @@ class Comment < ApplicationRecord
   end
 
   def synchronous_spam_score_check
-    return unless Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
-
-    self.score = -1 # ensure notification is not sent if possibly spammy
+    self.score = -3 if user.registered_at > 48.hours.ago && body_markdown.include?("http")
+    self.score = -5 if Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
   end
 
   def create_conditional_autovomits
@@ -333,6 +314,7 @@ class Comment < ApplicationRecord
       parent_user != user &&
       parent_user.notification_setting.email_comment_notifications &&
       parent_user.email &&
+      user&.badge_achievements_count&.positive? &&
       parent_or_root_article.receive_notifications
   end
 

@@ -83,7 +83,7 @@ RUN mkdir -p "${APP_HOME}"/public/{assets,images,packs,podcasts,uploads}
 # timeout, QEMU-based ones (as is the case with Docker BuildX for
 # cross-compiling) quite often can. This increased timeout should help
 # reduce false-negatives when building multiarch images.
-RUN echo 'network-timeout 300000' >> ~/.yarnrc
+RUN echo 'httpTimeout: 300000' >> ~/.yarnrc.yml
 
 # This is one giant step now because previously, removing node_modules to save
 # layer space was done in a later step, which is invalid in at least some

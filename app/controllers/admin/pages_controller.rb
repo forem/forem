@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     PAGE_ALLOWED_PARAMS = %i[
-      title slug body_markdown body_html body_json description template
+      title slug body_markdown body_html body_json body_css description template
       is_top_level_path social_image landing_page
     ].freeze
 

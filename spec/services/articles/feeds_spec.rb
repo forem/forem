@@ -1,6 +1,18 @@
 require "rails_helper"
 
 RSpec.describe Articles::Feeds do
+  describe "NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS" do
+    it "sets NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS to ApplicationConfig" do
+      allow(ApplicationConfig).to receive(:[])
+        .with("NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS").and_return(4)
+      expect(described_class.number_of_hours_to_offset_users_latest_article_views).to eq(4)
+    end
+
+    it "returns default 18 when ApplicationConfig is not defined" do
+      expect(described_class.number_of_hours_to_offset_users_latest_article_views).to eq(18)
+    end
+  end
+
   describe ".oldest_published_at_to_consider_for" do
     subject(:function_call) { described_class.oldest_published_at_to_consider_for(user: user) }
 
@@ -32,7 +44,7 @@ RSpec.describe Articles::Feeds do
       let(:user) { instance_double(User) }
       let(:page_viewed_at) { Time.current }
       let(:expected_result) do
-        page_viewed_at - described_class::NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS.hours
+        page_viewed_at - described_class.number_of_hours_to_offset_users_latest_article_views.hours
       end
 
       before do

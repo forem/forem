@@ -1,7 +1,7 @@
 class BillboardsController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show], unless: -> { current_user }
   include BillboardHelper
-  CACHE_EXPIRY_FOR_BILLBOARDS = 15.minutes.to_i.freeze
+  CACHE_EXPIRY_FOR_BILLBOARDS = 3.minutes.to_i.freeze
   RANDOM_USER_TAG_RANGE_MIN = 5
   RANDOM_USER_TAG_RANGE_MAX = 32
 
@@ -31,6 +31,7 @@ class BillboardsController < ApplicationController
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
         user_tags: user_tags,
+        cookies_allowed: cookies_allowed?,
         location: client_geolocation,
       )
 
@@ -58,15 +59,14 @@ class BillboardsController < ApplicationController
     current_user&.cached_followed_tag_names&.first(rand(RANDOM_USER_TAG_RANGE_MIN..RANDOM_USER_TAG_RANGE_MAX))
   end
 
-  def client_geolocation
-    if session_current_user_id
-      request.headers["X-Client-Geo"]
-    else
-      request.headers["X-Cacheable-Client-Geo"]
-    end
+  def return_test_billboard?
+    param_present = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? 
+    present_and_admin = param_present && current_user&.any_admin?
+    present_and_live = param_present && Billboard.approved_and_published.where(id: params[:bb_test_id]).any?
+    present_and_admin || present_and_live
   end
 
-  def return_test_billboard?
-    params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+  def cookies_allowed?
+    params[:cookies_allowed] == "true"
   end
 end

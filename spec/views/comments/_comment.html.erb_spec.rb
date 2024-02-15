@@ -4,8 +4,8 @@ RSpec.describe "rendering locals in a partial" do
   context "when comment is low-quality" do
     it "renders the comment with low-quality marker" do
       allow(Settings::General).to receive(:mascot_image_url).and_return("https://i.imgur.com/fKYKgo4.png")
-      comment = create(:comment, processed_html: "hi", score: CommentDecorator::LOW_QUALITY_THRESHOLD - 100)
       article = create(:article)
+      comment = create(:comment, processed_html: "hi", score: -100, commentable: article)
 
       render "comments/comment",
              comment: comment,

@@ -1,7 +1,8 @@
-import { setupBillboardDropdown } from '../utilities/billboardDropdown';
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import {
   observeBillboards,
   executeBBScripts,
+  implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 
 export async function getBillboard() {
@@ -16,17 +17,21 @@ export async function getBillboard() {
 async function generateBillboard(element) {
   let { asyncUrl } = element.dataset;
   const currentParams = window.location.href.split('?')[1];
+  const cookieStatus = localStorage.getItem('cookie_status');
   if (currentParams && currentParams.includes('bb_test_placement_area')) {
     asyncUrl = `${asyncUrl}?${currentParams}`;
   }
+
+  if (cookieStatus === 'allowed') {
+    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'  }cookies_allowed=true`;
+  }
+
   if (asyncUrl) {
     try {
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
-
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
-
       element.innerHTML = '';
       element.appendChild(generatedElement);
       element.querySelectorAll('img').forEach((img) => {
@@ -35,7 +40,8 @@ async function generateBillboard(element) {
         };
       });
       executeBBScripts(element);
-      setupBillboardDropdown();
+      implementSpecialBehavior(element);
+      setupBillboardInteractivity();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.

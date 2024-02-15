@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_12_08_165454) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -94,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_08_165454) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
+    t.float "clickbait_score", default: 0.0
     t.bigint "co_author_ids", default: [], array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
@@ -488,6 +489,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_08_165454) do
     t.text "processed_html"
     t.boolean "published", default: false
     t.integer "render_mode", default: 0
+    t.boolean "requires_cookies", default: false
+    t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
     t.ltree "target_geolocations", default: [], array: true
     t.integer "template", default: 0
@@ -781,6 +784,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_12_08_165454) do
   end
 
   create_table "pages", force: :cascade do |t|
+    t.text "body_css"
     t.text "body_html"
     t.jsonb "body_json"
     t.text "body_markdown"

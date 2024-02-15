@@ -5,7 +5,7 @@ class ModerationsController < ApplicationController
   SCORE_MAX = 5
 
   JSON_OPTIONS = {
-    only: %i[id title published_at cached_tag_list path],
+    only: %i[id title published_at cached_tag_list path nth_published_by_author],
     include: {
       user: { only: %i[username name path articles_count id] }
     }
@@ -16,6 +16,7 @@ class ModerationsController < ApplicationController
     return unless current_user&.trusted?
 
     @feed = params[:state] == "latest" ? "latest" : "inbox"
+    @members = params[:members].in?(%w[new not_new]) ? params[:members] : "all"
     articles = Article.published
       .order(published_at: :desc).limit(70)
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
@@ -26,9 +27,10 @@ class ModerationsController < ApplicationController
         .where("articles.score >= ? AND articles.score <= ?", SCORE_MIN, SCORE_MAX)
         .where(reactions: { id: nil })
     end
-    if params[:state] == "new-authors"
-      articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?",
-                                7.days.ago)
+    if @members == "new"
+      articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4")
+    elsif @members == "not_new"
+      articles = articles.where("nth_published_by_author > 3")
     end
     @articles = articles.includes(:user).to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?

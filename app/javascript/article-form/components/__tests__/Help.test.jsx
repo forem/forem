@@ -68,6 +68,7 @@ describe('<Help />', () => {
     expect(getByTestId('article-form__help-section')).toBeInTheDocument();
     expect(getByTestId('basic-editor-help')).toBeInTheDocument();
     expect(getByTestId('format-help')).toBeInTheDocument();
+    expect(getByTestId('article-publishing-tips')).toBeInTheDocument();
 
     expect(queryByTestId('title-help')).not.toBeInTheDocument();
     expect(queryByTestId('basic-tag-input-help')).not.toBeInTheDocument();

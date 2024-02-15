@@ -3,11 +3,19 @@ class PagesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[show badge bounty faq robots]
 
   def show
+    params[:slug] = combined_fragmented_slug if params[:slug_0].present?
     @page = Page.find_by!(slug: params[:slug])
-    not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
-
+    not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
-    render json: @page.body_json if @page.template == "json"
+
+    case @page.template
+    when "txt"
+      render plain: @page.processed_html, content_type: "text/plain"
+    when "json"
+      render json: @page.body_json
+    when "css"
+      render plain: @page.body_css, content_type: "text/css"
+    end
   end
 
   def about
@@ -123,5 +131,14 @@ class PagesController < ApplicationController
     else
       redirect_to(notifications_path)
     end
+  end
+
+  def not_found_conditions
+    not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+    not_found if params[:format] == "txt" && @page.template != "txt"
+  end
+
+  def combined_fragmented_slug
+    (0..5).filter_map { |i| params["slug_#{i}"] }.join("/")
   end
 end

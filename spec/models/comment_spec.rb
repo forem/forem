@@ -360,59 +360,6 @@ RSpec.describe Comment do
     end
   end
 
-  describe ".tree_for" do
-    let!(:other_comment) { create(:comment, commentable: article, user: user) }
-    let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
-
-    before { comment.update_column(:score, 1) }
-
-    it "returns a full tree" do
-      comments = described_class.tree_for(article)
-      expect(comments).to eq(comment => { child_comment => {} }, other_comment => {})
-    end
-
-    it "returns part of the tree" do
-      comments = described_class.tree_for(article, 1)
-      expect(comments).to eq(comment => { child_comment => {} })
-    end
-
-    context "with sort order" do
-      let!(:new_comment) { create(:comment, commentable: article, user: user, created_at: Date.tomorrow) }
-      let!(:old_comment) { create(:comment, commentable: article, user: user, created_at: Date.yesterday) }
-
-      before { comment }
-
-      it "returns comments in the right order when order is oldest" do
-        comments = described_class.tree_for(article, 0, "oldest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([old_comment.id, other_comment.id, comment.id, new_comment.id])
-      end
-
-      it "returns comments in the right order when order is latest" do
-        comments = described_class.tree_for(article, 0, "latest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([new_comment.id, comment.id, other_comment.id, old_comment.id])
-      end
-
-      # rubocop:disable RSpec/ExampleLength
-      it "returns comments in the right order when order is top" do
-        comment.update_column(:score, 5)
-        highest_rated_comment = comment
-        new_comment.update_column(:score, 1)
-        lowest_rated_comment = new_comment
-        old_comment.update_column(:score, 3)
-        mid_high_rated_comment = old_comment
-        other_comment.update_column(:score, 2)
-        mid_low_rated_comment = other_comment
-        comments = described_class.tree_for(article, 0)
-
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
-      end
-      # rubocop:enable RSpec/ExampleLength
-    end
-  end
-
   context "when callbacks are triggered after create" do
     let(:comment) { build(:comment, user: user, commentable: article) }
 
@@ -431,7 +378,7 @@ RSpec.describe Comment do
     # rubocop:disable RSpec/ExampleLength
     it "enqueues a worker to send email" do
       comment.save!
-      child_comment_user = create(:user)
+      child_comment_user = create(:user, badge_achievements_count: 1)
       child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
 
       expect do
@@ -439,6 +386,16 @@ RSpec.describe Comment do
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
     end
     # rubocop:enable RSpec/ExampleLength
+
+    it "does not send email notification if commenter has no badges" do
+      comment.save!
+      child_comment_user = create(:user, badge_achievements_count: 0)
+      child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
+
+      expect do
+        child_comment.save!
+      end.not_to change(Comments::SendEmailNotificationWorker.jobs, :size)
+    end
 
     it "enqueues a worker to bust comment cache" do
       expect do
@@ -491,6 +448,28 @@ RSpec.describe Comment do
       allow(Spam::Handler).to receive(:handle_comment!).with(comment: comment).and_call_original
       comment.save
       expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
+    end
+
+    it "marks score as negative 3 if new user and comment includes htttp" do
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save!
+      expect(comment.score).to eq(-3)
+    end
+
+    it "does not mark as negative 3 if not new user" do
+      user.update_column(:registered_at, 5.days.ago)
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save
+      expect(comment.score).to eq(0)
+    end
+
+    it "marks score as negative 5 if spam trigger is called" do
+      # Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
+      allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+      comment = create(:comment, user: user, commentable: article)
+      expect(comment.score).to eq(-5)
     end
   end
 

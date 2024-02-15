@@ -17,21 +17,21 @@ fr:
       award_beloved_comment:
         message: "Vous êtes célèbre ! [C'est le commentaire](%{comment}) pour lequel vous êtes reconnu. 😄"
       award_streak:
-        longest: 16 semaines ! Vous avez atteint la plus longue série d'écriture possible. Cela vous rend éligible pour des quêtes spéciales à l'avenir. Continuez à apporter votre contribution à notre communauté !
+        longest: 16 semaines ! Vous avez réalisé la plus longue séquence d’écriture possible. Continuez vos incroyables contributions à notre communauté!
         message:
-          one: "Félicitations pour avoir atteint cet objectif ! Il est difficile d'écrire de façon constante. Le prochain badge que vous pouvez obtenir est le badge %{count} Semaine. 😉"
-          other: "Félicitations pour avoir atteint cet objectif ! Il est difficile d'écrire de façon constante. Le prochain badge que vous pouvez obtenir est le badge %{count} Semaine. 😉"
+          one: "Félicitations pour avoir réalisé cette séquence ! Une écriture cohérente est difficile. Le prochain badge de séquence que vous pouvez obtenir est le badge de semaine %{count}. 😉"
+          other: "Félicitations pour avoir réalisé cette séquence ! Une écriture cohérente est difficile. Le prochain badge de séquence que vous pouvez obtenir est le badge de semaine %{count}. 😉"
       award_yearly_club:
         message:
-          one: Joyeux %{community} anniversaire ! Peux-tu croire que ça fait déjà %{count} an ?!
-          other: Joyeux %{community} anniversaire ! Peux-tu croire que ça fait déjà %{count} ans ?!
-      congrats: Félicitations !
+          one: Joyeux anniversaire %{community} ! Pouvez-vous croire que cela fait déjà %{count} année ?!
+          other: Joyeux anniversaire %{community} ! Pouvez-vous croire que cela fait déjà %{count} années ?!
+      congrats: Félicitations pour votre succès! 🎉 Et merci d'être une partie si essentielle de %{community} !
       thank_you: Merci beaucoup pour vos contributions !
       community_wellness:
         first: Merci de participer à une conversation constructive ! Vous avez posté deux commentaires ou plus cette semaine. Continuez comme ça pour poursuivre la série !
-        longest: 32 semaines ! Vous avez atteint la plus longue période possible pour l'insigne du bien-être communautaire. Vous avez fait un travail remarquable en vous engageant dans la communauté et continuez à apporter votre contribution à notre communauté !
-        other: Félicitations pour avoir atteint une série de %{weeks} semaines pour l'insigne du bien-être communautaire ! Continuez à envoyer des commentaires constructifs pour que la série continue !
-      thumbs_up: Merci pour vos efforts en examinant les messages et en obtenant %{count} réactions positives!
+        longest: 32 semaines ! Vous avez réalisé la plus longue séquence possible pour le badge Community Wellness. Un travail incroyable en m'engageant dans la communauté. Continuez vos incroyables contributions à notre communauté !
+        other: Félicitations, vous avez réalisé %{weeks} semaines consécutives pour le badge de bien-être communautaire ! Continuez à recevoir des commentaires constructifs pour continuer la séquence !
+      thumbs_up: Merci pour vos efforts en examinant les messages et en obtenant %{count} réactions positives !
     broadcasts:
       welcome_notification:
         generator:

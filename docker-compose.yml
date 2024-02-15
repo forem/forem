@@ -23,8 +23,7 @@ x-backend: &backend
     - rails_cache:/app/tmp/cache
     - assets:/app/public/assets
     - node_modules:/app/node_modules
-    - packs:/app/public/packs
-    - packs-test:/app/public/packs-test
+    - builds:/app/public/builds
     - history:/usr/local/hist
     - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
@@ -33,7 +32,6 @@ x-backend: &backend
     REDIS_URL: redis://redis:6379/
     DATABASE_URL: postgres://postgres:postgres@postgres:5432
     DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
-    WEBPACKER_DEV_SERVER_HOST: webpacker
     MALLOC_ARENA_MAX: 2
     WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
     BOOTSNAP_CACHE_DIR: /usr/local/bundle/_bootsnap
@@ -65,8 +63,7 @@ services:
       - rails_cache:/workspaces/forem/tmp/cache
       - assets:/workspaces/forem/public/assets
       - node_modules:/workspaces/forem/node_modules
-      - packs:/workspaces/forem/public/packs
-      - packs-test:/workspaces/forem/public/packs-test
+      - builds:/workspaces/forem/app/assets/builds
       - history:/usr/local/hist
       - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - /var/run/docker.sock:/var/run/docker-host.sock
@@ -86,7 +83,7 @@ services:
     ports:
       - '3000:3000'
     depends_on:
-      webpacker:
+      esbuild:
         condition: service_started
       sidekiq:
         condition: service_started
@@ -122,17 +119,14 @@ services:
       timeout: 3s
       retries: 30
 
-  webpacker:
+  esbuild:
     <<: *app
-    command: bundle exec ./bin/webpack-dev-server
-    ports:
-      - '3035:3035'
+    command: yarn build --watch
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/app:cached
       - bundle:/usr/local/bundle
       - node_modules:/app/node_modules
-      - packs:/app/public/packs
-      - packs-test:/app/public/packs-test
+      - builds:/app/assets/builds
     environment:
       <<: *env
       WEBPACKER_DEV_SERVER_HOST: 0.0.0.0
@@ -166,6 +160,5 @@ volumes:
   postgres:
   redis:
   assets:
-  packs:
-  packs-test:
+  builds:
 

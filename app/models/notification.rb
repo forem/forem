@@ -32,7 +32,12 @@ class Notification < ApplicationRecord
       return if follow.followable_type == "User" && UserBlock.blocking?(follow.followable_id, follow.follower_id)
 
       follow_data = Notifications::NewFollower::FollowData.coerce(follow).to_h
-      Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
+      follower = User.find_by(id: follow.follower_id)
+      if follower.registered_at > 48.hours.ago # Delay the job 60 minutes to check for spam users if new user
+        Notifications::NewFollowerWorker.perform_in(1.hour, follow_data, is_read)
+      else
+        Notifications::NewFollowerWorker.perform_async(follow_data, is_read)
+      end
     end
 
     def send_new_follower_notification_without_delay(follow, is_read: false)

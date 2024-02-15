@@ -24,7 +24,7 @@
   <%= auto_discovery_link_tag(:rss, app_url("feed"), title: t("views.stories.meta.rss", name: community_name)) %>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "homePage", defer: true %>
+<%= javascript_include_tag "homePage", defer: true %>
 <% cache(release_adjusted_cache_key("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <% if @hero_billboard && FeatureFlag.enabled?(:hero_billboard) %>
     <%= render partial: "shared/billboard", locals: { billboard: @hero_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
@@ -108,5 +108,5 @@
     <%= render "articles/sidebar_additional" %>
   </div>
 
-  <%= javascript_packs_with_chunks_tag "storiesList", "followButtons", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", "feedEvents", defer: true %>
+  <%= javascript_include_tag "storiesList", "followButtons", "feedPreviewCards", "heroBannerClose", "localizeArticleDates", "feedEvents", defer: true %>
 <% end %>

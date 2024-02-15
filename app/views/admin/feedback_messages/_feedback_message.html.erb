@@ -207,7 +207,7 @@
                   <%= time_ago_in_words note.created_at %> ago
                 </span>
                 <h3 class="crayons-subtitle-2">
-                  <%= note.author.name %>:
+                  <%= note.author&.name || "No Author" %>:
                 </h3>
                 <p>
                   <%= note.content %>

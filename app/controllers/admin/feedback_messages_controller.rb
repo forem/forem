@@ -92,8 +92,8 @@ module Admin
         .order(Arel.sql("
           CASE reactable_type
             WHEN 'User' THEN 0
-            WHEN 'Article' THEN 1
-            WHEN 'Comment' THEN 2
+            WHEN 'Comment' THEN 1
+            WHEN 'Article' THEN 2
             ELSE 3
           END,
           reactions.reactable_id ASC"))

@@ -14,12 +14,6 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
       u = create(:user, :trusted, last_reacted_at: 2.days.ago, last_moderation_notification: last_moderation_time)
       u.notification_setting.update(mod_roundrobin_notifications: true)
       allow(User).to receive(:staff_account).and_return(staff_account)
-      # Creating a comment calls moderation job which itself call moderation service
-      Comment.skip_callback(:commit, :after, :send_to_moderator)
-    end
-
-    after do
-      Comment.set_callback(:commit, :after, :send_to_moderator)
     end
 
     it "calls comment_data since parameter is a comment" do

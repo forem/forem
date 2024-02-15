@@ -734,6 +734,14 @@ RSpec.describe User do
       user.calculate_score
       expect(user.score).to eq(30)
     end
+
+    it "calculates a score of -500 if spam" do
+      user.add_role(:spam)
+      user.update_column(:badge_achievements_count, 3)
+
+      user.calculate_score
+      expect(user.score).to eq(-470)
+    end
   end
 
   describe "cache counts" do

@@ -394,8 +394,15 @@ Rails.application.routes.draw do
     get "/:username/:slug", to: "stories#show"
     get "/:sitemap", to: "sitemaps#show",
                      constraints: { format: /xml/, sitemap: /sitemap-.+/ }
-    get "/:username", to: "stories#index", as: "user_profile"
-
+    get "/:username", to: "stories#index", as: "user_profile", # No txt format
+                      constraints: { format: /html/ }
+    get "/:slug", to: "pages#show",
+                  constraints: { format: /txt/ }
+    get "/:slug_0/:slug_1", to: "pages#show", as: :page_0_1
+    get "/:slug_0/:slug_1/:slug_2", to: "pages#show", as: :page_0_1_2
+    get "/:slug_0/:slug_1/:slug_2/:slug_3", to: "pages#show", as: :page_0_1_2_3
+    get "/:slug_0/:slug_1/:slug_2/:slug_3/:slug_4", to: "pages#show", as: :page_0_1_2_3_4
+    get "/:slug_0/:slug_1/:slug_2/:slug_3/:slug_4/:slug_5", to: "pages#show", as: :page_0_1_2_3_4_5
     root "stories#index"
   end
 end

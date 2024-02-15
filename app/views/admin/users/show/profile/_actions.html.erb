@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/editUser", defer: true %>
+<%= javascript_include_tag "admin/editUser", defer: true %>
 <div class="flex relative justify-between s:justify-end gap-2 my-2 s:my-0">
   <a id="tag-priority-link" href="<%= dashboard_show_user_path(username: @user.username ) %>" class="c-link c-link--block c-link--icon-alone" aria-label="<%= t("views.main.tags.aria_label") %>" title="<%= t("views.main.tags.aria_label") %>">
     <%= crayons_icon_tag("dashboard-line") %>

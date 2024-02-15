@@ -24,7 +24,7 @@
         href="/dashboard/user_followers"
         <%= params[:action] == "followers" ? ' aria-current="page"'.html_safe : "" %>>
         <%= t("views.dashboard.actions.followers") %>
-        <span class="c-indicator"><%= @user.followers_count %></span>
+        <span class="c-indicator"><%= @user.good_standing_followers_count %></span>
       </a>
     </li>
     <% end %>
