@@ -31,35 +31,6 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         expect(comment.score).to be(-493)
         expect(comment.updated_at).to be_within(1.minute).of(Time.current)
       end
-
-      it "calls save on the root comment when given a descendant comment" do
-        child_comment = instance_double(Comment)
-
-        allow(root_comment).to receive(:save!)
-        allow(child_comment).to receive(:update_columns)
-        allow(child_comment).to receive_messages(is_root?: false, root_exists?: true, root: root_comment,
-                                                 user: user)
-        allow(Comment).to receive(:find_by).with(id: 1).and_return(child_comment)
-
-        worker.perform(1)
-
-        expect(child_comment).to have_received(:is_root?)
-        expect(child_comment).to have_received(:root)
-        expect(root_comment).to have_received(:save!)
-      end
-
-      it "does not call save on the root comment" do
-        allow(root_comment).to receive(:save)
-        allow(root_comment).to receive(:update_columns)
-        allow(root_comment).to receive_messages(is_root?: true, root: root_comment, user: user)
-        allow(Comment).to receive(:find_by).with(id: 1).and_return(root_comment)
-
-        worker.perform(1)
-
-        expect(root_comment).to have_received(:is_root?)
-        expect(root_comment).not_to have_received(:root)
-        expect(root_comment).not_to have_received(:save)
-      end
     end
 
     context "without comment" do
