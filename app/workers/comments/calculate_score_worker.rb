@@ -12,13 +12,11 @@ module Comments
       score -= 500 if comment.user&.spam?
       comment.update_columns(score: score, updated_at: Time.current)
 
-      # comment.commentable.touch(:last_comment_at) if comment.commentable.respond_to?(:last_comment_at)
-      # comment.user.touch(:last_comment_at) if comment.user
-      # EdgeCache::Bust.call(comment.commentable.path.to_s) if comment.commentable
+      comment.commentable.touch(:last_comment_at) if comment.commentable.respond_to?(:last_comment_at)
+      comment.user.touch(:last_comment_at) if comment.user
 
-      # Comments::BustCacheWorker.new.perform(comment.id)
-
-      # comment.root.save! if !comment.is_root? && comment.root_exists?
+      # busting comment cache includes busting commentable cache
+      Comments::BustCacheWorker.new.perform(comment.id)
     end
   end
 end
