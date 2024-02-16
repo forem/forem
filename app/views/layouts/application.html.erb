@@ -18,7 +18,6 @@
       <% end %>
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles", qualifier: "main" %>
-      <% if Settings::UserExperience.show_mobile_app_banner %>
       <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "baseTracking", defer: true %>
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
