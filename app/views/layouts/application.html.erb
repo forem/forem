@@ -21,7 +21,7 @@
       <%= javascript_include_tag "base", "application", "baseInitializers", "Search", "baseTracking", defer: true %>
       <% if Settings::UserExperience.show_mobile_app_banner %>
         <%= javascript_include_tag "runtimeBanner", defer: true %>
-      <% else %>
+      <% end %>
       <% if user_signed_in? %>
         <%= javascript_include_tag "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
