@@ -69,8 +69,8 @@ RSpec.describe "BillboardEvents" do
           params: { billboard_event: ad_event_params.merge(category: BillboardEvent::CATEGORY_SIGNUP) },
         )
 
-        # 13 / 4 = 3.25 because 3 clicks + (1 signup * 10) / 4 impressions
-        expect(billboard.reload.success_rate).to eq(3.25)
+        # 28 / 4 = 7 -> because 3 clicks and one signup is 28 (signup worth 25 clicks)
+        expect(billboard.reload.success_rate).to eq(7)
       end
 
       it "assigns event to current user" do

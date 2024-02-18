@@ -1,6 +1,6 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
-  SIGNUP_SUCCESS_MODIFIER = 10 # One signup is worth 10 clicks
+  SIGNUP_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
   # No policy needed. All views are for all users
 
   def create
