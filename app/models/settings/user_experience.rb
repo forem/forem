@@ -42,6 +42,9 @@ module Settings
     setting :display_in_directory, type: :boolean, default: true
     setting :award_tag_minimum_score, type: :integer, default: 100
 
+    # Mobile App
+    setting :show_mobile_app_banner, type: :boolean, default: true
+
     # Head and footer content
     setting :head_content, type: :string, default: ""
     setting :bottom_of_body_content, type: :string, default: ""

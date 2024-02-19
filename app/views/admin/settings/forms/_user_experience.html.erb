@@ -115,6 +115,15 @@
             </p>
           </div>
         </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :show_mobile_app_banner, checked: Settings::UserExperience.show_mobile_app_banner, class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :show_mobile_app_banner, model: Settings::UserExperience %>
+            <p class="crayons-field__description">
+              Do you want the Forem mobile banner to show on your Forem?
+            </p>
+          </div>
+        </div>
         <div class="crayons-field">
           <%= admin_config_label :head_content, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:head_content][:description] %>

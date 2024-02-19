@@ -63,10 +63,10 @@ experiments:
       - 20240214-variant-b
       - 20240214-variant-c
     weights:
-      - 67
-      - 11
-      - 11
-      - 11
+      - 10
+      - 10
+      - 10
+      - 70
     goals:
       - user_creates_pageview
       - user_creates_article_reaction
