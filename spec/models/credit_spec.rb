@@ -9,8 +9,8 @@ RSpec.describe Credit do
   it { is_expected.to belong_to(:purchase).optional }
 
   context "when caching counters" do
-    let(:user_credits) { create_list(:credit, 2, user: user) }
-    let(:org_credits) { create_list(:credit, 1, organization: organization) }
+    let!(:user_credits) { create_list(:credit, 2, user: user) }
+    let!(:org_credits) { create_list(:credit, 1, organization: organization) }
 
     describe "#credits_count" do
       it "counts credits for user" do
