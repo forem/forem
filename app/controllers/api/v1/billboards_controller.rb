@@ -50,7 +50,7 @@ module Api
         params.permit :approved, :body_markdown, :creator_id, :display_to,
                       :name, :organization_id, :placement_area, :published,
                       :tag_list, :type_of, :exclude_article_ids, :weight, :requires_cookies,
-                      :audience_segment_type, :audience_segment_id, :priority,
+                      :audience_segment_type, :audience_segment_id, :priority, :special_behavior,
                       :custom_display_label, :template, :render_mode, :preferred_article_ids,
                       # Permitting twice allows both comma-separated string and array values
                       :target_geolocations, target_geolocations: []

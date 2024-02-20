@@ -50,6 +50,16 @@ yarn-debug.log*
 app/javascript/storybook-static/
 yarn-error.log
 
+# Ignore yarn related files
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.yarn/install-state.gz
+
 # Ignore package-lock.json because we use yarn
 package-lock.json
 
