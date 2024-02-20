@@ -221,11 +221,14 @@ class ApplicationController < ActionController::Base
   helper_method :internal_navigation?
 
   def feed_style_preference
+    default = Settings::UserExperience.feed_style
+    return default unless user_signed_in?
+
     after_date = current_user && current_user.registered_at >= Time.zone.parse("2024-02-20")
     flag_on = feature_flag_enabled?(:feed_style_test_running)
-    return field_test(:feed_style_20240220, participant: current_user) if after_date && flag_on
+    return default unless after_date && flag_on
 
-    Settings::UserExperience.feed_style
+    field_test(:feed_style_20240220, participant: current_user)
   end
   helper_method :feed_style_preference
 
