@@ -60,12 +60,26 @@
   .text-styles {
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
-    font-size: 1.2em;
+    font-size: calc(0.8em + 0.58vw);
+    max-width: calc(var(--site-width) - var(--su-8));
   }
   .sponsorship-dropdown {
     top: auto;
     bottom: var(--su-8);
   }
+  @media (min-width: $breakpoint-xl) {
+    .crayons-sponsorship__header,
+    .text-styles {
+      margin-left: calc(50% - (var(--site-width) / 2));
+    }
+    .text-styles {
+      font-size: 1.22em;
+    }
+  }
+}
+
+.hide-popover-billboard .popover-billboard {
+  display: none;
 }
 
 .hero-billboard {

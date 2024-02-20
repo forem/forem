@@ -1,4 +1,4 @@
-<% navigation_links = Rails.cache.fetch("navigation_links", expires_in: 15.minutes) do
+<% navigation_links = Rails.cache.fetch("navigation_links-#{user_signed_in?}", expires_in: 15.minutes) do
 {
     default_nav_ids: NavigationLink.default_section.ordered.ids,
     other_nav_ids: NavigationLink.other_section.ordered.ids,
