@@ -70,7 +70,7 @@
   @media (min-width: $breakpoint-xl) {
     .crayons-sponsorship__header,
     .text-styles {
-      margin-left: calc(100% - var(--site-width) - var(--su-8));
+      margin-left: calc(50% - (var(--site-width) / 2));
     }
   }
 }
