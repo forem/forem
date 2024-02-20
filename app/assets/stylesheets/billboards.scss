@@ -61,6 +61,7 @@
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
     font-size: calc(0.7em + 1vw);
+    max-width: calc(var(--site-width) - var(--su-8));
   }
   .sponsorship-dropdown {
     top: auto;
