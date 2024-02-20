@@ -26,7 +26,8 @@ RSpec.describe "AsyncInfo" do
         sign_in create(:user)
 
         get "/async_info/base_data"
-        expect(response.parsed_body.keys).to match_array(%w[broadcast creator param token user])
+        expect(response.parsed_body.keys).to match_array(%w[broadcast client_geolocation creator
+                                                            default_email_optin_allowed param token user])
       end
 
       it "returns default_email_optin_allowed true if valid match with client geo" do
