@@ -1560,4 +1560,76 @@ RSpec.describe Article do
       end
     end
   end
+
+  describe "#skip_indexing?" do
+    context "when the article is unpublished" do
+      let(:article) { build(:unpublished_article) }
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score below minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score above or equal to minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 10, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when the article was published before the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.week.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.day.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article was published after the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when article score is below -1" do
+      let(:article) { build(:published_article, score: -2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+  end
 end
