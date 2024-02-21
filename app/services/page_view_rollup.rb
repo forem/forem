@@ -1,6 +1,6 @@
 class PageViewRollup
   ATTRIBUTES_PRESERVED = %i[article_id counts_for_number_of_views created_at time_tracked_in_seconds user_id].freeze
-  ATTRIBUTES_DESTROYED = %i[domain path referrer updated_at].freeze
+  ATTRIBUTES_DESTROYED = %i[id domain path referrer updated_at user_agent].freeze
 
   class ViewAggregator
     Compact = Struct.new(:views, :article_id, :user_id) do
@@ -21,7 +21,7 @@ class PageViewRollup
     end
 
     def <<(view)
-      @aggregator[event.article_id][event.user_id] << view
+      @aggregator[view.article_id][view.user_id] << view
     end
 
     def each
@@ -43,7 +43,7 @@ class PageViewRollup
   end
 
   def initialize(relation:)
-    @aggregator = EventAggregator.new
+    @aggregator = ViewAggregator.new
     @relation = relation
   end
 
@@ -56,8 +56,9 @@ class PageViewRollup
       start_hour = date.change(hour: hour)
       end_hour = date.change(hour: hour + 1)
       rows = relation.where(created_at: start_hour..end_hour)
-      aggregate_into_groups(rows).each do |compacted_events|
-        created << compact_records(start_hour, compacted_events)
+      aggregator = ViewAggregator.new
+      aggregate_into_groups(rows).each do |compacted_views|
+        created << compact_records(start_hour, compacted_views)
       end
     end
 
@@ -82,7 +83,7 @@ class PageViewRollup
         event.created_at = date
       end
 
-      relation.where(id: compacted.events).delete_all
+      relation.where(id: compacted.views).delete_all
     end
 
     result
