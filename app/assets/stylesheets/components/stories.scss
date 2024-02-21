@@ -12,9 +12,17 @@
 .crayons-story {
   background: var(--card-bg);
   box-shadow: 0 0 0 1px var(--card-secondary-border);
-  margin: 0 0 var(--su-2);
+  margin: 0 0 var(--su-3);
   position: relative;
   border-radius: var(--radius-auto);
+
+  &--compact {
+    margin: 0 0 var(--su-1);
+    border-radius: var(--su-1);
+    .crayons-story__tags {
+      margin-bottom: 0;
+    }
+  }
 
   &:focus-within {
     outline: none;
@@ -91,6 +99,10 @@
 
   &__body {
     padding: var(--story-padding);
+  }
+
+  &__body-compact {
+    padding: var(--su-5) var(--story-padding) var(--su-3);
   }
 
   &__indention {
@@ -185,6 +197,10 @@
         color: var(--link-color-hover);
       }
     }
+  }
+
+  &__title-compact {
+    font-size: var(--fs-xl);
   }
 
   &__flare-tag {

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { articlePropTypes } from '../../common-prop-types';
 import { locale } from '../../utilities/locale';
 
-export const ReactionsCount = ({ article }) => {
+export const ReactionsCount = ({ article, feedStyle }) => {
   const totalReactions = article.public_reactions_count || 0;
 
   if (totalReactions === 0) {
@@ -15,7 +15,7 @@ export const ReactionsCount = ({ article }) => {
       'reaction-category-resources',
     );
 
-    if (reversable === undefined) {
+    if (reversable === undefined || feedStyle === 'compact') {
       return;
     }
     reversable.reverse();

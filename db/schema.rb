@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_21_020634) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1388,6 +1388,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
 
   create_table "users_settings", force: :cascade do |t|
     t.string "brand_color1", default: "#000000"
+    t.integer "config_feed_style", default: 0, null: false
     t.integer "config_font", default: 0, null: false
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false

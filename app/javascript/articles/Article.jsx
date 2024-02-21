@@ -42,7 +42,7 @@ export const Article = ({
   ];
 
   let showCover =
-    (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
+    ((isFeatured && feedStyle != 'compact') || (feedStyle === 'rich' && article.main_image)) &&
     !article.cloudinary_video_url;
 
   // pinned article can have a cover image
@@ -50,7 +50,7 @@ export const Article = ({
 
   return (
     <article
-      className={`crayons-story cursor-pointer${
+      className={`crayons-story ${feedStyle === 'compact' ? 'crayons-story--compact' : ''} cursor-pointer${
         isFeatured ? ' crayons-story--featured' : ''
       }`}
       id={isFeatured ? 'featured-story-marker' : `article-${article.id}`}
@@ -83,7 +83,7 @@ export const Article = ({
         {article.cloudinary_video_url && <Video article={article} />}
 
         {showCover && <ArticleCoverImage article={article} />}
-        <div className="crayons-story__body">
+        <div className="crayons-story__body crayons-story__body-compact">
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
             {pinned && (
@@ -120,7 +120,7 @@ export const Article = ({
             <div className="crayons-story__bottom">
               {article.class_name !== 'User' && (
                 <div className="crayons-story__details">
-                  <ReactionsCount article={article} />
+                  <ReactionsCount article={article} feedStyle={feedStyle} />
                   <CommentsCount
                     count={article.comments_count}
                     articlePath={article.path}
@@ -143,7 +143,7 @@ export const Article = ({
           </div>
         </div>
 
-        {article.top_comments && article.top_comments.length > 0 && (
+        {feedStyle != 'compact' && article.top_comments && article.top_comments.length > 0 && (
           <CommentsList
             comments={article.top_comments}
             articlePath={article.path}
