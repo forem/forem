@@ -57,6 +57,8 @@
   z-index: var(--z-popover);
   animation: popoverEnter 0.5s;
   box-shadow: 0 0 100px 60px rgba(0, 0, 0, 0.2) !important;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
   .text-styles {
     padding-top: var(--su-4);
     padding-bottom: var(--su-4);
