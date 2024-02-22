@@ -139,6 +139,8 @@ module Settings
     setting :onboarding_newsletter_opt_in_head
     setting :onboarding_newsletter_opt_in_subhead
 
+    setting :geos_with_allowed_default_email_opt_in, type: :array, default: %w[]
+
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
 

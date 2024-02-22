@@ -231,4 +231,28 @@ describe('FollowTags', () => {
       expect(lastFetchUri).toEqual('/onboarding/notifications');
     });
   });
+
+  describe('emailDigestPeriodic state initialization', () => {
+    it('should initialize email_digest_periodic to true when data-default-email-optin-allowed is true', async () => {
+      // Simulate setting data-default-email-optin-allowed to true
+      document.body.dataset.defaultEmailOptinAllowed = 'true';
+
+      const { container } = renderFollowTags();
+      const checkbox = container.querySelector('#email_digest_periodic');
+
+      // Assert that the checkbox is checked, indicating email_digest_periodic state is true
+      expect(checkbox.checked).toBeTruthy();
+    });
+
+    it('should initialize email_digest_periodic to false when data-default-email-optin-allowed is false', async () => {
+      // Simulate setting data-default-email-optin-allowed to false
+      document.body.dataset.defaultEmailOptinAllowed = 'false';
+
+      const { container } = renderFollowTags();
+      const checkbox = container.querySelector('#email_digest_periodic');
+
+      // Assert that the checkbox is not checked, indicating email_digest_periodic state is false
+      expect(checkbox.checked).toBeFalsy();
+    });
+  });
 });
