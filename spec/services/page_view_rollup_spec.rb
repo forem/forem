@@ -46,6 +46,16 @@ RSpec.describe PageViewRollup, type: :service do
         [article1.id, nil, 3, 45],
       )
     end
+
+    it "compacts 24 hours" do
+      24.times do |hour|
+        create(:page_view, article: article1, user: nil, created_at: 2.days.ago.change(hour: hour))
+      end
+
+      expect do
+        described_class.rollup(2.days.ago)
+      end.not_to change(PageView, :count)
+    end
   end
 
   it "groups by article" do
