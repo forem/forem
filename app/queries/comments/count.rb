@@ -1,4 +1,4 @@
-# used to ...
+# find comments count for an article based on our display rules for signed in and signed out users
 module Comments
   class Count
     attr_reader :article, :user_signed_in
@@ -16,16 +16,19 @@ module Comments
       if user_signed_in
         # comments that are not displayed at all (not even a "comment deleted" message):
         # with the score below hiding threshold and w/o children
-        count_sql = "select count(id) from comments c1 where score < ? and commentable_id = ? and commentable_type = ? and not exists (select 1 from comments c2 where c2.ancestry = c1.id::varchar(255))"
+        count_sql = "SELECT COUNT(id) FROM comments c1 WHERE score < ? AND commentable_id = ?"\
+        " AND commentable_type = ? AND NOT EXISTS"\
+        " (SELECT 1 FROM comments c2 WHERE c2.ancestry LIKE CONCAT('%/', c1.id::varchar(255))"\
+        " OR c2.ancestry = c1.id::varchar(255))"
         san_count_sql = Comment.sanitize_sql([count_sql, Comment::HIDE_THRESHOLD, @article.id, "Article"])
         hidden_comments_cnt = Comment.count_by_sql(san_count_sql)
         article.comments_count - hidden_comments_cnt
       else
         # for signed out users we hide all negative comments and their children
-        article.comments_count
-
-        # negative_comments = article.comments.where("score < 0").roots
-        # negative_comment_descendants = negative_comments.descend
+        negative_comments_ids = article.comments.where("score < 0").roots.pluck(:id).map(&:to_s)
+        percented_array = negative_comments_ids.map{ |id| "#{id}/%" }
+        descendants_count = Comment.where("ancestry LIKE ANY ( array[?] ) OR ancestry in (?)", percented_array, negative_comments_ids).count
+        article.comments_count - negative_comments_ids.count - descendants_count
       end
     end
   end
