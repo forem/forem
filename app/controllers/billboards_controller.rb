@@ -59,16 +59,11 @@ class BillboardsController < ApplicationController
     current_user&.cached_followed_tag_names&.first(rand(RANDOM_USER_TAG_RANGE_MIN..RANDOM_USER_TAG_RANGE_MAX))
   end
 
-  def client_geolocation
-    if session_current_user_id
-      request.headers["X-Client-Geo"]
-    else
-      request.headers["X-Cacheable-Client-Geo"]
-    end
-  end
-
   def return_test_billboard?
-    params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? && current_user&.any_admin?
+    param_present = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? 
+    present_and_admin = param_present && current_user&.any_admin?
+    present_and_live = param_present && Billboard.approved_and_published.where(id: params[:bb_test_id]).any?
+    present_and_admin || present_and_live
   end
 
   def cookies_allowed?

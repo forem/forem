@@ -1,6 +1,6 @@
 <% title t("views.moderations.actions.meta.title2", title: @moderatable.title) %>
 
-<%= javascript_packs_with_chunks_tag "commentModPage", defer: true %>
+<%= javascript_include_tag "commentModPage", defer: true %>
 
 <% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>

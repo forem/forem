@@ -1,7 +1,7 @@
+<% @billboards = get_homepage_sidebar_billboards %>
 <aside class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
-  <% @sidebar_billboard = Billboard.for_display(area: "sidebar_right", user_signed_in: user_signed_in?) %>
-  <% if @sidebar_billboard %>
-    <%= render partial: "shared/billboard", locals: { billboard: @sidebar_billboard, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+  <% if @billboards.first %>
+    <%= render partial: "shared/billboard", locals: { billboard: @billboards.first, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
   <% if user_signed_in? && @active_discussions.any? %>
     <% if Settings::General.display_sidebar_active_discussions %>
@@ -20,10 +20,11 @@
     <% end %>
   <% end %>
 
-  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
+  <% if @billboards.second %>
+    <%= render partial: "shared/billboard", locals: { billboard: @billboards.second, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
+  <% end %>
 
-    <%= render "articles/sidebar_campaign" if Campaign.current.show_in_sidebar? %>
-    <%= render "articles/sidebar_listings" if Listing.feature_enabled? %>
+  <% cache(release_adjusted_cache_key("main-article-right-sidebar-discussions-#{params[:timeframe]}-#{user_signed_in?}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
 
     <% Tag.where(name: Settings::General.sidebar_tags).find_each do |tag| %>
       <section class="crayons-card crayons-card--secondary crayons-layout__content">
@@ -46,6 +47,9 @@
         </div>
       </section>
     <% end %>
+  <% end %>
+  <% if @billboards.third %>
+    <%= render partial: "shared/billboard", locals: { billboard: @billboards.third, data_context_type: BillboardEvent::CONTEXT_TYPE_HOME } %>
   <% end %>
   <% unless user_signed_in? %>
     <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>

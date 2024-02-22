@@ -31,8 +31,7 @@ module Notifications
         when "Organization"
           notification_params[:organization_id] = followable_id
         end
-
-        followers = User.where(id: recent_follows.select(:follower_id))
+        followers = User.where(id: recent_follows.map(&:follower_id))
         aggregated_siblings = followers.map { |follower| user_data(follower) }
         if aggregated_siblings.empty?
           notification = Notification.find_by(notification_params)&.destroy

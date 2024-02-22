@@ -201,3 +201,9 @@ en:
         no_flags: Article has no flags.
         no_quality_reactions: Article has no quality reactions by trusted users.
         title: Moderator actions
+      members:
+        all: All
+        new: New
+        established: Established
+        filter: Filter by Members
+        label: 'Members'

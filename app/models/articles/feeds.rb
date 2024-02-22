@@ -12,7 +12,8 @@ module Articles
     #       into an administrative setting.  Hence, I want to keep it
     #       a scalar to ease the implementation details of the admin
     #       setting.
-    NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS = 18
+    NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS =
+      (ApplicationConfig["NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS"] || 18).to_i
 
     DEFAULT_USER_EXPERIENCE_LEVEL = 5
     DEFAULT_NEGATIVE_REACTION_THRESHOLD = -10
@@ -47,7 +48,7 @@ module Articles
       time_of_second_latest_page_view = user&.page_views&.second_to_last&.created_at
       return days_since_published.days.ago unless time_of_second_latest_page_view
 
-      time_of_second_latest_page_view - NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS.hours
+      time_of_second_latest_page_view - number_of_hours_to_offset_users_latest_article_views.hours
     end
 
     # Get the properly configured feed for the given user (and other parameters).
@@ -78,6 +79,10 @@ module Articles
       LEVER_CATALOG
     end
 
+    def self.number_of_hours_to_offset_users_latest_article_views
+      (ApplicationConfig["NUMBER_OF_HOURS_TO_OFFSET_USERS_LATEST_ARTICLE_VIEWS"] || 18).to_i
+    end
+
     # rubocop:disable Metrics/BlockLength
     # The available levers for this forem instance.
     LEVER_CATALOG = LeverCatalogBuilder.new do
@@ -101,6 +106,16 @@ module Articles
       order_by_lever(:final_order_by_feed_success_score_minus_one_tenth_of_clickbait_score,
                      label: "Order by feed success score minus one tenth of clickbait score",
                      order_by_fragment: "articles.feed_success_score - (articles.clickbait_score / 10) DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_clickbait_score_with_randomness,
+                     label: "Order by feed success score minus clickbait score with a randomization factor",
+                     order_by_fragment:
+                      "(articles.feed_success_score - articles.clickbait_score) *
+                      article_relevancies.randomized_value DESC")
+      order_by_lever(:final_order_by_feed_success_score_minus_half_of_clickbait_score_with_small_randomness,
+                     label: "Order by feed success score minus half of clickbait score with a randomization factor",
+                     order_by_fragment:
+                       "(articles.feed_success_score - (articles.clickbait_score / 2)) +
+                       (article_relevancies.randomized_value / 3) DESC")
       order_by_lever(:final_order_by_feed_success_score_and_primary_score,
                      label: "Order by feed success score and primary score",
                      order_by_fragment: "((articles.feed_success_score + 0.01) * (articles.score / 10)) DESC")

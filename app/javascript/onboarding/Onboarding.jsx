@@ -10,6 +10,8 @@ export class Onboarding extends Component {
   constructor(props) {
     super(props);
 
+    this.recordBillboardConversion();
+
     const url = new URL(window.location);
     const previousLocation = url.searchParams.get('referrer');
 
@@ -56,6 +58,30 @@ export class Onboarding extends Component {
       this.setState({
         currentSlide: prevSlide,
       });
+    }
+  }
+
+  recordBillboardConversion() {
+    if (!localStorage || !localStorage.getItem('last_interacted_billboard')) {
+      return;
+    }
+    if (localStorage.getItem('last_interacted_billboard')) {
+      const tokenMeta = document.querySelector("meta[name='csrf-token']");
+      const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+      const dataBody = JSON.parse(
+        localStorage.getItem('last_interacted_billboard'),
+      );
+      dataBody['billboard_event']['category'] = 'signup';
+      window.fetch('/billboard_events', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataBody),
+        credentials: 'same-origin',
+      });
+      localStorage.removeItem('last_billboard_click_id');
     }
   }
 

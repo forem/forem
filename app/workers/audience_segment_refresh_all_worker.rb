@@ -8,6 +8,6 @@ class AudienceSegmentRefreshAllWorker
       .distinct(:audience_segment_id)
       .pluck(:audience_segment_id).compact
 
-    AudienceSegmentRefreshWorker.perform_bulk([ids])
+    AudienceSegmentRefreshWorker.perform_bulk(ids.zip)
   end
 end

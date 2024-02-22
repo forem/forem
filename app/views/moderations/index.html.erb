@@ -1,6 +1,6 @@
 <% title t("views.moderations.heading") %>
 
-<%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
+<%= javascript_include_tag "modCenter", defer: true %>
 
 <div id="moderation-page" aria-hidden="true"></div>
 
@@ -21,6 +21,26 @@
         <div class="crayons-notice mb-4 border-2 border-solid border-accent-brand">
           <%= t("views.moderations.feed.#{@feed}_html") %>
         </div>
+      <%= form_tag(request.path, method: :get, id: "members_filter_form") do %>
+        <div class="mod-filter">
+          <div class="crayons-layout__content mod-filter__item">
+            <label class="mod-filter__label" for="members"><%= t("views.moderations.members.label") %>:</label>
+            <%= select_tag :members,
+                           options_for_select(
+                             {
+                               t("views.moderations.members.all") => "",
+                               t("views.moderations.members.new") => "new",
+                               t("views.moderations.members.established") => "not_new"
+                             },
+                             params[:members],
+                           ),
+                           { class: "crayons-select crayons-input-sm", "aria-label": t("views.moderations.members.filter"),
+                             onchange: "this.form.submit();" } %>
+            <%= hidden_field_tag :state, params[:state] %>
+          </div>
+        </div>
+      <% end %>
+
       <section class="mod-index-body">
         <div class="mod-index-list-header lh-tight hidden m:grid">
           <h2 class="mod-index-list-header__label"><%= t("views.moderations.post") %></h2>

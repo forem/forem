@@ -6,7 +6,7 @@
   </style>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+<%= javascript_include_tag "actionsPanel", defer: true %>
 
 <% author_suspended = @moderatable.user.suspended? %>
 <% author_username = @moderatable.username %>

@@ -7,6 +7,7 @@ export const SingleArticle = ({
   title,
   publishedAt,
   cachedTagList,
+  nthPublishedByAuthor,
   user,
   key,
   articleOpened,
@@ -28,7 +29,7 @@ export const SingleArticle = ({
 
   const tags = cachedTagList.split(', ').map((tag) => tagsFormat(tag, key));
 
-  const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
+  const newAuthorNotification = nthPublishedByAuthor <= 3 ? '👋 ' : '';
 
   return (
     <Fragment>

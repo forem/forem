@@ -16,6 +16,13 @@ class CommentsController < ApplicationController
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
+    if @root_comment
+      # 404 for all low-quality for not signed in
+      not_found if @root_comment.score < Comment::LOW_QUALITY_THRESHOLD && !user_signed_in?
+      # 404 only for < -400 w/o children for signed in
+      not_found if @root_comment.score < Comment::HIDE_THRESHOLD && !@root_comment.has_children?
+    end
+
     if @podcast
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes

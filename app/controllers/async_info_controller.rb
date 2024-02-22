@@ -14,6 +14,8 @@ class AsyncInfoController < ApplicationController
             param: request_forgery_protection_token,
             token: form_authenticity_token,
             user: user_data,
+            client_geolocation: client_geolocation,
+            default_email_optin_allowed: default_email_optin_allowed?,
             creator: user_is_a_creator
           }
         end

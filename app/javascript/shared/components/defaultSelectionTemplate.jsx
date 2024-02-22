@@ -1,7 +1,7 @@
-import { h } from 'preact';
+import { Fragment, h } from 'preact';
 import PropTypes from 'prop-types';
 import { Icon, ButtonNew as Button } from '@crayons';
-import { Close } from '@images/x.svg';
+import Close from '@images/x.svg';
 
 /**
  * Responsible for the layout of a selected item in the crayons autocomplete and multi input components

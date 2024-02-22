@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/users/controls", defer: true %>
+<%= javascript_include_tag "admin/users/controls", defer: true %>
 
 <%= form_with url: admin_users_path, method: :get, local: true  do |f| %>
   <div class="flex m:flex-col xl:flex-row justify-between m:items-end xl:justify-end xl:items-center mb-4">

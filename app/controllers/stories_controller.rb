@@ -41,6 +41,8 @@ class StoriesController < ApplicationController
     elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    elsif (@page = Page.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
+      handle_page_display
     else
       not_found
     end
@@ -305,7 +307,7 @@ class StoriesController < ApplicationController
     @comments = []
     return unless user_signed_in? && @user.comments_count.positive?
 
-    @comments = @user.comments.where(deleted: false)
+    @comments = @user.comments.good_quality.where(deleted: false)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)

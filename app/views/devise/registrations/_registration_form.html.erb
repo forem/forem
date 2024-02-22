@@ -85,8 +85,8 @@
 </section>
 
 <script>
-  const registrationsPage = document.querySelector('.js-registration');
-  const topbarElement = document.querySelector('#topbar');
+  let registrationsPage = document.querySelector('.js-registration');
+  let topbarElement = document.querySelector('#topbar');
   // Check if the registrations or notifications element exists and the topbar element exists.
   if ((registrationsPage && topbarElement) || (notificationsPage && topbarElement)) {
       topbarElement.style.display = 'none';
@@ -94,4 +94,13 @@
       // This is needed to make sure that the bottom part of page is white when screen is zoomed-out.
       document.body.style.backgroundColor = 'white';
   }
+  // Reverse the above when the back button is clicked.
+  window.addEventListener('popstate', () => {
+    if (registrationsPage && topbarElement) {
+      topbarElement.style.display = 'block';
+      document.body.style.removeProperty('padding-top');
+      document.body.style.removeProperty('background-color');
+      document.body.classList.add('hide-popover-billboard');
+    }
+  });
 </script>

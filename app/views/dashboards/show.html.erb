@@ -36,7 +36,7 @@
     </div>
 
     <% if @articles.any? %>
-      <%= javascript_packs_with_chunks_tag "dashboardDropdowns", defer: true %>
+      <%= javascript_include_tag "dashboardDropdowns", defer: true %>
       <div class="crayons-card mb-6 mt-3">
         <% @articles.each do |article| %>
           <% if params[:which] == "organization" %>
@@ -68,5 +68,4 @@
   </div>
 </main>
 
-<%= javascript_packs_with_chunks_tag "archivedPostFilters", defer: true %>
-<%= javascript_packs_with_chunks_tag "dashboards/convertCoauthorIdsToUsernameInputs", defer: true %>
+<%= javascript_include_tag "archivedPostFilters", "dashboards/convertCoauthorIdsToUsernameInputs", defer: true %>
