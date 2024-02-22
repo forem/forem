@@ -27,7 +27,8 @@ class PageViewRollup
     def each
       @aggregator.each_pair do |article_id, grouped_by_article_id|
         grouped_by_article_id.each_pair do |user_id, views|
-          # next unless events.size > 1
+          next unless views.size > 1
+
           yield Compact.new(views, article_id, user_id)
         end
       end
@@ -39,7 +40,7 @@ class PageViewRollup
   end
 
   def self.rollup(date, relation: PageView)
-    new(relation: relation).rollup(date)
+    new(relation: relation).rollup(date.to_datetime)
   end
 
   def initialize(relation:)
@@ -55,8 +56,8 @@ class PageViewRollup
     (0..23).each do |hour|
       start_hour = date.change(hour: hour)
       end_hour = date.change(hour: hour + 1)
-      rows = relation.where(created_at: start_hour..end_hour)
-      aggregator = ViewAggregator.new
+      rows = relation.where(user_id: nil, created_at: start_hour..end_hour)
+      @aggregator = ViewAggregator.new
       aggregate_into_groups(rows).each do |compacted_views|
         created << compact_records(start_hour, compacted_views)
       end

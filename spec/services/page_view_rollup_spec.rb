@@ -16,90 +16,47 @@ RSpec.describe PageViewRollup, type: :service do
   end
 
   context "when compacting many rows" do
-    before do
-      create(:page_view, article: article1, user: nil)
-      create(:page_view, article: article1, user: nil)
-    end
-
-    it "compacts one day's billboard_events" do
-      # expect(BillboardEvent..count).to eq(5)
+    it "does not compact signed-in user's views" do
+      user_view1 = create(:page_view, article: article1, user: user1, created_at: 2.days.ago)
+      user_view2 = create(:page_view, article: article1, user: user1, created_at: 2.days.ago)
+      create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
+      create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
 
       expect do
-        described_class.rollup(DateTime.current)
-      end.to change { PageView.count }.from(2).to(1)
+        described_class.rollup(2.days.ago)
+      end.to change(PageView, :count).from(4).to(3)
 
-      # expectations = [
-      #   [billboard1.id, nil, 3],
-      #   [billboard1.id, user1.id, 1],
-      #   [billboard2.id, nil, 1],
-      # ]
-      # results_mapped = BillboardEvent.where(created_at: days_ago_as_range(2)).map do |event|
-      #   [event.billboard_id, event.user_id, event.counts_for]
-      # end
-      # expect(results_mapped).to match_array(expectations)
+      expect(PageView.all).to include(user_view1, user_view2)
+    end
+
+    it "compacts by the hour" do
+      [[1, 59], [1, 0], [3, 0], [3, 1], [3, 2]].each do |hour, min|
+        create(:page_view, article: article1, user: nil, created_at: 2.days.ago.change(hour: hour, min: min))
+      end
+
+      expect do
+        described_class.rollup(2.days.ago)
+      end.to change(PageView, :count).from(5).to(2)
+
+      results_plucked = PageView.where(created_at: days_ago_as_range(2))
+        .pluck(:article_id, :user_id, :counts_for_number_of_views, :time_tracked_in_seconds)
+
+      expect(results_plucked).to contain_exactly(
+        [article1.id, nil, 2, 30],
+        [article1.id, nil, 3, 45],
+      )
     end
   end
 
-  # separate category
-  it "groups by category" do
-    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
-    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
-    create(:billboard_event, category: "impression", billboard: billboard1, user_id: nil)
-    create(:billboard_event, category: "click", billboard: billboard1, user_id: nil)
-    create(:billboard_event, category: "click", billboard: billboard1, user_id: nil)
+  it "groups by article" do
+    create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
+    create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
+    create(:page_view, article: article2, user: nil, created_at: 2.days.ago)
+    create(:page_view, article: article2, user: nil, created_at: 2.days.ago)
 
-    described_class.rollup(Date.current)
-    results = BillboardEvent.where(created_at: Date.current.all_day)
-    by_category = results.index_by { |r| r["category"] }
-    expect(by_category["impression"]["counts_for"]).to eq(3)
-    expect(by_category["click"]["counts_for"]).to eq(2)
-  end
-
-  # separate billboard_id
-  it "groups by billboard_id" do
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-    create(:billboard_event, billboard: billboard2, user_id: nil)
-    create(:billboard_event, billboard: billboard2, user_id: nil)
-
-    described_class.rollup(Date.current)
-    results = BillboardEvent.where(created_at: Date.current.all_day)
-    by_ad = results.index_by { |r| r["billboard_id"] }
-    expect(by_ad[billboard1.id]["counts_for"]).to eq(3)
-    expect(by_ad[billboard2.id]["counts_for"]).to eq(2)
-  end
-
-  # separate user_id / null
-  it "groups by user_id (including null / logged-out user)" do
-    create(:billboard_event, billboard: billboard1, user: user1)
-    create(:billboard_event, billboard: billboard1, user: user2)
-    create(:billboard_event, billboard: billboard1, user: user2)
-    create(:billboard_event, billboard: billboard1, user: nil)
-    create(:billboard_event, billboard: billboard1, user: nil)
-    create(:billboard_event, billboard: billboard1, user: nil)
-    create(:billboard_event, billboard: billboard1, user: nil)
-    create(:billboard_event, billboard: billboard1, user: nil)
-
-    described_class.rollup(Date.current)
-    results = BillboardEvent.where(created_at: Date.current.all_day)
-    by_user = results.index_by { |r| r["user_id"] }
-    expect(by_user[user1.id]["counts_for"]).to eq(1)
-    expect(by_user[user2.id]["counts_for"]).to eq(2)
-    expect(by_user[nil]["counts_for"]).to eq(5)
-  end
-
-  # sums counts_for > 1
-  it "counts previously crunched" do
-    create(:billboard_event, billboard: billboard1, counts_for: 10, user_id: nil)
-    create(:billboard_event, billboard: billboard1, counts_for: 15, user_id: nil)
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-    create(:billboard_event, billboard: billboard1, user_id: nil)
-
-    described_class.rollup(Date.current)
-    results = BillboardEvent.where(created_at: Date.current.all_day)
-    expect(results.count).to eq(1)
-    expect(results.first.counts_for).to eq(28)
+    expect do
+      described_class.rollup(2.days.ago)
+    end.to change(PageView, :count).from(4).to(2)
+    expect(PageView.pluck(:article_id)).to contain_exactly(article1.id, article2.id)
   end
 end
