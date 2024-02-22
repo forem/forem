@@ -44,11 +44,10 @@ class PageViewRollup
   end
 
   def initialize(relation:)
-    @aggregator = ViewAggregator.new
     @relation = relation
   end
 
-  attr_reader :aggregator, :relation
+  attr_reader :relation
 
   def rollup(date)
     created = []
@@ -57,7 +56,6 @@ class PageViewRollup
       start_hour = date.change(hour: hour)
       end_hour = date.change(hour: hour + 1)
       rows = relation.where(user_id: nil, created_at: start_hour..end_hour)
-      @aggregator = ViewAggregator.new
       aggregate_into_groups(rows).each do |compacted_views|
         created << compact_records(start_hour, compacted_views)
       end
@@ -69,6 +67,7 @@ class PageViewRollup
   private
 
   def aggregate_into_groups(rows)
+    aggregator = ViewAggregator.new
     rows.in_batches.each_record do |event|
       aggregator << event
     end
