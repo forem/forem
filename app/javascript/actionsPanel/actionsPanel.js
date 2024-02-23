@@ -2,6 +2,7 @@ import { toggleFlagUserModal } from '../packs/toggleUserFlagModal';
 import { toggleSuspendUserModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { toggleUnpublishAllPostsModal } from '../packs/modals/unpublishAllPosts';
+import { fetchReactions } from './services/reactions';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -73,12 +74,11 @@ export function addReactionButtonListeners() {
       butt.classList.toggle('reacted');
 
       try {
-        const response = await request('/reactions', {
-          method: 'POST',
-          body: { reactable_type, category, reactable_id },
+        const outcome = await fetchReactions({
+          reactable_type,
+          category,
+          reactable_id,
         });
-
-        const outcome = await response.json();
 
         let message;
         /* eslint-disable no-restricted-globals */
@@ -107,6 +107,8 @@ export function addReactionButtonListeners() {
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);
+        
+        butt.classList.toggle('reacted');
       }
     });
   });

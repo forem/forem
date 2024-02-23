@@ -94,32 +94,44 @@ describe('addReactionButtonListeners()', () => {
 
   describe('when no reactions are already reacted on', () => {
     test('it marks thumbs up reaction as reacted', async () => {
-      let category = 'thumbsup';
-      fetch.mockResponse(sampleResponse(category));
+      const category = 'thumbsup';
+
       addReactionButtonListeners();
 
       const thumbsupButton = document.querySelector(
         `.reaction-button[data-category="${category}"]`,
       );
+      
       thumbsupButton.click();
       expect(thumbsupButton.classList).toContain('reacted');
+    });
 
-      category = 'thumbsdown';
+    test('it marks thumbs down reaction as reacted', () => {
+      const category = 'thumbsdown';
+
+      addReactionButtonListeners();
+
       const thumbsdownButton = document.querySelector(
         `.reaction-button[data-category="${category}"]`,
       );
       thumbsdownButton.click();
-      expect(thumbsdownButton.classList).toContain('reacted');
 
-      category = 'vomit';
-      fetch.resetMocks();
-      fetch.mockResponse(sampleResponse(category));
+      expect(thumbsdownButton.classList).toContain('reacted');
+    })
+
+    test('it marks vomit flag to admins', () => {
+      const category = 'vomit';
+      
+      addReactionButtonListeners();
+
       const vomitButton = document.querySelector(
         `.reaction-vomit-button[data-category="${category}"]`,
       );
+      
       vomitButton.click();
       expect(vomitButton.classList).toContain('reacted');
-    });
+    })
+
     test('it unmarks the proper reaction(s) when positive/negative reactions are clicked', async () => {
       let category = 'thumbsup';
       fetch.mockResponse(sampleResponse(category));
