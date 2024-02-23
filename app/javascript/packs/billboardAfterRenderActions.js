@@ -82,9 +82,10 @@ export function observeBillboards() {
   );
 
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
+    const currentPath = window.location.pathname;
     observer.observe(ad);
     ad.removeEventListener('click', trackAdClick, false);
-    ad.addEventListener('click', () => trackAdClick(ad, event));
+    ad.addEventListener('click', () => trackAdClick(ad, event, currentPath));
   });
 }
 
@@ -138,21 +139,10 @@ function trackAdImpression(adBox) {
   adBox.dataset.impressionRecorded = true;
 }
 
-function trackAdClick(adBox, event) {
+function trackAdClick(adBox, event, currentPath) {
   if (!event.target.closest('a')) {
     return;
   }
-  const isBot =
-    /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
-      navigator.userAgent,
-    ); // is crawler
-  const adClicked = adBox.dataset.clickRecorded;
-  if (isBot || adClicked) {
-    return;
-  }
-
-  const tokenMeta = document.querySelector("meta[name='csrf-token']");
-  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   const dataBody = {
     billboard_event: {
@@ -164,8 +154,22 @@ function trackAdClick(adBox, event) {
   };
 
   if (localStorage) {
+    dataBody['path'] = currentPath;
+    dataBody['time'] = new Date();
     localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
   }
+
+  const isBot =
+    /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
+      navigator.userAgent,
+    ); // is crawler
+  const adClicked = adBox.dataset.clickRecorded;
+  if (isBot || adClicked) {
+    return;
+  }
+
+  const tokenMeta = document.querySelector("meta[name='csrf-token']");
+  const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
   window.fetch('/billboard_events', {
     method: 'POST',
