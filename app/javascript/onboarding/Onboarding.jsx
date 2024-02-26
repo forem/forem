@@ -12,17 +12,17 @@ export class Onboarding extends Component {
 
     this.recordBillboardConversion();
 
-    const url = new URL(window.location);
-    const previousLocation = url.searchParams.get('referrer');
-
     const slides = [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
     this.slidesCount = slides.length;
+    const url = new URL(window.location);
+    const previousLocation = url.searchParams.get('referrer');
 
     this.state = {
       currentSlide: 0,
+      previousLocation,
     };
 
     this.slides = slides.map((SlideComponent, index) => (
@@ -39,15 +39,14 @@ export class Onboarding extends Component {
   }
 
   nextSlide() {
-    const { currentSlide } = this.state;
+    const { currentSlide, previousLocation } = this.state;
     const nextSlide = currentSlide + 1;
     if (nextSlide < this.slides.length) {
       this.setState({
         currentSlide: nextSlide,
       });
     } else {
-      // Redirect to the main feed at the end of onboarding.
-      window.location.href = '/';
+      window.location.href = previousLocation || '/';
     }
   }
 

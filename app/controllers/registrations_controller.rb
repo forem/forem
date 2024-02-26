@@ -4,7 +4,9 @@ class RegistrationsController < Devise::RegistrationsController
   def new
     return redirect_to root_path(signin: "true") if user_signed_in?
 
-    if URI(request.referer || "").host == URI(request.base_url).host
+    if URI(request.referer || "").host == URI(request.base_url).host &&
+        URI(request.referer).path.exclude?("/enter") &&
+        URI(request.referer).path.exclude?("/users/sign_up")
       store_location_for(:user, request.referer)
     end
 
@@ -32,10 +34,19 @@ class RegistrationsController < Devise::RegistrationsController
         redirect_to confirm_email_path(email: resource.email)
       else
         sign_in(resource)
-        redirect_to root_path
+        respond_with resource, location: after_sign_up_path_for(resource)
       end
     else
       render action: "by_email"
+    end
+  end
+
+  def after_sign_up_path_for(resource)
+    referrer = stored_location_for(resource) || root_path
+    if referrer
+      onboarding_path(referrer: referrer)
+    else
+      onboarding_path
     end
   end
 
