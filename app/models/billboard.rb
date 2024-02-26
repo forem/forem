@@ -5,7 +5,6 @@ class Billboard < ApplicationRecord
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :audience_segment, optional: true
 
-  # rubocop:disable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
                                sidebar_right
@@ -17,7 +16,6 @@ class Billboard < ApplicationRecord
                                post_fixed_bottom
                                post_sidebar
                                post_comments].freeze
-  # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home first position)",
@@ -80,7 +78,14 @@ class Billboard < ApplicationRecord
 
   self.table_name = "display_ads"
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil)
+  def self.for_display(area:,
+                       user_signed_in:,
+                       user_id: nil,
+                       article: nil,
+                       user_tags: nil,
+                       location: nil,
+                       cookies_allowed: false,
+                       user_agent: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
