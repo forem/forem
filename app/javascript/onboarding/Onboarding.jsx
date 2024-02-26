@@ -12,9 +12,6 @@ export class Onboarding extends Component {
 
     this.recordBillboardConversion();
 
-    const url = new URL(window.location);
-    const previousLocation = url.searchParams.get('referrer');
-
     const slides = [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
 
     this.nextSlide = this.nextSlide.bind(this);
@@ -33,7 +30,6 @@ export class Onboarding extends Component {
         currentSlideIndex={index}
         key={index}
         communityConfig={props.communityConfig}
-        previousLocation={previousLocation}
       />
     ));
   }
@@ -45,8 +41,14 @@ export class Onboarding extends Component {
       this.setState({
         currentSlide: nextSlide,
       });
+    } else if (localStorage && localStorage.getItem('last_interacted_billboard')) {
+      const obj = JSON.parse(localStorage.getItem('last_interacted_billboard'))
+      if (obj.path && obj.time && Date.parse(obj.time) > Date.now() - 900000) {
+        window.location.href = obj.path;
+      } else {
+        window.location.href = '/';
+      }
     } else {
-      // Redirect to the main feed at the end of onboarding.
       window.location.href = '/';
     }
   }
@@ -65,13 +67,13 @@ export class Onboarding extends Component {
     if (!localStorage || !localStorage.getItem('last_interacted_billboard')) {
       return;
     }
-    if (localStorage.getItem('last_interacted_billboard')) {
+    const dataBody = JSON.parse(localStorage.getItem('last_interacted_billboard'));
+  
+    if (dataBody && dataBody['billboard_event']) {
+      dataBody['billboard_event']['category'] = 'signup';
+
       const tokenMeta = document.querySelector("meta[name='csrf-token']");
       const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-      const dataBody = JSON.parse(
-        localStorage.getItem('last_interacted_billboard'),
-      );
-      dataBody['billboard_event']['category'] = 'signup';
       window.fetch('/billboard_events', {
         method: 'POST',
         headers: {
@@ -81,10 +83,8 @@ export class Onboarding extends Component {
         body: JSON.stringify(dataBody),
         credentials: 'same-origin',
       });
-      localStorage.removeItem('last_billboard_click_id');
     }
   }
-
   // TODO: Update main element id to enable skip link. See issue #1153.
   render() {
     const { currentSlide } = this.state;
