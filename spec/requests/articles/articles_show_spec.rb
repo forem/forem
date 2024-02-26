@@ -183,9 +183,9 @@ RSpec.describe "ArticlesShow" do
 
   context "with comments" do
     let!(:spam_comment) { create(:comment, score: -450, commentable: article, body_markdown: "Spam comment") }
+    let!(:good_comment) { create(:comment, score: 10, commentable: article, body_markdown: "Good comment") }
 
     before do
-      create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
       create(:comment, score: -99, commentable: article, body_markdown: "Bad comment")
       create(:comment, score: -10, commentable: article, body_markdown: "Mediocre comment")
     end
@@ -250,6 +250,13 @@ RSpec.describe "ArticlesShow" do
       end
 
       it "displays comments count w/o negative ones" do
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"1\">(1)</span>")
+      end
+
+      it "takes into account low-score children of good parents" do
+        spam_child = create(:comment, commentable: article, score: -401, parent: good_comment, body_markdown: "child-of-a-good-comment")
+        create(:comment, commentable: article, score: 0, parent: spam_child, body_markdown: "grandchild-of-a-good-comment")
         get article.path
         expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"1\">(1)</span>")
       end
