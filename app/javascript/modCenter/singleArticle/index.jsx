@@ -43,7 +43,7 @@ export const SingleArticle = ({
         <summary>
           <div className="article-details-container">
             <a href={path}>
-              <ExternalLinkIcon className="link-icon" />
+              <ExternalLinkIcon ariaLabel="Open in new tab" className="link-icon" />
             </a>
             <span className="article-title">
               <header>
