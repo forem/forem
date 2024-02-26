@@ -2,7 +2,7 @@ import { toggleFlagUserModal } from '../packs/toggleUserFlagModal';
 import { toggleSuspendUserModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { toggleUnpublishAllPostsModal } from '../packs/modals/unpublishAllPosts';
-import { fetchReactions } from './services/reactions';
+import { postReactions } from './services/reactions';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -57,24 +57,41 @@ function applyReactedClass(category) {
 }
 
 export function addReactionButtonListeners() {
-  const butts = Array.from(
+  const reactionButtons = Array.from(
     document.querySelectorAll('.reaction-button, .reaction-vomit-button'),
   );
+
+  const initialButtonsState = reactionButtons
+    .map((butt) => ({
+      [butt.getAttribute('data-category')]: butt.classList.contains('reacted'),
+    }))
+    .reduce((acc, cur) => ({ ...acc, ...cur }), {});
+
+  const rollbackReactionButtonsState = () => {
+    reactionButtons.forEach((button) => {
+      if (initialButtonsState[button.getAttribute('data-category')]) {
+        button.classList.add('reacted');
+      } else {
+        button.classList.remove('reacted');
+      }
+    });
+  };
+
   /* eslint-disable camelcase */
-  butts.forEach((butt) => {
-    butt.addEventListener('click', async (event) => {
+  reactionButtons.forEach((button) => {
+    button.addEventListener('click', async (event) => {
       event.preventDefault();
       const {
         reactableType: reactable_type,
         category,
         reactableId: reactable_id,
-      } = butt.dataset;
+      } = button.dataset;
 
       applyReactedClass(category);
-      butt.classList.toggle('reacted');
+      button.classList.toggle('reacted');
 
       try {
-        const outcome = await fetchReactions({
+        const outcome = await postReactions({
           reactable_type,
           category,
           reactable_id,
@@ -107,8 +124,7 @@ export function addReactionButtonListeners() {
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);
-        
-        butt.classList.toggle('reacted');
+        rollbackReactionButtonsState();
       }
     });
   });
