@@ -23,7 +23,7 @@ function saveTags(selectionString) {
 /**
  * Shows and Renders a Tags preact component for the Targeted Tag(s) field
  */
-function showTagsField() {
+function showPrecisionFields() {
   const billboardsTargetedTags = document.getElementById(
     'billboard-targeted-tags',
   );
@@ -35,17 +35,30 @@ function showTagsField() {
       billboardsTargetedTags,
     );
   }
+
+  const billboardPrecisionElements = document.querySelectorAll('.billboard-requires-precision-targeting');
+
+
+  billboardPrecisionElements.forEach((element) => {
+    element?.classList.remove('hidden');
+  });
 }
 
 /**
  * Hides the Targeted Tag(s) field
  */
-function hideTagsField() {
+function hidePrecisionFields() {
   const billboardsTargetedTags = document.getElementById(
     'billboard-targeted-tags',
   );
 
   billboardsTargetedTags?.classList.add('hidden');
+
+  const billboardPrecisionElements = document.querySelectorAll('.billboard-requires-precision-targeting');
+
+  billboardPrecisionElements.forEach((element) => {
+    element?.classList.add('hidden');
+  });
 }
 
 /**
@@ -154,14 +167,14 @@ document.ready.then(() => {
   ];
 
   if (targetedTagPlacements.includes(select.value)) {
-    showTagsField();
+    showPrecisionFields();
   }
 
   select.addEventListener('change', (event) => {
     if (targetedTagPlacements.includes(event.target.value)) {
-      showTagsField();
+      showPrecisionFields();
     } else {
-      hideTagsField();
+      hidePrecisionFields();
       clearTagList();
     }
   });
