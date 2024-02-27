@@ -14,6 +14,7 @@ RSpec.describe "Api::V1::Billboards" do
       type_of: "community",
       published: true,
       approved: true,
+      browser_context: "all_browsers",
       requires_cookies: false,
       target_geolocations: "US-WA, CA-BC"
     }
@@ -51,7 +52,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id", "exclude_article_ids",
+                          "creator_id", "exclude_article_ids", "browser_context",
                           "audience_segment_type", "audience_segment_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
@@ -71,7 +72,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id", "exclude_article_ids",
+                          "creator_id", "exclude_article_ids", "browser_context",
                           "audience_segment_type", "audience_segment_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
@@ -135,7 +136,7 @@ RSpec.describe "Api::V1::Billboards" do
           contain_exactly("approved", "body_markdown", "cached_tag_list",
                           "clicks_count", "created_at", "display_to", "id",
                           "impressions_count", "name", "organization_id",
-                          "placement_area", "processed_html", "published",
+                          "placement_area", "processed_html", "published", "browser_context",
                           "success_rate", "tag_list", "type_of", "updated_at",
                           "creator_id", "exclude_article_ids", "requires_cookies",
                           "audience_segment_type", "audience_segment_id", "special_behavior",

@@ -11,7 +11,7 @@ module Billboards
     # @param location [Geolocation|String] the visitor's geographic location
     def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
-                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false)
+                   user_id: nil, user_tags: nil, location: nil, cookies_allowed: false, user_agent: nil)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
@@ -21,6 +21,7 @@ module Billboards
       @article_id = article_id
       @permit_adjacent_sponsors = permit_adjacent_sponsors
       @user_tags = user_tags
+      @user_agent = user_agent
       @location = Geolocation.from_iso3166(location)
       @cookies_allowed = cookies_allowed
     end
@@ -28,6 +29,7 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+      @filtered_billboards = browser_context_ads if @user_agent
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
 
       if @article_id.present?
@@ -119,6 +121,19 @@ module Billboards
       end
 
       @filtered_billboards.where(geo_query)
+    end
+
+    def browser_context_ads
+      case @user_agent
+      when /DEV-Native-ios|DEV-Native-android|ForemWebView/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_in_app])
+      when /Mobile|iPhone|Android/
+        @filtered_billboards.where(browser_context: %i[all_browsers mobile_web])
+      when /Windows|Macintosh|Mac OS X|Linux/
+        @filtered_billboards.where(browser_context: %i[all_browsers desktop])
+      else
+        @filtered_billboards
+      end
     end
 
     def type_of_ads
