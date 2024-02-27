@@ -4,7 +4,9 @@
       <h3 class="fw-normal fs-l s:fs-xl m:fs-2xl">
       <%= t("views.notifications.badge.heading_html", badge: tag.strong(sanitize(json_data["badge_achievement"]["badge"]["title"]), class: "fw-bold")) %>
       </h3>
-      <p class="fs-l"><%= json_data["badge_achievement"]["badge"]["description"] %></p>
+      <% if json_data["badge_achievement"]["badge"]["description"] %>
+        <p class="fs-l"><%= json_data["badge_achievement"]["badge"]["description"] %></p>
+      <% end %>
     </header>
 
     <div class="crayons-card crayons-card--secondary p-4 w-100 grid gap-2">

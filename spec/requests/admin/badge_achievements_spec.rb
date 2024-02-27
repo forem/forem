@@ -78,6 +78,36 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
 
+    it "includes default description if passed as true" do
+      allow(BadgeAchievements::BadgeAwardWorker).to receive(:perform_async)
+      post admin_badge_achievements_award_badges_path, params: {
+        badge: badge.slug,
+        usernames: usernames_string,
+        message_markdown: "",
+        include_default_description: "1"
+      }
+      expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(usernames_array,
+                                                                                        badge.slug,
+                                                                                        expected_message,
+                                                                                        true)
+      expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
+    end
+
+    it "does not include default description if passed as false" do
+      allow(BadgeAchievements::BadgeAwardWorker).to receive(:perform_async)
+      post admin_badge_achievements_award_badges_path, params: {
+        badge: badge.slug,
+        usernames: usernames_string,
+        message_markdown: "",
+        include_default_description: "0"
+      }
+      expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(usernames_array,
+                                                                                        badge.slug,
+                                                                                        expected_message,
+                                                                                        false)
+      expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
+    end
+
     it "does not award a badge and raises an error if a badge is not specified" do
       post admin_badge_achievements_award_badges_path, params: {
         usernames: usernames_string,
