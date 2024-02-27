@@ -56,6 +56,8 @@ experiments:
       - recent_good_comments
       - more_inclusive_recent_good_comments
       - most_inclusive_recent_good_comments
+    ended_at: 2024-02-25
+    winner: more_inclusive_recent_good_comments
     weights:
       - 60
       - 10
