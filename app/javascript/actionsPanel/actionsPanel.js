@@ -60,12 +60,14 @@ export function addReactionButtonListeners() {
   const reactionButtons = Array.from(
     document.querySelectorAll('.reaction-button, .reaction-vomit-button'),
   );
+  const initialButtonsState = {};
 
-  const initialButtonsState = reactionButtons
-    .map((butt) => ({
-      [butt.getAttribute('data-category')]: butt.classList.contains('reacted'),
-    }))
-    .reduce((acc, cur) => ({ ...acc, ...cur }), {});
+  reactionButtons.forEach((button) => {
+    const { classList } = button;
+
+    initialButtonsState[button.getAttribute('data-category')] =
+      classList.contains('reacted');
+  });
 
   const rollbackReactionButtonsState = () => {
     reactionButtons.forEach((button) => {
@@ -115,6 +117,7 @@ export function addReactionButtonListeners() {
           message = 'Your quality rating was removed.';
         } else if (outcome.error) {
           message = `Error: ${outcome.error}`;
+          rollbackReactionButtonsState();
         }
         top.addSnackbarItem({
           message,
