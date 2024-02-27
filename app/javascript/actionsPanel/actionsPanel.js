@@ -70,12 +70,9 @@ export function addReactionButtonListeners() {
   });
 
   const rollbackReactionButtonsState = () => {
-    reactionButtons.forEach((button) => {
-      if (initialButtonsState[button.getAttribute('data-category')]) {
-        button.classList.add('reacted');
-      } else {
-        button.classList.remove('reacted');
-      }
+    reactionButtons.forEach(({ classList, dataset }) => {
+      if (initialButtonsState[dataset.category]) classList.add('reacted');
+      else classList.remove('reacted');
     });
   };
 
