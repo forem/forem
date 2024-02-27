@@ -46,7 +46,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
           message_markdown: "you got a badge nice one"
         }
         expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(
-          usernames_array, badge.slug, "you got a badge nice one"
+          usernames_array, badge.slug, "you got a badge nice one", false
         )
         expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
       end
@@ -60,7 +60,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         message_markdown: "Hinder me? Thou fool. No living man may hinder me!"
       }
       expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(
-        usernames_array, badge.slug, "Hinder me? Thou fool. No living man may hinder me!"
+        usernames_array, badge.slug, "Hinder me? Thou fool. No living man may hinder me!", false
       )
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
@@ -74,7 +74,8 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
       }
       expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(usernames_array,
                                                                                         badge.slug,
-                                                                                        expected_message)
+                                                                                        expected_message,
+                                                                                        false)
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
 
@@ -114,7 +115,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         message_markdown: ""
       }
       expect(BadgeAchievements::BadgeAwardWorker).not_to have_received(:perform_async).with(usernames_array,
-                                                                                            badge.slug, "")
+                                                                                            badge.slug, "", false)
     end
 
     it "does not award a badge if the username provided is not lowercase" do
@@ -124,7 +125,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         message_markdown: ""
       }
       expect(BadgeAchievements::BadgeAwardWorker).not_to have_received(:perform_async).with(user.username.upcase,
-                                                                                            badge.slug, "")
+                                                                                            badge.slug, "", false)
     end
   end
 
