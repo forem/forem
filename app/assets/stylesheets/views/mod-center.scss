@@ -161,7 +161,16 @@
   margin-bottom: 0;
 
   @media (min-width: $breakpoint-m) {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--su-9);
+  }
+
+  hr {
+    border-top: 1px solid var(--grey-600)
+  }
+
+  .tags-box {
+    max-height: 12rem;
+    overflow-y: auto;
   }
 }
 
