@@ -8,8 +8,6 @@
       <% if comment.deleted || decorated_comment.super_low_quality %>
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">
-            <%= comment.id %>
-            <%= comment.body_markdown %>
             <%= t("views.comments.delete.comment_deleted") %>
           </span>
         </div>

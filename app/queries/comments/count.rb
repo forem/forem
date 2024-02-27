@@ -28,10 +28,10 @@ module Comments
         negative_comments = article.comments.where("score < 0")
         like_array = negative_comments.map { |c| [c.ancestry.to_s, c.id.to_s, "%"].reject(&:empty?).join("/") }
         eq_array = negative_comments.map { |c| [c.ancestry.to_s, c.id.to_s].reject(&:empty?).join("/") }
-        descendants_count = Comment.where("id not in (?) AND (ancestry LIKE ANY ( array[?] ) OR ancestry in (?))",
+        descendants_count = Comment.where("id IN (?) OR (ancestry LIKE ANY ( array[?] ) OR ancestry in (?))",
                                           negative_comments.map(&:id), like_array,
                                           eq_array).count
-        article.comments_count - negative_comments.count - descendants_count
+        article.comments_count - descendants_count
       end
     end
   end
