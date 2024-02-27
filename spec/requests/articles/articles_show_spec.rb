@@ -255,8 +255,10 @@ RSpec.describe "ArticlesShow" do
       end
 
       it "takes into account low-score children of good parents" do
-        spam_child = create(:comment, commentable: article, score: -401, parent: good_comment, body_markdown: "child-of-a-good-comment")
-        create(:comment, commentable: article, score: 0, parent: spam_child, body_markdown: "grandchild-of-a-good-comment")
+        spam_child = create(:comment, commentable: article, score: -401, parent: good_comment,
+                                      body_markdown: "child-of-a-good-comment")
+        create(:comment, commentable: article, score: 0, parent: spam_child,
+                         body_markdown: "grandchild-of-a-good-comment")
         get article.path
         expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"1\">(1)</span>")
       end

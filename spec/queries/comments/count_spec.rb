@@ -5,7 +5,7 @@ RSpec.describe Comments::Count do
   let!(:comment) { create(:comment, commentable: article) }
   let!(:comment2) { create(:comment, commentable: article) }
 
-  context "for signed in" do
+  context "when signed in" do
     it "returns correct number with regular comments" do
       article.reload
       count = described_class.new(article: article, signed_in: true).call
@@ -13,14 +13,14 @@ RSpec.describe Comments::Count do
     end
 
     it "returns correct number with children" do
-      child = create(:comment, commentable: article, parent: comment2, score: 20)
+      create(:comment, commentable: article, parent: comment2, score: 20)
       article.reload
       count = described_class.new(article: article, signed_in: true).call
       expect(count).to eq(3)
     end
 
     it "doesn't include childless children" do
-      child = create(:comment, commentable: article, parent: comment, score: -450)
+      create(:comment, commentable: article, parent: comment, score: -450)
       article.reload
       count = described_class.new(article: article, signed_in: true).call
       expect(count).to eq(2)
@@ -54,11 +54,43 @@ RSpec.describe Comments::Count do
     end
   end
 
-  context "for signed out" do
+  context "when signed out" do
     it "returns correct number with regular comments" do
       article.reload
       count = described_class.new(article: article, signed_in: false).call
       expect(count).to eq(2)
+    end
+
+    it "includes ok comments with ok children" do
+      child = create(:comment, commentable: article, parent: comment, score: 0)
+      create(:comment, commentable: article, parent: child, score: 1)
+      article.reload
+      count = described_class.new(article: article, signed_in: false).call
+      expect(count).to eq(4)
+    end
+
+    it "doesn't include negative comments" do
+      create(:comment, commentable: article, parent: comment, score: 1)
+      create(:comment, commentable: article, parent: comment, score: -1)
+      article.reload
+      count = described_class.new(article: article, signed_in: false).call
+      expect(count).to eq(3)
+    end
+
+    it "doesn't include negative child comments with children" do
+      child = create(:comment, commentable: article, parent: comment, score: -1)
+      create(:comment, commentable: article, parent: child, score: 1)
+      article.reload
+      count = described_class.new(article: article, signed_in: false).call
+      expect(count).to eq(2)
+    end
+
+    it "doesn't include negative comments with children" do
+      comment.update_column(:score, -10)
+      create(:comment, commentable: article, parent: comment, score: 1)
+      article.reload
+      count = described_class.new(article: article, signed_in: false).call
+      expect(count).to eq(1)
     end
   end
 end
