@@ -46,7 +46,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
           message_markdown: "you got a badge nice one"
         }
         expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(
-          usernames_array, badge.slug, "you got a badge nice one", false
+          usernames_array, badge.slug, "you got a badge nice one"
         )
         expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
       end
@@ -60,7 +60,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         message_markdown: "Hinder me? Thou fool. No living man may hinder me!"
       }
       expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(
-        usernames_array, badge.slug, "Hinder me? Thou fool. No living man may hinder me!", false
+        usernames_array, badge.slug, "Hinder me? Thou fool. No living man may hinder me!"
       )
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
@@ -74,8 +74,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
       }
       expect(BadgeAchievements::BadgeAwardWorker).to have_received(:perform_async).with(usernames_array,
                                                                                         badge.slug,
-                                                                                        expected_message,
-                                                                                        false)
+                                                                                        expected_message)
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
 
