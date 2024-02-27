@@ -8,12 +8,12 @@ module Tags
 
     def initialize(...); end
 
-    def call
+    def call(article: nil)
       return suggested_tags if suggested_tags.count >= MAX
 
       Tag
         .where(suggested_for_onboarding_or_supported)
-        .order("suggested DESC, supported DESC, taggings_count DESC, name ASC")
+        .order("hotness_score DESC")
         .limit(MAX)
     end
 

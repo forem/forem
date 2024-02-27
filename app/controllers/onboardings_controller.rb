@@ -21,7 +21,8 @@ class OnboardingsController < ApplicationController
   end
 
   def tags
-    @tags = Tags::SuggestedForOnboarding.call
+    article = Article.find_by(path: params[:relevant_path])
+    @tags = Tags::SuggestedForOnboarding.call(article: article)
       .select(TAG_ONBOARDING_ATTRIBUTES)
 
     render json: @tags
