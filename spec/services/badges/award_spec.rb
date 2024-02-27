@@ -23,6 +23,7 @@ RSpec.describe Badges::Award, type: :service do
       described_class.call(User.all, "one-year-club", "Congrats on a badge!", false)
       expect(user.badge_achievements.pluck(:include_default_description)).to eq([false])
     end
+
     it "creates correct badge achievements with default description" do
       described_class.call(User.all, "one-year-club", "Congrats on a badge!", true)
       expect(user.badge_achievements.pluck(:include_default_description)).to eq([true])
