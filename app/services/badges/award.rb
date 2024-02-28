@@ -1,6 +1,6 @@
 module Badges
   class Award
-    def self.call(user_relation, slug, message_markdown, include_default_description = true) # rubocop:disable Style/OptionalBooleanParameter
+    def self.call(user_relation, slug, message_markdown, include_default_description: true) # rubocop:disable Style/OptionalBooleanParameter
       return unless (badge_id = Badge.id_for_slug(slug))
 
       user_relation.find_each do |user|
