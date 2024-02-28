@@ -63,7 +63,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         usernames_array,
         badge.slug,
         "Hinder me? Thou fool. No living man may hinder me!",
-        include_default_description: false
+        include_default_description: false,
       )
       expect(request.flash[:success]).to include("Badges are being rewarded. The task will finish shortly.")
     end
