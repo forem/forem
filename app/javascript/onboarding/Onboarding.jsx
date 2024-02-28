@@ -18,11 +18,10 @@ export class Onboarding extends Component {
     this.prevSlide = this.prevSlide.bind(this);
     this.slidesCount = slides.length;
     const url = new URL(window.location);
-    const previousLocation = url.searchParams.get('referrer');
+    this.previousLocation = url.searchParams.get('referrer');
 
     this.state = {
       currentSlide: 0,
-      previousLocation,
     };
 
     this.slides = slides.map((SlideComponent, index) => (
@@ -33,20 +32,26 @@ export class Onboarding extends Component {
         currentSlideIndex={index}
         key={index}
         communityConfig={props.communityConfig}
-        previousLocation={previousLocation}
       />
     ));
   }
 
   nextSlide() {
-    const { currentSlide, previousLocation } = this.state;
+    const { currentSlide } = this.state;
     const nextSlide = currentSlide + 1;
     if (nextSlide < this.slides.length) {
       this.setState({
         currentSlide: nextSlide,
       });
+    } else if (localStorage && localStorage.getItem('last_interacted_billboard')) {
+      const obj = JSON.parse(localStorage.getItem('last_interacted_billboard'))
+      if (obj.path && obj.time && Date.parse(obj.time) > Date.now() - 900000) {
+        window.location.href = obj.path;
+      } else {
+        window.location.href = '/';
+      }
     } else {
-      window.location.href = previousLocation || '/';
+      window.location.href = this.previousLocation || '/';
     }
   }
 
@@ -64,13 +69,13 @@ export class Onboarding extends Component {
     if (!localStorage || !localStorage.getItem('last_interacted_billboard')) {
       return;
     }
-    if (localStorage.getItem('last_interacted_billboard')) {
+    const dataBody = JSON.parse(localStorage.getItem('last_interacted_billboard'));
+
+    if (dataBody && dataBody['billboard_event']) {
+      dataBody['billboard_event']['category'] = 'signup';
+
       const tokenMeta = document.querySelector("meta[name='csrf-token']");
       const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-      const dataBody = JSON.parse(
-        localStorage.getItem('last_interacted_billboard'),
-      );
-      dataBody['billboard_event']['category'] = 'signup';
       window.fetch('/billboard_events', {
         method: 'POST',
         headers: {
@@ -80,10 +85,8 @@ export class Onboarding extends Component {
         body: JSON.stringify(dataBody),
         credentials: 'same-origin',
       });
-      localStorage.removeItem('last_billboard_click_id');
     }
   }
-
   // TODO: Update main element id to enable skip link. See issue #1153.
   render() {
     const { currentSlide } = this.state;
@@ -95,7 +98,7 @@ export class Onboarding extends Component {
           communityConfig.communityBackgroundColor &&
           communityConfig.communityBackgroundColor2
             ? {
-                background: `linear-gradient(${communityConfig.communityBackgroundColor}, 
+                background: `linear-gradient(${communityConfig.communityBackgroundColor},
                                              ${communityConfig.communityBackgroundColor2})`,
               }
             : { top: 777 }

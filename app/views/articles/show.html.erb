@@ -228,12 +228,14 @@
 
 <div class="mod-actions-menu print-hidden"></div>
 <div data-testid="unpublish-post-modal-container" class="unpublish-post-modal-container hidden"></div>
-<%= render "moderations/modals/suspend_user_modal" %>
-<%= render "moderations/modals/unsuspend_user_modal" %>
-<%= render "moderations/modals/unpublish_all_posts" %>
-<%= render "moderations/modals/unpublish_post_modal" %>
-<%= render "moderations/modals/flag_user_modal" %>
-<%= render "moderations/modals/unflag_user_modal" %>
+<% if user_signed_in? %>
+  <%= render "moderations/modals/suspend_user_modal" %>
+  <%= render "moderations/modals/unsuspend_user_modal" %>
+  <%= render "moderations/modals/unpublish_all_posts" %>
+  <%= render "moderations/modals/unpublish_post_modal" %>
+  <%= render "moderations/modals/flag_user_modal" %>
+  <%= render "moderations/modals/unflag_user_modal" %>
+<% end %>
 
 <div class="fullscreen-code js-fullscreen-code"></div>
 <%= javascript_include_tag "followButtons", "billboard", "localizeArticleDates", "articleReactions", defer: true %>

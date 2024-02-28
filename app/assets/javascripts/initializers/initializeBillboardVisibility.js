@@ -52,10 +52,26 @@ function trackAdImpression(adBox) {
   adBox.dataset.impressionRecorded = true;
 }
 
-function trackAdClick(adBox, event) {
+function trackAdClick(adBox, event, currentPath) {
   if (event && !event.target.closest('a')) {
     return;
   }
+
+  const dataBody = {
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
+      context_type: adBox.dataset.contextType,
+      category: adBox.dataset.categoryClick,
+      article_id: adBox.dataset.articleId,
+    },
+  };
+
+  if (localStorage) {
+    dataBody['path'] = currentPath;
+    dataBody['time'] = new Date();
+    localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
+  }
+
   var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
     navigator.userAgent,
   ); // is crawler
@@ -67,14 +83,6 @@ function trackAdClick(adBox, event) {
   var tokenMeta = document.querySelector("meta[name='csrf-token']");
   var csrfToken = tokenMeta && tokenMeta.getAttribute('content');
 
-  var dataBody = {
-    billboard_event: {
-      billboard_id: adBox.dataset.id,
-      context_type: adBox.dataset.contextType,
-      category: adBox.dataset.categoryClick,
-      article_id: adBox.dataset.articleId,
-    },
-  };
   window.fetch('/billboard_events', {
     method: 'POST',
     headers: {
@@ -111,10 +119,11 @@ function observeBillboards() {
   );
 
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
+    const currentPath = window.location.pathname;
     observer.observe(ad);
     ad.removeEventListener('click', trackAdClick, false);
     ad.addEventListener('click', function (e) {
-      trackAdClick(ad, e);
+      trackAdClick(ad, e, currentPath);
     });
   });
 }

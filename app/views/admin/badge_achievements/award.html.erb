@@ -19,10 +19,17 @@
     <div class="crayons-field">
       <%= f.label :message_markdown, "Override Default Message", class: "crayons-field__label" %>
       <p class="crayons-field__description">
-        Supports Markdown
+        Supports Markdown. This overrides the "message" sent in notifications and emails, it does not override the badge description.
       </p>
       <%= f.text_area :message_markdown, size: "40x3", class: "crayons-textfield" %>
     </div>
+    <div class="crayons-field crayons-field--checkbox pb-2 pl-1">
+      <%= f.check_box :include_default_description, checked: true %>
+      <%= f.label :include_default_description, "Include Default Description", class: "crayons-field__label pt-2" %>
+    </div>
+    <p class="crayons-field__description">
+      If checked, the default badge <em>description</em> will be included above the message. If unchecked, only the message will be included.
+    </p>
     <div>
       <%= f.submit "Award Badges", class: "c-btn c-btn--primary" %>
     </div>

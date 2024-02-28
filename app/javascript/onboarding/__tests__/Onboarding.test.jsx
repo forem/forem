@@ -70,7 +70,7 @@ describe('<Onboarding />', () => {
 
   it('should record billboard conversion correctly', async () => {
     const fakeBillboardData = {
-      billboard_event: { someData: 'test', category: 'signup' },
+      billboard_event: { category: 'signup', someData: 'test' }, // Ensure this structure matches what your code expects
     };
     window.localStorage.setItem(
       'last_interacted_billboard',
@@ -202,5 +202,43 @@ describe('<Onboarding />', () => {
     const { href } = window.location;
 
     expect(href).toEqual(url);
+  });
+
+  it('should redirect to the specified path in localStorage when conditions are met', async () => {
+    // Setup: Mock localStorage with a recent interaction
+    const expectedPath = '/expected-path';
+    const recentInteraction = {
+      path: expectedPath,
+      time: new Date(), // Simulate an interaction right now
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(recentInteraction),
+    );
+
+    // Mock fetch responses if needed
+    fetch.mockResponseOnce(JSON.stringify({}));
+
+    // Setup a spy/mock for window.location.href to verify it gets set
+    delete window.location;
+    window.location = { href: '' }; // Simplified mock; you might need a more robust solution
+
+    const { getByText } = renderOnboarding();
+
+    // Trigger the logic that includes the redirect
+    const nextButton = getByText(/continue/i); // Assuming "continue" triggers the nextSlide logic
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+
+    // Assert that window.location.href was updated to the expected path
+    await waitFor(() => {
+      expect(window.location.href).toBe(expectedPath);
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
   });
 });
