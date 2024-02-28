@@ -157,6 +157,9 @@ en:
           onboarding_newsletter_opt_in_subhead:
             description: "Newsletter checkbox subheading"
             placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+          geos_with_allowed_default_email_opt_in:
+            description: 'List of countries where the default email opt-in is allowed by admin'
+            placeholder: 'List of valid countries: comma separated, letters only e.g. US,CA'
           payment:
             description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:

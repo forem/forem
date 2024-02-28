@@ -145,6 +145,31 @@ describe('Reading List Archive', () => {
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');
       cy.get('@main').findByText('Test Article 3');
+
+      cy.url().should('eq', Cypress.config().baseUrl + 'readinglist?selectedTag=productivity');
+    });
+
+    it('should persist filtering by tag via query params', () => {
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
+
+      cy.visit('/readinglist?selectedTag=productivity');
+      cy.wait('@filteredReadingList');
+
+      cy.findByRole('main')
+        .as('main')
+        .findByLabelText('Filter by tag')
+        .as('tagFilter');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2').should('not.exist');
+      cy.get('@main').findByText('Test Article 3');
+
+      cy.get('@tagFilter').select('all tags');
+      cy.url().should('eq', Cypress.config().baseUrl + 'readinglist');
     });
   });
 
@@ -197,6 +222,31 @@ describe('Reading List Archive', () => {
       cy.get('@main').findByText('Test Article 1');
       cy.get('@main').findByText('Test Article 2').should('not.exist');
       cy.get('@main').findByText('Test Article 3');
+
+      cy.url().should('eq', Cypress.config().baseUrl + 'readinglist?selectedTag=productivity');
+    });
+
+    it('should persist filtering by tag via query params', () => {
+      cy.intercept(
+        Cypress.config().baseUrl +
+          'search/reactions?search_fields=&page=0&per_page=80&tag_names%5B%5D=productivity&tag_boolean_mode=all&status%5B%5D=valid&status%5B%5D=confirmed',
+        { fixture: 'search/readingListFilterByTagProductivity.json' },
+      ).as('filteredReadingList');
+
+      cy.visit('/readinglist?selectedTag=productivity');
+      cy.wait('@filteredReadingList');
+
+      cy.findByRole('main')
+        .as('main')
+        .findByRole('navigation', { name: /^Filter by tag$/i })
+        .as('tagFilter');
+
+      cy.get('@main').findByText('Test Article 1');
+      cy.get('@main').findByText('Test Article 2').should('not.exist');
+      cy.get('@main').findByText('Test Article 3');
+
+      cy.get('@tagFilter').findByText('All tags').click();
+      cy.url().should('eq', Cypress.config().baseUrl + 'readinglist');
     });
   });
 });
