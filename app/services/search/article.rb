@@ -8,9 +8,10 @@ module Search
       sort_by: nil,
       sort_direction: nil,
       page: nil,
-      per_page: nil
+      per_page: nil,
+      archived: nil
     )
-      relation = Homepage::ArticlesQuery.call(user_id: user_id, page: page, per_page: per_page)
+      relation = Homepage::ArticlesQuery.call(user_id: user_id, page: page, per_page: per_page, archived: archived)
 
       relation = relation.search_articles(term) if term.present?
 

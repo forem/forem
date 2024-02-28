@@ -44,6 +44,7 @@ class SearchController < ApplicationController
     :sort_direction,
     :tag,
     :user_id,
+    :archived,
     {
       tag_names: [],
       hidden_tags: [],
@@ -112,6 +113,7 @@ class SearchController < ApplicationController
           sort_direction: params[:sort_direction],
           page: params[:page],
           per_page: params[:per_page],
+          archived: feed_params[:archived],
         )
       elsif class_name.Comment?
         Search::Comment.search_documents(

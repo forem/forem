@@ -18,7 +18,8 @@ module Homepage
       sort_by: nil,
       sort_direction: nil,
       page: 0,
-      per_page: DEFAULT_PER_PAGE
+      per_page: DEFAULT_PER_PAGE,
+      archived: nil
     )
       articles = Homepage::ArticlesQuery.call(
         approved: approved,
@@ -31,6 +32,7 @@ module Homepage
         sort_direction: sort_direction,
         page: page,
         per_page: per_page,
+        archived: archived
       )
 
       Homepage::ArticleSerializer.serialized_collection_from(relation: articles)

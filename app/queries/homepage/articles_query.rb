@@ -14,6 +14,7 @@ module Homepage
       user_id
       video_duration_in_seconds
       video_thumbnail_url
+      archived
     ].freeze
     DEFAULT_PER_PAGE = 60
     MAX_PER_PAGE = 100
@@ -36,7 +37,8 @@ module Homepage
       sort_by: nil,
       sort_direction: nil,
       page: 0,
-      per_page: DEFAULT_PER_PAGE
+      per_page: DEFAULT_PER_PAGE,
+      archived: nil
     )
       @relation = Article.published.select(*ATTRIBUTES)
         .includes(:distinct_reaction_categories)
@@ -53,6 +55,7 @@ module Homepage
 
       @page = page.to_i + 1
       @per_page = [(per_page || DEFAULT_PER_PAGE).to_i, MAX_PER_PAGE].min
+      @archived = archived
     end
 
     def call
@@ -62,7 +65,7 @@ module Homepage
     private
 
     attr_reader :relation, :approved, :published_at, :user_id, :organization_id, :tags, :hidden_tags,
-                :sort_by, :sort_direction, :page, :per_page
+                :sort_by, :sort_direction, :page, :per_page, :archived
 
     def filter
       @relation = @relation.where(approved: approved) unless approved.nil?
@@ -73,6 +76,7 @@ module Homepage
       @relation = @relation.not_cached_tagged_with_any(hidden_tags) if hidden_tags.any?
       @relation = @relation.includes(:distinct_reaction_categories)
       @relation = @relation.where("score >= 0") # Never return negative score articles
+      @relation = @relation.where(archived: archived) unless archived.nil?
 
       relation
     end

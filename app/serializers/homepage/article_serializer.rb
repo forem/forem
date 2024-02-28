@@ -29,6 +29,7 @@ module Homepage
       :title,
       :user_id,
       :public_reaction_categories,
+      :archived
     )
 
     attribute :video_duration_string, &:video_duration_in_minutes
