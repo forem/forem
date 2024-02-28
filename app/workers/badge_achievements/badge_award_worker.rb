@@ -4,7 +4,7 @@ module BadgeAchievements
 
     sidekiq_options queue: :high_priority, retry: 10
 
-    def perform(usernames, badge_slug, message, include_default_description: true)
+    def perform(usernames, badge_slug, message, include_default_description = true) # rubocop:disable Style/OptionalBooleanParameter
       if (award_class = "Badges::#{badge_slug.classify}".safe_constantize)
         award_class.call
       else
