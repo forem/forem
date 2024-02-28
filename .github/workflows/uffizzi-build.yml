@@ -1,6 +1,8 @@
 name: Build PR Image
 on:
   pull_request:
+    branches-ignore:
+      - "!depfu/*"
     types: [opened, synchronize, reopened, closed]
 
 jobs:
