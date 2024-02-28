@@ -242,5 +242,33 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(Article).not_to have_received(:order)
       end
     end
+
+    describe "archived" do
+      it "returns both archived and not archived articles by default" do
+        archived_article = create(:article, archived: true)
+        not_archived_article = create(:article, archived: false)
+
+        expected_result = [archived_article.id, not_archived_article.id]
+        expect(described_class.call.ids).to match_array(expected_result)
+      end
+
+      it "returns archived articles", :aggregate_failures do
+        archived_article = create(:article, archived: true)
+        not_archived_article = create(:article, archived: false)
+
+        result = described_class.call(archived: true).ids
+        expect(result).to include(archived_article.id)
+        expect(result).not_to include(not_archived_article.id)
+      end
+
+      it "returns not archived articles" do
+        archived_article = create(:article, archived: true)
+        not_archived_article = create(:article, archived: false)
+
+        result = described_class.call(archived: false).ids
+        expect(result).not_to include(archived_article.id)
+        expect(result).to include(not_archived_article.id)
+      end
+    end
   end
 end
