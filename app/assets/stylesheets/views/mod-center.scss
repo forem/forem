@@ -165,12 +165,16 @@
   }
 
   hr {
-    border-top: 1px solid var(--grey-600)
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: var(--base-20);
+    color: var(--base-80);
   }
 
   .tags-box {
     max-height: 12rem;
     overflow-y: auto;
+    margin-bottom: var(--su-2);
   }
 }
 
