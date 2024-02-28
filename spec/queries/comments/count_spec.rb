@@ -5,92 +5,50 @@ RSpec.describe Comments::Count do
   let!(:comment) { create(:comment, commentable: article) }
   let!(:comment2) { create(:comment, commentable: article) }
 
-  context "when signed in" do
-    it "returns correct number with regular comments" do
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(2)
-    end
-
-    it "returns correct number with children" do
-      create(:comment, commentable: article, parent: comment2, score: 20)
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(3)
-    end
-
-    it "doesn't include childless children" do
-      create(:comment, commentable: article, parent: comment, score: -450)
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(2)
-    end
-
-    it "includes ok children of a low-score comment (but not low-score children)" do
-      comment.update_column(:score, -500)
-      create(:comment, commentable: article, parent: comment, score: 10)
-      create(:comment, commentable: article, parent: comment, score: -490)
-      create(:comment, commentable: article, parent: comment2, score: 0)
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(4)
-    end
-
-    it "includes children of a low-score comment" do
-      child = create(:comment, commentable: article, parent: comment, score: -401)
-      create(:comment, commentable: article, parent: child, score: 10)
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(4)
-    end
-
-    it "includes a comment with low-score ancestors" do
-      comment.update_column(:score, -500)
-      child = create(:comment, commentable: article, parent: comment, score: -401)
-      create(:comment, commentable: article, parent: child, score: 10)
-      article.reload
-      count = described_class.new(article: article, signed_in: true).call
-      expect(count).to eq(4)
-    end
+  it "returns correct number with regular comments" do
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(2)
   end
 
-  context "when signed out" do
-    it "returns correct number with regular comments" do
-      article.reload
-      count = described_class.new(article: article, signed_in: false).call
-      expect(count).to eq(2)
-    end
+  it "returns correct number with children" do
+    create(:comment, commentable: article, parent: comment2, score: 20)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(3)
+  end
 
-    it "includes ok comments with ok children" do
-      child = create(:comment, commentable: article, parent: comment, score: 0)
-      create(:comment, commentable: article, parent: child, score: 1)
-      article.reload
-      count = described_class.new(article: article, signed_in: false).call
-      expect(count).to eq(4)
-    end
+  it "doesn't include childless children" do
+    create(:comment, commentable: article, parent: comment, score: -450)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(2)
+  end
 
-    it "doesn't include negative comments" do
-      create(:comment, commentable: article, parent: comment, score: 1)
-      create(:comment, commentable: article, parent: comment, score: -1)
-      article.reload
-      count = described_class.new(article: article, signed_in: false).call
-      expect(count).to eq(3)
-    end
+  it "includes ok children of a low-score comment (but not low-score children)" do
+    comment.update_column(:score, -500)
+    create(:comment, commentable: article, parent: comment, score: 10)
+    create(:comment, commentable: article, parent: comment, score: -490)
+    create(:comment, commentable: article, parent: comment2, score: 0)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(4)
+  end
 
-    it "doesn't include negative child comments with children" do
-      child = create(:comment, commentable: article, parent: comment, score: -1)
-      create(:comment, commentable: article, parent: child, score: 1)
-      article.reload
-      count = described_class.new(article: article, signed_in: false).call
-      expect(count).to eq(2)
-    end
+  it "includes children of a low-score comment" do
+    child = create(:comment, commentable: article, parent: comment, score: -401)
+    create(:comment, commentable: article, parent: child, score: 10)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(4)
+  end
 
-    it "doesn't include negative comments with children" do
-      comment.update_column(:score, -10)
-      create(:comment, commentable: article, parent: comment, score: 1)
-      article.reload
-      count = described_class.new(article: article, signed_in: false).call
-      expect(count).to eq(1)
-    end
+  it "includes a comment with low-score ancestors" do
+    comment.update_column(:score, -500)
+    child = create(:comment, commentable: article, parent: comment, score: -401)
+    create(:comment, commentable: article, parent: child, score: 10)
+    article.reload
+    count = described_class.new(article).call
+    expect(count).to eq(4)
   end
 end

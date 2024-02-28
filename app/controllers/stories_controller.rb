@@ -275,7 +275,7 @@ class StoriesController < ApplicationController
     @organization = @article.organization
     @comments_order = fetch_sort_order
 
-    @comments_count = Comments::Count.new(article: @article, signed_in: user_signed_in?).call
+    @comments_count = Comments::Count.new(@article).call
 
     if @article.collection
       @collection = @article.collection
