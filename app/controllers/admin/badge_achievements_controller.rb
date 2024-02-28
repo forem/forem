@@ -36,7 +36,10 @@ module Admin
       message = permitted_params[:message_markdown].presence ||
         I18n.t("admin.badge_achievements_controller.congrats", community: ::Settings::Community.community_name)
       BadgeAchievements::BadgeAwardWorker
-        .perform_async(usernames, permitted_params[:badge], message, include_default_description)
+        .perform_async(usernames,
+                       permitted_params[:badge],
+                       message,
+                       include_default_description: include_default_description)
 
       flash[:success] = I18n.t("admin.badge_achievements_controller.rewarded")
       redirect_to admin_badge_achievements_path
