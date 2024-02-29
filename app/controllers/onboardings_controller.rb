@@ -22,6 +22,7 @@ class OnboardingsController < ApplicationController
 
   def tags
     @tags = Tags::SuggestedForOnboarding.call
+      .select(TAG_ONBOARDING_ATTRIBUTES)
 
     render json: @tags
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
