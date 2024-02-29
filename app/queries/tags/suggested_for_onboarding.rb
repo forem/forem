@@ -8,7 +8,7 @@ module Tags
 
     def initialize(...); end
 
-    def call(article: nil)
+    def call
       return suggested_tags if suggested_tags.count >= MAX
 
       Tag

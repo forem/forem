@@ -21,9 +21,7 @@ class OnboardingsController < ApplicationController
   end
 
   def tags
-    article = Article.find_by(path: params[:relevant_path])
-    @tags = Tags::SuggestedForOnboarding.call(article: article)
-      .select(TAG_ONBOARDING_ATTRIBUTES)
+    @tags = Tags::SuggestedForOnboarding.call
 
     render json: @tags
     set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
@@ -119,7 +117,7 @@ class OnboardingsController < ApplicationController
   end
 
   def suggested_user_follows
-    Users::SuggestProminent.call(current_user,
+    Users::SuggestProminent.call(User.last,
                                  attributes_to_select: SUGGESTED_USER_ATTRIBUTES)
   end
 end
