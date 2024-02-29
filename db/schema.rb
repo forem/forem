@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_27_181740) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -200,6 +200,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_142953) do
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.boolean "include_default_description", default: true, null: false
     t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
