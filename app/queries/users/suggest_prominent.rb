@@ -26,14 +26,13 @@ module Users
 
     def fetch_and_pluck_user_ids
       filtered_articles = if tags_to_consider.any?
-                            Article.cached_tagged_with_any(tags_to_consider)
+                            Article.published.cached_tagged_with_any(tags_to_consider)
                           else
-                            Article.featured
+                            Article.published.featured
                           end
-      order = Arel.sql("(hotness_score * (feed_success_score - clickbait_score)) DESC")
-      user_ids = filtered_articles.order(order).limit(RETURNING * 2).pluck(:user_id) - [user.id]
+      user_ids = filtered_articles.order("hotness_score DESC").limit(RETURNING * 2).pluck(:user_id) - [user.id]
       if user_ids.size > (RETURNING / 2)
-        user_ids
+        user_ids.sample(RETURNING)
       else
         # This is a fallback in case we don't have enough users to return
         # Will generally not be called — but maybe for brand new forems
