@@ -12,8 +12,7 @@ module Users
     end
 
     def suggest
-      user_ids = fetch_and_pluck_user_ids
-      User.includes(:profile).without_role(:suspended).where(id: user_ids.uniq)
+      User.includes(:profile).without_role(:suspended).where(id: fetch_and_pluck_user_ids.uniq)
         .limit(RETURNING).select(attributes_to_select)
     end
 
@@ -33,7 +32,7 @@ module Users
                           end
       order = Arel.sql("(hotness_score * (feed_success_score - clickbait_score)) DESC")
       user_ids = filtered_articles.order(order).limit(RETURNING * 2).pluck(:user_id) - [user.id]
-      if user_ids.size > 50
+      if user_ids.size > (RETURNING / 2)
         user_ids
       else
         # This is a fallback in case we don't have enough users to return
