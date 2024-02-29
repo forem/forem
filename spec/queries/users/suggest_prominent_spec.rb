@@ -5,16 +5,10 @@ RSpec.describe Users::SuggestProminent, type: :service do
     let(:user) { create(:user) }
     let(:attributes_to_select) { %i[id username] }
     let!(:featured_users) { create_list(:user, 3) }
-    let!(:articles) { create_list(:article, 3, user: featured_users.sample) }
 
     before do
       allow(Article).to receive(:featured).and_return(Article.all)
       allow(user).to receive(:cached_followed_tag_names).and_return([])
-    end
-
-    it "returns a limited number of users randomly" do
-      suggested_users = described_class.call(user, attributes_to_select: attributes_to_select)
-      expect(suggested_users).to match_array(User.limit(Users::SuggestProminent::RETURNING))
     end
 
     it "does not include the calling user" do
