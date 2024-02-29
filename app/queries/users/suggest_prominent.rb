@@ -12,7 +12,7 @@ module Users
     end
 
     def suggest
-      User.includes(:profile).without_role(:suspended).where(id: fetch_and_pluck_user_ids.uniq)
+      User.joins(:profile).without_role(:suspended).where(id: fetch_and_pluck_user_ids.uniq)
         .limit(RETURNING).select(attributes_to_select)
     end
 
