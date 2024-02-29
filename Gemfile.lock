@@ -282,7 +282,7 @@ GEM
     faraday-net_http (3.0.2)
     faraday-retry (2.1.0)
       faraday (~> 2.0)
-    fastimage (2.2.7)
+    fastimage (2.3.0)
     fastly (3.0.2)
     feedjira (3.2.2)
       loofah (>= 2.3.1)
