@@ -88,7 +88,6 @@ class Comment < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
   scope :good_quality, -> { where("score > ?", LOW_QUALITY_THRESHOLD) }
-  scope :hidden_by_score, -> { where("score <= ?", HIDE_THRESHOLD) }
 
   alias touch_by_reaction save
 
