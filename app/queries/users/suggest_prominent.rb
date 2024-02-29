@@ -8,7 +8,7 @@ module Users
 
     def initialize(user, attributes_to_select: [])
       @user = user
-      @attributes_to_select = attributes_to_select.join(", ")
+      @attributes_to_select = attributes_to_select
     end
 
     def suggest
