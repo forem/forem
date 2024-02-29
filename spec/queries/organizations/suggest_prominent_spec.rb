@@ -44,25 +44,20 @@ RSpec.describe Organizations::SuggestProminent, type: :service do
     end
   end
 
-  it "returns max 5 organizations with posts with at least an average score under any tags" do
-    results = suggester.suggest
-    expect(results.size).to eq(5)
-    expect(results).to include(*top_organizations)
-    expect(results).to include(mid_included)
-    expect(results).not_to include(mid_excluded)
-    expect(results).not_to include(bad_organizations.first)
-    expect(results).not_to include(bad_organizations.last)
-  end
+  context "when user is not following any tags" do
+    let(:first_tag) { create(:tag) }
+    let(:second_tag) { create(:tag) }
+    let(:org_first) { create(:organization) }
+    let(:org_second) { create(:organization) }
 
-  it "does not include orgs with posts published more than 3 weeks ago" do
-    old_timer = nil # so this is still accessible after block
-
-    Timecop.travel(5.weeks.ago) do
-      old_timer = create(:organization)
-      create(:article, organization_id: old_timer.id, score: 50)
+    before do
+      create_list(:article, 3, organization_id: org_first.id, score: 25, tags: first_tag.name)
+      create(:article, organization_id: org_second.id, score: 15, tags: second_tag.name)
     end
 
-    results = suggester.suggest
-    expect(results).not_to include(old_timer)
+    it "does not return organizations if no tags" do
+      results = suggester.suggest
+      expect(results).to be_empty
+    end
   end
 end

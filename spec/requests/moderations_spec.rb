@@ -173,26 +173,43 @@ RSpec.describe "Moderations" do
     end
 
     context "when user is trusted" do
+      let!(:first_article) { create(:article) }
+      let!(:second_article) { create(:article, score: -12) }
+      let(:spamer) { create(:user, :spam) }
+      let(:suspended_user) { create(:user, :suspended) }
+
       before do
         sign_in trusted_user
       end
 
       it "does not show articles the user has already reacted to for inbox" do
-        first_article = create(:article)
-        second_article = create(:article, score: -12)
         get "/mod"
 
         expect(response.body).to include(CGI.escapeHTML(first_article.title))
         expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
       end
 
-      it "shows all articles on latest" do
-        first_article = create(:article)
-        second_article = create(:article, score: -12)
+      it "doesn't include spam and suspended articles" do
+        spam_article = create(:article, user: spamer, score: 0)
+        suspended_article = create(:article, user: suspended_user, score: 0)
+
+        get "/mod"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
+      end
+
+      it "includes non-spam articles and doesn't include spam/suspended articles on latest" do
+        spam_article = create(:article, user: spamer, score: 0)
+        suspended_article = create(:article, user: suspended_user, score: 0)
+
         get "/mod?state=latest"
 
         expect(response.body).to include(CGI.escapeHTML(first_article.title))
         expect(response.body).to include(CGI.escapeHTML(second_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
       end
     end
   end
