@@ -6,7 +6,7 @@
       <fieldset>
         <div class="flex email_newsletter mt-5 pt-4 ">
           <div class="flex h-5 ml-3">
-            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-1 crayons-checkbox">
+            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-1 crayons-checkbox" <%= "checked".html_safe if default_email_optin_allowed? %>>
           </div>
           <div class="ml-3">
             <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
@@ -26,7 +26,7 @@
       <fieldset>
         <div class="flex email_newsletter mt-5 pt-3 ">
           <div class="flex h-5 ml-3">
-            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-2 crayons-checkbox">
+            <input type="checkbox" id="email_newsletter" name="email_newsletter" class="w-4 h-4 mt-2 crayons-checkbox" <%= "checked".html_safe if default_email_optin_allowed? %>>
           </div>
           <div class="ml-2">
             <label for="email_newsletter" class="font-medium text-gray-900 dark:text-gray-300">
@@ -52,10 +52,10 @@
       <legend>Email preferences</legend>
       <ul>
         <li class="checkbox-item">
-          <label for="email_newsletter"><input type="checkbox" id="email_newsletter" name="email_newsletter">I want to receive weekly newsletter emails.</label>
+          <label for="email_newsletter"><input type="checkbox" id="email_newsletter" name="email_newsletter" <%= "checked".html_safe if default_email_optin_allowed? %>>I want to receive weekly newsletter emails.</label>
         </li>
         <li class="checkbox-item">
-          <label for="email_digest_periodic"><input type="checkbox" id="email_digest_periodic" name="email_digest_periodic">I want to receive a periodic digest of top posts from my tags.</label>
+          <label for="email_digest_periodic"><input type="checkbox" id="email_digest_periodic" name="email_digest_periodic" <%= "checked".html_safe if default_email_optin_allowed? %>>I want to receive a periodic digest of top posts from my tags.</label>
         </li>
       </ul>
     </fieldset>

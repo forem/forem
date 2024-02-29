@@ -4,7 +4,9 @@ module Stories
 
     def show
       @page = (params[:page] || 1).to_i
-      @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
+      # This most recent test has concluded with a winner. Preserved as a comment awaiting next test
+      # @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
+      @comments_variant = "more_inclusive_recent_good_comments"
 
       @stories = assign_feed_stories
 

@@ -5,6 +5,7 @@
 # @see UserDecorator
 # @see ApplicationPolicy
 class AsyncInfo
+  include FieldTest::Helpers
   # @api public
   #
   # Generate a Hash of the relevant user data.
@@ -46,7 +47,7 @@ class AsyncInfo
       trusted: user.trusted?,
       moderator_for_tags: user.moderator_for_tags,
       config_body_class: user.config_body_class,
-      feed_style: feed_style_preference,
+      feed_style: feed_style_preference_variable(user),
       created_at: user.created_at,
       admin: user.any_admin?,
       policies: [
@@ -74,5 +75,14 @@ class AsyncInfo
     context.__send__(:policy, record).public_send(query)
   rescue Pundit::NotAuthorizedError
     false
+  end
+
+  def feed_style_preference_variable(user)
+    unwrapped_user = user.object # user here is actually a UserDecorator before. Need to unwrap.
+    after_date = unwrapped_user.registered_at >= Time.zone.parse("2024-02-20")
+    flag_on = FeatureFlag.enabled?(:feed_style_test_running)
+    return field_test(:feed_style_20240220, participant: unwrapped_user) if after_date && flag_on
+
+    feed_style_preference
   end
 end

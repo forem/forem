@@ -1,4 +1,4 @@
-<% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}-#{@discussion_lock&.updated_at}-#{@comments_order}-#{user_signed_in?}", expires_in: 2.hours) do %>
+<% cache("whole-comment-area-#{@article.id}-#{@article.comments.cache_key_with_version}-#{@article.show_comments}-#{@discussion_lock&.updated_at}-#{@comments_order}-#{user_signed_in?}", expires_in: 2.hours) do %>
   <section id="comments" data-follow-button-container="true" data-updated-at="<%= Time.current %>" class="text-padding mb-4 border-t-1 border-0 border-solid border-base-10">
     <% if @article.show_comments %>
       <header class="relative flex justify-between items-center mb-6">
