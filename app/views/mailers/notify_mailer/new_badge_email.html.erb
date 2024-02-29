@@ -5,9 +5,12 @@
   <p style="text-align:center;padding:20px 0px">
     <img src="<%= @badge.badge_image_url %>" style="height:200px" alt="<%= @badge.title %> badge" loading="lazy" />
   </p>
-  <p>
-    <%= @badge.description %>
-  </p>
+
+  <% if @badge_achievement.include_default_description %>
+    <p>
+      <%= @badge.description %>
+    </p>
+  <% end %>
 
   <% if @badge_achievement.rewarding_context_message.present? %>
     <p>
@@ -21,7 +24,7 @@
   <p>
     <a
       href="<%= user_url(@user) %>"
-      style="font-weight:bold;color:white;background:#4e57ef;padding: 5px 10px;border-radius:3px;text-decoration:none">
+      style="font-weight:bold;color:white;background:#4e57ef;padding: 12px 15px;border-radius:6px;text-decoration:none">
       Check out your profile
     </a>
   </p>
