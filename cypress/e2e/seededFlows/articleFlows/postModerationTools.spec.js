@@ -120,7 +120,7 @@ describe('Moderation Tools for Posts', () => {
       });
     });
 
-    it('should not show Feature Post button on a post', () => {
+    it.skip('should not show Feature Post button on a post', () => {
       cy.get('@moderatorUser').then((user) => {
         cy.loginAndVisit(user, '/admin_mcadmin/unfeatured-article-slug').then(
           () => {

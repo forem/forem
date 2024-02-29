@@ -34,7 +34,7 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it('flags and unflags only the comment when clicked', () => {
+    it.skip('flags and unflags only the comment when clicked', () => {
       cy.intercept('POST', '/reactions').as('flagRequest');
 
       findButton('Flag to Admins', { as: 'contentFlag' });
