@@ -37,7 +37,7 @@ module Users
       else
         # This is a fallback in case we don't have enough users to return
         # Will generally not be called — but maybe for brand new forems
-        User.order("last_comment_at DESC").limit(RETURNING * 2).ids - [user.id]
+        User.order("score DESC").limit(RETURNING * 2).ids - [user.id]
       end
     end
   end
