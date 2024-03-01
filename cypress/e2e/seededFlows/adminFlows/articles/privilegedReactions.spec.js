@@ -265,7 +265,10 @@ describe('Article flagged by a trusted user', () => {
 
     cy.wait('@request');
 
-    cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
-    cy.get('@flagStatus').should('contain', 'Valid');
+    cy.get('.flex .c-indicator')
+      .should('be.visible')
+      .should('contain', 'Valid');
+    // cy.get('.flex .c-indicator').should('be.visible').as('flagStatus');
+    // cy.get('@flagStatus').should('contain', 'Valid');
   });
 });
