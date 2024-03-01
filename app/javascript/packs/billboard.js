@@ -23,7 +23,7 @@ async function generateBillboard(element) {
   }
 
   if (cookieStatus === 'allowed') {
-    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'  }cookies_allowed=true`;
+    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'}cookies_allowed=true`;
   }
 
   if (asyncUrl) {
@@ -39,6 +39,15 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+      const dismissalSku =
+        element.querySelector('.js-billboard')?.dataset.dismissalSku;
+      if (localStorage && dismissalSku && dismissalSku.length > 0) {
+        const skuArray =
+          JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+        if (skuArray.includes(dismissalSku)) {
+          element.style.display = 'none';
+        }
+      }
       executeBBScripts(element);
       implementSpecialBehavior(element);
       setupBillboardInteractivity();
