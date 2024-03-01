@@ -39,6 +39,13 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+      const {dismissalSku} = element.querySelector('.js-billboard').dataset;
+      if (localStorage && dismissalSku && dismissalSku.length > 0) {
+        const skuArray = JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+        if (skuArray.includes(dismissalSku)) {
+          element.style.display = 'none';
+        }
+      }
       executeBBScripts(element);
       implementSpecialBehavior(element);
       setupBillboardInteractivity();
