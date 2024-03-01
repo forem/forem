@@ -21,6 +21,12 @@ export function setupBillboardInteractivity() {
 
         sponsorshipDropdownButton.dataset.initialized = 'true';
       }
+
+      const popoverParent = sponsorshipDropdownButton.closest('.popover-billboard');
+      if (popoverParent &&
+        sponsorshipDropdownButton.getBoundingClientRect().top > window.innerHeight / 2) {
+        popoverParent.classList.add('popover-billboard--menuopenupwards');
+      }
     });
   }
   const sponsorshipCloseButtons = document.querySelectorAll(
