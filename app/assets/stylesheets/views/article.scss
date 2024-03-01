@@ -22,9 +22,9 @@
       margin: auto;
       max-width: 100%;
       height: auto;
-      object-fit: contain;
+      object-fit: cover;
       max-height: calc(
-        100vh - var(--header-height) - 2 * var(--layout-padding)
+        40vh - var(--header-height) - 2 * var(--layout-padding)
       );
 
       &__feed {
