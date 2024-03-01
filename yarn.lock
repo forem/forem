@@ -2849,6 +2849,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kurkle/color@npm:^0.3.0":
+  version: 0.3.2
+  resolution: "@kurkle/color@npm:0.3.2"
+  checksum: 10c0/a9e8e3e35dcd59dec4dd4f0105919c05e24823a96347bcf152965c29e48d6290b66d5fb96c071875db752e10930724c48ce6d338fefbd65e0ce5082d5c78970e
+  languageName: node
+  linkType: hard
+
 "@mapbox/node-pre-gyp@npm:^1.0.0":
   version: 1.0.10
   resolution: "@mapbox/node-pre-gyp@npm:1.0.10"
@@ -7389,10 +7396,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chart.js@npm:^3.9.1":
-  version: 3.9.1
-  resolution: "chart.js@npm:3.9.1"
-  checksum: 10c0/a31342233403faaa53bebc1019aeb7b849d6d2cd4108c10f1dd73b36c4fcfc7c21bce8986f2f6eb00a28801fddc68a287b8c9f65e9758c50db6efef955b4e991
+"chart.js@npm:^4.4.1":
+  version: 4.4.1
+  resolution: "chart.js@npm:4.4.1"
+  dependencies:
+    "@kurkle/color": "npm:^0.3.0"
+  checksum: 10c0/ef0cd10118bfa66695b109cbb331be99193b19f1ac2bb7f35f8c71aa45a355f17d1c87d5fa6727a2b026ace4c7fa8ab557e9f61a9f13f1f39f58500bbd0c26d1
   languageName: node
   linkType: hard
 
@@ -8836,7 +8845,7 @@ __metadata:
     babel-plugin-module-resolver: "npm:^5.0.0"
     babel-preset-preact: "npm:^2.0.0"
     canvas: "npm:^2.11.0"
-    chart.js: "npm:^3.9.1"
+    chart.js: "npm:^4.4.1"
     classnames: "npm:^2.5.1"
     core-js: "npm:3"
     css-loader: "npm:^5.2.7"
