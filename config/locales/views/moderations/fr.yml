@@ -180,6 +180,8 @@ fr:
         tag: Guide de modération des étiquettes
         terms_and_conditions: Conditions générales d'utilisation
         trusted: Guide de l'utilisateur de confiance
+        following_tags: Following tags
+        moderating_tags: Moderating tags
       author: Auteur
       comments:
         view_comment: Voir le commentaire
