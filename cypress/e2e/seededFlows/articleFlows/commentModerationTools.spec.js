@@ -60,10 +60,10 @@ describe('Moderation Tools for Comments', () => {
       cy.get('.reaction-button')
         .filter(':contains("Flag questionable_user")')
         .click();
+      cy.get('@userFlag').should('have.class', 'reacted');
       cy.wait('@flagRequest');
 
       cy.get('@contentFlag').should('not.have.class', 'reacted');
-      cy.get('@userFlag').should('have.class', 'reacted');
 
       clickButton('@userFlag');
 
