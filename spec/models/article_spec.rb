@@ -1641,7 +1641,6 @@ RSpec.describe Article do
       )
     end
 
-
     it "returns reasons.unpublished for unpublished articles" do
       article.published = false
       expect(article.skip_indexing_reason).to eq("unpublished")
