@@ -18,6 +18,7 @@ class StoriesController < ApplicationController
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
 
   before_action :authenticate_user!, except: %i[index show]
+  before_action :set_admin, only: %i[index show]
   before_action :set_cache_control_headers, only: %i[index show]
   before_action :set_user_limit, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
@@ -49,6 +50,10 @@ class StoriesController < ApplicationController
   end
 
   private
+
+  def set_admin
+    @is_admin = current_user&.any_admin?
+  end
 
   def set_user_limit
     @user_limit = 50
@@ -185,7 +190,7 @@ class StoriesController < ApplicationController
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
-    not_found if @user.spam?
+    not_found if @user.spam? && !@is_admin
     if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
       not_found
     end
@@ -264,7 +269,7 @@ class StoriesController < ApplicationController
   def assign_article_show_variables
     not_found if permission_denied?
     not_found unless @article.user
-    not_found if @article.user.spam?
+    not_found if @article.user.spam? && !@is_admin
 
     @pinned_article_id = PinnedArticle.id
 
