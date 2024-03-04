@@ -8866,14 +8866,14 @@ __metadata:
     freezeframe: "npm:^5.0.2"
     he: "npm:^1.2.0"
     husky: "npm:^8.0.3"
-    i18n-js: "npm:^4.3.2"
+    i18n-js: "npm:^4.4.3"
     intersection-observer: "npm:^0.12.2"
     isomorphic-fetch: "npm:^3.0.0"
     jest: "npm:28.1.3"
     jest-axe: "npm:^6.0.0"
     jest-environment-jsdom: "npm:^28.1.3"
     jest-fetch-mock: "npm:^3.0.3"
-    jest-junit: "npm:^14.0.1"
+    jest-junit: "npm:^16.0.0"
     jest-watch-typeahead: "npm:^2.2.2"
     jsdom: "npm:^20.0.1"
     linkstate: "npm:^2.0.1"
@@ -11870,14 +11870,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18n-js@npm:^4.3.2":
-  version: 4.3.2
-  resolution: "i18n-js@npm:4.3.2"
+"i18n-js@npm:^4.4.3":
+  version: 4.4.3
+  resolution: "i18n-js@npm:4.4.3"
   dependencies:
     bignumber.js: "npm:*"
     lodash: "npm:*"
     make-plural: "npm:*"
-  checksum: 10c0/ccdfa7417f29cf1bf1e68d2146a3b3a1366392a2a2a07df23336fbffb9a8918dcc9c3bdfed20decf311a69d58c85c0160149a27752280dae14b521ec8bc3ab92
+  checksum: 10c0/545ce16b5fe9323d1a92637c91c6cd503c1065577fcbe96dabb34cae822a9da6642e2953eeb0e9e610a912b92f98c885c4c9717163e351593aaf0c2e5695442d
   languageName: node
   linkType: hard
 
@@ -13236,15 +13236,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-junit@npm:^14.0.1":
-  version: 14.0.1
-  resolution: "jest-junit@npm:14.0.1"
+"jest-junit@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "jest-junit@npm:16.0.0"
   dependencies:
     mkdirp: "npm:^1.0.4"
     strip-ansi: "npm:^6.0.1"
     uuid: "npm:^8.3.2"
     xml: "npm:^1.0.1"
-  checksum: 10c0/ec06ffad0326f037e62637b0c9935f2668c4657bebf4b81ab3b14867482b754f479c93cd13fe8915b763a7196a3dbc3edf323f062026763e4a79891b617e5945
+  checksum: 10c0/d813d4d142341c2b51b634db7ad6ceb9849514cb58f96ec5e7e4cf4031a557133490452710c2d9dec9b1dd546334d9ca663e042d3070c3e8f102ce6217bd8e2e
   languageName: node
   linkType: hard
 

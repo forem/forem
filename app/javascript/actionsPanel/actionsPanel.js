@@ -2,6 +2,7 @@ import { toggleFlagUserModal } from '../packs/toggleUserFlagModal';
 import { toggleSuspendUserModal } from '../packs/toggleUserSuspensionModal';
 import { toggleUnpublishPostModal } from '../packs/unpublishPostModal';
 import { toggleUnpublishAllPostsModal } from '../packs/modals/unpublishAllPosts';
+import { postReactions } from './services/reactions';
 import { request } from '@utilities/http';
 
 export function addCloseListener() {
@@ -56,29 +57,44 @@ function applyReactedClass(category) {
 }
 
 export function addReactionButtonListeners() {
-  const butts = Array.from(
+  const reactionButtons = Array.from(
     document.querySelectorAll('.reaction-button, .reaction-vomit-button'),
   );
+  const initialButtonsState = {};
+
+  reactionButtons.forEach((button) => {
+    const { classList } = button;
+
+    initialButtonsState[button.getAttribute('data-category')] =
+      classList.contains('reacted');
+  });
+
+  const rollbackReactionButtonsState = () => {
+    reactionButtons.forEach(({ classList, dataset }) => {
+      if (initialButtonsState[dataset.category]) classList.add('reacted');
+      else classList.remove('reacted');
+    });
+  };
+
   /* eslint-disable camelcase */
-  butts.forEach((butt) => {
-    butt.addEventListener('click', async (event) => {
+  reactionButtons.forEach((button) => {
+    button.addEventListener('click', async (event) => {
       event.preventDefault();
       const {
         reactableType: reactable_type,
         category,
         reactableId: reactable_id,
-      } = butt.dataset;
+      } = button.dataset;
 
       applyReactedClass(category);
-      butt.classList.toggle('reacted');
+      button.classList.toggle('reacted');
 
       try {
-        const response = await request('/reactions', {
-          method: 'POST',
-          body: { reactable_type, category, reactable_id },
+        const outcome = await postReactions({
+          reactable_type,
+          category,
+          reactable_id,
         });
-
-        const outcome = await response.json();
 
         let message;
         /* eslint-disable no-restricted-globals */
@@ -98,6 +114,7 @@ export function addReactionButtonListeners() {
           message = 'Your quality rating was removed.';
         } else if (outcome.error) {
           message = `Error: ${outcome.error}`;
+          rollbackReactionButtonsState();
         }
         top.addSnackbarItem({
           message,
@@ -107,6 +124,7 @@ export function addReactionButtonListeners() {
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);
+        rollbackReactionButtonsState();
       }
     });
   });
