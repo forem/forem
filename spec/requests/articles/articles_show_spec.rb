@@ -148,10 +148,11 @@ RSpec.describe "ArticlesShow" do
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    it "renders profile page for admins" do
+    it "renders successfully for admins", :aggregate_failures do
       sign_in admin_user
       get article.path
       expect(response).to be_successful
+      expect(response.body).to include("Spam")
     end
   end
 
