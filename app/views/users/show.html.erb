@@ -64,7 +64,7 @@
             </h1>
           </div>
 
-          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
+          <p class="fs-base profile-header__bio m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
 
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
@@ -151,7 +151,7 @@
 </main>
 
 <%= javascript_include_tag "storiesList", "followButtons",
-                                     "feedPreviewCards", "hideBookmarkButtons",
-                                     "profileDropdown", "users/profilePage",
-                                     "localizeArticleDates", "asyncUserStatusCheck",
-                                     defer: true %>
+                           "feedPreviewCards", "hideBookmarkButtons",
+                           "profileDropdown", "users/profilePage",
+                           "localizeArticleDates", "asyncUserStatusCheck",
+                           defer: true %>
