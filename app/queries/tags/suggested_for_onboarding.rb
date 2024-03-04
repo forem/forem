@@ -13,7 +13,7 @@ module Tags
 
       Tag
         .where(suggested_for_onboarding_or_supported)
-        .order("suggested DESC, supported DESC, taggings_count DESC, name ASC")
+        .order("hotness_score DESC")
         .limit(MAX)
     end
 

@@ -217,6 +217,17 @@ RSpec.describe "ArticlesShow" do
         expect(response.body).to include("Child comment")
         expect(response.body).to include("Comment deleted") # instead of the low quality one
       end
+
+      it "displays comments count w/o including super low-quality ones" do
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"3\">(3)</span>")
+      end
+
+      it "displays includes spam comments in comments count if they have children" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
+      end
     end
 
     context "when user not signed in" do
