@@ -181,6 +181,8 @@ en:
         tag: Tag Moderation Guide
         terms_and_conditions: Terms & Conditions
         trusted: Trusted User Guide
+        following_tags: Following tags
+        moderating_tags: Moderating tags
       author: Author
       comments:
         view_comment: View Comment
