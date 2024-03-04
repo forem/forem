@@ -34,13 +34,15 @@ describe('Moderation Tools for Comments', () => {
       });
     });
 
-    it.skip('flags and unflags only the comment when clicked', () => {
+    it('flags and unflags only the comment when clicked', () => {
       cy.intercept('POST', '/reactions').as('flagRequest');
 
       findButton('Flag to Admins', { as: 'contentFlag' });
       findButton(`Flag questionable_user`, { as: 'userFlag' });
 
-      clickButton('@contentFlag');
+      cy.get('.reaction-button').filter(`:contains("Flag to Admins")`).click();
+      cy.get('@contentFlag').should('have.class', 'reacted');
+      cy.wait('@flagRequest');
 
       cy.get('@contentFlag').should('have.class', 'reacted');
       cy.get('@userFlag').should('not.have.class', 'reacted');
@@ -57,10 +59,13 @@ describe('Moderation Tools for Comments', () => {
       findButton('Flag to Admins', { as: 'contentFlag' });
       findButton(`Flag questionable_user`, { as: 'userFlag' });
 
-      clickButton('@userFlag');
+      cy.get('.reaction-button')
+        .filter(':contains("Flag questionable_user")')
+        .click();
+      cy.get('@userFlag').should('have.class', 'reacted');
+      cy.wait('@flagRequest');
 
       cy.get('@contentFlag').should('not.have.class', 'reacted');
-      cy.get('@userFlag').should('have.class', 'reacted');
 
       clickButton('@userFlag');
 
