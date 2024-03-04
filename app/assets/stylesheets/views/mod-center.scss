@@ -161,7 +161,20 @@
   margin-bottom: 0;
 
   @media (min-width: $breakpoint-m) {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--su-9);
+  }
+
+  hr {
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-top-color: var(--base-20);
+    color: var(--base-80);
+  }
+
+  .tags-box {
+    max-height: 12rem;
+    overflow-y: auto;
+    margin-bottom: var(--su-2);
   }
 }
 
