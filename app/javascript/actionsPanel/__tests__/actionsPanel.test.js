@@ -1,18 +1,24 @@
 /* eslint-disable no-restricted-globals */
-import fetch from 'jest-fetch-mock';
+import { waitFor } from '@testing-library/dom';
 import { fireEvent } from '@testing-library/preact';
+import fetch from 'jest-fetch-mock';
 import {
   addCloseListener,
-  initializeHeight,
   addReactionButtonListeners,
-  handleAddTagButtonListeners,
   handleAddModTagButtonsListeners,
+  handleAddTagButtonListeners,
   handleRemoveTagButtonsListeners,
+  initializeHeight,
 } from '../actionsPanel';
+import { postReactions } from '../services/reactions';
 
 global.fetch = fetch;
 global.top.addSnackbarItem = jest.fn();
 global.alert = jest.fn();
+
+jest.mock('../services/reactions', () => ({
+  postReactions: jest.fn(),
+}));
 
 describe('addCloseListener()', () => {
   test('toggles the mod actions panel and its button on click', () => {
@@ -93,67 +99,252 @@ describe('addReactionButtonListeners()', () => {
   }
 
   describe('when no reactions are already reacted on', () => {
-    test('it marks thumbs up reaction as reacted', async () => {
-      let category = 'thumbsup';
-      fetch.mockResponse(sampleResponse(category));
-      addReactionButtonListeners();
+    describe('when postReaction is called successfully', () => {
+      beforeEach(() => {
+        postReactions.mockResolvedValue({
+          outcome: {
+            result: 'create',
+            category: 'thumbsup',
+          },
+        });
+      });
 
-      const thumbsupButton = document.querySelector(
-        `.reaction-button[data-category="${category}"]`,
-      );
-      thumbsupButton.click();
-      expect(thumbsupButton.classList).toContain('reacted');
+      test.each([['thumbsup'], ['thumbsdown']])(
+        'it marks %s reaction as reacted',
+        (category) => {
+          addReactionButtonListeners();
 
-      category = 'thumbsdown';
-      const thumbsdownButton = document.querySelector(
-        `.reaction-button[data-category="${category}"]`,
-      );
-      thumbsdownButton.click();
-      expect(thumbsdownButton.classList).toContain('reacted');
+          const button = document.querySelector(
+            `.reaction-button[data-category="${category}"]`,
+          );
+          button.click();
 
-      category = 'vomit';
-      fetch.resetMocks();
-      fetch.mockResponse(sampleResponse(category));
-      const vomitButton = document.querySelector(
-        `.reaction-vomit-button[data-category="${category}"]`,
+          expect(button.classList).toContain('reacted');
+        },
       );
-      vomitButton.click();
-      expect(vomitButton.classList).toContain('reacted');
+
+      test('it marks vomit flag to admins', () => {
+        const category = 'vomit';
+
+        addReactionButtonListeners();
+
+        const vomitButton = document.querySelector(
+          `.reaction-vomit-button[data-category="${category}"]`,
+        );
+
+        vomitButton.click();
+        expect(vomitButton.classList).toContain('reacted');
+      });
+
+      test('it unmarks the proper reaction(s) when positive/negative reactions are clicked', async () => {
+        let category = 'thumbsup';
+        fetch.mockResponse(sampleResponse(category));
+        addReactionButtonListeners();
+        const thumbsupButton = document.querySelector(
+          `.reaction-button[data-category="${category}"]`,
+        );
+        thumbsupButton.click();
+
+        category = 'thumbsdown';
+        fetch.resetMocks();
+        fetch.mockResponse(sampleResponse(category));
+        const thumbsdownButton = document.querySelector(
+          `.reaction-button[data-category="${category}"]`,
+        );
+        thumbsdownButton.click();
+        expect(thumbsupButton.classList).not.toContain('reacted');
+
+        fetch.resetMocks();
+        category = 'thumbsup';
+        fetch.mockResponse(sampleResponse(category, false));
+        thumbsupButton.click();
+        expect(thumbsdownButton.classList).not.toContain('reacted');
+        expect(thumbsupButton.classList).toContain('reacted');
+
+        category = 'vomit';
+        fetch.resetMocks();
+        fetch.mockResponse(sampleResponse(category));
+        const vomitButton = document.querySelector(
+          `.reaction-vomit-button[data-category="${category}"]`,
+        );
+        vomitButton.click();
+        expect(vomitButton.classList).toContain('reacted');
+        expect(thumbsupButton.classList).not.toContain('reacted');
+      });
     });
-    test('it unmarks the proper reaction(s) when positive/negative reactions are clicked', async () => {
-      let category = 'thumbsup';
-      fetch.mockResponse(sampleResponse(category));
-      addReactionButtonListeners();
-      const thumbsupButton = document.querySelector(
-        `.reaction-button[data-category="${category}"]`,
-      );
-      thumbsupButton.click();
 
-      category = 'thumbsdown';
-      fetch.resetMocks();
-      fetch.mockResponse(sampleResponse(category));
-      const thumbsdownButton = document.querySelector(
-        `.reaction-button[data-category="${category}"]`,
-      );
-      thumbsdownButton.click();
-      expect(thumbsupButton.classList).not.toContain('reacted');
+    describe('when postReaction fails', () => {
+      test.each([['thumbsup'], ['thumbsdown']])(
+        'it revert marks %s reaction',
+        async (category) => {
+          postReactions.mockImplementation(() => Promise.reject());
 
-      fetch.resetMocks();
-      category = 'thumbsup';
-      fetch.mockResponse(sampleResponse(category, false));
-      thumbsupButton.click();
-      expect(thumbsdownButton.classList).not.toContain('reacted');
-      expect(thumbsupButton.classList).toContain('reacted');
+          addReactionButtonListeners();
 
-      category = 'vomit';
-      fetch.resetMocks();
-      fetch.mockResponse(sampleResponse(category));
-      const vomitButton = document.querySelector(
-        `.reaction-vomit-button[data-category="${category}"]`,
+          const button = document.querySelector(
+            `.reaction-button[data-category="${category}"]`,
+          );
+
+          button.click();
+
+          expect(button.classList).toContain('reacted');
+
+          await waitFor(() => {
+            expect(button.classList).not.toContain('reacted');
+          });
+        },
       );
-      vomitButton.click();
-      expect(vomitButton.classList).toContain('reacted');
-      expect(thumbsupButton.classList).not.toContain('reacted');
+
+      test('it revert marks vomit flag to admins', async () => {
+        postReactions.mockImplementation(() => Promise.reject());
+
+        addReactionButtonListeners();
+
+        const vomitButton = document.querySelector(
+          `.reaction-vomit-button[data-category="vomit"]`,
+        );
+
+        vomitButton.click();
+
+        expect(vomitButton.classList).toContain('reacted');
+
+        await waitFor(() => {
+          expect(vomitButton.classList).not.toContain('reacted');
+        });
+      });
+    });
+
+    describe('when outcome result is create and category is thumbsup', () => {
+      test('calls addSnackbarItem with "This post will be more visible." message', async () => {
+        const category = 'thumbsup';
+
+        postReactions.mockResolvedValue({ result: 'create', category });
+
+        addReactionButtonListeners();
+
+        const button = document.querySelector(
+          `.reaction-button[data-category="${category}"]`,
+        );
+
+        button.click();
+
+        await waitFor(() => {
+          expect(top.addSnackbarItem).toHaveBeenCalledWith({
+            message: 'This post will be more visible.',
+            addCloseButton: true,
+          });
+        });
+      });
+    });
+
+    describe('when outcome result is create and category is thumbsdown', () => {
+      test('calls addSnackbarItem with "This post will be less visible." message', async () => {
+        const category = 'thumbsdown';
+
+        postReactions.mockResolvedValue({ result: 'create', category });
+
+        addReactionButtonListeners();
+
+        const button = document.querySelector(
+          `.reaction-button[data-category="${category}"]`,
+        );
+
+        button.click();
+
+        await waitFor(() => {
+          expect(top.addSnackbarItem).toHaveBeenCalledWith({
+            message: 'This post will be less visible.',
+            addCloseButton: true,
+          });
+        });
+      });
+    });
+
+    describe('when outcome result is create and category is vomit', () => {
+      test("calls addSnackbarItem with `You've flagged this post as abusive or spam.` message", async () => {
+        const category = 'vomit';
+
+        postReactions.mockResolvedValue({ result: 'create', category });
+
+        addReactionButtonListeners();
+
+        const button = document.querySelector(
+          `.reaction-vomit-button[data-category="${category}"]`,
+        );
+
+        button.click();
+
+        await waitFor(() => {
+          expect(top.addSnackbarItem).toHaveBeenCalledWith({
+            message: "You've flagged this post as abusive or spam.",
+            addCloseButton: true,
+          });
+        });
+      });
+    });
+
+    describe('when outcome result is destroy', () => {
+      test('calls addSnackbarItem with "Your quality rating was removed." message', async () => {
+        const category = 'vomit';
+
+        postReactions.mockResolvedValue({ result: 'destroy', category });
+
+        addReactionButtonListeners();
+
+        const button = document.querySelector(
+          `.reaction-vomit-button[data-category="${category}"]`,
+        );
+
+        button.click();
+
+        await waitFor(() => {
+          expect(top.addSnackbarItem).toHaveBeenCalledWith({
+            message: "Your quality rating was removed.",
+            addCloseButton: true,
+          });
+        });
+      });
+    });
+
+    describe('when outcome have an error', () => {
+      test.each([['thumbsup'], ['thumbsdown']])(
+        'it revert marks %s reaction',
+        async (category) => {
+          postReactions.mockResolvedValue({ error: 'error' });
+
+          addReactionButtonListeners();
+
+          const button = document.querySelector(
+            `.reaction-button[data-category="${category}"]`,
+          );
+
+          button.click();
+
+          expect(button.classList).toContain('reacted');
+
+          await waitFor(() => {
+            expect(button.classList).not.toContain('reacted');
+          });
+        },
+      );
+
+      test('it revert marks vomit flag to admins', async () => {
+        postReactions.mockResolvedValue({ error: 'error' });
+
+        addReactionButtonListeners();
+
+        const vomitButton = document.querySelector(
+          `.reaction-vomit-button[data-category="vomit"]`,
+        );
+
+        vomitButton.click();
+
+        expect(vomitButton.classList).toContain('reacted');
+
+        await waitFor(() => {
+          expect(vomitButton.classList).not.toContain('reacted');
+        });
+      });
     });
   });
 });

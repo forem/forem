@@ -17,8 +17,14 @@ class ModerationsController < ApplicationController
 
     @feed = params[:state] == "latest" ? "latest" : "inbox"
     @members = params[:members].in?(%w[new not_new]) ? params[:members] : "all"
+
+    # exclude articles from users that have suspended or spam role
+    role_ids = Role.where(name: %i[spam suspended]).ids
     articles = Article.published
+      .where("NOT EXISTS (SELECT 1 FROM users_roles WHERE users_roles.user_id = articles.user_id AND
+             role_id IN (?))", role_ids)
       .order(published_at: :desc).limit(70)
+
     articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
     if @feed == "inbox"
       articles = articles
@@ -35,6 +41,7 @@ class ModerationsController < ApplicationController
     @articles = articles.includes(:user).to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
     @current_user_tags = current_user.moderator_for_tags
+    @current_user_following_tags = current_user.currently_following_tags.pluck(:name) - @current_user_tags
   end
 
   def article
