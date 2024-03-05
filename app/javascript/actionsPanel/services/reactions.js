@@ -1,9 +1,11 @@
+import { request } from '@utilities/http';
+
 export const postReactions = async ({
   reactable_type,
   category,
   reactable_id,
 }) => {
-  const response = await fetch('/reactions', {
+  const response = await request('/reactions', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
