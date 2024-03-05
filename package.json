@@ -141,7 +141,7 @@
     "lodash.debounce": "4.0.8",
     "moment": "^2.29.4",
     "postcss": "^8.4.31",
-    "postcss-cli": "^10.1.0",
+    "postcss-cli": "^11.0.0",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^15.1.0",
     "postcss-preset-env": "^7.8.2",

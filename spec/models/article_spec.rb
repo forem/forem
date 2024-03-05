@@ -1632,4 +1632,44 @@ RSpec.describe Article do
       end
     end
   end
+
+  describe "#skip_indexing_reason" do
+    before do
+      allow(Settings::UserExperience).to receive_messages(
+        index_minimum_score: 5,
+        index_minimum_date: 2.days.ago.to_i,
+      )
+    end
+
+    it "returns reasons.unpublished for unpublished articles" do
+      article.published = false
+      expect(article.skip_indexing_reason).to eq("unpublished")
+    end
+
+    it "returns reasons.below_minimum_score for articles with score below minimum and not featured" do
+      article.published = true
+      article.score = 3
+      article.featured = false
+      expect(article.skip_indexing_reason).to eq("below_minimum_score")
+    end
+
+    it "returns reasons.below_minimum_date for articles published before the minimum date" do
+      article.published_at = 3.days.ago
+      article.score = 5
+      expect(article.skip_indexing_reason).to eq("below_minimum_date")
+    end
+
+    it "returns reasons.negative_score for articles with a negative score" do
+      article.score = -2
+      expect(article.skip_indexing_reason).to eq("negative_score")
+    end
+
+    it "returns reasons.none for articles that do not meet any skip criteria" do
+      article.published = true
+      article.score = 6
+      article.featured = true
+      article.published_at = 1.day.ago
+      expect(article.skip_indexing_reason).to eq("unknown")
+    end
+  end
 end
