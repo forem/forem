@@ -82,7 +82,7 @@ module ApplicationHelper
   def article_view_classes
     base_classes = " #{@article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}"
     base_classes += " articleuser-#{@article.user_id}"
-    base_classes += " articleorg-#{article.organization_id}" if @article.organization_id
+    base_classes += " articleorg-#{@article.organization_id}" if @article.organization_id
     base_classes
   end
 
