@@ -19,6 +19,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     end
 
     it "has the create account tracking element in the hamburger", :aggregate_failures do
+      Capybara.current_session.driver.resize(425, 694)
       first(".js-hamburger-trigger").click
       expect(page).to have_css('a[data-tracking-id="ca_hamburger_home_page"]')
     end
