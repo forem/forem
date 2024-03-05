@@ -235,7 +235,7 @@ describe('FollowTags', () => {
   describe('emailDigestPeriodic state initialization', () => {
     it('should initialize email_digest_periodic to true when data-default-email-optin-allowed is true', async () => {
       // Simulate setting data-default-email-optin-allowed to true
-      document.body.dataset.defaultEmailOptinAllowed = 'true';
+      document.body.dataset.default_email_optin_allowed = 'true';
 
       const { container } = renderFollowTags();
       const checkbox = container.querySelector('#email_digest_periodic');
