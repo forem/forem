@@ -74,8 +74,8 @@ module ApplicationHelper
                    else
                      "#{controller_name} #{current_page}"
                    end
-    base_classes += article_view_classes if @article
-    base_classes += page_view_classes if @page
+    base_classes += article_view_classes if @article&.class&.name&.start_with?("Article") # Article or ArticleDecorator
+    base_classes += page_view_classes if @page&.class&.name&.start_with?("Page")
     base_classes
   end
 
