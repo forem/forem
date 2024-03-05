@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Fragment } from 'preact';
 import { formatDate } from './util';
+import ExternalLinkIcon from '@images/external-link.svg';
 
 export const SingleArticle = ({
   id,
@@ -41,6 +42,9 @@ export const SingleArticle = ({
       >
         <summary>
           <div className="article-details-container">
+            <a href={path}>
+              <ExternalLinkIcon aria-label="Open in new tab" className="link-icon" />
+            </a>
             <span className="article-title">
               <header>
                 <h3 className="fs-base fw-bold lh-tight article-title-heading">
