@@ -10,6 +10,10 @@ module Comments
       @article = article
     end
 
+    def self.call(...)
+      new(...).call
+    end
+
     def call
       # comments that are not displayed at all (not even a "comment deleted" message):
       # with the score below hiding threshold and w/o children
