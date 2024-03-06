@@ -55,6 +55,15 @@
       content: '';
     }
 
+    .link-icon {
+      width: var(--su-7);
+      height: auto;
+
+      &:hover {
+        color: var(--link-branded-color);
+      }
+    }
+
     .article-details-container {
       cursor: pointer;
       display: grid;
@@ -65,7 +74,7 @@
       padding: var(--su-4);
 
       @media (min-width: $breakpoint-m) {
-        grid-template-columns: 4fr 2fr 1fr;
+        grid-template-columns: 0.25fr 4fr 2fr 1fr;
         grid-row-gap: 0;
         grid-template-rows: 1fr;
       }
