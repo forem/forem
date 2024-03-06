@@ -25,12 +25,10 @@ remote_options = remote_chrome ? { url: REMOTE_CHROME_URL } : {}
 Capybara.register_driver(:better_cuprite) do |app|
   Capybara::Cuprite::Driver.new(
     app,
-    **{
-      window_size: [1200, 800],
-      browser_options: {},
-      process_timeout: 10,
-      inspector: true,
-      headless: !ENV["HEADLESS"].in?(%w[n 0 no false])
-    }.merge(remote_options),
+    window_size: [1200, 800],
+    browser_options: {},
+    process_timeout: 30,
+    inspector: true,
+    headless: !ENV["HEADLESS"].in?(%w[n 0 no false]), **remote_options
   )
 end
