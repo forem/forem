@@ -13,21 +13,21 @@ describe('getBillboard', () => {
       </div>
     `;
     // Mock localStorage
-    const localStorageMock = (function() {
+    const localStorageMock = (function () {
       let store = {};
       return {
-        getItem: function(key) {
+        getItem (key) {
           return store[key] || null;
         },
-        setItem: function(key, value) {
+        setItem (key, value) {
           store[key] = value.toString();
         },
-        clear: function() {
+        clear () {
           store = {};
         },
-        removeItem: function(key) {
+        removeItem (key) {
           delete store[key];
-        }
+        },
       };
     })();
     Object.defineProperty(window, 'localStorage', {
@@ -98,7 +98,9 @@ describe('getBillboard', () => {
 
     await getBillboard();
 
-    const scriptElements = document.querySelectorAll('.js-billboard-container script');
+    const scriptElements = document.querySelectorAll(
+      '.js-billboard-container script',
+    );
     expect(scriptElements.length).toBe(2);
     scriptElements.forEach((script) => {
       expect(script.type).toEqual('text/javascript');
@@ -108,7 +110,9 @@ describe('getBillboard', () => {
 
   test('should add current URL parameters to asyncUrl if bb_test_placement_area exists', async () => {
     delete window.location;
-    window.location = new URL('http://example.com?bb_test_placement_area=post_sidebar&bb_test_id=1');
+    window.location = new URL(
+      'http://example.com?bb_test_placement_area=post_sidebar&bb_test_id=1',
+    );
 
     document.body.innerHTML = `
       <div>
@@ -124,37 +128,54 @@ describe('getBillboard', () => {
 
     await getBillboard();
 
-    expect(global.fetch).toHaveBeenCalledWith('/billboards/post_sidebar?bb_test_placement_area=post_sidebar&bb_test_id=1');
+    expect(global.fetch).toHaveBeenCalledWith(
+      '/billboards/post_sidebar?bb_test_placement_area=post_sidebar&bb_test_id=1',
+    );
   });
 
-  test('should display none  if dismissal SKU matches', async () => {
-    window.localStorage.setItem('dismissal_skus_triggered', JSON.stringify(['sku123']));
+  test('should have null content if dismissal SKU matches', async () => {
+    window.localStorage.setItem(
+      'dismissal_skus_triggered',
+      JSON.stringify(['sku123']),
+    );
 
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        text: () => Promise.resolve('<div class="js-billboard" data-dismissal-sku="sku123">Billboard Content</div>'),
+        text: () =>
+          Promise.resolve(
+            '<div class="js-billboard" data-dismissal-sku="sku123">Billboard Content</div>',
+          ),
       }),
     );
 
     await getBillboard();
 
-    const billboardContent = document.querySelector('.js-billboard-container div');
-    expect(billboardContent.closest('.js-billboard-container').style.display).toBe('none');
+    expect(document.querySelector('.js-billboard-container div')).toBe(null);
   });
 
   test('should display billboard content if there is no matching dismissal SKU', async () => {
-    window.localStorage.setItem('dismissal_skus_triggered', JSON.stringify(['sku999']));
+    window.localStorage.setItem(
+      'dismissal_skus_triggered',
+      JSON.stringify(['sku999']),
+    );
 
     global.fetch = jest.fn(() =>
       Promise.resolve({
-        text: () => Promise.resolve('<div class="js-billboard" data-dismissal-sku="sku123">Billboard Content</div>'),
+        text: () =>
+          Promise.resolve(
+            '<div class="js-billboard" data-dismissal-sku="sku123">Billboard Content</div>',
+          ),
       }),
     );
 
     await getBillboard();
 
-    const billboardContent = document.querySelector('.js-billboard-container div');
-    expect(billboardContent.closest('.js-billboard-container').style.display).toBe(''); // Not marked as display none
+    const billboardContent = document.querySelector(
+      '.js-billboard-container div',
+    );
+    expect(
+      billboardContent.closest('.js-billboard-container').style.display,
+    ).toBe(''); // Not marked as display none
   });
 });
 
@@ -180,7 +201,9 @@ describe('executeBBScripts', () => {
 
   test('should skip null or undefined script elements', () => {
     container.innerHTML = '<script>window.someGlobalVar = "executed";</script>';
-    const spiedGetElementsByTagName = jest.spyOn(container, 'getElementsByTagName').mockReturnValue([null, undefined]);
+    const spiedGetElementsByTagName = jest
+      .spyOn(container, 'getElementsByTagName')
+      .mockReturnValue([null, undefined]);
 
     executeBBScripts(container);
 
@@ -188,7 +211,8 @@ describe('executeBBScripts', () => {
   });
 
   test('should copy attributes of original script element', () => {
-    container.innerHTML = '<script type="text/javascript" async>window.someGlobalVar = "executed";</script>';
+    container.innerHTML =
+      '<script type="text/javascript" async>window.someGlobalVar = "executed";</script>';
 
     executeBBScripts(container);
 
@@ -206,7 +230,8 @@ describe('executeBBScripts', () => {
   });
 
   test('should insert the new script element at the same position as the original', () => {
-    container.innerHTML = '<div></div><script>window.someGlobalVar = "executed";</script><div></div>';
+    container.innerHTML =
+      '<div></div><script>window.someGlobalVar = "executed";</script><div></div>';
 
     executeBBScripts(container);
 

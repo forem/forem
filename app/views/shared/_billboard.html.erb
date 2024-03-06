@@ -15,12 +15,19 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
     <div class="crayons-story__body">
-      <div class="crayons-story__top">
+      <div class="crayons-story__top flex">
         <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+        <% if billboard.dismissal_sku.present? %>
+          <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+            class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
+              <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+          </button>
+        <% end %>
       </div>
       <div class="crayons-story__indention-billboard">
         <div class="text-styles text-styles--billboard">
@@ -35,10 +42,17 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
-    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+    <div class="flex">
+      <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+      <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+      </button>
+    </div>
     <div class="p-1 text-styles text-styles--billboard">
       <%= billboard.processed_html.html_safe %>
     </div>
