@@ -46,6 +46,7 @@ async function generateBillboard(element) {
           JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
         if (skuArray.includes(dismissalSku)) {
           element.style.display = 'none';
+          element.innerHTML = '';
         }
       }
       executeBBScripts(element);

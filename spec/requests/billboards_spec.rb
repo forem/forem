@@ -180,6 +180,20 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is feed_first" do
+      it "includes sponsorship-close-trigger when there is a dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first", dismissal_sku: "DISMISS_ME")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+
+      it "does not include sponsorship-close-trigger when there is no dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
     context "when the placement area is post_sidebar" do
       it "does not contain close button" do
         billboard = create_billboard(placement_area: "post_sidebar")
