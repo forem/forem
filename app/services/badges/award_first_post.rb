@@ -6,6 +6,7 @@ module Badges
       return unless (badge_id = Badge.id_for_slug(BADGE_SLUG))
 
       Article.joins(:user)
+        .published
         .where("articles.published_at > ?", 1.week.ago)
         .where("articles.published_at < ?", 1.hour.ago)
         .where("articles.score >= ?", 0)

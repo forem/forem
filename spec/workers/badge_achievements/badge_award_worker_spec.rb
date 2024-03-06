@@ -15,16 +15,16 @@ RSpec.describe BadgeAchievements::BadgeAwardWorker, type: :worker do
       it "sends badge email" do
         relation = User.none
         allow(User).to receive(:where).with(username: ["jess"]).and_return(relation)
-        worker.perform(["jess"], "test", "yo")
+        worker.perform(["jess"], "test", "yo", false)
 
-        expect(Badges::Award).to have_received(:call).with(relation, "test", "yo")
+        expect(Badges::Award).to have_received(:call).with(relation, "test", "yo", include_default_description: false)
       end
     end
 
     context "with predefined badge_slug" do
       it "sends badge email" do
         allow(Badges::AwardYearlyClub).to receive(:call)
-        worker.perform([], "award_yearly_club", "")
+        worker.perform([], "award_yearly_club", "", true)
 
         expect(Badges::AwardYearlyClub).to have_received(:call)
         expect(Badges::Award).not_to have_received(:call)

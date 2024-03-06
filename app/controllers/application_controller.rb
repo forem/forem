@@ -221,8 +221,6 @@ class ApplicationController < ActionController::Base
   helper_method :internal_navigation?
 
   def feed_style_preference
-    # TODO: Future functionality will let current_user override this value with UX preferences
-    # if current_user exists and has a different preference.
     Settings::UserExperience.feed_style
   end
   helper_method :feed_style_preference
@@ -279,6 +277,15 @@ class ApplicationController < ActionController::Base
     end
   end
   helper_method :client_geolocation
+
+  def default_email_optin_allowed?
+    return false if Settings::General.geos_with_allowed_default_email_opt_in.blank?
+
+    Settings::General.geos_with_allowed_default_email_opt_in.any? do |geo|
+      client_geolocation.to_s.starts_with?(geo)
+    end
+  end
+  helper_method :default_email_optin_allowed?
 
   def forward_to_app_config_domain
     # Let's only redirect get requests for this purpose.

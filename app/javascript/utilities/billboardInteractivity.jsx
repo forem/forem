@@ -21,6 +21,12 @@ export function setupBillboardInteractivity() {
 
         sponsorshipDropdownButton.dataset.initialized = 'true';
       }
+
+      const popoverParent = sponsorshipDropdownButton.closest('.popover-billboard');
+      if (popoverParent &&
+        sponsorshipDropdownButton.getBoundingClientRect().top > window.innerHeight / 2) {
+        popoverParent.classList.add('popover-billboard--menuopenupwards');
+      }
     });
   }
   const sponsorshipCloseButtons = document.querySelectorAll(
@@ -29,11 +35,11 @@ export function setupBillboardInteractivity() {
   if (sponsorshipCloseButtons.length) {
     sponsorshipCloseButtons.forEach((sponsorshipCloseButton) => {
       sponsorshipCloseButton.addEventListener('click', () => {
-        sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+        dismissBillboard(sponsorshipCloseButton);
       });
       document.addEventListener('click', (event) => {
         if (!event.target.closest('.js-billboard')) {
-          sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+          dismissBillboard(sponsorshipCloseButton);
         }
       });
     });
@@ -49,5 +55,17 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
   if (sponsorshipDropdownButton.closest('.js-billboard').clientHeight < 220) {
     sponsorshipDropdownButton.closest('.js-billboard').style.overflowY =
       'revert';
+  }
+}
+
+function dismissBillboard(sponsorshipCloseButton) {
+  const sku = sponsorshipCloseButton.closest('.js-billboard').dataset.dismissalSku;
+  sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
+  if (localStorage && sku && sku.length > 0) {
+    const skuArray = JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+    if (!skuArray.includes(sku)) {
+      skuArray.push(sku);
+      localStorage.setItem('dismissal_skus_triggered', JSON.stringify(skuArray));
+    }
   }
 }

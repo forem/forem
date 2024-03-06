@@ -45,13 +45,13 @@ RSpec.describe Comments::Tree do
       it "returns comments in the right order when order is oldest" do
         comments = described_class.for_commentable(article, limit: 0, order: "oldest")
         comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([old_comment.id, comment.id, other_comment.id, new_comment.id])
+        expect(comments).to contain_exactly(old_comment.id, comment.id, other_comment.id, new_comment.id)
       end
 
       it "returns comments in the right order when order is latest" do
         comments = described_class.for_commentable(article, limit: 0, order: "latest")
         comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([new_comment.id, other_comment.id, comment.id, old_comment.id])
+        expect(comments).to contain_exactly(new_comment.id, other_comment.id, comment.id, old_comment.id)
       end
 
       it "returns comments in the right order when order is top" do

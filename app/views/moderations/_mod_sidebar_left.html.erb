@@ -4,24 +4,39 @@
   </h1>
 
   <nav class="mod-center--nav" aria-label="Mod center inbox navigation">
-    <h3 class="crayons-subtitle-3 mb-2 pl-2 hidden m:block">
-      <%= t("views.moderations.aside.inbox") %>
-    </h3>
 
     <div id="mod-center-inbox" class="mod-center--nav--medium hidden m:block">
       <a
         href="<%= "#{URL.url}/mod" %>"
-        class="crayons-link crayons-link--block <%= "crayons-link--current" if @tag.blank? %>"
+        class="crayons-link crayons-link--block <%= "crayons-link--current" if @tag.blank? %> mb-2"
         data-tag-name="All topics">
         <%= t("views.moderations.aside.all") %>
       </a>
       <% if @current_user_tags.any? %>
-        <% @current_user_tags.each do |tag| %>
-          <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
-            #<%= tag %>
-            <span id="<%= tag %>-indicator" class="c-indicator"></span>
-          </a>
-        <% end %>
+        <h3 class="crayons-subtitle-3 mb-2 pl-2 hidden m:block">
+          <%= t("views.moderations.aside.moderating_tags") %>
+        </h3>
+        <div class="tags-box">
+          <% @current_user_tags.each do |tag| %>
+            <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+              #<%= tag %>
+              <span id="<%= tag %>-indicator" class="c-indicator"></span>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
+      <% if @current_user_following_tags.any? %>
+        <h3 class="crayons-subtitle-3 mb-2 pl-2 hidden m:block">
+          <%= t("views.moderations.aside.following_tags") %>
+        </h3>
+        <div class="tags-box">
+          <% @current_user_following_tags.each do |tag| %>
+            <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block <%= "crayons-link--current" if tag == @tag&.name %>" data-tag-name="<%= tag %>">
+              #<%= tag %>
+              <span id="<%= tag %>-indicator" class="c-indicator"></span>
+            </a>
+          <% end %>
+        </div>
       <% end %>
     </div>
 

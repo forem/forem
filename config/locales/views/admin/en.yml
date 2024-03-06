@@ -10,6 +10,14 @@ en:
           no_flags: Article has no flags.
           no_quality_reactions: Article has no quality reactions by trusted users.
           title: Moderator actions
+        noindex:
+          reason: "Not indexed on search engines: "
+          reasons:
+            unpublished: Unpublished
+            below_minimum_score: Below minimum indexing score and not featured
+            below_minimum_date: Published before minimum index date
+            negative_score: Negative score
+            unknown: Unknown
       comments:
         flags:
           score: Score affected by a particular flag
