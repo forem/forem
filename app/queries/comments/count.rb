@@ -23,7 +23,7 @@ module Comments
                   "OR c2.ancestry = c1.id::varchar(255))"
       san_count_sql = Comment.sanitize_sql([count_sql, Comment::HIDE_THRESHOLD, @article.id, "Article"])
       hidden_comments_cnt = Comment.count_by_sql(san_count_sql)
-      article.comments_count - hidden_comments_cnt
+      article.comments.count - hidden_comments_cnt
     end
   end
 end
