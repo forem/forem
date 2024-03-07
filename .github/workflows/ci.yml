@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       E2E: true
+      YARN_ENABLE_HARDENED_MODE: 0
 
     steps:
       - uses: actions/checkout@v4
@@ -221,6 +222,7 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
+      YARN_ENABLE_HARDENED_MODE: 1
 
     services:
       postgres:
