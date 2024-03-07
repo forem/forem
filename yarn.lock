@@ -8895,7 +8895,7 @@ __metadata:
     postcss-import: "npm:^15.1.0"
     postcss-preset-env: "npm:^7.8.2"
     postscribe: "npm:^2.0.8"
-    preact: "npm:^10.19.4"
+    preact: "npm:^10.19.6"
     prettier: "npm:^2.8.8"
     prop-types: "npm:^15.8.1"
     rails-erb-loader: "npm:^5.5.2"
@@ -16866,10 +16866,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preact@npm:^10.19.4":
-  version: 10.19.4
-  resolution: "preact@npm:10.19.4"
-  checksum: 10c0/cc8cc6fe8fe9ee0fd97ea68b28c8e277ccc4486bc1d2c59946b6ab7122a902fc518173046bdfc9ed12d1b2b330203888312e3ebe404f582962aa97f0fac6338e
+"preact@npm:^10.19.6":
+  version: 10.19.6
+  resolution: "preact@npm:10.19.6"
+  checksum: 10c0/305c63bc59f9a081185fea8ee9a43c96f69af58e50692228d0e566eacd69bac009f2fb9d4ebfa2bcfcfd9762c5318a7f1ccd1d5223ab8764e3f7e14386bce626
   languageName: node
   linkType: hard
 
