@@ -227,7 +227,6 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
-      YARN_ENABLE_HARDENED_MODE: 1
 
     services:
       postgres:
