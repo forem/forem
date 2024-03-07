@@ -19,7 +19,7 @@ RSpec.describe "Editing A Comment", :js do
   def assert_updated
     expect(page).to have_css("textarea")
     expect(page).to have_text("Editing comment")
-    fill_in("text-area", with: new_comment_text, fill_options: { clear: :backspace })
+    find("textarea").send_keys(new_comment_text)
 
     click_link_or_button("Submit")
 
