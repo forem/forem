@@ -30,16 +30,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Cache node_modules
+      - name: Look up node_modules cache
         id: nmcache
+        uses: actions/cache@v4
+        with:
+          lookup-only: true
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-node-modules-v2-
+      - name: Download node_modules cache if no exact cache-key match
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v2-
+        if: steps.nmcache.outputs.cache-hit != 'true'
       - name: Cache pre-compiled assets
         uses: actions/cache@v4
         id: assetscache
