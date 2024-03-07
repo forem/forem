@@ -42,6 +42,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn install --immutable
       - name: Cache pre-compiled assets
         uses: actions/cache@v4
@@ -67,6 +68,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - name: Restore node_modules
         uses: actions/cache/restore@v4
         with:
@@ -128,6 +130,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -174,6 +177,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -205,6 +209,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - run: yarn build-storybook
 
   build_test:
@@ -247,6 +252,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -299,6 +305,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
+          cache: yarn
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
