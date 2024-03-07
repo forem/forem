@@ -22,83 +22,54 @@ env:
   KNAPSACK_PRO_LOG_LEVEL: info
 
 jobs:
-  bundle_install:
+  build:
     runs-on: ubuntu-latest
+    env:
+      E2E: true
+      YARN_ENABLE_HARDENED_MODE: 0
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-  yarn_install:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Look up if node_module cache exist
-        id: cache
+      - name: Look up node_modules cache
+        id: nmcache
         uses: actions/cache/restore@v4
         with:
           lookup-only: true
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v2-
-      - name: Cache node_modules
+      - name: Download node_modules cache if no exact cache-key match
         uses: actions/cache@v4
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.cache.outputs.cache-hit != 'true'
-      - uses: actions/setup-node@v4
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
-        if: steps.cache.outputs.cache-hit != 'true'
-
-  precompile_assets:
-    needs: [bundle_install, yarn_install]
-    runs-on: ubuntu-latest
-    env:
-      E2E: true
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Look up if compiled assets exist
+        if: steps.nmcache.outputs.cache-hit != 'true'
+      - name: Cache pre-compiled assets
         uses: actions/cache@v4
-        id: cache
+        id: assetscache
         with:
-          fail-on-cache-miss: false
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-        if: steps.cache.outputs.cache-hit != 'true'
-      - name: Cache node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.nmcache.outputs.cache-hit != 'true' || steps.assetscache.outputs.cache-hit != 'true'
+      - run: yarn install --immutable
+        if: steps.nmcache.outputs.cache-hit != 'true' || steps.assetscache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.assetscache.outputs.cache-hit != 'true'
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install]
+    needs: [build]
 
     steps:
       - uses: actions/checkout@v4
@@ -127,7 +98,7 @@ jobs:
 
   rspec:
     runs-on: ubuntu-latest
-    needs: [precompile_assets]
+    needs: [build]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -204,7 +175,7 @@ jobs:
 
   jest:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [build]
     timeout-minutes: 20
 
     steps:
@@ -237,7 +208,7 @@ jobs:
 
   storybook:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [build]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -255,7 +226,7 @@ jobs:
 
   build_test:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install]
+    needs: [build]
     timeout-minutes: 20
     env:
       RAILS_ENV: production
@@ -297,13 +268,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: yarn install --immutable
       - run: bundle exec rails assets:precompile
       - run: RAILS_ENV=test bin/test-console-check
 
   cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [precompile_assets]
+    needs: [build]
     env:
       E2E: true
 
