@@ -34,21 +34,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Look up node_modules cache
-        id: nmcache
-        uses: actions/cache/restore@v4
-        with:
-          lookup-only: true
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-      - name: Download node_modules cache if no exact cache-key match
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.nmcache.outputs.cache-hit != 'true'
       - name: Cache pre-compiled assets
         uses: actions/cache@v4
         id: assetscache
@@ -61,9 +46,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.nmcache.outputs.cache-hit != 'true' || steps.assetscache.outputs.cache-hit != 'true'
       - run: yarn install --immutable
-        if: steps.nmcache.outputs.cache-hit != 'true' || steps.assetscache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
         if: steps.assetscache.outputs.cache-hit != 'true'
 
