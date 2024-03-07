@@ -46,7 +46,9 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - run: yarn install --immutable
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
         if: steps.assetscache.outputs.cache-hit != 'true'
 
