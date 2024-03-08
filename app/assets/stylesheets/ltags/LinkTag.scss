@@ -1,5 +1,15 @@
 @import '../variables';
 
+.p-1.pt-3.text-styles.text-styles--billboard .ltag__link {
+  display: flex;
+  flex-direction: column;
+}
+
+.p-1.pt-3.text-styles.text-styles--billboard .ltag__link .ltag__link__content {
+  width: 100%;
+  padding: 1rem;
+}
+
 .ltag__link__link {
   color: var(--body-color) !important;
   &:active {
