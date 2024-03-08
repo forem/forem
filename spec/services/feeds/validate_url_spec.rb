@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Feeds::ValidateUrl, type: :service, vcr: true do
+RSpec.describe Feeds::ValidateUrl, :vcr, type: :service do
   let(:invalid_feed_url) { "https://example.com" }
   let(:valid_feed_url) { "https://medium.com/feed/@vaidehijoshi" }
 

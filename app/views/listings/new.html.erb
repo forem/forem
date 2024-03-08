@@ -31,7 +31,7 @@
           <strong class="fs-2xl m:fs-3xl lh-tight color-base-90 m:mb-4 block" id="org-credits-number"><%= @organizations.first.credits.unspent.size %></strong>
           <a id="org-credits-purchase-link" target="_blank" rel="noopener noreferrer" class="crayons-btn crayons-btn--secondary m:w-100" href="/credits/purchase?organization_id=<%= @organizations.first.id %>" data-no-instant><%= t("views.listings.new.buy") %></a>
         </div>
-        <%= javascript_packs_with_chunks_tag "listingForm", "orgCreditsSelector", defer: true %>
+        <%= javascript_include_tag "listingForm", "orgCreditsSelector", defer: true %>
       </div>
     <% end %>
 

@@ -16,7 +16,7 @@
         </div>
       <% end %>
       <% if user_signed_in? %>
-        <%= javascript_packs_with_chunks_tag "sidebarWidget", defer: true %>
+        <%= javascript_include_tag "sidebarWidget", defer: true %>
         <div id="sidebarWidget__pack" data-tag-info="<%= @tag.attributes.slice("id", "text_color_hex", "bg_color_hex", "name").to_json %>">
         </div>
       <% else %>

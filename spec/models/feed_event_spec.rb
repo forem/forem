@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe FeedEvent do
   let(:reaction_multiplier) { FeedEvent::REACTION_SCORE_MULTIPLIER }
   let(:comment_multiplier) { FeedEvent::COMMENT_SCORE_MULTIPLIER }
+  let(:valid_categories) { %w[impression click reaction comment extended_pageview] }
 
   describe "validations" do
     it { is_expected.to belong_to(:article).optional }
@@ -10,7 +11,7 @@ RSpec.describe FeedEvent do
     it { is_expected.to belong_to(:user).optional }
     it { is_expected.to validate_numericality_of(:user_id).only_integer.allow_nil }
 
-    it { is_expected.to define_enum_for(:category).with_values(%i[impression click reaction comment]) }
+    it { is_expected.to define_enum_for(:category).with_values(valid_categories) }
     it { is_expected.to validate_numericality_of(:article_position).is_greater_than(0).only_integer }
     it { is_expected.to validate_inclusion_of(:context_type).in_array(%w[home search tag]) }
   end
@@ -113,7 +114,7 @@ RSpec.describe FeedEvent do
 
       article.reload
 
-      expect(article.feed_success_score).to eq(5.0) # One reaction by one distinct user
+      expect(article.feed_success_score).to eq(reaction_multiplier) # One reaction by one distinct user
       expect(article.feed_impressions_count).to eq(1) # One impression
       expect(article.feed_clicks_count).to eq(0) # Zero clicks
     end
@@ -123,13 +124,14 @@ RSpec.describe FeedEvent do
       create_list(:feed_event, 4, category: "click", article: article, user: user1)
       create_list(:feed_event, 3, category: "reaction", article: article, user: user2)
       create_list(:feed_event, 2, category: "comment", article: article, user: user2)
+      create_list(:feed_event, 3, category: "extended_pageview", article: article, user: user2)
 
       # Trigger the after_save
       create(:feed_event, category: "impression", article: article, user: user2)
 
       article.reload
 
-      expect(article.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
+      expect(article.feed_success_score).to eq((1 + 1 + reaction_multiplier + comment_multiplier) / 2.0)
       expect(article.feed_clicks_count).to eq(4)
       expect(article.feed_impressions_count).to eq(3)
     end
@@ -149,6 +151,7 @@ RSpec.describe FeedEvent do
       create(:feed_event, category: "click", article: article1, user: user1)
       create(:feed_event, category: "reaction", article: article1, user: user1)
       create(:feed_event, category: "comment", article: article1, user: user2)
+      create(:feed_event, category: "extended_pageview", article: article1, user: user2)
 
       # Create some feed events for article2
       create(:feed_event, category: "impression", article: article2, user: user2)
@@ -160,11 +163,11 @@ RSpec.describe FeedEvent do
       article1.reload
       article2.reload
 
-      expect(article1.feed_success_score).to eq((1 + reaction_multiplier + comment_multiplier) / 2.0) # Calculated score
+      expect(article1.feed_success_score).to eq((1 + 1 + reaction_multiplier + comment_multiplier) / 2.0)
       expect(article1.feed_impressions_count).to eq(3)
       expect(article1.feed_clicks_count).to eq(1)
 
-      expect(article2.feed_success_score).to eq((1 + 5) / 1.0) # Calculated score
+      expect(article2.feed_success_score).to eq((1 + reaction_multiplier) / 1.0) # Calculated score
       expect(article2.feed_impressions_count).to eq(1)
       expect(article2.feed_clicks_count).to eq(1)
     end

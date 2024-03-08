@@ -1,5 +1,5 @@
 <div id="response-templates-data" class="hidden"></div>
-<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+<%= javascript_include_tag "validateFileInputs", defer: true %>
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger" role="alert">

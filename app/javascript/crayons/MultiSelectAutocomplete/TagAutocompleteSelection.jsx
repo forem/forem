@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { ButtonNew as Button, Icon } from '@crayons';
-import { Close } from '@images/x.svg';
+import Close from '@images/x.svg';
 
 /**
  * Responsible for the layout of a tag autocomplete selected item in the article form

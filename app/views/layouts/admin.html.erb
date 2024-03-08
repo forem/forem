@@ -12,7 +12,7 @@
   <title><%= controller_name.titleize %></title>
 
   <!-- StimulusJS -->
-  <%= javascript_packs_with_chunks_tag "admin", defer: true %>
+  <%= javascript_include_tag "admin", defer: true %>
 
   <%= stylesheet_link_tag "admin" %>
 
@@ -60,7 +60,7 @@
       <%= render "admin/shared/nested_sidebar", menu_items: AdminMenu.navigation_items %>
     </div>
     <main id="main-content" class="crayons-layout__content min-w-0 p-2">
-      <%= javascript_packs_with_chunks_tag "admin/flashMessages", defer: true %>
+      <%= javascript_include_tag "admin/flashMessages", defer: true %>
       <% flash.each_with_index do |(type, message), i| %>
         <div
           id="notice-container"

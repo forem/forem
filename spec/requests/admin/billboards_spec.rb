@@ -50,7 +50,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "creates a new billboard" do
         expect do
           post_resource
-        end.to change { Billboard.all.count }.by(1)
+        end.to change(Billboard, :count).by(1)
       end
 
       it "sets creator to current_user" do
@@ -61,13 +61,13 @@ RSpec.describe "/admin/customization/billboards" do
       it "fails to create a new billboard with invalid target geolocations" do
         expect do
           post admin_billboards_path, params: params.merge(target_geolocations: "US-UM, CA-UH")
-        end.not_to change { Billboard.all.count }
+        end.not_to change(Billboard, :count)
       end
 
       it "creates a new billboard with no target geolocations" do
         expect do
           post admin_billboards_path, params: params.merge(target_geolocations: nil)
-        end.to change { Billboard.all.count }.by(1)
+        end.to change(Billboard, :count).by(1)
       end
     end
 
@@ -102,7 +102,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
-        end.to change { Billboard.all.count }.by(-1)
+        end.to change(Billboard, :count).by(-1)
       end
     end
   end
@@ -123,7 +123,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "creates a new billboard" do
         expect do
           post_resource
-        end.to change { Billboard.all.count }.by(1)
+        end.to change(Billboard, :count).by(1)
       end
 
       it "sets creator to current_user" do
@@ -150,7 +150,7 @@ RSpec.describe "/admin/customization/billboards" do
       it "deletes the Billboard" do
         expect do
           delete admin_billboard_path(billboard.id)
-        end.to change { Billboard.all.count }.by(-1)
+        end.to change(Billboard, :count).by(-1)
       end
     end
   end

@@ -159,8 +159,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
       let(:result_image) { double(MiniMagick::Tool::Convert) }
 
       before do
-        allow(generator).to receive(:calculate_font_size).and_return(40)
-        allow(generator).to receive(:wrap_text).and_return("Wrapped Text")
+        allow(generator).to receive_messages(calculate_font_size: 40, wrap_text: "Wrapped Text")
         allow(result_image).to receive(:combine_options) { |&block| block.call(result_image); result_image }
         allow(result_image).to receive(:gravity)
         allow(result_image).to receive(:pointsize)
@@ -282,7 +281,7 @@ RSpec.describe Images::GenerateSocialImageMagickally, type: :model do
 
     context "read_files" do
       let(:instance) { described_class.new(article) }
-      let(:logo_url) { 'http://example.com/logo.png' }
+      let(:logo_url) { "http://example.com/logo.png" }
 
       before do
         allow(Settings::General).to receive(:logo_png).and_return(logo_url)

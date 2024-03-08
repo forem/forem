@@ -65,8 +65,6 @@ RSpec.describe "ArticlesShow" do
   end
 
   describe "GET /:username/:slug (scheduled)" do
-    before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
-
     let(:scheduled_article) { create(:article, published: true, published_at: Date.tomorrow) }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
     let(:scheduled_article_path) { scheduled_article.path + query_params }
@@ -131,6 +129,25 @@ RSpec.describe "ArticlesShow" do
     end
   end
 
+  context "when author has spam role" do
+    before do
+      article.user.add_role(:spam)
+    end
+
+    it "renders 404" do
+      expect do
+        get article.path
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders 404 for authorized user" do
+      sign_in user
+      expect do
+        get article.path
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   context "when user signed in" do
     before do
       sign_in user
@@ -140,6 +157,10 @@ RSpec.describe "ArticlesShow" do
     describe "GET /:slug (user)" do
       it "does not render json ld" do
         expect(response.body).not_to include "application/ld+json"
+      end
+
+      it "renders comment sort button" do
+        expect(response.body).to include "toggle-comments-sort-dropdown"
       end
     end
   end
@@ -152,6 +173,80 @@ RSpec.describe "ArticlesShow" do
     describe "GET /:slug (user)" do
       it "does not render json ld" do
         expect(response.body).to include "application/ld+json"
+      end
+
+      it "does not render comment sort button" do
+        expect(response.body).not_to include "toggle-comments-sort-dropdown"
+      end
+    end
+  end
+
+  context "with comments" do
+    let!(:spam_comment) { create(:comment, score: -450, commentable: article, body_markdown: "Spam comment") }
+
+    before do
+      create(:comment, score: 10, commentable: article, body_markdown: "Good comment")
+      create(:comment, score: -99, commentable: article, body_markdown: "Bad comment")
+      create(:comment, score: -10, commentable: article, body_markdown: "Mediocre comment")
+    end
+
+    context "when user signed in" do
+      before do
+        sign_in user
+      end
+
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "shows comments with score from -400 to -75" do
+        get article.path
+        expect(response.body).to include("Bad comment")
+      end
+
+      it "hides comments with score < -400 and no comment deleted message" do
+        get article.path
+        expect(response.body).not_to include("Spam comment")
+        expect(response.body).not_to include("Comment deleted")
+      end
+
+      it "displays children of a low-quality comment and comment deleted message" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("Child comment")
+        expect(response.body).to include("Comment deleted") # instead of the low quality one
+      end
+
+      it "displays comments count w/o including super low-quality ones" do
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"3\">(3)</span>")
+      end
+
+      it "displays includes spam comments in comments count if they have children" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
+      end
+    end
+
+    context "when user not signed in" do
+      it "shows positive comments" do
+        get article.path
+        expect(response.body).to include("Good comment")
+      end
+
+      it "hides all negative comments", :aggregate_failures do
+        get article.path
+        expect(response.body).not_to include("Bad comment")
+        expect(response.body).not_to include("Spam comment")
+        expect(response.body).not_to include("Mediocre comment")
+      end
+
+      it "doesn't show children of a low-quality comment" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).not_to include("Child comment")
       end
     end
   end

@@ -37,12 +37,68 @@ describe('<Onboarding />', () => {
     document.body.setAttribute('data-user', getUserData());
     const csrfToken = 'this-is-a-csrf-token';
     global.getCsrfToken = async () => csrfToken;
+
+    // Mock localStorage
+    const localStorageMock = (function () {
+      let store = {};
+      return {
+        getItem(key) {
+          return store[key] || null;
+        },
+        setItem(key, value) {
+          store[key] = value.toString();
+        },
+        removeItem(key) {
+          delete store[key];
+        },
+        clear() {
+          store = {};
+        },
+      };
+    })();
+
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+    });
   });
 
   it('should have no a11y violations', async () => {
     const { container } = renderOnboarding();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
+  });
+
+  it('should record billboard conversion correctly', async () => {
+    const fakeBillboardData = {
+      billboard_event: { category: 'signup', someData: 'test' }, // Ensure this structure matches what your code expects
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(fakeBillboardData),
+    );
+
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for the billboard event
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for any subsequent fetch calls, if necessary
+
+    renderOnboarding();
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        '/billboard_events',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': expect.any(String),
+          }),
+          body: JSON.stringify(fakeBillboardData),
+        }),
+      );
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
   });
 
   it('should render the ProfileForm first', () => {
@@ -146,5 +202,43 @@ describe('<Onboarding />', () => {
     const { href } = window.location;
 
     expect(href).toEqual(url);
+  });
+
+  it('should redirect to the specified path in localStorage when conditions are met', async () => {
+    // Setup: Mock localStorage with a recent interaction
+    const expectedPath = '/expected-path';
+    const recentInteraction = {
+      path: expectedPath,
+      time: new Date(), // Simulate an interaction right now
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(recentInteraction),
+    );
+
+    // Mock fetch responses if needed
+    fetch.mockResponseOnce(JSON.stringify({}));
+
+    // Setup a spy/mock for window.location.href to verify it gets set
+    delete window.location;
+    window.location = { href: '' }; // Simplified mock; you might need a more robust solution
+
+    const { getByText } = renderOnboarding();
+
+    // Trigger the logic that includes the redirect
+    const nextButton = getByText(/continue/i); // Assuming "continue" triggers the nextSlide logic
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+
+    // Assert that window.location.href was updated to the expected path
+    await waitFor(() => {
+      expect(window.location.href).toBe(expectedPath);
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
   });
 });

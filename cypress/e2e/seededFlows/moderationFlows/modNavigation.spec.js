@@ -15,7 +15,7 @@ describe('Moderation navigation', () => {
       cy.findByRole('navigation', {
         name: 'Mod center inbox navigation',
       }).within(() => {
-        cy.findByRole('link', { name: 'All topics' }).should(
+        cy.findByRole('link', { name: 'All tags' }).should(
           'have.attr',
           'aria-current',
           'page',

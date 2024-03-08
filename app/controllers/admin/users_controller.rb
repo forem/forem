@@ -344,6 +344,8 @@ module Admin
       @users = Admin::UsersQuery.call(
         relation: User.registered,
         search: params[:search],
+        ids: params[:ids],
+        limit: params[:limit],
       )
 
       render json: @users.to_json(only: %i[id name username])

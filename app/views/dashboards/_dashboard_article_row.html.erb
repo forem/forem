@@ -122,22 +122,30 @@
 
             <div class="crayons-field mb-4">
               <label for="user_id" class="crayons-field__label"><%= t("views.dashboard.article.author") %></label>
-              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select" } %>
+              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select #{article_series ? 'disabled': ''}", disabled: article_series } %>
               <%= f.hidden_field :from_dashboard, value: 1 %>
+              <% if article_series %>
+                  <div class="disabled-info-container">
+                    <%= crayons_icon_tag("info", class: "disabled-info-icon", title: t("views.dashboard.article.icon")) %>
+                    <p class="disabled-info-text"><%= t("views.dashboard.article.series_author_change_warning") %></p>
+                  </div>
+              <% end %>
             </div>
 
-            <div class="crayons-field mb-4">
-              <label for="co_author_ids" class="crayons-field__label"><%= t("views.dashboard.article.co_authors") %></label>
-              <div class="crayons-field">
-                <%= f.text_field :co_author_ids_list,
-                                 id: "article_#{article.id}_co_author_ids_list",
-                                 class: "article_org_co_author_ids_list",
-                                 data: {
-                                   fetch_users: organization_members_path(organization.username, format: "json")
-                                 } %>
+            <% unless article_series %>
+              <div class="crayons-field mb-4">
+                <label for="co_author_ids" class="crayons-field__label"><%= t("views.dashboard.article.co_authors") %></label>
+                <div class="crayons-field">
+                  <%= f.text_field :co_author_ids_list,
+                                  id: "article_#{article.id}_co_author_ids_list",
+                                  class: "article_org_co_author_ids_list",
+                                  data: {
+                                    fetch_users: organization_members_path(organization.username, format: "json")
+                                  } %>
+                </div>
+                <%= f.hidden_field :from_dashboard, value: 1 %>
               </div>
-              <%= f.hidden_field :from_dashboard, value: 1 %>
-            </div>
+            <% end %>
 
             <button type="submit" class="crayons-btn"><%= t("views.dashboard.article.save") %></button>
           <% end %>

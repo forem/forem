@@ -80,6 +80,17 @@ class OnboardingsController < ApplicationController
     notifications_updated_response(success, current_user.notification_setting.errors_as_sentence)
   end
 
+  def newsletter
+    respond_to do |format|
+      format.json do
+        rendered_content = render_to_string(partial: "onboardings/newsletter",
+                                            formats: [:html],
+                                            layout: false)
+        render json: { content: rendered_content }
+      end
+    end
+  end
+
   private
 
   def unset_username?

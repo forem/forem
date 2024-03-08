@@ -52,6 +52,11 @@ RSpec.describe Organization do
       it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.not_to allow_value("3.0").for(:company_size) }
       it { is_expected.to allow_value("3").for(:company_size) }
+
+      it { is_expected.to allow_value("1345abc").for(:slug) }
+      it { is_expected.to allow_value("just_non_digit_characters").for(:slug) }
+      it { is_expected.to allow_value("123_4").for(:slug) }
+      it { is_expected.not_to allow_value("1234").for(:slug) }
     end
   end
 

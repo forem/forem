@@ -49,7 +49,7 @@ describe('drag and drop for components', () => {
         result.current.setElement(document.createElement('textarea'));
       });
 
-      expect(HTMLElement.prototype.addEventListener).toHaveBeenCalledTimes(4);
+      expect(HTMLElement.prototype.addEventListener).toHaveBeenCalledTimes(5);
       expect(HTMLDocument.prototype.addEventListener).toHaveBeenCalledTimes(2);
     });
 
@@ -78,7 +78,7 @@ describe('drag and drop for components', () => {
         2,
       );
       expect(HTMLElement.prototype.removeEventListener).toHaveBeenCalledTimes(
-        4,
+        5,
       );
     });
   });
@@ -115,7 +115,7 @@ describe('drag and drop for components', () => {
       );
 
       expect(HTMLDocument.prototype.addEventListener).toBeCalledTimes(2);
-      expect(HTMLElement.prototype.addEventListener).toHaveBeenCalledTimes(4);
+      expect(HTMLElement.prototype.addEventListener).toHaveBeenCalledTimes(5);
     });
 
     it('should not attach drag and drop events', async () => {
@@ -151,7 +151,7 @@ describe('drag and drop for components', () => {
       unmount();
       expect(HTMLDocument.prototype.removeEventListener).toBeCalledTimes(2);
       expect(HTMLElement.prototype.removeEventListener).toHaveBeenCalledTimes(
-        4,
+        5,
       );
     });
 

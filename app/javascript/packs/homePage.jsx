@@ -6,7 +6,7 @@ import {
   initializeBillboardVisibility,
 } from '../packs/billboardAfterRenderActions';
 import { observeFeedElements } from '../packs/feedEvents';
-import { setupBillboardDropdown } from '@utilities/billboardDropdown';
+import { setupBillboardInteractivity } from '@utilities/billboardInteractivity';
 import { trackCreateAccountClicks } from '@utilities/ahoy/trackEvents';
 
 /* global userData */
@@ -63,9 +63,13 @@ function trackTagCogIconClicks() {
     });
 }
 
+function removeLocalePath(pathname) {
+  return pathname.replace(/^\/locale\/[a-zA-Z-]+\/?/, '/');
+}
+
 function renderSidebar() {
   const sidebarContainer = document.getElementById('sidebar-wrapper-right');
-  const { pathname } = window.location;
+  const pathname = removeLocalePath(window.location.pathname);
 
   // If the screen's width is less than 640 we don't need this extra data.
   if (
@@ -78,7 +82,7 @@ function renderSidebar() {
       .then((res) => res.text())
       .then((response) => {
         sidebarContainer.innerHTML = response;
-        setupBillboardDropdown();
+        setupBillboardInteractivity();
       });
   }
 }
@@ -101,7 +105,7 @@ if (!document.getElementById('featured-story-marker')) {
         const callback = () => {
           initializeBillboardVisibility();
           observeBillboards();
-          setupBillboardDropdown();
+          setupBillboardInteractivity();
           observeFeedElements();
         };
 
@@ -124,7 +128,7 @@ if (!document.getElementById('featured-story-marker')) {
           const callback = () => {
             initializeBillboardVisibility();
             observeBillboards();
-            setupBillboardDropdown();
+            setupBillboardInteractivity();
             observeFeedElements();
           };
 

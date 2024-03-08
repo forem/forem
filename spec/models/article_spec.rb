@@ -7,8 +7,6 @@ RSpec.describe Article do
     article
   end
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
-
   let(:user) { create(:user) }
   let!(:article) { create(:article, user: user) }
 
@@ -85,11 +83,10 @@ RSpec.describe Article do
     end
 
     describe "#body_markdown" do
-      it "is unique scoped for user_id and title", :aggregate_failures do
+      it "is not unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
 
-        expect(art2).not_to be_valid
-        expect(art2.errors_as_sentence).to match("markdown has already been taken")
+        expect(art2).to be_valid
       end
 
       # using https://unicode-table.com/en/11A15/ multibyte char
@@ -619,6 +616,20 @@ RSpec.describe Article do
         frontmatter_scheduled_article.update(body_markdown: new_body_markdown)
         frontmatter_scheduled_article.reload
         expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
+      end
+
+      it "nullifies published_at when way too far in future" do
+        scheduled_time = 8.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_nil
+      end
+
+      it "does not nullify published_at when only slightly in future" do
+        scheduled_time = 4.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_within(1.minute).of(scheduled_time)
       end
     end
 
@@ -1392,6 +1403,12 @@ RSpec.describe Article do
 
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
     end
+
+    it "includes user marked as spam punishment" do
+      article.user.add_role(:spam)
+      article.update_score
+      expect(article.reload.score).to eq(-500)
+    end
   end
 
   describe "#feed_source_url and canonical_url must be unique for published articles" do
@@ -1541,6 +1558,118 @@ RSpec.describe Article do
         article.save
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
       end
+    end
+  end
+
+  describe "#skip_indexing?" do
+    context "when the article is unpublished" do
+      let(:article) { build(:unpublished_article) }
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score below minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score above or equal to minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 10, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when the article was published before the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.week.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.day.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article was published after the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when article score is below -1" do
+      let(:article) { build(:published_article, score: -2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+  end
+
+  describe "#skip_indexing_reason" do
+    before do
+      allow(Settings::UserExperience).to receive_messages(
+        index_minimum_score: 5,
+        index_minimum_date: 2.days.ago.to_i,
+      )
+    end
+
+    it "returns reasons.unpublished for unpublished articles" do
+      article.published = false
+      expect(article.skip_indexing_reason).to eq("unpublished")
+    end
+
+    it "returns reasons.below_minimum_score for articles with score below minimum and not featured" do
+      article.published = true
+      article.score = 3
+      article.featured = false
+      expect(article.skip_indexing_reason).to eq("below_minimum_score")
+    end
+
+    it "returns reasons.below_minimum_date for articles published before the minimum date" do
+      article.published_at = 3.days.ago
+      article.score = 5
+      expect(article.skip_indexing_reason).to eq("below_minimum_date")
+    end
+
+    it "returns reasons.negative_score for articles with a negative score" do
+      article.score = -2
+      expect(article.skip_indexing_reason).to eq("negative_score")
+    end
+
+    it "returns reasons.none for articles that do not meet any skip criteria" do
+      article.published = true
+      article.score = 6
+      article.featured = true
+      article.published_at = 1.day.ago
+      expect(article.skip_indexing_reason).to eq("unknown")
     end
   end
 end

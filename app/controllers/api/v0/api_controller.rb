@@ -44,7 +44,7 @@ module Api
       def authenticate!
         user = authenticate_with_api_key_or_current_user
         return error_unauthorized unless user
-        return error_unauthorized if @user.suspended?
+        return error_unauthorized if @user.spam_or_suspended?
 
         true
       end
@@ -120,7 +120,7 @@ module Api
         # guard against timing attacks
         # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>
         secure_secret = ActiveSupport::SecurityUtils.secure_compare(api_secret.secret, api_key)
-        return api_secret.user if secure_secret
+        api_secret.user if secure_secret
       end
     end
   end

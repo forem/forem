@@ -43,8 +43,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
 
     it "defaults to image height when settings are crop" do
-      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("crop")
-      allow(Settings::UserExperience).to receive(:cover_image_height).and_return(680)
+      allow(Settings::UserExperience).to receive_messages(cover_image_fit: "crop", cover_image_height: 680)
       allow(FastImage).to receive(:size).and_return([100, 50])
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)
@@ -53,8 +52,7 @@ RSpec.describe Articles::EnrichImageAttributes, type: :service do
     end
 
     it "falls back to 300 when FastImage times out and cover_image_fit is set to limit" do
-      allow(Settings::UserExperience).to receive(:cover_image_fit).and_return("limit")
-      allow(Settings::UserExperience).to receive(:cover_image_height).and_return(2_000)
+      allow(Settings::UserExperience).to receive_messages(cover_image_fit: "limit", cover_image_height: 2_000)
       allow(FastImage).to receive(:size).and_return(nil)
       body_markdown = file_fixture("article_published_cover_image.txt").read
       article.update(body_markdown: body_markdown)

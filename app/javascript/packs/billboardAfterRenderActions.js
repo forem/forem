@@ -18,6 +18,48 @@ export function initializeBillboardVisibility() {
   });
 }
 
+export function executeBBScripts(el) {
+  const scriptElements = el.getElementsByTagName('script');
+  let originalElement, copyElement, parentNode, nextSibling, i;
+
+  for (i = 0; i < scriptElements.length; i++) {
+    originalElement = scriptElements[i];
+    if (!originalElement) {
+      continue;
+    }
+    copyElement = document.createElement('script');
+    for (let j = 0; j < originalElement.attributes.length; j++) {
+      copyElement.setAttribute(
+        originalElement.attributes[j].name,
+        originalElement.attributes[j].value,
+      );
+    }
+    copyElement.textContent = originalElement.textContent;
+    parentNode = originalElement.parentNode;
+    nextSibling = originalElement.nextSibling;
+    parentNode.removeChild(originalElement);
+    parentNode.insertBefore(copyElement, nextSibling);
+  }
+}
+
+export function implementSpecialBehavior(element) {
+  if (
+    element.querySelector('.js-billboard') &&
+    element.querySelector('.js-billboard').dataset.special === 'delayed'
+  ) {
+    element.classList.add('hidden');
+    const observerOptions = {
+      root: null,
+      rootMargin: '-150px',
+      threshold: 0.2,
+    };
+
+    const observer = new IntersectionObserver(showDelayed, observerOptions);
+    const target = document.getElementById('new_comment');
+    observer.observe(target);    
+  }
+}
+
 export function observeBillboards() {
   const observer = new IntersectionObserver(
     (entries) => {
@@ -40,9 +82,23 @@ export function observeBillboards() {
   );
 
   document.querySelectorAll('[data-display-unit]').forEach((ad) => {
+    const currentPath = window.location.pathname;
     observer.observe(ad);
     ad.removeEventListener('click', trackAdClick, false);
-    ad.addEventListener('click', () => trackAdClick(ad));
+    ad.addEventListener('click', () => trackAdClick(ad, event, currentPath));
+  });
+}
+
+function showDelayed(entries) {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      // The target element has come into the viewport
+      // Place the behavior you want to trigger here
+      // query for data-special "delayed"
+      document.querySelectorAll("[data-special='delayed']").forEach((el) => {
+        el.closest('.hidden').classList.remove('hidden');
+      });
+    }
   });
 }
 
@@ -64,6 +120,7 @@ function trackAdImpression(adBox) {
       billboard_id: adBox.dataset.id,
       context_type: adBox.dataset.contextType,
       category: adBox.dataset.categoryImpression,
+      article_id: adBox.dataset.articleId,
     },
   };
 
@@ -82,7 +139,26 @@ function trackAdImpression(adBox) {
   adBox.dataset.impressionRecorded = true;
 }
 
-function trackAdClick(adBox) {
+function trackAdClick(adBox, event, currentPath) {
+  if (!event.target.closest('a')) {
+    return;
+  }
+
+  const dataBody = {
+    billboard_event: {
+      billboard_id: adBox.dataset.id,
+      context_type: adBox.dataset.contextType,
+      category: adBox.dataset.categoryClick,
+      article_id: adBox.dataset.articleId,
+    },
+  };
+
+  if (localStorage) {
+    dataBody['path'] = currentPath;
+    dataBody['time'] = new Date();
+    localStorage.setItem('last_interacted_billboard', JSON.stringify(dataBody));
+  }
+
   const isBot =
     /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(
       navigator.userAgent,
@@ -94,14 +170,6 @@ function trackAdClick(adBox) {
 
   const tokenMeta = document.querySelector("meta[name='csrf-token']");
   const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
-
-  const dataBody = {
-    billboard_event: {
-      billboard_id: adBox.dataset.id,
-      context_type: adBox.dataset.contextType,
-      category: adBox.dataset.categoryClick,
-    },
-  };
 
   window.fetch('/billboard_events', {
     method: 'POST',

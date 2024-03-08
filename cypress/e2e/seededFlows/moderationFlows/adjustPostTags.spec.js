@@ -38,7 +38,9 @@ describe('Adjust post tags', () => {
       });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+        cy.findByRole('button', { name: 'Open adjust tags section' }).click({
+          force: true,
+        });
         cy.findByText('tag1').click();
         cy.findByPlaceholderText('Reason to remove tag (optional)').type(
           'testing',
@@ -163,7 +165,9 @@ describe('Adjust post tags', () => {
       });
 
       cy.getIframeBody('.actions-panel-iframe').within(() => {
-        cy.findByRole('button', { name: 'Open adjust tags section' }).click();
+        cy.findByRole('button', { name: 'Open adjust tags section' }).click({
+          force: true,
+        });
 
         cy.findByText('tag1').click();
         cy.findByPlaceholderText('Reason to remove tag (optional)').type(

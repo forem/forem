@@ -1,5 +1,6 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
+  SIGNUP_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
   # No policy needed. All views are for all users
 
   def create
@@ -22,7 +23,8 @@ class BillboardEventsController < ApplicationMetalController
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
-      rate = num_clicks.to_f / num_impressions
+      signup_success = @billboard.billboard_events.signups.sum(:counts_for) * SIGNUP_SUCCESS_MODIFIER
+      rate = (num_clicks + signup_success).to_f / num_impressions
 
       @billboard.update_columns(
         success_rate: rate,
@@ -37,6 +39,8 @@ class BillboardEventsController < ApplicationMetalController
     # keeping while we may receive data in the "old" format from cached js
     billboard_id = event_params.delete(:display_ad_id)
     event_params[:billboard_id] ||= billboard_id
-    event_params.slice(:context_type, :category, :billboard_id)
+    event_params[:article_id] = params[:article_id] if params[:article_id].present?
+    event_params[:geolocation] = client_geolocation
+    event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation)
   end
 end

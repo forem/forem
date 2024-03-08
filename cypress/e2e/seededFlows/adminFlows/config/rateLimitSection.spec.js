@@ -20,8 +20,9 @@ describe('Campaign Section', () => {
 
         cy.get('@rateLimitSectionForm')
           .get('#settings_rate_limit_user_considered_new_days')
-          .clear()
-          .type('42');
+          .as('limit');
+        cy.get('@limit').clear();
+        cy.get('@limit').type('42');
 
         cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
 
@@ -55,8 +56,9 @@ describe('Campaign Section', () => {
 
         cy.get('@rateLimitSectionForm')
           .get('#settings_rate_limit_user_considered_new_days')
-          .clear()
-          .type('42');
+          .as('limit');
+        cy.get('@limit').clear();
+        cy.get('@limit').type('42');
 
         cy.get('@rateLimitSectionForm').findByText('Update Settings').click();
 

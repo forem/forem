@@ -10,19 +10,19 @@
     <% menu_items.each do |group_name, group| %>
       <li>
         <a
-          class="c-link c-link--block c-link--icon-left <%= "c-link--current" if current?(request, group, group_name) %>"
+          class="c-link c-link--block c-link--icon-left <%= "c-link--current mb-1" if current?(request, group, group_name) %>"
           aria-current="<%= "page" if current?(request, group, group_name) && !group.has_multiple_children? %>"
           href="<%= nav_path(group, group_name) %>">
           <%= crayons_icon_tag(group.svg, class: "c-link__icon", aria_hidden: true) %>
           <%= display_name(group_name) %>
         </a>
         <% if group.has_multiple_children? %>
-          <ul class="ml-6 mb-1 <%= current?(request, group, group_name) ? "" : "hidden" %>">
+          <ul class="ml-6 mb-1 <%= current?(request, group, group_name) ? "block" : "hidden" %>">
             <% group.children.each do |item| %>
               <% if item.visible %>
                 <li>
                   <a
-                    class="c-link c-link--block inline-block"
+                    class="c-link c-link--block"
                     href="<%= admin_path %>/<%= group_name %>/<%= item.controller %>"
                     <% if sidebar_item_active?(item) %>
                       style="--bg: transparent"

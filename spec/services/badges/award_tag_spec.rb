@@ -61,4 +61,24 @@ RSpec.describe Badges::AwardTag, type: :service do
     expect(second_user.reload.badge_achievements.size).to eq(1)
     expect(third_user.reload.badge_achievements.size).to eq(1)
   end
+
+  context "when award_tag_minimum_score setting is different than default" do
+    it "awards badge if qualifying article by score and tagged appropriately" do
+      allow(Settings::UserExperience).to receive(:award_tag_minimum_score).and_return(200)
+      article.update_columns(cached_tag_list: tag.name, score: 201)
+      described_class.call
+      expect(user.badge_achievements.size).to eq(1)
+      expect(user.badge_achievements.last.badge_id).to eq(badge.id)
+    end
+  end
+
+  context "when award_tag_minimum_score is 100 and the article score is greater than it" do
+    it "awards badge if qualifying article by score and tagged appropriately" do
+      allow(Settings::UserExperience).to receive(:award_tag_minimum_score).and_return(100)
+      article.update_columns(cached_tag_list: tag.name, score: 201)
+      described_class.call
+      expect(user.badge_achievements.size).to eq(1)
+      expect(user.badge_achievements.last.badge_id).to eq(badge.id)
+    end
+  end
 end

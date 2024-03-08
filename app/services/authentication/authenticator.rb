@@ -51,6 +51,7 @@ module Authentication
                else
                  update_user(user)
                end
+        user.set_initial_roles!
 
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?
@@ -118,9 +119,9 @@ module Authentication
       suspended_user = Users::SuspendedUsername.previously_suspended?(username)
       raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
-      existing_user = User.where(
+      existing_user = User.find_by(
         provider.user_username_field => username,
-      ).take
+      )
       return existing_user if existing_user
 
       User.new.tap do |user|
@@ -148,7 +149,7 @@ module Authentication
     end
 
     def update_user(user)
-      return user if user.suspended?
+      return user if user.spam_or_suspended?
 
       user.tap do |model|
         model.unlock_access! if model.access_locked?

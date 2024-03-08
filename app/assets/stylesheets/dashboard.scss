@@ -259,13 +259,16 @@
 }
 
 .analytics-container {
-  width: 1400px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
 .crayons-tabs--analytics {
   width: min-content;
-  margin: var(--su-8) auto;
+  margin: var(--su-1) auto var(--su-4);
+  @media screen and (min-width: 800px) {
+    margin: var(--su-1) var(--su-4) var(--su-4);
+  }
 }
 
 $column-flex: 1;
@@ -277,6 +280,7 @@ $column-flex: 1;
 
   &__col {
     flex: $column-flex;
+    min-height: 100px;
   }
 }
 
@@ -285,12 +289,18 @@ $column-flex: 1;
 }
 
 .graphs {
-  text-align: center;
   display: flex;
   justify-content: space-between;
-
   &__col {
     flex: $column-flex;
+  }
+  .charts-container {
+    padding: var(--su-4);
+    height: 320px;
+    canvas {
+      min-height: 280px;
+      max-height: 280px;
+    }
   }
 }
 
@@ -357,6 +367,7 @@ $column-flex: 1;
 
 .featured-stat {
   font-size: 2em;
+  font-weight: bold;
 }
 
 .header-card {

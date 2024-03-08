@@ -29,5 +29,5 @@
 <%= render "shared/webcomponents_loader_script" %>
 <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>
 
-<%= javascript_packs_with_chunks_tag "articleForm", defer: true %>
+<%= javascript_include_tag "articleForm", defer: true %>
 <div id="markdown-lint-js-path" class="hidden" data-markdown-it-js-path="<%= asset_path("markdown-it.min.js") %>" data-markdown-lint-js-path="<%= asset_path("markdownlint-browser.min.js") %>">

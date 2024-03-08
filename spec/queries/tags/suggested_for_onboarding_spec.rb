@@ -22,10 +22,5 @@ RSpec.describe Tags::SuggestedForOnboarding, type: :query do
       expect(result).to include(*suggested_tags)
       expect(result).to include(supported)
     end
-
-    it "sorts suggested first, then supported" do
-      expect(suggested_tags).to include(result.first)
-      expect(result).to include(result.first)
-    end
   end
 end

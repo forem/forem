@@ -16,7 +16,9 @@
   <li>Most of the time, you can write inline HTML directly into your posts.</li>
   <li>We support native Liquid tags and created some fun custom ones, too! Trying embedding a Tweet or GitHub issue in your post, using the complete URL: <code>{% embed https://... %}</code>.</li>
   <li>Links to unpublished posts are shareable for feedback/review.</li>
-  <li>When you're ready to publish, set the published variable to <strong>true.</strong></li>
+  <li> When you're ready to publish, set the published variable to <strong>true</strong> or click publish depending on the editor version, you're using</li>
+ <li>Links to unpublished posts (drafts or scheduled posts) are shareable for feedback/review. These posts have a notice which reads "This URL is public but secret, so share at your own discretion." They are not visible in feeds or on your profile until published.</li>
+  <li><strong> <p>description area in Twitter cards and open graph cards</li>
 </ul>
 
 <p><em><b>We have two editor versions</b>. If you'd prefer to edit title and tags etc. as separate fields, switch to the "rich + markdown" option in <a href="<%= user_settings_path(:customization) %>">Settings → Customization</a>. Otherwise, continue:</em></p>
@@ -25,8 +27,7 @@
 <p>Custom variables set for each post, located between the triple-dashed lines in your editor Here is a list of possibilities:</p>
 <ul>
   <li><strong>title:</strong> the title of your article</li>
-  <li><strong>published:</strong> boolean that determines whether or not your article is published</li>
-  <li><strong>description:</strong> description area in Twitter cards and open graph cards</li>
+  <li><strong>published:</strong> boolean that determines whether or not your article is published.</li> 
   <li><strong>tags:</strong> max of four tags, needs to be comma-separated</li>
   <li><strong>canonical_url:</strong> link for the canonical version of the content</li>
   <li><strong>cover_image:</strong> cover image for post, accepts a URL. <br>The best size is 1000 x 420.</li>

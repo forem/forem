@@ -6,7 +6,7 @@
   </style>
 <% end %>
 
-<%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+<%= javascript_include_tag "actionsPanel", defer: true %>
 
 <% author_suspended = @moderatable.user.suspended? %>
 <% author_username = @moderatable.username %>
@@ -47,7 +47,7 @@
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.class.name %>">
-      <%= crayons_icon_tag("twemoji/suspicious", native: true, class: "mr-1", title: "Suspicious...") %>
+      <%= crayons_icon_tag("twemoji/flag", native: true, class: "mr-1", title: "Flag") %>
       <span></span>
       <%= crayons_icon_tag(:checkmark, class: "vomit-checkmark", title: t("views.moderations.actions.checkmark")) %>
     </button>
@@ -77,11 +77,13 @@
         <%= t("views.moderations.actions.featured_past_day", count: recent_featured_count) %>
       </div>
     <% end %>
-    <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
-      <span class="additional-subtext-section py-3">
-        <%= t("views.moderations.actions.how") %>
-      </span>
-    </a>
+    <% unless is_mod_center %>
+      <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
+        <span class="additional-subtext-section py-3">
+          <%= t("views.moderations.actions.how") %>
+        </span>
+      </a>
+    <% end %>
   </div>
 
   <div class="other-things-container">
@@ -262,7 +264,7 @@
     <button aria-haspopup="true" aria-expanded="false" aria-controls="set-experience-options" class="other-things-btn set-experience" type="button" data-other-things-type="set-experience" aria-label="<%= t("views.moderations.actions.experience.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= crayons_icon_tag(:book, title: t("views.moderations.actions.experience.icon")) %>
+          <%= crayons_icon_tag("book", title: t("views.moderations.actions.experience.icon")) %>
         </div>
         <header>
           <h2><%= t("views.moderations.actions.experience.heading") %></h2>
@@ -310,7 +312,7 @@
       aria-label="<%= t("views.moderations.actions.admin.aria_label") %>">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
-          <%= inline_svg_tag("admin.svg", aria_hidden: true, title: t("views.moderations.actions.admin.icon")) %>
+          <%= crayons_icon_tag("admin", title: t("views.moderations.actions.admin.icon")) %>
         </div>
         <header>
           <h2><%= t("views.moderations.actions.admin.heading") %></h2>
@@ -318,7 +320,7 @@
         </header>
       </div>
       <div class="toggle-chevron-container">
-        <%= inline_svg_tag("arrow-down-fill.svg", aria: true, title: t("views.moderations.actions.toggle")) %>
+        <%= crayons_icon_tag("arrow-down-fill", title: t("views.moderations.actions.toggle")) %>
       </div>
     </button>
 
@@ -331,9 +333,9 @@
         data-modal-size="small"
         data-modal-content-selector="#<%= @author_flagged ? "unflag" : "flag" %>-user-modal-content">
         <% if @author_flagged %>
-          <%= t("views.moderations.actions.unflag", username: author_username) %>
+          <%= t("views.moderations.actions.unflag_user", username: author_username) %>
         <% else %>
-          <%= t("views.moderations.actions.flag", username: author_username) %>
+          <%= t("views.moderations.actions.flag_user", username: author_username) %>
         <% end %>
       </button>
       <% if policy(@moderatable).can_perform_moderator_actions? %>

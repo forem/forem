@@ -115,6 +115,30 @@ RSpec.describe Notifications::NewFollower::Send, type: :service do
       expect(notification.json_data["user"]["class"]).to eq("name" => "User")
     end
 
+    it "does not include suspended users in aggregated_siblings" do
+      # Initial Setup: Let's assume user4 and user3 are following user2.
+      user4 = create(:user)
+      user5 = create(:user)
+      user6 = create(:user)
+      user4.follow(user2)
+      user5.follow(user2)
+      user6.follow(user2)
+
+      # Now, suspend user4
+      user5.add_role(:suspended)
+
+      # Trigger the described_class call for a new follow event, let's say from user3 to user2.
+      notification = described_class.call(follow_data(follow2)) # Assuming follow2 is from user3 to user2
+
+      # Aggregate names of siblings from the JSON data in the notification
+      aggregated_sibling_names = notification.json_data["aggregated_siblings"].pluck("name")
+
+      # Expectations: user4 should not be in the aggregated_siblings, but user3 should.
+      expect(aggregated_sibling_names).not_to include(user5.name)
+      expect(aggregated_sibling_names).to include(user4.name)
+      expect(aggregated_sibling_names).to include(user6.name)
+    end
+
     context "when notification exists" do
       before do
         create(:notification, user: user2, action: "Follow", notifiable: follow, notified_at: 1.year.ago)

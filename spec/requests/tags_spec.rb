@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Tags", proper_status: true do
+RSpec.describe "Tags", :proper_status do
   describe "GET /tags" do
     it "returns proper page" do
       create(:tag, name: "ruby")

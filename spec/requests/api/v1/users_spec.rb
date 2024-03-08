@@ -59,6 +59,30 @@ RSpec.describe "Api::V1::Users" do
 
       expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
       expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+      expect(response_user["badge_ids"]).to eq(user.badge_ids)
+      expect(response_user.key?("followers_count")).to be false
+    end
+
+    it "includes email if display_email_on_profile is set to true" do
+      user.setting.update_column(:display_email_on_profile, true)
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user["email"]).to eq(user.email)
+    end
+
+    it "doesn't include email if display_email_on_profile is false" do
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user.key?("email")).to be true
+      expect(response_user["email"]).to be_nil
+    end
+
+    it "includes badge_ids" do
+      achievement = create(:badge_achievement, user: user)
+      badge_ids = [achievement.badge_id]
+      get api_user_path("by_username"), params: { url: user.username }, headers: headers
+      response_user = response.parsed_body
+      expect(response_user["badge_ids"]).to eq(badge_ids)
     end
   end
 
@@ -81,10 +105,11 @@ RSpec.describe "Api::V1::Users" do
       let(:user) { api_secret.user }
 
       it "returns the correct json representation of the user", :aggregate_failures do
+        create(:badge_achievement, user: user)
+
         get me_api_users_path, headers: auth_headers
 
         expect(response).to have_http_status(:ok)
-
         response_user = response.parsed_body
 
         expect(response_user["type_of"]).to eq("user")
@@ -99,6 +124,9 @@ RSpec.describe "Api::V1::Users" do
 
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
+
+        expect(response_user["badge_ids"]).to eq(user.badge_ids)
+        expect(response_user["followers_count"]).to eq(user.followers_count)
       end
 
       it "returns 200 if no authentication and the Forem instance is set to private but user is authenticated" do
@@ -120,21 +148,30 @@ RSpec.describe "Api::V1::Users" do
         expect(response_user["joined_at"]).to eq(user.created_at.strftime("%b %e, %Y"))
         expect(response_user["profile_image"]).to eq(user.profile_image_url_for(length: 320))
       end
+
+      it "returns followers_count" do
+        create(:follow, followable: user)
+        get me_api_users_path, headers: auth_headers
+        response_user = response.parsed_body
+        expect(response_user["followers_count"]).to eq(1)
+      end
+
+      it "doesn't include spammers in followers_count" do
+        follower = create(:user, :spam)
+        create(:follow, followable: user, follower: follower)
+        get me_api_users_path, headers: auth_headers
+        response_user = response.parsed_body
+        expect(response_user["followers_count"]).to eq(0)
+      end
     end
   end
 
-  describe "PUT /api/users/:id/suspend", :aggregate_failures do
-    let(:target_user) { create(:user) }
-    let(:payload) { { note: "Violated CoC despite multiple warnings" } }
-
-    before { Audit::Subscribe.listen listener }
-
-    after { Audit::Subscribe.forget listener }
+  describe "GET /api/users/search", :aggregate_failures do
+    let!(:user) { create(:user) }
 
     context "when unauthenticated" do
       it "returns unauthorized" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
+        get api_users_search_path(email: user.email),
             headers: headers
 
         expect(response).to have_http_status(:unauthorized)
@@ -143,17 +180,15 @@ RSpec.describe "Api::V1::Users" do
 
     context "when unauthorized" do
       it "returns unauthorized if api key is invalid" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
+        get api_users_search_path(email: user.email),
             headers: headers.merge({ "api-key" => "invalid api key" })
 
         expect(response).to have_http_status(:unauthorized)
       end
 
       it "returns unauthorized if api key belongs to non-admin user" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: headers
+        get api_users_search_path(email: user.email),
+            headers: auth_headers
 
         expect(response).to have_http_status(:unauthorized)
       end
@@ -162,28 +197,29 @@ RSpec.describe "Api::V1::Users" do
     context "when request is authenticated" do
       before { api_secret.user.add_role(:super_admin) }
 
-      it "is successful in suspending a user", :aggregate_failures do
-        expect do
-          put api_user_suspend_path(id: target_user.id),
-              params: payload,
-              headers: auth_headers
-
-          expect(response).to have_http_status(:no_content)
-          expect(target_user.reload.suspended?).to be true
-          expect(Note.last.content).to eq(payload[:note])
-        end.to change(Note, :count).by(1)
+      it "returns 200 when finds a user" do
+        get api_users_search_path(email: user.email), headers: auth_headers
+        expect(response).to have_http_status(:ok)
       end
 
-      it "creates an audit log of the action taken" do
-        put api_user_suspend_path(id: target_user.id),
-            params: payload,
-            headers: auth_headers
+      it "finds a user" do
+        get api_users_search_path(email: user.email), headers: auth_headers
 
-        log = AuditLog.last
-        expect(log.category).to eq(AuditLog::ADMIN_API_AUDIT_LOG_CATEGORY)
-        expect(log.data["action"]).to eq("api_user_suspend")
-        expect(log.data["target_user_id"]).to eq(target_user.id)
-        expect(log.user_id).to eq(api_secret.user.id)
+        response_user = response.parsed_body
+        expect(response_user["type_of"]).to eq("user")
+        %w[id username name twitter_username github_username].each do |attr|
+          expect(response_user[attr]).to eq(user.public_send(attr))
+        end
+      end
+
+      it "returns not found when no email is passed" do
+        get api_users_search_path, headers: auth_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns not found when user is not found" do
+        get api_users_search_path(email: "hello@hello.edu"), headers: auth_headers
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
@@ -227,8 +263,8 @@ RSpec.describe "Api::V1::Users" do
 
       it "is successful in unpublishing a user's comments and articles", :aggregate_failures do
         # User's articles are published and comments exist
-        expect(target_articles.map(&:published?)).to match_array([true, true, true])
-        expect(target_comments.map(&:deleted)).to match_array([false, false, false])
+        expect(target_articles.map(&:published?)).to contain_exactly(true, true, true)
+        expect(target_comments.map(&:deleted)).to contain_exactly(false, false, false)
 
         sidekiq_perform_enqueued_jobs(only: Moderator::UnpublishAllArticlesWorker) do
           put api_user_unpublish_path(id: target_user.id), headers: auth_headers
@@ -238,8 +274,8 @@ RSpec.describe "Api::V1::Users" do
 
         # Ensure article's aren't published and comments deleted
         # (with boolean attribute so they can be reverted if needed)
-        expect(target_articles.map(&:reload).map(&:published?)).to match_array([false, false, false])
-        expect(target_comments.map(&:reload).map(&:deleted)).to match_array([true, true, true])
+        expect(target_articles.map { |a| a.reload.published? }).to contain_exactly(false, false, false)
+        expect(target_comments.map { |c| c.reload.deleted }).to contain_exactly(true, true, true)
       end
 
       it "creates an audit log of the action taken" do

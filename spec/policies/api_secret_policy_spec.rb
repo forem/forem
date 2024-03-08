@@ -35,4 +35,11 @@ RSpec.describe ApiSecretPolicy, type: :policy do
 
     it { is_expected.to forbid_actions %i[create] }
   end
+
+  context "when the user has a spam role" do
+    let(:user) { create(:user, :spam) }
+    let(:api_secret) { build_stubbed(:api_secret) }
+
+    it { is_expected.to forbid_actions %i[create] }
+  end
 end

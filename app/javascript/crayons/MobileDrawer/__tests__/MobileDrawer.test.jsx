@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { axe } from 'jest-axe';
 import '@testing-library/jest-dom';
 import { render, waitFor } from '@testing-library/preact';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import { MobileDrawer } from '../MobileDrawer';
 
 describe('<MobileDrawer />', () => {

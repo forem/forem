@@ -42,6 +42,7 @@ class DashboardsController < ApplicationController
     end
 
     @reactions_count = @articles.sum(&:public_reactions_count)
+    @comments_count = @articles.sum(&:comments_count)
     @page_views_count = @articles.sum(&:page_views_count)
 
     @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
@@ -75,7 +76,7 @@ class DashboardsController < ApplicationController
 
   def followers
     fetch_and_authorize_user
-    @follows = Follow.followable_user(@user.id)
+    @follows = Follow.non_suspended("User", @user.id)
       .includes(:follower).order(created_at: :desc).limit(follows_limit)
     @collections_count = collections_count(@user)
   end

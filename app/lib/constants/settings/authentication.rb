@@ -66,6 +66,10 @@ module Constants
             description: I18n.t("lib.constants.settings.authentication.invite_only.description"),
             placeholder: ""
           },
+          new_user_status: {
+            description: I18n.t("lib.constants.settings.authentication.new_user_status.description"),
+            placeholder: I18n.t("lib.constants.settings.authentication.new_user_status.placeholder")
+          },
           recaptcha_site_key: {
             description: I18n.t("lib.constants.settings.authentication.recaptcha_site.description"),
             placeholder: I18n.t("lib.constants.settings.authentication.recaptcha_site.placeholder")

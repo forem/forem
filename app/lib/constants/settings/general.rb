@@ -45,6 +45,14 @@ module Constants
             description: I18n.t("lib.constants.settings.general.ga_analytics_4.description"),
             placeholder: ""
           },
+          cookie_banner_user_context: {
+            description: I18n.t("lib.constants.settings.general.cookie_banner_user_context.description"),
+            placeholder: "off"
+          },
+          coolie_banner_platform_context: {
+            description: I18n.t("lib.constants.settings.general.coolie_banner_platform_context.description"),
+            placeholder: "off"
+          },
           health_check_token: {
             description: I18n.t("lib.constants.settings.general.health.description"),
             placeholder: I18n.t("lib.constants.settings.general.health.placeholder")
@@ -88,6 +96,22 @@ module Constants
           meta_keywords: {
             description: "",
             placeholder: I18n.t("lib.constants.settings.general.meta_keywords.description")
+          },
+          onboarding_newsletter_content: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.placeholder")
+          },
+          onboarding_newsletter_opt_in_head: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.placeholder")
+          },
+          onboarding_newsletter_opt_in_subhead: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.placeholder")
+          },
+          geos_with_allowed_default_email_opt_in: {
+            description: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.description"),
+            placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.placeholder")
           },
           payment_pointer: {
             description: I18n.t("lib.constants.settings.general.payment.description"),

@@ -197,7 +197,7 @@ RSpec.describe "ResponseTemplate" do
         expect(response_template.type_of).to eq "personal_comment"
       end
 
-      it "successfully creates a mod_comment response template" do
+      it "**cannot** create a mod_comment response template" do
         post response_templates_path, params: {
           response_template: {
             title: attributes[:title],
@@ -206,11 +206,11 @@ RSpec.describe "ResponseTemplate" do
           }
         }
 
-        response_template = ResponseTemplate.last
-        expect(response_template.user_id).to be_nil
-        expect(response_template.title).to eq attributes[:title]
-        expect(response_template.content).to eq attributes[:content]
-        expect(response_template.type_of).to eq "mod_comment"
+        expect(ResponseTemplate.count).to be_zero
+        expect(response).to have_http_status(:redirect)
+
+        expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
+                                                                    id: nil)
       end
 
       it "redirects to the edit page upon success" do

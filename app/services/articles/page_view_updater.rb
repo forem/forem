@@ -4,6 +4,7 @@ module Articles
   # @see Articles::UpdatePageViewsWorker for the sibling that's responsible for recording page
   #      views.
   module PageViewUpdater
+    EXTENDED_PAGEVIEW_NUMBER = 60
     # @param article_id [Integer]
     # @param user_id [Integer]
     #
@@ -22,10 +23,13 @@ module Articles
 
       page_view = PageView.order(created_at: :desc)
         .find_or_create_by(article_id: article_id, user_id: user_id)
-
       return true if page_view.new_record?
 
-      page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
+      new_time_mark = page_view.time_tracked_in_seconds + 15
+      page_view.update_column(:time_tracked_in_seconds, new_time_mark)
+      if new_time_mark == EXTENDED_PAGEVIEW_NUMBER
+        FeedEvent.record_journey_for(page_view.user, article: page_view.article, category: :extended_pageview)
+      end
 
       true
     end

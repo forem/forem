@@ -80,4 +80,20 @@ RSpec.describe CrossModelSlugValidator do
 
     it { is_expected.to be_valid }
   end
+
+  context "when organization's slug consists of only digits" do
+    let(:organization) { build(:organization, slug: "1337") }
+
+    it "is invalid" do
+      expect(organization).not_to be_valid
+    end
+  end
+
+  context "when organization's slug contains at least one non-digit character" do
+    let(:organization) { build(:organization, slug: "1234a") }
+
+    it "is valid" do
+      expect(organization).to be_valid
+    end
+  end
 end

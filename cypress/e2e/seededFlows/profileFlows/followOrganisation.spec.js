@@ -17,6 +17,7 @@ describe('Follow user from profile page', () => {
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     cy.get('@followButton').click();
+    cy.wait('@followsRequest');
     // Inner text should now be following
     cy.get('@followButton').should('have.text', 'Following');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');

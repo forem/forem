@@ -95,7 +95,6 @@ function initializeCommentsPage() {
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
-      butt.style.zIndex = butts.length - i;
       butt.onclick = function (event) {
         var thisButt = this;
         event.preventDefault();

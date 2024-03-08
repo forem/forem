@@ -146,12 +146,47 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
+  has_many :more_inclusive_top_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :recent_good_comments,
+           lambda {
+             where(comments: { score: 8.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :more_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :most_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 3.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
   validates :body_markdown, bytesize: {
     maximum: 800.kilobytes,
     too_long: proc { I18n.t("models.article.is_too_long") }
   }
   validates :body_markdown, length: { minimum: 0, allow_nil: false }
-  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :cached_tag_list, length: { maximum: 126 }
   validates :canonical_url,
             uniqueness: { allow_nil: true, scope: :published, message: unique_url_error },
@@ -179,6 +214,7 @@ class Article < ApplicationRecord
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
   validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
+  validates :clickbait_score, numericality: { greater_than_or_equal_to: 0.0, less_than_or_equal_to: 1.0 }
   validate :future_or_current_published_at, on: :create
   validate :correct_published_at?, on: :update, unless: :admin_update
 
@@ -194,6 +230,7 @@ class Article < ApplicationRecord
   before_validation :evaluate_markdown, :create_slug, :set_published_date
   before_validation :normalize_title
   before_validation :remove_prohibited_unicode_characters
+  before_validation :remove_invalid_published_at
   before_save :set_cached_entities
   before_save :set_all_dates
 
@@ -479,22 +516,7 @@ class Article < ApplicationRecord
   end
 
   def has_frontmatter?
-    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
-      processed_content.has_front_matter?
-    else
-      original_has_frontmatter?
-    end
-  end
-
-  def original_has_frontmatter?
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown)
-    begin
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed.front_matter["title"].present?
-    rescue Psych::SyntaxError, Psych::DisallowedClass
-      # if frontmatter is invalid, still render editor with errors instead of 500ing
-      true
-    end
+    processed_content.has_front_matter?
   end
 
   def class_name
@@ -570,7 +592,9 @@ class Article < ApplicationRecord
   end
 
   def update_score
-    self.score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    spam_adjustment = user.spam? ? -500 : 0
+    negative_reaction_adjustment = Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
+    self.score = reactions.sum(:points) + spam_adjustment + negative_reaction_adjustment
     update_columns(score: score,
                    privileged_users_reaction_points_sum: reactions.privileged_category.sum(:points),
                    comment_score: comments.sum(:score),
@@ -607,13 +631,20 @@ class Article < ApplicationRecord
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
     # true if unpublished, or spammy,
-    # or low score, not featured, and from a user with no comments
+    # or low score, and not featured
     !published ||
-      (score < Settings::UserExperience.index_minimum_score &&
-       user.comments_count < 1 &&
-       !featured) ||
+      (score < Settings::UserExperience.index_minimum_score && !featured) ||
       published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
+  end
+
+  def skip_indexing_reason
+    return "unpublished" unless published
+    return "negative_score" if score < -1
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
+
+    "unknown"
   end
 
   def privileged_reaction_counts
@@ -622,6 +653,12 @@ class Article < ApplicationRecord
 
   def ordered_tag_adjustments
     tag_adjustments.includes(:user).order(:created_at).reverse
+  end
+
+  def async_score_calc
+    return if !published? || destroyed?
+
+    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   private
@@ -688,14 +725,6 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[user])
-      extracted_evaluate_markdown
-    else
-      original_evaluate_markdown
-    end
-  end
-
-  def extracted_evaluate_markdown
     content_renderer = processed_content
     return unless content_renderer
 
@@ -717,34 +746,10 @@ class Article < ApplicationRecord
     errors.add(:base, ErrorMessages::Clean.call(e.message))
   end
 
-  def original_evaluate_markdown
-    fixed_body_markdown = MarkdownProcessor::Fixer::FixAll.call(body_markdown || "")
-    parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: self, user: user)
-    self.reading_time = parsed_markdown.calculate_reading_time
-    self.processed_html = parsed_markdown.finalize
-
-    if parsed.front_matter.any?
-      evaluate_front_matter(parsed.front_matter)
-    elsif tag_list.any?
-      set_tag_list(tag_list)
-    end
-
-    self.description = processed_description if description.blank?
-  rescue StandardError => e
-    errors.add(:base, ErrorMessages::Clean.call(e.message))
-  end
-
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
     self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
-  end
-
-  def async_score_calc
-    return if !published? || destroyed?
-
-    Articles::ScoreCalcWorker.perform_async(id)
   end
 
   def fetch_video_duration
@@ -888,7 +893,7 @@ class Article < ApplicationRecord
 
   def future_or_current_published_at
     # allow published_at in the future or within 15 minutes in the past
-    return if !published || published_at > 15.minutes.ago
+    return if !published || published_at.blank? || published_at > 15.minutes.ago
 
     errors.add(:published_at, I18n.t("models.article.future_or_current_published_at"))
   end
@@ -1040,6 +1045,14 @@ class Article < ApplicationRecord
 
     bidi_stripped = title.gsub(BIDI_CONTROL_CHARACTERS, "")
     self.title = bidi_stripped if bidi_stripped.blank? # title only contains BIDI characters = blank title
+  end
+
+  # Sometimes published_at is set to a date *way way too far in the future*, likely a parsing mistake. Let's nullify.
+  # Do this instead of invlidating the record, because we want to allow the user to fix the date and publish as needed.
+  def remove_invalid_published_at
+    return if published_at.blank?
+
+    self.published_at = nil if published_at > 5.years.from_now
   end
 
   def record_field_test_event

@@ -22,43 +22,35 @@
   <div class="summary-stats__col crayons-card mx-5">
     <div id="comments-card" class="py-3"></div>
   </div>
-  <div class="summary-stats__col crayons-card mx-5">
-    <div id="followers-card" class="py-3"></div>
-  </div>
 </div>
 
-<div class="graphs my-5">
+<div class="graphs my-2">
   <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5"><%= t("views.stats.readers") %></h2>
+    <h2 class="mt-5 mx-5"><%= t("views.stats.readers") %></h2>
     <div class="charts-container">
       <canvas id="readers-chart"></canvas>
     </div>
   </div>
-  <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5"><%= t("views.stats.followers") %></h2>
-    <div class="charts-container">
-      <canvas id="followers-chart"></canvas>
-    </div>
-  </div>
 </div>
 
-<div class="graphs mb-5">
-  <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5"><%= t("views.stats.reactions") %></h2>
+<div class="grid xl:grid-cols-2 gap-4 mx-5 mb-2">
+  <div class="graphs__col crayons-card">
+    <h2 class="mt-5 mx-5"><%= t("views.stats.reactions") %></h2>
     <div class="charts-container">
       <canvas id="reactions-chart"></canvas>
     </div>
   </div>
-  <div class="graphs__col crayons-card mx-5">
-    <h2 class="my-5"><%= t("views.stats.comments") %></h2>
+  <div class="graphs__col crayons-card">
+    <h2 class="mt-5 mx-5"><%= t("views.stats.comments") %></h2>
     <div class="charts-container">
       <canvas id="comments-chart"></canvas>
     </div>
   </div>
 </div>
 
-<div class="w-90 crayons-card mx-5 mb-5 p-5">
-  <h2 class="align-center mb-5"><%= t("views.stats.traffic.text") %></h2>
+<div class="grid xl:grid-cols-2 gap-4 mx-5 ">
+  <div class="crayons-card p-2">
+  <h2 class="mt-5 mx-5"><%= t("views.stats.traffic.text") %></h2>
   <table class="w-100 m-auto crayons-table">
     <thead>
       <tr>
@@ -70,4 +62,30 @@
     <tbody id="referrers-container">
     </tbody>
   </table>
+  </div>
+
+  <% if @reactions && @reactions.any? %>
+    <div class="crayons-card p-4 overflow-auto" style="max-height:calc(100vh - 150px)">
+      <h2 class="crayons-subtitle mb-2">
+        <%= t("views.stats.reactions_history") %>
+      </h2>
+      <% @reactions.each do |reaction| %>
+        <div class="fs-sm py-2 flex items-center">
+          <div class="mr-3 relative">
+            <img class="crayons-avatar h-8 w-8" style="height: 30px; width: 30px;" src="<%= reaction.user.profile_image_90 %>" width="25" height="25">
+            <img class="crayons-avatar absolute -right-1 -bottom-1 border-base-inverted" style="height: 20px; width: 20px;" src="/assets/<%= reaction.reaction_category.icon %>.svg" width="16" height="16">
+          </div>
+          <div class="flex-1 flex items-center justify-between">
+            <div>
+              <strong><%= reaction.category %></strong>
+              by <a href="<%= URL.user(reaction.user) %>" class="fw-bold"><%= reaction.user.name %></a>
+            </div>
+            <div class="fs-xs">
+              <%= reaction.readable_date %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
 </div>

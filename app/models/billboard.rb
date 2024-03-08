@@ -6,15 +6,28 @@ class Billboard < ApplicationRecord
   belongs_to :audience_segment, optional: true
 
   # rubocop:disable Layout/LineLength
-  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left sidebar_left_2 sidebar_right feed_first feed_second feed_third home_hero post_sidebar post_comments].freeze
+  ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
+                               sidebar_left_2
+                               sidebar_right
+                               sidebar_right_second
+                               sidebar_right_third
+                               feed_first feed_second
+                               feed_third
+                               home_hero
+                               post_fixed_bottom
+                               post_sidebar
+                               post_comments].freeze
   # rubocop:enable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
-                                            "Sidebar Right (Home)",
+                                            "Sidebar Right (Home first position)",
+                                            "Sidebar Right (Home second position)",
+                                            "Sidebar Right (Home third position)",
                                             "Home Feed First",
                                             "Home Feed Second",
                                             "Home Feed Third",
                                             "Home Hero",
+                                            "Fixed Bottom (Individual Post)",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section"].freeze
 
@@ -30,6 +43,9 @@ class Billboard < ApplicationRecord
   attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
   enum type_of: { in_house: 0, community: 1, external: 2 }
+  enum render_mode: { forem_markdown: 0, raw: 1 }
+  enum template: { authorship_box: 0, plain: 1 }
+  enum :special_behavior, { nothing: 0, delayed: 1 }
 
   belongs_to :organization, optional: true
   has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy
@@ -63,7 +79,7 @@ class Billboard < ApplicationRecord
 
   self.table_name = "display_ads"
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil, cookies_allowed: false)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -77,6 +93,7 @@ class Billboard < ApplicationRecord
       user_id: user_id,
       user_tags: user_tags,
       location: location,
+      cookies_allowed: cookies_allowed,
     )
 
     case rand(99) # output integer from 0-99
@@ -90,7 +107,7 @@ class Billboard < ApplicationRecord
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
-      weighted_random_selection(relation) || billboards_for_display.sample
+      weighted_random_selection(relation, article&.id) || billboards_for_display.sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -103,24 +120,49 @@ class Billboard < ApplicationRecord
     end
   end
 
-  def self.weighted_random_selection(relation)
+  def self.weighted_random_selection(relation, target_article_id = nil)
     base_query = relation.to_sql
     random_val = rand.to_f
-
-    query = <<-SQL
-      WITH base AS (#{base_query}),
-      weighted AS (
-        SELECT *, weight,
-        SUM(weight) OVER () AS total_weight,
-        SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
-        FROM base
-      )
-      SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
-      WHERE running_weight >= ? * total_weight
-      ORDER BY running_weight ASC
-      LIMIT 1
-    SQL
-
+    if FeatureFlag.enabled?(:article_id_adjusted_weight)
+      condition = target_article_id.blank? ? "FALSE" : "#{target_article_id} = ANY(preferred_article_ids)"
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *,
+            CASE
+              WHEN #{condition} THEN weight * 10
+              ELSE weight
+            END AS adjusted_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER () AS total_weight,
+          SUM(CASE
+                WHEN #{condition} THEN weight * 10
+                ELSE weight
+              END) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    else
+      query = <<-SQL
+        WITH base AS (#{base_query}),
+        weighted AS (
+          SELECT *, weight,
+          SUM(weight) OVER () AS total_weight,
+          SUM(weight) OVER (ORDER BY id ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_weight
+          FROM base
+        )
+        SELECT *, running_weight, ? * total_weight AS random_value FROM weighted
+        WHERE running_weight >= ? * total_weight
+        ORDER BY running_weight ASC
+        LIMIT 1
+      SQL
+    end
     relation.find_by_sql([query, random_val, random_val]).first
   end
 
@@ -194,12 +236,18 @@ class Billboard < ApplicationRecord
   end
   # rubocop:enable Style/OptionHash
 
-  # exclude_article_ids is an integer array, web inputs are comma-separated strings
+  # exclude_article_ids and preferred_article_ids are integer arrays, web inputs are comma-separated strings
   # ActiveRecord normalizes these in a bad way, so we are intervening
   def exclude_article_ids=(input)
     adjusted_input = input.is_a?(String) ? input.split(",") : input
     adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
     write_attribute :exclude_article_ids, (adjusted_input || [])
+  end
+
+  def preferred_article_ids=(input)
+    adjusted_input = input.is_a?(String) ? input.split(",") : input
+    adjusted_input = adjusted_input&.filter_map { |value| value.presence&.to_i }
+    write_attribute :preferred_article_ids, (adjusted_input || [])
   end
 
   private
@@ -214,30 +262,20 @@ class Billboard < ApplicationRecord
   def process_markdown
     return unless body_markdown_changed?
 
-    if FeatureFlag.enabled?(:consistent_rendering)
+    if render_mode == "forem_markdown"
       extracted_process_markdown
-    else
-      original_process_markdown
+    else # raw
+      self.processed_html = Html::Parser.new(body_markdown)
+        .prefix_all_images(width: 880, quality: 100, synchronous_detail_detection: true).html
     end
   end
 
   def extracted_process_markdown
     renderer = ContentRenderer.new(body_markdown || "", source: self)
     self.processed_html = renderer.process(prefix_images_options: { width: prefix_width,
+                                                                    quality: 100,
                                                                     synchronous_detail_detection: true }).processed_html
     self.processed_html = processed_html.delete("\n")
-  end
-
-  def original_process_markdown
-    renderer = Redcarpet::Render::HTMLRouge.new(hard_wrap: true, filter_html: false)
-    markdown = Redcarpet::Markdown.new(renderer, Constants::Redcarpet::CONFIG)
-    initial_html = markdown.render(body_markdown)
-    stripped_html = ActionController::Base.helpers.sanitize initial_html,
-                                                            tags: MarkdownProcessor::AllowedTags::BILLBOARD,
-                                                            attributes: MarkdownProcessor::AllowedAttributes::BILLBOARD
-    html = stripped_html.delete("\n")
-    self.processed_html = Html::Parser.new(html)
-      .prefix_all_images(width: prefix_width, synchronous_detail_detection: true).html
   end
 
   def prefix_width

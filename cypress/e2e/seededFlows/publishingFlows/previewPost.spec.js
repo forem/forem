@@ -40,17 +40,18 @@ describe('Post Editor', () => {
       cy.get('@previewButton').click();
 
       cy.get('@previewButton').should('not.have.attr', 'aria-current');
-      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
+      cy.findByTestId('error-message').as('message');
+      cy.get('@message').scrollIntoView();
+      cy.get('@message').should('be.visible');
     });
 
     it('should show the accessibility suggestions notice', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       // Add a heading level one which should cause an accessibility lint error
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type('# Heading level one');
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type('# Heading level one');
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -144,17 +145,18 @@ describe('Post Editor', () => {
       cy.get('@previewButton').click();
 
       cy.get('@previewButton').should('not.have.attr', 'aria-current');
-      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
+      cy.findByTestId('error-message').as('message');
+      cy.get('@message').scrollIntoView();
+      cy.get('@message').should('be.visible');
     });
 
     it('should show the accessibility suggestions notice', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       // Add a heading level one which should cause an accessibility lint error
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type('# Heading level one');
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type('# Heading level one');
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -200,18 +202,19 @@ describe('Post Editor', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
       // Cause an error by having a non tag liquid tag without a tag name in the post body.
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type(`${postTextWithError}\n{%tag %}`, {
-          parseSpecialCharSequences: false,
-        });
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type(`${postTextWithError}\n{%tag %}`, {
+        parseSpecialCharSequences: false,
+      });
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
         .click();
 
-      cy.findByTestId('error-message').scrollIntoView().should('be.visible');
+      cy.findByTestId('error-message').as('message');
+      cy.get('@message').scrollIntoView();
+      cy.get('@message').should('be.visible');
 
       cy.findByRole('heading', {
         name: 'Improve the accessibility of your post',
@@ -223,10 +226,9 @@ describe('Post Editor', () => {
         '# Heading level 1\n![](http://imagewithoutalt.png)\n![Image description](http://imagewithdefaultalt.png)\n#### Heading level 4';
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type(postTextWithFourErrors);
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type(postTextWithFourErrors);
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -264,10 +266,11 @@ describe('Post Editor', () => {
 
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type(`${textWithHeadingErrors}\n${textWithThreeImageErrors}`);
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type(
+        `${textWithHeadingErrors}\n${textWithThreeImageErrors}`,
+      );
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -285,10 +288,9 @@ describe('Post Editor', () => {
     it('should show a suggestion for level one headings', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type('# Level one heading');
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type('# Level one heading');
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -306,10 +308,9 @@ describe('Post Editor', () => {
     it('should show a suggestion when heading level increases by more than one', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type('## Level two heading\n#### Level four heading');
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type('## Level two heading\n#### Level four heading');
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -327,10 +328,9 @@ describe('Post Editor', () => {
     it('should show a suggestion for empty alt text on images', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type('![](http://image1.png)');
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type('![](http://image1.png)');
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -348,12 +348,11 @@ describe('Post Editor', () => {
     it('should show a suggestion for default alt text on images', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type(
-          '![Image description](http://image1.png)\n![Image description](http://image2.png)',
-        );
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type(
+        '![Image description](http://image1.png)\n![Image description](http://image2.png)',
+      );
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })
@@ -380,12 +379,11 @@ describe('Post Editor', () => {
     it('should show the correct suggestion for alt text when other text exists on the same line', () => {
       cy.findByRole('form', { name: /^Edit post$/i }).as('articleForm');
 
-      cy.get('@articleForm')
-        .findByLabelText('Post Content')
-        .clear()
-        .type(
-          'Some text ![Image description](http://image1.png) Some more text',
-        );
+      cy.get('@articleForm').findByLabelText('Post Content').as('field');
+      cy.get('@field').clear();
+      cy.get('@field').type(
+        'Some text ![Image description](http://image1.png) Some more text',
+      );
 
       cy.get('@articleForm')
         .findByRole('button', { name: /^Preview$/i })

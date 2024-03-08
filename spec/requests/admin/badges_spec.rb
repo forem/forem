@@ -28,7 +28,7 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
     it "successfully creates a badge" do
       expect do
         post_resource
-      end.to change { Badge.all.count }.by(1)
+      end.to change(Badge, :count).by(1)
     end
   end
 

@@ -33,4 +33,4 @@
     <%= inline_svg_tag("preview-logo.svg", id: "color-select-preview-logo", class: "p-4 radius-default", title: t("views.logo.preview.icon")) %>
   </div>
 </div>
-<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>

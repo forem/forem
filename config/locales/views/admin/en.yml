@@ -10,6 +10,14 @@ en:
           no_flags: Article has no flags.
           no_quality_reactions: Article has no quality reactions by trusted users.
           title: Moderator actions
+        noindex:
+          reason: "Not indexed on search engines: "
+          reasons:
+            unpublished: Unpublished
+            below_minimum_score: Below minimum indexing score and not featured
+            below_minimum_date: Published before minimum index date
+            negative_score: Negative score
+            unknown: Unknown
       comments:
         flags:
           score: Score affected by a particular flag
@@ -286,7 +294,6 @@ en:
               comment_suspended: Comment Suspended
               limited: Limited
               creator: Creator
-              mod_relations_admin: Mod Relations Admin
               super_moderator: Super Moderator
               podcast_admin: Podcast Admin
               restricted_liquid_tag: Restricted Liquid Tag
@@ -311,7 +318,6 @@ en:
               tech_admin: Tech Admin
               trusted: Trusted
               warned: Warned
-              workshop_pass: Workshop Pass
           tag_mod:
             subtitle: Tags
             aria_learn: Learn more about tag moderation
@@ -403,6 +409,7 @@ en:
           Comment Suspended: Comment Suspended
           Limited: Limited
           Suspended: Suspended
+          Spam: Spam
           Good Standing: Good Standing
           Good standing: Good standing
           Trusted: Trusted

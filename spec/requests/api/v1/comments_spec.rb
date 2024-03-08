@@ -183,6 +183,30 @@ RSpec.describe "Api::V1::Comments" do
         expect(response.parsed_body.size).to eq(1)
       end
     end
+
+    context "when using pagination" do
+      before do
+        create_list(:comment, 5, commentable: article)
+      end
+
+      it "doesn't paginate w/o page param" do
+        get api_comments_path(a_id: article.id, per_page: 2), headers: headers
+        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+      end
+
+      it "paginates with page param" do
+        get api_comments_path(a_id: article.id, page: 2, per_page: 2), headers: headers
+        expect(response.parsed_body.size).to eq(2)
+      end
+
+      it "paginates with page param using default per_page" do
+        get api_comments_path(a_id: article.id, page: 1), headers: headers
+        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+        expect(find_root_comment(response)).to include(
+          "created_at" => root_comment.created_at.utc.iso8601,
+        )
+      end
+    end
   end
 
   describe "GET /api/comments/:id" do

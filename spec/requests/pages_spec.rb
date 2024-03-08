@@ -9,12 +9,13 @@ RSpec.describe "Pages" do
       expect(response.body).to include("/page/#{page.slug}")
     end
 
-    it "has proper headline for top-level" do
+    it "has proper headline and classes for top-level" do
       page = create(:page, title: "Edna O'Brien96", is_top_level_path: true)
       get "/#{page.slug}"
       expect(response.body).to include(CGI.escapeHTML(page.title))
       expect(response.body).not_to include("/page/#{page.slug}")
       expect(response.body).to include("stories-show")
+      expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
     context "when json template" do
@@ -42,6 +43,63 @@ RSpec.describe "Pages" do
         expect(response.media_type).to eq("application/json")
         expect(response.body).to include(json_text)
       end
+    end
+  end
+
+  describe "GET /:slug.txt" do
+    it "renders proper text file when template is txt" do
+      page = create(:page, title: "Text page", body_html: "This is a test", template: "txt")
+      get "/#{page.slug}.txt"
+      expect(response.body).to include(page.processed_html)
+      expect(response.media_type).to eq("text/plain")
+    end
+
+    it "renders not found when .txt request does not have txt template" do
+      page = create(:page, title: "Text page", body_html: "This is a test", template: "contained")
+      expect { get "/#{page.slug}.txt" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "GET /slug/slug/slug/etc." do
+    it "renders proper page when slug has one subdirectory" do
+      page = create(:page, slug: "first-slug/second-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has two subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has three subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has four subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug", is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "renders proper page when slug has five subdirectories" do
+      page = create(:page, slug: "first-slug/second-slug/third-slug/fourth-slug/fifth-slug/sixth-slug",
+                           is_top_level_path: true)
+      get "/#{page.slug}"
+      expect(response.body).to include(CGI.escapeHTML(page.title))
+    end
+
+    it "returns not found when five directories, but no page" do
+      # 6+ directories will be a non-valid page, so just further testing routing error
+      expect { get "/heyhey/hey/hey/hey/hey" }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "returns routing error when 7+ directories" do
+      # 6+ directories will be a non-valid page, so just further testing routing error
+      expect { get "/heyhey/hey/hey/hey/hey/hey/hey" }.to raise_error(ActionController::RoutingError)
     end
   end
 

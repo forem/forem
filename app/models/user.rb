@@ -100,6 +100,7 @@ class User < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :segmented_users, dependent: :destroy
   has_many :audience_segments, through: :segmented_users
+  has_many :recommended_articles_lists, dependent: :destroy
 
   # we keep rating votes as they belong to the article, not to the user who viewed it
   has_many :rating_votes, dependent: :nullify
@@ -117,6 +118,7 @@ class User < ApplicationRecord
   has_many :devices, dependent: :delete_all
   # languages that user undestands
   has_many :languages, class_name: "UserLanguage", inverse_of: :user, dependent: :delete_all
+  has_many :user_visit_contexts, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -260,6 +262,10 @@ class User < ApplicationRecord
     find_by(id: Settings::General.mascot_user_id)
   end
 
+  def good_standing_followers_count
+    Follow.non_suspended("User", id).count
+  end
+
   def tag_line
     profile.summary
   end
@@ -277,6 +283,21 @@ class User < ApplicationRecord
     self.remember_created_at ||= Time.now.utc
   end
 
+  def set_initial_roles!
+    # Avoid overwriting roles for users who already exist but are e.g. logging in
+    # through a new identity provider
+    return unless valid? && previously_new_record?
+
+    if Settings::General.waiting_on_first_user
+      add_role(:creator)
+      add_role(:super_admin)
+      add_role(:trusted)
+    elsif Settings::Authentication.limit_new_users?
+      add_role(:limited)
+      # Otherwise just leave the new user in good standing
+    end
+  end
+
   def calculate_score
     # User score is used to mitigate spam by reducing visibility of flagged users
     # It can generally be used as a baseline for affecting certain functionality which
@@ -290,6 +311,7 @@ class User < ApplicationRecord
     # mass re-calculation is needed.
     user_reaction_points = Reaction.user_vomits.where(reactable_id: id).sum(:points)
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
+    calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
   end
 
@@ -430,13 +452,14 @@ class User < ApplicationRecord
     :super_admin?,
     :support_admin?,
     :suspended?,
+    :spam?,
+    :spam_or_suspended?,
     :tag_moderator?,
     :tech_admin?,
     :trusted?,
     :user_subscription_tag_available?,
     :vomited_on?,
     :warned?,
-    :workshop_eligible?,
     to: :authorizer,
   )
   alias suspended suspended?

@@ -21,19 +21,23 @@ module Admin
     # @param search [String, nil]
     # @param roles [Array<String>, nil]
     # @param statuses [Array<String>, nil]
+    # @param ids [Array<Integer>, nil]
     # @param organizations [Array<String>, nil]
     # @param joining_start [String, nil]
     # @param joining_end [String, nil]
     # @param date_format [String]
+    # @param limit [Integer, nil]
     def self.call(relation: User.registered,
                   role: nil,
                   search: nil,
                   roles: [],
                   organizations: [],
                   statuses: [],
+                  ids: [],
                   joining_start: nil,
                   joining_end: nil,
-                  date_format: "DD/MM/YYYY")
+                  date_format: "DD/MM/YYYY",
+                  limit: nil)
       # We are at an interstitial moment where we are exposing both the role and roles param.  We
       # need to favor one or the other.
       if role.presence
@@ -53,11 +57,18 @@ module Admin
       end
 
       relation = search_relation(relation, search) if search.presence
+      relation = filter_ids(relation, ids) if ids.presence
+      relation = relation.limit(limit.to_i) if limit.to_i.positive?
+
       relation.distinct.order(created_at: :desc)
     end
 
     def self.search_relation(relation, search)
       relation.where(SEARCH_CLAUSE, search: "%#{search.strip}%")
+    end
+
+    def self.filter_ids(relation, ids)
+      relation.where(id: ids)
     end
 
     def self.filter_joining_date(relation:, joining_start:, joining_end:, date_format:)

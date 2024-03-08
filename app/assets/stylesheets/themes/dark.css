@@ -83,7 +83,7 @@
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
-  --link-bg-current: var(--base-inverted);
+  --link-bg-current: var(--card-bg);
 
   /* Primary buttons */
   --button-primary-bg: var(--accent-brand-darker);
@@ -278,6 +278,10 @@
   /* Indicators: Default */
   --indicator-bg: rgb(var(--grey-600));
   --indicator-color: rgb(var(--grey-200));
+
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-700));
+  --indicator-subtle-color: rgb(var(--grey-200));  
 
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-700));

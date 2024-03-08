@@ -1,6 +1,6 @@
 <%= form_for(Settings::Community.new,
              url: admin_settings_communities_path,
-             html: { data: { action: "submit->config#updateConfigurationSettings" } }) do |f| %>
+             html: { data: { action: "submit->config#updateConfigurationSettings" }, class: "hidden" }) do |f| %>
   <details class="crayons-card">
     <summary class="crayons-subtitle-2 p-6">Community Content</summary>
     <div class="p-6 pt-0">

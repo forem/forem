@@ -66,7 +66,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         handler.call
 
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.all.pluck(:name).sort)
+        expect(FieldTest::Event.pluck(:name).sort)
           .to match_array([
             goal,
             "user_publishes_post_at_least_two_times_within_two_weeks",
@@ -83,7 +83,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         handler.call
 
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.all.pluck(:name).sort)
+        expect(FieldTest::Event.pluck(:name).sort)
           .to match_array([
             goal,
             "user_publishes_post_at_least_two_times_within_two_weeks",
@@ -246,7 +246,7 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         handler.call
 
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.all.pluck(:name).sort)
+        expect(FieldTest::Event.pluck(:name).sort)
           .to match_array([
             goal,
             "user_creates_article_reaction_on_four_different_days_within_a_week",
@@ -263,8 +263,8 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         handler.call
 
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.all.pluck(:name))
-          .to match_array([goal])
+        expect(FieldTest::Event.pluck(:name))
+          .to contain_exactly(goal)
       end
 
       it "does not record the conversion when their 4 reactions are not within a week" do
@@ -276,8 +276,8 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         handler.call
 
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Event.all.pluck(:name))
-          .to match_array([goal])
+        expect(FieldTest::Event.pluck(:name))
+          .to contain_exactly(goal)
       end
     end
 

@@ -75,8 +75,8 @@ fr:
           subtitle: Actions de modération pour %{user}
           aria_label: Ouvrir les actions d'administration
           icon: Couronne
-        flag: Signaler %{username}
-        unflag: Retirer le signalement de %{username}
+        flag_user: Signaler %{username}
+        unflag_user: Retirer le signalement de %{username}
         how: Comment cela fonctionne-t-il ?
         hidden:
           subtitle: Commentaires cachés
@@ -100,7 +100,7 @@ fr:
           unsuspend_user: Retirer la suspension %{username}
           unsuspend_modal_text: Une fois la suspension levée, %{username} pourra à nouveau commenter et publier des messages.
           unsuspend_modal_button: Soumettre et lever la suspension
-        suspicious: Suspicieux
+        flag: Signaler
         tag:
           subtitle: Ajustements des étiquettes
           add: Ajouter
@@ -140,7 +140,11 @@ fr:
         featured_past_day:
           one: '%{count} des articles de la journée précédente sont mis en avant.'
           other: '%{count} des articles de la journée précédente sont mis en avant.'
-      all: Tous les sujets
+      feed:
+        inbox_filter: Inbox
+        latest_filter: Récent
+        inbox_html: <strong>Inbox</strong> est une liste chronologique des publications qui n'ont pas encore été examinées par plusieurs modérateurs ou membres.
+        latest_html: <strong>Récent</strong> montre tous les posts dans l'ordre chronologique, indépendamment de s'ils ont été examinés ou non.
       article:
         approved: Approuvée
         author_id: Identifiant de l'auteur
@@ -176,6 +180,8 @@ fr:
         tag: Guide de modération des étiquettes
         terms_and_conditions: Conditions générales d'utilisation
         trusted: Guide de l'utilisateur de confiance
+        following_tags: Following tags
+        moderating_tags: Moderating tags
       author: Auteur
       comments:
         view_comment: Voir le commentaire
@@ -196,3 +202,10 @@ fr:
         no_flags: L'article n'a pas de drapeaux.
         no_quality_reactions: L'article n'a pas de réactions de qualité par des utilisateurs de confiance
         title: Actions privilégiées
+      members:
+        all: Tous les membres
+        new: Nouveaux membres
+        established: Membres établis
+        filter: Filtrer par membres
+        label: 'Membres'
+

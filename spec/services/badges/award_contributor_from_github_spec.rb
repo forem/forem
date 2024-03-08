@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Badges::AwardContributorFromGithub, type: :service, vcr: true do
+RSpec.describe Badges::AwardContributorFromGithub, :vcr, type: :service do
   let(:badge) { create(:badge, title: "DEV Contributor") }
 
   before do

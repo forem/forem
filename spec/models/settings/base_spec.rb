@@ -30,6 +30,8 @@ RSpec.describe Settings::Base do
       setting :float_item, type: :float, default: 7
       setting :big_decimal_item, type: :big_decimal, default: 9
       setting :default_value_with_block, type: :integer, default: -> { 1 + 1 }
+      setting :some_markdown, type: :markdown
+      setting :some_markdown_processed_html
     end
   end
 
@@ -49,7 +51,7 @@ RSpec.describe Settings::Base do
 
   describe ".keys" do
     it "returns all the defined settings", :aggregate_failures do
-      expect(TestSetting.keys.size).to eq 10
+      expect(TestSetting.keys.size).to eq 12
       expect(TestSetting.keys).to include("host")
       expect(TestSetting.keys).to include("default_value_with_block")
     end
@@ -131,6 +133,19 @@ RSpec.describe Settings::Base do
     it "coerces values to big decimals" do
       TestSetting.big_decimal_item = 5
       expect(TestSetting.big_decimal_item).to be_an_instance_of(BigDecimal)
+    end
+
+    it "can be coerced from markdown to parsed_html" do
+      some_markdown = <<~HEREDOC
+        Hi, Hello!
+
+        This is **markdown**.
+      HEREDOC
+      TestSetting.some_markdown = some_markdown
+
+      processed_html = "<p>Hi, Hello!</p>\n\n<p>This is <strong>markdown</strong>.</p>\n\n"
+      expect(TestSetting.some_markdown_processed_html).to eq(processed_html)
+      expect(TestSetting.some_markdown).to eq(some_markdown)
     end
   end
 

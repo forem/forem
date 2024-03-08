@@ -5,7 +5,7 @@
 
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
-  <% if @user.score.negative? || @user.suspended? %>
+  <% if @user.score.negative? || @user.spam_or_suspended? %>
     <meta name="robots" content="noindex">
     <meta name="robots" content="nofollow">
   <% end %>
@@ -64,7 +64,7 @@
             </h1>
           </div>
 
-          <p class="fs-base m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
+          <p class="fs-base profile-header__bio m:fs-l color-base-90 mb-4 mx-auto max-w-100 m:max-w-75"><%= @user.tag_line.presence || [t("views.users.empty")].sample %></p>
 
           <div class="profile-header__meta">
             <% if @user.profile.location.present? %>
@@ -150,8 +150,8 @@
 </div>
 </main>
 
-<%= javascript_packs_with_chunks_tag "storiesList", "followButtons",
-                                     "feedPreviewCards", "hideBookmarkButtons",
-                                     "profileDropdown", "users/profilePage",
-                                     "localizeArticleDates", "asyncUserStatusCheck",
-                                     defer: true %>
+<%= javascript_include_tag "storiesList", "followButtons",
+                           "feedPreviewCards", "hideBookmarkButtons",
+                           "profileDropdown", "users/profilePage",
+                           "localizeArticleDates", "asyncUserStatusCheck",
+                           defer: true %>

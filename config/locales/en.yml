@@ -149,6 +149,7 @@ en:
     menu:
       aria_label: Toggle dropdown menu
       icon: Dropdown menu
+      close: Close
       manage_preferences: Manage preferences
       what_is_a_billboard: What's a billboard?
       report_billboard: Report billboard

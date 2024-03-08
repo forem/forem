@@ -74,7 +74,7 @@ describe('Manage User Roles', () => {
         verifyAndDismissFlashMessage('User has been updated', 'flash-success');
 
         cy.findByRole('button', {
-          name: "Suspended You can't remove this role.",
+          name: 'Remove role: Suspended',
         }).should('exist');
         checkUserStatus('Suspended');
 

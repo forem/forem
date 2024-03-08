@@ -69,18 +69,17 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
-        })
-          .clear()
-          .type('something');
+        }).as('textbox');
+        cy.get('@textbox').clear();
+        cy.get('@textbox').type('something');
         // Indicator should not be shown while open
         cy.get('@searchButton')
           .findByTestId('search-indicator')
           .should('not.be.visible');
 
         // Collapse the filter field; indicator should now be shown
-        cy.get('@searchButton')
-          .click()
-          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@searchButton').click();
+        cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.get('@searchButton')
           .findByTestId('search-indicator')
           .should('be.visible');

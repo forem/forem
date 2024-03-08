@@ -4,7 +4,6 @@ class Role < ApplicationRecord
     codeland_admin
     comment_suspended
     creator
-    mod_relations_admin
     super_moderator
     podcast_admin
     restricted_liquid_tag
@@ -12,11 +11,11 @@ class Role < ApplicationRecord
     super_admin
     support_admin
     suspended
+    spam
     tag_moderator
     tech_admin
     trusted
     warned
-    workshop_pass
     limited
   ].freeze
 

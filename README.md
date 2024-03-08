@@ -5,8 +5,11 @@
 </div>
 <br>
 <p align="center">
-  <a href="https://github.com/forem/forem/actions/workflows/ci-cd.yml">
-    <img src="https://github.com/forem/forem/actions/workflows/ci-cd.yml/badge.svg" alt="Build Status">
+  <a href="https://github.com/forem/forem/actions/workflows/ci.yml">
+    <img src="https://github.com/forem/forem/actions/workflows/ci.yml/badge.svg" alt="Build Status">
+  </a>
+  <a href="https://github.com/forem/forem/actions/workflows/cd.yml">
+    <img src="https://github.com/forem/forem/actions/workflows/cd.yml/badge.svg" alt="Build Status">
   </a>
   <img src="https://img.shields.io/github/commit-activity/w/forem/forem" alt="GitHub commit activity">
   <a href="https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22">
@@ -44,12 +47,8 @@ within our community. ❤️
 - [Community](#community)
 - [Contributing](#contributing)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-    - [Local](#local)
-    - [Containers](#containers)
   - [Installation Documentation](#installation-documentation)
 - [Developer Documentation](#developer-documentation)
-- [Core team](#core-team)
 - [Vulnerability disclosure](#vulnerability-disclosure)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -93,21 +92,6 @@ Please see our installation guides:
 ## Developer Documentation
 
 [Check out our dedicated docs page for more technical documentation](https://developers.forem.com).
-
-## Core team
-
-- [@benhalpern](https://dev.to/ben)
-- [@jessleenyc](https://dev.to/jess)
-- [@peterkimfrank](https://dev.to/peter)
-- [@maestromac](https://dev.to/maestromac)
-- [@lightalloy](https://dev.to/lightalloy)
-- [@ridhwana](https://dev.to/ridhwana)
-- [@rt4914](https://dev.to/rt4914)
-- [@jaw6](https://dev.to/jaw6)
-- [@lboogie2004](https://dev.to/lboogie2004)
-- [@klardotsh](https://dev.to/klardotsh)
-- [@filleduchaos](https://dev.to/filleduchaos)
-- [@dukegreene](https://dev.to/dukegreene)
 
 ## Vulnerability disclosure
 

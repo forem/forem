@@ -115,7 +115,7 @@ module Users
     end
 
     def conditionally_resave_articles
-      return unless resave_articles? && !@user.suspended?
+      return unless resave_articles? && !@user.spam_or_suspended?
 
       Users::ResaveArticlesWorker.perform_async(@user.id)
     end

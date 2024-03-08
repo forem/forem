@@ -19,6 +19,48 @@ RSpec.describe Authentication::Authenticator, type: :service do
     end
   end
 
+  shared_examples "preserves existing user roles" do
+    it "does not make any changes to roles if the user already exists" do
+      existing_user = create(:user, :trusted)
+      auth_payload.info.email = existing_user.email
+
+      expect do
+        user = service.call
+        expect(user).to eq(existing_user)
+        expect(user).to be_trusted
+        expect(user).not_to be_limited
+      end.not_to change(existing_user.roles, :count)
+    end
+  end
+
+  shared_examples "appropriate new user status" do
+    it "registers a user in good standing by default" do
+      user = service.call
+
+      expect(user.registered).to be(true)
+      expect(user.registered_at).not_to be_nil
+      expect(user).not_to be_limited
+    end
+
+    include_examples "preserves existing user roles"
+
+    context "when new user status admin setting is limited" do
+      before do
+        allow(Settings::Authentication).to receive(:new_user_status).and_return("limited")
+      end
+
+      it "registers the user as limited" do
+        user = service.call
+
+        expect(user.registered).to be(true)
+        expect(user.registered_at).not_to be_nil
+        expect(user).to be_limited
+      end
+
+      include_examples "preserves existing user roles"
+    end
+  end
+
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do
       auth_payload = OmniAuth.config.mock_auth[:github].merge(provider: "okta")
@@ -33,6 +75,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
     let!(:service) { described_class.new(auth_payload) }
 
     include_context "spam handling"
+
+    include_context "appropriate new user status"
 
     describe "new user" do
       it "creates a new user" do
@@ -229,6 +273,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
     include_context "spam handling"
 
+    include_context "appropriate new user status"
+
     describe "new user" do
       it "creates a new user" do
         expect do
@@ -422,6 +468,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
     include_context "spam handling"
 
+    include_context "appropriate new user status"
+
     describe "new user" do
       it "creates a new user" do
         expect do
@@ -506,6 +554,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
     let!(:service) { described_class.new(auth_payload) }
 
     include_context "spam handling"
+
+    include_context "appropriate new user status"
 
     describe "new user" do
       it "creates a new user" do
@@ -684,6 +734,8 @@ RSpec.describe Authentication::Authenticator, type: :service do
     let!(:service) { described_class.new(auth_payload) }
 
     include_context "spam handling"
+
+    include_context "appropriate new user status"
 
     describe "new user" do
       it "creates a new user" do

@@ -4,7 +4,7 @@ RSpec.describe "Billboards" do
   let(:user)    { create(:user) }
   let(:article) { create(:article, user: user) }
 
-  let(:max_age) { 15.minutes.to_i }
+  let(:max_age) { 3.minutes.to_i }
   let(:stale_if_error) { 26_400 }
 
   def create_billboard(**options)
@@ -141,6 +141,129 @@ RSpec.describe "Billboards" do
           "Cache-Control" => "public, no-cache",
           "Surrogate-Control" => "max-age=#{max_age}, stale-if-error=#{stale_if_error}",
         )
+      end
+    end
+
+    context "when billboard template is authorship_box" do
+      before do
+        billboard.update_column(:template, "authorship_box")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "crayons-sponsorship__header relative"
+      end
+
+      it "includes custom_display_label if set" do
+        billboard.update_column(:custom_display_label, "My great custom label")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).to include "My great custom label"
+      end
+    end
+
+    context "when billboard template is plain" do
+      before do
+        billboard.update_column(:template, "plain")
+      end
+
+      it "includes authorship box html" do
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
+        expect(response.body).not_to include "crayons-sponsorship__header relative"
+      end
+    end
+
+    context "when the placement area is post_fixed_bottom" do
+      it "contains close button" do
+        billboard = create_billboard(placement_area: "post_fixed_bottom")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is feed_first" do
+      it "includes sponsorship-close-trigger when there is a dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first", dismissal_sku: "DISMISS_ME")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+
+      it "does not include sponsorship-close-trigger when there is no dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is post_sidebar" do
+      it "does not contain close button" do
+        billboard = create_billboard(placement_area: "post_sidebar")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when requesting test billboard" do
+      let(:admin) { create(:user, :admin) }
+      let!(:test_billboard) { create_billboard(id: 123, placement_area: "post_sidebar", approved: false) }
+
+      before do
+        sign_in admin
+      end
+
+      it "returns the test billboard when proper parameters are provided" do
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(test_billboard.processed_html)
+      end
+
+      it "does not return the test billboard when parameters are missing" do
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(test_billboard.processed_html)
+      end
+
+      it "does return live billboards for non-admin contexts" do
+        # Create a few live billboards which should not be returned
+        create_list(:billboard, 8, placement_area: "post_sidebar", approved: true, published: true)
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(billboard.processed_html)
+      end
+
+      it "does not return the test billboard for non-admin users" do
+        sign_out admin
+        sign_in create(:user)
+
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: test_billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).not_to include(test_billboard.processed_html)
       end
     end
   end

@@ -13,13 +13,15 @@ describe('User Update Settings Profile', () => {
     const summary = 'This is my story...';
     const location = 'New York City';
 
-    cy.findByLabelText(/^Website URL$/i)
-      .clear()
-      .type(websiteURL);
-    cy.findByLabelText(/^Bio$/i).clear().type(summary);
-    cy.findByLabelText(/^Location$/i)
-      .clear()
-      .type(location);
+    cy.findByLabelText(/^Website URL$/i).as('url');
+    cy.get('@url').clear();
+    cy.get('@url').type(websiteURL);
+    cy.findByLabelText(/^Bio$/i).as('bio');
+    cy.get('@bio').clear();
+    cy.get('@bio').type(summary);
+    cy.findByLabelText(/^Location$/i).as('location');
+    cy.get('@location').clear();
+    cy.get('@location').type(location);
 
     cy.findByText(/^Save Profile Information$/i).click();
 

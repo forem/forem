@@ -45,9 +45,9 @@ describe('Creator Settings Page', () => {
       .should('be.visible');
 
     cy.get('@joinCommunity').within(() => {
-      cy.findByRole('radio', { name: /everyone/i })
-        .check()
-        .should('be.checked');
+      cy.findByRole('radio', { name: /everyone/i }).as('radio');
+      cy.get('@radio').check();
+      cy.get('@radio').should('be.checked');
 
       cy.findByRole('radio', { name: /invite only/i }).should('not.be.checked');
     });
@@ -60,9 +60,9 @@ describe('Creator Settings Page', () => {
       .should('be.visible');
 
     cy.get('@viewCommunity').within(() => {
-      cy.findByRole('radio', { name: /members only/i })
-        .check()
-        .should('be.checked');
+      cy.findByRole('radio', { name: /members only/i }).as('radio');
+      cy.get('@radio').check();
+      cy.get('@radio').should('be.checked');
 
       cy.findByRole('radio', { name: /everyone/i }).should('not.be.checked');
     });
@@ -164,10 +164,10 @@ describe('Creator Settings Page', () => {
         rgbColor,
       );
 
-      cy.findAllByRole('radio', { name: /members only/i })
-        .check()
-        .should('have.css', 'background-color', rgbColor)
-        .should('have.css', 'border-color', rgbColor);
+      cy.findAllByRole('radio', { name: /members only/i }).as('radio');
+      cy.get('@radio').check();
+      cy.get('@radio').should('have.css', 'background-color', rgbColor);
+      cy.get('@radio').should('have.css', 'border-color', rgbColor);
 
       cy.findByRole('link', { name: /Forem Admin Guide/i }).should(
         'have.css',
@@ -175,11 +175,11 @@ describe('Creator Settings Page', () => {
         rgbColor,
       );
 
-      cy.findByRole('textbox', { name: /community name/i })
-        .clear()
-        .focus()
-        .type('Climbing Life')
-        .should('have.css', 'border-color', rgbColor);
+      cy.findByRole('textbox', { name: /community name/i }).as('textbox');
+      cy.get('@textbox').clear();
+      cy.get('@textbox').focus();
+      cy.get('@textbox').type('Climbing Life');
+      cy.get('@textbox').should('have.css', 'border-color', rgbColor);
     });
   });
 });

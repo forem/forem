@@ -26,7 +26,6 @@ class AdminMenu
 
     scope :customization, "tools-line", [
       item(name: "config"),
-      item(name: "html variants", controller: "html_variants"),
       item(name: "billboards"),
       item(name: "navigation links"),
       item(name: "pages"),

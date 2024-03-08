@@ -11,23 +11,24 @@
       <a href="<%= admin_reports_path(state: @feedback_type, status: "Invalid") %>" class="crayons-navigation__item <%= "crayons-navigation__item--current" if @status == "Invalid" %>">Invalid</a>
   </ul>
 
-  <div id="vomitReactions">
-    <details class="crayons-card w-100">
+  <div id="vomitReactions" class="mt-2">
+    <details class="crayons-card w-100 cursor-pointer">
       <summary class="crayons-subtitle-2 p-5" id="vomitReactionsHeader">
         Flag Reactions
+        <% if @status == "Open" %>
+          (<%= @vomits.size %>)
+        <% end %>
       </summary>
       <div id="vomitReactionsBodyContainer" aria-labelledby="vomitReactionsHeader" data-parent="#vomitReactions">
         <div class="crayons-card__body" style="overflow: scroll; max-height: 500px;">
           <% @vomits.each do |reaction| %>
-            <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-
             <div
               class="flex justify-between"
               data-controller="reaction"
               data-reaction-id-value="<%= reaction.id %>"
               data-reaction-url-value="<%= admin_reaction_path(reaction.id) %>">
               <span>
-                <%= crayons_icon_tag("twemoji/suspicious", native: true, class: "mr-1", aria_hidden: true) %> <a href="<%= reaction.user.path %>" target="_blank" rel="noopener">@<%= reaction.user.username %></a>
+                <%= crayons_icon_tag("twemoji/flag", native: true, class: "mr-1", aria_hidden: true) %> <a href="<%= reaction.user.path %>" target="_blank" rel="noopener">@<%= reaction.user.username %></a>
                 <% if reaction.user_id == Settings::General.mascot_user_id %>
                   <strong>(auto-generated)</strong>
                 <% end %>
@@ -35,7 +36,7 @@
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>
                 <a href="<%= reaction.reactable.path %>" target="_blank" rel="noopener"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
-                <% if reaction.reactable_type == "User" && reaction.reactable.suspended? %>
+                <% if reaction.reactable_type == "User" && reaction.reactable.spam_or_suspended? %>
                   <span class="c-indicator c-indicator--danger">Suspended</span>
                 <% end %>
                 <% if reaction.reactable_type == "User" && reaction.reactable.vomited_on? %>

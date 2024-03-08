@@ -1,9 +1,14 @@
 import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 function openUserOptions(callback) {
-  cy.findByRole('button', { name: 'Options' })
-    .should('have.attr', 'aria-haspopup', 'true')
-    .should('have.attr', 'aria-expanded', 'false')
+  cy.findByRole('button', { name: 'Options' }).as('options');
+  cy.get('@options').should('have.attr', 'aria-haspopup', 'true');
+  cy.get('@options').should('have.attr', 'aria-expanded', 'false');
+  // Can't find a better way to get to the aria-controls attribute at the moment
+  // Might be possible if we use pipe(click) with the helper method used in AdjustPostTags spec,
+  // instead of the .then syntax... but skipping the linter may be safest of all.
+  /* eslint-disable-next-line cypress/unsafe-to-chain-command */
+  cy.get('@options')
     .click()
     .then(([button]) => {
       expect(button.getAttribute('aria-expanded')).to.equal('true');

@@ -46,3 +46,18 @@
     line-height: var(--lh-tight);
   }
 }
+
+.disabled-info-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.disabled-info-icon {
+  color: #666666;
+  margin-right: 10px;
+}
+
+.disabled-info-text {
+  color: #666666;
+  text-align: left;
+}

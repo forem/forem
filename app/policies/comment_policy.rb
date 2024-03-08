@@ -1,6 +1,6 @@
 class CommentPolicy < ApplicationPolicy
   def edit?
-    return false if user_suspended?
+    return false if user.spam_or_suspended?
 
     user_author?
   end
@@ -10,7 +10,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def create?
-    !user_suspended? && !user.comment_suspended?
+    !user.spam_or_suspended? && !user.comment_suspended?
   end
 
   alias new? create?
@@ -40,8 +40,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    # NOTE: Here, when we say "moderator", we mean "tag_moderator"
-    user_moderator? || user_any_admin?
+    Authorizer.for(user: user).accesses_mod_response_templates?
   end
 
   def hide?

@@ -1,7 +1,7 @@
 <section class="crayons-card p-7 m:basis-1-3">
   <h2 class="crayons-subtitle-1 mb-4">Health check</h2>
 
-  <a href="<%= admin_privileged_reactions_path %>" class="flex flex-col c-link c-link--block -mx-4">
+  <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
     <strong class="fs-xl"><%= @data_counts.flags_count %></strong>
     <span>Flags raised by <span class="fw-bold">Moderators</span></span>
     <small class="opacity-75">
@@ -14,10 +14,5 @@
   <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
     <strong class="fs-xl"><%= @data_counts.open_abuse_reports_count %></strong>
     <span><%= "Report".pluralize(@data_counts.open_abuse_reports_count) %> submitted by <span class="fw-bold">Users</span></span>
-  </a>
-
-  <a href="<%= admin_feedback_messages_path %>" class="flex flex-col c-link c-link--block -mx-4">
-    <strong class="fs-xl"><%= @data_counts.possible_spam_users_count %></strong>
-    <span>Potential spam/abuse users</span>
   </a>
 </section>

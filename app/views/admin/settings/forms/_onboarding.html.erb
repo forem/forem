@@ -14,6 +14,37 @@
                            value: Settings::General.suggested_tags.join(","),
                            placeholder: Constants::Settings::General.details[:suggested_tags][:placeholder] %>
         </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label :newsletter_step_heading %>
+          <%= admin_config_description Constants::Settings::General.details[:onboarding_newsletter_content][:description] %>
+          <%= f.text_area :onboarding_newsletter_content,
+                          class: "crayons-textfield",
+                          value: Settings::General.onboarding_newsletter_content,
+                          placeholder: Constants::Settings::General.details[:onboarding_newsletter_content][:placeholder] %>
+        </div>
+
+        <div class="crayons-field">
+          <%= admin_config_label Constants::Settings::General.details[:onboarding_newsletter_opt_in_head][:description] %>
+          <%= f.text_field :onboarding_newsletter_opt_in_head,
+                           class: "crayons-textfield",
+                           value: Settings::General.onboarding_newsletter_opt_in_head,
+                           placeholder: Constants::Settings::General.details[:onboarding_newsletter_opt_in_head][:placeholder] %>
+
+          <%= admin_config_label Constants::Settings::General.details[:onboarding_newsletter_opt_in_subhead][:description] %>
+          <%= f.text_field :onboarding_newsletter_opt_in_subhead,
+                           class: "crayons-textfield",
+                           value: Settings::General.onboarding_newsletter_opt_in_subhead,
+                           placeholder: Constants::Settings::General.details[:onboarding_newsletter_opt_in_subhead][:placeholder] %>
+          <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+            <%= admin_config_label Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:description] %>
+            <%= f.text_field :geos_with_allowed_default_email_opt_in,
+                             class: "crayons-textfield",
+                             value: Settings::General.geos_with_allowed_default_email_opt_in,
+                             placeholder: Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:placeholder] %>
+          <% end %>
+       </div>
+
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

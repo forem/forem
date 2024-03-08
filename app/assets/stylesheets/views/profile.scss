@@ -45,6 +45,10 @@
     padding: var(--padding);
   }
 
+  &__bio {
+    white-space: pre-wrap;
+  }
+
   &__meta {
     font-size: var(--fs-s);
     color: var(--base-60);

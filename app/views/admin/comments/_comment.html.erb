@@ -26,8 +26,8 @@
           </span>
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.vomit") %>">
-            <%= crayons_icon_tag("twemoji/suspicious", native: true, width: 16, height: 16) %>
-            <span class="fs-s fw-medium lh-base"><%= (@countable_vomits&.dig(comment.id) || 0) %></span>
+            <%= crayons_icon_tag("twemoji/flag", native: true, width: 16, height: 16) %>
+            <span class="fs-s fw-medium lh-base"><%= @countable_vomits&.dig(comment.id) || 0 %></span>
           </span>
 
           <span class="crayons-card crayons-card--secondary px-3 py-1 ml-3 flex gap-2 items-center" title="<%= t("views.moderations.actions.score") %>">

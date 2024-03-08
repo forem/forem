@@ -8,7 +8,7 @@ fr:
     badge_achievements_controller:
       deleted: La réalisation du badge a été supprimée !
       rewarded: Les badges sont en train d'être récompensés. La tâche sera bientôt terminée.
-      congrats: Félicitations !
+      congrats: Félicitations pour votre succès! 🎉 Et merci d'être une partie si essentielle de %{community} !
       award: Veuillez choisir un badge à décerner
       wrong: Quelque chose a mal fonctionné.
     badges_controller:

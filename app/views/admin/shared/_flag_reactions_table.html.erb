@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
+<%= javascript_include_tag "admin/shared/flagReactionItemDropdownButton", defer: true %>
 <% if vomit_reactions.present? %>
   <% vomit_reactions.each do |vomit_reaction| %>
     <%= render "admin/shared/flag_reaction_item", vomit_reaction: vomit_reaction, text_section: text_section %>

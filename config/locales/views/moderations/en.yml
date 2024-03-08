@@ -75,8 +75,8 @@ en:
           subtitle: Moderating actions for %{user}
           aria_label: Open admin actions
           icon: Crown
-        flag: Flag %{username}
-        unflag: Unflag %{username}
+        flag_user: Flag %{username}
+        unflag_user: Unflag %{username}
         how: How does this work?
         hidden:
           subtitle: Hidden Comments
@@ -101,7 +101,7 @@ en:
           unsuspend_user: Unsuspend %{username}
           unsuspend_modal_text: Once unsuspended, %{username} will be able to comment and publish posts again.
           unsuspend_modal_button: Submit & Unsuspend
-        suspicious: Suspicious
+        flag: Flag
         tag:
           subtitle: Tag Adjustments
           add: Add
@@ -141,7 +141,11 @@ en:
         featured_past_day:
           one: '%{count} post from the past day is featured.'
           other: '%{count} posts from the past day are featured.'
-      all: All topics
+      feed:
+        inbox_filter: Inbox
+        latest_filter: Latest
+        inbox_html: <strong>Inbox</strong> is a chronological list of posts which have not yet been scrutinized by multiple mods or members.
+        latest_html: <strong>Latest</strong> shows all posts in chronological order regardless of whether they have been scrutinized. 
       article:
         approved: Approved
         author_id: Author ID
@@ -164,7 +168,7 @@ en:
         user_warned: User warned
         view_details: View details
       aside:
-        all: All topics
+        all: All tags
         code_of_conduct: Code of Conduct
         external: External link
         feedback:
@@ -177,6 +181,8 @@ en:
         tag: Tag Moderation Guide
         terms_and_conditions: Terms & Conditions
         trusted: Trusted User Guide
+        following_tags: Following tags
+        moderating_tags: Moderating tags
       author: Author
       comments:
         view_comment: View Comment
@@ -197,3 +203,9 @@ en:
         no_flags: Article has no flags.
         no_quality_reactions: Article has no quality reactions by trusted users.
         title: Moderator actions
+      members:
+        all: All
+        new: New
+        established: Established
+        filter: Filter by Members
+        label: 'Members'

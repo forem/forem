@@ -1,8 +1,12 @@
 function openOptionsMenu(callback) {
-  cy.findAllByRole('button', { name: 'Options' })
-    .first()
-    .should('have.attr', 'aria-haspopup', 'true')
-    .should('have.attr', 'aria-expanded', 'false')
+  cy.findAllByRole('button', { name: 'Options' }).first().as('option');
+  cy.get('@option').should('have.attr', 'aria-haspopup', 'true');
+  cy.get('@option').should('have.attr', 'aria-expanded', 'false');
+  // Can't find a better way to get to the aria-controls attribute at the moment
+  // Might be possible if we use pipe(click) with the helper method used in AdjustPostTags spec,
+  // instead of the .then syntax... but skipping the linter may be safest of all.
+  /* eslint-disable-next-line cypress/unsafe-to-chain-command */
+  cy.get('@option')
     .click()
     .then(([button]) => {
       expect(button.getAttribute('aria-expanded')).to.equal('true');

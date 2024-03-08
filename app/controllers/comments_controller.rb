@@ -16,6 +16,13 @@ class CommentsController < ApplicationController
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
+    if @root_comment
+      # 404 for all low-quality for not signed in
+      not_found if @root_comment.score < Comment::LOW_QUALITY_THRESHOLD && !user_signed_in?
+      # 404 only for < -400 w/o children for signed in
+      not_found if @root_comment.score < Comment::HIDE_THRESHOLD && !@root_comment.has_children?
+    end
+
     if @podcast
       @user = @podcast
       @commentable = @user.podcast_episodes.find_by(slug: params[:slug]) if @user.podcast_episodes
@@ -91,7 +98,7 @@ class CommentsController < ApplicationController
     return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
-    authorize response_template, :moderator_create?
+    authorize response_template, :use_template_for_moderator_comment?
 
     moderator = User.find(Settings::General.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
@@ -187,14 +194,8 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      if FeatureFlag.enabled?(:consistent_rendering, FeatureFlag::Actor[current_user])
-        renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
-        processed_html = renderer.process.processed_html
-      else
-        fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
-        parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
-        processed_html = parsed_markdown.finalize
-      end
+      renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
+      processed_html = renderer.process.processed_html
     rescue StandardError => e
       processed_html = I18n.t("comments_controller.markdown_html", error: e)
     end
@@ -223,7 +224,7 @@ class CommentsController < ApplicationController
     if success
       @comment&.commentable&.update_column(:any_comments_hidden, true)
       if params[:hide_children] == "1"
-        @comment.descendants.includes(:user, :commentable).each do |c|
+        @comment.descendants.includes(:user, :commentable).find_each do |c|
           c.update(hidden_by_commentable_user: true)
         end
       end

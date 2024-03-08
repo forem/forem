@@ -1,10 +1,12 @@
 class ProfileImageUploader < BaseUploader
+  MAX_FILE_SIZE = 8.megabytes
+
   def filename
     "#{secure_token}.#{file.extension}" if original_filename.present?
   end
 
   def size_range
-    1..(2.megabytes)
+    1..MAX_FILE_SIZE
   end
 
   protected

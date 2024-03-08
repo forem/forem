@@ -29,9 +29,12 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role(:workshop_pass)
       remove_mod_roles
       remove_tag_moderator_role
+    end
+
+    def remove_notifications
+      Notifications::RemoveBySpammerWorker.perform_async(user.id)
     end
 
     def remove_mod_roles
@@ -58,6 +61,7 @@ module Moderator
       )
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def handle_user_status(role, note)
       case role
       when "Admin"
@@ -70,6 +74,10 @@ module Moderator
       when "Suspended" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
+      when "Spam"
+        user.add_role(:spam)
+        remove_privileges
+        remove_notifications
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
@@ -95,7 +103,11 @@ module Moderator
         warned
       end
       create_note(role, note)
+
+      user.articles.published.find_each(&:async_score_calc)
+      user.comments.find_each(&:calculate_score)
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def assign_elevated_role_to_user(user, role)
       check_super_admin
@@ -130,12 +142,15 @@ module Moderator
 
     def warned
       user.add_role(:warned)
-      user.remove_role(:suspended)
+      user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       remove_privileges
     end
 
     def remove_negative_roles
+      user.remove_role(:limited) if user.limited?
       user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end

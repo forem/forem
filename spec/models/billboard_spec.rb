@@ -5,8 +5,6 @@ RSpec.describe Billboard do
   let(:billboard) { build(:billboard, organization: nil) }
   let(:audience_segment) { create(:audience_segment) }
 
-  before { allow(FeatureFlag).to receive(:enabled?).with(:consistent_rendering, any_args).and_return(true) }
-
   it_behaves_like "Taggable"
 
   describe "validations" do
@@ -136,6 +134,28 @@ RSpec.describe Billboard do
     end
   end
 
+  context "when render_mode is set to raw" do
+    it "outputs processed html that matches the body input" do
+      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
+      raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
+      expect(raw_billboard.processed_html).to eq raw_input
+    end
+
+    it "still processes images in raw mode" do
+      raw_input = "<div class=\"bb\"><img src=\"https://dummyimage.com/100x100\" /></div>"
+      raw_billboard = create(:billboard, body_markdown: raw_input, render_mode: "raw")
+      expect(raw_billboard.processed_html).to include "dummyimage.com/100x100\" width=\"\" height=\"\" loading=\"lazy\""
+    end
+  end
+
+  context "when render_mode is not set to raw" do
+    it "outputs processed html that sanitizes raw html as if it were markdown" do
+      raw_input = "<style>.bb { color: red }</style><div class=\"bb\">This is a raw div</div>"
+      raw_billboard = create(:billboard, body_markdown: raw_input) # default render mode
+      expect(raw_billboard.processed_html).to eq "<p>.bb { color: red }</p>This is a raw div"
+    end
+  end
+
   context "when callbacks are triggered before save" do
     before { billboard.save! }
 
@@ -176,7 +196,7 @@ RSpec.describe Billboard do
       options = { http_header: { "User-Agent" => "DEV(local) (http://forem.test)" }, timeout: 10 }
       expect(FastImage).to have_received(:size).with(image_url, options)
       # width is billboard.prefix_width
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
       # Images::Optimizer.call(source, width: width)
     end
 
@@ -186,7 +206,7 @@ RSpec.describe Billboard do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "post_sidebar")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::SIDEBAR_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::SIDEBAR_WIDTH, quality: 100)
     end
 
     it "uses post width for feed location" do
@@ -195,7 +215,7 @@ RSpec.describe Billboard do
       allow(Images::Optimizer).to receive(:call).and_return(image_url)
       image_md = "![Image description](#{image_url})<p style='margin-top:100px'>Hello <em>hey</em> Hey hey</p>"
       create(:billboard, body_markdown: image_md, placement_area: "feed_second")
-      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH)
+      expect(Images::Optimizer).to have_received(:call).with(image_url, width: Billboard::POST_WIDTH, quality: 100)
     end
 
     it "keeps the same processed_html if markdown was not changed" do
@@ -533,36 +553,79 @@ RSpec.describe Billboard do
   end
 
   describe ".weighted_random_selection" do
-    it "samples with weights correctly" do
-      described_class.delete_all
-      bb1 = create(:billboard, weight: 5)
-      bb2 = create(:billboard, weight: 1)
-      bb3 = create(:billboard, weight: 1)
-      bb4 = create(:billboard, weight: 2)
-      bb5 = create(:billboard, weight: 1)
+    context "when no target_article_id is provided" do
+      it "samples with weights correctly" do
+        described_class.delete_all
+        bb1 = create(:billboard, weight: 5)
+        bb2 = create(:billboard, weight: 1)
+        bb3 = create(:billboard, weight: 1)
+        bb4 = create(:billboard, weight: 2)
+        bb5 = create(:billboard, weight: 1)
 
-      total_weight = 5 + 1 + 1 + 2 + 1 # 10
-      expected_probabilities = {
-        bb1.id => 5.0 / total_weight,
-        bb2.id => 1.0 / total_weight,
-        bb3.id => 1.0 / total_weight,
-        bb4.id => 2.0 / total_weight,
-        bb5.id => 1.0 / total_weight
-      }
+        total_weight = 5 + 1 + 1 + 2 + 1 # 10
+        expected_probabilities = {
+          bb1.id => 5.0 / total_weight,
+          bb2.id => 1.0 / total_weight,
+          bb3.id => 1.0 / total_weight,
+          bb4.id => 2.0 / total_weight,
+          bb5.id => 1.0 / total_weight
+        }
 
-      counts = Hash.new(0)
-      num_trials = 5_000
+        counts = Hash.new(0)
+        num_trials = 5_000
 
-      num_trials.times do
-        id = described_class.weighted_random_selection(described_class.all).id
-        counts[id] += 1
+        num_trials.times do
+          id = described_class.weighted_random_selection(described_class.all).id
+          counts[id] += 1
+        end
+
+        counts.each do |id, count|
+          observed_probability = count.to_f / num_trials
+          expected_probability = expected_probabilities[id]
+
+          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        end
       end
+    end
 
-      counts.each do |id, count|
-        observed_probability = count.to_f / num_trials
-        expected_probability = expected_probabilities[id]
+    context "when a target_article_id is provided" do
+      it "favors records containing the target_article_id" do
+        allow(FeatureFlag).to receive(:enabled?).with(:article_id_adjusted_weight).and_return(true)
+        described_class.delete_all
+        target_article_id = 123
+        favored_weight_multiplier = 10
 
-        expect(observed_probability).to be_within(0.025).of(expected_probability)
+        # Create billboards with different weights and article_ids
+        bb1 = create(:billboard, weight: 5, preferred_article_ids: [target_article_id])
+        bb2 = create(:billboard, weight: 1, preferred_article_ids: [])
+        bb3 = create(:billboard, weight: 1, preferred_article_ids: [target_article_id])
+        bb4 = create(:billboard, weight: 2, preferred_article_ids: [])
+        bb5 = create(:billboard, weight: 1, preferred_article_ids: [])
+
+        # Adjusted total weight accounting for the favored records
+        total_weight = (5 * favored_weight_multiplier) + 1 + (1 * favored_weight_multiplier) + 2 + 1
+        expected_probabilities = {
+          bb1.id => (5.0 * favored_weight_multiplier) / total_weight,
+          bb2.id => 1.0 / total_weight,
+          bb3.id => (1.0 * favored_weight_multiplier) / total_weight,
+          bb4.id => 2.0 / total_weight,
+          bb5.id => 1.0 / total_weight
+        }
+
+        counts = Hash.new(0)
+        num_trials = 5_000
+
+        num_trials.times do
+          id = described_class.weighted_random_selection(described_class.all, target_article_id).id
+          counts[id] += 1
+        end
+
+        counts.each do |id, count|
+          observed_probability = count.to_f / num_trials
+          expected_probability = expected_probabilities[id]
+
+          expect(observed_probability).to be_within(0.025).of(expected_probability)
+        end
       end
     end
   end
