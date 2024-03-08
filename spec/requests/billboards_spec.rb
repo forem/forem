@@ -180,6 +180,16 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is page_fixed_bottom" do
+      let(:page) { create(:page) }
+
+      it "contains close button" do
+        billboard = create_billboard(placement_area: "page_fixed_bottom", page_id: page.id)
+        get billboard_path(page_id: page.id, placement_area: "page_fixed_bottom")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
     context "when the placement area is post_sidebar" do
       it "does not contain close button" do
         billboard = create_billboard(placement_area: "post_sidebar")
