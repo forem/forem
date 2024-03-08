@@ -46,7 +46,13 @@
             <%= article.title %>
           </a>
         </h2>
-        <div class="flex items-center gap-1">
+        <div class="flex items-stretch gap-1">
+          <% if article.skip_indexing? %>
+          <span class="crayons-card crayons-card--secondary px-3 py-1 flex items-center" title="<%= t("views.admin.articles.noindex.reason") %><%= t("views.admin.articles.noindex.reasons." + article.skip_indexing_reason) %>">
+            <%= crayons_icon_tag("twemoji/warning", native: true, width: 18, height: 18) %>
+          </span>
+          <% end %>
+
           <span class="crayons-card crayons-card--secondary px-3 py-1 flex gap-2 items-center" title="<%= t("views.moderations.actions.thumb_up") %>">
             <%= crayons_icon_tag("twemoji/thumb-up", native: true, width: 16, height: 16) %>
             <span class="fs-s fw-medium lh-base"><%= article.privileged_reaction_counts["thumbsup"] || "0" %></span>
