@@ -638,6 +638,15 @@ class Article < ApplicationRecord
       score < -1
   end
 
+  def skip_indexing_reason
+    return "unpublished" unless published
+    return "negative_score" if score < -1
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
+
+    "unknown"
+  end
+
   def privileged_reaction_counts
     @privileged_reaction_counts ||= reactions.privileged_category.group(:category).count
   end

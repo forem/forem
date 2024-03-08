@@ -262,6 +262,46 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
       end.not_to raise_error
     end
+
+    it "does not raise error if XSS is inside tripe backticks code blocks" do
+      code_block = "```\n src='data \n```"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside double backticks code blocks" do
+      code_block = "`` src='data ``"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside single backtick code blocks" do
+      code_block = "` src='data `"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside triple tildes code blocks" do
+      code_block = "~~~\n src='data \n~~~"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "raises and error if XSS attempt is in between codeblocks" do
+      markdown = <<~MARKDOWN
+        ```
+          code block 1
+        ```
+
+        src='data
+
+        ```
+          code block 2
+        ```
+      MARKDOWN
+
+      expect { generate_and_parse_markdown(markdown) }.to raise_error(ArgumentError)
+    end
   end
 
   context "when provided with an @username" do

@@ -5,7 +5,7 @@
         <div class="flex items-center">
           <h2 class="crayons-subtitle-1">
             <%= t("views.articles.comments.subtitle.#{@comments_order}_html",
-                  num: tag.span(t("views.articles.comments.num", num: @article.comments_count), class: "js-comments-count", data: { comments_count: @article.comments_count })) %>
+                  num: tag.span(t("views.articles.comments.num", num: @comments_count), class: "js-comments-count", data: { comments_count: @comments_count })) %>
           </h2>
           <% if user_signed_in? %>
             <button class="c-btn c-btn--ghost crayons-btn--icon-left" id="toggle-comments-sort-dropdown" aria-controls="comments-sort-dropdown-container" aria-expanded="false" aria-label="<%= t("views.articles.comments.sort_button.aria_label") %>" aria-haspopup="true">

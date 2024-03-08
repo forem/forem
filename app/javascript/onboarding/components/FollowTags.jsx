@@ -13,8 +13,7 @@ export class FollowTags extends Component {
     this.handleComplete = this.handleComplete.bind(this);
 
     const emailState =
-      document.body.dataset.defaultEmailOptinAllowed === 'true';
-
+      document.body.dataset.default_email_optin_allowed === 'true';
     this.state = {
       allTags: [],
       selectedTags: [],
