@@ -9,12 +9,13 @@ RSpec.describe "Pages" do
       expect(response.body).to include("/page/#{page.slug}")
     end
 
-    it "has proper headline for top-level" do
+    it "has proper headline and classes for top-level" do
       page = create(:page, title: "Edna O'Brien96", is_top_level_path: true)
       get "/#{page.slug}"
       expect(response.body).to include(CGI.escapeHTML(page.title))
       expect(response.body).not_to include("/page/#{page.slug}")
       expect(response.body).to include("stories-show")
+      expect(response.body).to include(" pageslug-#{page.slug}")
     end
 
     context "when json template" do

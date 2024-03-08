@@ -232,15 +232,27 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
     feedSecondBillboard,
     feedThirdBillboard,
   ) {
-    if (organizedFeedItems.length >= 9 && feedThirdBillboard) {
+    if (
+      organizedFeedItems.length >= 9 &&
+      feedThirdBillboard &&
+      !isDismissed(feedThirdBillboard)
+    ) {
       organizedFeedItems.splice(7, 0, feedThirdBillboard);
     }
 
-    if (organizedFeedItems.length >= 3 && feedSecondBillboard) {
+    if (
+      organizedFeedItems.length >= 3 &&
+      feedSecondBillboard &&
+      !isDismissed(feedSecondBillboard)
+    ) {
       organizedFeedItems.splice(2, 0, feedSecondBillboard);
     }
 
-    if (organizedFeedItems.length >= 0 && feedFirstBillboard) {
+    if (
+      organizedFeedItems.length >= 0 &&
+      feedFirstBillboard &&
+      !isDismissed(feedFirstBillboard)
+    ) {
       organizedFeedItems.splice(0, 0, feedFirstBillboard);
     }
 
@@ -255,6 +267,22 @@ export const Feed = ({ timeFrame, renderFeed, afterRender }) => {
 
   function isHTML(result) {
     return result.value.headers?.get('content-type')?.includes('text/html');
+  }
+
+  function isDismissed(bb) {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(bb, 'text/html');
+    const element = doc.querySelector('.crayons-story');
+    const dismissalSku = element?.dataset?.dismissalSku;
+    if (localStorage && dismissalSku && dismissalSku.length > 0) {
+      const skuArray =
+        JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+      if (skuArray.includes(dismissalSku)) {
+        return true;
+      }
+    } else {
+      return false;
+    }
   }
 
   // /**

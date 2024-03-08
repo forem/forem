@@ -6,7 +6,7 @@ describe('billboard close functionality', () => {
     // Setup a simple DOM structure that includes only the elements needed for the close functionality
     document.body.innerHTML = `
       <div class="another-element"></div>
-      <div class="js-billboard" style="display: block;" data-dismissal-sku="WHATUP">
+      <div class="js-billboard popover-billboard" style="display: block;" data-dismissal-sku="WHATUP">
         <button id="sponsorship-close-trigger-1"></button>
       </div>
     `;
@@ -44,7 +44,9 @@ describe('billboard close functionality', () => {
     closeButton.click();
 
     // Assert the dismissal sku is added to local storage
-    const dismissalSkus = JSON.parse(localStorage.getItem('dismissal_skus_triggered'));
+    const dismissalSkus = JSON.parse(
+      localStorage.getItem('dismissal_skus_triggered'),
+    );
     expect(dismissalSkus).toEqual(['WHATUP']);
   });
 });

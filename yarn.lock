@@ -2341,23 +2341,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@honeybadger-io/core@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "@honeybadger-io/core@npm:5.2.0"
+"@honeybadger-io/core@npm:^6.5.1":
+  version: 6.5.1
+  resolution: "@honeybadger-io/core@npm:6.5.1"
   dependencies:
+    json-nd: "npm:^1.0.0"
     stacktrace-parser: "npm:^0.1.10"
-  checksum: 10c0/261b6919646238a707a8164e39014f75bd18fd0a9cdb411856e6c87fe302f53ae4f385fa07ad8a3184ea1b567cda2963087d7414ba937b081c6b01473765f78d
+  checksum: 10c0/c9f4edf8adea9ba4f47227a018d9a8d503e6862b2e2c8cfe72257dc0368ce0c0ef94009bc9674453889128b5c1a91529a3cf79861bb4bfb3ea41c9e60411a0eb
   languageName: node
   linkType: hard
 
-"@honeybadger-io/js@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@honeybadger-io/js@npm:5.4.1"
+"@honeybadger-io/js@npm:^6.8.3":
+  version: 6.8.3
+  resolution: "@honeybadger-io/js@npm:6.8.3"
   dependencies:
-    "@honeybadger-io/core": "npm:^5.2.0"
+    "@honeybadger-io/core": "npm:^6.5.1"
     "@types/aws-lambda": "npm:^8.10.89"
     "@types/express": "npm:^4.17.13"
-  checksum: 10c0/ee09e080f25a028784c94a6e7f8e9e70015c35d620e63670b12680abd5239a049c92cf2ec95ca85f44f6dc5d5f4690afac9698735cb60db64a9536dbcaf73fcf
+  bin:
+    honeybadger-checkins-sync: dist/server/check-ins-sync-exec.js
+  checksum: 10c0/b0e74b88b92ab6f80047e666033d76c3d442386f926feb42d2e5e8b1454c08b4f41db1b0abde4c0e22994e158de916cb6f2512ac78f6aa4f7fdb876a30fff551
   languageName: node
   linkType: hard
 
@@ -8813,7 +8816,7 @@ __metadata:
     "@cypress/code-coverage": "npm:^3.12.1"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.5.1"
     "@faker-js/faker": "npm:^7.6.0"
-    "@honeybadger-io/js": "npm:^5.4.1"
+    "@honeybadger-io/js": "npm:^6.8.3"
     "@hotwired/stimulus": "npm:3.2.2"
     "@knapsack-pro/cypress": "npm:^7.4.0"
     "@rails/ujs": "npm:7.1.3"
@@ -8895,7 +8898,7 @@ __metadata:
     postcss-import: "npm:^15.1.0"
     postcss-preset-env: "npm:^7.8.2"
     postscribe: "npm:^2.0.8"
-    preact: "npm:^10.19.4"
+    preact: "npm:^10.19.6"
     prettier: "npm:^2.8.8"
     prop-types: "npm:^15.8.1"
     rails-erb-loader: "npm:^5.5.2"
@@ -13840,6 +13843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-nd@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "json-nd@npm:1.0.0"
+  checksum: 10c0/7ec5a5f629b4e02ab1c803a97841793b06768470ade7a397dc9beaf551c96c5fbc38d3e6980f365aabbc4b0942d10ccbbad143570093b64e94c8a78875786549
+  languageName: node
+  linkType: hard
+
 "json-parse-better-errors@npm:^1.0.2":
   version: 1.0.2
   resolution: "json-parse-better-errors@npm:1.0.2"
@@ -16866,10 +16876,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preact@npm:^10.19.4":
-  version: 10.19.4
-  resolution: "preact@npm:10.19.4"
-  checksum: 10c0/cc8cc6fe8fe9ee0fd97ea68b28c8e277ccc4486bc1d2c59946b6ab7122a902fc518173046bdfc9ed12d1b2b330203888312e3ebe404f582962aa97f0fac6338e
+"preact@npm:^10.19.6":
+  version: 10.19.6
+  resolution: "preact@npm:10.19.6"
+  checksum: 10c0/305c63bc59f9a081185fea8ee9a43c96f69af58e50692228d0e566eacd69bac009f2fb9d4ebfa2bcfcfd9762c5318a7f1ccd1d5223ab8764e3f7e14386bce626
   languageName: node
   linkType: hard
 

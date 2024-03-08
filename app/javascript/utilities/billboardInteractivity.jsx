@@ -22,9 +22,13 @@ export function setupBillboardInteractivity() {
         sponsorshipDropdownButton.dataset.initialized = 'true';
       }
 
-      const popoverParent = sponsorshipDropdownButton.closest('.popover-billboard');
-      if (popoverParent &&
-        sponsorshipDropdownButton.getBoundingClientRect().top > window.innerHeight / 2) {
+      const popoverParent =
+        sponsorshipDropdownButton.closest('.popover-billboard');
+      if (
+        popoverParent &&
+        sponsorshipDropdownButton.getBoundingClientRect().top >
+          window.innerHeight / 2
+      ) {
         popoverParent.classList.add('popover-billboard--menuopenupwards');
       }
     });
@@ -37,14 +41,15 @@ export function setupBillboardInteractivity() {
       sponsorshipCloseButton.addEventListener('click', () => {
         dismissBillboard(sponsorshipCloseButton);
       });
-      document.addEventListener('click', (event) => {
-        if (!event.target.closest('.js-billboard')) {
-          dismissBillboard(sponsorshipCloseButton);
-        }
-      });
+      if (sponsorshipCloseButton.closest('.popover-billboard')) {
+        document.addEventListener('click', (event) => {
+          if (!event.target.closest('.js-billboard')) {
+            dismissBillboard(sponsorshipCloseButton);
+          }
+        });
+      }
     });
   }
-
 }
 
 /**
@@ -59,13 +64,18 @@ function amendBillboardStyle(sponsorshipDropdownButton) {
 }
 
 function dismissBillboard(sponsorshipCloseButton) {
-  const sku = sponsorshipCloseButton.closest('.js-billboard').dataset.dismissalSku;
+  const sku =
+    sponsorshipCloseButton.closest('.js-billboard').dataset.dismissalSku;
   sponsorshipCloseButton.closest('.js-billboard').style.display = 'none';
   if (localStorage && sku && sku.length > 0) {
-    const skuArray = JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+    const skuArray =
+      JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
     if (!skuArray.includes(sku)) {
       skuArray.push(sku);
-      localStorage.setItem('dismissal_skus_triggered', JSON.stringify(skuArray));
+      localStorage.setItem(
+        'dismissal_skus_triggered',
+        JSON.stringify(skuArray),
+      );
     }
   }
 }

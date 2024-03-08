@@ -20,85 +20,41 @@ env:
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   POSTGRES_PASSWORD: postgres
   KNAPSACK_PRO_LOG_LEVEL: info
+  YARN_ENABLE_HARDENED_MODE: 0
 
 jobs:
-  bundle_install:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-
-  yarn_install:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Look up if node_module cache exist
-        id: cache
-        uses: actions/cache/restore@v4
-        with:
-          lookup-only: true
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-      - name: Cache node_modules
-        uses: actions/cache@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.cache.outputs.cache-hit != 'true'
-      - uses: actions/setup-node@v4
-        if: steps.cache.outputs.cache-hit != 'true'
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
-        if: steps.cache.outputs.cache-hit != 'true'
-
-  precompile_assets:
-    needs: [bundle_install, yarn_install]
+  build:
     runs-on: ubuntu-latest
     env:
       E2E: true
 
     steps:
       - uses: actions/checkout@v4
-      - name: Look up if compiled assets exist
-        uses: actions/cache@v4
-        id: cache
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          fail-on-cache-miss: false
+          bundler-cache: true
+      - name: Cache pre-compiled assets
+        uses: actions/cache@v4
+        id: assetscache
+        with:
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: setup ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-        if: steps.cache.outputs.cache-hit != 'true'
-      - name: Cache node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
-        if: steps.cache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.assetscache.outputs.cache-hit != 'true'
+      - run: yarn install --immutable
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.assetscache.outputs.cache-hit != 'true'
 
   audit:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install]
+    needs: [build]
 
     steps:
       - uses: actions/checkout@v4
@@ -110,12 +66,7 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: yarn
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+      - run: yarn install --immutable
       - name: rubocop
         uses: reviewdog/action-rubocop@v2
         with:
@@ -127,7 +78,7 @@ jobs:
 
   rspec:
     runs-on: ubuntu-latest
-    needs: [precompile_assets]
+    needs: [build]
     timeout-minutes: 20
     env:
       KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
@@ -162,12 +113,6 @@ jobs:
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -204,21 +149,16 @@ jobs:
 
   jest:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [build]
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
+      - run: yarn install --immutable
       - run: yarn test --colors --ci --reporters="jest-junit" --reporters="default"
       - name: Upload test results to BuildPulse for flaky test detection
         if: '!cancelled()' # Run this step even when the tests fail. Skip if the workflow is cancelled.
@@ -237,16 +177,11 @@ jobs:
 
   storybook:
     runs-on: ubuntu-latest
-    needs: [yarn_install]
+    needs: [build]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
+      - run: yarn install --immutable
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -255,7 +190,7 @@ jobs:
 
   build_test:
     runs-on: ubuntu-latest
-    needs: [bundle_install, yarn_install]
+    needs: [build]
     timeout-minutes: 20
     env:
       RAILS_ENV: production
@@ -268,6 +203,7 @@ jobs:
       SECRET_KEY_BASE: dummydummydummy
       GITHUB_KEY: dummy
       GITHUB_SECRET: dummy
+      YARN_ENABLE_HARDENED_MODE: 1
 
     services:
       postgres:
@@ -283,12 +219,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
@@ -297,13 +227,14 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: yarn install --immutable
       - run: bundle exec rails assets:precompile
       - run: RAILS_ENV=test bin/test-console-check
 
   cypress:
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: [precompile_assets]
+    needs: [build]
     env:
       E2E: true
 
@@ -335,26 +266,16 @@ jobs:
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: Restore node_modules
-        uses: actions/cache/restore@v4
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-modules-v2-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-node-modules-v2-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
+      - run: yarn install --immutable
       - name: setup ruby
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
       - run: bundle exec rails db:test:prepare
-      - name: Cache cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: ${{ runner.os }}-cypress-binary-${{ hashFiles('**/yarn.lock') }}
       - run: yarn cypress install
       - name: cypress
         env:

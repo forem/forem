@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Editing A Comment", js: true do
+RSpec.describe "Editing A Comment", :js do
   let(:user) { create(:user) }
   let!(:article) { create(:article, show_comments: true) }
-  let(:new_comment_text) { Faker::Lorem.paragraph }
+  let(:new_comment_text) { "This is an editted text" }
   let!(:comment) do
     create(:comment,
            commentable: article,
@@ -19,13 +19,12 @@ RSpec.describe "Editing A Comment", js: true do
   def assert_updated
     expect(page).to have_css("textarea")
     expect(page).to have_text("Editing comment")
-    fill_in "text-area", with: new_comment_text
+    find("textarea").send_keys(new_comment_text)
 
-    click_button("Submit")
+    click_link_or_button("Submit")
 
-    expect(page).to have_text(new_comment_text)
+    expect(page).to have_text("Edited on").and have_text(new_comment_text)
 
-    expect(page).to have_text("Edited on")
     # using .last here because the first `<time>` element is the creation date,
     # the second one is the time of editing
     timestamp = page.all(".comment-date time").last[:datetime]
@@ -38,7 +37,7 @@ RSpec.describe "Editing A Comment", js: true do
       wait_for_javascript
 
       click_on(class: "comment__dropdown-trigger")
-      click_link("Edit")
+      click_link_or_button("Edit")
       assert_updated
     end
   end
@@ -52,7 +51,7 @@ RSpec.describe "Editing A Comment", js: true do
       wait_for_javascript
 
       click_on(class: "comment__dropdown-trigger")
-      click_link("Edit")
+      click_link_or_button("Edit")
       assert_updated
     end
   end
