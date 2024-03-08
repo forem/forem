@@ -1,4 +1,4 @@
-name: Build PR Image
+name: Build Uffizzi PR Image
 on:
   pull_request:
     types: [opened, synchronize, reopened, closed]
