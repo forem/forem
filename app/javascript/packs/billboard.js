@@ -26,6 +26,12 @@ async function generateBillboard(element) {
     asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'}cookies_allowed=true`;
   }
 
+  // When context is digest we don't show this billboard
+  // This is a hardcoded feature which should become more dynamic later.
+  if (asyncUrl.contains('post_fixed_bottom') && currentParams.includes('context=digest')) {
+    return;
+  }
+
   if (asyncUrl) {
     try {
       const response = await window.fetch(asyncUrl);
