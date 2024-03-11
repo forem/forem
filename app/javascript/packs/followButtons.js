@@ -415,7 +415,11 @@ function initializeNonUserFollowButtons() {
     const userLoggedIn =
       document.body.getAttribute('data-user-status') === 'logged-in';
 
-    const user = userLoggedIn ? userData() : null;
+    if (!userLoggedIn) {
+      return;
+    }
+
+    const user = userData();
 
     const followedTags = user
       ? JSON.parse(user.followed_tags).map((tag) => tag.id)
