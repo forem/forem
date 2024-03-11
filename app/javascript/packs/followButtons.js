@@ -415,12 +415,7 @@ function initializeNonUserFollowButtons() {
     const userLoggedIn =
       document.body.getAttribute('data-user-status') === 'logged-in';
 
-    if (!userLoggedIn) {
-      return;
-    }
-
-    const user = userData();
-
+    const user = userLoggedIn ? userData() : null;
     const followedTags = user
       ? JSON.parse(user.followed_tags).map((tag) => tag.id)
       : [];
@@ -432,6 +427,9 @@ function initializeNonUserFollowButtons() {
       const buttonInfo = JSON.parse(info);
       const { className, name } = buttonInfo;
       addAriaLabelToButton({ button, followType: className, followName: name });
+      if (user === null) {
+        return; // No need to fetch the status if the user is logged out
+      }
       if (className === 'Tag' && user) {
         // We don't need to make a network request to 'fetch' the status of tag buttons
         button.dataset.fetched = true;
