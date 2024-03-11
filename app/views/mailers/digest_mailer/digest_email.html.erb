@@ -12,17 +12,17 @@
         <!-- Subheader -->
         <tr>
           <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
-            Recent community posts you might find valuable
+            Recent community posts just for you
           </td>
         </tr>
 
         <!-- Articles List -->
         <% @articles.each do |article| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 25px 0px 0px; text-align: left;">
-              <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;"><%= article.title.strip %></a>
+            <td bgcolor="#FFFFFF" style="padding: 17px 0px 0px; text-align: left;">
+              <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
               <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                <%= truncate(article.description, length: 150) %>
+                <%= truncate(article.description, length: 180) %>
               </p>
             </td>
           </tr>
@@ -47,11 +47,11 @@
           <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">
             <h2>How to make your Digest better</h2>
             <% if @user.setting.experience_level.nil? %>
-              <p style="margin: 22px 0; font-size: 14px;">
+              <p style="margin: 22px 0; font-size: 16px;">
                 Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #0a0a0a; text-decoration: underline;">your settings</a></b> to enter your experience level to get more relevant posts for you.
               </p>
             <% end %>
-            <p style="margin: 22px 0 10px; font-size: 14px;">
+            <p style="margin: 22px 0 10px; font-size: 16px;">
               Visit the <b><a href="<%= app_url(tags_path) %>" style="color: #0a0a0a; text-decoration: underline;">tags page</a></b> to choose which types of content will be featured.
             </p>
           </td>
