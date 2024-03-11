@@ -22,10 +22,13 @@ class DigestMailer < ApplicationMailer
   private
 
   def generate_title
+    base = "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+    return base unless FeatureFlag.enabled?(:digest_subject_testing)
+
     title_variant = field_test(:digest_title_03_11, participant: @user)
     case title_variant
     when "base"
-      "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+      base
     when "base_with_no_emoji"
       "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase}"
     when "base_with_start_with_dev_digest"
