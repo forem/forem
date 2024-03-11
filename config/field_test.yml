@@ -27,6 +27,34 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_title_03_11:
+    started_at: 2024-03-11
+    variants:
+      - base
+      - base_with_no_emoji
+      - base_with_start_with_dev_digest
+      - base_with_start_with_dev_digest_and_no_emoji
+      - just_first_title
+      - just_first_title_and_dev_digest
+    weights:
+      - 50
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
   feed_style_20240220:
     started_at: 2024-02-20
     variants:

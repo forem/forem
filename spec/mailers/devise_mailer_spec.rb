@@ -40,7 +40,7 @@ RSpec.describe DeviseMailer do
       end
 
       it "renders proper URL" do
-        expect(email.body.to_s).to include("/users/confirmation?confirmation_token=faketoken")
+        expect(email.body.to_s).to include("confirmation_token%3Dfaketoken") # encoded URL
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe DeviseMailer do
       end
 
       it "renders proper URL" do
-        expect(email.body.to_s).to include("/users/confirmation?confirmation_token=faketoken")
+        expect(email.body.to_s).to include("confirmation_token%3Dfaketoken")
       end
     end
   end
