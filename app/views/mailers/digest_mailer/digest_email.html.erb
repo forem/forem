@@ -27,7 +27,15 @@
             </td>
           </tr>
         <% end %>
-
+        <% if true #ForemInstance.dev_to? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 30px 0 8px;">
+                <p style="margin: 0; font-weight: bold; font-size: 20px;">
+                  Happy coding ❤️
+                </p>
+            </td>
+          </tr>
+        <% end %>
         <tr>
           <td bgcolor="#FFFFFF" style="padding: 20px 0;">
             <hr style="border-top: 3px solid #0a0a0a;"/>
@@ -36,29 +44,21 @@
 
         <!-- Footer -->
         <tr>
-          <td bgcolor="#FFFFFF" style="padding: 20px; text-align: center; font-size: 16px;">
-            <h2>How to make your DEV Digest better</h2>
+          <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">
+            <h2>How to make your Digest better</h2>
             <% if @user.setting.experience_level.nil? %>
               <p style="margin: 22px 0; font-size: 14px;">
                 Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #0a0a0a; text-decoration: underline;">your settings</a></b> to enter your experience level to get more relevant posts for you.
               </p>
             <% end %>
-            <p style="margin: 22px 0; font-size: 14px;">
+            <p style="margin: 22px 0 10px; font-size: 14px;">
               Visit the <b><a href="<%= app_url(tags_path) %>" style="color: #0a0a0a; text-decoration: underline;">tags page</a></b> to choose which types of content will be featured.
             </p>
-            <% if true #ForemInstance.dev_to? %>
-              <p style="margin: 50px 0 15px; font-size: 14px;">
-                You are a better developer today than you were yesterday.
-              </p>
-              <p style="margin: 0; font-weight: bold; font-size: 14px;">
-                Happy coding
-              </p>
-            <% end %>
           </td>
         </tr>
 
         <tr>
-          <td bgcolor="#FFFFFF" style="padding: 20px 0;">
+          <td bgcolor="#FFFFFF" style="padding: 10px 0;">
             <hr style="border-top: 3px solid #0a0a0a;"/>
           </td>
         </tr>

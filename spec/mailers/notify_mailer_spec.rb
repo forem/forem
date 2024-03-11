@@ -124,7 +124,7 @@ RSpec.describe NotifyMailer do
 
     context "when rendering the HTML email for badge w/o credits" do
       it "includes the user URL" do
-        expect(email.html_part.body).to include(URL.user(user))
+        expect(email.html_part.body).to include("%2F#{user.username}")
       end
 
       it "doesn't include the listings URL" do
