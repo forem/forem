@@ -21,7 +21,7 @@ end
 
 Sidekiq.configure_server do |config|
   schedule_file = "config/schedule.yml"
-  config[:cron_poll_interval] = 10 # for Sidekiq-Cron since the default 30s is too slow
+  config[:average_scheduled_poll_interval] = 10 # for Sidekiq-Cron since the default 30s is too slow
 
   if File.exist?(schedule_file)
     Sidekiq::Cron::Job.load_from_hash!(YAML.load_file(schedule_file))
