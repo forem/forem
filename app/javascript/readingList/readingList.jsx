@@ -77,10 +77,10 @@ export class ReadingList extends Component {
       searchOptions: { status: `${statusView}` },
     });
 
-    const persistedTag = checkForPersistedTag();
-    if (persistedTag) {
+    const persistedAvailableTag = checkForPersistedTag(this.state.availableTags);
+    if (persistedAvailableTag) {
       this.selectTag({
-        target: { value: persistedTag },
+        target: { value: persistedAvailableTag, },
         preventDefault(){},
       });
     }
