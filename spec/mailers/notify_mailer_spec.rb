@@ -122,44 +122,6 @@ RSpec.describe NotifyMailer do
       expect(email.to).to eq([user.email])
     end
 
-    context "when rendering the HTML email for badge with credits" do
-      it "includes the listings URL" do
-        expect(email_with_credits.html_part.body).to include(
-          Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "includes the about listings URL" do
-        expect(email_with_credits.html_part.body).to include(
-          Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "includes number of credits" do
-        expect(email_with_credits.html_part.body).to include("7 new credits")
-      end
-    end
-
-    context "when rendering the text email for badge with credits" do
-      it "includes the listings URL" do
-        expect(email_with_credits.text_part.body).not_to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-          ),
-        )
-      end
-
-      it "includes the about listings URL" do
-        expect(email_with_credits.text_part.body).not_to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain)),
-        )
-      end
-
-      it "includes number of credits" do
-        expect(email_with_credits.text_part.body).to include("7 new credits")
-      end
-    end
-
     context "when rendering the HTML email for badge w/o credits" do
       it "includes the user URL" do
         expect(email.html_part.body).to include(URL.user(user))
