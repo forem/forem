@@ -19,7 +19,7 @@ module Comments
       commentable = comment.commentable
 
       commentable.touch(:last_comment_at) if commentable.respond_to?(:last_comment_at)
-      commentable.update_column(:displayed_comments_count, Comments::Count.call(commentable)) if commentable.is_a?(Article)
+      Comments::Count.call(commentable, recalculate: true) if commentable.is_a?(Article)
 
       # busting comment cache includes busting commentable cache
       Comments::BustCacheWorker.new.perform(comment.id)
