@@ -21,12 +21,7 @@ end
 
 Sidekiq.configure_server do |config|
   schedule_file = "config/schedule.yml"
-  # @mstruve/@sre: sidekiq-cron still uses the removed poll_interval
-  # to determine how often to poll for jobs so we should manually set it
-  # https://github.com/ondrejbartas/sidekiq-cron/issues/254
-  # Sidekiq default is 5, we don't need it quite that often but would like it more than
-  # every 30 seconds which the gem defaults to
-  config[:cron_poll_interval] = 10
+  config[:cron_poll_interval] = 10 # for Sidekiq-Cron since the default 30s is too slow
 
   if File.exist?(schedule_file)
     Sidekiq::Cron::Job.load_from_hash!(YAML.load_file(schedule_file))
