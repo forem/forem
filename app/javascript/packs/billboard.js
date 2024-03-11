@@ -26,14 +26,15 @@ async function generateBillboard(element) {
     asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'}cookies_allowed=true`;
   }
 
-  // When context is digest we don't show this billboard
-  // This is a hardcoded feature which should become more dynamic later.
-  if (asyncUrl.contains('post_fixed_bottom') && currentParams.includes('context=digest')) {
-    return;
-  }
 
   if (asyncUrl) {
     try {
+      // When context is digest we don't show this billboard
+      // This is a hardcoded feature which should become more dynamic later.
+      if (asyncUrl.includes('post_fixed_bottom') && currentParams.includes('context=digest')) {
+        return;
+      }
+
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
       const generatedElement = document.createElement('div');
