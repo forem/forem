@@ -107,8 +107,7 @@
   z-index: var(--z-sticky);
 
   @media (min-width: $breakpoint-m) {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+    border-radius: var(--radius-large);
     padding: 0;
     padding-bottom: 0;
     background: var(--body-bg);
