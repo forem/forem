@@ -18,7 +18,6 @@ class StoriesController < ApplicationController
   REDIRECT_VIEW_PARAMS = %w[moderate admin].freeze
 
   before_action :authenticate_user!, except: %i[index show]
-  # before_action :set_admin, only: %i[index show]
   before_action :set_cache_control_headers, only: %i[index show]
   before_action :set_user_limit, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
