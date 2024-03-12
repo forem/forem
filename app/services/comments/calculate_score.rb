@@ -1,11 +1,11 @@
 module Comments
   class CalculateScore
-    def initialize(comment)
-      @comment = comment
-    end
-
     def self.call(...)
       new(...).call
+    end
+
+    def initialize(comment)
+      @comment = comment
     end
 
     def call
@@ -13,7 +13,7 @@ module Comments
       score -= 500 if comment.user&.spam?
       comment.update_columns(score: score, updated_at: Time.current)
 
-      comment.user.touch(:last_comment_at) if comment.user
+      comment.user&.touch(:last_comment_at)
 
       # update commentable
       commentable = comment.commentable

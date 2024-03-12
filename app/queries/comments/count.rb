@@ -4,13 +4,13 @@
 
 module Comments
   class Count
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(article, recalculate: false)
       @article = article
       @recalculate = recalculate
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call
