@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
+  mount AhoyEmail::Engine => "/ahoy"
 
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"

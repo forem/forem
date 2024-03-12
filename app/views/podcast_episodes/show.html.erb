@@ -39,7 +39,7 @@
           id="user-follow-butt"
           class="crayons-btn follow-action-button"
           data-info='<%= DataInfo.to_json(object: @podcast) %>'>
-          &nbsp;
+            <%= t("views.podcasts.follow") %>
         </button>
       </h2>
       <% if @episode.title.size > 60 %>

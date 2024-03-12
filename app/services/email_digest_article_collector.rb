@@ -9,13 +9,14 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
+    order = Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score) DESC")
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
       articles = if user_has_followings?
                    experience_level_rating = (@user.setting.experience_level || 5)
-                   experience_level_rating_min = experience_level_rating - 3.6
-                   experience_level_rating_max = experience_level_rating + 3.6
+                   experience_level_rating_min = experience_level_rating - 4
+                   experience_level_rating_max = experience_level_rating + 4
 
                    @user.followed_articles
                      .select(:title, :description, :path)
@@ -23,10 +24,10 @@ class EmailDigestArticleCollector
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
-                     .where("score > ?", 12)
+                     .where("score > ?", 8)
                      .where("experience_level_rating > ? AND experience_level_rating < ?",
                             experience_level_rating_min, experience_level_rating_max)
-                     .order(score: :desc)
+                     .order(order)
                      .limit(6)
                  else
                    Article.select(:title, :description, :path)
@@ -35,8 +36,8 @@ class EmailDigestArticleCollector
                      .featured
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
-                     .where("score > ?", 25)
-                     .order(score: :desc)
+                     .where("score > ?", 15)
+                     .order(order)
                      .limit(6)
                  end
 
@@ -61,7 +62,7 @@ class EmailDigestArticleCollector
   end
 
   def cutoff_date
-    a_few_days_ago = 4.days.ago.utc
+    a_few_days_ago = 7.days.ago.utc
     return a_few_days_ago unless last_email_sent
 
     [a_few_days_ago, last_email_sent].max

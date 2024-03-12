@@ -1,16 +1,15 @@
 <html>
-  <body style='font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;'>
-    <table style="width:100%;max-width:700px;margin:auto;font-size:18px">
+  <body style='font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;background:#fcfcfc;padding: 1% 0;'>
+    <table style="width:100%;max-width:700px;margin:15px auto;font-size:18px;border:solid 1px #e6e6e6;border-radius:12px;display:block;padding:2px 1%;text-decoration:none;background:white;">
       <tr>
-        <td style="padding:4%;">
+        <td style="padding:2%;">
           <%= yield %>
         </td>
       </tr>
       <% if @user %>
         <tr>
-          <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#7d7d7d">
+          <td style="padding:3% 12% 2% 4%;font-size:18px;line-height:22px;color:#202121">
             <%= signed_up_with(@user) %>
-
             <br /><br />
             <div style="font-size:0.78em">
               <% if @unsubscribe %>

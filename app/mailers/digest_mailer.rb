@@ -1,4 +1,5 @@
 class DigestMailer < ApplicationMailer
+  include FieldTest::Helpers
   default from: -> { email_from(I18n.t("mailers.digest_mailer.from")) }
 
   def digest_email
@@ -18,10 +19,31 @@ class DigestMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
+  def title_test_variant(user)
+    field_test(:digest_title_03_11, participant: user)
+  end
+
   private
 
   def generate_title
-    "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+    base = "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+    return base unless FeatureFlag.enabled?(:digest_subject_testing)
+
+    title_variant = title_test_variant(@user)
+    case title_variant
+    when "base"
+      base
+    when "base_with_no_emoji"
+      "#{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase}"
+    when "base_with_start_with_dev_digest"
+      "DEV Digest: #{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase} #{random_emoji}"
+    when "base_with_start_with_dev_digest_and_no_emoji"
+      "DEV Digest: #{adjusted_title(@articles.first)} + #{@articles.size - 1} #{email_end_phrase}"
+    when "just_first_title"
+      @articles.first.title
+    when "just_first_title_and_dev_digest"
+      "#{@articles.first.title} | DEV Digest"
+    end
   end
 
   def adjusted_title(article)
