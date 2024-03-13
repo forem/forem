@@ -1,50 +1,68 @@
-<h1 style="text-align: center;">
-  <%= community_name %> Digest
-</h1>
-<h4 style="text-align: center;">Recent posts you might find valuable based on your interests ❤️</h4>
-<ul>
-  <% @articles.each do |article| %>
-    <li style="margin:18px auto">
-      <a href="<%= article_url(article) %>" style="font-weight: bold;color:#0045ff;font-size:calc(0.93em + 0.2vw);"><%= article.title.strip %></a> <%= truncate(article.description, length: 120) %>
-    </li>
-  <% end %>
-     <hr />
-</ul>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center">
+      <table style="width:100%;" cellpadding="0" cellspacing="0">
+        <!-- Header -->
+        <tr>
+          <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+            <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
+          </td>
+        </tr>
 
-<center style="margin-top:50px;">
-  <em>
-    <% if @user.setting.experience_level.nil? %>
-      <b>
-        You can now add your experience level to your account in order to receive more relevant content.
-      </b>
-      <br /><br />
-      Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
-      <br /><br />
-      You can change it any time in the future.
-    <% elsif @user.following_users_count == 0 %>
-      <b>
-        <%= community_name %> Digest is a new periodic email featuring the best posts from our community of <%= community_members_label %>.
-      </b>
-      <br /><br />
-      Your digest is not yet customized. Follow <%= community_members_label %> on
-      <a href="<%= app_url %>" style="text-decoration: none;"><%= community_name %></a> that interest you in order to receive the most relevant posts in your inbox.
-    <% else %>
-      <% tip_rand = rand(5) %>
-      <% if tip_rand == 0 %>
-        Thanks for being a valued member of the community.
-      <% elsif tip_rand == 1 %>
-        Follow the authors you want to see more of!
-      <% elsif tip_rand == 2 %>
-        And there's so much more <%= community_name %> goodness to discover.
-      <% elsif tip_rand == 3 %>
-        You're a better <%= Settings::Community.member_label %> today than you were yesterday.
-      <% elsif tip_rand == 4 %>
-        <% if @user.articles_count > 0 %>
-          Can't wait to see <b>your</b> next <%= community_name %> post!
-        <% else %>
-          Can't wait to see <b>your</b> first <%= community_name %> post!
+        <!-- Subheader -->
+        <tr>
+          <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+            Recent community posts just for you
+          </td>
+        </tr>
+
+        <!-- Articles List -->
+        <% @articles.each do |article| %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 17px 0px 0px; text-align: left;">
+              <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+              <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                <%= truncate(article.description, length: 180) %>
+              </p>
+            </td>
+          </tr>
         <% end %>
-      <% end %>
-    <% end %>
-  </em>
-</center>
+        <% if ForemInstance.dev_to? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 30px 0 8px;">
+                <p style="margin: 0; font-weight: bold; font-size: 20px;">
+                  Happy coding ❤️
+                </p>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 20px 0;">
+            <hr style="border-top: 3px solid #0a0a0a;"/>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">
+            <h2>How to make your Digest better</h2>
+            <% if @user.setting.experience_level.nil? %>
+              <p style="margin: 22px 0; font-size: 16px;">
+                Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #0a0a0a; text-decoration: underline;">your settings</a></b> to enter your experience level to get more relevant posts for you.
+              </p>
+            <% end %>
+            <p style="margin: 22px 0 10px; font-size: 16px;">
+              Visit the <b><a href="<%= app_url(tags_path) %>" style="color: #0a0a0a; text-decoration: underline;">tags page</a></b> to choose which types of content will be featured.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 10px 0;">
+            <hr style="border-top: 3px solid #0a0a0a;"/>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
