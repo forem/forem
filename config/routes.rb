@@ -18,6 +18,12 @@ Rails.application.routes.draw do
   end
   mount AhoyEmail::Engine => "/ahoy"
 
+  # Custom controller for tracking clicks asynchronously
+  namespace :ahoy do
+    post "email_clicks", to: "email_clicks#create"
+  end
+
+
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
