@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
   let(:article) { create(:article, user: user, published: true, organization: organization) }
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
@@ -145,6 +146,13 @@ RSpec.describe "ArticlesShow" do
       expect do
         get article.path
       end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders successfully for admins", :aggregate_failures do
+      sign_in admin_user
+      get article.path
+      expect(response).to be_successful
+      expect(response.body).to include("Spam")
     end
   end
 

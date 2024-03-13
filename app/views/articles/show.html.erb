@@ -122,6 +122,9 @@
                 </div>
                 <div class="pl-3 flex-1">
                   <a href="/<%= @user.username %>" class="crayons-link fw-bold"><%= @user.name %></a>
+                  <% if @user.spam? %>
+                    <span class="c-indicator c-indicator--danger">Spam</span>
+                  <% end %>
                   <% if @organization %>
                     <%= t("views.articles.for_org_html",
                           start: tag("span", { class: "color-base-60" }, true),
