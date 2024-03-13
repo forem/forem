@@ -24,4 +24,6 @@ RUN apt update && \
         && \
     apt clean
 
+RUN corepack enable
+
 CMD [ "/usr/local/bin/irb" ]
