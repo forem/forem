@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/member_manager/users", type: :request do
+RSpec.describe "/admin/member_manager/users" do
   let!(:user) { create(:user) }
   let!(:admin) { create(:user, :super_admin) }
 
@@ -26,14 +26,14 @@ RSpec.describe "/admin/member_manager/users", type: :request do
     end
 
     it "creates a note with the reason for the change" do
-      expect {
+      expect do
         patch reputation_modifier_admin_user_path(user.id), params: {
           user: {
             reputation_modifier: new_reputation_modifier,
             new_note: note_content
           }
         }
-      }.to change(Note, :count).by(1)
+      end.to change(Note, :count).by(1)
 
       note = Note.last
       expect(note.content).to include("Changed user's reputation modifier to #{new_reputation_modifier}")
