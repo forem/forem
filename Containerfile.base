@@ -1,4 +1,4 @@
-ARG RUBY_VERSION=3.2.0
+ARG RUBY_VERSION=3.3.0
 ARG DEBIAN_VERSION=bullseye
 FROM public.ecr.aws/docker/library/ruby:${RUBY_VERSION}-slim-${DEBIAN_VERSION} AS ruby-upstream
 
@@ -23,7 +23,5 @@ RUN apt update && \
         nodejs \
         && \
     apt clean
-
-RUN npm install -g yarn@$YARN_VERSION
 
 CMD [ "/usr/local/bin/irb" ]
