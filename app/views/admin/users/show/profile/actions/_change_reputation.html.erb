@@ -1,0 +1,17 @@
+<div id="change-reputation">
+  <%= form_for(@user, url: reputation_modifier_admin_user_path(@user),
+                      html: { class: "flex flex-col gap-4", method: :patch }) do |f| %>
+    <p><%= t("views.admin.users.reputation.desc_html", reputation_modifier: @user.reputation_modifier) %></p>
+    <div class="crayons-field mb-4">
+      <%= f.label :reputation_modifier, t("views.admin.users.reputation.reputation_modifier"), class: "crayons-field__label" %>
+      <%= f.text_field :reputation_modifier, placeholder: @user.reputation_modifier, class: "crayons-textfield", type: "number", inputmode: "numeric", step: "0.01", min: "0", max: 5, aria: { describedby: "reputation_modifier" } %>
+    </div>
+    <div class="crayons-field mb-4">
+      <%= f.label :new_note, t("views.admin.users.reputation.change_note"), class: "crayons-field__label" %>
+      <%= f.text_area :new_note, size: 50, required: true, class: "crayons-textfield", id: "new_note" %>
+    </div>
+    <div>
+      <%= f.button t("views.admin.users.reputation.submit"), class: "c-btn c-btn--primary", type: "submit" %>
+    </div>
+  <% end %>
+</div>
