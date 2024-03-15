@@ -11,9 +11,11 @@ RSpec.describe PageViewRollupWorker, type: :worker do
 
   describe "#perform" do
     it "rollups five month ago" do
-      five_month_ago = Date.current - 5.months
-      worker.perform
-      expect(PageViewRollup).to have_received(:rollup).with(five_month_ago)
+      Time.freeze do
+        one_year_ago = 1.year.ago
+        worker.perform
+        expect(PageViewRollup).to have_received(:rollup).with(one_year_ago)
+      end
     end
   end
 end
