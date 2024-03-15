@@ -223,10 +223,11 @@ RSpec.describe "UserProfiles" do
         expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "renders spammer users for admins", skip: "to implement later" do
+      it "renders spammer users for admins", :aggregate_failures do
         sign_in admin_user
         get spam_user.path
         expect(response).to be_successful
+        expect(response.body).to include("Spam")
       end
 
       context "when a user is signed in" do

@@ -30,6 +30,7 @@ class BillboardsController < ApplicationController
         user_signed_in: user_signed_in?,
         user_id: current_user&.id,
         article: @article ? ArticleDecorator.new(@article) : nil,
+        page_id: params[:page_id],
         user_tags: user_tags,
         cookies_allowed: cookies_allowed?,
         location: client_geolocation,
@@ -60,7 +61,7 @@ class BillboardsController < ApplicationController
   end
 
   def return_test_billboard?
-    param_present = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present? 
+    param_present = params[:bb_test_placement_area] == placement_area && params[:bb_test_id].present?
     present_and_admin = param_present && current_user&.any_admin?
     present_and_live = param_present && Billboard.approved_and_published.where(id: params[:bb_test_id]).any?
     present_and_admin || present_and_live

@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
   let(:article) { create(:article, user: user, published: true, organization: organization) }
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
@@ -146,6 +147,13 @@ RSpec.describe "ArticlesShow" do
         get article.path
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "renders successfully for admins", :aggregate_failures do
+      sign_in admin_user
+      get article.path
+      expect(response).to be_successful
+      expect(response.body).to include("Spam")
+    end
   end
 
   context "when user signed in" do
@@ -216,6 +224,17 @@ RSpec.describe "ArticlesShow" do
         get article.path
         expect(response.body).to include("Child comment")
         expect(response.body).to include("Comment deleted") # instead of the low quality one
+      end
+
+      it "displays comments count w/o including super low-quality ones" do
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"3\">(3)</span>")
+      end
+
+      it "displays includes spam comments in comments count if they have children" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
       end
     end
 

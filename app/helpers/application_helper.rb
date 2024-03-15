@@ -67,14 +67,29 @@ module ApplicationHelper
   #
   # rubocop:disable Rails/HelperInstanceVariable
   def view_class
-    if @podcast_episode_show # custom due to edge cases
-      "stories stories-show podcast_episodes-show"
-    elsif @story_show
-      "stories stories-show"
-    else
-      "#{controller_name} #{current_page}"
-    end
+    base_classes = if @podcast_episode_show # custom due to edge cases
+                     "stories stories-show podcast_episodes-show"
+                   elsif @story_show
+                     "stories stories-show"
+                   else
+                     "#{controller_name} #{current_page}"
+                   end
+    base_classes += article_view_classes if @article&.class&.name&.start_with?("Article") # Article or ArticleDecorator
+    base_classes += page_view_classes if @page&.class&.name&.start_with?("Page")
+    base_classes
   end
+
+  def article_view_classes
+    base_classes = " #{@article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}"
+    base_classes += " articleuser-#{@article.user_id}"
+    base_classes += " articleorg-#{@article.organization_id}" if @article.organization_id
+    base_classes
+  end
+
+  def page_view_classes
+    " pageslug-#{@page.slug.gsub('/', '__SLASH__')}"
+  end
+
   # rubocop:enable Rails/HelperInstanceVariable
 
   # This function derives the appropriate "title" given the page_title.  Further it assigns the

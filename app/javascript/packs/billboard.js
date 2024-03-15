@@ -23,11 +23,18 @@ async function generateBillboard(element) {
   }
 
   if (cookieStatus === 'allowed') {
-    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'  }cookies_allowed=true`;
+    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'}cookies_allowed=true`;
   }
+
 
   if (asyncUrl) {
     try {
+      // When context is digest we don't show this billboard
+      // This is a hardcoded feature which should become more dynamic later.
+      if (asyncUrl?.includes('post_fixed_bottom') && currentParams?.includes('context=digest')) {
+        return;
+      }
+
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
       const generatedElement = document.createElement('div');
@@ -39,6 +46,16 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+      const dismissalSku =
+        element.querySelector('.js-billboard')?.dataset.dismissalSku;
+      if (localStorage && dismissalSku && dismissalSku.length > 0) {
+        const skuArray =
+          JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+        if (skuArray.includes(dismissalSku)) {
+          element.style.display = 'none';
+          element.innerHTML = '';
+        }
+      }
       executeBBScripts(element);
       implementSpecialBehavior(element);
       setupBillboardInteractivity();
