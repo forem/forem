@@ -145,6 +145,8 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
+                                  presence: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|

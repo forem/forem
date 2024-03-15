@@ -324,7 +324,7 @@ en:
             icon: Mod
             desc: "Add a tag that this member can moderate. "
             remove: "Remove tag:"
-            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the user's ID (%{user_id}).
+            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the username (%{username}).
             tag_page: tag's page
         priviliged_actions:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
@@ -365,6 +365,15 @@ en:
             Open: Open
             Resolved: Resolved
             Invalid: Invalid
+        reputation:
+          change: Change reputation modifier
+          change_note: Reason for change
+          desc_html: This changes the points awarded to reactions given by the user, increasing or decreasing their impact on article and comment score. The user's current's reputation modifier is <strong>%{reputation_modifier}</strong>.
+          heading: Change reputation modifier
+          reputation_modifier: New reputation modifier
+          submit: Change reputation modifier
+          success: Successfully changed user's reputation modifier to %{reputation_modifier}.
+          error: Failed to change user's reptuation modifier (select between 0 and 5)
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"

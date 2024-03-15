@@ -112,7 +112,7 @@ en:
       update_success: Space has been updated.
     tags:
       moderators_controller:
-        not_found: 'User ID #%{user_id} was not found'
+        not_found: 'Username "%{username}" was not found'
         not_found_or: 'User ID #%{user_id} was not found, or their account has errors: %{errors}'
         removed: '@%{username} - ID #%{user_id} was removed as a tag moderator.'
         added: '%{username} was added as a tag moderator!'
