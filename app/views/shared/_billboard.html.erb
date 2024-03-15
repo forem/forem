@@ -57,7 +57,7 @@
       <%= billboard.processed_html.html_safe %>
     </div>
   </div>
-<% elsif billboard.placement_area == "post_fixed_bottom" %>
+<% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
   <div class="crayons-card crayons-card--secondary crayons-sponsorship popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
@@ -65,7 +65,11 @@
     data-context-type="<%= data_context_type %>"
     data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
-    data-article-id="<%= @article&.id %>"
+    <% if billboard.placement_area == "post_fixed_bottom" && @article.present? %>
+      data-article-id="<%= @article&.id %>"
+    <% else %>
+      data-page-id="<%= @page&.id %>"
+    <% end %>
     data-type-of="<%= billboard.type_of %>">
     <div class="flex">
       <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>

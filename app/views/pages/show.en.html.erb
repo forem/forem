@@ -41,4 +41,5 @@
     <%= @page.processed_html.html_safe %>
   <% end %>
 </main>
-<div id="IS_CENTERED_PAGE"></div>
+<div class="js-billboard-container pb-4 crayons-layout__comments-billboard" data-async-url="<%= billboard_path(page_id: @page.id, placement_area: :page_fixed_bottom) %>"></div>
+<%= javascript_include_tag "billboard", defer: true %>
