@@ -1,6 +1,7 @@
 class PageViewRollup
-  ATTRIBUTES_PRESERVED = %i[article_id counts_for_number_of_views created_at time_tracked_in_seconds user_id].freeze
-  ATTRIBUTES_DESTROYED = %i[id domain path referrer updated_at user_agent].freeze
+  ATTRIBUTES_PRESERVED = %i[article_id created_at user_id].freeze
+  ATTRIBUTES_DESTROYED = %i[id domain path referrer updated_at user_agent counts_for_number_of_views
+                            time_tracked_in_seconds].freeze
 
   class ViewAggregator
     Compact = Struct.new(:views, :article_id, :user_id) do
