@@ -47,7 +47,7 @@ RSpec.describe PageViewRollup, type: :service do
       )
     end
 
-    it "compacts 24 hours" do
+    it "does not compact views outside of the same hour" do
       24.times do |hour|
         create(:page_view, article: article1, user: nil, created_at: 2.days.ago.change(hour: hour))
       end
@@ -58,7 +58,7 @@ RSpec.describe PageViewRollup, type: :service do
     end
   end
 
-  it "groups by article" do
+  it "only compacts views of the same article" do
     create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
     create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
     create(:page_view, article: article2, user: nil, created_at: 2.days.ago)
@@ -67,6 +67,7 @@ RSpec.describe PageViewRollup, type: :service do
     expect do
       described_class.rollup(2.days.ago)
     end.to change(PageView, :count).from(4).to(2)
-    expect(PageView.pluck(:article_id)).to contain_exactly(article1.id, article2.id)
+    expect(PageView.pluck(:article_id,
+                          :counts_for_number_of_views)).to contain_exactly([article1.id, 2], [article2.id, 2])
   end
 end
