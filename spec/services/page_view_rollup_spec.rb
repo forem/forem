@@ -19,14 +19,16 @@ RSpec.describe PageViewRollup, type: :service do
     it "does not compact signed-in user's views" do
       user_view1 = create(:page_view, article: article1, user: user1, created_at: 2.days.ago)
       user_view2 = create(:page_view, article: article1, user: user1, created_at: 2.days.ago)
-      create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
-      create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
+      rando_view1 = create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
+      rando_view2 = create(:page_view, article: article1, user: nil, created_at: 2.days.ago)
 
       expect do
         described_class.rollup(2.days.ago)
       end.to change(PageView, :count).from(4).to(3)
 
-      expect(PageView.all).to include(user_view1, user_view2)
+      expect(user_view1.reload).to be_persisted
+      expect(user_view2.reload).to be_persisted
+      expect(PageView.where(id: [rando_view1.id, rando_view2.id])).to be_empty
     end
 
     it "compacts by the hour" do
