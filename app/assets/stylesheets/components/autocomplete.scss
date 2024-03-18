@@ -24,7 +24,7 @@
 
     &:hover,
     &[aria-selected='true'] {
-      background: hsl(211, 10%, 95%);
+      background: var(--link-bg-hover);
 
       & .crayons-autocomplete__name {
         color: var(--link-color-hover);
