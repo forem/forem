@@ -17,9 +17,9 @@
         </tr>
 
         <!-- Articles List -->
-        <% @articles.each do |article| %>
+        <% @articles.each_with_index do |article, i| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: 17px 0px 0px; text-align: left;">
+            <td bgcolor="#FFFFFF" style="padding: <%= i == 0 ? "27" : "17" %>px 0px 0px; text-align: left;">
               <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
               <p style="margin-top: 5px; font-size: 14px; color: #808080;">
                 <%= truncate(article.description, length: 180) %>
