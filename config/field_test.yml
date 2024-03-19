@@ -30,12 +30,12 @@ experiments:
   digest_count_03_18:
     started_at: 2024-03-18
     variants:
-      - 6
-      - 4
-      - 5
-      - 7
-      - 8
-      - 10
+      - count_6
+      - count_4
+      - count_5
+      - count_7
+      - count_8
+      - count_10
     weights:
       - 60
       - 8
