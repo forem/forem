@@ -78,6 +78,6 @@ class EmailDigestArticleCollector
   def results_count
     return 6 unless FeatureFlag.enabled?(:digest_results_count_testing)
 
-    (field_test(:digest_count_03_18, participant: @user) || 6).to_i
+    (field_test(:digest_count_03_18, participant: @user)&.split("_")&.last || 6).to_i
   end
 end
