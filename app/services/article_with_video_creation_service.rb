@@ -1,5 +1,5 @@
 class ArticleWithVideoCreationService
-  VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net".freeze
+  VIDEO_SERVICE_URL = "https://d23blx1djxc1xd.cloudfront.net".freeze
 
   def initialize(article_params, current_user)
     @article_params = article_params
@@ -17,7 +17,7 @@ class ArticleWithVideoCreationService
         article.video = @article_params[:video]
         article.video_state = "PROGRESSING"
 
-        video_code = article.video.split("dev-to-input-v0/")[1]
+        video_code = article.video.split("forem-video-input-nt/")[1]
         article.video_code = video_code
         article.video_source_url = "#{VIDEO_SERVICE_URL}/#{video_code}/#{video_code}.m3u8"
 

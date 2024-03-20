@@ -15,8 +15,9 @@ class VideoPolicy < ApplicationPolicy
     # Newly granted admins get to "short-circuit" the business logic of "were you created too
     # recently?"
     return user_any_admin? if ArticlePolicy.limit_post_creation_to_admins?
+    return user_super_admin?
 
-    user.created_at.before?(2.weeks.ago)
+    user.created_at.before?(1.weeks.ago)
   end
 
   alias new? create?
