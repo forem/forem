@@ -754,7 +754,7 @@ class Article < ApplicationRecord
 
   def fetch_video_duration
     if video.present? && video_duration_in_seconds.zero?
-      url = video_source_url.gsub(".m3u8", "1351620000001-200015_hls_v4.m3u8")
+      url = video_source_url
       duration = 0
       HTTParty.get(url).body.split("#EXTINF:").each do |chunk|
         duration += chunk.split(",")[0].to_f
