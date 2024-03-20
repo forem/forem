@@ -51,6 +51,10 @@ module Moderator
       Mailchimp::Bot.new(user).manage_tag_moderator_list
     end
 
+    def resolve_spam_reports
+      Users::ResolveSpamReports.call(@user)
+    end
+
     def create_note(reason, content)
       Note.create(
         author_id: @admin.id,
@@ -78,6 +82,7 @@ module Moderator
         user.add_role(:spam)
         remove_privileges
         remove_notifications
+        resolve_reports
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
