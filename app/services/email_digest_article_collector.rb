@@ -1,4 +1,5 @@
 class EmailDigestArticleCollector
+  include FieldTest::Helpers
   include Instrumentation
 
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
@@ -14,7 +15,7 @@ class EmailDigestArticleCollector
       return [] unless should_receive_email?
 
       articles = if user_has_followings?
-                   experience_level_rating = (@user.setting.experience_level || 5)
+                   experience_level_rating = @user.setting.experience_level || 5
                    experience_level_rating_min = experience_level_rating - 4
                    experience_level_rating_max = experience_level_rating + 4
 
@@ -28,7 +29,7 @@ class EmailDigestArticleCollector
                      .where("experience_level_rating > ? AND experience_level_rating < ?",
                             experience_level_rating_min, experience_level_rating_max)
                      .order(order)
-                     .limit(6)
+                     .limit(results_count)
                  else
                    Article.select(:title, :description, :path)
                      .published
@@ -38,7 +39,7 @@ class EmailDigestArticleCollector
                      .not_authored_by(@user.id)
                      .where("score > ?", 15)
                      .order(order)
-                     .limit(6)
+                     .limit(results_count)
                  end
 
       articles.length < 3 ? [] : articles
@@ -72,5 +73,11 @@ class EmailDigestArticleCollector
     @user.following_users_count.positive? ||
       @user.cached_followed_tag_names.any? ||
       @user.cached_antifollowed_tag_names.any?
+  end
+
+  def results_count
+    return 6 unless FeatureFlag.enabled?(:digest_results_count_testing)
+
+    (field_test(:digest_count_03_18, participant: @user)&.split("_")&.last || 6).to_i
   end
 end
