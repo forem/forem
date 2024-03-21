@@ -41,7 +41,7 @@ class PageViewRollup
   end
 
   def self.rollup(date, relation: PageView)
-    new(relation: relation).rollup(date.to_datetime)
+    new(relation: relation).rollup(date.to_datetime.beginning_of_day)
   end
 
   def initialize(relation:)
