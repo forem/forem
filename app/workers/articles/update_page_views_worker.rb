@@ -10,8 +10,7 @@ module Articles
     # @see Articles::PageViewUpdater
     def perform(create_params)
       article = Article.find_by(id: create_params["article_id"])
-      return unless article
-      return unless article.published?
+      return unless article&.published?
       return if create_params[:user_id] && article.user_id == create_params[:user_id]
 
       PageView.create!(create_params)

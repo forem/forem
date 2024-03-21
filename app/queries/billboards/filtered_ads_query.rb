@@ -9,13 +9,14 @@ module Billboards
     # @param user_signed_in [Boolean] whether or not the visitor is signed-in
     # @param billboards [Billboard] can be a filtered scope or Arel relationship
     # @param location [Geolocation|String] the visitor's geographic location
-    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [],
+    def initialize(area:, user_signed_in:, organization_id: nil, article_tags: [], page_id: nil,
                    permit_adjacent_sponsors: true, article_id: nil, billboards: Billboard,
                    user_id: nil, user_tags: nil, location: nil, cookies_allowed: false)
       @filtered_billboards = billboards.includes([:organization])
       @area = area
       @user_signed_in = user_signed_in
       @user_id = user_signed_in ? user_id : nil
+      @page_id = page_id
       @organization_id = organization_id
       @article_tags = article_tags
       @article_id = article_id
@@ -28,6 +29,7 @@ module Billboards
     def call
       @filtered_billboards = approved_and_published_ads
       @filtered_billboards = placement_area_ads
+      @filtered_billboards = page_ads if @page_id.present?
       @filtered_billboards = cookies_allowed_ads unless @cookies_allowed
 
       if @article_id.present?
@@ -81,6 +83,10 @@ module Billboards
 
     def placement_area_ads
       @filtered_billboards.where(placement_area: @area)
+    end
+
+    def page_ads
+      @filtered_billboards.where(page_id: @page_id)
     end
 
     def tagged_ads(tag_type)

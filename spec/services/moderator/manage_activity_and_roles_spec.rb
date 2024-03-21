@@ -250,6 +250,29 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     end
   end
 
+  describe "removes reports when adding the spam role" do
+    let(:spam_user) { create(:user) }
+    let(:spam_article) { create(:article, user: spam_user) }
+    let!(:report) do
+      create(:feedback_message, category: "spam", status: "Open", reported_url: URL.url(spam_article.path))
+    end
+
+    it "calls ResolveSpamReports" do
+      allow(Users::ResolveSpamReports).to receive(:call)
+      sidekiq_perform_enqueued_jobs do
+        manage_roles_for(spam_user, user_status: "Spam")
+      end
+      expect(Users::ResolveSpamReports).to have_received(:call).with(spam_user)
+    end
+
+    it "actually removes the report" do
+      sidekiq_perform_enqueued_jobs do
+        manage_roles_for(spam_user, user_status: "Spam")
+      end
+      expect(report.reload.status).to eq("Resolved")
+    end
+  end
+
   describe "removes notifications when adding the spam role" do
     let(:nice_article) { create(:article, user: user) }
     let(:spam_user) { create(:user) }

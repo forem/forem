@@ -29,6 +29,7 @@
         <% if @user.identities.any? %>
           <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.social.heading") %>" data-modal-size="medium" data-modal-content-selector="#remove-social-accounts"><%= t("views.admin.users.profile.options.remove_social") %></button></li>
         <% end %>
+        <li><button type="button" class="c-btn w-100 align-left" data-modal-title="<%= t("views.admin.users.reputation.heading") %>" data-modal-size="medium" data-modal-content-selector="#change-reputation"><%= t("views.admin.users.reputation.change") %></button></li>
         <li>
           <button type="button"
             class="c-btn c-btn--destructive w-100 align-left"
@@ -38,7 +39,7 @@
             data-form-action="<%= banish_admin_user_path(@user) %>"
             data-user-name="<%= @user.name %>"
             data-banishable-user="<%= @banishable_user %>"><%= t("views.admin.users.profile.options.banish") %></button>
-        </li>
+        </li> 
         <li><button type="button" class="c-btn c-btn--destructive w-100 align-left" data-modal-title="<%= t("views.admin.users.delete.heading", user: @user.name) %>" data-modal-size="small" data-modal-content-selector="#delete-user"><%= t("views.admin.users.profile.options.delete") %></button></li>
       </ul>
     </div>
@@ -51,6 +52,7 @@
   <%= render "admin/users/show/profile/actions/merge" %>
   <%= render "admin/users/modals/unpublish_modal" %>
   <%= render "admin/users/show/profile/actions/social_accounts" %>
+  <%= render "admin/users/show/profile/actions/change_reputation" %>
   <%= render "admin/users/modals/banish_modal" %>
   <%= render "admin/users/show/profile/actions/delete" %>
 </div>

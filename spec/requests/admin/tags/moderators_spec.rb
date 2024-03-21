@@ -8,11 +8,18 @@ RSpec.describe "/admin/content_manager/tags/:id/moderator" do
   describe "POST /admin/content_manager/tags/:id/moderator" do
     before { sign_in super_admin }
 
-    it "adds the given user as trusted and as a tag moderator" do
-      post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { user_id: user.id } }
+    it "adds the given user as trusted and as a tag moderator by username" do
+      post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { username: user.username } }
 
       expect(user.tag_moderator?).to be true
       expect(user.trusted?).to be true
+    end
+
+    it "redirects to edit with not_found message when there is no such username" do
+      post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { username: "any_username" } }
+
+      expect(response).to redirect_to(edit_admin_tag_path(tag.id))
+      expect(flash[:error]).to include("Username \"any_username\" was not found")
     end
   end
 
