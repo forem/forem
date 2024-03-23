@@ -1,8 +1,6 @@
 import '@utilities/document_ready';
 
 export async function asyncUserStatusCheck() {
-  const indicator = ` <span data-testid="user-status" class="ml-3 c-indicator c-indicator--danger c-indicator--relaxed">Suspended</span>`;
-
   const profile = document.querySelector('.profile-header__details');
 
   if (profile && !profile.dataset.statusChecked) {
@@ -11,14 +9,24 @@ export async function asyncUserStatusCheck() {
       .then((res) => res.json())
       .then((data) => {
         profile.dataset.statusChecked = true;
-        const { suspended } = data;
-        if (suspended) {
-          profile.querySelector('.js-username-container').innerHTML +=
-            indicator;
+        const { suspended, spam } = data;
+
+        let status = '';
+        if (spam) status = 'Spam';
+        else if (suspended) status = 'Suspended';
+
+        if (status) {
+          const indicator = `<span data-testid="user-status" class="ml-3 c-indicator c-indicator--danger c-indicator--relaxed">${status}</span>`;
+          profile.querySelector('.js-username-container').innerHTML += indicator;
         }
       });
   }
 }
+
+
+
+
+
 
 document.ready.then(() => {
   asyncUserStatusCheck();

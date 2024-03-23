@@ -465,6 +465,7 @@ class User < ApplicationRecord
     to: :authorizer,
   )
   alias suspended suspended?
+  alias spam spam?
   ##############################################################################
   #
   # End Authorization Refactor

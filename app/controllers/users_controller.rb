@@ -343,9 +343,13 @@ class UsersController < ApplicationController
 
   def attributes_for_show
     default_options = { only: %i[id username] }
-    return default_options unless current_user&.trusted?
 
-    trusted_options = { methods: %i[suspended] }
-    default_options.merge(trusted_options)
+    methods = []
+    methods << :suspended if current_user&.trusted? || current_user&.any_admin?
+    methods << :spam if current_user&.any_admin?
+
+    options_to_merge = methods.empty? ? {} : { methods: methods }
+
+    default_options.merge(options_to_merge)
   end
 end
