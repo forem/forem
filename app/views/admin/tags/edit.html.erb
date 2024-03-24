@@ -15,9 +15,9 @@
     <div class="flex flex-col gap-2">
       <%= form_with url: admin_tag_moderator_path(@tag.id), model: [:admin, @tag], method: :post, local: true do |f| %>
         <div class="crayons-field w-50 my-4">
-          <%= f.label :user_id, "Add Moderator:", class: "crayons-field__label" %>
+          <%= f.label :username, "Add Moderator:", class: "crayons-field__label" %>
           <div>
-            <%= f.text_field :user_id, class: "crayons-textfield js-username_id_input" %>
+            <%= f.text_field :username, class: "crayons-textfield js-username_input", placeholder: "username" %>
           </div>
           <%= f.submit "Add Moderator", class: "crayons-btn" %>
         </div>
