@@ -97,6 +97,7 @@ class UserPolicy < ApplicationPolicy
   alias manage_user_roles? elevated_user?
   alias unpublish_all_articles? elevated_user?
   alias search_by_email? elevated_user?
+  alias toggle_spam? elevated_user?
 
   def moderation_routes?
     (user.has_trusted_role? || elevated_user?) && !user.spam_or_suspended?

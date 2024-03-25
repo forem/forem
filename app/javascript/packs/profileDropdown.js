@@ -1,5 +1,6 @@
 import { initBlock } from '../profileDropdown/blockButton';
 import { initFlag } from '../profileDropdown/flagButton';
+import { initSpam } from '../profileDropdown/spamButton';
 import { initializeDropdown } from '@utilities/dropdownUtils';
 
 /* global userData */
@@ -7,6 +8,7 @@ import { initializeDropdown } from '@utilities/dropdownUtils';
 function initButtons() {
   initBlock();
   initFlag();
+  initSpam();
 }
 
 function initDropdown() {
