@@ -69,7 +69,7 @@
 
     <div class="comment-form__buttons mb-4">
       <button type="submit" class="crayons-btn mr-2 js-btn-enable" onclick="validateField(event)" data-tracking-name="comment_submit_button" disabled><%= t("views.comments.write.submit") %></button>
-      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" data-tracking-name="comment_preview_button" disabled><%= t("views.comments.write.preview") %></button>
+      <button type="button" class="preview-toggle crayons-btn crayons-btn--secondary comment-action-preview js-btn-enable mr-2" data-tracking-name="comment_preview_button" onclick="handleCommentPreview(event)" disabled><%= t("views.comments.write.preview") %></button>
       <a href="<%= @comment.path %>" class="dismiss-edit-comment crayons-btn crayons-btn--ghost js-btn-dismiss hidden"><%= t("views.comments.write.cancel") %></a>
     </div>
   </div>
