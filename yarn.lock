@@ -8411,15 +8411,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-multi-reporters@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "cypress-multi-reporters@npm:1.6.3"
+"cypress-multi-reporters@npm:^1.6.4":
+  version: 1.6.4
+  resolution: "cypress-multi-reporters@npm:1.6.4"
   dependencies:
     debug: "npm:^4.3.4"
     lodash: "npm:^4.17.21"
   peerDependencies:
     mocha: ">=3.1.2"
-  checksum: 10c0/33ad7aa985f9867eccf1c574f83a321a2e38052a64114850720594196cf03d0d46b03e4bd365b1f571bddd5cf263b4a2e9e361ad04b97d34a9d3b98b0fbe2905
+  checksum: 10c0/5872176582068d15273412090afc0a504920c34aadb5f0d2b9afcbbdc6c94cd16f97661751c1f7d177b915ccafc13fdc691908ebfc1c058e09728dceea9e8599
   languageName: node
   linkType: hard
 
@@ -8854,7 +8854,7 @@ __metadata:
     cypress: "npm:^13.2.0"
     cypress-failed-log: "npm:^2.10.0"
     cypress-file-upload: "npm:^5.0.8"
-    cypress-multi-reporters: "npm:^1.6.3"
+    cypress-multi-reporters: "npm:^1.6.4"
     cypress-pipe: "npm:^2.0.0"
     esbuild: "npm:^0.19.10"
     esbuild-plugin-stimulus: "npm:^0.1.5"
