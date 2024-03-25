@@ -100,7 +100,7 @@
     "mocha-junit-reporter": "^2.2.1",
     "prettier": "^2.8.8",
     "sass": "1.54.0",
-    "sass-loader": "^13.3.2",
+    "sass-loader": "^13.3.3",
     "storybook-addon-jsx": "^7.3.14",
     "style-loader": "^2.0.0",
     "svgo": "2.8.0"
