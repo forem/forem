@@ -112,7 +112,7 @@ fr:
       update_success: L'espace a été mis à jour.
     tags:
       moderators_controller:
-        not_found: "L'ID utilisateur #%{user_id} n'a pas été trouvé"
+        not_found: "Le nom d'utilisateur %{username} n'a pas été trouvé"
         not_found_or: "L'identifiant de l'utilisateur #%{user_id} n'a pas été trouvé, ou son compte présente des erreurs : %{errors}"
         removed: "@%{username} - ID #%{user_id} a été supprimé en tant que modérateur de tags."
         added: "%{username} a été ajouté en tant que modérateur de tags !"
