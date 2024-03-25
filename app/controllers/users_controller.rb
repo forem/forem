@@ -266,6 +266,37 @@ class UsersController < ApplicationController
     end
   end
 
+  def toggle_spam
+    @target_user = User.find_by(id: params[:id])
+    render json, status: :not_found unless @target_user
+
+    authorize @current_user
+
+    begin
+      case request.method_symbol
+      when :put
+        manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
+        manager.handle_user_status("Spam", "Mark as Spam from user profile")
+        payload = { action: "mark_as_spam", target_user_id: params[:id] }
+        Audit::Logger.log(:admin, @current_user, payload)
+      when :delete
+        manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
+        manager.handle_user_status("Good standing", "Set in good standing from user profile")
+        payload = { action: "remove_spam_role_from_user", target_user_id: params[:id] }
+        Audit::Logger.log(:admin, @current_user, payload)
+      else
+        render json, status: :method_not_allowed
+      end
+      head :no_content
+    rescue StandardError => e
+      Rails.logger.error("Failed to toggle spam status for user #{params[:id]}: #{e.message}")
+      respond_to do |format|
+        format.html { redirect_to "/dashboard", notice: I18n.t("articles_controller.deleted") }
+        format.json { head :internal_server_error }
+      end
+    end
+  end
+
   private
 
   def handle_organization_tab
@@ -343,9 +374,13 @@ class UsersController < ApplicationController
 
   def attributes_for_show
     default_options = { only: %i[id username] }
-    return default_options unless current_user&.trusted?
 
-    trusted_options = { methods: %i[suspended] }
-    default_options.merge(trusted_options)
+    methods = []
+    methods << :suspended if current_user&.trusted? || current_user&.any_admin?
+    methods << :spam if current_user&.any_admin?
+
+    options_to_merge = methods.empty? ? {} : { methods: methods }
+
+    default_options.merge(options_to_merge)
   end
 end
