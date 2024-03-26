@@ -1899,17 +1899,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/code-coverage@npm:^3.12.1":
-  version: 3.12.1
-  resolution: "@cypress/code-coverage@npm:3.12.1"
+"@cypress/code-coverage@npm:^3.12.26":
+  version: 3.12.26
+  resolution: "@cypress/code-coverage@npm:3.12.26"
   dependencies:
-    "@cypress/webpack-preprocessor": "npm:^5.11.0"
+    "@cypress/webpack-preprocessor": "npm:^6.0.0"
     chalk: "npm:4.1.2"
-    dayjs: "npm:1.11.9"
+    dayjs: "npm:1.11.10"
     debug: "npm:4.3.4"
     execa: "npm:4.1.0"
-    globby: "npm:11.0.4"
-    istanbul-lib-coverage: "npm:3.0.0"
+    globby: "npm:11.1.0"
+    istanbul-lib-coverage: "npm:^3.0.0"
     js-yaml: "npm:4.1.0"
     nyc: "npm:15.1.0"
   peerDependencies:
@@ -1918,7 +1918,7 @@ __metadata:
     babel-loader: ^8.3 || ^9
     cypress: "*"
     webpack: ^4 || ^5
-  checksum: 10c0/d30c8bc5b4f5f350d27ca7843bdeb91b10402250c6126be8b02208cfffd21e8d50e4822d2362a174b8dfe4124fa6075d89d4792fd4d83f2b0a7d024f950eecaa
+  checksum: 10c0/8aa0772f5123a33ba948b0b68bc33c77fa1fdbd9750eacb7cc5232d7ccef485fbcd70be1c13ee5479bd1af2fb4e771ee57275e159bce4537cf4760380dfa8eb3
   languageName: node
   linkType: hard
 
@@ -1948,9 +1948,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/webpack-preprocessor@npm:^5.11.0":
-  version: 5.17.0
-  resolution: "@cypress/webpack-preprocessor@npm:5.17.0"
+"@cypress/webpack-preprocessor@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "@cypress/webpack-preprocessor@npm:6.0.1"
   dependencies:
     bluebird: "npm:3.7.1"
     debug: "npm:^4.3.4"
@@ -1958,9 +1958,9 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.1
     "@babel/preset-env": ^7.0.0
-    babel-loader: ^8.0.2 || ^9
+    babel-loader: ^8.3 || ^9
     webpack: ^4 || ^5
-  checksum: 10c0/23db92a0023d3e70e502eb29d19ca28538ef278a522bfbde9d399c16e6edaf46da2cdaa899fe5fde9a44d5975116dadaca3a16d56e3a28b3458a309b1cc448cd
+  checksum: 10c0/cf041209507e3770fcc02fe580dd31b94994b7e9c3819ee39cd19975898b6fa2398b94361e126f7706f1ba8366260b51ba7a9cdde7ec3e70ea85af864b3bb302
   languageName: node
   linkType: hard
 
@@ -8411,15 +8411,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress-multi-reporters@npm:^1.6.3":
-  version: 1.6.3
-  resolution: "cypress-multi-reporters@npm:1.6.3"
+"cypress-multi-reporters@npm:^1.6.4":
+  version: 1.6.4
+  resolution: "cypress-multi-reporters@npm:1.6.4"
   dependencies:
     debug: "npm:^4.3.4"
     lodash: "npm:^4.17.21"
   peerDependencies:
     mocha: ">=3.1.2"
-  checksum: 10c0/33ad7aa985f9867eccf1c574f83a321a2e38052a64114850720594196cf03d0d46b03e4bd365b1f571bddd5cf263b4a2e9e361ad04b97d34a9d3b98b0fbe2905
+  checksum: 10c0/5872176582068d15273412090afc0a504920c34aadb5f0d2b9afcbbdc6c94cd16f97661751c1f7d177b915ccafc13fdc691908ebfc1c058e09728dceea9e8599
   languageName: node
   linkType: hard
 
@@ -8510,7 +8510,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.11.9, dayjs@npm:^1.10.4":
+"dayjs@npm:1.11.10":
+  version: 1.11.10
+  resolution: "dayjs@npm:1.11.10"
+  checksum: 10c0/4de9af50639d47df87f2e15fa36bb07e0f9ed1e9c52c6caa1482788ee9a384d668f1dbd00c54f82aaab163db07d61d2899384b8254da3a9184fc6deca080e2fe
+  languageName: node
+  linkType: hard
+
+"dayjs@npm:^1.10.4":
   version: 1.11.9
   resolution: "dayjs@npm:1.11.9"
   checksum: 10c0/1697892de0f4107083ec72451ba86c947df61d9a67f8c52da991c5f8e347781baccec5c4c42e81a99e63cf603389ed324723cd77ad1b6fbd04f0f34433334979
@@ -8813,7 +8820,7 @@ __metadata:
     "@babel/plugin-transform-react-jsx": "npm:^7.22.15"
     "@babel/preset-env": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
-    "@cypress/code-coverage": "npm:^3.12.1"
+    "@cypress/code-coverage": "npm:^3.12.26"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.5.1"
     "@faker-js/faker": "npm:^7.6.0"
     "@honeybadger-io/js": "npm:^6.8.3"
@@ -8854,7 +8861,7 @@ __metadata:
     cypress: "npm:^13.2.0"
     cypress-failed-log: "npm:^2.10.0"
     cypress-file-upload: "npm:^5.0.8"
-    cypress-multi-reporters: "npm:^1.6.3"
+    cypress-multi-reporters: "npm:^1.6.4"
     cypress-pipe: "npm:^2.0.0"
     esbuild: "npm:^0.19.10"
     esbuild-plugin-stimulus: "npm:^0.1.5"
@@ -10382,7 +10389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.1.1, fast-glob@npm:^3.2.9":
+"fast-glob@npm:^3.2.9":
   version: 3.2.12
   resolution: "fast-glob@npm:3.2.12"
   dependencies:
@@ -11305,21 +11312,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"globby@npm:11.0.4":
-  version: 11.0.4
-  resolution: "globby@npm:11.0.4"
-  dependencies:
-    array-union: "npm:^2.1.0"
-    dir-glob: "npm:^3.0.1"
-    fast-glob: "npm:^3.1.1"
-    ignore: "npm:^5.1.4"
-    merge2: "npm:^1.3.0"
-    slash: "npm:^3.0.0"
-  checksum: 10c0/de5f828c834baf75e3bd3c629bb3a64d1dfa9965831d0b105b728f9184284c6ba2b0d42e24862b411abc18e6e0af12e60880b3a62e096752de3426f2839f9ef7
-  languageName: node
-  linkType: hard
-
-"globby@npm:^11.0.2, globby@npm:^11.1.0":
+"globby@npm:11.1.0, globby@npm:^11.0.2, globby@npm:^11.1.0":
   version: 11.1.0
   resolution: "globby@npm:11.1.0"
   dependencies:
@@ -11962,7 +11955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.1.4, ignore@npm:^5.2.0":
+"ignore@npm:^5.2.0":
   version: 5.2.4
   resolution: "ignore@npm:5.2.4"
   checksum: 10c0/7c7cd90edd9fea6e037f9b9da4b01bf0a86b198ce78345f9bbd983929d68ff14830be31111edc5d70c264921f4962404d75b7262b4d9cc3bc12381eccbd03096
@@ -12847,13 +12840,6 @@ __metadata:
   version: 0.1.2
   resolution: "isstream@npm:0.1.2"
   checksum: 10c0/a6686a878735ca0a48e0d674dd6d8ad31aedfaf70f07920da16ceadc7577b46d67179a60b313f2e6860cb097a2c2eb3cbd0b89e921ae89199a59a17c3273d66f
-  languageName: node
-  linkType: hard
-
-"istanbul-lib-coverage@npm:3.0.0":
-  version: 3.0.0
-  resolution: "istanbul-lib-coverage@npm:3.0.0"
-  checksum: 10c0/29ab1980e973f169d0de899256c193caff192f30e5e4f50ec40bddac307d454c7c6493836fffea633469e7d1d1ab7fe04fa64c426f8bf8d14b17679284f5fd07
   languageName: node
   linkType: hard
 
