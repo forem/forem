@@ -267,10 +267,10 @@ class UsersController < ApplicationController
   end
 
   def toggle_spam
-    @target_user = User.find_by(id: params[:id])
-    render json, status: :not_found unless @target_user
-
     authorize @current_user
+
+    @target_user = User.find_by(id: params[:id])
+    error_not_found and return unless @target_user
 
     begin
       case request.method_symbol
