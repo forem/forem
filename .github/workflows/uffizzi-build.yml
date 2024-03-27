@@ -37,8 +37,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           file: ./Dockerfile
           target: uffizzi
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
   render-compose-file:
     name: Render Docker Compose File
