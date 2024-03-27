@@ -8912,7 +8912,7 @@ __metadata:
     react-colorful: "npm:^5.6.1"
     react-dates: "npm:^21.8.0"
     sass: "npm:1.54.0"
-    sass-loader: "npm:^13.3.2"
+    sass-loader: "npm:^13.3.3"
     storybook-addon-jsx: "npm:^7.3.14"
     style-loader: "npm:^2.0.0"
     svgo: "npm:2.8.0"
@@ -18368,9 +18368,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^13.3.2":
-  version: 13.3.2
-  resolution: "sass-loader@npm:13.3.2"
+"sass-loader@npm:^13.3.3":
+  version: 13.3.3
+  resolution: "sass-loader@npm:13.3.3"
   dependencies:
     neo-async: "npm:^2.6.2"
   peerDependencies:
@@ -18388,7 +18388,7 @@ __metadata:
       optional: true
     sass-embedded:
       optional: true
-  checksum: 10c0/7db8132101ed663f3cf936ce765b9b960a48b14f13f17d367a4e0c2ae259e91b6c401e33ab0f27ee88c98c8b5893c778848fc8366f1f387ac788ebef244e000a
+  checksum: 10c0/5e955a4ffce35ee0a46fce677ce51eaa69587fb5371978588c83af00f49e7edc36dcf3bb559cbae27681c5e24a71284463ebe03a1fb65e6ecafa1db0620e3fc8
   languageName: node
   linkType: hard
 
