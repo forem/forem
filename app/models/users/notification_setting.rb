@@ -16,6 +16,10 @@ module Users
 
     after_commit :subscribe_to_mailchimp_newsletter
 
+    def self.users_where_new_post_notification(user_ids, subscribed)
+      where(id: user_ids, subscribed_to_new_post_notifications?: subscribed).select(:id)
+    end
+
     def subscribe_to_mailchimp_newsletter
       return if Settings::General.mailchimp_api_key.blank?
       return unless saved_changes.key?(:email_newsletter)
@@ -23,5 +27,6 @@ module Users
 
       Users::SubscribeToMailchimpNewsletterWorker.perform_async(user.id)
     end
+
   end
 end
