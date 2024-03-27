@@ -91,6 +91,8 @@ en:
         notice_html: All private interactions <b>must</b> abide by the %{code}.
         placeholder: Enter your message here...
         submit: Send
+      spam: Mark @%{user} as Spam
       social: "%{service} website"
       unflag: Unflag @%{user}
+      unspam: Set @%{user} in Good standing
       website: Personal website
