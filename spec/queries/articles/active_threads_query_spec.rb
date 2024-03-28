@@ -75,5 +75,17 @@ RSpec.describe Articles::ActiveThreadsQuery, type: :query do
         expect(result.first.first).to eq(article.path)
       end
     end
+
+    context "when Tag requires approval" do
+      it "returns approved articles", :aggregate_failures do
+        tag = create(:tag, name: "discuss", requires_approval: true)
+        article = create(:article, score: min_score + 1, approved: true, tags: "discuss")
+        create(:article, score: min_score + 1, approved: false, tags: "discuss")
+
+        result = described_class.call(tags: "discuss", time_ago: "latest", count: 10)
+        expect(result.length).to eq(1)
+        expect(result.first.first).to eq(article.path)
+      end
+    end
   end
 end
