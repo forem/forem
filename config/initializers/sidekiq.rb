@@ -20,17 +20,12 @@ module Sidekiq
 end
 
 Sidekiq.configure_server do |config|
-  schedule_file = "config/schedule.yml"
   # @mstruve/@sre: sidekiq-cron still uses the removed poll_interval
   # to determine how often to poll for jobs so we should manually set it
   # https://github.com/ondrejbartas/sidekiq-cron/issues/254
   # Sidekiq default is 5, we don't need it quite that often but would like it more than
   # every 30 seconds which the gem defaults to
   config[:poll_interval] = 10
-
-  if File.exist?(schedule_file)
-    Sidekiq::Cron::Job.load_from_hash!(YAML.load_file(schedule_file))
-  end
 
   sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]
   # On Heroku this configuration is overridden and Sidekiq will point at the redis
