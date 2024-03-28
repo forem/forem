@@ -50,6 +50,15 @@
                     class="border-none crayons-link crayons-link--block">
                     <%= t("views.users.#{@flag_status ? 'unflag' : 'flag'}", user: @user.username) %>
                   </a>
+                  <a
+                    href="javascript:void(0);"
+                    id="user-profile-dropdownmenu-spam-button"
+                    data-profile-user-id="<%= @user.id %>"
+                    data-profile-user-name="@<%= @user.username %>"
+                    data-is-user-spam="<%= @user.spam? %>"
+                    class="border-none crayons-link crayons-link--block">
+                    <%= t("views.users.#{@user.spam? ? 'unspam' : 'spam'}", user: @user.username) %>
+                  </a>
                 <% end %>
                 <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
               </div>

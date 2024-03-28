@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_01_160047) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -103,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_160047) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
+    t.integer "displayed_comments_count"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
@@ -485,6 +486,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_160047) do
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
+    t.bigint "page_id"
     t.string "placement_area"
     t.integer "preferred_article_ids", default: [], array: true
     t.boolean "priority", default: false
@@ -501,6 +503,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_01_160047) do
     t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["page_id"], name: "index_display_ads_on_page_id"
     t.index ["placement_area"], name: "index_display_ads_on_placement_area"
     t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
     t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
