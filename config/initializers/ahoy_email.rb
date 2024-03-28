@@ -11,6 +11,7 @@ module AhoyEmail
   class Processor
     protected
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def track_links
       if html_part?
         part = message.html_part || message

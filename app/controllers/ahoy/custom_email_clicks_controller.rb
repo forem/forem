@@ -1,7 +1,7 @@
 module Ahoy
   class CustomEmailClicksController < ApplicationController
     skip_before_action :verify_authenticity_token # Signitures are used to verify requests here
-    # before_action :verify_signature
+    before_action :verify_signature
 
     def create
       data = {
