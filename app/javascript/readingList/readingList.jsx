@@ -80,7 +80,10 @@ export class ReadingList extends Component {
     const persistedAvailableTag = checkForPersistedTag(this.state.availableTags);
     if (persistedAvailableTag) {
       this.selectTag({
-        target: { value: persistedAvailableTag, },
+        target: {
+          value: persistedAvailableTag,
+          skipPushState: true,
+      },
         preventDefault(){},
       });
     }

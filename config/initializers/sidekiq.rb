@@ -26,7 +26,7 @@ Sidekiq.configure_server do |config|
   # https://github.com/ondrejbartas/sidekiq-cron/issues/254
   # Sidekiq default is 5, we don't need it quite that often but would like it more than
   # every 30 seconds which the gem defaults to
-  Sidekiq.options[:poll_interval] = 10
+  config[:poll_interval] = 10
 
   if File.exist?(schedule_file)
     Sidekiq::Cron::Job.load_from_hash!(YAML.load_file(schedule_file))
