@@ -143,21 +143,21 @@ RSpec.describe NotifyMailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
-        expect(email.html_part.body).to include("%2Fhey")
+        expect(email.html_part.body).to include("/hey")
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include("%2Fhey")
+        expect(email.html_part.body).not_to include("/hey")
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include("%2Fhey")
+        expect(email.html_part.body).not_to include("/hey")
       end
     end
 
@@ -180,21 +180,21 @@ RSpec.describe NotifyMailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.text_part.body).to include("Hello Yoho")
-        expect(email.text_part.body).not_to include("%2Fhey")
+        expect(email.text_part.body).not_to include("/hey")
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.text_part.body).not_to include("Hello Yoho")
-        expect(email.text_part.body).not_to include("%2Fhey")
+        expect(email.text_part.body).not_to include("/hey")
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.text_part.body).not_to include("Hello Yoho")
-        expect(email.text_part.body).not_to include("%2Fhey")
+        expect(email.text_part.body).not_to include("/hey")
       end
     end
   end
