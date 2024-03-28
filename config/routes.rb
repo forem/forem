@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     get "/confirm-email", to: "confirmations#new"
     delete "/sign_out", to: "devise/sessions#destroy"
   end
+
+  # This route makes default Ahoy Email redirect URLs available to us
+  # However, we monkeypatch this behavior in config/initializers/ahoy_email.rb so this
+  # routes is not currently where emails pass through.
   mount AhoyEmail::Engine => "/ahoy"
 
   # Custom controller for tracking clicks asynchronously
