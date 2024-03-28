@@ -41,7 +41,7 @@ class PageViewRollup
   end
 
   def self.rollup(date, relation: PageView)
-    new(relation: relation).rollup(date.to_datetime)
+    new(relation: relation).rollup(date)
   end
 
   def initialize(relation:)
@@ -52,10 +52,11 @@ class PageViewRollup
 
   def rollup(date)
     created = []
+    fixed_date = date.to_datetime.beginning_of_day
 
     (0..23).each do |hour|
-      start_hour = date.change(hour: hour)
-      end_hour = date.change(hour: hour + 1)
+      start_hour = fixed_date.change(hour: hour)
+      end_hour = fixed_date.change(hour: hour + 1)
       rows = relation.where(user_id: nil, created_at: start_hour...end_hour)
       aggregate_into_groups(rows).each do |compacted_views|
         created << compact_records(start_hour, compacted_views)

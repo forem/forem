@@ -18,7 +18,7 @@ export function onSearchBoxType(event) {
 
 export function selectTag(event) {
   event.preventDefault();
-  const { value, dataset } = event.target;
+  const { value, dataset, skipPushState } = event.target;
   const selectedTagOrAll = value ?? dataset.tag;
   const selectedTag = selectedTagOrAll?.match(/all tags/i) ? null : selectedTagOrAll;
   const component = this;
@@ -32,7 +32,10 @@ export function selectTag(event) {
   });
 
   // persist the selected tag in query params
-  window.history.pushState(null, null, `/readinglist${selectedTag ? `?selectedTag=${selectedTag}` : ''}`);
+  if (!skipPushState) {
+    const newQueryParams = selectedTag ? `?selectedTag=${selectedTag}` : '';
+    window.history.pushState(null, null, `/readinglist${newQueryParams}`);
+  }
 }
 
 export function clearSelectedTags(event) {
@@ -140,11 +143,12 @@ export function loadNextPage() {
   });
 }
 
-export function checkForPersistedTag() {
+export function checkForPersistedTag(availableTags) {
   // credit: https://stackoverflow.com/a/9870540
   const params = (new URL(window.location)).searchParams
-  const selectedTag =  params.get('selectedTag');
+  const selectedTag = params.get('selectedTag');
 
-  return selectedTag || '';
+  if (availableTags?.includes(selectedTag)) return selectedTag;
+  return null;
 }
 
