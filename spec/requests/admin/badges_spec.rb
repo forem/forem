@@ -3,6 +3,7 @@ require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/admin/content_manager/badge_achievements" do
   let(:admin) { create(:user, :super_admin) }
+  let!(:badge_category) { create(:badge_category) }
   let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
   let(:params) do
     {
@@ -11,7 +12,8 @@ RSpec.describe "/admin/content_manager/badge_achievements" do
         slug: "greeting-badge",
         description: "Awarded to welcoming users",
         credits_awarded: 10,
-        badge_image: Rack::Test::UploadedFile.new("spec/support/fixtures/images/image1.jpeg", "image/jpeg")
+        badge_image: Rack::Test::UploadedFile.new("spec/support/fixtures/images/image1.jpeg", "image/jpeg"),
+        badge_category_id: badge_category.id
       }
     }
   end

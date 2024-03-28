@@ -211,7 +211,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
+  create_table "badge_categories", force: :cascade do |t|
+    t.integer "badges_count", default: 0
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_badge_categories_on_name", unique: true
+  end
+
   create_table "badges", force: :cascade do |t|
+    t.bigint "badge_category_id"
     t.string "badge_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false
@@ -1293,7 +1303,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_followed_at", precision: nil
-    t.datetime "last_moderation_notification", precision: nil, default: "2017-01-01 05:00:00"
+    t.datetime "last_moderation_notification", precision: nil, default: "2016-12-31 18:30:00"
     t.datetime "last_notification_activity", precision: nil
     t.string "last_onboarding_page"
     t.datetime "last_reacted_at", precision: nil

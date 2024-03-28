@@ -18,6 +18,7 @@ class AdminMenu
       item(name: "badges", children: [
              item(name: "library", controller: "badges"),
              item(name: "achievements", controller: "badge_achievements"),
+             item(name: "Categories", controller: "badge_categories"),
            ]),
       item(name: "organizations"),
       item(name: "podcasts"),

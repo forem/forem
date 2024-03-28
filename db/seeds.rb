@@ -212,12 +212,36 @@ Users::CreateMascotAccount.call unless Settings::General.mascot_user_id
 
 ##############################################################################
 
+seeder.create_if_none(BadgeCategory) do
+  categories = [
+    {
+      name: "Community",
+      description: Faker::Lorem.sentence
+    },
+    {
+      name: "Coding",
+      description: Faker::Lorem.sentence
+    },
+    {
+      name: "Participation",
+      description: Faker::Lorem.sentence
+    },
+  ].freeze
+
+  categories.each { |attributes| BadgeCategory.create!(attributes) }
+end
+
+##############################################################################
+
 seeder.create_if_none(Badge) do
+  badge_category_ids = BadgeCategory.ids
+
   5.times do
     Badge.create!(
       title: "#{Faker::Lorem.word} #{rand(100)}",
       description: Faker::Lorem.sentence,
       badge_image: Rails.root.join("app/assets/images/#{rand(1..40)}.png").open,
+      badge_category_id: badge_category_ids.sample,
     )
   end
 

@@ -3,7 +3,7 @@ module Admin
     layout "admin"
 
     def index
-      @badges = Badge.all
+      @badges = Badge.includes(:badge_category)
     end
 
     def new
@@ -41,7 +41,7 @@ module Admin
     private
 
     def badge_params
-      params.require(:badge).permit(:title, :description, :badge_image, :credits_awarded)
+      params.require(:badge).permit(:title, :description, :badge_image, :credits_awarded, :badge_category_id)
     end
   end
 end
