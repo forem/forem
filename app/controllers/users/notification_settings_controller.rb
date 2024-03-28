@@ -18,7 +18,8 @@ module Users
                         mobile_mention_notifications
                         mod_roundrobin_notifications
                         reaction_notifications
-                        welcome_notifications].freeze
+                        welcome_notifications
+                        new_post_notifications].freeze
     ONBOARDING_ALLOWED_PARAMS = %i[email_newsletter email_digest_periodic].freeze
 
     def update
