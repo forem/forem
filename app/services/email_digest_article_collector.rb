@@ -3,6 +3,7 @@ class EmailDigestArticleCollector
   include Instrumentation
 
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
+  RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
 
   def initialize(user)
     @user = user
@@ -29,7 +30,7 @@ class EmailDigestArticleCollector
                      .where("experience_level_rating > ? AND experience_level_rating < ?",
                             experience_level_rating_min, experience_level_rating_max)
                      .order(order)
-                     .limit(results_count)
+                     .limit(RESULTS_COUNT)
                  else
                    Article.select(:title, :description, :path)
                      .published
@@ -39,7 +40,7 @@ class EmailDigestArticleCollector
                      .not_authored_by(@user.id)
                      .where("score > ?", 15)
                      .order(order)
-                     .limit(results_count)
+                     .limit(RESULTS_COUNT)
                  end
 
       articles.length < 3 ? [] : articles
@@ -73,11 +74,5 @@ class EmailDigestArticleCollector
     @user.following_users_count.positive? ||
       @user.cached_followed_tag_names.any? ||
       @user.cached_antifollowed_tag_names.any?
-  end
-
-  def results_count
-    return 6 unless FeatureFlag.enabled?(:digest_results_count_testing)
-
-    (field_test(:digest_count_03_18, participant: @user)&.split("_")&.last || 6).to_i
   end
 end
