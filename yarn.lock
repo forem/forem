@@ -1899,9 +1899,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/code-coverage@npm:^3.12.26":
-  version: 3.12.26
-  resolution: "@cypress/code-coverage@npm:3.12.26"
+"@cypress/code-coverage@npm:^3.12.30":
+  version: 3.12.30
+  resolution: "@cypress/code-coverage@npm:3.12.30"
   dependencies:
     "@cypress/webpack-preprocessor": "npm:^6.0.0"
     chalk: "npm:4.1.2"
@@ -1918,7 +1918,7 @@ __metadata:
     babel-loader: ^8.3 || ^9
     cypress: "*"
     webpack: ^4 || ^5
-  checksum: 10c0/8aa0772f5123a33ba948b0b68bc33c77fa1fdbd9750eacb7cc5232d7ccef485fbcd70be1c13ee5479bd1af2fb4e771ee57275e159bce4537cf4760380dfa8eb3
+  checksum: 10c0/4fc8494606f1baaeb41b2fe649686b64fd1ca7c99ed5f4054ed2acfbc5bed0a8133e7c154240c18b45ee233517b0e6805da4f40f38fc893a3c47d3e2eaeeba49
   languageName: node
   linkType: hard
 
@@ -8820,7 +8820,7 @@ __metadata:
     "@babel/plugin-transform-react-jsx": "npm:^7.22.15"
     "@babel/preset-env": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
-    "@cypress/code-coverage": "npm:^3.12.26"
+    "@cypress/code-coverage": "npm:^3.12.30"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.5.1"
     "@faker-js/faker": "npm:^7.6.0"
     "@honeybadger-io/js": "npm:^6.8.3"
