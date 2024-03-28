@@ -29,6 +29,8 @@
 experiments:
   digest_count_03_18:
     started_at: 2024-03-18
+    ended_at: 2024-03-28
+    winner: count_7
     variants:
       - count_6
       - count_4
