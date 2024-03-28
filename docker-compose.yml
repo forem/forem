@@ -4,7 +4,7 @@ x-app: &app
     context: .
     args:
       PG_MAJOR: '13'
-  image: ghcr.io/forem/forem:development
+  image: ghcr.io/forem/forem:1.0.0-development
   environment: &env
     NODE_ENV: ${NODE_ENV:-development}
     RAILS_ENV: ${RAILS_ENV:-development}

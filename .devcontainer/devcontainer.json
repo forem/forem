@@ -2,7 +2,7 @@
   "name": "Forem DEVcontainer",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "devcontainer",
-  "runServices": ["postgres", "redis", "chrome"],
+  "runServices": ["postgres", "redis"],
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "remoteEnv": {
     "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}",
