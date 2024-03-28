@@ -73,6 +73,7 @@ en:
           unmute: Unmute notifications
       quality:
         low: Comment marked as low quality/non-constructive by the community.
+        superlow: Comment score below hiding threshold, displayed only for admins
         conduct: View Code of Conduct
         hidden:
           icon: Info
