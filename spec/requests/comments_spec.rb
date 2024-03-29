@@ -3,6 +3,7 @@ require "requests/shared_examples/comment_hide_or_unhide_request"
 
 RSpec.describe "Comments" do
   let(:user) { create(:user) }
+  let(:admin) { create(:user, :admin) }
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
@@ -231,6 +232,13 @@ RSpec.describe "Comments" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
+      it "renders success when no children + admin signed in", :aggregate_failures do
+        sign_in admin
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low-comment")
+      end
+
       it "raises 404 when has children and not signed in" do
         create(:comment, commentable: article, user: user, parent: low_comment,
                          body_markdown: "child of a low-quality comment")
@@ -253,6 +261,16 @@ RSpec.describe "Comments" do
         get low_comment.path
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment deleted")
+        expect(response.body).to include("child of a low-quality comment")
+      end
+
+      it "displays text when there are children + admin signed in", :aggregate_failures do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        sign_in admin
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low-comment")
         expect(response.body).to include("child of a low-quality comment")
       end
 

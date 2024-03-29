@@ -1,6 +1,9 @@
 <% if decorated_comment.low_quality %>
   <div class="crayons-notice crayons-notice--warning low-quality-comment-marker">
     <%= t("views.comments.quality.low") %> <a href="/code-of-conduct"><strong><%= t("views.comments.quality.conduct") %></strong></a>
+    <% if decorated_comment.super_low_quality %>
+      <p><strong>(<%= t("views.comments.quality.superlow") %>)</strong></p>
+    <% end %>
   </div>
 <% end %>
 

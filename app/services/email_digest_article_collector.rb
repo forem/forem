@@ -1,7 +1,9 @@
 class EmailDigestArticleCollector
+  include FieldTest::Helpers
   include Instrumentation
 
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
+  RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
 
   def initialize(user)
     @user = user
@@ -14,7 +16,7 @@ class EmailDigestArticleCollector
       return [] unless should_receive_email?
 
       articles = if user_has_followings?
-                   experience_level_rating = (@user.setting.experience_level || 5)
+                   experience_level_rating = @user.setting.experience_level || 5
                    experience_level_rating_min = experience_level_rating - 4
                    experience_level_rating_max = experience_level_rating + 4
 
@@ -28,7 +30,7 @@ class EmailDigestArticleCollector
                      .where("experience_level_rating > ? AND experience_level_rating < ?",
                             experience_level_rating_min, experience_level_rating_max)
                      .order(order)
-                     .limit(6)
+                     .limit(RESULTS_COUNT)
                  else
                    Article.select(:title, :description, :path)
                      .published
@@ -38,7 +40,7 @@ class EmailDigestArticleCollector
                      .not_authored_by(@user.id)
                      .where("score > ?", 15)
                      .order(order)
-                     .limit(6)
+                     .limit(RESULTS_COUNT)
                  end
 
       articles.length < 3 ? [] : articles

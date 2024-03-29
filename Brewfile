@@ -1,4 +1,4 @@
-# Dependencies of things managed by .rtx.toml (or otherwise hand-installed, if rtx isn't used)
+# Dependencies of things managed by .mise.toml (or otherwise hand-installed, if mise isn't used)
 brew "gpg2"
 brew "pkg-config"
 

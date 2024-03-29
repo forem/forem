@@ -31,7 +31,7 @@ async function generateBillboard(element) {
     try {
       // When context is digest we don't show this billboard
       // This is a hardcoded feature which should become more dynamic later.
-      if (asyncUrl.includes('post_fixed_bottom') && currentParams.includes('context=digest')) {
+      if (asyncUrl?.includes('post_fixed_bottom') && currentParams?.includes('context=digest')) {
         return;
       }
 
