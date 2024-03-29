@@ -20,12 +20,21 @@ class BillboardEventsController < ApplicationMetalController
 
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 25.minutes) do
       @billboard = Billboard.find(billboard_event_id)
+      aggregates = @billboard.billboard_events.select(
+        'SUM(CASE WHEN event_type = \'impressions\' THEN counts_for ELSE 0 END) AS total_impressions',
+        'SUM(CASE WHEN event_type = \'clicks\' THEN counts_for ELSE 0 END) AS total_clicks',
+        'SUM(CASE WHEN event_type = \'signups\' THEN counts_for ELSE 0 END) * ? AS signup_success',
+        SIGNUP_SUCCESS_MODIFIER
+      ).first
 
-      num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
-      num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
-      signup_success = @billboard.billboard_events.signups.sum(:counts_for) * SIGNUP_SUCCESS_MODIFIER
-      rate = (num_clicks + signup_success).to_f / num_impressions
+      num_impressions = aggregates.total_impressions.to_i
+      num_clicks = aggregates.total_clicks.to_i
+      signup_success = aggregates.signup_success.to_f
 
+      # Ensure num_impressions is not zero to avoid division by zero error
+      rate = num_impressions > 0 ? (num_clicks + signup_success) / num_impressions.to_f : 0
+
+      # Update the billboard record
       @billboard.update_columns(
         success_rate: rate,
         clicks_count: num_clicks,
