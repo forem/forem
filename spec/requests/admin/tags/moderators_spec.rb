@@ -11,8 +11,15 @@ RSpec.describe "/admin/content_manager/tags/:id/moderator" do
     it "adds the given user as trusted and as a tag moderator by username" do
       post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { username: user.username } }
 
-      expect(user.tag_moderator?).to be true
+      expect(user.tag_moderator?(tag: tag)).to be true
       expect(user.trusted?).to be true
+    end
+
+    it "updates user's email_tag_mod_newsletter setting" do
+      user.notification_setting.update_column(:email_tag_mod_newsletter, false)
+      expect do
+        post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { username: user.username } }
+      end.to change { user.reload.notification_setting.email_tag_mod_newsletter }.from(false).to(true)
     end
 
     it "redirects to edit with not_found message when there is no such username" do
