@@ -342,9 +342,6 @@ GEM
     globalid (1.2.1)
       activesupport (>= 6.1)
     google-protobuf (3.24.0)
-    google-protobuf (3.24.0-arm64-darwin)
-    google-protobuf (3.24.0-x86_64-darwin)
-    google-protobuf (3.24.0-x86_64-linux)
     guard (2.18.1)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -1131,7 +1128,7 @@ DEPENDENCIES
   zonebie (~> 0.6.1)
 
 RUBY VERSION
-   ruby 3.2.0p0
+   ruby 3.3.0p0
 
 BUNDLED WITH
    2.4.17
