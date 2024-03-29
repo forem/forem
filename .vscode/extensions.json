@@ -13,5 +13,6 @@
     "waderyan.nodejs-extension-pack",
     "koichisasada.vscode-rdbg",
     "ms-edgedevtools.vscode-edge-devtools",
+    "shopify.ruby-lsp",
   ]
 }
