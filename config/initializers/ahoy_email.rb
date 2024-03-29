@@ -51,7 +51,7 @@ module AhoyEmail
           link["href"] += "?#{uri.query}" unless uri.query.nil? || uri.query.empty?
         end
       end
-      part.body = doc.to_s
+      part.body = doc.to_s.gsub("&amp;", "&")
     end
   end
 end

@@ -141,6 +141,10 @@ RSpec.describe NotifyMailer do
         )
       end
 
+      it "includes the click tracking parameters" do
+        expect(email.html_part.body).to include("/hey?ahoy_click=true&t=")
+      end
+
       it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
         expect(email.html_part.body).to include("/hey")
