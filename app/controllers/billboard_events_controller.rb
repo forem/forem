@@ -21,9 +21,9 @@ class BillboardEventsController < ApplicationMetalController
     ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 25.minutes) do
       @billboard = Billboard.find(billboard_event_id)
       aggregates = @billboard.billboard_events.select(<<-SQL
-        SUM(counts_for) FILTER (WHERE category = 'impressions') AS total_impressions,
-        SUM(counts_for) FILTER (WHERE category = 'clicks') AS total_clicks,
-        SUM(counts_for * #{SIGNUP_SUCCESS_MODIFIER}) FILTER (WHERE category = 'signups') AS signup_success
+        SUM(counts_for) FILTER (WHERE category = 'impression') AS total_impressions,
+        SUM(counts_for) FILTER (WHERE category = 'click') AS total_clicks,
+        SUM(counts_for * #{SIGNUP_SUCCESS_MODIFIER}) FILTER (WHERE category = 'signup') AS signup_success
       SQL
       ).first
 
