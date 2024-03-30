@@ -11,6 +11,7 @@
     "sbenp.prettier-vscode",
     "silvenon.mdx",
     "waderyan.nodejs-extension-pack",
-    "koichisasada.vscode-rdbg"
+    "koichisasada.vscode-rdbg",
+    "ms-edgedevtools.vscode-edge-devtools",
   ]
 }

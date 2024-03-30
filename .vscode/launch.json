@@ -12,7 +12,7 @@
       "type": "node"
     },
     {
-      "type": "edge",
+      "type": "vscode-edge-devtools.debug",
       "request": "attach",
       "name": "Attach to Edge",
       "port": 2015,
