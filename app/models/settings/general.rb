@@ -1,10 +1,10 @@
 module Settings
   class General < Base
-    BANNER_USER_CONFIGS = %w[off logged_out_only all].freeze
-    BANNER_PLATFORM_CONFIGS = %w[off all all_web desktop_web mobile_web mobile_app].freeze
+    BANNER_USER_CONFIGS ||= %w[off logged_out_only all].freeze
+    BANNER_PLATFORM_CONFIGS ||= %w[off all all_web desktop_web mobile_web mobile_app].freeze
 
     self.table_name = "site_configs"
-    SOCIAL_MEDIA_SERVICES = %w[
+    SOCIAL_MEDIA_SERVICES ||= %w[
       twitter facebook github instagram twitch mastodon
     ].freeze
 
