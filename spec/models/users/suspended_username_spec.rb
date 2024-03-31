@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::SuspendedUsername, type: :model do
+RSpec.describe Users::SuspendedUsername do
   describe "validations" do
     subject { create(:suspended_username) }
 
@@ -11,6 +11,13 @@ RSpec.describe Users::SuspendedUsername, type: :model do
   describe ".previously_suspended?" do
     it "returns true if the user has been previously suspended" do
       user = create(:user, :suspended)
+      described_class.create_from_user(user)
+
+      expect(described_class.previously_suspended?(user.username)).to be true
+    end
+
+    it "returns true if the user has been previously assigned a spam roles" do
+      user = create(:user, :spam)
       described_class.create_from_user(user)
 
       expect(described_class.previously_suspended?(user.username)).to be true

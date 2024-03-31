@@ -10,7 +10,7 @@ module Users
       user.blocker_blocks.delete_all
       user.blocked_blocks.delete_all
       user.authored_notes.delete_all
-      user.display_ad_events.delete_all
+      user.billboard_events.delete_all
       user.email_messages.delete_all
       user.html_variants.delete_all
       user.poll_skips.delete_all
@@ -22,7 +22,7 @@ module Users
 
     # delete_all will nullify the corresponding foreign_key field because of the dependent: :nullify strategy
     def delete_feedback_messages(user)
-      user.offender_feedback_messages.delete_all
+      user.offender_feedback_messages.update_all(status: "Resolved")
       user.reporter_feedback_messages.delete_all
       user.affected_feedback_messages.delete_all
     end

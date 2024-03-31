@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/advanced/data_update_scripts", type: :request do
+RSpec.describe "/admin/advanced/data_update_scripts" do
   let(:get_resource) { get admin_data_update_scripts_path }
 
   context "when the user is not an tech admin" do

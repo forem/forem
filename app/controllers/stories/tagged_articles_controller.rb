@@ -16,7 +16,9 @@ module Stories
 
       @page = (params[:page] || 1).to_i
 
-      @moderators = User.with_role(:tag_moderator, @tag).select(:username, :profile_image, :id)
+      @moderators = User.with_role(:tag_moderator, @tag)
+        .order(badge_achievements_count: :desc)
+        .select(:username, :profile_image, :id)
 
       set_number_of_articles(tag: @tag)
 
@@ -36,7 +38,8 @@ module Stories
                                 elsif Settings::UserExperience.feed_strategy == "basic"
                                   tagged_count(tag: tag)
                                 else
-                                  Rails.cache.fetch("article-cached-tagged-count-#{tag.name}", expires_in: 2.hours) do
+                                  Rails.cache.fetch("#{tag.cache_key}/article-cached-tagged-count",
+                                                    expires_in: 2.hours) do
                                     tagged_count(tag: tag)
                                   end
                                 end
@@ -78,6 +81,7 @@ module Stories
     def stories_by_timeframe(stories:)
       if Timeframe::FILTER_TIMEFRAMES.include?(params[:timeframe])
         stories.where("published_at > ?", Timeframe.datetime(params[:timeframe]))
+          .where(score: -20..)
           .order(public_reactions_count: :desc)
       elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
         stories.where(score: -20..).order(published_at: :desc)

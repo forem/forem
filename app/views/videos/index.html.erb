@@ -30,7 +30,7 @@
         <a href="<%= video_article.path %>" id="video-article-<%= video_article.id %>" class="crayons-card media-card">
           <div class="media-card__artwork">
             <%= optimized_image_tag(video_article.video_thumbnail_url,
-                                    optimizer_options: { crop: "imagga_scale", width: 320, height: 180 },
+                                    optimizer_options: { crop: "crop", width: 320, height: 180 },
                                     image_options: { alt: video_article.title, loading: "lazy", class: "w-100 object-cover block aspect-16-9 h-auto" }) %>
             <span class="media-card__artwork__badge"><%= video_article.video_duration_in_minutes %></span>
           </div>

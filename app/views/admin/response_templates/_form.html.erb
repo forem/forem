@@ -1,25 +1,32 @@
 <%= form_with(model: [:admin, response_template], local: true, html: { class: "crayons-card p-6" }) do |f| %>
-  <div class="form-group">
-    <%= f.label :type_of, "Type of Response Template" %>
-    <% type_of_options = [["Trusted User Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>
-    <%= f.select :type_of, options_for_select(type_of_options, response_template.type_of), html: { required: true }, class: "form-control" %>
+  <div class="flex flex-col gap-4">
+    <div class="crayons-field">
+      <%= label_tag "response_template[type_of]", "Type of Response Template", class: "crayons-field__label" %>
+      <% type_of_options = [["Trusted User Comment", "mod_comment"], ["Personal Comment", "personal_comment"], %w[Email email_reply], ["Abuse Report Email", "abuse_report_email_reply"]] %>
+      <%= select_tag "response_template[type_of]", options_for_select(type_of_options, response_template.type_of), html: { required: true }, class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag "response_template[title]", "Title", class: "crayons-field__label" %>
+      <%= text_field_tag "response_template[title]", response_template.title, class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag "response_template[content]", "Response template body", class: "crayons-field__label" %>
+      <%= text_area_tag "response_template[content]", response_template.content , class: "crayons-textfield" %>
+    </div>
+    
+    <div class="crayons-field">
+      <%= label_tag "response_template[content_type]", "Content Type (for ex. Markdown)", class: "crayons-field__label" %>
+      <% content_type_options = [%w[Markdown body_markdown], ["Plain Text", "plain_text"], %w[HTML html]] %>
+      <%= select_tag "response_template[content_type]", options_for_select(content_type_options, response_template.content_type || "plain_text"), class: "crayons-select" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= label_tag "response_template[user_identifier]", "User - Specify a username, email or ID to restrict usage for a single user", class: "crayons-field__label" %>
+      <%= text_field_tag "response_template[user_identifier]", response_template.user_identifier, class: "crayons-textfield" %>
+    </div>
+    
+    <%= f.submit class: "crayons-btn mr-auto" %>
   </div>
-  <div class="form-group">
-    <%= f.label :title %>
-    <%= f.text_field :title, value: response_template.title, class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= f.label :content, "Response template body" %>
-    <%= f.text_area :content, class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= f.label :content_type, "Content Type (for ex. Markdown)", value: response_template.content %>
-    <% content_type_options = [%w[Markdown body_markdown], ["Plain Text", "plain_text"], %w[HTML html]] %>
-    <%= f.select :content_type, options_for_select(content_type_options, response_template.content_type || "plain_text"), class: "form-control" %>
-  </div>
-  <div class="form-group">
-    <%= f.label :user_identifier, "User - Specify a username, email or ID to restrict usage for a single user" %>
-    <%= f.text_field :user_identifier, value: response_template.user_identifier, class: "form-control" %>
-  </div>
-  <%= f.submit class: "btn btn-primary" %>
 <% end %>

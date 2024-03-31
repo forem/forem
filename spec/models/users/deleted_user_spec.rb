@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::DeletedUser, type: :model do
+RSpec.describe Users::DeletedUser do
   subject(:deleted_user) { described_class }
 
   describe "#class_name" do

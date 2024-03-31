@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Notifications::Reads", type: :request do
+RSpec.describe "Notifications::Reads" do
   def create_follow_notifications(user, following_user)
     follow_instance = following_user.follow(user)
     Notification.send_new_follower_notification_without_delay(follow_instance)

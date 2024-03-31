@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticleApprovals", type: :request do
+RSpec.describe "ArticleApprovals" do
   describe "POST article_approvals" do
     let(:tag)            { create(:tag, requires_approval: true) }
     let(:user)           { create(:user) }

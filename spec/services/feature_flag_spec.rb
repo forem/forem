@@ -49,6 +49,36 @@ describe FeatureFlag, type: :service do
     end
   end
 
+  describe ".enabled_for_user?" do
+    subject(:method_call) { described_class.enabled?(flag) }
+
+    let(:flag) { "foo" }
+    let(:user) { build(:user) }
+
+    it "calls Flipper's enabled? method" do
+      allow(Flipper).to receive(:enabled?)
+
+      described_class.enabled_for_user?(flag, user)
+
+      expect(Flipper).to have_received(:enabled?).with(flag, instance_of(FeatureFlag::Actor))
+    end
+  end
+
+  describe ".enabled_for_user_id?" do
+    subject(:method_call) { described_class.enabled?(flag) }
+
+    let(:flag) { "foo" }
+    let(:user) { build(:user) }
+
+    it "calls Flipper's enabled? method" do
+      allow(Flipper).to receive(:enabled?)
+
+      described_class.enabled_for_user_id?(flag, user.id)
+
+      expect(Flipper).to have_received(:enabled?).with(flag, instance_of(FeatureFlag::Actor))
+    end
+  end
+
   describe ".exist?" do
     it "calls Flipper's exist? method" do
       allow(Flipper).to receive(:exist?).with("foo")
@@ -60,7 +90,7 @@ describe FeatureFlag, type: :service do
   end
 
   describe ".accessible?" do
-    let(:user) { UserStruct.new(flipper_id: 1) }
+    let(:user) { UserStruct.new({ flipper_id: 1 }) }
 
     it "returns false when flag doesn't exist" do
       expect(described_class.accessible?("missing_flag")).to be(true)
@@ -107,6 +137,29 @@ describe FeatureFlag, type: :service do
 
       described_class.disable(:flag2)
       expect(described_class.all).to eq({ flag1: :on, flag2: :off })
+    end
+  end
+
+  describe FeatureFlag::Actor, type: :service do
+    context "when user object" do
+      subject(:actor) { described_class[user] }
+
+      let(:user_id) { 123 }
+      let(:user) { User.new id: user_id }
+
+      it "represents flipper_id as user.id" do
+        expect(actor.flipper_id).to eq(user_id)
+      end
+    end
+
+    context "when user_id" do
+      subject(:actor) { described_class[user_id] }
+
+      let(:user_id) { 123 }
+
+      it "represents flipper_id as user.id" do
+        expect(actor.flipper_id).to eq(user_id)
+      end
     end
   end
 end

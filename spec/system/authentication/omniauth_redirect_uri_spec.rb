@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Omniauth redirect_uri", type: :system do
+RSpec.describe "Omniauth redirect_uri" do
   let!(:test_app_domain) { Settings::General.app_domain }
 
   # Avoid messing with other tests by resetting back Settings::General.app_domain
@@ -20,7 +20,7 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
     allow(Settings::Authentication).to receive(:providers).and_return(Authentication::Providers.available)
     visit sign_up_path
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_button = find("button.brand-#{provider_name}")
       provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end
@@ -30,7 +30,7 @@ RSpec.describe "Omniauth redirect_uri", type: :system do
 
     # After an update the callback_url should now match Settings::General.app_domain
     Authentication::Providers.available.each do |provider_name|
-      provider_auth_button = find("button.crayons-btn--brand-#{provider_name}")
+      provider_auth_button = find("button.brand-#{provider_name}")
       provider_auth_url = provider_auth_button.find(:xpath, "..")["action"]
       expect(provider_auth_url).to match(provider_redirect_regex(provider_name))
     end

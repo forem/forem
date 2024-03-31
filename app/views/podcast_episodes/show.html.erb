@@ -39,7 +39,7 @@
           id="user-follow-butt"
           class="crayons-btn follow-action-button"
           data-info='<%= DataInfo.to_json(object: @podcast) %>'>
-          &nbsp;
+            <%= t("views.podcasts.follow") %>
         </button>
       </h2>
       <% if @episode.title.size > 60 %>
@@ -56,7 +56,7 @@
     <button id="record-<%= @episode.slug %>" class="record-wrapper" data-podcast="<%= @podcast.slug %>" data-episode="<%= @episode.slug %>" aria-pressed="false">
       <div class="record" id="record">
         <%= optimized_image_tag(@podcast.image_url,
-                                optimizer_options: { width: 420, height: 420, crop: "fill" },
+                                optimizer_options: { width: 420, height: 420, crop: "crop" },
                                 image_options: { class: "main-image", alt: @podcast.title }) %>
         <img alt="Play podcast" class="butt play-butt" src="<%= image_path("playbutt.png") %>" />
         <img alt="Play podcast" class="butt pause-butt" src="<%= image_path("pausebutt.png") %>" />
@@ -98,14 +98,14 @@
         data-commentable-id="<%= @episode.id %>"
         data-commentable-type="PodcastEpisode"
         data-follow-button-container="true">
-        <%= javascript_packs_with_chunks_tag "commentDropdowns", defer: true %>
+        <%= javascript_include_tag "commentDropdowns", defer: true %>
         <%= render "/comments/form",
                    commentable: @episode,
                    commentable_type: "PodcastEpisode" %>
         <div class="comment-trees" id="comment-trees-container">
           <% podcast_comment_tree(@episode).each do |comment, sub_comments| %>
             <% cache ["comment_root_#{user_signed_in?}", comment] do %>
-              <%= tree_for(comment, sub_comments, @episode) %>
+              <%= nested_comments(tree: { comment => sub_comments }, commentable: @episode, is_view_root: true) %>
             <% end %>
           <% end %>
         </div>
@@ -115,4 +115,4 @@
 </main>
 
 <%= render "podcast_episodes/podcast_bar", podcast: @podcast, episode: @episode %>
-<%= javascript_packs_with_chunks_tag "followButtons", defer: true %>
+<%= javascript_include_tag "followButtons", defer: true %>

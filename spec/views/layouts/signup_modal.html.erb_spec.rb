@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "layouts/_signup_modal", type: :view do
+RSpec.describe "layouts/_signup_modal" do
   let(:tagline_text) { "the best community" }
 
   it "renders the tagline if it is set" do

@@ -48,8 +48,6 @@ module Feeds
 
         total_articles_count += articles.length
 
-        articles.each { |article| Slack::Messengers::ArticleFetchedFeed.call(article: article) }
-
         # we use `feed_fetched_at` to mark the last time a particular user's feed has been fetched, parsed and imported
         batch_of_users.update_all(feed_fetched_at: Time.current)
       end
@@ -167,6 +165,10 @@ module Feeds
         )
 
         next
+      end
+
+      if articles.length.positive?
+        Slack::WorkflowWebhookWorker.perform_async("Imported #{articles.length} articles for #{user.username}")
       end
 
       articles

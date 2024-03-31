@@ -1,0 +1,62 @@
+<% title "Markdown Basics" %>
+
+<%= content_for :page_meta do %>
+  <link rel="canonical" href="<%= app_url("/p/markdown_basics") %>" />
+  <meta name="description" content="dev.to | markdown basics">
+  <%= meta_keywords_default %>
+<% end %>
+
+<div class="crayons-layout crayons-layout--limited-l">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">Markdown Basics 🤓</h1>
+
+    <p>Below are some examples of commonly used markdown syntax. If you want to dive deeper, check out
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">this cheat sheet.</a>
+    </p>
+
+    <h3><strong>Bold & Italic</strong></h3>
+    <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
+    <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
+
+    <h3><strong>Links</strong></h3>
+    <p><a href="https://dev.to">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
+
+    <h3><strong>Inline Images</strong></h3>
+    <p>
+      <img src="https://res.cloudinary.com/practicaldev/image/fetch/s--OsLaFSo9--/c_fill,f_auto,fl_progressive,h_220,q_auto,w_220/https://thepracticaldev.s3.amazonaws.com/uploads/user/profile_image/31047/af153cd6-9994-4a68-83f4-8ddf3e13f0bf.jpg" alt="example image, with sloan" loading="lazy" />
+      <code>![Image description](put-link-to-image-here)</code>
+    </p>
+
+    <h3><strong>Headers</strong></h3>
+    <p>Add a header to your post with this syntax:</p>
+    <pre>
+      <code><br>#One '#' for a h1 header<br>##Two '#'s for a h2 header<br>...<br>######Six '#'s for a h6 header</code>
+    </pre>
+    <h1>One '#' for a h1 header</h1>
+    <h2>Two '#'s for a h2 header</h2>
+    <h6>Six '#'s for a h6 header</h6>
+
+    <hr />
+
+    <%= render partial: "liquid_tag_section_intro", locals: { styles: "font-size:2.4em;" } %>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "supported-url-embeds-list", title: "Supported URL Embeds" } %>
+
+    <%= render partial: "supported_url_embeds_list" %>
+
+    <%= render partial: "editor_guide_h3", locals: { id: "supported-nonurl-embeds-list", title: "Supported Non-URL Embeds" } %>
+
+    <%= render partial: "supported_nonurl_embeds_list" %>
+
+    <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
+    <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
+    <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>
+    <p>One specific edge case is with using the <code>raw</code> tag. To properly escape it, use this format:</p>
+    <p><code>`{% raw %}{{site.SOMETHING }} {% ``endraw`` %}`</code></p>
+
+    <h4>
+      <a href="https://github.com/adam-p/markdown-here/wiki/Markdown-Here-Cheatsheet" target="_blank" rel="noopener">Here's the Markdown cheatsheet again for reference.</a>
+    </h4>
+    Happy posting! 📝
+  </div>
+</div>

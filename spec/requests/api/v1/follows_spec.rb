@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::FollowsController", type: :request do
+RSpec.describe "Api::V1::FollowsController" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
 
   describe "POST /api/follows" do
@@ -12,14 +12,22 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
     context "when user is authorized" do
       let(:user) { create(:user) }
       let(:users_hash) { [{ id: create(:user).id }, { id: create(:user).id }] }
+      let(:orgs_hash) { [{ id: create(:organization).id }, { id: create(:organization).id }] }
 
       before do
         sign_in user
       end
 
       it "returns the number of followed users" do
-        post "/api/follows", params: { users: users_hash }, headers: headers
-        expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
+        post "/api/follows",
+             params: {
+               users: users_hash,
+               organizations: orgs_hash
+             },
+             headers: headers
+
+        expected_outcome = users_hash.size + orgs_hash.size
+        expect(response.parsed_body["outcome"]).to include("#{expected_outcome} users")
       end
 
       it "creates follows" do
@@ -29,6 +37,23 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
             post "/api/follows", params: { users: users_hash }, headers: headers
           end
         end.to change(Follow, :count).by(users_hash.size)
+      end
+
+      it "can follow users or organizations" do
+        sign_in user
+        user_to_follow = create(:user)
+        org_to_follow = create(:organization)
+
+        expect do
+          sidekiq_perform_enqueued_jobs do
+            post "/api/follows",
+                 params: {
+                   users: [{ id: user_to_follow.id }],
+                   organizations: [{ id: org_to_follow.id }]
+                 },
+                 headers: headers
+          end
+        end.to change(Follow, :count).by(2)
       end
     end
   end
@@ -53,7 +78,7 @@ RSpec.describe "Api::V1::FollowsController", type: :request do
         [tag1, tag2].each { |tag| user.follow(tag) }
       end
 
-      it "returns only the tags the user follows", aggregate_failures: true do
+      it "returns only the tags the user follows", :aggregate_failures do
         get "/api/follows/tags", headers: headers
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to include(tag1_json)

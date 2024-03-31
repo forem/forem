@@ -84,8 +84,9 @@ RSpec.describe Users::Delete, type: :service do
         affected_feedback_messages
         audit_logs
         banished_users
+        billboard_events
         created_podcasts
-        display_ad_events
+        feed_events
         offender_feedback_messages
         page_views
         rating_votes
@@ -136,6 +137,7 @@ RSpec.describe Users::Delete, type: :service do
     end
 
     it "keeps the kept associations" do
+      # NB: each association must have a factory defined!
       expect(kept_associations).not_to be_empty
       user.reload
       described_class.call(user)
@@ -162,6 +164,15 @@ RSpec.describe Users::Delete, type: :service do
   context "when the user was suspended" do
     it "stores a hash of the username so the user can't sign up again" do
       user = create(:user, :suspended)
+      expect do
+        described_class.call(user)
+      end.to change(Users::SuspendedUsername, :count).by(1)
+    end
+  end
+
+  context "when the user was a spammer" do
+    it "stores a hash of the username so the user can't sign up again" do
+      user = create(:user, :spam)
       expect do
         described_class.call(user)
       end.to change(Users::SuspendedUsername, :count).by(1)

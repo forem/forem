@@ -10,6 +10,27 @@ class NotificationSubscriptionsController < ApplicationController
     end
   end
 
+  # Client-side needs this to be idempotent-ish, return existing subscription instead
+  # of raising uniqueness exception
+  def create
+    authorize :comment, :subscribe?
+
+    subscription_config = params[:subscription_config].presence || "all_comments"
+    subscriber = NotificationSubscriptions::Subscribe.call(current_user,
+                                                           article_id: params[:article_id].presence,
+                                                           comment_id: params[:comment_id].presence,
+                                                           config: subscription_config)
+
+    render json: subscriber, status: :ok
+  end
+
+  def destroy
+    authorize :comment, :unsubscribe?
+    unsubscriber = NotificationSubscriptions::Unsubscribe.call(current_user, params[:subscription_id])
+
+    render json: unsubscriber, status: :ok
+  end
+
   def upsert
     not_found unless current_user
 

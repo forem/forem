@@ -34,7 +34,7 @@ RSpec.shared_examples "PATCH /comments/:comment_id/hide or unhide" do |args|
     end
 
     it "returns a proper JSON response" do
-      expect(JSON.parse(response.body)).to eq("hidden" => args[:hidden])
+      expect(response.parsed_body).to eq("hidden" => args[:hidden])
     end
 
     it "returns 200 on a good request" do

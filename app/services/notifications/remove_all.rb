@@ -1,14 +1,14 @@
 module Notifications
   class RemoveAll
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(notifiable_ids, notifiable_type)
       return unless %w[Article Comment Mention].include?(notifiable_type) && notifiable_ids.present?
 
       @notifiable_type = notifiable_type
       @notifiable_ids = notifiable_ids
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call

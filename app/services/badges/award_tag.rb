@@ -13,7 +13,7 @@ module Badges
     def call
       Tag.where.not(badge_id: nil).find_each do |tag|
         past_winner_user_ids = BadgeAchievement.where(badge_id: tag.badge_id).pluck(:user_id)
-        winning_article = Article.where("score > 100")
+        winning_article = Article.where("score > ?", Settings::UserExperience.award_tag_minimum_score)
           .published
           .not_authored_by(past_winner_user_ids)
           .order(score: :desc)

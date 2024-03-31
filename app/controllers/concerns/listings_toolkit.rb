@@ -18,7 +18,7 @@ module ListingsToolkit
       return
     end
 
-    if !@listing.valid? || rate_limit?
+    if @listing.invalid? || rate_limit?
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return

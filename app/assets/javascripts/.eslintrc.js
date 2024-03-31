@@ -24,7 +24,7 @@ module.exports = {
     handleFollowButtPress: false,
     browserStoreCache: false,
     initializeBaseUserData: false,
-    initializeDisplayAdVisibility: false,
+    initializeBillboardVisibility: false,
     initializeReadingListIcons: false,
     ActiveXObject: false,
     AndroidBridge: false,

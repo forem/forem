@@ -1,7 +1,7 @@
 class ReplitTag < LiquidTagBase
   PARTIAL = "liquids/replit".freeze
-  REGISTRY_REGEXP = %r{https?://replit\.com/(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
-  VALID_ADDRESS = %r{(?<address>@\w{2,15}/[a-zA-Z0-9\-]{0,60})(?:#[\w.]+)?}
+  REGISTRY_REGEXP = %r{https?://replit\.com/(?<address>@\w{2,15}/[a-zA-Z0-9-]{0,60})(?:#[\w.]+)?}
+  VALID_ADDRESS = %r{(?<address>@\w{2,15}/[a-zA-Z0-9-]{0,60})(?:#[\w.]+)?}
   REGEXP_OPTIONS = [REGISTRY_REGEXP, VALID_ADDRESS].freeze
 
   def initialize(_tag_name, input, _parse_context)

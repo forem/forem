@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NotificationSubscriptions", type: :request do
+RSpec.describe "NotificationSubscriptions" do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let(:article) { create(:article, :with_notification_subscription, user: user) }
@@ -48,14 +48,14 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "returns the correct subscription boolean as JSON" do
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(JSON.parse(response.body)["config"]).to eq "all_comments"
+        expect(response.parsed_body["config"]).to eq "all_comments"
       end
 
       it "returns the correct subscription boolean as JSON if unsubscribed" do
         article.notification_subscriptions.first.delete
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(JSON.parse(response.body)["config"]).to eq "not_subscribed"
+        expect(response.parsed_body["config"]).to eq "not_subscribed"
       end
     end
 
@@ -168,6 +168,58 @@ RSpec.describe "NotificationSubscriptions", type: :request do
         results = parent_comment_by_og.subtree.where(user: other_user).pluck(:receive_notifications)
         expect(results.uniq).to eq [true]
       end
+    end
+  end
+
+  describe "POST /comments/subscribe" do
+    let(:subscribe_service_result) { { updated: true } }
+    let(:request_params) { { comment_id: 1, article_id: 2 } }
+
+    before do
+      sign_in user
+
+      allow(NotificationSubscriptions::Subscribe).to receive(:call)
+        .and_return(subscribe_service_result)
+
+      post "/comments/subscribe", params: request_params
+    end
+
+    it "calls the Subscribe service object with the correct parameters" do
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq(subscribe_service_result.to_json)
+      expect(NotificationSubscriptions::Subscribe).to \
+        have_received(:call)
+        .with(user, comment_id: "1", article_id: "2", config: "all_comments")
+    end
+
+    context "when setting subscription config in the request parameters" do
+      let(:request_params) do
+        { article_id: 3, subscription_config: "top_level_comments" }
+      end
+
+      it "calls the Subscribe service object with the correct parameters" do
+        expect(NotificationSubscriptions::Subscribe).to \
+          have_received(:call)
+          .with(user, a_hash_including(article_id: "3", config: "top_level_comments"))
+      end
+    end
+  end
+
+  describe "POST /subscription/unsubscribe" do
+    before do
+      sign_in user
+
+      allow(NotificationSubscriptions::Unsubscribe).to receive(:call)
+        .and_return({ destroyed: true })
+
+      post "/subscription/unsubscribe", params: { subscription_id: 1 }
+    end
+
+    it "calls the Unsubscribe service object with the correct parameters" do
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq("{\"destroyed\":true}")
+      expect(NotificationSubscriptions::Unsubscribe).to \
+        have_received(:call).with(user, "1")
     end
   end
 end

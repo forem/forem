@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Organization, type: :model do
+RSpec.describe Organization do
   let(:organization) { create(:organization) }
 
   describe "validations" do
@@ -10,7 +10,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to have_many(:articles).dependent(:nullify) }
       it { is_expected.to have_many(:collections).dependent(:nullify) }
       it { is_expected.to have_many(:credits).dependent(:restrict_with_error) }
-      it { is_expected.to have_many(:display_ads).dependent(:destroy) }
+      it { is_expected.to have_many(:billboards).dependent(:destroy) }
       it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:notifications).dependent(:delete_all) }
       it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
@@ -27,8 +27,9 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:name).is_at_most(50) }
       it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
-      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(30) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(250) }
       it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
       it { is_expected.to validate_length_of(:twitter_username).is_at_most(15) }
@@ -39,9 +40,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_presence_of(:profile_image) }
       it { is_expected.to validate_presence_of(:slug) }
       it { is_expected.to validate_presence_of(:spent_credits_count) }
-      it { is_expected.to validate_presence_of(:summary) }
       it { is_expected.to validate_presence_of(:unspent_credits_count) }
-      it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
       it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
 
@@ -53,6 +52,11 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to allow_value("#abc").for(:text_color_hex) }
       it { is_expected.not_to allow_value("3.0").for(:company_size) }
       it { is_expected.to allow_value("3").for(:company_size) }
+
+      it { is_expected.to allow_value("1345abc").for(:slug) }
+      it { is_expected.to allow_value("just_non_digit_characters").for(:slug) }
+      it { is_expected.to allow_value("123_4").for(:slug) }
+      it { is_expected.not_to allow_value("1234").for(:slug) }
     end
   end
 
@@ -273,6 +277,8 @@ RSpec.describe Organization, type: :model do
           organization.save!
         end.to change { organization.reload.profile_image_url }
 
+        sidekiq_perform_enqueued_jobs
+
         # I want to collect reloaded versions of the organization's articles so I can see their
         # cached organization profile image
         articles_profile_image_urls = organization.articles
@@ -304,6 +310,8 @@ RSpec.describe Organization, type: :model do
 
           organization.update(name: "ACME Org")
 
+          sidekiq_perform_enqueued_jobs
+
           expect(article.reload.reading_list_document).not_to eq(old_reading_list_document)
         end
 
@@ -333,6 +341,102 @@ RSpec.describe Organization, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, organization: organization, spent: false)
       expect(organization.enough_credits?(1)).to be(true)
+    end
+  end
+
+  describe "#public_articles_count" do
+    it "returns the count of published articles" do
+      published_articles = create_list(:article, 2, organization: organization, published: true)
+      create_list(:article, 1, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(published_articles.count)
+    end
+
+    it "returns 0 if there are no published articles" do
+      create_list(:article, 2, organization: organization, published: false)
+
+      expect(organization.public_articles_count).to eq(0)
+    end
+  end
+
+  describe ".simple_name_match" do
+    before do
+      create(:organization, name: "Not Matching")
+      create(:organization, name: "For Fans of Books")
+      create(:organization, name: "Boo! A Ghost")
+    end
+
+    it "finds them by simple ilike match" do
+      query = "boo"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["Boo! A Ghost", "For Fans of Books"])
+
+      query = "book"
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+
+      query = "  BOOK  "
+      results = described_class.simple_name_match(query)
+      expect(results.pluck(:name)).to eq(["For Fans of Books"])
+    end
+
+    it "returns all orgs on empty query" do
+      query = nil
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = ""
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+
+      query = "        "
+      results = described_class.simple_name_match(query)
+      expect(results.size).to eq(3)
+    end
+  end
+
+  describe "#generate_social_images" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+      create(:article, organization: organization)
+    end
+
+    context "when the name or profile_image has changed and the organization has articles" do
+      it "calls SocialImageWorker.perform_async" do
+        organization.name = "New name for this org!"
+        organization.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async)
+      end
+    end
+
+    context "when the name or profile_image has not changed or the organization has no articles" do
+      it "does not call SocialImageWorker.perform_async" do
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+        organization.save
+      end
+    end
+
+    context "when the name or profile_image has changed and the organization has no articles" do
+      it "does not call SocialImageWorker.perform_async" do
+        organization.articles.destroy_all
+        organization.name = "New name for this org!!"
+        organization.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
+  describe "#bust_cache" do
+    context "when a new user is added to the organization" do
+      let(:user) { create(:user) }
+
+      it "calls BustCachePathWorker after creating an organization membership" do
+        org_membership = OrganizationMembership.create(user: user, organization: organization, type_of_user: "admin")
+
+        allow(org_membership).to receive(:bust_cache)
+        org_membership.save
+        expect(org_membership).to have_received(:bust_cache)
+      end
     end
   end
 end

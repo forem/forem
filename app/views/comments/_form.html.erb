@@ -1,5 +1,5 @@
 <div id="response-templates-data" class="hidden"></div>
-<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+<%= javascript_include_tag "validateFileInputs", defer: true %>
 
 <% if @comment.errors.any? %>
   <div class="crayons-notice crayons-notice--danger" role="alert">
@@ -51,8 +51,6 @@
         <button type="button" class="crayons-btn personal-template-button active" data-target-type="personal" data-form-id="new_comment"><%= t("views.comments.write.template.personal") %></button>
         <button type="button" class="crayons-btn moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment"><%= t("views.comments.write.template.moderator") %></button>
       </header>
-
-      <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading" loading="lazy" />
 
       <div class="personal-responses-container">
         <%# filled by JS %>

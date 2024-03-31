@@ -1,18 +1,31 @@
 require "rails_helper"
 
-RSpec.shared_examples "redirects to the lowercase route" do
-  context "when a path contains uppercase characters" do
-    it "redirects to the lowercase route" do
-      get path
-      expect(response).to have_http_status(:moved_permanently)
-      expect(response).to redirect_to(path.downcase)
-    end
-  end
-end
+RSpec.describe "StoriesIndex" do
+  it "redirects to the lowercase route", :aggregate_failures do
+    get "/Bad_name"
+    expect(response).to have_http_status(:moved_permanently)
+    expect(response).to redirect_to("/bad_name")
 
-RSpec.describe "StoriesIndex", type: :request do
+    get "/Bad_name?i=i"
+    expect(response).to have_http_status(:moved_permanently)
+    expect(response).to redirect_to("/bad_name?i=i")
+  end
+
   describe "GET stories index" do
     let(:user) { create(:user) }
+    let(:org) { create(:organization) }
+
+    it "renders head content if present" do
+      allow(Settings::UserExperience).to receive(:head_content).and_return("head content")
+      get "/"
+      expect(response.body).to include("head content")
+    end
+
+    it "renders bottom of body content if present" do
+      allow(Settings::UserExperience).to receive(:bottom_of_body_content).and_return("bottom of body content")
+      get "/"
+      expect(response.body).to include("bottom of body content")
+    end
 
     it "renders page with article list and proper attributes", :aggregate_failures do
       article = create(:article, featured: true)
@@ -66,47 +79,55 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("This is a landing page!")
     end
 
-    it "renders all display_ads of different placements when published and approved" do
-      org = create(:organization)
-      ad = create(:display_ad, published: true, approved: true, organization: org, placement_area: "sidebar_left")
-      second_left_ad = create(:display_ad, published: true, approved: true, organization: org,
-                                           placement_area: "sidebar_left_2")
-      right_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_right",
-                                     organization: org)
+    it "renders billboards when published and approved for sidebar right (first position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                              organization: org)
 
       get "/"
       expect(response.body).to include(ad.processed_html)
-      expect(response.body).to include(second_left_ad.processed_html)
-      expect(response.body).to include(right_ad.processed_html)
     end
 
-    it "does not render display_ads when not approved" do
-      org = create(:organization)
-      ad = create(:display_ad, published: true, approved: false, organization: org)
-      right_ad = create(:display_ad, published: true, approved: false, placement_area: "sidebar_right",
-                                     organization: org)
+    it "renders billboards when published and approved for sidebar right (second position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_second",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "renders billboards when published and approved for sidebar right (third position)" do
+      ad = create(:billboard, published: true, approved: true, placement_area: "sidebar_right_third",
+                              organization: org)
+
+      get "/"
+      expect(response.body).to include(ad.processed_html)
+    end
+
+    it "does not render billboards when not approved" do
+      ad = create(:billboard, published: true, approved: false, placement_area: "sidebar_right",
+                              organization: org)
 
       get "/"
       expect(response.body).not_to include(ad.processed_html)
-      expect(response.body).not_to include(right_ad.processed_html)
     end
 
-    it "renders only one display ad of placement" do
-      org = create(:organization)
-      left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left", organization: org)
-      second_left_ad = create(:display_ad, published: true, approved: true, placement_area: "sidebar_left",
-                                           organization: org)
+    it "renders only one billboard per placement" do
+      billboard = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                                     organization: org)
+      second_billboard = create(:billboard, published: true, approved: true, placement_area: "sidebar_right",
+                                            organization: org)
 
       get "/"
-      expect(response.body).to include(left_ad.processed_html).or(include(second_left_ad.processed_html))
-      expect(response.body).to include("crayons-sponsorship-widget").once
+      expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
+      expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
+      expect(response.body).to include("sponsorship-dropdown-trigger-").once
     end
 
-    it "shows listings" do
-      user = create(:user)
-      listing = create(:listing, user_id: user.id)
+    it "renders a hero billboard" do
+      allow(FeatureFlag).to receive(:enabled?).with(:hero_billboard).and_return(true)
+      billboard = create(:billboard, published: true, approved: true, placement_area: "home_hero", organization: org)
       get "/"
-      expect(response.body).to include(CGI.escapeHTML(listing.title))
+      expect(response.body).to include(billboard.processed_html)
     end
 
     it "does not set cache-related headers if private" do
@@ -203,74 +224,6 @@ RSpec.describe "StoriesIndex", type: :request do
       end
     end
 
-    context "with campaign_sidebar" do
-      before do
-        allow(Settings::Campaign).to receive(:featured_tags).and_return("mytag,yourtag")
-        allow(Settings::UserExperience).to receive(:home_feed_minimum_score).and_return(7)
-
-        a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
-        create(:article, approved: true, body_markdown: a_body, score: 1)
-        u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,mytag\n---\n\nHello"
-        create(:article, approved: false, body_markdown: u_body, score: 1)
-      end
-
-      it "displays display name when it is set" do
-        allow(Settings::Campaign).to receive(:display_name).and_return("Backstreet is back")
-        get "/"
-        expect(response.body).not_to include("Backstreet is back (0)")
-      end
-
-      it "displays Stories fallback when display name is not set" do
-        allow(Settings::Campaign).to receive(:display_name).and_return("")
-        get "/"
-        expect(response.body).not_to include("Stories (0)")
-      end
-
-      it "doesn't display posts with the campaign tags when sidebar is disabled" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
-      end
-
-      it "doesn't display unapproved posts" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
-        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(true)
-        Article.last.update_column(:score, -2)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
-      end
-
-      it "displays unapproved post if approval is not required" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
-        allow(Settings::Campaign).to receive(:articles_require_approval).and_return(false)
-        get "/"
-        expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
-      end
-
-      it "displays only approved posts with the campaign tags" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(false)
-        get "/"
-        expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
-      end
-
-      it "displays sidebar url if url is set" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
-        allow(Settings::Campaign).to receive(:sidebar_image).and_return("https://example.com/image.png")
-        get "/"
-        expect(response.body).to include('<a href="https://campaign-lander.com"')
-      end
-
-      it "does not display sidebar url if image is not present is set" do
-        allow(Settings::Campaign).to receive(:sidebar_enabled).and_return(true)
-        allow(Settings::Campaign).to receive(:url).and_return("https://campaign-lander.com")
-        get "/"
-        expect(response.body).not_to include('<a href="https://campaign-lander.com"')
-      end
-    end
-
     context "with default_locale configured to fr" do
       before do
         allow(Settings::UserExperience).to receive(:default_locale).and_return("fr")
@@ -289,12 +242,30 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET stories index with timeframe" do
     describe "/latest" do
+      let(:user) { create(:user) }
+      let!(:low_score) { create(:article, score: -10) }
+
+      before do
+        create_list(:article, 3, score: Settings::UserExperience.home_feed_minimum_score + 1)
+      end
+
       it "includes a link to Relevant", :aggregate_failures do
         get "/latest"
 
         # The link should be `/`
         expected_tag = "<a data-text=\"Relevant\" href=\"/\""
         expect(response.body).to include(expected_tag)
+      end
+
+      it "includes message and a link to sign in for signed-out" do
+        get "/latest"
+        expect(response.body).to include("Some latest posts are only visible for members")
+        expect(response.body).to match(/Sign in.*to see all latest/)
+      end
+
+      it "excludes low-score content for signed-out" do
+        get "/latest"
+        expect(response.body).not_to include(low_score.title)
       end
     end
 
@@ -327,27 +298,11 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET podcast index" do
-    include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{build(:podcast).slug.upcase}" }
-    end
-
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
       get "/#{podcast.slug}"
       expect(response.body).to include(podcast.title)
-    end
-  end
-
-  describe "GET user_path" do
-    include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{build(:user).username.upcase}" }
-    end
-  end
-
-  describe "GET organization_path" do
-    include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{build(:organization).slug.upcase}" }
     end
   end
 end

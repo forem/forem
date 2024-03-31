@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Display users search spec", type: :system, js: true do
+RSpec.describe "Display users search spec", js: true do
   let(:current_user) { create(:user, username: "ironman", name: "Iron Man") }
   let(:found_user) { create(:user, username: "janedoe", name: "Jane Doe") }
   let(:found_two_user) { create(:user, username: "doejane", name: "Doe Jane") }

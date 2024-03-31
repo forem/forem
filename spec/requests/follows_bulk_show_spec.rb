@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Follows #bulk_show", type: :request do
+RSpec.describe "Follows #bulk_show" do
   let(:current_user) { create(:user) }
   let(:followed_user) { create(:user) }
   let(:not_followed_user) { create(:user) }

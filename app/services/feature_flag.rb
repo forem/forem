@@ -2,8 +2,26 @@
 #
 # @note A wrapper around the Flipper gem
 module FeatureFlag
+  class Actor < SimpleDelegator
+    class << self
+      alias [] new
+    end
+
+    def flipper_id
+      respond_to?(:id) ? id : self
+    end
+  end
+
   class << self
     delegate :add, :disable, :enable, :enabled?, :exist?, :remove, to: Flipper
+
+    def enabled_for_user?(flag_name, user)
+      enabled?(flag_name, FeatureFlag::Actor[user])
+    end
+
+    def enabled_for_user_id?(flag_name, user_id)
+      enabled?(flag_name, FeatureFlag::Actor[user_id])
+    end
 
     # @!method FeatureFlag.enabled?(feature_flag_name, *args)
     #

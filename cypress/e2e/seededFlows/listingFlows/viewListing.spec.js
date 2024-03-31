@@ -6,21 +6,6 @@ describe('View listing', () => {
     cy.visit('/');
   });
 
-  it('opens a listing from the Feed page', () => {
-    cy.findByText('Listing title').click();
-    cy.findByTestId('listings-modal').as('listingsModal');
-
-    cy.get('@listingsModal').findByText('Listing').should('exist');
-    cy.get('@listingsModal').findByText('Listing title').should('exist');
-    cy.get('@listingsModal')
-      .findAllByRole('button')
-      .first()
-      .should('have.focus');
-
-    cy.get('@listingsModal').findByRole('button', { name: /Close/ }).click();
-    cy.get('@listingsModal').should('not.exist');
-  });
-
   it('opens a listing from the listings page', () => {
     cy.intercept(
       '/search/listings?category=&listing_search=&page=0&per_page=75&tag_boolean_mode=all',
@@ -55,14 +40,16 @@ describe('View listing', () => {
     cy.findByRole('main')
       .findByRole('link', { name: 'Listing title' })
       .as('listingTitle');
-    cy.get('@listingTitle').focus().click();
+    cy.get('@listingTitle').focus();
+    cy.get('@listingTitle').click();
 
     cy.findByTestId('listings-modal').as('listingsModal');
     cy.get('@listingsModal')
       .findByRole('link', { name: 'cfp' })
       .as('listingCategory');
 
-    cy.get('@listingCategory').focus().click();
+    cy.get('@listingCategory').focus();
+    cy.get('@listingCategory').click();
 
     cy.findByTestId('listings-modal').should('not.exist');
     cy.get('@listingTitle').should('be.focused');

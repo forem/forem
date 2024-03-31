@@ -44,12 +44,23 @@ module UnifiedEmbed
 
     def self.validate_link(input:, retries: MAX_REDIRECTION_COUNT, method: Net::HTTP::Head)
       uri = URI.parse(input.split.first)
+      return input if uri.host == "twitter.com" # Twitter sends a forbidden like to codepen below
+
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true if http.port == 443
 
       req = method.new(uri.request_uri)
-      req["User-Agent"] = "#{Settings::Community.community_name} (#{URL.url})"
+      req["User-Agent"] = "#{safe_user_agent} (#{URL.url})"
+
       response = http.request(req)
+
+      # This might be a temporary hack we can remove in the future. For some
+      # reason, CodePen sometimes sends a 403 on initial request, it's likely a
+      # misconfigured CloudFlare on their end, but making the request a second
+      # time seems to fix it.
+      if uri.host == "codepen.io" && response.is_a?(Net::HTTPForbidden)
+        response = http.request(req)
+      end
 
       case response
       when Net::HTTPSuccess
@@ -75,6 +86,10 @@ module UnifiedEmbed
       return unless link.start_with?("#{URL.url}/listings/") && !Listing.feature_enabled?
 
       raise StandardError, I18n.t("liquid_tags.unified_embed.tag.listings_disabled")
+    end
+
+    def self.safe_user_agent(agent = Settings::Community.community_name)
+      agent.gsub(/[^-_.()a-zA-Z0-9 ]+/, "-")
     end
   end
 end

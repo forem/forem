@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Dashboards", type: :request do
+RSpec.describe "Dashboards" do
   let(:user)          { create(:user) }
   let(:second_user)   { create(:user) }
   let(:super_admin)   { create(:user, :super_admin) }
@@ -52,6 +52,14 @@ RSpec.describe "Dashboards", type: :request do
         scheduled_article
         get "/dashboard"
         expect(response.body).to include "Scheduled"
+      end
+
+      it "renders the detected language if an article has it" do
+        article
+        article.update_column(:language, :es)
+        get "/dashboard"
+        expect(response.body).to include "Language:"
+        expect(response.body).to include "Spanish"
       end
 
       it "renders the delete button for scheduled article" do
@@ -225,23 +233,59 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    describe "followed tags section" do
-      let(:tag) { create(:tag) }
+    context "when dealing with tags" do
+      let(:first_followed_tag) { create(:tag, name: "tagone") }
+      let(:antifollowed_tag) { create(:tag, name: "tagtwo") }
+      let(:second_followed_tag) { create(:tag, name: "tagthree") }
 
       before do
         sign_in user
-        user.follow tag
+        first_followed = user.follow(first_followed_tag)
+        first_followed.update explicit_points: 5
+
+        antifollowed = user.follow(antifollowed_tag)
+        antifollowed.update explicit_points: -5
+
+        second_followed = user.follow(second_followed_tag)
+        second_followed.update explicit_points: 0
         user.reload
-        get "/dashboard/following_tags"
       end
 
-      it "renders followed tags count" do
-        expect(response.body).to include "Following tags (1)"
+      # rubocop:disable RSpec/NestedGroups
+      describe "followed tags section" do
+        before do
+          get "/dashboard/following_tags"
+        end
+
+        it "renders followed tags count" do
+          expect(response.body).to include "Following tags (2)"
+        end
+
+        it "lists followed tags" do
+          expect(response.body).to include first_followed_tag.name
+          expect(response.body).to include second_followed_tag.name
+
+          expect(response.body).not_to include antifollowed_tag.name
+        end
       end
 
-      it "lists followed tags" do
-        expect(response.body).to include tag.name
+      describe "hidden tags section" do
+        before do
+          get "/dashboard/hidden_tags"
+        end
+
+        it "renders hidden tags count" do
+          expect(response.body).to include "Hidden tags (1)"
+        end
+
+        it "lists hidden tags" do
+          expect(response.body).not_to include first_followed_tag.name
+          expect(response.body).not_to include second_followed_tag.name
+
+          expect(response.body).to include antifollowed_tag.name
+        end
       end
+      # rubocop:enable RSpec/NestedGroups
     end
 
     describe "followed organizations section" do
@@ -292,11 +336,21 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in" do
-      it "renders the current user's followers" do
+      let(:spam_user) { create(:user, :spam) }
+      let(:suspended_user) { create(:user, :suspended) }
+
+      before do
         second_user.follow user
+        spam_user.follow user
+        suspended_user.follow user
         sign_in user
+      end
+
+      it "only includes good standing users as followers (not spam or suspended)", :aggregated_failures do
         get "/dashboard/user_followers"
         expect(response.body).to include CGI.escapeHTML(second_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(spam_user.name)
+        expect(response.body).not_to include CGI.escapeHTML(suspended_user.name)
       end
     end
   end
@@ -327,7 +381,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user is an org admin" do
       it "shows page properly" do
-        org = create :organization
+        org = create(:organization)
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
 
         sign_in user
@@ -338,7 +392,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user is an org member" do
       it "shows page properly" do
-        org = create :organization
+        org = create(:organization)
         create(:organization_membership, user: user, organization: org)
 
         sign_in user

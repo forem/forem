@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "NavigationLinks", type: :request do
+RSpec.describe "NavigationLinks" do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -42,7 +42,7 @@ RSpec.describe "NavigationLinks", type: :request do
     it "creates a navigation link" do
       expect do
         post admin_navigation_links_path, params: { navigation_link: new_navigation_link }
-      end.to change { NavigationLink.all.count }.by(1)
+      end.to change(NavigationLink, :count).by(1)
 
       last_navigation_link_record = NavigationLink.last
       expect(last_navigation_link_record.name).to eq(new_navigation_link[:name])

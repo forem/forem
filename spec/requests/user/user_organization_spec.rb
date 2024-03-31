@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserOrganization", type: :request do
+RSpec.describe "UserOrganization" do
   let(:user)          { create(:user) }
   let(:organization)  { create(:organization, secret: SecureRandom.hex(50)) }
 
@@ -180,7 +180,7 @@ RSpec.describe "UserOrganization", type: :request do
       end
 
       it "deletes the organization" do
-        sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id]) do
+        sidekiq_assert_enqueued_with(job: Organizations::DeleteWorker, args: [org_id, org_admin.id, true]) do
           delete organization_path(org_id)
         end
       end

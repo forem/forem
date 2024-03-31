@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "SocialPreviews", type: :request do
+RSpec.describe "SocialPreviews" do
   let(:user) { create(:user) }
   let(:tag) { create(:tag, badge: create(:badge)) }
   let(:organization) { create(:organization) }

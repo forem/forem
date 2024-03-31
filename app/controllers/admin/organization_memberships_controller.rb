@@ -4,37 +4,6 @@ module Admin
 
     ALLOWED_PARAMS = %i[user_id type_of_user organization_id].freeze
 
-    def update
-      organization_membership = OrganizationMembership.find(params[:id])
-
-      respond_to do |format|
-        format.html do
-          if organization_membership.update(organization_membership_params_for_update)
-            flash[:success] =
-              I18n.t("admin.organization_memberships_controller.updated",
-                     type: organization_membership.type_of_user)
-          else
-            flash[:danger] = organization_membership.errors_as_sentence
-          end
-
-          redirect_to admin_user_path(organization_membership.user_id)
-        end
-
-        format.js do
-          if organization_membership.update(organization_membership_params_for_update)
-            message =
-              I18n.t("admin.organization_memberships_controller.updated",
-                     type: organization_membership.type_of_user)
-            render json: { result: message }, content_type: "application/json"
-          else
-            render json: { error: organization_membership.errors_as_sentence },
-                   content_type: "application/json",
-                   status: :unprocessable_entity
-          end
-        end
-      end
-    end
-
     def create
       organization_membership = OrganizationMembership.new(organization_membership_params_for_create)
       organization = Organization.find_by(id: organization_membership_params_for_create[:organization_id])
@@ -67,6 +36,37 @@ module Admin
             message = I18n.t("admin.organization_memberships_controller.not_exist",
                              org_id: organization_membership_params_for_create[:organization_id])
             render json: { error: message }, content_type: "application/json", status: :unprocessable_entity
+          else
+            render json: { error: organization_membership.errors_as_sentence },
+                   content_type: "application/json",
+                   status: :unprocessable_entity
+          end
+        end
+      end
+    end
+
+    def update
+      organization_membership = OrganizationMembership.find(params[:id])
+
+      respond_to do |format|
+        format.html do
+          if organization_membership.update(organization_membership_params_for_update)
+            flash[:success] =
+              I18n.t("admin.organization_memberships_controller.updated",
+                     type: organization_membership.type_of_user)
+          else
+            flash[:danger] = organization_membership.errors_as_sentence
+          end
+
+          redirect_to admin_user_path(organization_membership.user_id)
+        end
+
+        format.js do
+          if organization_membership.update(organization_membership_params_for_update)
+            message =
+              I18n.t("admin.organization_memberships_controller.updated",
+                     type: organization_membership.type_of_user)
+            render json: { result: message }, content_type: "application/json"
           else
             render json: { error: organization_membership.errors_as_sentence },
                    content_type: "application/json",

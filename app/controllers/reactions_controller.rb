@@ -12,16 +12,8 @@ class ReactionsController < ApplicationController
     if params[:article_id]
       id = params[:article_id]
 
-      reactions = if session_current_user_id
-                    Reaction.public_category
-                      .where(
-                        reactable_id: id,
-                        reactable_type: "Article",
-                        user_id: session_current_user_id,
-                      )
-                  else
-                    Reaction.none
-                  end
+      reactions = reactions_by_user_id(session_current_user_id) if session_current_user_id
+      reactions ||= Reaction.none
 
       result = { article_reaction_counts: Reaction.count_for_article(id) }
     else
@@ -65,7 +57,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_comment_reactions(user, comment_ids)
-    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}",
+    cache = Rails.cache.fetch("#{user.cache_key}/public-comment-reactions-#{user.public_reactions_count}",
                               expires_in: 24.hours) do
       user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
         h[r.reactable_id] = r.attributes
@@ -85,6 +77,23 @@ class ReactionsController < ApplicationController
     # however it is dependent on the category of the reaction.
     policy_query = ReactionPolicy.policy_query_for(category: params[:category])
     authorize(Reaction, policy_query)
+  end
+
+  def reactions_by_user_id(user_id = session_current_user_id)
+    id = params[:article_id]
+
+    public_reactions = Reaction.public_category.where(
+      reactable_id: id,
+      reactable_type: "Article",
+      user_id: user_id,
+    )
+    readinglist = Reaction.where(
+      reactable_id: id,
+      reactable_type: "Article",
+      category: "readinglist", user_id: user_id
+    )
+
+    public_reactions + readinglist
   end
 
   # TODO: should this move to toggle service? refactor?

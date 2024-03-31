@@ -1,10 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "UserProfiles", type: :request do
+RSpec.describe "UserProfiles" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
+  let(:current_user) { create(:user) }
 
-  describe "GET /user" do
+  describe "GET /:username" do
     it "renders to appropriate page" do
       get "/#{user.username}"
       expect(response.body).to include CGI.escapeHTML(user.name)
@@ -45,24 +46,6 @@ RSpec.describe "UserProfiles", type: :request do
                           old_old_username: user.old_username)
       get "/#{old_username}"
       expect(response).to redirect_to("/#{user.username}")
-    end
-
-    it "raises not found for banished users" do
-      banishable_user = create(:user)
-      Moderator::BanishUser.call(admin: user, user: banishable_user)
-      expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
-      expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "raises not found if user not registered" do
-      user.update_column(:registered, false)
-      expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    it "renders noindex meta if suspended" do
-      user.add_role(:suspended)
-      get "/#{user.username}"
-      expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
     end
 
     it "does not render noindex meta if not suspended" do
@@ -108,6 +91,28 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include "<p>Location</p>"
       expect(response.body).to include user.profile.location
       expect(response.body).to include "M18.364 17.364L12 23.728l-6.364-6.364a9 9 0 1112.728 0zM12 13a2 2 0 100-4 2 2 0"
+    end
+
+    context "when has comments" do
+      before do
+        create(:comment, user: user, body_markdown: "nice_comment")
+        create(:comment, user: user, score: -100, body_markdown: "low_comment")
+        create(:comment, user: user, score: -401, body_markdown: "bad_comment")
+      end
+
+      it "displays good standing comments", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("nice_comment")
+        expect(response.body).not_to include("low_comment")
+        expect(response.body).not_to include("bad_comment")
+      end
+
+      it "doesn't display any comments for not signed in user", :aggregate_failures do
+        get user.path
+        expect(response.body).not_to include("nice_comment")
+        expect(response.body).not_to include("bad_comment")
+      end
     end
 
     context "when organization" do
@@ -194,6 +199,74 @@ RSpec.describe "UserProfiles", type: :request do
         expect(response.body).not_to include("github-repos-container")
       end
     end
+
+    # rubocop:disable RSpec/NestedGroups
+    describe "not found and no index behaviour" do
+      let(:spam_user) { create(:user, :spam) }
+      let(:admin_user) { create(:user, :admin) }
+
+      it "raises not found for banished users" do
+        banishable_user = create(:user)
+        Moderator::BanishUser.call(admin: user, user: banishable_user)
+        expect { get "/#{banishable_user.reload.old_username}" }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { get "/#{banishable_user.reload.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed in" do
+        sign_in current_user
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises not found for spammers with articles for signed out" do
+        create(:article, user: spam_user)
+        expect { get spam_user.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "renders spammer users for admins", :aggregate_failures do
+        sign_in admin_user
+        get spam_user.path
+        expect(response).to be_successful
+        expect(response.body).to include("Spam")
+      end
+
+      context "when a user is signed in" do
+        it "does not raise not found for suspended users who have no current content" do
+          sign_in current_user
+
+          suspended_user = create(:user)
+          suspended_user.add_role(:suspended)
+          create(:article, user_id: user.id, published: false, published_at: Date.tomorrow)
+
+          get "/#{suspended_user.username}"
+          expect(response).to be_successful
+        end
+      end
+
+      context "when a user is not signed in" do
+        it "raises not found for suspended users who do not have published content" do
+          suspended_user = create(:user)
+          suspended_user.add_role(:suspended)
+          create(:article, user_id: user.id, published: false, published_at: Date.tomorrow)
+
+          expect { get "/#{suspended_user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
+
+      it "renders noindex meta if suspended (and has published content)" do
+        user.add_role(:suspended)
+
+        create(:article, user_id: user.id)
+        get "/#{user.username}"
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "raises not found if user not registered" do
+        user.update_column(:registered, false)
+        expect { get "/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+    # rubocop:enable RSpec/NestedGroups
   end
 
   describe "redirect to moderation" do

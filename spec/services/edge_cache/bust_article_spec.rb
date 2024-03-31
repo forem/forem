@@ -28,7 +28,7 @@ RSpec.describe EdgeCache::BustArticle, type: :service do
   it "busts the cache" do
     described_class.call(article)
     expect(article).to have_received(:purge).once
-    expect(cache_bust).to have_received(:call).exactly(9).times
+    expect(cache_bust).to have_received(:call).exactly(6).times
     expect(cache_bust).to have_received(:call).with(article.path).once
     expect(described_class).to have_received(:bust_home_pages).with(cache_bust, article).once
     expect(described_class).to have_received(:bust_tag_pages).with(cache_bust, article).once

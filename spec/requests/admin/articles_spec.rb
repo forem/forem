@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/content_manager/articles", type: :request do
+RSpec.describe "/admin/content_manager/articles" do
   let(:super_admin) { create(:user, :super_admin) }
   let(:article) { create(:article) }
 

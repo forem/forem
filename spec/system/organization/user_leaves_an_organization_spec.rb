@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User leaves an organization", type: :system do
+RSpec.describe "User leaves an organization" do
   let!(:org_user) { create(:user, :org_member) }
   let(:organization) { org_user.organizations.first }
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "OrganizationsUpdate", type: :request do
+RSpec.describe "OrganizationsUpdate" do
   let(:user) { create(:user, :org_admin) }
   let(:org_id) { user.organizations.first.id }
   let(:article) { create(:article, user_id: user.id) }
@@ -29,13 +29,6 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     Organization.last.update_column(:profile_updated_at, 2.weeks.ago)
     put "/organizations/#{org_id}", params: { organization: { id: org_id, text_color_hex: "#111111" } }
     expect(Organization.last.profile_updated_at).to be > 2.minutes.ago
-  end
-
-  it "updates nav_image" do
-    put "/organizations/#{org_id}", params: { organization: { id: org_id,
-                                                              nav_image: fixture_file_upload("podcast.png",
-                                                                                             "image/png") } }
-    expect(Organization.find(org_id).nav_image_url).to be_present
   end
 
   it "returns not_found if organization is missing" do

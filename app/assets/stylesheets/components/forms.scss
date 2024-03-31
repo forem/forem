@@ -66,6 +66,10 @@
     display: none;
   }
 
+  &::-webkit-date-and-time-value {
+    min-height: 1.5em;
+  }
+
   &--icon {
     padding-left: var(--su-7);
   }
@@ -146,6 +150,13 @@
   &::-ms-clear {
     display: none;
   }
+
+  &.disabled {
+    background-color: #f2f2f2;
+    color: #888888;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
 }
 
 ///////////////////////////////////////////////////
@@ -164,6 +175,10 @@
 
     + .crayons-field__description {
       margin-top: 0;
+    }
+
+    &.required:after {
+      content: '*';
     }
   }
 
@@ -210,6 +225,11 @@
     margin: 0.1875em; // centering checkbox within 1.5em grid cell.
     justify-self: center;
   }
+}
+
+input[type='file']::file-selector-button {
+  @extend .crayons-btn;
+  @extend .crayons-btn--secondary;
 }
 
 .crayons-fields {
@@ -275,7 +295,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &__popover {
     min-width: min-content;
-    
+
     & .react-colorful {
       padding: var(--su-2);
       border-radius: var(--radius);
@@ -283,7 +303,7 @@ textarea.crayons-textfield.crayons-textfield--ghost {
       box-shadow: var(--shadow-1);
       width: 220px;
       height: 160px;
-      
+
       &__pointer {
         cursor: pointer;
       }

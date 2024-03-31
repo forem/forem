@@ -39,5 +39,6 @@ en:
             other: "%{count} members"
       support: Support email
       team: Meet the team
+      all_members: See All Members
       twitter:
         icon: Twitter logo

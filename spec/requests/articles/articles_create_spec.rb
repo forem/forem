@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesCreate", type: :request do
+RSpec.describe "ArticlesCreate" do
   let(:user) { create(:user, :org_member) }
   let(:template) { file_fixture("article_published.txt").read }
   let(:new_title) { "NEW TITLE #{rand(100)}" }
@@ -193,6 +193,13 @@ RSpec.describe "ArticlesCreate", type: :request do
       post "/articles", params: { article: { body_markdown: body_markdown } }
       a = Article.find_by(title: "super-article")
       expect(a.published_at).to be_within(1.minute).of(published_at)
+    end
+  end
+
+  context "when validation error" do
+    it "returns 422 status code" do
+      post "/articles", params: { article: { body_markdown: nil } }
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 end

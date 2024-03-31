@@ -4,11 +4,11 @@ require "swagger_helper"
 # rubocop:disable RSpec/EmptyExampleGroup
 # rubocop:disable RSpec/VariableName
 
-RSpec.describe "api/v1/reactions", type: :request do
+RSpec.describe "api/v1/reactions" do
   let(:Accept) { "application/vnd.forem.api-v1+json" }
   let(:api_secret) { create(:api_secret) }
   let(:category) { "like" }
-  let(:reactable) { create :article }
+  let(:reactable) { create(:article) }
   let(:reaction) { reactable.reactions.create user: user, category: "like" }
   let(:result) { ReactionHandler::Result.new reaction: reaction }
   let(:user) { api_secret.user }
@@ -17,7 +17,6 @@ RSpec.describe "api/v1/reactions", type: :request do
     user.add_role(:admin)
 
     result.category = category
-    allow(FeatureFlag).to receive(:enabled?).with(:api_v1).and_return(true)
     allow(ReactionHandler).to receive(:toggle).and_return(result)
   end
 

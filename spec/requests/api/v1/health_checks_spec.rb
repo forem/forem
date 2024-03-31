@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "HealthCheck", type: :request do
+RSpec.describe "HealthCheck" do
   let(:token) { "secret" }
   let(:headers) { { "health-check-token" => token, "Accept" => "application/vnd.forem.api-v1+json" } }
 

@@ -12,12 +12,16 @@ export const Meta = ({
   mainImage,
   onMainImageUrlChange,
   switchHelpContext,
+  coverImageCrop,
+  coverImageHeight,
 }) => {
   return (
     <div className="crayons-article-form__top text-padding drop-area">
       <ArticleCoverImage
         mainImage={mainImage}
         onMainImageUrlChange={onMainImageUrlChange}
+        coverImageCrop={coverImageCrop}
+        coverImageHeight={coverImageHeight}
       />
       <Title
         defaultValue={titleDefaultValue}
@@ -41,6 +45,8 @@ Meta.propTypes = {
   mainImage: PropTypes.string,
   onMainImageUrlChange: PropTypes.func.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
+  coverImageHeight: PropTypes.string.isRequired,
+  coverImageCrop: PropTypes.string.isRequired,
 };
 
 Meta.displayName = 'Meta';

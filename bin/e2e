@@ -1,4 +1,12 @@
 #!/bin/bash
+
+# Setting the port that the Rails app launches on for a stable app domain in permalinks
+# (otherwise, Cypress chooses a random port each run)
+# Choosing 30300 here to avoid conflicts with local dev on :3000
+export CYPRESS_RAILS_HOST="localhost"
+export CYPRESS_RAILS_PORT="30300"
+export APP_DOMAIN="localhost:30300"
+
 printf "Doing a quick bundle check to make sure gems are all up to date.\n\n"
 bundle check # ensure gems are up to date
 
@@ -34,5 +42,5 @@ if [ "$1" = "--creator-onboarding-seed" ]; then
    echo "Running E2E tests with creator onboarding seed data"
    CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.config.js --e2e" RAILS_ENV=test E2E=true CREATOR_ONBOARDING_SEED_DATA=1 E2E_FOLDER=creatorOnboardingFlows bundle exec rake cypress:open
 else
-   CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.config.js --e2e" RAILS_ENV=test E2E=true bundle exec rake cypress:open 
+   CYPRESS_RAILS_CYPRESS_OPTS="--config-file cypress.dev.config.js --e2e" RAILS_ENV=test E2E=true bundle exec rake cypress:open
 fi

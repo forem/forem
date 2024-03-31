@@ -14,6 +14,12 @@ RSpec.describe Search::User, type: :service do
       expect(described_class.search_documents.pluck(:id)).not_to include(user.id)
     end
 
+    it "does not return unregistered (aka invited) users" do
+      user = create(:user, registered: false)
+
+      expect(described_class.search_documents.pluck(:id)).not_to include(user.id)
+    end
+
     it "returns regular users" do
       user = create(:user)
 

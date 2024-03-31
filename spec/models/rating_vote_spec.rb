@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RatingVote, type: :model do
+RSpec.describe RatingVote do
   let(:user) { create(:user, :trusted) }
   let(:user2) { create(:user, :trusted) }
   let(:article) { create(:article, user: user) }

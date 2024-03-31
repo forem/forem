@@ -14,7 +14,8 @@ function renderPage() {
   const communityConfig = {
     communityName: dataElement.dataset.communityName,
     communityLogo: dataElement.dataset.communityLogo,
-    communityBackground: dataElement.dataset.communityBackground,
+    communityBackgroundColor: dataElement.dataset.communityBackgroundColor,
+    communityBackgroundColor2: dataElement.dataset.communityBackgroundColor2,
     communityDescription: dataElement.dataset.communityDescription,
   };
   import('../onboarding/Onboarding')

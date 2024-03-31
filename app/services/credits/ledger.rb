@@ -2,12 +2,12 @@ module Credits
   class Ledger
     Item = Struct.new(:purchase, :cost, :purchased_at, keyword_init: true)
 
-    def initialize(user)
-      @user = user
-    end
-
     def self.call(...)
       new(...).call
+    end
+
+    def initialize(user)
+      @user = user
     end
 
     def call

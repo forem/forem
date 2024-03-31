@@ -7,12 +7,12 @@ RSpec.describe TwitchTag, type: :liquid_tag do
 
   def assert_parses_clip(slug, token)
     liquid = Liquid::Template.parse("{% twitch #{token} %}").render
-    expect(liquid).to include "https://clips.twitch.tv/embed?clip=#{slug}&amp;parent=localhost&amp;autoplay=false"
+    expect(liquid).to include "https://clips.twitch.tv/embed?clip=#{slug}&amp;parent=forem.test&amp;autoplay=false"
   end
 
   def assert_parses_video(id, token)
     liquid = Liquid::Template.parse("{% twitch #{token} %}").render
-    expect(liquid).to include "https://player.twitch.tv/?video=#{id}&amp;parent=localhost&amp;autoplay=false"
+    expect(liquid).to include "https://player.twitch.tv/?video=#{id}&amp;parent=forem.test&amp;autoplay=false"
   end
 
   context "when twitch clip slug passed in" do

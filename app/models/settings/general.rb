@@ -1,6 +1,12 @@
 module Settings
   class General < Base
+    BANNER_USER_CONFIGS = %w[off logged_out_only all].freeze
+    BANNER_PLATFORM_CONFIGS = %w[off all all_web desktop_web mobile_web mobile_app].freeze
+
     self.table_name = "site_configs"
+    SOCIAL_MEDIA_SERVICES = %w[
+      twitter facebook github instagram twitch mastodon
+    ].freeze
 
     # Forem Team
     # [forem-fix] Remove channel name from Settings::General
@@ -21,9 +27,15 @@ module Settings
     setting :contact_email, type: :string, default: ApplicationConfig["DEFAULT_EMAIL"]
     setting :periodic_email_digest, type: :integer, default: 2
 
-    # Google Analytics Tracking ID, e.g. UA-71991000-1
+    # Analytics and tracking
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
     setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+    setting :cookie_banner_user_context, type: :string, default: "off", validates: {
+      inclusion: { in: BANNER_USER_CONFIGS }
+    }
+    setting :coolie_banner_platform_context, type: :string, default: "off", validates: {
+      inclusion: { in: BANNER_PLATFORM_CONFIGS }
+    }
 
     # Ahoy Tracking
     setting :ahoy_tracking, type: :boolean, default: false
@@ -69,6 +81,10 @@ module Settings
     setting :payment_pointer, type: :string
     setting :stripe_api_key, type: :string, default: ApplicationConfig["STRIPE_SECRET_KEY"]
     setting :stripe_publishable_key, type: :string, default: ApplicationConfig["STRIPE_PUBLISHABLE_KEY"]
+    # Billboard-related. Not sure this is the best place for it, but it's a start.
+    setting :billboard_enabled_countries, type: :hash, default: Geolocation::DEFAULT_ENABLED_COUNTRIES, validates: {
+      enabled_countries_hash: true
+    }
 
     # Newsletter
     # <https://mailchimp.com/developer/>
@@ -81,10 +97,7 @@ module Settings
     setting :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
     # Onboarding
-    setting :onboarding_background_image, type: :string, validates: { url: true, unless: -> { value.blank? } }
     setting :suggested_tags, type: :array, default: %w[]
-    setting :suggested_users, type: :array, default: %w[]
-    setting :prefer_manual_suggested_users, type: :boolean, default: false
 
     # Social Media
     setting :social_media_handles, type: :hash, default: {
@@ -92,11 +105,13 @@ module Settings
       facebook: nil,
       github: nil,
       instagram: nil,
-      twitch: nil
+      twitch: nil,
+      mastodon: nil
     }
     setting :twitter_hashtag, type: :string
 
     # Tags
+    setting :display_sidebar_active_discussions, type: :boolean, default: true
     setting :sidebar_tags, type: :array, default: %w[]
 
     # Broadcast
@@ -117,5 +132,28 @@ module Settings
     setting :feed_pinned_article_id, type: :integer, validates: {
       existing_published_article_id: true, allow_nil: true
     }
+
+    # Onboarding newsletter
+    setting :onboarding_newsletter_content, type: :markdown
+    setting :onboarding_newsletter_content_processed_html
+    setting :onboarding_newsletter_opt_in_head
+    setting :onboarding_newsletter_opt_in_subhead
+
+    setting :geos_with_allowed_default_email_opt_in, type: :array, default: %w[]
+
+    setting :default_content_language, type: :string, default: "en",
+                                       validates: { inclusion: Languages::Detection.codes }
+
+    def self.custom_newsletter_configured?
+      onboarding_newsletter_content_processed_html.present? &&
+        onboarding_newsletter_opt_in_head.present? &&
+        onboarding_newsletter_opt_in_subhead.present?
+    end
+
+    def self.social_media_services
+      SOCIAL_MEDIA_SERVICES.index_with do |name|
+        social_media_handles[name]
+      end
+    end
   end
 end

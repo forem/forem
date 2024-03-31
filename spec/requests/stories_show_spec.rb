@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "StoriesShow", type: :request do
+RSpec.describe "StoriesShow" do
   let(:user) { create(:user) }
   let(:org)     { create(:organization) }
   let(:article) { create(:article, user: user) }
@@ -98,6 +98,13 @@ RSpec.describe "StoriesShow", type: :request do
     it "does not render title tag with search_optimized_title_preamble not signed in but not set" do
       get article.path
       expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
+    end
+
+    it "renders proper wrapper content clases" do
+      get article.path
+      expect(response.body)
+        .to include(" #{article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}")
+      expect(response.body).to include(" articleuser-#{article.user_id}")
     end
 
     ###
@@ -214,6 +221,18 @@ RSpec.describe "StoriesShow", type: :request do
       article.user.update_column(:comments_count, 1)
       get article.path
       expect(response.body).not_to include("noindex")
+    end
+
+    it "renders og:image with main image if present ahead of social" do
+      article = create(:article, with_main_image: true, social_image: "https://example.com/image.jpg")
+      get article.path
+      expect(response.body).to include(%(property="og:image" content="#{article.main_image}"))
+    end
+
+    it "renders og:image with social if present and main image not so much" do
+      article = create(:article, with_main_image: false, social_image: "https://example.com/image.jpg")
+      get article.path
+      expect(response.body).to include(%(property="og:image" content="#{article.social_image}"))
     end
   end
 

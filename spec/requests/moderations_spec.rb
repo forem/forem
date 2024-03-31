@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when not logged-in" do
-    it "does not grant access", proper_status: true do
+    it "does not grant access", :proper_status do
       get path
       expect(response).to have_http_status(:not_found)
     end
@@ -15,7 +15,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   context "when user is not trusted" do
     before { sign_in create(:user) }
 
-    it "does not grant access", proper_status: true do
+    it "does not grant access", :proper_status do
       get path
       expect(response).to have_http_status(:not_found)
     end
@@ -26,7 +26,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
   end
 end
 
-RSpec.describe "Moderations", type: :request do
+RSpec.describe "Moderations" do
   let(:trusted_user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
@@ -94,7 +94,7 @@ RSpec.describe "Moderations", type: :request do
         sign_in tag_mod
 
         get "#{article1.path}/actions_panel"
-        expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+        expect(response.body).to include "circle centered-icon remove-icon"
       end
 
       it "shows the option to add the tag when the article has the tag" do
@@ -102,7 +102,7 @@ RSpec.describe "Moderations", type: :request do
         sign_in tag_mod
 
         get "#{article2.path}/actions_panel"
-        expect(response.body).to include "circle centered-icon adjustment-icon plus"
+        expect(response.body).to include "circle centered-icon add-icon"
       end
     end
   end
@@ -133,7 +133,7 @@ RSpec.describe "Moderations", type: :request do
 
     it "shows the admin tag options", :aggregate_failures do
       expect(response.body).to include "admin-add-tag"
-      expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+      expect(response.body).to include "circle centered-icon remove-icon"
     end
   end
 
@@ -169,6 +169,47 @@ RSpec.describe "Moderations", type: :request do
         get "/mod"
 
         expect(response.body).to include logged_out_copy
+      end
+    end
+
+    context "when user is trusted" do
+      let!(:first_article) { create(:article) }
+      let!(:second_article) { create(:article, score: -12) }
+      let(:spamer) { create(:user, :spam) }
+      let(:suspended_user) { create(:user, :suspended) }
+
+      before do
+        sign_in trusted_user
+      end
+
+      it "does not show articles the user has already reacted to for inbox" do
+        get "/mod"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(second_article.title))
+      end
+
+      it "doesn't include spam and suspended articles" do
+        spam_article = create(:article, user: spamer, score: 0)
+        suspended_article = create(:article, user: suspended_user, score: 0)
+
+        get "/mod"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
+      end
+
+      it "includes non-spam articles and doesn't include spam/suspended articles on latest" do
+        spam_article = create(:article, user: spamer, score: 0)
+        suspended_article = create(:article, user: suspended_user, score: 0)
+
+        get "/mod?state=latest"
+
+        expect(response.body).to include(CGI.escapeHTML(first_article.title))
+        expect(response.body).to include(CGI.escapeHTML(second_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(spam_article.title))
+        expect(response.body).not_to include(CGI.escapeHTML(suspended_article.title))
       end
     end
   end
@@ -251,6 +292,33 @@ RSpec.describe "Moderations", type: :request do
         expect do
           patch "/admin/member_manager/users/#{article.user_id}/user_status",
                 params: { user: { user_status: "Suspend", new_note: "Test note" } }
+        end.to change(AuditLog, :count).by(1)
+      end
+    end
+
+    context "when adding the spam role to the user" do
+      it "creates a note on a user when note content is provided" do
+        note_content = "Spam acount"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam", note_for_current_role: note_content } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(note_content)
+      end
+
+      it "creates a default note on a user when note content isn't provided" do
+        expected_note = "#{super_mod.username} updated #{article.user.username}"
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam" } }
+        end.to change(Note, :count).by(1)
+        expect(Note.last.content).to eq(expected_note)
+      end
+
+      it "creates an AuditLog for the action taken" do
+        expect do
+          patch "/admin/member_manager/users/#{article.user_id}/user_status",
+                params: { user: { user_status: "Spam", new_note: "Test note" } }
         end.to change(AuditLog, :count).by(1)
       end
     end

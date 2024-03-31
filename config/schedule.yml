@@ -86,6 +86,22 @@ award_community_wellness_badges:
     - ""
     - award_community_wellness
     - ""
+award_thumbs_up_badges:
+  description: "Awards Thumbs Up Milestone badge to users (runs daily at 01:00 UTC) "
+  cron: "0 1 * * *"
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_thumbs_up
+    - ""
+award_first_post_badges:
+  description: "Awards First Post badges to users (runs daily at 02:00 UTC) "
+  cron: "0 2 * * *"
+  class: "BadgeAchievements::BadgeAwardWorker"
+  args:
+    - ""
+    - award_first_post
+    - ""
 resave_supported_tags:
   description: "Resaves supported tags to recalculate scores (runs daily at 00:25 UTC)"
   cron: "25 0 * * *"
@@ -146,7 +162,11 @@ notify_about_published_articles:
   description: "Sends notifications about the new published articles (runs every minute)"
   cron: "*/5 * * * *"
   class: "Articles::PublishWorker"
-display_ad_event_rollup:
+billboard_event_rollup:
   description: "Compact rows in the display_ad_events table"
   cron: "5 3 * * *"
-  class: "DisplayAdEventRollupWorker"
+  class: "BillboardEventRollupWorker"
+audience_segment_refresh:
+  description: "Refresh audience segmentation for all segments"
+  cron: "10 3 * * *"
+  class: "AudienceSegmentRefreshAllWorker"

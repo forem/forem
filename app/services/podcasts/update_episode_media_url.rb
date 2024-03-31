@@ -1,12 +1,12 @@
 module Podcasts
   class UpdateEpisodeMediaUrl
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(episode, enclosure_url)
       @episode = episode
       @enclosure_url = enclosure_url
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call

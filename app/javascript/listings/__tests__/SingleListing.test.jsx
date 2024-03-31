@@ -61,7 +61,7 @@ describe('<SingleListing />', () => {
 
   it('shows a listing title', () => {
     const { queryByText } = renderSingleListing();
-    expect(queryByText('Illo iure quos perspiciatis.')).toBeDefined();
+    expect(queryByText('Illo iure quos perspiciatis.')).toExist();
   });
 
   it('shows a dropdown', () => {

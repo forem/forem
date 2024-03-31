@@ -2,13 +2,13 @@ module Notifications
   class Update
     delegate :article_data, :comment_data, :user_data, :organization_data, to: Notifications
 
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(notifiable, action = nil)
       @notifiable = notifiable
       @action = action
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     def call

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ListingCategory, type: :model do
+RSpec.describe ListingCategory do
   describe "validations" do
     # The uniqueness validation didn't work without this, see section "Caveat" at
     # https://www.rubydoc.info/github/thoughtbot/shoulda-matchers/Shoulda%2FMatchers%2FActiveRecord:validate_uniqueness_of

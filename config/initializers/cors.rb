@@ -17,6 +17,12 @@ Rails.application.config.middleware.insert_before(
       source # echo back the client's `Origin` header instead of using `*`
     end
 
+    resource "/.well-known/ai-plugin.json"
+    resource "/openapi.yml"
+    resource "/api/articles/search/*", methods: %i[head get options], headers: %w[content-type openai-conversation-id
+                                                                                  openai-ephemeral-user-id],
+                                       max_age: 2.hours.to_i
+
     # allowed public APIs
     %w[articles comments listings podcast_episodes tags users videos].each do |resource_name|
       # allow read operations, disallow custom headers (eg. api-key) and enable preflight caching

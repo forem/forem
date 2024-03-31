@@ -1,8 +1,8 @@
 import { h, render } from 'preact';
-import ahoy from 'ahoy.js';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
 import { initializeDropdown } from '../utilities/dropdownUtils';
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
 import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
@@ -33,6 +33,20 @@ if (snackZone) {
 
 // eslint-disable-next-line no-restricted-globals
 top.addSnackbarItem = addSnackbarItem;
+
+const multiReactionDrawerTrigger = document.getElementById(
+  'reaction-drawer-trigger',
+);
+
+if (
+  multiReactionDrawerTrigger &&
+  multiReactionDrawerTrigger.dataset.initialized !== 'true'
+) {
+  initializeDropdown({
+    triggerElementId: 'reaction-drawer-trigger',
+    dropdownContentId: 'reaction-drawer',
+  });
+}
 
 // Dropdown accessibility
 function hideCopyLinkAnnouncerIfVisible() {
@@ -73,26 +87,13 @@ function showAnnouncer() {
   document.getElementById('article-copy-link-announcer').hidden = false;
 }
 
-// Temporary Ahoy Stats for displaying comments section either on page load or after scrolling
-function trackCommentsSectionDisplayed() {
-  const callback = (entries, observer) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        ahoy.track('Comment section viewable', { page: location.href });
-        observer.disconnect();
-      }
-      if (location.hash === '#comments') {
-        //handle focus event on text area
-        const element = document.getElementById('text-area');
-        const event = new FocusEvent('focus');
-        element.dispatchEvent(event);
-      }
-    });
-  };
-
-  const target = document.getElementById('comments');
-  const observer = new IntersectionObserver(callback, {});
-  observer.observe(target);
+function focusOnComments() {
+  if (location.hash === '#comments') {
+    //handle focus event on text area
+    const element = document.getElementById('text-area');
+    const event = new FocusEvent('focus');
+    element.dispatchEvent(event);
+  }
 }
 
 function copyArticleLink() {
@@ -158,7 +159,8 @@ getCsrfToken().then(async () => {
 const targetNode = document.querySelector('#comments');
 targetNode && embedGists(targetNode);
 
+setupBillboardInteractivity();
 initializeUserSubscriptionLiquidTagContent();
+focusOnComments();
 // Temporary Ahoy Stats for comment section clicks on controls
 trackCommentClicks('comments');
-trackCommentsSectionDisplayed();

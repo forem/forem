@@ -1,0 +1,49 @@
+.ltag_cta {
+  --border-width: 1px;
+  padding: var(--su-2) var(--su-4);
+  border: var(--border-width) solid;
+  border-color: var(--border);
+  text-decoration: none;
+  border-radius: var(--radius);
+  font: inherit;
+  background-color: var(--bg);
+  color: var(--color);
+  outline: 0;
+  text-align: center;
+  display: inline-flex;
+  position: relative;
+  overflow-wrap: normal;
+
+  &:hover,
+  .js-focus-visible &.focus-visible:focus {
+    background-color: var(--bg-hover);
+    border-color: var(--border-hover);
+    color: var(--color-hover);
+    z-index: var(--z-elevate);
+    text-decoration: underline;
+  }
+
+  .js-focus-visible &.focus-visible:focus {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.ltag_cta {
+  --bg: var(--cta-bg);
+  --bg-hover: var(--cta-bg-hover);
+  --color: var(--cta-color);
+  --color-hover: var(--cta-color-hover);
+  --border: var(--cta-border);
+  --border-hover: var(--cta-border-hover);
+
+  &--branded {
+    --bg: var(--cta-branded-bg);
+    --bg-hover: var(--cta-branded-bg-hover);
+    --color: var(--cta-branded-color);
+    --color-hover: var(--cta-branded-color-hover);
+    --border: var(--cta-branded-border);
+    --border-hover: var(--cta-branded-border-hover);
+
+    font-weight: var(--fw-medium);
+  }
+}

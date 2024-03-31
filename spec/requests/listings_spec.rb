@@ -1,7 +1,7 @@
 require "rails_helper"
 require "nokogiri"
 
-RSpec.describe "/listings", type: :request do
+RSpec.describe "/listings" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:edu_category) { create(:listing_category, cost: 1) }
@@ -63,13 +63,6 @@ RSpec.describe "/listings", type: :request do
       it "shows all active listings" do
         get "/listings"
         expect(response.body).to include("listings-container")
-      end
-    end
-
-    context "when the user has category and slug params for active listing" do
-      it "shows that direct listing" do
-        get "/listings", params: { category: listing.category, slug: listing.slug }
-        expect(response.body).to include(CGI.escapeHTML(listing.title))
       end
     end
 

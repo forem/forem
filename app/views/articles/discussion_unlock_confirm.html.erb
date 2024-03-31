@@ -28,7 +28,7 @@
     </div>
 
     <%= form_for @discussion_lock, method: :delete do |f| %>
-      <div class="form-group">
+      <div class="crayons-field">
         <%= f.hidden_field :article_id, value: @article.id %>
       </div>
       <%= f.submit t("views.articles.unlock.submit"), class: "crayons-btn crayons-btn--danger" %>

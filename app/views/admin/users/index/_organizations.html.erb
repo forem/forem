@@ -1,8 +1,8 @@
 <% if organizations.any? %>
-    <figure class="crayons-hover-tooltip crayons-hover-tooltip--right border p-1 rounded bg-base-inverted w-fit" data-tooltip="<%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %>">
+    <figure class="crayons-hover-tooltip crayons-hover-tooltip--right p-1 border-solid border-1 border-base-20 radius-default bg-base-inverted w-fit" data-tooltip="<%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %>">
       <figcaption class="screen-reader-only"><%= organization_tooltip(organizations.pluck(:name), org_count, imposed_limit: @organization_limit) %></figcaption>
       <% organizations.each_with_index do |organization, index| %>
-          <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="crayons-logo crayons-logo--l border border-2 border-base-0 <%= index.positive? ? "-ml-4" : "" %>">
+          <img src="<%= organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= organization.name %>" class="crayons-logo crayons-logo--l border-solid border-2 border-base-0 <%= index.positive? ? "-ml-4" : "" %>">
       <% end %>
       <% if org_count > @organization_limit %>
         <span class="fs-s pr-1"><%= t("views.admin.users.more_orgs", count: overflow_count(org_count, imposed_limit: @organization_limit)) %></span>

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "UserDestroy", type: :request do
+RSpec.describe "UserDestroy" do
   let(:user) { create(:user) }
 
   describe "GET /settings/account" do

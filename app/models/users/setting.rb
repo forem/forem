@@ -24,18 +24,24 @@ module Users
               format: { with: HEX_COLOR_REGEXP,
                         message: I18n.t("models.users.setting.invalid_hex") },
               allow_nil: true
-    validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
+    validates :experience_level, numericality: { in: 1..10 }, allow_blank: true
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
 
     validate :validate_feed_url, if: :feed_url_changed?
 
+    after_update :refresh_auto_audience_segments
+
     def resolved_font_name
       config_font.gsub("default", Settings::UserExperience.default_font)
     end
 
     private
+
+    def refresh_auto_audience_segments
+      user.refresh_auto_audience_segments
+    end
 
     def validate_feed_url
       return if feed_url.blank?

@@ -2,7 +2,7 @@ Hi <%= @name %>.
 
 Your organization <%= @org_name %> on <%= community_name %> has been successfully deleted.
 
-<%= t("contact_prompts.if_we_can_help_html") %>
+<%= strip_tags t("views.mailers.contact_mailto_html", contact_email: ForemInstance.contact_email) %>
 
 Thanks,
 The <%= community_name %> Team

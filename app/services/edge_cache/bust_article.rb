@@ -24,13 +24,10 @@ module EdgeCache
     def self.paths_for(article, &block)
       paths = [
         article.path,
-        "/#{article.user.username}",
         "#{article.path}/",
-        "#{article.path}?i=i",
-        "#{article.path}/?i=i",
+        "/#{article.user.username}",
         "#{article.path}/comments",
         "#{article.path}?preview=#{article.password}",
-        "#{article.path}?preview=#{article.password}&i=i",
         "/api/articles/#{article.id}",
       ]
 
@@ -47,13 +44,12 @@ module EdgeCache
 
     def self.bust_home_pages(cache_bust, article)
       if article.published_at.to_i > Time.current.to_i
+        # TODO
         cache_bust.call("/")
-        cache_bust.call("?i=i")
       end
 
       if article.video.present? && article.published_at.to_i > 10.days.ago.to_i
         cache_bust.call("/videos")
-        cache_bust.call("/videos?i=i")
       end
 
       TIMEFRAMES.each do |timestamp, interval|
@@ -61,13 +57,10 @@ module EdgeCache
           .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
         cache_bust.call("/top/#{interval}")
-        cache_bust.call("/top/#{interval}?i=i")
-        cache_bust.call("/top/#{interval}/?i=i")
       end
 
       if article.published && article.published_at > 1.hour.ago
         cache_bust.call("/latest")
-        cache_bust.call("/latest?i=i")
       end
 
       cache_bust.call("/") if Article.published.order(hotness_score: :desc).limit(4).ids.include?(article.id)
@@ -81,7 +74,6 @@ module EdgeCache
       article.tag_list.each do |tag|
         if article.published_at.to_i > 2.minutes.ago.to_i
           cache_bust.call("/t/#{tag}/latest")
-          cache_bust.call("/t/#{tag}/latest?i=i")
         end
 
         TIMEFRAMES.each do |timestamp, interval|
@@ -89,8 +81,6 @@ module EdgeCache
             .order(public_reactions_count: :desc).limit(3).ids.include?(article.id)
 
           cache_bust.call("/top/#{interval}")
-          cache_bust.call("/top/#{interval}?i=i")
-          cache_bust.call("/top/#{interval}/?i=i")
           12.times do |i|
             cache_bust.call("/api/articles?tag=#{tag}&top=#{i}")
           end
@@ -101,7 +91,6 @@ module EdgeCache
             .order(hotness_score: :desc).limit(2).ids.include?(article.id)
 
         cache_bust.call("/t/#{tag}")
-        cache_bust.call("/t/#{tag}?i=i")
       end
     end
 

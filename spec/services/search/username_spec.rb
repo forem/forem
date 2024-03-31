@@ -91,12 +91,12 @@ RSpec.describe Search::Username, type: :service do
   end
 
   describe "::search_documents with context" do
-    let(:article) { create :article, user: author }
-    let(:author) { create :user, name: "Person A", username: "author" }
-    let(:commenter) { create :user, name: "Person B", username: "commentator" }
+    let(:article) { create(:article, user: author) }
+    let(:author) { create(:user, name: "Person A", username: "author") }
+    let(:commenter) { create(:user, name: "Person B", username: "commentator") }
 
     before do
-      create :comment, user: commenter, commentable: article
+      create(:comment, user: commenter, commentable: article)
     end
 
     it "returns data in the expected format" do
@@ -153,19 +153,19 @@ RSpec.describe Search::Username, type: :service do
 
     it "ranks author higher than commenter" do
       results = search("Per", context: article)
-      expect(results.pluck(:username)).to contain_exactly(*%w[author commentator])
+      expect(results.pluck(:username)).to match_array(%w[author commentator])
     end
 
     it "ranks unrelated user lower" do
-      create :user, username: "unrelated", name: "Person C"
+      create(:user, username: "unrelated", name: "Person C")
 
       results = search("Per", context: article)
 
-      expect(results.pluck(:username)).to contain_exactly(*%w[author commentator unrelated])
+      expect(results.pluck(:username)).to match_array(%w[author commentator unrelated])
     end
 
     it "does not have authorship ranking for PodcastEpisode (yet)" do
-      pod_ep = create :podcast_episode
+      pod_ep = create(:podcast_episode)
 
       results = search("Per", context: pod_ep)
 

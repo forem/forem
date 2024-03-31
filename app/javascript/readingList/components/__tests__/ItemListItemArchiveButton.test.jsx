@@ -16,6 +16,6 @@ describe('<ItemListItemArchiveButton />', () => {
       <ItemListItemArchiveButton text="archive" />,
     );
 
-    expect(queryByText(/archive/i)).toBeDefined();
+    expect(queryByText(/archive/i)).toExist();
   });
 });

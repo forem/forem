@@ -7,12 +7,12 @@ module Slack
         %<reactable_url>s
       TEXT
 
-      def initialize(reaction:)
-        @reaction = reaction
-      end
-
       def self.call(...)
         new(...).call
+      end
+
+      def initialize(reaction:)
+        @reaction = reaction
       end
 
       def call

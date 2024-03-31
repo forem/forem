@@ -130,7 +130,7 @@ module Feeds
 
     def parse_and_translate_youtube_iframe!(html_doc)
       html_doc.css("iframe").each do |iframe|
-        next unless /youtube\.com/.match?(iframe.attributes["src"].value)
+        next unless iframe.attributes["src"].value.include?("youtube.com")
 
         iframe.name = "p"
         youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first

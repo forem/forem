@@ -8,11 +8,12 @@ module Users
       Digest::SHA256.hexdigest(username)
     end
 
+    # suspended or assigned spam role
     def self.previously_suspended?(username)
       where(username_hash: hash_username(username)).any?
     end
 
-    # Convenience method for easily adding a suspended user
+    # Convenience method for easily adding a suspended/spam user
     def self.create_from_user(user)
       create!(username_hash: hash_username(user.username))
     end

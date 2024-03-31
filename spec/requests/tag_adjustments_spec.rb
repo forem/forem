@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "TagAdjustments", type: :request do
+RSpec.describe "TagAdjustments" do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:tag) { create(:tag) }

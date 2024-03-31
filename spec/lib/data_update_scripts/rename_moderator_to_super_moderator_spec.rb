@@ -5,9 +5,9 @@ require Rails.root.join(
 
 describe DataUpdateScripts::RenameModeratorToSuperModerator do
   before do
-    create :user
-    create :user, :tag_moderator
-    create :user, :super_admin
+    create(:user)
+    create(:user, :tag_moderator)
+    create(:user, :super_admin)
   end
 
   context "when there are no moderators" do
@@ -36,7 +36,7 @@ describe DataUpdateScripts::RenameModeratorToSuperModerator do
   end
 
   context "when rename has already run" do
-    let!(:super_moderator) { create :user, :super_moderator }
+    let!(:super_moderator) { create(:user, :super_moderator) }
 
     it "does nothing" do
       expect(described_class.new.run).to eq(0)

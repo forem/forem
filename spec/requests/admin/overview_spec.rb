@@ -1,11 +1,36 @@
 require "rails_helper"
 
-RSpec.describe "/admin", type: :request do
+RSpec.describe "/admin" do
   let(:super_admin) { create(:user, :super_admin) }
 
   before do
     sign_in super_admin
     allow(FeatureFlag).to receive(:enabled?).and_call_original
+  end
+
+  describe "Notices" do
+    it "does not show warning if deployed at is recent" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(1.day.ago)
+      get admin_path
+
+      expect(response.body).not_to include("If you stay out of date for too long")
+    end
+
+    it "shows warning notice if deployed at is over two weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(3.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include("If you stay out of date for too long")
+      expect(response.body).to include("crayons-notice--warning")
+    end
+
+    it "shows danger notice if deployed at is over four weeks ago" do
+      allow(ForemInstance).to receive(:deployed_at).and_return(5.weeks.ago)
+      get admin_path
+
+      expect(response.body).to include("If you stay out of date for too long")
+      expect(response.body).to include("crayons-notice--danger")
+    end
   end
 
   describe "Last deployed and Latest Commit ID card" do
@@ -38,9 +63,12 @@ RSpec.describe "/admin", type: :request do
 
     it { is_expected.to include("Analytics and trends") }
     it { is_expected.to include("Yesterday") }
-    xit { is_expected.to include("Apr 23") }
 
-    xit "displays correct number of posts from past week" do
+    it "includes date", skip: "timezone-sensitive spec" do
+      expect(body).to include("Apr 23")
+    end
+
+    it "displays correct number of posts from past week", skip: "timezone-sensitive spec" do
       create(:article, published_at: Time.current)
       create(:article, published_at: 1.day.ago)
       create(:article, published_at: 7.days.ago)

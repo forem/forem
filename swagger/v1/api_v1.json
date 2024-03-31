@@ -7,6 +7,91 @@
   },
   "paths": {
     "/api/articles": {
+      "post": {
+        "summary": "Publish article",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to create a new article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "operationId": "createArticle",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 2,
+                  "title": "New article",
+                  "description": "New post example",
+                  "readable_publish_date": "Dec 15",
+                  "slug": "new-article-2io1",
+                  "path": "/username2/new-article-2io1",
+                  "url": "http://forem.test/username2/new-article-2io1",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": 1,
+                  "published_timestamp": "2023-12-15T00:15:27Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
+                  "social_image": "https://thepracticaldev.s3.amazonaws.com/i/5wfo25724gzgk5e5j50g.jpg",
+                  "canonical_url": "https://dev.to/fdocr/headless-chrome-dual-mode-tests-for-ruby-on-rails-4p6g",
+                  "created_at": "2023-12-15T00:15:27Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2023-12-15T00:15:27Z",
+                  "last_comment_at": "2023-12-15T00:15:27Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "",
+                  "tags": [],
+                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
+                  "body_markdown": "**New** body for the article",
+                  "user": {
+                    "name": "Carmen \"Andre\" \\:/ Rodriguez",
+                    "username": "username2",
+                    "twitter_username": "twitter2",
+                    "github_username": "github2",
+                    "user_id": 882,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/882/a6c7c9f0-6c40-491e-a306-a03c926c6aac.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/882/a6c7c9f0-6c40-491e-a306-a03c926c6aac.jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: article",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Article"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "summary": "Published articles",
         "security": [],
@@ -103,45 +188,45 @@
                 "example": [
                   {
                     "type_of": "article",
-                    "id": 191,
-                    "title": "An Acceptable Time172",
-                    "description": "Shabby chic wayfarers normcore marfa carry. Schlitz kinfolk +1 kickstarter pitchfork cardigan 90's....",
-                    "readable_publish_date": "Nov 17",
-                    "slug": "an-acceptable-time172-25ik",
-                    "path": "/username378/an-acceptable-time172-25ik",
-                    "url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
+                    "id": 5,
+                    "title": "Let Us Now Praise Famous Men4",
+                    "description": "Street yr raw denim master. Twee vice selvage neutra.  Single-origin coffee crucifix franzen lo-fi...",
+                    "readable_publish_date": "Dec 15",
+                    "slug": "let-us-now-praise-famous-men4-1oj7",
+                    "path": "/username6/let-us-now-praise-famous-men4-1oj7",
+                    "url": "http://forem.test/username6/let-us-now-praise-famous-men4-1oj7",
                     "comments_count": 0,
                     "public_reactions_count": 0,
                     "collection_id": null,
-                    "published_timestamp": "2022-11-17T09:30:31Z",
+                    "published_timestamp": "2023-12-15T00:15:28Z",
                     "positive_reactions_count": 0,
-                    "cover_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "social_image": "http://localhost:3000/assets/23-33ea5a2b5af3dc15b9ed90de0b850f67e2390eaec3361d6687d3b9750c699f84.png",
-                    "canonical_url": "http://localhost:3000/username378/an-acceptable-time172-25ik",
-                    "created_at": "2022-11-17T09:30:31Z",
+                    "cover_image": "http://forem.test/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
+                    "social_image": "http://forem.test/assets/8-915172672c34364d29c3fce07afa413c1ac072beff54ddd79fc7e3ed633556a1.png",
+                    "canonical_url": "http://forem.test/username6/let-us-now-praise-famous-men4-1oj7",
+                    "created_at": "2023-12-15T00:15:28Z",
                     "edited_at": null,
                     "crossposted_at": null,
-                    "published_at": "2022-11-17T09:30:31Z",
-                    "last_comment_at": "2022-11-17T09:30:31Z",
+                    "published_at": "2023-12-15T00:15:28Z",
+                    "last_comment_at": "2023-12-15T00:15:28Z",
                     "reading_time_minutes": 1,
                     "tag_list": ["discuss"],
                     "tags": "discuss",
                     "user": {
-                      "name": "Melaine \"Quinn\" \\:/ Goodwin",
-                      "username": "username378",
-                      "twitter_username": "twitter378",
-                      "github_username": "github378",
-                      "user_id": 386,
+                      "name": "Lanette \"Marine\" \\:/ Stanton",
+                      "username": "username6",
+                      "twitter_username": "twitter6",
+                      "github_username": "github6",
+                      "user_id": 886,
                       "website_url": null,
-                      "profile_image": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg",
-                      "profile_image_90": "/uploads/user/profile_image/386/93f316c4-1287-45b3-b1c7-49861128e477.jpeg"
+                      "profile_image": "/uploads/user/profile_image/886/e13bee17-64f8-43d8-9cdb-ba17c28cbdb4.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/886/e13bee17-64f8-43d8-9cdb-ba17c28cbdb4.jpeg"
                     },
                     "organization": {
-                      "name": "Baumbach Group",
-                      "username": "org60",
-                      "slug": "org60",
-                      "profile_image": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png",
-                      "profile_image_90": "/uploads/organization/profile_image/65/0bccbabf-3f76-473b-8c5e-bac56178315b.png"
+                      "name": "Spinka and Sons",
+                      "username": "org4",
+                      "slug": "org4",
+                      "profile_image": "/uploads/organization/profile_image/4/f1003659-a58c-4019-89d1-24817528626a.png",
+                      "profile_image_90": "/uploads/organization/profile_image/4/f1003659-a58c-4019-89d1-24817528626a.png"
                     },
                     "flare_tag": {
                       "name": "discuss",
@@ -150,6 +235,628 @@
                     }
                   }
                 ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/latest": {
+      "get": {
+        "summary": "Published articles sorted by published date",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a list of articles. ordered by descending publish date.\n\nIt supports pagination, each page will contain 30 articles by default.",
+        "operationId": "getLatestArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Articles",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 8,
+                    "title": "Precious Bane7",
+                    "description": "Etsy green juice trust fund irony sriracha bushwick flexitarian pickled. Blog kitsch...",
+                    "readable_publish_date": "Dec 15",
+                    "slug": "precious-bane7-31i9",
+                    "path": "/username9/precious-bane7-31i9",
+                    "url": "http://forem.test/username9/precious-bane7-31i9",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2023-12-15T00:15:28Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/29-62fdba2773105cf85b89a795a479be680d13a73e6b5406cacaa2458d403dda8c.png",
+                    "social_image": "http://forem.test/assets/29-62fdba2773105cf85b89a795a479be680d13a73e6b5406cacaa2458d403dda8c.png",
+                    "canonical_url": "http://forem.test/username9/precious-bane7-31i9",
+                    "created_at": "2023-12-15T00:15:28Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2023-12-15T00:15:28Z",
+                    "last_comment_at": "2023-12-15T00:15:28Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": ["javascript", "html", "discuss"],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Bobette \"Ling\" \\:/ Kuvalis",
+                      "username": "username9",
+                      "twitter_username": "twitter9",
+                      "github_username": "github9",
+                      "user_id": 889,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/889/114ac38d-7b97-41d5-9668-c44b27fa8fa1.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/889/114ac38d-7b97-41d5-9668-c44b27fa8fa1.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  },
+                  {
+                    "type_of": "article",
+                    "id": 7,
+                    "title": "Cover Her Face6",
+                    "description": "Park aesthetic tattooed godard post-ironic wolf beard cold-pressed. Tumblr authentic roof readymade...",
+                    "readable_publish_date": "Dec 15",
+                    "slug": "cover-her-face6-12p3",
+                    "path": "/username8/cover-her-face6-12p3",
+                    "url": "http://forem.test/username8/cover-her-face6-12p3",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2023-12-15T00:15:28Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "social_image": "http://forem.test/assets/25-b4bb206b62bee552880440f638594e41dcd649ed9bd821af2e8dfc671d1d6813.png",
+                    "canonical_url": "http://forem.test/username8/cover-her-face6-12p3",
+                    "created_at": "2023-12-15T00:15:28Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2023-12-15T00:15:28Z",
+                    "last_comment_at": "2023-12-15T00:15:28Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": ["javascript", "html", "discuss"],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Karen \"Nakia\" \\:/ Lockman",
+                      "username": "username8",
+                      "twitter_username": "twitter8",
+                      "github_username": "github8",
+                      "user_id": 888,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/888/bb690b36-2309-455f-81f4-98b4ec247427.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/888/bb690b36-2309-455f-81f4-98b4ec247427.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  },
+                  {
+                    "type_of": "article",
+                    "id": 6,
+                    "title": "I Know Why the Caged Bird Sings5",
+                    "description": "Carry meh farm-to-table. Fanny pack before they sold out normcore fingerstache disrupt church-key...",
+                    "readable_publish_date": "Dec 15",
+                    "slug": "i-know-why-the-caged-bird-sings5-393f",
+                    "path": "/username7/i-know-why-the-caged-bird-sings5-393f",
+                    "url": "http://forem.test/username7/i-know-why-the-caged-bird-sings5-393f",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2023-12-15T00:15:28Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
+                    "social_image": "http://forem.test/assets/7-7dc75c1a59875db65e2539f321090f6cb232c3dbffdbe4367b0d32b8f2797758.png",
+                    "canonical_url": "http://forem.test/username7/i-know-why-the-caged-bird-sings5-393f",
+                    "created_at": "2023-12-15T00:15:28Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2023-12-15T00:15:28Z",
+                    "last_comment_at": "2023-12-15T00:15:28Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": ["javascript", "html", "discuss"],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Darby \"Damian\" \\:/ Quitzon",
+                      "username": "username7",
+                      "twitter_username": "twitter7",
+                      "github_username": "github7",
+                      "user_id": 887,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/887/9e09ae0d-d45e-46e6-bcab-3b65ffef6c4d.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/887/9e09ae0d-d45e-46e6-bcab-3b65ffef6c4d.jpeg"
+                    },
+                    "flare_tag": {
+                      "name": "discuss",
+                      "bg_color_hex": "#000000",
+                      "text_color_hex": "#ffffff"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{id}": {
+      "get": {
+        "summary": "Published article by id",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a single published article given its `id`.",
+        "operationId": "getArticleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 9,
+                  "title": "It's a Battlefield8",
+                  "description": "Venmo slow-carb vhs ugh cronut crucifix. Freegan hella hammock helvetica you probably haven't heard...",
+                  "readable_publish_date": "Dec 15",
+                  "slug": "its-a-battlefield8-2af",
+                  "path": "/username10/its-a-battlefield8-2af",
+                  "url": "http://forem.test/username10/its-a-battlefield8-2af",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-12-15T00:15:28Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                  "social_image": "http://forem.test/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                  "canonical_url": "http://forem.test/username10/its-a-battlefield8-2af",
+                  "created_at": "2023-12-15T00:15:28Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2023-12-15T00:15:28Z",
+                  "last_comment_at": "2023-12-15T00:15:28Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": ["discuss"],
+                  "body_html": "<p>Venmo slow-carb vhs ugh cronut crucifix. Freegan hella hammock helvetica you probably haven't heard of them try-hard. Humblebrag iphone fashion axe small batch flexitarian fixie.</p>\n\n<p>Neutra cliche occupy trust fund actually. Heirloom vinyl vice freegan. Pbr&amp;b whatever organic dreamcatcher kickstarter pork belly authentic.</p>\n\n",
+                  "body_markdown": "---\ntitle: It's a Battlefield8\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\nVenmo slow-carb vhs ugh cronut crucifix. Freegan hella hammock helvetica you probably haven't heard of them try-hard. Humblebrag iphone fashion axe small batch flexitarian fixie.\n\n\nNeutra cliche occupy trust fund actually. Heirloom vinyl vice freegan. Pbr&b whatever organic dreamcatcher kickstarter pork belly authentic.\n\n",
+                  "user": {
+                    "name": "Raylene \"Romana\" \\:/ Bailey",
+                    "username": "username10",
+                    "twitter_username": "twitter10",
+                    "github_username": "github10",
+                    "user_id": 890,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/890/f6fe914d-9deb-461c-bb67-2f8af4957a89.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/890/f6fe914d-9deb-461c-bb67-2f8af4957a89.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an article by id",
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to update an existing article.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.",
+        "operationId": "updateArticle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 10,
+                  "title": "Recalled to Life9",
+                  "description": "Messenger bag kickstarter fingerstache. Green juice hammock taxidermy.  Gastropub pop-up godard put a...",
+                  "readable_publish_date": "Dec 15",
+                  "slug": "recalled-to-life9-1990",
+                  "path": "/username11/recalled-to-life9-1990",
+                  "url": "http://forem.test/username11/recalled-to-life9-1990",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-12-15T00:15:28Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
+                  "social_image": "http://forem.test/assets/21-8c16e6ef44da175a1e51f1ba9d0cb55af8a920db6aacbf1e4b7a055afc1b3d30.png",
+                  "canonical_url": "http://forem.test/username11/recalled-to-life9-1990",
+                  "created_at": "2023-12-15T00:15:28Z",
+                  "edited_at": "2023-12-15T00:15:28Z",
+                  "crossposted_at": null,
+                  "published_at": "2023-12-15T00:15:28Z",
+                  "last_comment_at": "2023-12-15T00:15:28Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "",
+                  "tags": [],
+                  "body_html": "<p><strong>New</strong> body for the article</p>\n\n",
+                  "body_markdown": "**New** body for the article",
+                  "user": {
+                    "name": "Danilo \"Morton\" \\:/ Douglas",
+                    "username": "username11",
+                    "twitter_username": "twitter11",
+                    "github_username": "github11",
+                    "user_id": 891,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/891/e23f88f8-724f-4e6d-b6e1-1b3a9f04f39b.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/891/e23f88f8-724f-4e6d-b6e1-1b3a9f04f39b.jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: article",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Article"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{username}/{slug}": {
+      "get": {
+        "summary": "Published article by path",
+        "security": [],
+        "tags": ["articles"],
+        "description": "This endpoint allows the client to retrieve a single published article given its `path`.",
+        "operationId": "getArticleByPath",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Article",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "article",
+                  "id": 13,
+                  "title": "Far From the Madding Crowd12",
+                  "description": "3 wolf moon asymmetrical mumblecore put a bird on it tilde yolo mustache crucifix. Heirloom scenester...",
+                  "readable_publish_date": "Dec 15",
+                  "slug": "far-from-the-madding-crowd12-1m5d",
+                  "path": "/username15/far-from-the-madding-crowd12-1m5d",
+                  "url": "http://forem.test/username15/far-from-the-madding-crowd12-1m5d",
+                  "comments_count": 0,
+                  "public_reactions_count": 0,
+                  "collection_id": null,
+                  "published_timestamp": "2023-12-15T00:15:29Z",
+                  "positive_reactions_count": 0,
+                  "cover_image": "http://forem.test/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
+                  "social_image": "http://forem.test/assets/2-1a96ae446ded018b65b215cce3aecc40a00e701642da521fdd6edd3c593ff6c1.png",
+                  "canonical_url": "http://forem.test/username15/far-from-the-madding-crowd12-1m5d",
+                  "created_at": "2023-12-15T00:15:29Z",
+                  "edited_at": null,
+                  "crossposted_at": null,
+                  "published_at": "2023-12-15T00:15:29Z",
+                  "last_comment_at": "2023-12-15T00:15:29Z",
+                  "reading_time_minutes": 1,
+                  "tag_list": "discuss",
+                  "tags": ["discuss"],
+                  "body_html": "<p>3 wolf moon asymmetrical mumblecore put a bird on it tilde yolo mustache crucifix. Heirloom scenester crucifix pickled skateboard. Synth 8-bit flexitarian typewriter banjo. Crucifix synth wayfarers humblebrag locavore vice brooklyn organic.</p>\n\n<p>Microdosing cronut muggle magic authentic carry. Occupy kombucha synth celiac food truck you probably haven't heard of them.</p>\n\n",
+                  "body_markdown": "---\ntitle: Far From the Madding Crowd12\npublished: true\ntags: discuss\ndate: \nseries: \ncanonical_url: \n\n---\n\n3 wolf moon asymmetrical mumblecore put a bird on it tilde yolo mustache crucifix. Heirloom scenester crucifix pickled skateboard. Synth 8-bit flexitarian typewriter banjo. Crucifix synth wayfarers humblebrag locavore vice brooklyn organic.\n\n\nMicrodosing cronut muggle magic authentic carry. Occupy kombucha synth celiac food truck you probably haven't heard of them.\n\n",
+                  "user": {
+                    "name": "Noreen \"Alvaro\" \\:/ Schinner",
+                    "username": "username15",
+                    "twitter_username": "twitter15",
+                    "github_username": "github15",
+                    "user_id": 895,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/895/9e4706ef-d56d-4167-9355-1a3db85801e1.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/895/9e4706ef-d56d-4167-9355-1a3db85801e1.jpeg"
+                  },
+                  "flare_tag": {
+                    "name": "discuss",
+                    "bg_color_hex": "#000000",
+                    "text_color_hex": "#ffffff"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Article Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me": {
+      "get": {
+        "summary": "User's articles",
+        "tags": ["articles", "users"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/published": {
+      "get": {
+        "summary": "User's published articles",
+        "tags": ["articles", "users"],
+        "description": "This endpoint allows the client to retrieve a list of published articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nPublished articles will be in reverse chronological publication order.\n\nIt will return published articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserPublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/unpublished": {
+      "get": {
+        "summary": "User's unpublished articles",
+        "tags": ["articles", "users"],
+        "description": "This endpoint allows the client to retrieve a list of unpublished articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nUnpublished articles will be in reverse chronological creation order.\n\nIt will return unpublished articles with pagination. By default a page will contain 30 articles.",
+        "operationId": "getUserUnpublishedArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/me/all": {
+      "get": {
+        "summary": "User's all articles",
+        "tags": ["articles", "users"],
+        "description": "This endpoint allows the client to retrieve a list of all articles on behalf of an authenticated user.\n\n\"Articles\" are all the posts that users create on DEV that typically show up in the feed. They can be a blog post, a discussion question, a help thread etc. but is referred to as article within the code.\n\nIt will return both published and unpublished articles with pagination.\n\nUnpublished articles will be at the top of the list in reverse chronological creation order. Published articles will follow in reverse chronological publication order.\n\nBy default a page will contain 30 articles.",
+        "operationId": "getUserAllArticles",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of the authenticated user's Articles",
+            "content": {
+              "application/json": {
+                "example": [],
                 "schema": {
                   "type": "array",
                   "items": {
@@ -221,17 +928,800 @@
         }
       }
     },
-    "/api/display_ads": {
+    "/api/segments": {
       "get": {
-        "summary": "display ads",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to retrieve a list of all display ads.",
+        "summary": "Manually managed audience segments",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a list of audience segments.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.\n\nThe endpoint supports pagination, and each page will contain `30` segments by default.",
+        "operationId": "getSegments",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of manually managed audience segments",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 2,
+                    "created_at": "2023-12-15T11:15:30.398+11:00",
+                    "type_of": "manual",
+                    "updated_at": "2023-12-15T11:15:30.398+11:00",
+                    "user_count": 1
+                  },
+                  {
+                    "id": 1,
+                    "created_at": "2023-12-15T11:15:30.308+11:00",
+                    "type_of": "manual",
+                    "updated_at": "2023-12-15T11:15:30.308+11:00",
+                    "user_count": 3
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Segment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to create a new audience segment.\n\nAn audience segment is a group of users that can be targeted by a Billboard. This API only permits managing segments you create and maintain yourself.",
+        "operationId": "createSegment",
+        "responses": {
+          "201": {
+            "description": "A manually managed audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 3,
+                  "created_at": "2023-12-15T11:15:30.723+11:00",
+                  "type_of": "manual",
+                  "updated_at": "2023-12-15T11:15:30.723+11:00"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}": {
+      "get": {
+        "summary": "A manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a single manually-managed audience segment specified by ID.",
+        "operationId": "getSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 4,
+                  "created_at": "2023-12-15T11:15:30.937+11:00",
+                  "type_of": "manual",
+                  "updated_at": "2023-12-15T11:15:30.937+11:00",
+                  "user_count": 3
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Segment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to delete an audience segment specified by ID.\n\nAudience segments cannot be deleted if there are still any Billboards using them.",
+        "operationId": "deleteSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deleted audience segment",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 8,
+                  "created_at": "2023-12-15T11:15:31.351+11:00",
+                  "type_of": "manual",
+                  "updated_at": "2023-12-15T11:15:31.351+11:00"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Audience segment could not be deleted",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Segments cannot be deleted while in use by any billboards"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/users": {
+      "get": {
+        "summary": "Users in a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to retrieve a list of the users in an audience segment specified by ID. The endpoint supports pagination, and each page will contain `30` users by default.",
+        "operationId": "getUsersInSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of users in the audience segment",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user",
+                    "id": 935,
+                    "username": "username55",
+                    "name": "Douglas \"Ervin\" \\:/ Homenick",
+                    "twitter_username": "twitter55",
+                    "github_username": "github55",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "Dec 15, 2023",
+                    "profile_image": "/uploads/user/profile_image/935/f305ebc2-4b79-4bd2-8cf3-068dce1744f1.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 936,
+                    "username": "username56",
+                    "name": "Cheree \"Brandon\" \\:/ Kilback",
+                    "twitter_username": "twitter56",
+                    "github_username": "github56",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "Dec 15, 2023",
+                    "profile_image": "/uploads/user/profile_image/936/c39ca408-c6f0-4812-b69e-98ac37b03526.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 937,
+                    "username": "username57",
+                    "name": "Reta \"Janetta\" \\:/ Heathcote",
+                    "twitter_username": "twitter57",
+                    "github_username": "github57",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "Dec 15, 2023",
+                    "profile_image": "/uploads/user/profile_image/937/d2b7e4ec-9c26-401f-83dc-18852e2d5617.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/add_users": {
+      "put": {
+        "summary": "Add users to a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to add users in bulk to an audience segment specified by ID.\n\nSuccesses are users that were included in the segment (even if they were already in it), and failures are users that could not be added to the segment.",
+        "operationId": "addUsersToSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of adding the users to the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [943, 944, 945],
+                  "failed": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: user_ids",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentUserIds"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/segments/{id}/remove_users": {
+      "put": {
+        "summary": "Remove users from a manually managed audience segment",
+        "tags": ["segments"],
+        "description": "This endpoint allows the client to remove users in bulk from an audience segment specified by ID.\n\nSuccesses are users that were removed; failures are users that weren't a part of the segment.",
+        "operationId": "removeUsersFromSegment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result of removing the users to the segment.",
+            "content": {
+              "application/json": {
+                "example": {
+                  "succeeded": [962, 963, 964],
+                  "failed": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Audience Segment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: user_ids",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SegmentUserIds"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/billboards": {
+      "get": {
+        "summary": "Billboards",
+        "tags": ["billboards"],
+        "description": "This endpoint allows the client to retrieve a list of all billboards.",
         "responses": {
           "200": {
             "description": "successful",
             "content": {
               "application/json": {
-                "example": []
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Billboard"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a billboard",
+        "tags": ["billboards"],
+        "description": "This endpoint allows the client to create a new billboard.",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "A billboard",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 2,
+                  "approved": true,
+                  "audience_segment_id": null,
+                  "body_markdown": "# Hi, this is ad\nYep, it's an ad",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2023-12-15T11:15:34.267+11:00",
+                  "creator_id": null,
+                  "custom_display_label": null,
+                  "display_to": "all",
+                  "exclude_article_ids": "",
+                  "impressions_count": 0,
+                  "name": "Example Billboard",
+                  "organization_id": null,
+                  "placement_area": "post_comments",
+                  "priority": false,
+                  "processed_html": "<h1>  <a name=\"hi-this-is-ad\" href=\"#hi-this-is-ad\">  </a>  Hi, this is ad</h1><p>Yep, it's an ad</p>",
+                  "published": true,
+                  "render_mode": "forem_markdown",
+                  "success_rate": 0.0,
+                  "template": "authorship_box",
+                  "type_of": "in_house",
+                  "updated_at": "2023-12-15T11:15:34.267+11:00",
+                  "weight": 1.0,
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": ["US-WA", "CA-BC"]
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Billboard"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation failed: Placement area is not included in the list",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "items": {
+                  "$ref": "#/components/schemas/Billboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/billboards/{id}": {
+      "get": {
+        "summary": "A billboard (by id)",
+        "tags": ["billboards"],
+        "description": "This endpoint allows the client to retrieve a single billboard, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the billboard.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 3,
+                  "approved": false,
+                  "audience_segment_id": null,
+                  "body_markdown": "Hello _hey_ Hey hey 2",
+                  "cached_tag_list": "",
+                  "clicks_count": 0,
+                  "created_at": "2023-12-15T11:15:34.492+11:00",
+                  "creator_id": null,
+                  "custom_display_label": null,
+                  "display_to": "all",
+                  "exclude_article_ids": "",
+                  "impressions_count": 0,
+                  "name": "Billboard 3",
+                  "organization_id": 6,
+                  "placement_area": "sidebar_left",
+                  "priority": false,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 2</p>",
+                  "published": false,
+                  "render_mode": "forem_markdown",
+                  "success_rate": 0.0,
+                  "template": "authorship_box",
+                  "type_of": "in_house",
+                  "updated_at": "2023-12-15T11:15:34.495+11:00",
+                  "weight": 1.0,
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": []
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown Billboard ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a billboard by ID",
+        "tags": ["billboards"],
+        "description": "This endpoint allows the client to update the attributes of a single billboard, via its id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the billboard.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "approved": false,
+                  "body_markdown": "Hello _hey_ Hey hey 3",
+                  "creator_id": null,
+                  "display_to": "all",
+                  "name": "Billboard 4",
+                  "organization_id": 7,
+                  "placement_area": "sidebar_left",
+                  "published": false,
+                  "type_of": "in_house",
+                  "exclude_article_ids": "",
+                  "weight": 1.0,
+                  "audience_segment_id": null,
+                  "priority": false,
+                  "custom_display_label": null,
+                  "template": "authorship_box",
+                  "render_mode": "forem_markdown",
+                  "cached_tag_list": "",
+                  "id": 4,
+                  "clicks_count": 0,
+                  "created_at": "2023-12-15T11:15:34.735+11:00",
+                  "impressions_count": 0,
+                  "processed_html": "<p>Hello <em>hey</em> Hey hey 3</p>",
+                  "success_rate": 0.0,
+                  "updated_at": "2023-12-15T11:15:34.738+11:00",
+                  "audience_segment_type": null,
+                  "tag_list": "",
+                  "target_geolocations": []
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Billboard"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "items": {
+                  "$ref": "#/components/schemas/Billboard"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/billboards/{id}/unpublish": {
+      "put": {
+        "summary": "Unpublish a billboard",
+        "tags": ["billboards"],
+        "description": "This endpoint allows the client to remove a billboard from rotation by un-publishing it.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the billboard to unpublish.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 123
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "no content"
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
               }
             }
           },
@@ -249,17 +1739,703 @@
         }
       }
     },
-    "/api/display_ads/{id}": {
+    "/api/comments": {
       "get": {
-        "summary": "display ad",
-        "tags": ["display ads"],
-        "description": "This endpoint allows the client to retrieve a single display ad, via its id.",
+        "summary": "Comments",
+        "security": [],
+        "tags": ["comments"],
+        "description": "This endpoint allows the client to retrieve all comments belonging to an article or podcast episode as threaded conversations.\n\nIt will return the all top level comments with their nested comments as threads. See the format specification for further details.\n\nIt supports pagination, each page will contain `50` top level comments (and as many child comments they have) by default.\n\nIf the page parameter is not passed, all comments of an article or podcast will be returned.\n",
+        "operationId": "getCommentsByArticleId",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "a_id",
+            "in": "query",
+            "required": false,
+            "description": "Article identifier.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
+          },
+          {
+            "name": "p_id",
+            "in": "query",
+            "required": false,
+            "description": "Podcast Episode identifier.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "description": "Page",
+            "schema": {
+              "type": "string"
+            },
+            "example": "321"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Comments",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "comment",
+                    "id_code": "1",
+                    "created_at": "2023-12-15T00:15:35Z",
+                    "body_html": "<p>Poutine try-hard migas.</p>\n\n",
+                    "user": {
+                      "name": "Denese \"Adriene\" \\:/ Leffler",
+                      "username": "username121",
+                      "twitter_username": "twitter121",
+                      "github_username": "github121",
+                      "user_id": 1001,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/1001/5e43495c-e279-4d6b-a6b9-3409c368d2f5.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/1001/5e43495c-e279-4d6b-a6b9-3409c368d2f5.jpeg"
+                    },
+                    "children": []
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Comment"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/comments/{id}": {
+      "get": {
+        "summary": "Comment by id",
+        "security": [],
+        "tags": ["comments"],
+        "description": "This endpoint allows the client to retrieve a comment as well as his descendants comments.\n\n  It will return the required comment (the root) with its nested descendants as a thread.\n\n  See the format specification for further details.",
+        "operationId": "getCommentById",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "description": "The ID of the user to unpublish.",
+            "description": "Comment identifier.",
+            "schema": {
+              "type": "integer"
+            },
+            "example": "321"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of the Comments",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "comment",
+                  "id_code": "3",
+                  "created_at": "2023-12-15T00:15:35Z",
+                  "body_html": "<p>Food truck beard typewriter locavore. Lomo bushwick cardigan post-ironic vhs. Vinegar gluten-free swag tumblr helvetica listicle xoxo.</p>\n\n",
+                  "user": {
+                    "name": "Kennith \"Rodney\" \\:/ Baumbach",
+                    "username": "username125",
+                    "twitter_username": "twitter125",
+                    "github_username": "github125",
+                    "user_id": 1005,
+                    "website_url": null,
+                    "profile_image": "/uploads/user/profile_image/1005/a2641bae-3a16-4238-952a-04f14ce74d1a.jpeg",
+                    "profile_image_90": "/uploads/user/profile_image/1005/a2641bae-3a16-4238-952a-04f14ce74d1a.jpeg"
+                  },
+                  "children": []
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comment Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/follows/tags": {
+      "get": {
+        "summary": "Followed Tags",
+        "tags": ["followed_tags", "tags"],
+        "description": "This endpoint allows the client to retrieve a list of the tags they follow.",
+        "operationId": "getFollowedTags",
+        "responses": {
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A List of followed tags",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 46,
+                    "name": "tag3",
+                    "points": 1.0
+                  },
+                  {
+                    "id": 47,
+                    "name": "tag4",
+                    "points": 1.0
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FollowedTag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/followers/users": {
+      "get": {
+        "summary": "Followers",
+        "tags": ["followers"],
+        "description": "This endpoint allows the client to retrieve a list of the followers they have.\n        \"Followers\" are users that are following other users on the website.\n        It supports pagination, each page will contain 80 followers by default.",
+        "operationId": "getFollowers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "description": "Default is 'created_at'. Specifies the sort order for the created_at param of the follow\n                                relationship. To sort by newest followers first (descending order) specify\n                                ?sort=-created_at.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "created_at"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of followers",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user_follower",
+                    "id": 6,
+                    "created_at": "2023-12-15T00:15:36Z",
+                    "user_id": 1012,
+                    "name": "Moises \"Eddie\" \\:/ Johns",
+                    "path": "/username132",
+                    "username": "username132",
+                    "profile_image": "/uploads/user/profile_image/1012/bdceff13-fec1-4040-8999-fda3de5d20ad.jpeg"
+                  },
+                  {
+                    "type_of": "user_follower",
+                    "id": 5,
+                    "created_at": "2023-12-15T00:15:36Z",
+                    "user_id": 1010,
+                    "name": "Bianca \"Bryan\" \\:/ Turcotte",
+                    "path": "/username130",
+                    "username": "username130",
+                    "profile_image": "/uploads/user/profile_image/1010/2a301706-4678-449a-95b9-75e71500015b.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "description": "A follower",
+                    "type": "object",
+                    "properties": {
+                      "type_of": {
+                        "description": "user_follower by default",
+                        "type": "string"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "user_id": {
+                        "description": "The follower's user id",
+                        "type": "integer",
+                        "format": "int32"
+                      },
+                      "name": {
+                        "description": "The follower's name",
+                        "type": "string"
+                      },
+                      "path": {
+                        "description": "A path to the follower's profile",
+                        "type": "string"
+                      },
+                      "profile_image": {
+                        "description": "Profile image (640x640)",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations/{username}": {
+      "get": {
+        "summary": "An organization (by username)",
+        "tags": ["organizations"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a single organization by their username",
+        "operationId": "getOrganization",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "organization",
+                  "id": 12,
+                  "username": "org12",
+                  "name": "Sporer Inc",
+                  "summary": "Biodiesel sustainable letterpress portland chartreuse. Authentic post-ironic everyday skateboard franzen thundercats.",
+                  "twitter_username": "org2359",
+                  "github_username": "org5109",
+                  "url": "http://baumbach-smitham.net/lavonia_emard",
+                  "location": null,
+                  "tech_stack": null,
+                  "tag_line": null,
+                  "story": null,
+                  "joined_at": "2023-12-15T00:15:36Z",
+                  "profile_image": "/uploads/organization/profile_image/12/f0728df4-7a41-474c-8675-aa2b31a8d84c.png"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations/{organization_id_or_username}/users": {
+      "get": {
+        "summary": "Organization's users",
+        "tags": ["organizations", "users"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a list of users belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
+        "operationId": "getOrgUsers",
+        "parameters": [
+          {
+            "name": "organization_id_or_username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization's users (with ID)",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "user",
+                    "id": 1025,
+                    "username": "username145",
+                    "name": "Lennie \"Lacy\" \\:/ Jaskolski",
+                    "twitter_username": "twitter145",
+                    "github_username": "github145",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "Dec 15, 2023",
+                    "profile_image": "/uploads/user/profile_image/1025/6c6a3071-cc34-41fb-9a03-811eca66e09d.jpeg"
+                  },
+                  {
+                    "type_of": "user",
+                    "id": 1026,
+                    "username": "username146",
+                    "name": "Iva \"Deon\" \\:/ Bernhard",
+                    "twitter_username": "twitter146",
+                    "github_username": "github146",
+                    "summary": null,
+                    "location": null,
+                    "website_url": null,
+                    "joined_at": "Dec 15, 2023",
+                    "profile_image": "/uploads/user/profile_image/1026/08be477d-61b1-4140-b1af-0608ba9fc9cd.jpeg"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations/{organization_id_or_username}/articles": {
+      "get": {
+        "summary": "Organization's Articles",
+        "tags": ["organizations", "articles"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a list of Articles belonging to the organization\n\nIt supports pagination, each page will contain `30` users by default.",
+        "operationId": "getOrgArticles",
+        "parameters": [
+          {
+            "name": "organization_id_or_username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization's Articles (with ID)",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "article",
+                    "id": 27,
+                    "title": "To Say Nothing of the Dog26",
+                    "description": "Readymade literally fanny pack squid slow-carb crucifix mumblecore authentic. Kickstarter put a bird...",
+                    "readable_publish_date": "Dec 15",
+                    "slug": "to-say-nothing-of-the-dog26-2oic",
+                    "path": "/org18/to-say-nothing-of-the-dog26-2oic",
+                    "url": "http://forem.test/org18/to-say-nothing-of-the-dog26-2oic",
+                    "comments_count": 0,
+                    "public_reactions_count": 0,
+                    "collection_id": null,
+                    "published_timestamp": "2023-12-15T00:15:37Z",
+                    "positive_reactions_count": 0,
+                    "cover_image": "http://forem.test/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "social_image": "http://forem.test/assets/14-5e64731cc7cd63e3b689647d9d3c3e4e1d907690c716d3dd1e356466726a2c2d.png",
+                    "canonical_url": "http://forem.test/org18/to-say-nothing-of-the-dog26-2oic",
+                    "created_at": "2023-12-15T00:15:37Z",
+                    "edited_at": null,
+                    "crossposted_at": null,
+                    "published_at": "2023-12-15T00:15:37Z",
+                    "last_comment_at": "2023-12-15T00:15:37Z",
+                    "reading_time_minutes": 1,
+                    "tag_list": ["javascript", "html", "discuss"],
+                    "tags": "javascript, html, discuss",
+                    "user": {
+                      "name": "Emmett \"Lanelle\" \\:/ Hills",
+                      "username": "username156",
+                      "twitter_username": "twitter156",
+                      "github_username": "github156",
+                      "user_id": 1036,
+                      "website_url": null,
+                      "profile_image": "/uploads/user/profile_image/1036/11b2f734-0a30-48a0-926f-13ff058d4c93.jpeg",
+                      "profile_image_90": "/uploads/user/profile_image/1036/11b2f734-0a30-48a0-926f-13ff058d4c93.jpeg"
+                    },
+                    "organization": {
+                      "name": "Lindgren-Marquardt",
+                      "username": "org18",
+                      "slug": "org18",
+                      "profile_image": "/uploads/organization/profile_image/18/040332d6-91a3-43e2-b13a-60d17688bf40.png",
+                      "profile_image_90": "/uploads/organization/profile_image/18/040332d6-91a3-43e2-b13a-60d17688bf40.png"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations": {
+      "get": {
+        "summary": "Organizations",
+        "tags": ["organizations"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a list of Dev organizations.\n\n  It supports pagination, each page will contain 10 tags by default.",
+        "operationId": "getOrganizations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of all organizations",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 20,
+                    "name": "Klein Group",
+                    "profile_image": {
+                      "url": "/uploads/organization/profile_image/20/6656819e-edbd-4af2-97de-b4457cdfd026.png"
+                    },
+                    "slug": "org20",
+                    "summary": "Lomo food truck pour-over. 90's quinoa authentic diy muggle magic butcher ethical. Cliche tattooed mustache ethical.",
+                    "tag_line": null,
+                    "url": "http://skiles.org/woodrow"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an Organization",
+        "tags": ["organizations"],
+        "description": "This endpoint allows the client to create an organization with the provided parameters.\n        It requires a token from a user with `admin` privileges.",
+        "operationId": "createOrganization",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "description": "Successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 23,
+                  "name": "New Test Org",
+                  "profile_image": "uploads/organization/profile_image/1/400x400.jpg",
+                  "slug": "org10001",
+                  "summary": "a newly created test org",
+                  "tag_line": "a test org's tagline",
+                  "url": "https://testorg.io"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "Validation failed: Name can't be blank, Profile image can't be blank, Slug can't be blank",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Organization"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations/{id}": {
+      "get": {
+        "summary": "An organization (by id)",
+        "tags": ["organizations"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a single organization by their id",
+        "operationId": "getOrganizationById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An Organization",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "organization",
+                  "id": 21,
+                  "username": "org21",
+                  "name": "Wehner, Skiles and Reinger",
+                  "summary": "Lo-fi tattooed master single-origin coffee umami.",
+                  "twitter_username": "org7509",
+                  "github_username": "org9430",
+                  "url": "http://haag-stark.io/fredrick.tillman",
+                  "location": null,
+                  "tech_stack": null,
+                  "tag_line": null,
+                  "story": null,
+                  "joined_at": "2023-12-15T00:15:37Z",
+                  "profile_image": "/uploads/organization/profile_image/21/38405e52-b2b2-47d3-a55d-2e908713fe06.png"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/Organization"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an organization by id",
+        "tags": ["organizations"],
+        "description": "This endpoint allows the client to update an existing organization.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the organization to update.",
             "schema": {
               "type": "integer",
               "format": "int32",
@@ -270,27 +2446,174 @@
         ],
         "responses": {
           "200": {
+            "description": "An Organization",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 24,
+                  "name": "Reinger, Gleichner and Rogahn",
+                  "profile_image": "/uploads/organization/profile_image/24/1b9f0d37-acb7-4b80-b950-d621f5c5463d.png",
+                  "slug": "org23",
+                  "summary": "An updated summary for the organization.",
+                  "tag_line": null,
+                  "url": "http://kertzmann.io/clora.mcglynn"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "organization Not Found",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "param is missing or the value is empty: organization",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Organization"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Organization by id",
+        "tags": ["organizations"],
+        "description": "This endpoint allows the client to delete a single organization, specified by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the organization.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
             "description": "successful",
             "content": {
               "application/json": {
                 "example": {
-                  "id": 10,
-                  "approved": false,
-                  "body_markdown": "Hello _hey_ Hey hey 5",
-                  "cached_tag_list": "",
-                  "clicks_count": 0,
-                  "created_at": "2022-11-17T10:30:32.066+01:00",
-                  "display_to": "all",
-                  "impressions_count": 0,
-                  "name": "Display Ad 10",
-                  "organization_id": 66,
-                  "placement_area": "sidebar_left",
-                  "processed_html": "<p>Hello <em>hey</em> Hey hey 5</p>",
-                  "published": false,
-                  "success_rate": 0.0,
-                  "type_of": "in_house",
-                  "updated_at": "2022-11-17T10:30:32.069+01:00",
-                  "tag_list": []
+                  "message": "deletion scheduled for organization with ID 28",
+                  "status": 200
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pages": {
+      "get": {
+        "summary": "show details for all pages",
+        "security": [],
+        "tags": ["pages"],
+        "description": "This endpoint allows the client to retrieve details for all Page objects.",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 1,
+                    "title": "For Whom the Bell Tolls",
+                    "slug": "onion-book",
+                    "description": "Reprehenderit quia et voluptate.",
+                    "is_top_level_path": false,
+                    "landing_page": false,
+                    "body_html": null,
+                    "body_json": null,
+                    "body_markdown": "Enim pariatur aut ea.",
+                    "processed_html": "<p>Enim pariatur aut ea.</p>\n\n",
+                    "social_image": {
+                      "url": null
+                    },
+                    "template": "contained"
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Page"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "pages",
+        "tags": ["pages"],
+        "description": "This endpoint allows the client to create a new page.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 3,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": "<h1>\n  <a name=\"hi-this-is-a-new-page\" href=\"#hi-this-is-a-new-page\">\n  </a>\n  Hi, this is a New Page\n</h1>\n\n<p>Yep, it's an a new page</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
                 }
               }
             }
@@ -306,8 +2629,400 @@
               }
             }
           },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": null,
+                  "title": "Example Page",
+                  "slug": "example1",
+                  "description": "a new page",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "# Hi, this is a New Page\nYep, it's an a new page",
+                  "processed_html": null,
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Title of the page"
+                  },
+                  "slug": {
+                    "type": "string",
+                    "description": "Used to link to this page in URLs, must be unique and URL-safe"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "For internal use, helps similar pages from one another"
+                  },
+                  "body_markdown": {
+                    "type": "string",
+                    "description": "The text (in markdown) of the ad (required)"
+                  },
+                  "body_json": {
+                    "type": "string",
+                    "description": "For JSON pages, the JSON body"
+                  },
+                  "is_top_level_path": {
+                    "type": "boolean",
+                    "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
+                  },
+                  "template": {
+                    "type": "string",
+                    "enum": [
+                      "contained",
+                      "full_within_layout",
+                      "nav_bar_included",
+                      "json"
+                    ],
+                    "default": "contained",
+                    "description": "Controls what kind of layout the page is rendered in"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pages/{id}": {
+      "get": {
+        "summary": "show details for a page",
+        "security": [],
+        "tags": ["pages"],
+        "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 6,
+                  "title": "Dance Dance Dance",
+                  "slug": "cutting_deport",
+                  "description": "Vitae eos corrupti explicabo.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Atque aut qui nisi.",
+                  "processed_html": "<p>Atque aut qui nisi.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "update details for a page",
+        "tags": ["pages"],
+        "description": "This endpoint allows the client to retrieve details for a single Page object, specified by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 7,
+                  "title": "New Title",
+                  "slug": "distant_provision",
+                  "description": "Qui aspernatur illo aut.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Quia rerum officiis quod.",
+                  "processed_html": "<p>Quia rerum officiis quod.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 9,
+                  "title": "Behold the Man",
+                  "slug": "kidnap-outside",
+                  "description": "Blanditiis sunt vel inventore.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Voluptatum fugit quisquam occaecati.",
+                  "processed_html": "<p>Voluptatem beatae provident sed.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "moon"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Page"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "remove a page",
+        "tags": ["pages"],
+        "description": "This endpoint allows the client to delete a single Page object, specified by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the page.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "id": 10,
+                  "title": "After Many a Summer Dies the Swan",
+                  "slug": "exhibition_nursery",
+                  "description": "Doloribus blanditiis delectus quibusdam.",
+                  "is_top_level_path": false,
+                  "landing_page": false,
+                  "body_html": null,
+                  "body_json": null,
+                  "body_markdown": "Laudantium sit quod blanditiis.",
+                  "processed_html": "<p>Laudantium sit quod blanditiis.</p>\n\n",
+                  "social_image": {
+                    "url": null
+                  },
+                  "template": "contained"
+                },
+                "schema": {
+                  "$ref": "#/components/schemas/Page"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "unprocessable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "doubled_module": {
+                    "const_name": "Page",
+                    "object": "Page"
+                  },
+                  "__expired": false,
+                  "name": null,
+                  "__sending_message": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/podcast_episodes": {
+      "get": {
+        "summary": "Podcast Episodes",
+        "security": [],
+        "tags": ["podcast_episodes"],
+        "description": "This endpoint allows the client to retrieve a list of podcast episodes.\n        \"Podcast episodes\" are episodes belonging to podcasts.\n        It will only return active (reachable) podcast episodes that belong to published podcasts available on the platform, ordered by descending publication date.\n        It supports pagination, each page will contain 30 articles by default.",
+        "operationId": "getPodcastEpisodes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "description": "Using this parameter will retrieve episodes belonging to a specific podcast.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "codenewbie"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of Podcast episodes filtered by username",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "podcast_episodes",
+                    "class_name": "PodcastEpisode",
+                    "id": 2,
+                    "path": "/codenewbie/slug-2",
+                    "title": "14",
+                    "image_url": "/uploads/podcast/image/2/74b69d3b-45d0-4dcc-82e8-aae16f3f3afb.jpeg",
+                    "podcast": {
+                      "title": "Brooklyn Black",
+                      "slug": "codenewbie",
+                      "image_url": "/uploads/podcast/image/2/74b69d3b-45d0-4dcc-82e8-aae16f3f3afb.jpeg"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PodcastEpisodeIndex"
+                  }
+                }
+              }
+            }
+          },
           "404": {
-            "description": "Unknown DisplayAd ID",
+            "description": "Unknown Podcast username",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/profile_images/{username}": {
+      "get": {
+        "summary": "A Users or organizations profile image",
+        "tags": ["profile images"],
+        "description": "This endpoint allows the client to retrieve a user or organization profile image information by its\n        corresponding username.",
+        "operationId": "getProfileImage",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "description": "The parameter is the username of the user or the username of the organization.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "janedoe"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object containing profile image details",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "profile_image",
+                  "image_of": "user",
+                  "profile_image": "/uploads/user/profile_image/1060/88048a31-60e1-41af-8d6d-5a5bd37a6767.jpeg",
+                  "profile_image_90": "/uploads/user/profile_image/1060/88048a31-60e1-41af-8d6d-5a5bd37a6767.jpeg"
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfileImage"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource Not Found",
             "content": {
               "application/json": {
                 "example": {
@@ -332,7 +3047,13 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["like", "readinglist", "unicorn"]
+              "enum": [
+                "like",
+                "unicorn",
+                "exploding_head",
+                "raised_hands",
+                "fire"
+              ]
             }
           },
           {
@@ -363,7 +3084,7 @@
                   "result": "create",
                   "category": "like",
                   "id": 1,
-                  "reactable_id": 195,
+                  "reactable_id": 29,
                   "reactable_type": "Article"
                 }
               }
@@ -395,7 +3116,13 @@
             "required": true,
             "schema": {
               "type": "string",
-              "enum": ["like", "readinglist", "unicorn"]
+              "enum": [
+                "like",
+                "unicorn",
+                "exploding_head",
+                "raised_hands",
+                "fire"
+              ]
             }
           },
           {
@@ -426,7 +3153,7 @@
                   "result": "none",
                   "category": "like",
                   "id": 3,
-                  "reactable_id": 197,
+                  "reactable_id": 31,
                   "reactable_type": "Article"
                 }
               }
@@ -439,6 +3166,521 @@
                 "example": {
                   "error": "unauthorized",
                   "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/readinglist": {
+      "get": {
+        "summary": "Readinglist",
+        "tags": ["readinglist"],
+        "description": "This endpoint allows the client to retrieve a list of articles that were saved to a Users readinglist.\n        It supports pagination, each page will contain `30` articles by default",
+        "operationId": "getReadinglist",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam30to1000"
+          }
+        ],
+        "responses": {
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "A list of articles in the users readinglist",
+            "content": {
+              "application/json": {
+                "example": [],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleIndex"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags": {
+      "get": {
+        "summary": "Tags",
+        "tags": ["tags"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a list of tags that can be used to tag articles.\n\nIt will return tags ordered by popularity.\n\nIt supports pagination, each page will contain 10 tags by default.",
+        "operationId": "getTags",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam10to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of all tags",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "id": 86,
+                    "name": "tag7",
+                    "bg_color_hex": null,
+                    "text_color_hex": null
+                  },
+                  {
+                    "id": 85,
+                    "name": "tag6",
+                    "bg_color_hex": null,
+                    "text_color_hex": null
+                  },
+                  {
+                    "id": 84,
+                    "name": "tag5",
+                    "bg_color_hex": null,
+                    "text_color_hex": null
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/suspend": {
+      "put": {
+        "summary": "Suspend a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
+        "operationId": "suspendUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to suspend.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully unpublished"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/limited": {
+      "put": {
+        "summary": "Add limited role for a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to limit a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'limited' role. Limiting a user will limit notifications\ngenerated from new posts and comments. It doesn't delete any of the user's content or prevent them\nfrom generating new content while limited. Users are not notified of their limits\nin the UI, so if you want them to know about this, you must notify them.",
+        "operationId": "limitUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to limit.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully limited"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove limited for a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to remove limits for a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be restored to 'general' status. Users are not notified\nof limits in the UI, so if you want them to know about this, you must\nnotify them.",
+        "operationId": "unLimitUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to un-limit.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully un-limited"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/spam": {
+      "put": {
+        "summary": "Add spam role for a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to add the spam role to a user.\n\n          The user associated with the API key must have any 'admin' or 'moderator' role.\n\n          This specified user will be assigned the 'spam' role. Addding the spam role to a user will stop the\n          user from posting new posts and comments. It doesn't delete any of the user's content, just\n          prevents them from creating new content while having the spam role. Users are not notified of their spaminess\n          in the UI, so if you want them to know about this, you must notify them",
+        "operationId": "spamUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to assign the spam role.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Spam role assigned to the user successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove spam role from a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to remove the spam role for a user.\n\n          The user associated with the API key must have any 'admin' or 'moderator' role.\n\n          This specified user will be restored to 'general' status. Users are not notified\n          of removing their spam role in the UI, so if you want them to know about this, you must\n          notify them.",
+        "operationId": "unSpamUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to remove the spam role from.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully removed the spam role from a user"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/trusted": {
+      "put": {
+        "summary": "Add trusted role for a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to add the trusted role to a user.\n          The user associated with the API key must have an 'admin' or 'moderator' role.\n          The specified user will be assigned the 'trusted' role. Adding the trusted role to a user\n          allows them to upvote and downvote posts and flag content that needs investigating by admins.\n          Users are notified of this change in the UI, and by email.",
+        "operationId": "trustUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to assign the trusted role.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Trusted role assigned to the user successfully"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove trusted role from a User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to remove the trusted role for a user.\n          The user associated with the API key must have an 'admin' or 'moderator' role.\n          The specified user will be restored to 'general' status. Users are not notified\n          of removing their trusted role in the UI, so if you want them to know about this, you must\n          notify them.",
+        "operationId": "unTrustUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to remove the trusted role from.",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "minimum": 1
+            },
+            "example": 1
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully removed the trusted role from a user"
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown User ID",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "not found",
+                  "status": 404
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/me": {
+      "get": {
+        "summary": "The authenticated user",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve information about the authenticated user",
+        "operationId": "getUserMe",
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "example": {
+                  "type_of": "user",
+                  "id": 1110,
+                  "username": "username230",
+                  "name": "Erich \"Ewa\" \\:/ Prohaska",
+                  "twitter_username": "twitter230",
+                  "github_username": "github230",
+                  "email": null,
+                  "summary": null,
+                  "location": null,
+                  "website_url": null,
+                  "joined_at": "Dec 15, 2023",
+                  "profile_image": "/uploads/user/profile_image/1110/9f031b2e-e68a-445f-b577-f46210dc14cf.jpeg",
+                  "badge_ids": [],
+                  "followers_count": 0
+                },
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/MyUser"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "error": "unauthorized",
+                  "status": 401
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "summary": "A User",
+        "tags": ["users"],
+        "description": "This endpoint allows the client to retrieve a single user, either by id\nor by the user's username.\n\nFor complete documentation, see the v0 API docs: https://developers.forem.com/api/v0#tag/users/operation/getUser",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "items": {
+                    "$ref": "#/components/schemas/ExtendedUser"
+                  }
                 }
               }
             }
@@ -495,29 +3737,16 @@
         }
       }
     },
-    "/api/users/{id}/suspend": {
-      "put": {
-        "summary": "Suspend a User",
+    "/api/admin/users": {
+      "post": {
+        "summary": "Invite a User",
         "tags": ["users"],
-        "description": "This endpoint allows the client to suspend a user.\n\nThe user associated with the API key must have any 'admin' or 'moderator' role.\n\nThis specified user will be assigned the 'suspended' role. Suspending a user will stop the\nuser from posting new posts and comments. It doesn't delete any of the user's content, just\nprevents them from creating new content while suspended. Users are not notified of their suspension\nin the UI, so if you want them to know about this, you must notify them.",
-        "operationId": "suspendUser",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "The ID of the user to suspend.",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "minimum": 1
-            },
-            "example": 1
-          }
-        ],
+        "description": "This endpoint allows the client to trigger an invitation to the provided email address.\n\n        It requires a token from a user with `super_admin` privileges.",
+        "operationId": "postAdminUsersCreate",
+        "parameters": [],
         "responses": {
-          "204": {
-            "description": "User successfully unpublished"
+          "200": {
+            "description": "Successful"
           },
           "401": {
             "description": "Unauthorized",
@@ -530,13 +3759,82 @@
               }
             }
           },
-          "404": {
-            "description": "Unknown User ID",
+          "422": {
+            "description": "Unprocessable Entity",
             "content": {
               "application/json": {
                 "example": {
-                  "error": "not found",
-                  "status": 404
+                  "error": "param is missing or the value is empty: email",
+                  "status": 422
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInviteParam"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/videos": {
+      "get": {
+        "summary": "Articles with a video",
+        "tags": ["videos", "articles"],
+        "security": [],
+        "description": "This endpoint allows the client to retrieve a list of articles that are uploaded with a video.\n\nIt will only return published video articles ordered by descending popularity.\n\nIt supports pagination, each page will contain 24 articles by default.",
+        "operationId": "videos",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/pageParam"
+          },
+          {
+            "$ref": "#/components/parameters/perPageParam24to1000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A List of all articles with videos",
+            "content": {
+              "application/json": {
+                "example": [
+                  {
+                    "type_of": "video_article",
+                    "id": 34,
+                    "path": "/username244/brandy-of-the-damned33-2cbm",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "title": "Brandy of the Damned33",
+                    "user_id": 1125,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Effie \"Kieth\" \\:/ Weimann"
+                    }
+                  },
+                  {
+                    "type_of": "video_article",
+                    "id": 33,
+                    "path": "/username243/o-pioneers32-1ejl",
+                    "cloudinary_video_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+                    "title": "O Pioneers!32",
+                    "user_id": 1124,
+                    "video_duration_in_minutes": "00:00",
+                    "video_source_url": "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+                    "user": {
+                      "name": "Preston \"Darius\" \\:/ Runolfsdottir"
+                    }
+                  }
+                ],
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VideoArticle"
+                  }
                 }
               }
             }
@@ -663,16 +3961,18 @@
           },
           "bg_color_hex": {
             "description": "Background color (hexadecimal)",
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "text_color_hex": {
             "description": "Text color (hexadecimal)",
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
       "ArticleIndex": {
-        "description": "Resprentation of an article or post returned in a list",
+        "description": "Representation of an article or post returned in a list",
         "type": "object",
         "properties": {
           "type_of": {
@@ -801,6 +4101,285 @@
           "reading_time_minutes"
         ]
       },
+      "VideoArticle": {
+        "description": "Representation of an Article with video",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "path": {
+            "type": "string"
+          },
+          "cloudinary_video_url": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "user_id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "video_duration_in_minutes": {
+            "type": "string"
+          },
+          "video_source_url": {
+            "type": "string"
+          },
+          "user": {
+            "description": "Author of the article",
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Article": {
+        "description": "Representation of an Article to be created/updated",
+        "type": "object",
+        "properties": {
+          "article": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "body_markdown": {
+                "type": "string"
+              },
+              "published": {
+                "type": "boolean",
+                "default": false
+              },
+              "series": {
+                "type": "string",
+                "nullable": true
+              },
+              "main_image": {
+                "type": "string",
+                "nullable": true
+              },
+              "canonical_url": {
+                "type": "string",
+                "nullable": true
+              },
+              "description": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "string"
+              },
+              "organization_id": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
+          }
+        }
+      },
+      "Organization": {
+        "description": "Representation of an Organization",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "twitter_username": {
+            "type": "string"
+          },
+          "github_username": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "joined_at": {
+            "type": "string"
+          },
+          "tech_stack": {
+            "type": "string"
+          },
+          "tag_line": {
+            "type": "string",
+            "nullable": true
+          },
+          "story": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "FollowedTag": {
+        "description": "Representation of a followed tag",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "points": {
+            "type": "number",
+            "format": "float"
+          }
+        },
+        "required": ["id", "name", "points"]
+      },
+      "Tag": {
+        "description": "Representation of a tag",
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Tag id",
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "bg_color_hex": {
+            "type": "string",
+            "nullable": true
+          },
+          "text_color_hex": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Page": {
+        "description": "Representation of a page object",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title of the page"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Used to link to this page in URLs, must be unique and URL-safe"
+          },
+          "description": {
+            "type": "string",
+            "description": "For internal use, helps similar pages from one another"
+          },
+          "body_markdown": {
+            "type": "string",
+            "description": "The text (in markdown) of the ad (required)",
+            "nullable": true
+          },
+          "body_json": {
+            "type": "string",
+            "description": "For JSON pages, the JSON body",
+            "nullable": true
+          },
+          "is_top_level_path": {
+            "type": "boolean",
+            "description": "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution"
+          },
+          "social_image": {
+            "type": "object",
+            "nullable": true
+          },
+          "template": {
+            "type": "string",
+            "enum": [
+              "contained",
+              "full_within_layout",
+              "nav_bar_included",
+              "json"
+            ],
+            "default": "contained",
+            "description": "Controls what kind of layout the page is rendered in"
+          }
+        },
+        "required": ["title", "slug", "description", "template"]
+      },
+      "PodcastEpisodeIndex": {
+        "description": "Representation of a podcast episode returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "class_name": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "format": "path"
+          },
+          "title": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast episode image url or podcast image url",
+            "type": "string",
+            "format": "url"
+          },
+          "podcast": {
+            "$ref": "#/components/schemas/SharedPodcast"
+          }
+        },
+        "required": [
+          "type_of",
+          "class_name",
+          "id",
+          "path",
+          "title",
+          "image_url",
+          "podcast"
+        ]
+      },
+      "ProfileImage": {
+        "description": "A profile image object",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "description": "Return profile_image",
+            "type": "string"
+          },
+          "image_of": {
+            "description": "Determines the type of the profile image owner (user or organization)",
+            "type": "string"
+          },
+          "profile_image": {
+            "description": "Profile image (640x640)",
+            "type": "string"
+          },
+          "profile_image_90": {
+            "description": "Profile image (90x90)",
+            "type": "string"
+          }
+        }
+      },
       "SharedUser": {
         "description": "The resource creator",
         "type": "object",
@@ -856,6 +4435,347 @@
             "description": "Profile image (90x90)",
             "type": "string",
             "format": "url"
+          }
+        }
+      },
+      "User": {
+        "description": "The representation of a user returned in a list",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitter_username": {
+            "type": "string"
+          },
+          "github_username": {
+            "type": "string"
+          },
+          "website_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "joined_at": {
+            "type": "string"
+          },
+          "profile_image": {
+            "type": "string"
+          }
+        }
+      },
+      "ExtendedUser": {
+        "description": "The representation of a user",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitter_username": {
+            "type": "string"
+          },
+          "github_username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email (if user allows displaying email on their profile) or nil"
+          },
+          "website_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "joined_at": {
+            "type": "string"
+          },
+          "profile_image": {
+            "type": "string"
+          },
+          "badge_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "ids of the badges awarded to the user"
+          }
+        }
+      },
+      "MyUser": {
+        "description": "The representation of a user when accessed by themselves",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string",
+            "nullable": true
+          },
+          "twitter_username": {
+            "type": "string"
+          },
+          "github_username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "nullable": true,
+            "description": "Email (if user allows displaying email on their profile) or nil"
+          },
+          "website_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "location": {
+            "type": "string",
+            "nullable": true
+          },
+          "joined_at": {
+            "type": "string"
+          },
+          "profile_image": {
+            "type": "string"
+          },
+          "badge_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "ids of the badges awarded to the user"
+          },
+          "followers_count": {
+            "type": "integer"
+          }
+        }
+      },
+      "SharedPodcast": {
+        "description": "The podcast that the resource belongs to",
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "image_url": {
+            "description": "Podcast image url",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "Comment": {
+        "description": "A Comment on an Article or Podcast Episode",
+        "type": "object",
+        "properties": {
+          "type_of": {
+            "type": "string"
+          },
+          "id_code": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "image_url": {
+            "description": "Podcast image url",
+            "type": "string",
+            "format": "url"
+          }
+        }
+      },
+      "UserInviteParam": {
+        "description": "User invite parameters",
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Billboard": {
+        "description": "Billboard, aka Widget, ex. Display Ad",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the Billboard"
+          },
+          "name": {
+            "type": "string",
+            "description": "For internal use, helps distinguish ads from one another"
+          },
+          "body_markdown": {
+            "type": "string",
+            "description": "The text (in markdown) of the ad (required)"
+          },
+          "approved": {
+            "type": "boolean",
+            "description": "Ad must be both published and approved to be in rotation"
+          },
+          "published": {
+            "type": "boolean",
+            "description": "Ad must be both published and approved to be in rotation"
+          },
+          "organization_id": {
+            "type": "integer",
+            "description": "Identifies the organization to which the ad belongs",
+            "nullable": true
+          },
+          "creator_id": {
+            "type": "integer",
+            "description": "Identifies the user who created the ad.",
+            "nullable": true
+          },
+          "placement_area": {
+            "type": "string",
+            "enum": [
+              "sidebar_left",
+              "sidebar_left_2",
+              "sidebar_right",
+              "feed_first",
+              "feed_second",
+              "feed_third",
+              "home_hero",
+              "post_sidebar",
+              "post_comments"
+            ],
+            "description": "Identifies which area of site layout the ad can appear in"
+          },
+          "tag_list": {
+            "type": "string",
+            "description": "Tags on which this ad can be displayed (blank is all/any tags)"
+          },
+          "exclude_article_ids": {
+            "type": "string",
+            "nullable": true,
+            "description": "Articles this ad should *not* appear on (blank means no articles are disallowed, and this ad can appear next to any/all articles). Comma-separated list of integer Article IDs"
+          },
+          "audience_segment_id": {
+            "type": "integer",
+            "description": "Specifies a specific audience segment who will see this billboard"
+          },
+          "audience_segment_type": {
+            "type": "string",
+            "enum": [
+              "manual",
+              "trusted",
+              "posted",
+              "no_posts_yet",
+              "dark_theme",
+              "light_theme",
+              "no_experience",
+              "experience1",
+              "experience2",
+              "experience3",
+              "experience4",
+              "experience5"
+            ],
+            "description": "Specifies a group of users who will see this billboard (must match audience_segment_id if both provided)"
+          },
+          "target_geolocations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Locations to show this billboard in (blank means it will be shown in all locations). Specified as a comma-separated list or array of ISO 3166-2 country and optionally region codes)"
+          },
+          "display_to": {
+            "type": "string",
+            "enum": ["all", "logged_in", "logged_out"],
+            "default": "all",
+            "description": "Potentially limits visitors to whom the ad is visible"
+          },
+          "type_of": {
+            "type": "string",
+            "enum": ["in_house", "community", "external"],
+            "default": "in_house",
+            "description": "Types of the billboards:\nin_house (created by admins),\ncommunity (created by an entity, appears on entity's content),\nexternal ( created by an entity, or a non-entity, can appear everywhere)\n"
+          }
+        },
+        "required": ["name", "body_markdown", "placement_area"]
+      },
+      "Segment": {
+        "description": "A manually managed audience segment",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the segment"
+          },
+          "type_of": {
+            "type": "string",
+            "enum": ["manual"],
+            "default": "manual",
+            "description": "Marks the segment as manually managed (other types are internal)"
+          },
+          "user_count": {
+            "type": "integer",
+            "description": "The current number of users in the segment"
+          }
+        }
+      },
+      "SegmentUserIds": {
+        "type": "object",
+        "properties": {
+          "user_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 10000
           }
         }
       }

@@ -2,14 +2,20 @@ class AuditLog
   class UnpublishAllsQuery
     Result = Struct.new(:exists?, :audit_log, :target_articles, :target_comments, keyword_init: true)
 
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(user_id)
       @user_id = user_id
       @target_articles = []
       @target_comments = []
     end
 
-    def self.call(...)
-      new(...).call
+    def exists?
+      exists = AuditLog.where(slug: %w[api_user_unpublish unpublish_all_articles])
+        .where("data @> '{\"target_user_id\": ?}'", user_id).present?
+      Result.new(exists?: exists)
     end
 
     def call

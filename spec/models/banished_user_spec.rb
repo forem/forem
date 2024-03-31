@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BanishedUser, type: :model do
+RSpec.describe BanishedUser do
   describe "validations" do
     describe "builtin validations" do
       it { is_expected.to belong_to(:banished_by).class_name("User").optional }

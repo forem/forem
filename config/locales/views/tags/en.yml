@@ -8,7 +8,7 @@ en:
         og:
           description: "%{community} is great!"
       heading:
-        default: Top tags
+        default: Tags
         search_results: Search results for %{q}
       search:
         aria_labels:
@@ -38,14 +38,19 @@ en:
             placeholder: Optional - Can be used for challenges, i.e. submission guidelines.
           submit: Save
       follow: Follow
+      hide: Hide
+      aria_labels:
+        follow: "Follow tag: %{tag_name}"
+        hide: "Hide tag: %{tag_name}"
       following_tags: Following tags
+      hidden_tags: Hidden tags
       moderator:
         text_html: "comma separated, space is optional. Example: %{code}"
         code: 123
         placeholder: "comma separated, space is optional. Example: 1,2,3"
       published:
-        one: 1 post published
-        other: "%{count} posts published"
+        one: 1 post
+        other: "%{count} posts"
       sidebar:
         about: 'about #%{tag}'
         admin: Admin

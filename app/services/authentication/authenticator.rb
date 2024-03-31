@@ -12,14 +12,6 @@ module Authentication
   # 2. update an existing user and align it to its authentication identity
   # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
-    # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
-    def initialize(auth_payload, current_user: nil, cta_variant: nil)
-      @provider = load_authentication_provider(auth_payload)
-
-      @current_user = current_user
-      @cta_variant = cta_variant
-    end
-
     # @api public
     #
     # @see #initialize method for parameters
@@ -30,6 +22,14 @@ module Authentication
     # @raise [Authentication::Errors::SpammyEmailDomain] when the associated email is spammy
     def self.call(...)
       new(...).call
+    end
+
+    # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
+    def initialize(auth_payload, current_user: nil, cta_variant: nil)
+      @provider = load_authentication_provider(auth_payload)
+
+      @current_user = current_user
+      @cta_variant = cta_variant
     end
 
     # @api private
@@ -51,6 +51,7 @@ module Authentication
                else
                  update_user(user)
                end
+        user.set_initial_roles!
 
         identity.user = user if identity.user_id.blank?
         new_identity = identity.new_record?
@@ -118,9 +119,9 @@ module Authentication
       suspended_user = Users::SuspendedUsername.previously_suspended?(username)
       raise ::Authentication::Errors::PreviouslySuspended if suspended_user
 
-      existing_user = User.where(
+      existing_user = User.find_by(
         provider.user_username_field => username,
-      ).take
+      )
       return existing_user if existing_user
 
       User.new.tap do |user|
@@ -148,7 +149,7 @@ module Authentication
     end
 
     def update_user(user)
-      return user if user.suspended?
+      return user if user.spam_or_suspended?
 
       user.tap do |model|
         model.unlock_access! if model.access_locked?

@@ -38,13 +38,6 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     expect(number_of_triple_backticks).to eq(2)
   end
 
-  # TODO: @zhao-andy this should fail if this issue is solved: https://github.com/forem/forem/issues/13823
-  it "escapes triple backticks within a codeblock when using tildes" do
-    code_block = "~~~\nhello\n```\nwhatever\n```\n~~~"
-    number_of_triple_backticks = generate_and_parse_markdown(code_block).scan("```").count
-    expect(number_of_triple_backticks).to eq(0)
-  end
-
   it "does not remove the non-'raw tag related' four dashes" do
     code_block = "```\n----\n```"
     expect(generate_and_parse_markdown(code_block)).to include("----")
@@ -269,12 +262,52 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         generate_and_parse_markdown("```const data = 'data:text/html';```")
       end.not_to raise_error
     end
+
+    it "does not raise error if XSS is inside tripe backticks code blocks" do
+      code_block = "```\n src='data \n```"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside double backticks code blocks" do
+      code_block = "`` src='data ``"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside single backtick code blocks" do
+      code_block = "` src='data `"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "does not raise error if XSS is inside triple tildes code blocks" do
+      code_block = "~~~\n src='data \n~~~"
+
+      expect { generate_and_parse_markdown(code_block) }.not_to raise_error
+    end
+
+    it "raises and error if XSS attempt is in between codeblocks" do
+      markdown = <<~MARKDOWN
+        ```
+          code block 1
+        ```
+
+        src='data
+
+        ```
+          code block 2
+        ```
+      MARKDOWN
+
+      expect { generate_and_parse_markdown(markdown) }.to raise_error(ArgumentError)
+    end
   end
 
   context "when provided with an @username" do
     context "when html has injected styles" do
       before do
-        create :user, username: "User1"
+        create(:user, username: "User1")
       end
 
       let(:suspicious) do
@@ -285,7 +318,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       end
 
       it "strips the styles as expected" do
-        linked_user = %(<a class=\"mentioned-user\" href=\"http://localhost:3000/user1\">@user1</a>)
+        linked_user = %(<a class="mentioned-user" href="http://forem.test/user1">@user1</a>)
         expected_result = <<~HTML.strip
           <p>x{animation:s}#{linked_user} s{}&lt;br&gt;
           &lt;style&gt;{transition:color 1s}:hover{color:red}&lt;/p&gt;
@@ -378,7 +411,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
       expect(generate_and_parse_markdown(markdown_with_img)).to include("<a")
     end
 
-    it "wraps the image with Cloudinary", cloudinary: true do
+    it "wraps the image with Cloudinary", :cloudinary do
       expect(generate_and_parse_markdown(markdown_with_img))
         .to include("https://res.cloudinary.com")
     end
@@ -487,7 +520,7 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
         "{% liquid example %}",
         source: :my_source,
         user: :my_user,
-        policy: :my_policy,
+        liquid_tag_options: { policy: :my_policy },
       ).finalize
       expect(Liquid::Template).to have_received(:parse)
         .with(

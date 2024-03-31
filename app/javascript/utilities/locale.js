@@ -12,6 +12,6 @@ const { locale: userLocale } = document.body.dataset;
 if (userLocale) {
   i18n.locale = userLocale;
 }
-export function locale(term) {
-  return i18n.t(term);
+export function locale(term, params = {}) {
+  return i18n.t(term, params);
 }

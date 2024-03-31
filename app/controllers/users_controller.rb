@@ -5,22 +5,25 @@ class UsersController < ApplicationController
                 only: %i[update update_password request_destroy full_delete remove_identity]
   after_action :verify_authorized,
                except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org confirm_destroy]
-  before_action :set_suggested_users, only: %i[index]
   before_action :initialize_stripe, only: %i[edit]
 
-  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
-  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
-
   def index
-    @users =
-      case params[:state]
-      when "follow_suggestions"
-        determine_follow_suggestions(current_user)
-      when "sidebar_suggestions"
-        Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
-      else
-        User.none
+    @users = sidebar_suggestions || User.none
+  end
+
+  # Unlike other methods in this controller, this does _NOT_ assume the current_user is *the* user
+  def show
+    skip_authorization
+    user = User.find(params[:id])
+    # authorize user, :show?
+
+    respond_to do |format|
+      format.json do
+        render json: user.as_json(attributes_for_show)
       end
+    end
+  rescue ActiveRecord::RecordNotFound
+    error_not_found
   end
 
   # GET /settings/@tab
@@ -55,16 +58,26 @@ class UsersController < ApplicationController
       end
       flash[:settings_notice] = notice
       @user.touch(:profile_updated_at)
-      redirect_to "/settings/#{@tab}"
+      respond_to do |format|
+        format.json { render json: { success: true, user: @user } }
+        format.html { redirect_to "/settings/#{@tab}" }
+      end
     else
       Honeycomb.add_field("error", @user.errors.messages.compact_blank)
       Honeycomb.add_field("errored", true)
 
-      if @tab
-        render :edit, status: :bad_request
-      else
-        flash[:error] = @user.errors.full_messages.join(", ")
-        redirect_to "/settings"
+      error_message = @user.errors.full_messages.join(", ")
+
+      respond_to do |format|
+        format.json { render json: { success: false, error: error_message }, status: :bad_request }
+        format.html do
+          if @tab
+            render :edit, status: :bad_request
+          else
+            flash[:error] = error_message
+            redirect_to "/settings"
+          end
+        end
       end
     end
   end
@@ -253,30 +266,42 @@ class UsersController < ApplicationController
     end
   end
 
+  def toggle_spam
+    authorize @current_user
+
+    @target_user = User.find_by(id: params[:id])
+    error_not_found and return unless @target_user
+
+    begin
+      case request.method_symbol
+      when :put
+        manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
+        manager.handle_user_status("Spam", "Mark as Spam from user profile")
+        payload = { action: "mark_as_spam", target_user_id: params[:id] }
+        Audit::Logger.log(:admin, @current_user, payload)
+      when :delete
+        manager = Moderator::ManageActivityAndRoles.new(admin: @current_user, user: @target_user, user_params: {})
+        manager.handle_user_status("Good standing", "Set in good standing from user profile")
+        payload = { action: "remove_spam_role_from_user", target_user_id: params[:id] }
+        Audit::Logger.log(:admin, @current_user, payload)
+      else
+        render json, status: :method_not_allowed
+      end
+      head :no_content
+    rescue StandardError => e
+      Rails.logger.error("Failed to toggle spam status for user #{params[:id]}: #{e.message}")
+      respond_to do |format|
+        format.html { redirect_to "/dashboard", notice: I18n.t("articles_controller.deleted") }
+        format.json { head :internal_server_error }
+      end
+    end
+  end
+
   private
-
-  def set_suggested_users
-    @suggested_users = Settings::General.suggested_users
-  end
-
-  def default_suggested_users
-    @default_suggested_users ||= User.includes(:profile).where(username: @suggested_users)
-  end
-
-  def determine_follow_suggestions(current_user)
-    return default_suggested_users if Settings::General.prefer_manual_suggested_users? && default_suggested_users
-
-    recent_suggestions = Users::SuggestRecent.call(
-      current_user,
-      attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-    )
-
-    recent_suggestions.presence || default_suggested_users
-  end
 
   def handle_organization_tab
     @organizations = @current_user.organizations.order(name: :asc)
-    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.size.zero?)
+    if params[:org_id] == "new" || (params[:org_id].blank? && @organizations.empty?)
       @organization = Organization.new
     elsif params[:org_id].blank? || params[:org_id].match?(/\d/)
       @organization = Organization.find_by(id: params[:org_id]) || @organizations.first
@@ -335,5 +360,27 @@ class UsersController < ApplicationController
 
   def password_params
     params.permit(:current_password, :password, :password_confirmation)
+  end
+
+  def sidebar_suggestions
+    return if params[:state].to_s != "sidebar_suggestions"
+
+    Users::SuggestForSidebar.call(current_user, params[:tag]).sample(3)
+  end
+
+  def error_not_found
+    render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  def attributes_for_show
+    default_options = { only: %i[id username] }
+
+    methods = []
+    methods << :suspended if current_user&.trusted? || current_user&.any_admin?
+    methods << :spam if current_user&.any_admin?
+
+    options_to_merge = methods.empty? ? {} : { methods: methods }
+
+    default_options.merge(options_to_merge)
   end
 end

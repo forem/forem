@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe DiscussionLock, type: :model do
+RSpec.describe DiscussionLock do
   let(:discussion_lock) { create(:discussion_lock) }
 
   describe "relationships" do

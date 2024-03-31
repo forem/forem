@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "StripeActiveCards", type: :request do
+RSpec.describe "StripeActiveCards" do
   let(:user) { create(:user) }
   let(:stripe_helper) { StripeMock.create_test_helper }
   let(:card_token) { stripe_helper.generate_card_token }

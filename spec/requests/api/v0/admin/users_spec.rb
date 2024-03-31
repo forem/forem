@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/api/admin/users", type: :request do
+RSpec.describe "/api/admin/users" do
   let(:params) { { email: "test@example.com" } }
 
   context "when unauthorized" do

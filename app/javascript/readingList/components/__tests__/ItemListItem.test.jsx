@@ -31,7 +31,7 @@ describe('<ItemListItem />', () => {
   it('renders the title', () => {
     const { queryByText } = render(<ItemListItem item={getItem()} />);
 
-    expect(queryByText(/Title/i)).toBeDefined();
+    expect(queryByText(/Title/i)).toExist();
   });
 
   it('renders the path', () => {
@@ -45,7 +45,7 @@ describe('<ItemListItem />', () => {
   it('renders a published date', () => {
     const { queryByText } = render(<ItemListItem item={getItem()} />);
 
-    expect(queryByText(/Jun 29/i)).toBeDefined();
+    expect(queryByText(/Jun 29/i)).toExist();
   });
 
   it('renders a profile_image', () => {
@@ -62,7 +62,7 @@ describe('<ItemListItem />', () => {
 
     const { queryByText } = render(<ItemListItem item={item} />);
 
-    expect(queryByText(/1 min read/i)).toBeDefined();
+    expect(queryByText(/1 min read/i)).toExist();
   });
 
   it('renders with readingtime of 1 min if reading time is null.', () => {
@@ -71,7 +71,7 @@ describe('<ItemListItem />', () => {
 
     const { queryByText } = render(<ItemListItem item={item} />);
 
-    expect(queryByText(/1 min read/i)).toBeDefined();
+    expect(queryByText(/1 min read/i)).toExist();
   });
 
   it('renders correct readingtime.', () => {
@@ -80,7 +80,7 @@ describe('<ItemListItem />', () => {
 
     const { queryByText } = render(<ItemListItem item={item} />);
 
-    expect(queryByText(/10 min read/i)).toBeDefined();
+    expect(queryByText(/10 min read/i)).toExist();
   });
 
   it('renders without any tags if the tags array is empty.', () => {

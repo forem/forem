@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Profiles", type: :request do
+RSpec.describe "Profiles" do
   let(:profile) { create(:profile) }
 
   describe "POST /profiles" do

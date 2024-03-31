@@ -1,0 +1,7 @@
+{
+  "name": "preact-root-fragment",
+  "version": "0.2.0",
+  "main": "./preact-root-fragment.js",
+  "module": "./preact-root-fragment.js",
+  "type": "module"
+}

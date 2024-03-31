@@ -2,14 +2,14 @@ module Moderator
   class ManageActivityAndRoles
     attr_reader :user, :admin, :user_params
 
+    def self.handle_user_roles(admin:, user:, user_params:)
+      new(user: user, admin: admin, user_params: user_params).update_roles
+    end
+
     def initialize(user:, admin:, user_params:)
       @user = user
       @admin = admin
       @user_params = user_params
-    end
-
-    def self.handle_user_roles(admin:, user:, user_params:)
-      new(user: user, admin: admin, user_params: user_params).update_roles
     end
 
     def delete_comments
@@ -29,9 +29,12 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role(:workshop_pass)
       remove_mod_roles
       remove_tag_moderator_role
+    end
+
+    def remove_notifications
+      Notifications::RemoveBySpammerWorker.perform_async(user.id)
     end
 
     def remove_mod_roles
@@ -58,6 +61,7 @@ module Moderator
       )
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def handle_user_status(role, note)
       case role
       when "Admin"
@@ -65,9 +69,17 @@ module Moderator
         TagModerators::AddTrustedRole.call(user)
       when "Comment Suspended"
         comment_suspended
+      when "Limited"
+        limited
       when "Suspended" || "Spammer"
         user.add_role(:suspended)
         remove_privileges
+      when "Spam"
+        user.add_role(:spam)
+        remove_privileges
+        remove_notifications
+        resolve_spam_reports
+        confirm_flag_reactions
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
@@ -93,7 +105,11 @@ module Moderator
         warned
       end
       create_note(role, note)
+
+      user.articles.published.find_each(&:async_score_calc)
+      user.comments.find_each(&:calculate_score)
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     def assign_elevated_role_to_user(user, role)
       check_super_admin
@@ -116,6 +132,11 @@ module Moderator
       remove_privileges
     end
 
+    def limited
+      user.add_role(:limited)
+      remove_privileges
+    end
+
     def regular_member
       remove_negative_roles
       remove_mod_roles
@@ -123,24 +144,31 @@ module Moderator
 
     def warned
       user.add_role(:warned)
-      user.remove_role(:suspended)
+      user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       remove_privileges
     end
 
     def remove_negative_roles
+      user.remove_role(:limited) if user.limited?
       user.remove_role(:suspended) if user.suspended?
+      user.remove_role(:spam) if user.spam?
       user.remove_role(:warned) if user.warned?
       user.remove_role(:comment_suspended) if user.comment_suspended?
     end
 
-    def update_trusted_cache
-      Rails.cache.delete("user-#{@user.id}/has_trusted_role")
-      @user.trusted?
-    end
-
     def update_roles
       handle_user_status(user_params[:user_status], user_params[:note_for_current_role])
-      update_trusted_cache
+    end
+
+    private
+
+    def resolve_spam_reports
+      Users::ResolveSpamReportsWorker.perform_async(user.id)
+    end
+
+    def confirm_flag_reactions
+      Users::ConfirmFlagReactionsWorker.perform_async(user.id)
     end
   end
 end

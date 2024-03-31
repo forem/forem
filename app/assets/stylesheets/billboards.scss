@@ -1,0 +1,148 @@
+@import 'config/import';
+@import 'variables';
+@import '_mixins';
+
+.crayons-layout__comments-billboard {
+  .crayons-sponsorship {
+    .c-indicator.crayons-sponsorship__indicator {
+      line-height: 15px;
+    }
+
+    padding-left: var(--content-padding-x);
+    padding-bottom: var(--su-6);
+
+    @media (min-width: $breakpoint-s) {
+      .text-styles {
+        padding-right: var(--su-8);
+      }
+    }
+  }
+}
+
+.billboard .crayons-dropdown.sponsorship-dropdown {
+  @media (min-width: $breakpoint-m) {
+    max-width: 200px;
+    min-width: auto;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    max-width: 250px;
+  }
+
+  hr {
+    border: 0.5px solid var(--divider);
+    margin: 8px;
+  }
+}
+
+.billboard .ltag_cta {
+  padding-top: var(--su-2);
+  padding-bottom: var(--su-2);
+
+  @media (max-width: $breakpoint-s) {
+    display: block;
+  }
+}
+
+// refers to the sidebar billboards where we use cards
+.crayons-card.billboard .ltag_cta {
+  display: block;
+}
+
+.crayons-card.hero-billboard .ltag_cta {
+  display: block;
+}
+
+.popover-billboard {
+  z-index: var(--z-popover);
+  animation: popoverEnter 0.5s;
+  box-shadow: 0 0 100px 60px rgba(0, 0, 0, 0.2) !important;
+  max-height: calc(100vh - var(--header-height));
+  .text-styles {
+    padding-top: var(--su-4);
+    padding-bottom: var(--su-4);
+    font-size: calc(0.8em + 0.58vw);
+    max-width: calc(var(--site-width) - var(--su-8));
+    overflow-y: auto;
+    max-height: calc(100vh - var(--header-height) - var(--su-8));
+  }
+  @media (min-width: $breakpoint-xl) {
+    .crayons-sponsorship__header,
+    .text-styles {
+      margin-left: calc(50% - (var(--site-width) / 2));
+    }
+    .text-styles {
+      font-size: 1.22em;
+    }
+  }
+}
+
+.popover-billboard--menuopenupwards {
+  .sponsorship-dropdown {
+    top: auto;
+    bottom: var(--su-8);
+  }
+}
+
+.hide-popover-billboard .popover-billboard {
+  display: none;
+}
+
+.hero-billboard {
+  margin: var(--su-2) 0 0;
+  h1,
+  h2,
+  h3,
+  p {
+    text-align: center;
+  }
+
+  @media (max-width: $breakpoint-s) {
+    display: block;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    margin: var(--su-2) var(--su-2) 0;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    max-width: var(--site-width);
+    margin: var(--su-4) var(--su-4) 0;
+  }
+
+  @media (min-width: 1284px) {
+    max-width: var(--site-width);
+    margin: var(--su-4) auto 0;
+  }
+}
+
+@media (min-width: $breakpoint-s) {
+  .hero-billboard h1 {
+    font-size: var(--fs-3xl);
+  }
+}
+
+// these are inline CTA's
+//refers to the below the comments billboard on the article page
+//refers to the feed/stories where we use story
+.crayons-layout__comments-billboard .crayons-card.billboard .ltag_cta,
+.crayons-story.billboard .ltag_cta {
+  padding-right: var(--su-7);
+  padding-left: var(--su-7);
+}
+
+// fadeIn
+@keyframes popoverEnter {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe BadgeAchievement, type: :model do
+RSpec.describe BadgeAchievement do
   let(:badge_with_credits) { create(:badge, credits_awarded: 10) }
   let(:badge) { create(:badge, credits_awarded: 0) }
   let(:achievement) { create(:badge_achievement, badge: badge) }

@@ -37,7 +37,7 @@ describe('User index view', () => {
           cy.findAllByText('Good standing').should('exist');
           cy.findByText('Last activity').should('exist');
           cy.findByText('Joined on').should('exist');
-          cy.findByRole('figure').findByText('+ 1').should('exist');
+          cy.findByRole('figure').findByText('+ 2').should('exist');
         });
     });
 
@@ -69,18 +69,17 @@ describe('User index view', () => {
           .should('have.attr', 'aria-expanded', 'true');
         cy.findByRole('textbox', {
           name: 'Search member by name, username or email',
-        })
-          .clear()
-          .type('something');
+        }).as('textbox');
+        cy.get('@textbox').clear();
+        cy.get('@textbox').type('something');
         // Indicator should not be shown while open
         cy.get('@searchButton')
           .findByTestId('search-indicator')
           .should('not.be.visible');
 
         // Collapse the filter field; indicator should now be shown
-        cy.get('@searchButton')
-          .click()
-          .should('have.attr', 'aria-expanded', 'false');
+        cy.get('@searchButton').click();
+        cy.get('@searchButton').should('have.attr', 'aria-expanded', 'false');
         cy.get('@searchButton')
           .findByTestId('search-indicator')
           .should('be.visible');
@@ -109,10 +108,7 @@ describe('User index view', () => {
           .should('have.focus');
 
         // Check the correct text is on the clipboard
-        cy.window()
-          .its('navigator.clipboard')
-          .invoke('readText')
-          .should('equal', 'admin@forem.local');
+        cy.assertValueCopiedToClipboard('admin@forem.local');
       });
     });
 
@@ -163,7 +159,7 @@ describe('User index view', () => {
           );
           cy.findByAltText('Many orgs user').should('exist');
           cy.findAllByText('Good standing').should('exist');
-          cy.findByRole('figure').findByText('+ 1').should('exist');
+          cy.findByRole('figure').findByText('+ 2').should('exist');
         });
     });
 
@@ -216,10 +212,7 @@ describe('User index view', () => {
           .should('have.focus');
 
         // Check the correct text is on the clipboard
-        cy.window()
-          .its('navigator.clipboard')
-          .invoke('readText')
-          .should('equal', 'admin@forem.local');
+        cy.assertValueCopiedToClipboard('admin@forem.local');
       });
 
       it('Opens the assign role modal', () => {

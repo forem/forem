@@ -2,14 +2,13 @@
 @import '../components/buttons';
 
 .ltag__wikipedia--container {
-  border: 1px solid $light-medium-gray;
-  border-radius: 3px;
-  box-shadow: $shadow;
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
   margin: 1.1em auto 1.3em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
   overflow: hidden;
-  max-width: 620px;
   padding-top: 1rem;
 
   .ltag__wikipedia--header {
@@ -17,7 +16,7 @@
     font-size: var(--fs-xl);
     line-height: var(--lh-base);
     margin: 0em 0 0.5em;
-    padding: 0 var(--su-3);
+    padding: 0 var(--su-5);
 
     > a {
       color: var(--link-branded-color);
@@ -41,7 +40,7 @@
     margin-left: 0.15em;
     font-size: var(--fs-s);
     line-height: var(--lh-base);
-    padding: 0 var(--su-3);
+    padding: 0 var(--su-5);
   }
 
   .ltag__wikipedia--btn--container {

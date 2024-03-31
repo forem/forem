@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/member_manager/invitations", type: :request do
+RSpec.describe "/admin/member_manager/invitations" do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 
@@ -40,11 +40,31 @@ RSpec.describe "/admin/member_manager/invitations", type: :request do
       expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
     end
 
+    it "enqueues an invitation email to be sent with custom subject", :aggregate_failures do
+      allow(DeviseMailer).to receive(:invitation_instructions).and_call_original
+
+      assert_enqueued_with(job: Devise.mailer.delivery_job) do
+        user_params = { email: "hey#{rand(1000)}@email.co",
+                        custom_invite_subject: "Custom Subject!",
+                        custom_invite_message: "**Custom message**",
+                        custom_invite_footnote: "Custom footnote" }
+        post admin_invitations_path, params: { user: user_params }
+      end
+
+      expect(DeviseMailer).to have_received(:invitation_instructions) do |_user, _token, args|
+        expect(args).to include(
+          custom_invite_subject: "Custom Subject!",
+          custom_invite_message: "**Custom message**",
+        )
+      end
+      expect(enqueued_jobs.first[:args]).to match(array_including("invitation_instructions"))
+    end
+
     it "does not create an invitation if a user with that email exists" do
       expect do
         post admin_invitations_path,
              params: { user: { email: admin.email } }
-      end.not_to change { User.all.count }
+      end.not_to change(User, :count)
       expect(admin.reload.registered).to be true
       expect(flash[:error].present?).to be true
     end
@@ -71,7 +91,7 @@ RSpec.describe "/admin/member_manager/invitations", type: :request do
     it "deletes the invitation" do
       expect do
         delete admin_invitation_path(invitation.id)
-      end.to change { User.all.count }.by(-1)
+      end.to change(User, :count).by(-1)
       expect(response.body).to redirect_to admin_invitations_path
     end
   end

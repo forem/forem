@@ -28,11 +28,7 @@ describe('Organisation settings', () => {
         cy.findAllByRole('alert').should('have.length', 1);
         cy.findByText('Copied to clipboard!').should('be.visible');
 
-        // Check the clipboard has been populated with the correct content
-        cy.window()
-          .its('navigator.clipboard')
-          .invoke('readText')
-          .should('equal', $orgSecretCode);
+        cy.assertValueCopiedToClipboard($orgSecretCode);
       });
   });
 

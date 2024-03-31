@@ -2,6 +2,8 @@ module Settings
   class Authentication < Base
     self.table_name = :settings_authentications
 
+    NEW_USER_STATUSES = %w[good_standing limited].freeze
+
     setting :allow_email_password_login, type: :boolean, default: true
     setting :allow_email_password_registration, type: :boolean, default: false
     setting :allowed_registration_email_domains, type: :array, default: %w[], validates: {
@@ -24,6 +26,9 @@ module Settings
     setting :google_oauth2_key, type: :string
     setting :google_oauth2_secret, type: :string
     setting :invite_only_mode, type: :boolean, default: false
+    setting :new_user_status, type: :string, default: "good_standing", validates: {
+      inclusion: { in: NEW_USER_STATUSES }
+    }
     setting :providers, type: :array, default: %w[]
     setting :require_captcha_for_email_password_registration, type: :boolean, default: false
     setting :twitter_key, type: :string, default: ApplicationConfig["TWITTER_KEY"]
@@ -56,6 +61,10 @@ module Settings
       return true if allowed_registration_email_domains.include?(domain)
 
       false
+    end
+
+    def self.limit_new_users?
+      new_user_status == "limited"
     end
   end
 end

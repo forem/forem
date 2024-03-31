@@ -1,6 +1,5 @@
 @import 'variables';
 @import 'mixins';
-@import 'functions';
 
 .github-repos {
   max-height: 400px;
@@ -8,8 +7,7 @@
   background: var(--card-bg);
   &.loading-repos {
     height: 400px;
-    background: white url(image-src('loading-ellipsis.svg')) no-repeat center
-      center;
+    background: white;
     background-size: 50px;
   }
   &.github-repos-errored {
@@ -32,8 +30,7 @@
       button {
         &:disabled {
           padding: var(--su-2);
-          background: var(--accent-brand) url(image-src('loading-ellipsis.svg'))
-            no-repeat center center;
+          background: var(--accent-brand);
           background-size: contain;
           height: 40px;
           width: 80px;

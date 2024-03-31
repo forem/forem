@@ -3,12 +3,12 @@ module Mentions
   # This class will check to see if there are any @-mentions in the post, and will
   # create the associated mentions inline if necessary.
   class CreateAll
-    def initialize(notifiable)
-      @notifiable = notifiable
-    end
-
     def self.call(...)
       new(...).call
+    end
+
+    def initialize(notifiable)
+      @notifiable = notifiable
     end
 
     def call

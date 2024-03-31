@@ -7,5 +7,5 @@
     data-orglistings="<%= @org_listings_json %>"
     data-orgs="<%= @orgs_json %>">
   </div>
-  <%= javascript_packs_with_chunks_tag "listingDashboard", defer: true %>
+  <%= javascript_include_tag "listingDashboard", defer: true %>
 </main>

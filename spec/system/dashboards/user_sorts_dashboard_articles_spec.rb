@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
+RSpec.describe "Sorting Dashboard Articles", js: true do
   let(:user) { create(:user) }
   let(:article1) do
     create(:article, user_id: user.id, published_at: 10.minutes.ago, created_at: 1.day.ago, public_reactions_count: 5,

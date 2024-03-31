@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Link /> renders a link with icon alone 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--icon-alone\\"><svg class=\\"crayons-icon c-link__icon\\" aria-hidden=\\"true\\" focusable=\\"false\\" width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\"><path d=\\"m12 1 9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z\\"></path></svg></a>"`;
+exports[`<Link /> renders a link with icon alone 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--icon-alone\\"><svg aria-hidden=\\"true\\" focusable=\\"false\\" width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon c-link__icon\\"><path d=\\"m12 1 9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z\\"></path></svg></a>"`;
 
 exports[`<Link /> renders block link 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--block\\">Hello world!</a>"`;
 
@@ -12,4 +12,4 @@ exports[`<Link /> renders rounded link 1`] = `"<a href=\\"/url\\" class=\\"c-lin
 
 exports[`<Link /> renders with additional classnames 1`] = `"<a href=\\"/url\\" class=\\"c-link one two three\\">Hello world!</a>"`;
 
-exports[`<Link /> renders with icon and text 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--icon-left\\"><svg class=\\"crayons-icon c-link__icon\\" aria-hidden=\\"true\\" focusable=\\"false\\" width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\"><path d=\\"m12 1 9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z\\"></path></svg>Hello world!</a>"`;
+exports[`<Link /> renders with icon and text 1`] = `"<a href=\\"/url\\" class=\\"c-link c-link--icon-left\\"><svg aria-hidden=\\"true\\" focusable=\\"false\\" width=\\"24\\" height=\\"24\\" viewBox=\\"0 0 24 24\\" xmlns=\\"http://www.w3.org/2000/svg\\" class=\\"crayons-icon c-link__icon\\"><path d=\\"m12 1 9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-2a2 2 0 1 0 0-4 2 2 0 0 0 0 4z\\"></path></svg>Hello world!</a>"`;

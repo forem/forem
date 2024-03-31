@@ -7,12 +7,8 @@ module EdgeCache
       user_id = user.id
       paths = [
         "/#{username}",
-        "/#{username}?i=i",
         "/#{username}/comments",
-        "/#{username}/comments?i=i",
-        "/#{username}/comments/?i=i",
         "/live/#{username}",
-        "/live/#{username}?i=i",
         "/feed/#{username}",
         "/api/users/#{user_id}",
       ]

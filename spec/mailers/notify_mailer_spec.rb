@@ -1,12 +1,13 @@
 require "rails_helper"
 
-RSpec.describe NotifyMailer, type: :mailer do
+RSpec.describe NotifyMailer do
   let(:user)      { create(:user) }
   let(:user2)     { create(:user) }
   let(:article)   { create(:article, user_id: user.id) }
   let(:organization) { create(:organization) }
   let(:organization_membership) { create(:organization_membership, user: user, organization: organization) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
+  let(:token) { "secret" }
 
   describe "#new_reply_email" do
     let(:email) { described_class.with(comment: comment).new_reply_email }
@@ -121,47 +122,9 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    context "when rendering the HTML email for badge with credits" do
-      it "includes the listings URL" do
-        expect(email_with_credits.html_part.body).to include(
-          Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "includes the about listings URL" do
-        expect(email_with_credits.html_part.body).to include(
-          Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain),
-        )
-      end
-
-      it "includes number of credits" do
-        expect(email_with_credits.html_part.body).to include("7 new credits")
-      end
-    end
-
-    context "when rendering the text email for badge with credits" do
-      it "includes the listings URL" do
-        expect(email_with_credits.text_part.body).not_to include(
-          CGI.escape(
-            Rails.application.routes.url_helpers.listings_url(host: Settings::General.app_domain),
-          ),
-        )
-      end
-
-      it "includes the about listings URL" do
-        expect(email_with_credits.text_part.body).not_to include(
-          CGI.escape(Rails.application.routes.url_helpers.about_listings_url(host: Settings::General.app_domain)),
-        )
-      end
-
-      it "includes number of credits" do
-        expect(email_with_credits.text_part.body).to include("7 new credits")
-      end
-    end
-
     context "when rendering the HTML email for badge w/o credits" do
       it "includes the user URL" do
-        expect(email.html_part.body).to include(URL.user(user))
+        expect(email.html_part.body).to include("%2F#{user.username}")
       end
 
       it "doesn't include the listings URL" do
@@ -180,21 +143,21 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.html_part.body).to include("Hello <a")
-        expect(email.html_part.body).to include(URL.url("/hey"))
+        expect(email.html_part.body).to include("%2Fhey")
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(URL.url("/hey"))
+        expect(email.html_part.body).not_to include("%2Fhey")
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.html_part.body).not_to include("Hello <a")
-        expect(email.html_part.body).not_to include(URL.url("/hey"))
+        expect(email.html_part.body).not_to include("%2Fhey")
       end
     end
 
@@ -217,21 +180,21 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the rewarding_context_message in the email" do
         expect(email.text_part.body).to include("Hello Yoho")
-        expect(email.text_part.body).not_to include(URL.url("/hey"))
+        expect(email.text_part.body).not_to include("%2Fhey")
       end
 
       it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
 
         expect(email.text_part.body).not_to include("Hello Yoho")
-        expect(email.text_part.body).not_to include(URL.url("/hey"))
+        expect(email.text_part.body).not_to include("%2Fhey")
       end
 
       it "does not include the empty rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.text_part.body).not_to include("Hello Yoho")
-        expect(email.text_part.body).not_to include(URL.url("/hey"))
+        expect(email.text_part.body).not_to include("%2Fhey")
       end
     end
   end
@@ -331,6 +294,22 @@ RSpec.describe NotifyMailer, type: :mailer do
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
     end
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
+    end
+  end
+
+  describe "#account_deletion_requested_email" do
+    let(:email) do
+      described_class.with(user: user, token: token).account_deletion_requested_email
+    end
+
+    include_examples "#renders_proper_email_headers"
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
+    end
   end
 
   describe "#organization_deleted_email" do
@@ -346,6 +325,10 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     it "renders proper receiver" do
       expect(email.to).to eq([user.email])
+    end
+
+    it "includes contact email" do
+      expect(email.html_part.body).to include(ForemInstance.contact_email)
     end
   end
 
@@ -381,7 +364,7 @@ RSpec.describe NotifyMailer, type: :mailer do
     include_examples "#renders_proper_email_headers"
 
     it "renders proper subject" do
-      expect(email.subject).to eq("Congrats! You're the moderator for ##{tag.name}")
+      expect(email.subject).to eq("Congrats! You're now a moderator for ##{tag.name}")
     end
 
     it "renders proper receiver" do

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Tracking 'Clicked on Create Account'" do
+RSpec.describe "Tracking 'Clicked on Create Account'", :js do
   context "when on the homepage" do
     let(:user) { create(:user) }
     # rubocop:disable RSpec/LetSetup
@@ -13,45 +13,38 @@ RSpec.describe "Tracking 'Clicked on Create Account'" do
       visit root_path
     end
 
-    it "expects page to have the necessary tracking elements", :aggregate_failures do
-      # rubocop:disable RSpec/Capybara/SpecificMatcher
-      expect(page).to have_selector('a[data-tracking-id="ca_top_nav"]')
-      expect(page).to have_selector('a[data-tracking-id="ca_left_sidebar_home_page"]')
-      expect(page).to have_selector('a[data-tracking-id="ca_hamburger_home_page"]')
-      expect(page).to have_selector('a[data-tracking-id="ca_feed_home_page"]')
-      # rubocop:enable RSpec/Capybara/SpecificMatcher
+    it "has the necessary initial tracking elements", :aggregate_failures do
+      expect(page).to have_css('a[data-tracking-id="ca_top_nav"]')
+      expect(page).to have_css('a[data-tracking-id="ca_left_sidebar_home_page"]')
     end
 
-    it "tracks a click with the correct source", { js: true, aggregate_failures: true } do
-      expect do
-        find('[data-tracking-id="ca_top_nav"]').click
-      end.to change(Ahoy::Event, :count).by(1)
+    it "has the create account tracking element in the hamburger", :aggregate_failures do
+      Capybara.current_session.driver.resize(425, 694)
+      first(".js-hamburger-trigger").click
+      expect(page).to have_css('a[data-tracking-id="ca_hamburger_home_page"]')
+    end
 
-      ahoy_event = Ahoy::Event.find_by(name: "Clicked on Create Account")
-      expect(ahoy_event).to be_present
-      expect(ahoy_event.properties).to have_key("source")
-      expect(ahoy_event.properties).to have_key("page")
-      expect(ahoy_event.properties).to have_key("version")
+    it "tracks a click with the correct source", :aggregate_failures do
+      expect(Ahoy::Event.count).to eq(0)
+      find('[data-tracking-id="ca_top_nav"]').click
 
-      expect(ahoy_event.properties["source"]).to eq("top_navbar")
+      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
+      expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
     end
   end
 
   context "when tracking through the modal" do
-    it "adds an ahoy event", { js: true, aggregate_failures: true } do
+    it "adds an ahoy event", :aggregate_failures do
       article = create(:article, user: create(:user))
       visit article.path
       find(".follow-action-button").click
-      find(".js-global-signup-modal__create-account").click
+      expect do
+        find(".js-global-signup-modal__create-account").click
+      end.to change(Ahoy::Event, :count).by(1)
 
       expect(page).to have_current_path("/enter?state=new-user")
-      ahoy_event = Ahoy::Event.find_by(name: "Clicked on Create Account")
-      expect(ahoy_event).to be_present
-      expect(ahoy_event.properties).to have_key("source")
-      expect(ahoy_event.properties).to have_key("page")
-      expect(ahoy_event.properties).to have_key("referring_source")
-      expect(ahoy_event.properties).to have_key("trigger")
-      expect(ahoy_event.properties).to have_key("version")
+      expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
+      expect(Ahoy::Event.last.properties).to include("source", "page", "referring_source", "trigger", "version")
     end
   end
 end

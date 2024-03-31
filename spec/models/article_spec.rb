@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Article, type: :model do
+RSpec.describe Article do
   def build_and_validate_article(*args)
     article = build(:article, *args)
     article.validate!
@@ -23,6 +23,7 @@ RSpec.describe Article, type: :model do
 
     it { is_expected.to have_many(:comments).dependent(:nullify) }
     it { is_expected.to have_many(:context_notifications).dependent(:delete_all) }
+    it { is_expected.to have_many(:feed_events).dependent(:delete_all) }
     it { is_expected.to have_many(:mentions).dependent(:delete_all) }
     it { is_expected.to have_many(:notification_subscriptions).dependent(:delete_all) }
     it { is_expected.to have_many(:notifications).dependent(:delete_all) }
@@ -32,6 +33,7 @@ RSpec.describe Article, type: :model do
     it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
     it { is_expected.to have_many(:sourced_subscribers) }
     it { is_expected.to have_many(:reactions).dependent(:destroy) }
+    it { is_expected.to have_many(:tag_adjustments) }
     it { is_expected.to have_many(:tags) }
     it { is_expected.to have_many(:user_subscriptions).dependent(:nullify) }
 
@@ -81,11 +83,10 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#body_markdown" do
-      it "is unique scoped for user_id and title", :aggregate_failures do
+      it "is not unique scoped for user_id and title" do
         art2 = build(:article, body_markdown: article.body_markdown, user: article.user, title: article.title)
 
-        expect(art2).not_to be_valid
-        expect(art2.errors_as_sentence).to match("markdown has already been taken")
+        expect(art2).to be_valid
       end
 
       # using https://unicode-table.com/en/11A15/ multibyte char
@@ -100,6 +101,46 @@ RSpec.describe Article, type: :model do
 
         expect(article).not_to be_valid
         expect(article.errors_as_sentence).to match("too long")
+      end
+    end
+
+    describe "#validate_tag" do
+      # rubocop:disable RSpec/VerifiedDoubles
+      it "does not modify the tag list if there are no adjustments" do
+        # See https://github.com/forem/forem/pull/6302
+        article = build(:article, user: user)
+        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
+        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
+
+        article.save
+
+        # We expect this to happen once in #evaluate_front_matter
+        expect(article.tag_list).to have_received(:add).once
+        expect(article.tag_list).not_to have_received(:remove)
+      end
+      # rubocop:enable RSpec/VerifiedDoubles
+
+      it "adjusts the tags in the tag_list based on the tag_adjustments" do
+        user = create(:user, :admin)
+        tag1 = create(:tag, name: "tag1")
+        tag2 = create(:tag, name: "tag2")
+
+        # try save an article with a tag_list of tag 1, tag 3
+        # in the tag adjustments we have a removal of tag1 and an addition of tag2
+        # hence the tag_list should be tag2, tag3
+        article = build(:article, user: user, tags: "#{tag1.name}, tag3")
+
+        create(:tag_adjustment, adjustment_type: "addition", tag_id: tag2.id,
+                                tag_name: tag2.name, article: article, user: user)
+
+        create(:tag_adjustment, adjustment_type: "removal", tag_id: tag1.id,
+                                tag_name: tag1.name, article: article, user: user)
+
+        article.save
+
+        expect(article.tag_list).to include("tag3")
+        expect(article.tag_list).to include("tag2")
+        expect(article.tag_list).not_to include("tag1")
       end
     end
 
@@ -162,7 +203,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "#canonical_url_must_not_have_spaces" do
-      let!(:article) { build :article, user: user }
+      let!(:article) { build(:article, user: user) }
 
       it "is valid without spaces" do
         valid_url = "https://www.positronx.io/angular-radio-buttons-example/"
@@ -206,7 +247,7 @@ RSpec.describe Article, type: :model do
     end
 
     describe "liquid tags" do
-      xit "is not valid if it contains invalid liquid tags" do
+      it "is not valid if it contains invalid liquid tags" do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
@@ -252,41 +293,24 @@ RSpec.describe Article, type: :model do
         expect(test_article.title).to eq("An Article Title")
       end
 
-      it "sanitizes the title" do
-        test_article = build(:article, title: "\u202dThis starts with BIDI override")
+      it "sanitizes the title with deprecated BIDI marks" do
+        test_article = build(:article, title: "\u202bThis starts with BIDI embedding\u202c\u061cALM\u200e")
 
         test_article.validate
 
-        expect(test_article.title).not_to match(/\u202d/)
-        expect(test_article.title).to eq("This starts with BIDI override")
+        expect(test_article.title).not_to match(/\u202b/)
+        expect(test_article.title).to eq("This starts with BIDI embedding\u202c\u061cALM\u200e")
       end
 
       it "rejects empty titles after sanitizing" do
-        test_article = build(:article, title: "\u202a\u202b\u202c\u202d\u202e")
+        test_article = build(:article,
+                             title: "\u061c\u200e\u200f\u202a\u202b\u202c\u202d\u202e\u2066\u2067\u2068\u2069")
 
         test_article.validate
 
         expect(test_article).not_to be_valid
         expect(test_article.errors_as_sentence).to match("Title can't be blank")
       end
-    end
-
-    describe "tag validation" do
-      let(:article) { build(:article, user: user) }
-
-      # See https://github.com/forem/forem/pull/6302
-      # rubocop:disable RSpec/VerifiedDoubles
-      it "does not modify the tag list if there are no adjustments" do
-        allow(TagAdjustment).to receive(:where).and_return(TagAdjustment.none)
-        allow(article).to receive(:tag_list).and_return(spy("tag_list"))
-
-        article.save
-
-        # We expect this to happen once in #evaluate_front_matter
-        expect(article.tag_list).to have_received(:add).once
-        expect(article.tag_list).not_to have_received(:remove)
-      end
-      # rubocop:enable RSpec/VerifiedDoubles
     end
   end
 
@@ -577,8 +601,9 @@ RSpec.describe Article, type: :model do
       end
 
       it "keeps published at when trying to set published_at" do
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at: 2022-05-12 18:00 +0300---\n\n"
         frontmatter_article.update(body_markdown: new_body_markdown)
+        frontmatter_article.reload
         expect(frontmatter_article.published_at).to be_within(1.minute).of(DateTime.parse(published_at))
       end
 
@@ -587,9 +612,24 @@ RSpec.describe Article, type: :model do
         time_str = scheduled_time.strftime("%d/%m/%Y %H:%M %z")
         scheduled_body_markdown = "---\ntitle: Title\npublished: true\npublished_at: #{time_str}\n---\n\n"
         frontmatter_scheduled_article = create(:article, body_markdown: scheduled_body_markdown)
-        new_body_markdown = "---\ntitle: Title\npublished: false\npublished_at:2022-12-05 18:00 +0300---\n\n"
+        new_body_markdown = "---\ntitle: Title\npublished: false\n---\n\n"
         frontmatter_scheduled_article.update(body_markdown: new_body_markdown)
+        frontmatter_scheduled_article.reload
         expect(frontmatter_scheduled_article.published_at).to be_within(1.minute).of(scheduled_time)
+      end
+
+      it "nullifies published_at when way too far in future" do
+        scheduled_time = 8.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_nil
+      end
+
+      it "does not nullify published_at when only slightly in future" do
+        scheduled_time = 4.years.from_now
+        article = build(:article, published_at: scheduled_time, published: true)
+        article.save
+        expect(article.published_at).to be_within(1.minute).of(scheduled_time)
       end
     end
 
@@ -771,7 +811,7 @@ RSpec.describe Article, type: :model do
     end
 
     it "returns true if parser raises a Psych::DisallowedClass error" do
-      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg"))
+      allow(FrontMatterParser::Parser).to receive(:new).and_raise(Psych::DisallowedClass.new("msg", Date))
       expect(article.has_frontmatter?).to be(true)
     end
 
@@ -1213,7 +1253,7 @@ RSpec.describe Article, type: :model do
       co_author1 = create(:user)
       co_author2 = create(:user)
       article.co_author_ids_list = "#{co_author1.id}, #{co_author2.id}"
-      expect(article.co_author_ids).to match_array([co_author1.id, co_author2.id])
+      expect(article.co_author_ids).to contain_exactly(co_author1.id, co_author2.id)
     end
   end
 
@@ -1271,6 +1311,74 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe "#privileged_reaction_counts" do
+    it "contains correct vomit count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "vomit", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to eq(1)
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsup count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsup", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to eq(1)
+      expect(counts["thumbsdown"]).to be_nil
+    end
+
+    it "contains correct thumbsdown count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: article, category: "thumbsdown", user: user)
+      counts = article.privileged_reaction_counts
+      expect(counts["vomit"]).to be_nil
+      expect(counts["thumbsup"]).to be_nil
+      expect(counts["thumbsdown"]).to eq(1)
+    end
+
+    it "returns an empty hash if there are no privileged reactions" do
+      counts = article.privileged_reaction_counts
+
+      expect(counts).to be_empty
+    end
+  end
+
+  describe "#ordered_tag_adjustments" do
+    let(:tag) { create(:tag, name: "rspec") }
+    let(:another_tag) { create(:tag, name: "testing") }
+    let(:mod) { create(:user) }
+    let(:another_mod) { create(:user) }
+
+    before do
+      mod.add_role(:tag_moderator, tag)
+      another_mod.add_role(:tag_moderator, another_tag)
+    end
+
+    it "returns an empty collection when the tag has not been adjusted" do
+      expect(article.ordered_tag_adjustments.length).to be 0
+    end
+
+    it "returns tag adjustments for the article in reverse chronological order" do
+      adj_first = create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                                          tag_id: tag.id, tag_name: tag.name,
+                                          adjustment_type: "addition")
+      adj_second = create(:tag_adjustment, article_id: article.id, user_id: another_mod.id,
+                                           tag_id: another_tag.id, tag_name: another_tag.name,
+                                           adjustment_type: "addition")
+      expect(article.ordered_tag_adjustments.map(&:id)).to eq([adj_second.id, adj_first.id])
+    end
+
+    it "includes the user object associated with each tag adjustment" do
+      create(:tag_adjustment, article_id: article.id, user_id: mod.id,
+                              tag_id: tag.id, adjustment_type: "addition")
+      ordered_adjustment = article.ordered_tag_adjustments.first
+      expect(ordered_adjustment.user.name).to eq(mod.name)
+    end
+  end
+
   describe "#followers" do
     it "returns an array of users who follow the article's author" do
       following_user = create(:user)
@@ -1294,6 +1402,12 @@ RSpec.describe Article, type: :model do
       create(:thumbsdown_reaction, reactable: article, user: user)
 
       expect { article.update_score }.to change { article.reload.privileged_users_reaction_points_sum }
+    end
+
+    it "includes user marked as spam punishment" do
+      article.user.add_role(:spam)
+      article.update_score
+      expect(article.reload.score).to eq(-500)
     end
   end
 
@@ -1335,6 +1449,227 @@ RSpec.describe Article, type: :model do
       expect(another_article).not_to be_valid
       expect(another_article.errors.messages[:canonical_url]).to include(error_message)
       expect(another_article.errors.messages[:feed_source_url]).to include(error_message)
+    end
+  end
+
+  describe "#public_reaction_categories reports unique associated reaction categories" do
+    before do
+      user2 = create(:user)
+      user2.add_role(:trusted)
+
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "like")
+      create(:reaction, reactable: article, category: "readinglist")
+      create(:reaction, reactable: article, category: "vomit", user: user2)
+    end
+
+    it "reports accurately" do
+      categories = article.public_reaction_categories
+      expect(categories.map(&:slug)).to match_array(%i[like])
+    end
+  end
+
+  describe ".above_average and .average_score" do
+    context "when there are not yet any articles with score above 0" do
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(0.0)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(0)
+      end
+    end
+
+    context "when there are articles with score" do
+      before do
+        create(:article, score: 10)
+        create(:article, score: 6)
+        create(:article, score: 4)
+        create(:article, score: 1)
+        # averages 4.2 with article created earlier, see let on line 13
+      end
+
+      it "works as expected" do
+        expect(described_class.average_score).to be_within(0.1).of(4.2)
+        articles = described_class.above_average
+        expect(articles.pluck(:score)).to contain_exactly(10, 6)
+      end
+    end
+  end
+
+  describe "#detect_language" do
+    let(:detected_language) { :kl } # kl for Klingon
+
+    before do
+      allow(Languages::Detection).to receive(:call).and_return(detected_language)
+    end
+
+    it "detects language using title and body for newly created articles" do
+      article = create(:article)
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "detects language using title and body for updated articles" do
+      article.update(body_markdown: "---title: This is a new english article\n---\n\n# Hello World")
+      expect(Languages::Detection).to have_received(:call).with("#{article.title}. #{article.body_text}")
+    end
+
+    it "does not call detection when title and body_markdown are unchanged" do
+      article.language = "es"
+      article.update(nth_published_by_author: 5)
+      expect(Languages::Detection).not_to have_received(:call)
+    end
+  end
+
+  describe "#generate_social_image" do
+    before do
+      allow(Images::SocialImageWorker).to receive(:perform_async)
+    end
+
+    context "when title or published_at attribute changes and published is true" do
+      it "triggers the Images::SocialImageWorker" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: true\n---\n\n# Hello World"
+        article.main_image = nil
+        article.save
+        expect(Images::SocialImageWorker).to have_received(:perform_async)
+      end
+    end
+
+    context "when attributes have changed, but main image is present" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.body_markdown = <<~MKDN
+          ---\ntitle: New Title #{rand(1_000)}
+          cover_image: https://example.com/i.jpg\npublished: true
+          ---\n\n# Hello World
+        MKDN
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when neither title nor published_at attribute changes" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+
+    context "when title or published_at attribute changes but published is false" do
+      it "does not trigger the Images::SocialImageWorker" do
+        article.body_markdown = "---\ntitle: New Title #{rand(1_000)}\npublished: false\n---\n\n# Hello World"
+        article.save
+        expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
+  describe "#skip_indexing?" do
+    context "when the article is unpublished" do
+      let(:article) { build(:unpublished_article) }
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score below minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article has score above or equal to minimum and is not featured" do
+      let(:article) { build(:published_article, featured: false, score: 10, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive_messages(index_minimum_score: 10,
+                                                            index_minimum_date: 1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when the article was published before the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.week.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.day.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+
+    context "when the article was published after the minimum date" do
+      let(:article) { build(:published_article, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns false" do
+        expect(article.skip_indexing?).to be false
+      end
+    end
+
+    context "when article score is below -1" do
+      let(:article) { build(:published_article, score: -2, published_at: 1.day.ago) }
+
+      before do
+        allow(Settings::UserExperience).to receive(:index_minimum_date).and_return(1.week.ago)
+      end
+
+      it "returns true" do
+        expect(article.skip_indexing?).to be true
+      end
+    end
+  end
+
+  describe "#skip_indexing_reason" do
+    before do
+      allow(Settings::UserExperience).to receive_messages(
+        index_minimum_score: 5,
+        index_minimum_date: 2.days.ago.to_i,
+      )
+    end
+
+    it "returns reasons.unpublished for unpublished articles" do
+      article.published = false
+      expect(article.skip_indexing_reason).to eq("unpublished")
+    end
+
+    it "returns reasons.below_minimum_score for articles with score below minimum and not featured" do
+      article.published = true
+      article.score = 3
+      article.featured = false
+      expect(article.skip_indexing_reason).to eq("below_minimum_score")
+    end
+
+    it "returns reasons.below_minimum_date for articles published before the minimum date" do
+      article.published_at = 3.days.ago
+      article.score = 5
+      expect(article.skip_indexing_reason).to eq("below_minimum_date")
+    end
+
+    it "returns reasons.negative_score for articles with a negative score" do
+      article.score = -2
+      expect(article.skip_indexing_reason).to eq("negative_score")
+    end
+
+    it "returns reasons.none for articles that do not meet any skip criteria" do
+      article.published = true
+      article.score = 6
+      article.featured = true
+      article.published_at = 1.day.ago
+      expect(article.skip_indexing_reason).to eq("unknown")
     end
   end
 end

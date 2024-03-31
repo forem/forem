@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Suspended user", type: :system do
+RSpec.describe "Suspended user" do
   let(:suspended_user)   { create(:user, :suspended) }
 
   it "tries to create an article" do

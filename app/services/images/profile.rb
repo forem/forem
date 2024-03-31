@@ -24,7 +24,8 @@ module Images
         image_url || BACKUP_LINK,
         width: length,
         height: length,
-        crop: "fill",
+        crop: "crop",
+        never_imagga: true,
       )
     end
   end

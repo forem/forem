@@ -3,19 +3,19 @@ fr:
   api:
     v0:
       analytics_controller:
-        invalid_date_format: Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'
-        start_missing: Required 'start' parameter is missing
+        invalid_date_format: Les paramètres de date "début" ou "fin" doivent être au format "yyyy-mm-dd"
+        start_missing: Le paramètre 'début' requis est manquant
       articles_controller:
-        must_be_json: article param must be a JSON object. You provided article as a %{type}
+        must_be_json: Le paramètre article doit être un objet JSON. Vous avez fourni l'article comme %{type}
       follows_controller:
         followed:
-          one: followed %{count} user
-          other: followed %{count} users
+          one: a suivi %{count} utilisateur
+          other: a suivi %{count} utilisateurs
       health_checks_controller:
-        app_is_up: App is up!
-        database_connected: Database connected
-        database_not_connected: Database NOT connected!
-        redis_connected: Redis connected
-        redis_not_connected: Redis NOT connected!
+        app_is_up: L'application est en place !
+        database_connected: Base de données connectée
+        database_not_connected: Base de données NON connectée !
+        redis_connected: Redis connecté
+        redis_not_connected: Redis NON connecté !
       listings_controller:
-        no_credit: Not enough available credits
+        no_credit: Pas assez de crédits disponibles

@@ -1,19 +1,45 @@
 <% title t("views.moderations.heading") %>
 
-<%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
+<%= javascript_include_tag "modCenter", defer: true %>
 
 <div id="moderation-page" aria-hidden="true"></div>
 
 <% if current_user&.trusted? %>
-  <div class="crayons-layout crayons-layout--2-cols" id="mod-center">
+  <div class="crayons-layout crayons-layout--2-cols" style="max-width: 1700px" id="mod-center">
     <%= render "moderations/mod_sidebar_left" %>
     <main class="mod-index-container articles-list crayons-layout__content">
 
       <header class="mod-index-header hidden m:block">
-        <h2 class="crayons-subtitle-1">
-          <%= @tag ? "##{@tag.accessible_name}" : t("views.moderations.all") %>
-        </h2>
+        <div class="crayons-subtitle-1 flex">
+          <% if @tag %>
+            <span class="p-4 py-2">#<%= @tag.accessible_name %>:</span>
+          <% end %>
+          <a class="crayons-navigation__item p-4 py-2 <%= "crayons-navigation__item--current" if @feed == "inbox" %>" href="<%= request.path %>?state=inbox"><%= t("views.moderations.feed.inbox_filter") %></a>
+          <a class="crayons-navigation__item p-4 py-2 ml-2 <%= "crayons-navigation__item--current" if @feed == "latest" %>" href="<%= request.path %>?state=latest"><%= t("views.moderations.feed.latest_filter") %></a>
+        </div>
       </header>
+        <div class="crayons-notice mb-4 border-2 border-solid border-accent-brand">
+          <%= t("views.moderations.feed.#{@feed}_html") %>
+        </div>
+      <%= form_tag(request.path, method: :get, id: "members_filter_form") do %>
+        <div class="mod-filter">
+          <div class="crayons-layout__content mod-filter__item">
+            <label class="mod-filter__label" for="members"><%= t("views.moderations.members.label") %>:</label>
+            <%= select_tag :members,
+                           options_for_select(
+                             {
+                               t("views.moderations.members.all") => "",
+                               t("views.moderations.members.new") => "new",
+                               t("views.moderations.members.established") => "not_new"
+                             },
+                             params[:members],
+                           ),
+                           { class: "crayons-select crayons-input-sm", "aria-label": t("views.moderations.members.filter"),
+                             onchange: "this.form.submit();" } %>
+            <%= hidden_field_tag :state, params[:state] %>
+          </div>
+        </div>
+      <% end %>
 
       <section class="mod-index-body">
         <div class="mod-index-list-header lh-tight hidden m:grid">

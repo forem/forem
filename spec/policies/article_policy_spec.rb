@@ -37,7 +37,7 @@ RSpec.describe ArticlePolicy do
       it "omits suspended and regular users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
 
-        expect(results).to match_array([super_admin])
+        expect(results).to contain_exactly(super_admin)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe ArticlePolicy do
 
       it "omits only suspended users" do
         results = described_class.scope_users_authorized_to_action(users_scope: User, action: :create?).to_a
-        expect(results).to match_array([author, super_admin])
+        expect(results).to contain_exactly(author, super_admin)
       end
     end
   end
@@ -174,7 +174,7 @@ RSpec.describe ArticlePolicy do
     context "when article excludes tagmod_tag, has no room for more tags, and no relevant adjustments" do
       let(:resource) { create(:article, tags: "tagtwo, tagthree, tagfour, tagfive") }
 
-      it { is_expected.not_to be_tag_moderator_eligible }
+      it { is_expected.to be_tag_moderator_eligible }
     end
 
     context "when tag moderator's tag has been adjusted" do
@@ -189,7 +189,7 @@ RSpec.describe ArticlePolicy do
           tag_name: tagmod_tag,
           adjustment_type: "removal",
         )
-        expect(policy).not_to be_tag_moderator_eligible
+        expect(policy).to be_tag_moderator_eligible
       end
     end
 

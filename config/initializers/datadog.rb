@@ -2,6 +2,8 @@ Datadog.configure do |c|
   c.env = Rails.env
   c.tracing.enabled = ENV["DD_API_KEY"].present?
   c.tracing.partial_flush.enabled = true
+  c.diagnostics.startup_logs.enabled = Rails.env.production?
+  c.tracing.log_injection = Rails.env.production?
   service_name = ENV.fetch("DD_SERVICE") { "rails-#{Rails.env}" }
 
   c.tracing.instrument :rails, service_name: service_name
@@ -24,8 +26,8 @@ Datadog.configure do |c|
   # *lot* of memory on instrumentation alone. This env var allows us to
   # enable it only when needed.
   if ENV["DD_ENABLE_REDIS_SIDEKIQ"] == "true"
-    c.tracing.strument :redis, service_name: "#{service_name}-redis-sidekiq",
-                               describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
+    c.tracing.instrument :redis, service_name: "#{service_name}-redis-sidekiq",
+                                 describes: { url: ENV.fetch("REDIS_SIDEKIQ_URL", nil) }
   end
   # Generic REDIS_URL comes last, allowing it to overwrite any of the
   # above when multiple Redis use cases are backed by the same Redis URL.

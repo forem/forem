@@ -1,6 +1,6 @@
 :root {
   color-scheme: dark;
-  
+
   --theme-secondary-color: #cedae2;
   --theme-container-background: #141f2d;
   --theme-container-accent-background: #202c3d;
@@ -65,6 +65,8 @@
   --card-color-tertiary: rgb(var(--grey-400));
   --card-secondary-bg: rgb(var(--grey-900));
   --card-secondary-color: rgb(var(--grey-200));
+  --card-tertiary-bg: rgb(var(--grey-800));
+  --card-tertiary-bg-hover: rgba(var(--grey-800), 0.9);
   --card-border: rgba(var(--white), 0.15);
   --card-secondary-border: rgba(var(--white), 0.1);
 
@@ -81,7 +83,7 @@
   --link-color-current: var(--base-100);
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
-  --link-bg-current: var(--base-inverted);
+  --link-bg-current: var(--card-bg);
 
   /* Primary buttons */
   --button-primary-bg: var(--accent-brand-darker);
@@ -151,6 +153,8 @@
   --tag-bg-hover: rgba(var(--grey-50), 0.05);
   --tag-prefix: rgba(var(--grey-50), 0.6);
   --tag-prefix-hover: rgb(var(--grey-50));
+  --tag-onboarding-bg: var(--grey-900);
+  --tag-onboarding-border: var(--grey-700);
 
   /* Story */
   --story-comments-bg: rgb(var(--grey-800));
@@ -172,6 +176,9 @@
 
   /* Code */
   --code-inline-bg: rgb(var(--white), 0.1);
+
+  /* Onboarding suggested people */
+  --content-row-hover-bg: rgba(var(--base-20));
 }
 
 :root {
@@ -272,6 +279,10 @@
   --indicator-bg: rgb(var(--grey-600));
   --indicator-color: rgb(var(--grey-200));
 
+  /* Indicators: Subtle */
+  --indicator-subtle-bg: rgb(var(--grey-700));
+  --indicator-subtle-color: rgb(var(--grey-200));  
+
   /* Indicators: Success */
   --indicator-success-bg: rgb(var(--green-700));
   --indicator-success-color: rgb(var(--green-50));
@@ -294,6 +305,12 @@
   
   --list-item-bg-hover: rgb(var(--grey-800));
   
+  /***********************************************
+  ** Checkbox ************************************
+  ***********************************************/
+
+  --checkbox-default-bg: rgb(var(--grey-800));
+
   /***********************************************
   ** Modals **************************************
   ***********************************************/
@@ -341,6 +358,30 @@
   --selected-range-color: var(--body-color-inverted);
 
   /***********************************************
+  ** Tag Moderation ******************************
+  ***********************************************/
+
+  /* Tag item */
+  --tag-item-bg-hover: rgba(var(--indigo-900), 0.5);
+
+  /* Subtract */
+  --subtract-color: rgb(var(--red-200));
+  --subtract-color-hover: rgb(var(--white));
+  --subtract-bg: rgba(var(--red-600), 0.4);
+  --subtract-bg-hover: rgb(var(--red-600));
+
+  /* Plus */
+  --plus-color: rgb(var(--green-200));
+  --plus-color-hover: rgb(var(--white));
+  --plus-bg: rgba(var(--green-600), 0.4);
+  --plus-bg-hover: rgb(var(--green-600));
+
+  /* Tag name */
+  --tag-hash: rgb(var(--grey-500));
+  --tag-name: rgb(var(--grey-50));
+  --add-tag-hash: rgb(var(--grey-200));
+
+  /***********************************************
   ** Utilities ***********************************
   ***********************************************/
 
@@ -357,4 +398,5 @@
   --shadow-2: 0 20px 25px -5px rgba(var(--black), 0.5),
     0 10px 10px -5px rgba(var(--black), 0.25),
     inset 0 0 0 1px rgba(var(--white), 0.1);
+  --shadow-smooth: 0px 8px 16px rgba(0, 0, 0, 0.06);
 }

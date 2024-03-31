@@ -1,0 +1,29 @@
+<% title t("views.onboardings.meta.title", community: community_name) %>
+
+<style>
+  <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>
+    <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
+  <% end %>
+
+  .crayons-header,
+  .crayons-footer {
+    display: none;
+  }
+</style>
+
+<div id="onboarding-container"
+  data-community-name="<%= j(community_name) %>"
+  data-community-description="<%= j(Settings::Community.community_description) %>"
+  data-community-logo="<%= optimized_image_url(Settings::General.logo_png) %>"
+  data-community-background-color="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:light] %>"
+  data-community-background-color2="<%= gradient_from_hex(Settings::UserExperience.primary_brand_color_hex)[:dark] %>">
+  <%= javascript_include_tag "Onboarding", defer: true %>
+</div>
+
+<div id="terms" style="display: none;">
+  <%= Page.render_safe_html_for(slug: Page::TERMS_SLUG) { render "pages/terms_text" } %>
+</div>
+
+<div id="coc" style="display: none;">
+  <%= Page.render_safe_html_for(slug: Page::CODE_OF_CONDUCT_SLUG) { render "pages/coc_text" } %>
+</div>

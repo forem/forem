@@ -1,5 +1,5 @@
 <% if show_integration %>
-  <div class="crayons-card crayons-card--content-rows">
+  <div class="crayons-card crayons-card--content-rows" id="github">
     <header>
       <h2 class="crayons-subtitle-1">
         <%= t("views.settings.extensions.github.heading") %>
@@ -17,6 +17,6 @@
       </div>
     </div>
 
-    <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
+    <%= javascript_include_tag "githubRepos", defer: true %>
   </div>
 <% end %>

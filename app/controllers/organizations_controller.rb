@@ -1,5 +1,6 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
+  skip_after_action :verify_authorized, only: :members
 
   ORGANIZATIONS_PERMITTED_PARAMS = %i[
     id
@@ -10,8 +11,6 @@ class OrganizationsController < ApplicationController
     url
     proof
     profile_image
-    nav_image
-    dark_nav_image
     location
     company_size
     tech_stack
@@ -77,7 +76,7 @@ class OrganizationsController < ApplicationController
     organization = Organization.find_by(id: params[:id])
     authorize organization
 
-    Organizations::DeleteWorker.perform_async(organization.id, current_user.id)
+    Organizations::DeleteWorker.perform_async(organization.id, current_user.id, true)
     flash[:settings_notice] =
       I18n.t("organizations_controller.deletion_scheduled", organization_name: organization.name)
 
@@ -93,6 +92,16 @@ class OrganizationsController < ApplicationController
     @organization.save
     flash[:settings_notice] = I18n.t("organizations_controller.secret_updated")
     redirect_to user_settings_path(:organization)
+  end
+
+  def members
+    @organization = Organization.find_by(slug: params[:slug])
+    @members = @organization.users
+
+    respond_to do |format|
+      format.json { render json: @members.to_json(only: %i[id name username]) }
+      format.html
+    end
   end
 
   private

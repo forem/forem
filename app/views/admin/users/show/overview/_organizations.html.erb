@@ -1,5 +1,5 @@
 <header class="mb-4">
-  <h2 class="crayons-subtitle-2 mb-1 flex items-center">
+  <h2 class="crayons-subtitle-1 mb-1 flex items-center">
     <%= crayons_icon_tag(:team, title: t("views.admin.users.overview.orgs.icon"), aria_hidden: true, class: "mr-2") %>
     <%= t("views.admin.users.overview.orgs.subtitle") %>
   </h2>
@@ -24,7 +24,7 @@
         <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link crayons-logo crayons-logo--l">
           <img src="<%= org_membership.organization.profile_image_url_for(length: 64) %>" width="32" height="32" alt="<%= org_membership.organization.name %>" class="crayons-logo__image">
         </a>
-        <h3 class="crayons-subtitle-3">
+        <h3 class="crayons-subtitle-2">
           <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener" class="c-link">
             <%= org_membership.organization.name %>
           </a>

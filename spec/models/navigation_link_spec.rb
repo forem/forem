@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe NavigationLink, type: :model do
+RSpec.describe NavigationLink do
   let(:navigation_link) { create(:navigation_link) }
 
   describe ".create_or_update_by_identity" do
@@ -51,6 +51,18 @@ RSpec.describe NavigationLink, type: :model do
 
       navigation_link.icon = "<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >"
       expect(navigation_link).to be_valid
+
+      navigation_link.icon = "something...something\n<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >"
+      expect(navigation_link).not_to be_valid
+
+      navigation_link.icon = "<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >\n\n\n\n"
+      expect(navigation_link).to be_valid
+
+      navigation_link.icon = "<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >\n\n\t     \n\n"
+      expect(navigation_link).to be_valid
+
+      navigation_link.icon = "<svg foo='bar'\nbaz='lol'\n\n more stuff...\n\n.  >\n\nsomething\n\n"
+      expect(navigation_link).not_to be_valid
     end
 
     context "when validating the URL" do

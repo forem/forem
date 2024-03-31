@@ -12,8 +12,8 @@ RSpec.describe CalculateReactionPoints, type: :service do
   end
 
   context "when reaction is to comment on author's post" do
-    let(:comment) { build :comment, commentable: article }
-    let(:reaction) { build :reaction, reactable: comment, user: user }
+    let(:comment) { build(:comment, commentable: article) }
+    let(:reaction) { build(:reaction, reactable: comment, user: user) }
 
     it "assigns extra 5 points" do
       expect(calculated_points).to eq(5.0)
@@ -36,7 +36,7 @@ RSpec.describe CalculateReactionPoints, type: :service do
 
   context "when newish user" do
     let(:newish_user) { create(:user, registered_at: 3.days.ago) }
-    let(:reaction) { build :reaction, reactable: article, user: newish_user }
+    let(:reaction) { build(:reaction, reactable: article, user: newish_user) }
 
     it "assigns fractional points to new users on create" do
       expect(calculated_points).to be_within(0.1).of(0.3)

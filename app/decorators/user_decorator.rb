@@ -43,7 +43,7 @@ class UserDecorator < ApplicationDecorator
   # @return [Array<UserDecorator::CachedTagByUser>]
   def cached_followed_tags
     cached_tag_attributes = Rails.cache.fetch(
-      "user-#{id}-#{following_tags_count}-#{last_followed_at&.rfc3339}/user_followed_tags",
+      "#{cache_key}-#{last_followed_at&.rfc3339}/followed_tags",
       expires_in: 20.hours,
     ) do
       Tag.followed_tags_for(follower: object).map { |tag| tag.slice(*CACHED_TAGGED_BY_USER_ATTRIBUTES) }
@@ -76,9 +76,13 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       setting.config_theme.tr("_", "-"),
       "#{setting.resolved_font_name.tr('_', '-')}-article-body",
+      "mod-status-#{any_admin? || !moderator_for_tags.empty?}",
       "trusted-status-#{trusted?}",
       "#{setting.config_navbar.tr('_', '-')}-header",
     ]
+
+    # Backfill ten-x-hacker-theme because the ios app looks for it to render native dark shell.
+    body_class << "ten-x-hacker-theme" if setting.config_theme == "dark_theme"
     body_class.join(" ")
   end
 
@@ -115,7 +119,7 @@ class UserDecorator < ApplicationDecorator
 
   # returns true if the user has been suspended and has no content
   def fully_banished?
-    articles_count.zero? && comments_count.zero? && suspended?
+    articles_count.zero? && comments_count.zero? && spam_or_suspended?
   end
 
   def considered_new?

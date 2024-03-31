@@ -3,9 +3,6 @@ require "rails_helper"
 RSpec.describe StackblitzTag, type: :liquid_tag do
   describe "#id" do
     let(:stackblitz_id) { "ball-demo" }
-    let(:stackblitz_id_with_view) { "ball-demo view=preview" }
-    let(:stackblitz_id_with_file) { "ball-demo file=style.css" }
-    let(:stackblitz_id_with_view_and_file) { "ball-demo view=preview file=style.css" }
 
     xss_links = %w(
       //evil.com/?ball-demo
@@ -29,27 +26,74 @@ RSpec.describe StackblitzTag, type: :liquid_tag do
       end.to raise_error(StandardError)
     end
 
-    it "accepts stackblitz id with a view parameter" do
-      expect do
-        generate_new_liquid(stackblitz_id_with_view)
-      end.not_to raise_error
+    it "parses stackblitz id with a view parameter" do
+      liquid = generate_new_liquid("ball-demo view=preview")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?view=preview")
     end
 
-    it "accepts stackblitz id with a file parameter" do
-      expect do
-        generate_new_liquid(stackblitz_id_with_file)
-      end.not_to raise_error
-    end
-
-    it "accepts stackblitz id with a view and file parameter" do
-      expect do
-        generate_new_liquid(stackblitz_id_with_view_and_file)
-      end.not_to raise_error
+    it "parses stackblitz id with a file parameter" do
+      liquid = generate_new_liquid("ball-demo file=style.css")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?file=style.css")
     end
 
     it "parses stackblitz id with a view and file parameter" do
-      liquid = generate_new_liquid(stackblitz_id_with_view_and_file)
+      liquid = generate_new_liquid("ball-demo view=preview file=style.css")
       expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?view=preview&amp;file=style.css")
+    end
+
+    it "parses stackblitz id with an embed parameter" do
+      liquid = generate_new_liquid("ball-demo embed=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?embed=1")
+    end
+
+    it "parses stackblitz id with a hideNavigation parameter" do
+      liquid = generate_new_liquid("ball-demo hideNavigation=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?hideNavigation=1")
+    end
+
+    it "parses stackblitz id with a theme parameter" do
+      liquid = generate_new_liquid("ball-demo theme=dark")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?theme=dark")
+    end
+
+    it "parses stackblitz id with a ctl parameter" do
+      liquid = generate_new_liquid("ball-demo ctl=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?ctl=1")
+    end
+
+    it "parses stackblitz id with a devtoolsheight parameter" do
+      liquid = generate_new_liquid("ball-demo devtoolsheight=80")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?devtoolsheight=80")
+    end
+
+    it "parses stackblitz id with a hidedevtools parameter" do
+      liquid = generate_new_liquid("ball-demo hidedevtools=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?hidedevtools=1")
+    end
+
+    it "parses stackblitz id with a initialpath parameter" do
+      liquid = generate_new_liquid("ball-demo initialpath=/foo/index.html")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?initialpath=/foo/index.html")
+    end
+
+    it "parses stackblitz id with a showSidebar parameter" do
+      liquid = generate_new_liquid("ball-demo showSidebar=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?showSidebar=1")
+    end
+
+    it "parses stackblitz id with a terminalHeight parameter" do
+      liquid = generate_new_liquid("ball-demo terminalHeight=80")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?terminalHeight=80")
+    end
+
+    it "parses stackblitz id with a startScript parameter" do
+      liquid = generate_new_liquid("ball-demo startScript=dev")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?startScript=dev")
+    end
+
+    it "removes invalid parameters" do
+      liquid = generate_new_liquid("ball-demo foo=bar bar=baz showSidebar=1")
+      expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?showSidebar=1")
     end
 
     it "rejects XSS attempts" do

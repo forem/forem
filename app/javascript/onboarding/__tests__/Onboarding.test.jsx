@@ -16,7 +16,8 @@ describe('<Onboarding />', () => {
         communityConfig={{
           communityName: 'Community Name',
           communityLogo: '/x.png',
-          communityBackground: '/y.jpg',
+          communityBackgroundColor: '#e6d800',
+          communityBackgroundColor2: '#999000',
           communityDescription: 'Some community description',
         }}
       />,
@@ -36,6 +37,29 @@ describe('<Onboarding />', () => {
     document.body.setAttribute('data-user', getUserData());
     const csrfToken = 'this-is-a-csrf-token';
     global.getCsrfToken = async () => csrfToken;
+
+    // Mock localStorage
+    const localStorageMock = (function () {
+      let store = {};
+      return {
+        getItem(key) {
+          return store[key] || null;
+        },
+        setItem(key, value) {
+          store[key] = value.toString();
+        },
+        removeItem(key) {
+          delete store[key];
+        },
+        clear() {
+          store = {};
+        },
+      };
+    })();
+
+    Object.defineProperty(window, 'localStorage', {
+      value: localStorageMock,
+    });
   });
 
   it('should have no a11y violations', async () => {
@@ -44,23 +68,48 @@ describe('<Onboarding />', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('should render the IntroSlide first', () => {
+  it('should record billboard conversion correctly', async () => {
+    const fakeBillboardData = {
+      billboard_event: { category: 'signup', someData: 'test' }, // Ensure this structure matches what your code expects
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(fakeBillboardData),
+    );
+
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for the billboard event
+    fetch.mockResponseOnce(() => Promise.resolve(JSON.stringify({}))); // Mock for any subsequent fetch calls, if necessary
+
+    renderOnboarding();
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith(
+        '/billboard_events',
+        expect.objectContaining({
+          method: 'POST',
+          headers: expect.objectContaining({
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': expect.any(String),
+          }),
+          body: JSON.stringify(fakeBillboardData),
+        }),
+      );
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
+  });
+
+  it('should render the ProfileForm first', () => {
     const { queryByTestId } = renderOnboarding();
 
-    expect(queryByTestId('onboarding-intro-slide')).toBeDefined();
+    expect(queryByTestId('onboarding-profile-form')).toExist();
   });
 
   it('should allow the modal to move forward and backward a step where relevant', async () => {
     // combined back and forward into one test to avoid a long test running time
     const { getByTestId, findByText, findByTestId } = renderOnboarding();
-
-    getByTestId('onboarding-intro-slide');
-
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
 
     // click to next step
     const nextButton = await findByText(/continue/i);
@@ -77,22 +126,14 @@ describe('<Onboarding />', () => {
     const backButton = getByTestId('back-button');
     backButton.click();
 
-    // we should be on the Intro Slide step
-    const introSlide = await findByTestId('onboarding-intro-slide');
+    // we should be on the Profile Form Slide step
+    const introSlide = await findByTestId('onboarding-profile-form');
 
-    expect(introSlide).toBeDefined();
+    expect(introSlide).toExist();
   });
 
   it("should skip the step when 'Skip for now' is clicked", async () => {
-    const { getByTestId, getByText, findByText, findByTestId } =
-      renderOnboarding();
-    getByTestId('onboarding-intro-slide');
-
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
+    const { getByText, findByText, findByTestId } = renderOnboarding();
 
     // click to next step
     const nextButton = await findByText(/continue/i);
@@ -104,31 +145,26 @@ describe('<Onboarding />', () => {
     // we should be on the Follow tags step
     const followTagsStep = await findByTestId('onboarding-follow-tags');
 
-    expect(followTagsStep).toBeDefined();
+    expect(followTagsStep).toExist();
 
     // click on skip for now
     const skipButton = getByText(/Skip for now/i);
     skipButton.click();
 
     // we should be on the Profile Form step
-    const profileStep = await findByTestId('onboarding-profile-form');
+    const profileStep = await findByTestId('onboarding-follow-users');
 
-    expect(profileStep).toBeDefined();
+    expect(profileStep).toExist();
   });
 
   it('should redirect the users to the correct steps every time', async () => {
     const { getByTestId, getByText, findByText, findByTestId } =
       renderOnboarding();
-    getByTestId('onboarding-intro-slide');
 
-    fetch.mockResponseOnce({});
-    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click();
-    const termsCheckbox = getByTestId('checked-terms-and-conditions');
-    termsCheckbox.click();
+    getByTestId('onboarding-profile-form');
 
     // click to next step
-    let nextButton = await findByText(/continue/i);
+    const nextButton = await findByText(/continue/i);
     await waitFor(() => expect(nextButton).not.toHaveAttribute('disabled'));
 
     fetch.mockResponse(fakeEmptyResponse);
@@ -140,14 +176,6 @@ describe('<Onboarding />', () => {
     // click on skip for now
     let skipButton = getByText(/Skip for now/i);
     skipButton.click();
-
-    // we should be on the Profile Form step
-    await findByTestId('onboarding-profile-form');
-
-    // click on continue without adjusting form fields
-    nextButton = getByText(/Continue/i);
-    fetch.mockResponse(fakeEmptyResponse);
-    nextButton.click();
 
     // we should be on the Follow Users step
     await findByTestId('onboarding-follow-users');
@@ -174,5 +202,43 @@ describe('<Onboarding />', () => {
     const { href } = window.location;
 
     expect(href).toEqual(url);
+  });
+
+  it('should redirect to the specified path in localStorage when conditions are met', async () => {
+    // Setup: Mock localStorage with a recent interaction
+    const expectedPath = '/expected-path';
+    const recentInteraction = {
+      path: expectedPath,
+      time: new Date(), // Simulate an interaction right now
+    };
+    window.localStorage.setItem(
+      'last_interacted_billboard',
+      JSON.stringify(recentInteraction),
+    );
+
+    // Mock fetch responses if needed
+    fetch.mockResponseOnce(JSON.stringify({}));
+
+    // Setup a spy/mock for window.location.href to verify it gets set
+    delete window.location;
+    window.location = { href: '' }; // Simplified mock; you might need a more robust solution
+
+    const { getByText } = renderOnboarding();
+
+    // Trigger the logic that includes the redirect
+    const nextButton = getByText(/continue/i); // Assuming "continue" triggers the nextSlide logic
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+    nextButton.click();
+
+    // Assert that window.location.href was updated to the expected path
+    await waitFor(() => {
+      expect(window.location.href).toBe(expectedPath);
+    });
+
+    // Cleanup
+    window.localStorage.clear();
+    fetch.resetMocks();
   });
 });

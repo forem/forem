@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages pages", type: :system do
+RSpec.describe "Admin manages pages" do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -80,17 +80,20 @@ RSpec.describe "Admin manages pages", type: :system do
   describe "when the defaults are overridden" do
     before do
       create(:page,
+             :without_validations, # validations prevent reserved_word "code-of-conduct"
              slug: "code-of-conduct",
              body_html: "<div>Code of Conduct</div>",
              title: "Code of Conduct",
              description: "A page that describes how to behave on this platform",
              is_top_level_path: true)
       create(:page,
+             :without_validations, # validations prevent reserved_word "privacy"
              slug: "privacy",
              body_html: "<div>Privacy Policy</div>",
              title: "Privacy Policy",
              description: "A page that describes the privacy policy", is_top_level_path: true)
       create(:page,
+             :without_validations, # validations prevent reserved_word "terms"
              slug: "terms",
              body_html: "<div>Terms of Use</div>",
              title: "Terms of Use",

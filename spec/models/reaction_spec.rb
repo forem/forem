@@ -116,6 +116,11 @@ RSpec.describe Reaction do
       expect(reaction.skip_notification_for?(user)).to be(true)
     end
 
+    it "is true when the reaction is a bookmark" do
+      reaction.category = "readinglist"
+      expect(reaction.skip_notification_for?(user)).to be(true)
+    end
+
     context "when reactable is a user" do
       let(:user) { create(:user) }
       let(:reaction) { build(:reaction, reactable: user, user: nil) }
@@ -139,10 +144,13 @@ RSpec.describe Reaction do
 
       expected_result = [
         { category: "like", count: 1 },
-        { category: "readinglist", count: 0 },
         { category: "unicorn", count: 1 },
+        { category: "exploding_head", count: 0 },
+        { category: "fire", count: 0 },
+        { category: "raised_hands", count: 0 },
+        { category: "readinglist", count: 0 },
       ]
-      expect(described_class.count_for_article(article.id)).to eq(expected_result)
+      expect(described_class.count_for_article(article.id)).to match_array(expected_result)
     end
   end
 
@@ -234,7 +242,7 @@ RSpec.describe Reaction do
   end
 
   context "when callbacks are called before destroy" do
-    let(:reaction) { create(:reaction, reactable: article, user: user) }
+    let!(:reaction) { create(:reaction, reactable: article, user: user) }
 
     it "enqueues a ScoreCalcWorker on article reaction destroy" do
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
@@ -242,16 +250,29 @@ RSpec.describe Reaction do
       end
     end
 
-    it "updates reactable without delay" do
-      allow(reaction).to receive(:update_reactable_without_delay)
+    it "updates reactable with delay" do
+      allow(Reactions::UpdateRelevantScoresWorker).to receive(:perform_async)
       reaction.destroy
-      expect(reaction).to have_received(:update_reactable_without_delay)
+      expect(Reactions::UpdateRelevantScoresWorker).to have_received(:perform_async)
     end
 
     it "busts reactable cache without delay" do
       allow(reaction).to receive(:bust_reactable_cache_without_delay)
       reaction.destroy
       expect(reaction).to have_received(:bust_reactable_cache_without_delay)
+    end
+
+    it "busts article if it is the last public reaction" do
+      allow(EdgeCache::BustArticle).to receive(:call)
+      reaction.destroy
+      expect(EdgeCache::BustArticle).to have_received(:call)
+    end
+
+    it "does not bust article if it is not the last public reaction" do
+      create(:reaction, reactable: article, user: create(:user))
+      allow(EdgeCache::BustArticle).to receive(:call)
+      reaction.destroy
+      expect(EdgeCache::BustArticle).not_to have_received(:call)
     end
   end
 
@@ -309,6 +330,46 @@ RSpec.describe Reaction do
 
     it "returns un-archived reactions on articles" do
       expect(described_class.readinglist_for_user(user).pluck(:reactable_id)).to contain_exactly(article.id)
+    end
+  end
+
+  describe ".live_reactable" do
+    let(:moderator) { create(:user, :trusted) }
+
+    it "returns reactions on articles where article is published" do
+      article = create(:article, published: true)
+      reaction = create(:vomit_reaction, user: moderator, reactable: article)
+
+      expect(described_class.live_reactable.to_a).to eq([reaction])
+    end
+
+    it "does not return reaction on articles where not published" do
+      article = create(:article)
+      create(:vomit_reaction, user: moderator, reactable: article)
+      article.update_column(:published, false)
+
+      expect(described_class.live_reactable.to_a).to eq([])
+    end
+
+    it "returns reactions on comments" do
+      comment = create(:comment)
+      reaction = create(:vomit_reaction, user: moderator, reactable: comment)
+
+      expect(described_class.live_reactable).to eq([reaction])
+    end
+
+    it "returns reactions to users" do
+      user = create(:user)
+      reaction = create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([reaction])
+    end
+
+    it "does not return reactions to users who are deemed spam already" do
+      user = create(:user, username: "spam_400")
+      create(:vomit_reaction, user: moderator, reactable: user)
+
+      expect(described_class.live_reactable.to_a).to eq([])
     end
   end
 end

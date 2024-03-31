@@ -2,4 +2,4 @@
 fr:
   decorators:
     article_decorator:
-      tagged_with: " Tagged with %{cached_tag_list}."
+      tagged_with: " Tagué avec %{cached_tag_list}."

@@ -1,4 +1,4 @@
-<%= javascript_packs_with_chunks_tag "stickySaveFooter", defer: true %>
+<%= javascript_include_tag "stickySaveFooter", defer: true %>
 
 <%= form_for @users_setting,
              url: users_settings_path,
@@ -72,14 +72,13 @@
       </p>
     </div>
   </div>
-
-  <div class="crayons-card crayons-card--content-rows">
+  <div id="sponsors" class="crayons-card crayons-card--content-rows">
     <header>
       <h2 class="crayons-subtitle-1">
         <%= t("views.settings.custom.sponsor") %>
       </h2>
       <p>
-        <%= t("views.settings.custom.sponsor_desc") %>
+        <%= t("views.settings.custom.sponsor_desc_html") %>
       </p>
     </header>
 

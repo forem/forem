@@ -2,16 +2,16 @@
 module Notifications
   module WelcomeNotification
     class Send
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(receiver_id, welcome_broadcast)
         @receiver_id = receiver_id
         @welcome_broadcast = welcome_broadcast
       end
 
       delegate :user_data, to: Notifications
-
-      def self.call(...)
-        new(...).call
-      end
 
       def call
         mascot_account = User.mascot_account

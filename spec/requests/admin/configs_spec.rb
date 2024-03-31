@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/customization/config", type: :request do
+RSpec.describe "/admin/customization/config" do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :admin) }
   let(:super_admin) { create(:user, :super_admin) }
@@ -405,15 +405,6 @@ RSpec.describe "/admin/customization/config", type: :request do
       end
 
       describe "Onboarding" do
-        it "updates onboarding_background_image" do
-          expected_image_url = "https://dummyimage.com/300x300.png"
-          post admin_settings_general_settings_path, params: {
-            settings_general:
-            { onboarding_background_image: expected_image_url }
-          }
-          expect(Settings::General.onboarding_background_image).to eq(expected_image_url)
-        end
-
         it "removes space suggested_tags" do
           post admin_settings_general_settings_path, params: {
             settings_general: { suggested_tags: "hey, haha,hoho, bobo fofo" }
@@ -426,40 +417,6 @@ RSpec.describe "/admin/customization/config", type: :request do
             settings_general: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }
           }
           expect(Settings::General.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "removes space suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "downcases suggested_users" do
-          post admin_settings_general_settings_path, params: {
-            settings_general: {
-              suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO"
-            }
-          }
-          expect(Settings::General.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "updates prefer_manual_suggested_users to true" do
-          prefer_manual = true
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
-        end
-
-        it "updates prefer_manual_suggested_users to false" do
-          prefer_manual = false
-          post admin_settings_general_settings_path, params: {
-            settings_general: { prefer_manual_suggested_users: prefer_manual }
-          }
-          expect(Settings::General.prefer_manual_suggested_users).to eq(prefer_manual)
         end
       end
 
@@ -770,6 +727,17 @@ RSpec.describe "/admin/customization/config", type: :request do
               settings_user_experience: { display_in_directory: false }
             }
           end.to change(Settings::UserExperience, :display_in_directory).from(default_value).to(false)
+        end
+
+        it "updates the award_tag_minimum_score" do
+          default_value = Settings::UserExperience.get_default(:award_tag_minimum_score)
+          new_award_tag_minimum_score = 200
+          expect do
+            post admin_settings_user_experiences_path, params: {
+              settings_user_experience: { award_tag_minimum_score: new_award_tag_minimum_score }
+            }
+          end.to change(Settings::UserExperience,
+                        :award_tag_minimum_score).from(default_value).to(new_award_tag_minimum_score)
         end
       end
 

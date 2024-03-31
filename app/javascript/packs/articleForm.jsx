@@ -1,6 +1,7 @@
 import { h, render } from 'preact';
 import { ArticleForm } from '../article-form/articleForm';
 import { Snackbar } from '../Snackbar';
+import { createRootFragment } from '../shared/preact/preact-root-fragment';
 import { getUserDataAndCsrfToken } from '@utilities/getUserDataAndCsrfToken';
 
 HTMLDocument.prototype.ready = new Promise((resolve) => {
@@ -24,7 +25,7 @@ function loadForm() {
     window.csrfToken = csrfToken;
 
     const root = document.querySelector('main');
-    const { article, organizations, version, siteLogo, schedulingEnabled } =
+    const { article, organizations, version, siteLogo, schedulingEnabled, coverImageHeight, coverImageCrop } =
       root.dataset;
     render(
       <ArticleForm
@@ -32,10 +33,11 @@ function loadForm() {
         organizations={organizations}
         version={version}
         siteLogo={siteLogo}
+        coverImageHeight={coverImageHeight}
+        coverImageCrop={coverImageCrop}
         schedulingEnabled={schedulingEnabled == 'true'}
       />,
-      root,
-      root.firstElementChild,
+      createRootFragment(root, root.firstElementChild),
     );
   });
 }

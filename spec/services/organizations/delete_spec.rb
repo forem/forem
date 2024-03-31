@@ -28,6 +28,9 @@ RSpec.describe Organizations::Delete, type: :service do
 
     it "removes the organization name from the .reading_list_document after destroy" do
       org.update(name: "ACME")
+
+      sidekiq_perform_enqueued_jobs
+
       expect(article.reload.reading_list_document).to include("acme")
 
       described_class.call(org)

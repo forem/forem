@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/advanced/tools", type: :request do
+RSpec.describe "/admin/advanced/tools" do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
 

@@ -2,11 +2,13 @@
 @import '../mixins';
 
 .ltag__tag {
-  border: 1px solid $black;
   font-family: var(--ff-sans-serif);
-  border: 1px solid $light-medium-gray;
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-  border-radius: 3px;
+  border-left: 1px solid var(--form-border) !important;
+  border-right: 1px solid var(--form-border) !important;
+  border-bottom: 1px solid var(--form-border) !important;
+  border-top: 30px solid var(--form-border);
+  box-shadow: var(--shadow-smooth) !important;
+  border-radius: var(--radius-auto) !important;
   display: block;
   margin: 0.95em 0 1.2em;
   position: relative;
@@ -14,7 +16,6 @@
   width: auto;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    max-width: 620px;
   }
   .ltag__tag__content {
     a {
@@ -27,7 +28,7 @@
     h2 {
       margin: 0;
       padding: 0;
-      font-weight: 500;
+      font-weight: var(--fw-bold);
       display: flex;
       align-items: center;
       .follow-action-button {
@@ -40,6 +41,7 @@
     }
     .ltag__tag__summary {
       padding-top: calc(0.5vw + 6px);
+      padding-bottom: calc(0.5vw + 6px);
       font-size: 0.77em;
       line-height: 1.1em;
     }

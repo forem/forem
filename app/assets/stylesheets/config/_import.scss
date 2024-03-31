@@ -160,7 +160,7 @@ $z-indexes: (
   @each $name, $value in $values {
     .#{$prefix}#{$separator}#{$name} {
       @each $property in $properties {
-        #{$property}: $value !important; // TODO: Remove !important once we drop Bootstrap as dependency. More: https://forem-team.slack.com/archives/C01K9U7UATV/p1642687819005100
+        #{$property}: $value
       }
     }
   }

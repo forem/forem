@@ -15,14 +15,14 @@ RSpec.describe Images::GenerateSocialImage, type: :labor do
     expect(described_class.call(article)).to eq(article.main_image)
   end
 
-  it "returns article social image", cloudinary: true do
+  it "returns article social image", :cloudinary do
     article.main_image = nil
     article.social_image = nil
     article.cached_tag_list = "discuss, hello, goodbye"
     expect(described_class.call(article)).to include(
       "article/#{article.id}",
       "image/url2png",
-      "c_fill,g_north,h_400,w_800/",
+      "c_limit,g_north,h_400,w_800/",
     )
   end
 

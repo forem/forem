@@ -13,6 +13,7 @@ fr:
           following_users: Following users (%{num})
           following_orgs: Following organizations (%{num})
           following_pods: Following podcasts (%{num})
+          hidden_tags: Hidden tags (%{num})
         posts: Publications
         series: Séries
         followers: Suiveurs
@@ -20,6 +21,7 @@ fr:
         following_users: Following users
         following_orgs: Following organizations
         following_pods: Following podcasts
+        hidden_tags: Hidden tags
         listings: Annonces
         analytics: Analytique
         for_org: Analytics for %{org}
@@ -28,9 +30,7 @@ fr:
         meta:
           title: Analytics
         heading: Analytics Dashboard for %{name}
-        desc_1: Welcome to the Analytics Dashboard, the home of in-depth user metrics so that authors can make data-driven decisions about the %{members} ecosystem.
-        desc_2: This dashboard highlights deep insights especially relevant to %{members} relations, authors, and serious bloggers.
-        back: "👈 Back to Main Dashboard"
+        back: "Back to Main Dashboard"
         your: Your Dashboard
         org: "%{org} Analytics Dashboard"
       article:
@@ -92,6 +92,9 @@ fr:
         archive: Archive post
         unarchive: Unarchive post
         author: Author
+        co_authors: Co-authors
+        series_author_change_warning: No author changes allowed for series posts.
+        icon: Details
         author_is: 'AUTHOR: '
         save: Save
         submit: Submit author change
@@ -106,18 +109,19 @@ fr:
         empty: You don't follow any podcasts yet...
       following_tags:
         heading: Dashboard » Following tags
-        adjust: Adjust tag weight to modify your home feed. Higher values mean more appearances for that tag.
-        anti:
-          title: This tag has negative follow weight
-          text: Anti-follow
-        default: Default 1.0
         empty_html: "<span>Follow tags to personalize your feed. You can explore popular tags <a href=%{link}>here</a></span>."
-        number:
-          aria_label: "%{name} tag weight"
-        update: Update Weights
       following_users:
         heading: Tableau de bord » Utilisateurs suivis
         empty: Vous ne suivez aucun utilisateur...
+      hidden_tags:
+        heading: Dashboard » Hidden tags
+        empty_html: "<span>You don't have any hidden tags...</span>"
+      tags:
+        following_button: Following
+        options:
+          icon: Options
+          hide: Hide tag
+        unhide_button: Unhide
       listings:
         meta:
           title: Listings Dashboard

@@ -1,12 +1,25 @@
 ENV["RAILS_ENV"] = "test"
+# Temporary workaround for Ruby 3.0.6 / CGI udpate
+ENV["APP_DOMAIN"] = "forem.test"
 require "knapsack_pro"
 require "simplecov"
 require "simplecov_json_formatter"
 
-SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+if ENV["CI"]
+  SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+end
 KnapsackPro::Adapters::RSpecAdapter.bind
 KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
   SimpleCov.command_name("rspec_ci_node_#{KnapsackPro::Config::Env.ci_node_index}")
+end
+
+TMP_RSPEC_XML_REPORT = "tmp/rspec.xml".freeze
+FINAL_RSPEC_XML_REPORT = "tmp/rspec_final_results.xml".freeze
+
+KnapsackPro::Hooks::Queue.after_subset_queue do |_queue_id, _subset_queue_id|
+  if File.exist?(TMP_RSPEC_XML_REPORT)
+    FileUtils.mv(TMP_RSPEC_XML_REPORT, FINAL_RSPEC_XML_REPORT)
+  end
 end
 
 require "spec_helper"
@@ -14,6 +27,9 @@ require "spec_helper"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+
+Rake.application = Rake::Application.new
+Rails.application.load_tasks
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -59,6 +75,7 @@ allowed_sites = [
   "selenium-release.storage.googleapis.com",
   "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
+  ENV.fetch("CHROME_URL", nil),
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -74,7 +91,7 @@ Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
-  config.fixture_path = "#{::Rails.root}/spec/fixtures"
+  config.fixture_path = Rails.root.join("spec/fixtures")
 
   config.include ActionMailer::TestHelper
   config.include ApplicationHelper
@@ -136,7 +153,7 @@ RSpec.configure do |config|
     ex.run_with_retry retry: 3
   end
 
-  config.around(:each, throttle: true) do |example|
+  config.around(:each, :throttle) do |example|
     Rack::Attack.enabled = true
     example.run
     Rack::Attack.enabled = false
@@ -201,6 +218,15 @@ RSpec.configure do |config|
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
+    stub_request(:get, %r{assets/icon})
+      .with(headers:
+            {
+              "Accept" => "*/*",
+              "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+              "User-Agent" => "Ruby"
+            }).to_return(status: 200, body: "", headers: {})
+    stub_request(:get, %r{assets/\d+(-\w+)?\.png})
+      .to_return(status: 200, body: "", headers: {})
 
     allow(Settings::Community).to receive(:community_description).and_return("Some description")
     allow(Settings::UserExperience).to receive(:public).and_return(true)

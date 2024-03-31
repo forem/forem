@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { FocusTrap } from '../shared/components/focusTrap';
-import { IntroSlide } from './components/IntroSlide';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
@@ -11,16 +10,9 @@ export class Onboarding extends Component {
   constructor(props) {
     super(props);
 
-    const url = new URL(window.location);
-    const previousLocation = url.searchParams.get('referrer');
+    this.recordBillboardConversion();
 
-    const slides = [
-      IntroSlide,
-      FollowTags,
-      ProfileForm,
-      FollowUsers,
-      EmailPreferencesForm,
-    ];
+    const slides = [ProfileForm, FollowTags, FollowUsers, EmailPreferencesForm];
 
     this.nextSlide = this.nextSlide.bind(this);
     this.prevSlide = this.prevSlide.bind(this);
@@ -38,7 +30,6 @@ export class Onboarding extends Component {
         currentSlideIndex={index}
         key={index}
         communityConfig={props.communityConfig}
-        previousLocation={previousLocation}
       />
     ));
   }
@@ -50,8 +41,14 @@ export class Onboarding extends Component {
       this.setState({
         currentSlide: nextSlide,
       });
+    } else if (localStorage && localStorage.getItem('last_interacted_billboard')) {
+      const obj = JSON.parse(localStorage.getItem('last_interacted_billboard'))
+      if (obj.path && obj.time && Date.parse(obj.time) > Date.now() - 900000) {
+        window.location.href = obj.path;
+      } else {
+        window.location.href = '/';
+      }
     } else {
-      // Redirect to the main feed at the end of onboarding.
       window.location.href = '/';
     }
   }
@@ -66,6 +63,28 @@ export class Onboarding extends Component {
     }
   }
 
+  recordBillboardConversion() {
+    if (!localStorage || !localStorage.getItem('last_interacted_billboard')) {
+      return;
+    }
+    const dataBody = JSON.parse(localStorage.getItem('last_interacted_billboard'));
+  
+    if (dataBody && dataBody['billboard_event']) {
+      dataBody['billboard_event']['category'] = 'signup';
+
+      const tokenMeta = document.querySelector("meta[name='csrf-token']");
+      const csrfToken = tokenMeta && tokenMeta.getAttribute('content');
+      window.fetch('/billboard_events', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': csrfToken,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataBody),
+        credentials: 'same-origin',
+      });
+    }
+  }
   // TODO: Update main element id to enable skip link. See issue #1153.
   render() {
     const { currentSlide } = this.state;
@@ -74,11 +93,13 @@ export class Onboarding extends Component {
       <main
         className="onboarding-body"
         style={
-          communityConfig.communityBackground
+          communityConfig.communityBackgroundColor &&
+          communityConfig.communityBackgroundColor2
             ? {
-                backgroundImage: `url(${communityConfig.communityBackground})`,
+                background: `linear-gradient(${communityConfig.communityBackgroundColor}, 
+                                             ${communityConfig.communityBackgroundColor2})`,
               }
-            : null
+            : { top: 777 }
         }
       >
         <FocusTrap
@@ -95,7 +116,7 @@ export class Onboarding extends Component {
 Onboarding.propTypes = {
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
-    communityBackground: PropTypes.string.isRequired,
+    communityBackgroundColor: PropTypes.string.isRequired,
     communityLogo: PropTypes.string.isRequired,
     communityDescription: PropTypes.string.isRequired,
   }).isRequired,

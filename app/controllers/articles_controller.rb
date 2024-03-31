@@ -111,10 +111,10 @@ class ArticlesController < ApplicationController
     authorize Article
 
     begin
-      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(params[:article_body])
-      parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-      parsed_markdown = MarkdownProcessor::Parser.new(parsed.content, source: Article.new, user: current_user)
-      processed_html = parsed_markdown.finalize
+      renderer = ContentRenderer.new(params[:article_body], source: Article.new, user: current_user)
+      result = renderer.process_article
+      processed_html = result.processed_html
+      front_matter = result.front_matter.to_h
     rescue StandardError => e
       @article = Article.new(body_markdown: params[:article_body])
       @article.errors.add(:base, ErrorMessages::Clean.call(e.message))
@@ -125,7 +125,6 @@ class ArticlesController < ApplicationController
         format.json { render json: @article.errors, status: :unprocessable_entity }
       else
         format.json do
-          front_matter = parsed.front_matter.to_h
           if front_matter["tags"]
             tags = Article.new.tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
           end
@@ -149,11 +148,11 @@ class ArticlesController < ApplicationController
     @user = current_user
     article = Articles::Creator.call(@user, article_params_json)
 
-    render json: if article.persisted?
-                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
-                 else
-                   article.errors.to_json
-                 end
+    if article.persisted?
+      render json: { id: article.id, current_state_path: article.decorate.current_state_path }, status: :ok
+    else
+      render json: article.errors.to_json, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -181,11 +180,11 @@ class ArticlesController < ApplicationController
       end
 
       format.json do
-        render json: if updated.success
-                       @article.to_json(only: [:id], methods: [:current_state_path])
-                     else
-                       @article.errors.to_json
-                     end
+        if updated.success
+          render json: @article.to_json(only: [:id], methods: [:current_state_path]), status: :ok
+        else
+          render json: @article.errors.to_json, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -208,6 +207,7 @@ class ArticlesController < ApplicationController
   def stats
     authorize @article
     @organization_id = @article.organization_id
+    @reactions = @article.reactions.public_category.order(created_at: :desc).limit(500).includes(:user)
   end
 
   def admin_unpublish
@@ -321,8 +321,9 @@ class ArticlesController < ApplicationController
 
     # NOTE: the organization logic is still a little counter intuitive but this should
     # fix the bug <https://github.com/forem/forem/issues/2871>
-    if params["article"]["user_id"] && org_admin_user_change_privilege
+    if org_admin_user_change_privilege
       allowed_params << :user_id
+      allowed_params << :co_author_ids_list
     elsif params["article"]["organization_id"] && allowed_to_change_org_id?
       # change the organization of the article only if explicitly asked to do so
       allowed_params << :organization_id

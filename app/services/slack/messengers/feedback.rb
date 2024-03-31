@@ -1,16 +1,16 @@
 module Slack
   module Messengers
     class Feedback
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(type:, category:, reported_url:, message:, user: nil)
         @user = user
         @type = type
         @category = category
         @reported_url = reported_url
         @message = message
-      end
-
-      def self.call(...)
-        new(...).call
       end
 
       def call

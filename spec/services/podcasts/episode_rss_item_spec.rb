@@ -30,7 +30,7 @@ RSpec.describe Podcasts::EpisodeRssItem, type: :service do
   describe "#from_item" do
     it "returns a hash" do
       attributes = described_class.from_item(item).to_h
-      expect(attributes).to be_kind_of(Hash)
+      expect(attributes).to be_a(Hash)
       expect(attributes[:title]).to eq("lightalloy's podcast")
       expect(attributes[:enclosure_url]).to eq("https://audio.simplecast.com/2330f132.mp3")
       expect(attributes[:body]).to eq("world")

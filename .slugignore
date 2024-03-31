@@ -1,5 +1,4 @@
 .buildkite/
-.codeclimate.yml
 .dockerignore
 .editorconfig
 .env_sample

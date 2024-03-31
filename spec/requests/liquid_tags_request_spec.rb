@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "LiquidTags", type: :request do
+RSpec.describe "LiquidTags" do
   describe "GET /liquid_tags" do
     context "when not signed in do" do
       it "returns a list of all custom Liquid tags" do

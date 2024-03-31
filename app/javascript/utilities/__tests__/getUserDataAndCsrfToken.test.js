@@ -1,4 +1,7 @@
-import { getUserDataAndCsrfToken } from '../getUserDataAndCsrfToken';
+import {
+  getUserDataAndCsrfToken,
+  getUserDataAndCsrfTokenSafely,
+} from '../getUserDataAndCsrfToken';
 
 const ERROR_MESSAGE = "Couldn't find user data on page.";
 
@@ -52,5 +55,18 @@ describe('getUserDataAndCsrfToken', () => {
       currentUser,
       csrfToken,
     });
+  });
+});
+
+describe('getUserDataAndCsrfTokenSafely', () => {
+  afterEach(() => {
+    document.head.innerHTML = '';
+    document.body.removeAttribute('data-user');
+  });
+
+  test('should not reject if no user or csrf token found.', async () => {
+    await expect(getUserDataAndCsrfTokenSafely(document)).resolves.toEqual(
+      expect.anything(),
+    );
   });
 });

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin creates new page", type: :system do
+RSpec.describe "Admin creates new page" do
   let(:admin) { create(:user, :super_admin) }
 
   context "when we pass through a slug param" do

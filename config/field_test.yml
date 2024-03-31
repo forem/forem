@@ -27,11 +27,643 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_count_03_18:
+    started_at: 2024-03-18
+    ended_at: 2024-03-28
+    winner: count_7
+    variants:
+      - count_6
+      - count_4
+      - count_5
+      - count_7
+      - count_8
+      - count_10
+    weights:
+      - 60
+      - 8
+      - 8
+      - 8
+      - 8
+      - 8
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  digest_title_03_11:
+    started_at: 2024-03-11
+    ended_at: 2024-03-18
+    winner: just_first_title_and_dev_digest
+    variants:
+      - base
+      - base_with_no_emoji
+      - base_with_start_with_dev_digest
+      - base_with_start_with_dev_digest_and_no_emoji
+      - just_first_title
+      - just_first_title_and_dev_digest
+    weights:
+      - 50
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_style_20240220:
+    started_at: 2024-02-20
+    variants:
+      - basic
+      - rich
+    weights:
+      - 50
+      - 50
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+
+  comments_to_display_20240129:
+    started_at: 2024-01-29
+    variants:
+      - top_comments
+      - more_inclusive_top_comments
+      - recent_good_comments
+      - more_inclusive_recent_good_comments
+      - most_inclusive_recent_good_comments
+    ended_at: 2024-02-25
+    winner: more_inclusive_recent_good_comments
+    weights:
+      - 60
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20240214:
+    started_at: 2024-02-14
+    variants:
+      - 20240205-variant-c
+      - 20240214-variant-a
+      - 20240214-variant-b
+      - 20240214-variant-c
+    weights:
+      - 10
+      - 10
+      - 10
+      - 70
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20240205:
+    started_at: 2024-02-05
+    variants:
+      - 20240126-variant-c
+      - 20240205-variant-a
+      - 20240205-variant-b
+      - 20240205-variant-c
+    ended_at: 2024-02-14
+    winner: 20240205-variant-c
+    weights:
+      - 67
+      - 11
+      - 11
+      - 11
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20240126:
+    started_at: 2024-01-26
+    variants:
+      - 20240104-variant-a
+      - 20240126-variant-a
+      - 20240126-variant-b
+      - 20240126-variant-c
+    ended_at: 2024-02-05
+    winner: 20240126-variant-c
+    weights:
+      - 67
+      - 11
+      - 11
+      - 11
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20240115:
+    started_at: 2024-01-15
+    variants:
+      - 20240104-variant-b
+      - 20231127-variant-c
+      - 20240104-variant-a
+      - 20240104-variant-c
+    ended_at: 2024-01-26
+    winner: 20240104-variant-a
+    weights:
+      - 68
+      - 8
+      - 12
+      - 12
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20240104:
+    started_at: 2024-01-04
+    variants:
+      - 20231127-variant-c
+      - 20240104-variant-a
+      - 20240104-variant-b
+      - 20240104-variant-c
+    ended_at: 2024-01-15
+    winner: 20240104-variant-b
+    weights:
+      - 64
+      - 12
+      - 12
+      - 12
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20231205:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-12-05
+    variants:
+      - 20231127-variant-c
+      - 20231205-variant-a
+      - 20231205-variant-b
+      - 20231205-variant-c
+    ended_at: 2024-01-04
+    winner: 20231127-variant-c
+    weights:
+      - 70
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_202311127:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-11-29
+    variants:
+      - 20231023-variant-b
+      - 20231127-variant-a
+      - 20231127-variant-b
+      - 20231127-variant-c
+    ended_at: 2023-12-05
+    winner: 20231127-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_202311108:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-11-08
+    variants:
+      - 20231023-variant-b
+      - 20231108-variant-a
+      - 20231108-variant-b
+    ended_at: 2023-11-27
+    winner: 20231023-variant-b
+    weights:
+      - 70
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20231023:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-10-23
+    ended_at: 2023-11-08
+    winner: 20231023-variant-b
+    variants:
+      - 20231017-variant-b
+      - 20231023-variant-a
+      - 20231023-variant-b
+    weights:
+      - 70
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20231017:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-10-17
+    ended_at: 2023-10-23
+    winner: 20231017-variant-b
+    variants:
+      - 20230918-variant-a
+      - 20231017-variant-a
+      - 20231017-variant-b
+      - 20231017-variant-c
+    weights:
+      - 64
+      - 12
+      - 12
+      - 12
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20231001:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-10-01
+    ended_at: 2023-10-17
+    winner: 20230918-variant-a
+    variants:
+      - 20230918-variant-a
+      - 20231001-variant-a
+      - 20231001-variant-b
+    weights:
+      - 70
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230927:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-09-27
+    ended_at: 2023-10-01
+    winner: 20230918-variant-a
+    variants:
+      - 20230918-variant-a
+      - 20230927-variant-a
+      - 20230927-variant-b
+    weights:
+      - 70
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230918:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-09-18
+    ended_at: 2023-09-27
+    winner: 20230918-variant-a
+    variants:
+      - 20230814-variant-b
+      - 20230918-variant-a
+      - 20230918-variant-b
+      - 20230918-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230814:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-08-15
+    ended_at: 2023-09-17
+    winner: 20230814-variant-b
+    variants:
+      - 20230511-variant-b
+      - 20230814-variant-a
+      - 20230814-variant-b
+      - 20230814-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230511:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-05-11
+    ended_at: 2023-08-15
+    winner: 20230511-variant-b
+    variants:
+      - 20230424-variant-b
+      - 20230511-variant-a
+      - 20230511-variant-b
+      - 20230511-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230430:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-05-01
+    ended_at: 2023-05-11
+    winner: 20230424-variant-b
+    variants:
+      - 20230424-variant-b
+      - 20230430-variant-a
+      - 20230430-variant-b
+      - 20230430-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230424:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-04-24
+    ended_at: 2023-05-01
+    winner: 20230424-variant-b
+    variants:
+      - 20230110-variant-c
+      - 20230424-variant-a
+      - 20230424-variant-b
+      - 20230424-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+  feed_strategy_starting_20230110:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2023-01-10
+    ended_at: 2023-04-24
+    winner: 20230110-variant-c
+    variants:
+      - 20221215-variant-a
+      - 20230110-variant-a
+      - 20230110-variant-b
+      - 20230110-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
+  feed_strategy_starting_20221215:
+    # NOTE: Required as we want only want to consider for conversion events that
+    #       occurred on or after the given start_date.
+    started_at: 2022-12-15
+    ended_at: 2023-01-10
+    winner: 20221215-variant-a
+    variants:
+      - 20221122-variant-a
+      - 20221215-variant-a
+      - 20221215-variant-b
+      - 20221215-variant-c
+    weights:
+      - 55
+      - 15
+      - 15
+      - 15
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_publishes_post
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
+      - user_creates_article_reaction_on_four_different_days_within_a_week
+      - user_creates_comment_on_at_least_four_different_days_within_a_week
+      - user_publishes_post_on_four_different_days_within_a_week
+      - user_views_pages_on_at_least_three_different_hours_within_a_day
+      - user_views_pages_on_at_least_four_different_hours_within_a_day
+      - user_views_pages_on_at_least_twelve_different_hours_within_five_days
+      - user_views_pages_on_at_least_nine_different_days_within_two_weeks
+      - user_publishes_post_at_least_two_times_within_week
+      - user_publishes_post_at_least_two_times_within_two_weeks
   feed_strategy_starting_20221122:
     # NOTE: Required as we want only want to consider for conversion events that
     #       occurred on or after the given start_date.
     started_at: 2022-11-23
+    ended_at: 2022-12-15
+    winner: 20221122-variant-a
     variants:
       - 20221107-variant-c
       - 20221122-variant-a

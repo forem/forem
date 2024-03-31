@@ -3,15 +3,24 @@ module Admin
     layout "admin"
 
     def index
+      reconcile_ransack_params
       @q = FeedbackMessage.includes(:reporter, :offender, :affected)
         .order(created_at: :desc)
         .ransack(params[:q])
-      @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+      @feedback_messages = @q.result.page(params[:page] || 1).per(10)
+      @feedback_messages = if params[:status] == "Resolved"
+                             @feedback_messages.where(status: "Resolved")
+                           elsif params[:status] == "Invalid"
+                             @feedback_messages = @feedback_messages.where(status: "Invalid")
+                           else
+                             @feedback_messages = @feedback_messages.where(status: "Open")
+                           end
 
       @feedback_type = params[:state] || "abuse-reports"
-      @status = params[:status] || "Open"
+      @status = params[:status].presence || "Open"
 
       @email_messages = EmailMessage.find_for_reports(@feedback_messages)
+      @notes = Note.find_for_reports(@feedback_messages)
 
       @vomits = get_vomits
     end
@@ -28,6 +37,7 @@ module Admin
     def show
       @feedback_message = FeedbackMessage.find_by(id: params[:id])
       @email_messages = EmailMessage.find_for_reports(@feedback_message.id)
+      @notes = Note.find_for_reports(@feedback_message)
     end
 
     def send_email
@@ -77,8 +87,16 @@ module Admin
                       end
       q = Reaction.includes(:user, :reactable)
         .where(category: "vomit", status: status)
+        .live_reactable
         .select(:id, :user_id, :reactable_type, :reactable_id)
-        .order(updated_at: :desc)
+        .order(Arel.sql("
+          CASE reactable_type
+            WHEN 'User' THEN 0
+            WHEN 'Comment' THEN 1
+            WHEN 'Article' THEN 2
+            ELSE 3
+          END,
+          reactions.reactable_id ASC"))
         .limit(limit)
       # don't show reactions where the reactable was not found
       q.select(&:reactable)
@@ -109,6 +127,16 @@ module Admin
         :id, :status, :reviewer_id,
         note: %i[content reason noteable_id noteable_type author_id]
       )
+    end
+
+    def reconcile_ransack_params
+      params[:q] ||= {}
+      if params[:status].blank? && params.dig(:q, :status_eq).present?
+        params[:status] = params[:q][:status_eq]
+      end
+      if params[:category].blank? && params.dig(:q, :category_eq).present? # rubocop:disable Style/GuardClause
+        params[:category] = params[:q][:category_eq]
+      end
     end
   end
 end

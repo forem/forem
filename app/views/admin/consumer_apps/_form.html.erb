@@ -1,19 +1,21 @@
-<div class="form-group">
-  <%= label_tag :app_bundle, "App Bundle:" %>
-  <%= text_field_tag :app_bundle, @app.app_bundle, class: "form-control" %>
-</div>
+<div class="flex flex-col gap-4">
+   <div class="crayons-field">
+    <%= label_tag :app_bundle, "App Bundle:", class: "crayons-field__label" %>
+    <%= text_field_tag :app_bundle, @app.app_bundle, class: "crayons-textfield" %>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :platform, "Platform:" %>
-  <%= select_tag :platform, options_for_select(ConsumerApp.platforms.invert, selected: @app.platform, class: "crayons-select"), class: "crayons-select", data: { "consumer-app-target" => "platform", "action" => "consumer-app#checkPlatform" } %>
-</div>
+  <div class="crayons-field">
+    <%= label_tag :platform, "Platform:", class: "crayons-field_label" %>
+    <%= select_tag :platform, options_for_select(ConsumerApp.platforms.invert, selected: @app.platform), class: "crayons-select", data: { "consumer-app-target" => "platform", "action" => "consumer-app#checkPlatform" } %>
+  </div>
 
-<div class="form-group">
-  <%= label_tag :auth_key, "Authentication Key:" %>
-  <%= text_area_tag :auth_key, @app.auth_key, size: "100x10", class: "form-control" %>
-</div>
+  <div class="crayons-field">
+    <%= label_tag :auth_key, "Authentication Key:", class: "crayons-field__label" %>
+    <%= text_area_tag :auth_key, @app.auth_key, size: "100x10", class: "crayons-textfield" %>
+  </div>
 
-<div class="form-group hidden" data-consumer-app-target="teamId">
-  <%= label_tag :team_id, "Team ID (Universal Links Support):" %>
-  <%= text_field_tag :team_id, @app.team_id, class: "form-control" %>
+  <div class="crayons-field hidden" data-consumer-app-target="teamId">
+    <%= label_tag :team_id, "Team ID (Universal Links Support):", class: "crayons-field__label" %>
+    <%= text_field_tag :team_id, @app.team_id, class: "crayons-textfield" %>
+  </div>
 </div>

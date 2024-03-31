@@ -16,16 +16,14 @@ describe('Edit tag', () => {
     // Input should be pre-filled with the current bg_color_hex
     cy.get('@input').should('have.value', '#672c99');
     // Button should open and close a picker
-    cy.get('@popoverButton')
-      .should('have.attr', 'aria-expanded', 'false')
-      .click()
-      .should('have.attr', 'aria-expanded', 'true');
+    cy.get('@popoverButton').should('have.attr', 'aria-expanded', 'false');
+    cy.get('@popoverButton').click();
+    cy.get('@popoverButton').should('have.attr', 'aria-expanded', 'true');
 
     cy.findByLabelText('Color').should('be.visible');
 
-    cy.get('@popoverButton')
-      .click()
-      .should('have.attr', 'aria-expanded', 'false');
+    cy.get('@popoverButton').click();
+    cy.get('@popoverButton').should('have.attr', 'aria-expanded', 'false');
     cy.findByLabelText('Color').should('not.be.visible');
   });
 

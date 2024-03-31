@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Comments", type: :request do
+RSpec.describe "Api::V1::Comments" do
   let(:headers) { { "Accept" => "application/vnd.forem.api-v1+json" } }
   let(:article) { create(:article) }
   let!(:root_comment) { create(:comment, commentable: article) }
@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::Comments", type: :request do
       get api_comments_path(a_id: article.id), headers: headers
 
       expected_ids = article.comments.roots.map(&:id_code_generated)
-      response_ids = response.parsed_body.map { |cm| cm["id_code"] }
+      response_ids = response.parsed_body.pluck("id_code")
       expect(response_ids).to match_array(expected_ids)
     end
 
@@ -181,6 +181,30 @@ RSpec.describe "Api::V1::Comments", type: :request do
         get api_comments_path(p_id: podcast_episode.id), headers: headers
         expect(response).to have_http_status(:ok)
         expect(response.parsed_body.size).to eq(1)
+      end
+    end
+
+    context "when using pagination" do
+      before do
+        create_list(:comment, 5, commentable: article)
+      end
+
+      it "doesn't paginate w/o page param" do
+        get api_comments_path(a_id: article.id, per_page: 2), headers: headers
+        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+      end
+
+      it "paginates with page param" do
+        get api_comments_path(a_id: article.id, page: 2, per_page: 2), headers: headers
+        expect(response.parsed_body.size).to eq(2)
+      end
+
+      it "paginates with page param using default per_page" do
+        get api_comments_path(a_id: article.id, page: 1), headers: headers
+        expect(response.parsed_body.size).to eq(6) # 6 root comments (+ 3 children)
+        expect(find_root_comment(response)).to include(
+          "created_at" => root_comment.created_at.utc.iso8601,
+        )
       end
     end
   end

@@ -10,17 +10,6 @@ module Admin
       @ungrouped_profile_fields = ProfileField.where(profile_field_group_id: nil).order(:label)
     end
 
-    def update
-      profile_field = ProfileField.find(params[:id])
-      if profile_field.update(profile_field_params)
-        flash[:success] =
-          I18n.t("admin.profile_fields_controller.updated", field: profile_field.label)
-      else
-        flash[:error] = I18n.t("errors.messages.general", errors: profile_field.errors_as_sentence)
-      end
-      redirect_to admin_profile_fields_path
-    end
-
     def create
       add_result = ProfileFields::Add.call(profile_field_params)
       if add_result.success?
@@ -29,6 +18,17 @@ module Admin
           I18n.t("admin.profile_fields_controller.created", field: profile_field.label)
       else
         flash[:error] = I18n.t("errors.messages.general", errors: add_result.error_message)
+      end
+      redirect_to admin_profile_fields_path
+    end
+
+    def update
+      profile_field = ProfileField.find(params[:id])
+      if profile_field.update(profile_field_params)
+        flash[:success] =
+          I18n.t("admin.profile_fields_controller.updated", field: profile_field.label)
+      else
+        flash[:error] = I18n.t("errors.messages.general", errors: profile_field.errors_as_sentence)
       end
       redirect_to admin_profile_fields_path
     end

@@ -7,5 +7,6 @@ module Ahoy
 
     has_many :events, class_name: "Ahoy::Event", dependent: :destroy
     belongs_to :user, optional: true
+    belongs_to :user_visit_context, optional: true
   end
 end

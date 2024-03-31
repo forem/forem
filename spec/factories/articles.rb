@@ -5,13 +5,14 @@ FactoryBot.define do
     published_at { Time.current }
 
     transient do
-      title { generate :title }
+      title { generate(:title) }
       published { true }
       date { "01/01/2015" }
       tags { "javascript, html, discuss" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
+      main_image_from_frontmatter { false }
       with_date { false }
       with_tags { true }
       with_hr_issue { false }
@@ -23,7 +24,7 @@ FactoryBot.define do
     end
 
     co_author_ids { [] }
-    association :user, factory: :user, strategy: :create
+    user factory: %i[user], strategy: :create
     description { Faker::Hipster.paragraph(sentence_count: 1)[0..100] }
     main_image    do
       if with_main_image
@@ -33,7 +34,7 @@ FactoryBot.define do
 
     experience_level_rating { rand(4..6) }
     # The tags property in the markdown is a bit of a hack, and this entire factory needs refactoring.
-    # In the Tagglable spec we want to extract some common scopes from the article and display ad
+    # In the Tagglable spec we want to extract some common scopes from the article and billboard
     # models and test them, hence we want to pass through the tag_list property.
     # However, the body_markdown caters for the way that we associate tags for the v1 editor.
     # Hence, in this test we default to the transient with_tags being set to true, but if we pass a tag_list through
@@ -61,10 +62,37 @@ FactoryBot.define do
     end
   end
 
+  factory :published_article, class: "Article" do
+    transient do
+      past_published_at { 3.days.ago }
+    end
+
+    user
+    title { generate(:title) }
+    published { true }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
+  factory :unpublished_article, class: "Article" do
+    user
+    title { generate(:title) }
+    published { false }
+    published_at { nil }
+    tag_list { "javascript, html, discuss" }
+    co_author_ids { [] }
+    body_markdown { Faker::Hipster.paragraph(sentence_count: 2) }
+  end
+
   trait :video do
-    after(:build) do |article|
-      article.video = "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b"
-      article.save
+    after(:create) do |article|
+      article.update_columns(
+        video: "https://s3.amazonaws.com/dev-to-input-v0/video-upload__2d7dc29e39a40c7059572bca75bb646b",
+        video_code: "video-upload__2d7dc29e39a40c7059572bca75bb646b",
+        video_source_url: "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f.m3u8",
+        video_thumbnail_url: "https://dw71fyauz7yz9.cloudfront.net/video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f/thumbs-video-upload__1e42eb0bab4abb3c63baeb5e8bdfe69f-00001.png",
+      )
     end
   end
 

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Listings", type: :request do
+RSpec.describe "Api::V1::Listings" do
   let(:cfp_category) do
     create(:listing_category, :cfp)
   end

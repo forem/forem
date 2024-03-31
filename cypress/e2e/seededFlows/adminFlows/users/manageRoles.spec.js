@@ -1,4 +1,4 @@
-import { verifyAndDismissUserUpdatedMessage } from './userAdminUtilitites';
+import { verifyAndDismissFlashMessage } from '../shared/utilities';
 
 // More on roles, https://admin.forem.com/docs/forem-basics/user-roles
 function openRolesModal() {
@@ -42,7 +42,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
           'exist',
@@ -71,10 +71,10 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
 
         cy.findByRole('button', {
-          name: "Suspended You can't remove this role.",
+          name: 'Remove role: Suspended',
         }).should('exist');
         checkUserStatus('Suspended');
 
@@ -96,29 +96,6 @@ describe('Manage User Roles', () => {
           'not.exist',
         );
         checkUserStatus('Good standing');
-      });
-
-      it('should not remove the Super Admin role', () => {
-        checkUserStatus('Trusted');
-
-        openRolesModal().within(() => {
-          cy.findByRole('combobox', { name: 'Role' }).select('Super Admin');
-          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
-            'some reason',
-          );
-          cy.findByRole('button', { name: 'Add' }).click();
-        });
-
-        cy.findByRole('button', {
-          name: `Super Admin You can't remove this role.`,
-        })
-          .as('superAdminButton')
-          .click()
-          .within(() => {
-            cy.findByText(`You can't remove this role.`).should('exist');
-          });
-
-        cy.get('@superAdminButton').should('exist');
       });
     });
 
@@ -155,7 +132,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
@@ -173,7 +150,7 @@ describe('Manage User Roles', () => {
         });
 
         cy.getModal().should('not.exist');
-        verifyAndDismissUserUpdatedMessage();
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
         checkUserStatus('Warned');
 
         cy.findByRole('button', { name: 'Remove role: Warned' }).should(
@@ -181,6 +158,25 @@ describe('Manage User Roles', () => {
         );
         cy.findByRole('button', {
           name: 'Remove role: Comment Suspended',
+        }).should('exist');
+
+        openRolesModal().within(() => {
+          cy.findByRole('combobox', { name: 'Role' }).select('Limited');
+          cy.findByRole('textbox', { name: 'Add a note to this action:' }).type(
+            'some reason',
+          );
+          cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.getModal().should('not.exist');
+        verifyAndDismissFlashMessage('User has been updated', 'flash-success');
+        checkUserStatus('Warned');
+
+        cy.findByRole('button', { name: 'Remove role: Warned' }).should(
+          'exist',
+        );
+        cy.findByRole('button', {
+          name: 'Remove role: Limited',
         }).should('exist');
       });
     });

@@ -9,12 +9,8 @@ RSpec.describe EdgeCache::BustUser, type: :service do
 
     [
       "/#{username}",
-      "/#{username}?i=i",
       "/#{username}/comments",
-      "/#{username}/comments?i=i",
-      "/#{username}/comments/?i=i",
       "/live/#{username}",
-      "/live/#{username}?i=i",
       "/feed/#{username}",
       "/api/users/#{user.id}",
     ]
@@ -28,7 +24,7 @@ RSpec.describe EdgeCache::BustUser, type: :service do
     end
   end
 
-  it "busts the cache" do
+  it "busts the cache", :aggregate_failures do
     described_class.call(user)
 
     paths.each do |path|

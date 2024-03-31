@@ -41,6 +41,9 @@ fr:
           cancel: Dismiss
           edit: Edit
           unpublish: Unpublish
+      jump_to_comments:
+        aria_label: Jump to Comments
+        label: Jump to Comments
       lock:
         meta:
           title: Confirm Discussion Lock
@@ -100,7 +103,9 @@ fr:
       edited_html: Updated on %{date}
       for_org_html: "%{start} for %{end}%{org}"
       missing: Article No Longer Available
-      posted_html: Posted on %{date}
+      published_html: Posted on %{date}
+      scheduled_html: Scheduled for %{date}
+      sign_in_for_full_latest_html: Some latest posts are only visible for members. <a href="%{link}">Sign in</a> to see all latest.
       read_next: Lire ensuite
       reading_time:
         one: "1 min read"

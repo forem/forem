@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
-  enable_extension "pg_stat_statements"
+  enable_extension "ltree"
   enable_extension "pg_trgm"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -57,10 +57,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   create_table "ahoy_visits", force: :cascade do |t|
     t.datetime "started_at", precision: nil
     t.bigint "user_id"
+    t.bigint "user_visit_context_id"
     t.string "visit_token"
     t.string "visitor_token"
     t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["user_visit_context_id"], name: "index_ahoy_visits_on_user_visit_context_id"
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
+    t.index ["visitor_token", "started_at"], name: "index_ahoy_visits_on_visitor_token_and_started_at"
   end
 
   create_table "announcements", force: :cascade do |t|
@@ -91,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "cached_user_name"
     t.string "cached_user_username"
     t.string "canonical_url"
+    t.float "clickbait_score", default: 0.0
     t.bigint "co_author_ids", default: [], array: true
     t.bigint "collection_id"
     t.integer "comment_score", default: 0
@@ -99,18 +103,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
+    t.integer "displayed_comments_count"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
     t.float "experience_level_rating_distribution", default: 5.0
     t.boolean "featured", default: false
+    t.integer "feed_clicks_count", default: 0
+    t.integer "feed_impressions_count", default: 0
     t.string "feed_source_url"
+    t.float "feed_success_score", default: 0.0, null: false
     t.integer "hotness_score", default: 0
+    t.string "language"
     t.datetime "last_comment_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at", precision: nil
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.boolean "main_image_from_frontmatter", default: false
+    t.integer "main_image_height", default: 420
     t.integer "nth_published_by_author", default: 0
     t.integer "organic_page_views_count", default: 0
     t.integer "organic_page_views_past_month_count", default: 0
@@ -151,7 +161,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
-    t.index "user_id, title, digest(body_markdown, 'sha512'::text)", name: "index_articles_on_user_id_and_title_and_digest_body_markdown", unique: true
     t.index ["cached_tag_list"], name: "index_articles_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true, where: "(published IS TRUE)"
     t.index ["collection_id"], name: "index_articles_on_collection_id"
@@ -161,6 +170,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url_unscoped"
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
+    t.index ["language"], name: "index_articles_on_language"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
@@ -168,6 +178,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.index ["reading_list_document"], name: "index_articles_on_reading_list_document", using: :gin
     t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_articles_on_user_id"
+  end
+
+  create_table "audience_segments", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "type_of"
+    t.datetime "updated_at", null: false
   end
 
   create_table "audit_logs", force: :cascade do |t|
@@ -185,6 +201,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   create_table "badge_achievements", force: :cascade do |t|
     t.bigint "badge_id", null: false
     t.datetime "created_at", precision: nil, null: false
+    t.boolean "include_default_description", default: true, null: false
     t.bigint "rewarder_id"
     t.text "rewarding_context_message"
     t.text "rewarding_context_message_markdown"
@@ -304,7 +321,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.datetime "bumped_at", precision: nil
     t.string "cached_tag_list"
     t.bigint "classified_listing_category_id"
-    t.boolean "contact_via_connect", default: false
     t.datetime "created_at", precision: nil, null: false
     t.datetime "expires_at", precision: nil
     t.string "location"
@@ -442,11 +458,13 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   end
 
   create_table "display_ad_events", force: :cascade do |t|
+    t.integer "article_id"
     t.string "category"
     t.string "context_type"
     t.integer "counts_for", default: 1, null: false
     t.datetime "created_at", precision: nil, null: false
     t.bigint "display_ad_id"
+    t.string "geolocation"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
     t.index ["display_ad_id"], name: "index_display_ad_events_on_display_ad_id"
@@ -455,21 +473,40 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
 
   create_table "display_ads", force: :cascade do |t|
     t.boolean "approved", default: false
+    t.integer "audience_segment_id"
     t.text "body_markdown"
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
+    t.integer "creator_id"
+    t.string "custom_display_label"
+    t.string "dismissal_sku"
     t.integer "display_to", default: 0, null: false
+    t.integer "exclude_article_ids", default: [], array: true
     t.integer "impressions_count", default: 0
     t.string "name"
     t.bigint "organization_id"
+    t.bigint "page_id"
     t.string "placement_area"
+    t.integer "preferred_article_ids", default: [], array: true
+    t.boolean "priority", default: false
     t.text "processed_html"
     t.boolean "published", default: false
+    t.integer "render_mode", default: 0
+    t.boolean "requires_cookies", default: false
+    t.integer "special_behavior", default: 0, null: false
     t.float "success_rate", default: 0.0
+    t.ltree "target_geolocations", default: [], array: true
+    t.integer "template", default: 0
     t.integer "type_of", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.float "weight", default: 1.0, null: false
     t.index ["cached_tag_list"], name: "index_display_ads_on_cached_tag_list", opclass: :gin_trgm_ops, using: :gin
+    t.index ["exclude_article_ids"], name: "index_display_ads_on_exclude_article_ids", using: :gin
+    t.index ["page_id"], name: "index_display_ads_on_page_id"
+    t.index ["placement_area"], name: "index_display_ads_on_placement_area"
+    t.index ["preferred_article_ids"], name: "index_display_ads_on_preferred_article_ids", using: :gin
+    t.index ["target_geolocations"], name: "gist_index_display_ads_on_target_geolocations", using: :gist
   end
 
   create_table "email_authorizations", force: :cascade do |t|
@@ -481,6 +518,21 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.bigint "user_id"
     t.datetime "verified_at", precision: nil
     t.index ["user_id"], name: "index_email_authorizations_on_user_id"
+  end
+
+  create_table "feed_events", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.integer "article_position"
+    t.integer "category", null: false
+    t.string "context_type", null: false
+    t.integer "counts_for", default: 1, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["article_id", "user_id", "category"], name: "index_feed_events_on_article_user_and_category"
+    t.index ["article_id"], name: "index_feed_events_on_article_id"
+    t.index ["created_at"], name: "index_feed_events_on_created_at"
+    t.index ["user_id"], name: "index_feed_events_on_user_id"
   end
 
   create_table "feedback_messages", force: :cascade do |t|
@@ -590,7 +642,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.text "html"
     t.string "name"
     t.boolean "published", default: false
-    t.float "success_rate", default: 0.0
     t.string "target_tag"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
@@ -694,14 +745,12 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "cta_button_text"
     t.string "cta_button_url"
     t.text "cta_processed_html"
-    t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
     t.datetime "last_article_at", precision: nil, default: "2017-01-01 05:00:00"
     t.datetime "latest_article_updated_at", precision: nil
     t.string "location"
     t.string "name"
-    t.string "nav_image"
     t.string "old_old_slug"
     t.string "old_slug"
     t.string "profile_image"
@@ -740,6 +789,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   end
 
   create_table "pages", force: :cascade do |t|
+    t.text "body_css"
     t.text "body_html"
     t.jsonb "body_json"
     t.text "body_markdown"
@@ -960,6 +1010,20 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
   end
 
+  create_table "recommended_articles_lists", force: :cascade do |t|
+    t.integer "article_ids", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.string "name"
+    t.integer "placement_area", default: 0
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["article_ids"], name: "index_recommended_articles_lists_on_article_ids", using: :gin
+    t.index ["expires_at"], name: "index_recommended_articles_lists_on_expires_at"
+    t.index ["placement_area"], name: "index_recommended_articles_lists_on_placement_area"
+    t.index ["user_id"], name: "index_recommended_articles_lists_on_user_id"
+  end
+
   create_table "response_templates", force: :cascade do |t|
     t.text "content", null: false
     t.string "content_type", null: false
@@ -981,6 +1045,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.datetime "updated_at", precision: nil
     t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
     t.index ["name"], name: "index_roles_on_name"
+  end
+
+  create_table "segmented_users", force: :cascade do |t|
+    t.bigint "audience_segment_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["audience_segment_id", "user_id"], name: "index_segmented_users_on_audience_segment_and_user", unique: true
+    t.index ["audience_segment_id"], name: "index_segmented_users_on_audience_segment_id"
+    t.index ["user_id"], name: "index_segmented_users_on_user_id"
   end
 
   create_table "settings_authentications", force: :cascade do |t|
@@ -1049,7 +1123,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "tag_name"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id"
-    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -1079,7 +1152,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.datetime "created_at", precision: nil, null: false
     t.integer "hotness_score", default: 0
     t.string "keywords_for_search"
-    t.bigint "mod_chat_channel_id"
     t.string "name"
     t.string "pretty_name"
     t.string "profile_image"
@@ -1090,6 +1162,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.string "social_image"
     t.string "social_preview_template", default: "article"
     t.text "submission_template"
+    t.boolean "suggested", default: false
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
     t.string "text_color_hex"
@@ -1143,6 +1216,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
+  create_table "user_languages", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "language", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_user_languages_on_user_id"
+  end
+
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", null: false
@@ -1155,6 +1236,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
     t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
+  end
+
+  create_table "user_visit_contexts", force: :cascade do |t|
+    t.text "accept_language"
+    t.datetime "created_at", null: false
+    t.string "geolocation"
+    t.datetime "last_visit_at"
+    t.datetime "updated_at", null: false
+    t.text "user_agent"
+    t.bigint "user_id", null: false
+    t.bigint "visit_count", default: 0
+    t.index ["geolocation", "user_agent", "accept_language", "user_id"], name: "index_user_visit_contexts_on_all_attributes", unique: true
+    t.index ["user_id"], name: "index_user_visit_contexts_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -1238,7 +1332,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.string "username"
-    t.datetime "workshop_expiration", precision: nil
     t.index "to_tsvector('simple'::regconfig, COALESCE((name)::text, ''::text))", name: "index_users_on_name_as_tsvector", using: :gin
     t.index "to_tsvector('simple'::regconfig, COALESCE((username)::text, ''::text))", name: "index_users_on_username_as_tsvector", using: :gin
     t.index ["apple_username"], name: "index_users_on_apple_username"
@@ -1275,7 +1368,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
     t.boolean "email_badge_notifications", default: true, null: false
     t.boolean "email_comment_notifications", default: true, null: false
     t.boolean "email_community_mod_newsletter", default: false, null: false
-    t.boolean "email_connect_messages", default: true, null: false
     t.boolean "email_digest_periodic", default: false, null: false
     t.boolean "email_follower_notifications", default: true, null: false
     t.boolean "email_membership_newsletter", default: false, null: false
@@ -1364,6 +1456,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   add_foreign_key "display_ad_events", "users", on_delete: :cascade
   add_foreign_key "display_ads", "organizations", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "feed_events", "articles", on_delete: :cascade
+  add_foreign_key "feed_events", "users", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "affected_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "offender_id", on_delete: :nullify
   add_foreign_key "feedback_messages", "users", column: "reporter_id", on_delete: :nullify
@@ -1397,7 +1491,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   add_foreign_key "rating_votes", "articles", on_delete: :cascade
   add_foreign_key "rating_votes", "users", on_delete: :nullify
   add_foreign_key "reactions", "users", on_delete: :cascade
+  add_foreign_key "recommended_articles_lists", "users"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "segmented_users", "audience_segments"
+  add_foreign_key "segmented_users", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
@@ -1406,8 +1503,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_10_130111) do
   add_foreign_key "tweets", "users", on_delete: :nullify
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
+  add_foreign_key "user_languages", "users"
   add_foreign_key "user_subscriptions", "users", column: "author_id"
   add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
+  add_foreign_key "user_visit_contexts", "users"
   add_foreign_key "users_notification_settings", "users"
   add_foreign_key "users_roles", "roles", on_delete: :cascade
   add_foreign_key "users_roles", "users", on_delete: :cascade

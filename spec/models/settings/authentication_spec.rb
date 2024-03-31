@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Settings::Authentication, type: :model do
+RSpec.describe Settings::Authentication do
   describe "#acceptable_domain?" do
     subject { described_class.acceptable_domain?(domain: domain) }
 

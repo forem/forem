@@ -8,6 +8,6 @@
   data-article-pinned-modal-ok-button-id-value="article-pin-modal-ok"
   data-action="article-pinned-modal:open@document->article-pinned-modal#openModal">
 
-  <%= render partial: "individual_article", locals: { article: @article } %>
+  <%= render partial: "article_item", locals: { article: @article, show_on_individual_article_only: true } %>
   <%= render partial: "pinned_article_modal" %>
 </div>

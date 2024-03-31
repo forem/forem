@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Page, type: :model do
+RSpec.describe Page do
   describe ".render_safe_html_for" do
     let(:slug) { "the-given-slug" }
 
@@ -32,11 +32,12 @@ RSpec.describe Page, type: :model do
   end
 
   describe "#validations" do
-    it "requires either body_markdown, body_html, or body_json" do
+    it "requires either body_markdown, body_html, body_json or body_css" do
       page = build(:page)
       page.body_html = nil
       page.body_markdown = nil
       page.body_json = nil
+      page.body_css = nil
       expect(page).not_to be_valid
     end
 
@@ -65,6 +66,22 @@ RSpec.describe Page, type: :model do
       page = build(:page, slug: "sitemap-hey")
       expect(page).not_to be_valid
       expect(page.errors[:slug].to_s.include?("taken")).to be true
+    end
+
+    it "circumnavigates ReservedWords check" do
+      page = build(:page, slug: "code-of-conduct")
+      expect(page).to be_valid
+    end
+
+    it "allows / in slug" do
+      page = build(:page, slug: "heyhey/hey")
+      expect(page).to be_valid
+    end
+
+    it "disallows 6+ directories via /" do
+      page = build(:page, slug: "heyhey/hey/hey/hey/hey/hey/hey")
+      expect(page).not_to be_valid
+      expect(page.errors[:slug].to_s.include?("subdirectories")).to be true
     end
   end
 

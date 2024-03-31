@@ -2,7 +2,7 @@ class DiscussionLockPolicy < ApplicationPolicy
   PERMITTED_ATTRIBUTES = %i[article_id notes reason].freeze
 
   def create?
-    (user_author? || user_any_admin?) && !user_suspended?
+    (user_author? || user_any_admin?) && !user.spam_or_suspended?
   end
 
   alias destroy? create?

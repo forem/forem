@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User edits their Customization settings", type: :system do
+RSpec.describe "User edits their Customization settings" do
   let(:user) { create(:user) }
 
   before do

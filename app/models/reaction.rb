@@ -11,7 +11,10 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
-  scope :public_category, -> { where(category: ReactionCategory.public.map(&:to_s)) }
+  scope :public_category, lambda {
+    categories = public_reaction_types
+    where(category: categories)
+  }
 
   # Be wary, this is all things on the reading list, but for an end
   # user they might only see readinglist items that are published.
@@ -34,6 +37,18 @@ class Reaction < ApplicationRecord
   scope :unarchived, -> { where.not(status: "archived") }
   scope :from_user, ->(user) { where(user: user) }
   scope :readinglist_for_user, ->(user) { readinglist.unarchived.only_articles.from_user(user) }
+  scope :distinct_categories, -> { select("distinct(reactions.category) as category, reactable_id, reactable_type") }
+  scope :live_reactable, lambda {
+    joins("LEFT JOIN articles ON reactions.reactable_id = articles.id AND reactions.reactable_type = 'Article'")
+      .joins("LEFT JOIN users ON reactions.reactable_id = users.id AND reactions.reactable_type = 'User'")
+      .where("
+          CASE
+            WHEN reactions.reactable_type = 'Article' THEN articles.published = TRUE
+            WHEN reactions.reactable_type = 'User' THEN users.username NOT LIKE 'spam_%'
+            ELSE TRUE
+          END
+        ")
+  }
 
   validates :category, inclusion: { in: ReactionCategory.all_slugs.map(&:to_s) }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -44,7 +59,7 @@ class Reaction < ApplicationRecord
   before_save :assign_points
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_destroy :bust_reactable_cache_without_delay
-  before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
+  before_destroy :update_reactable, unless: :destroyed_by_association
   after_commit :async_bust
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :record_field_test_event, on: %i[create]
@@ -55,10 +70,8 @@ class Reaction < ApplicationRecord
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
-        reaction_types = %w[like readinglist]
-        unless FeatureFlag.enabled?(:replace_unicorn_with_jump_to_comments)
-          reaction_types << "unicorn"
-        end
+        reaction_types = public_reaction_types
+        reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
 
         reaction_types.map do |type|
           { category: type, count: counts.fetch(type, 0) }
@@ -73,6 +86,16 @@ class Reaction < ApplicationRecord
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
+    end
+
+    def public_reaction_types
+      @public_reaction_types ||= ReactionCategory.public.map(&:to_s) - ["readinglist"]
+    end
+
+    def for_analytics
+      reaction_types = public_reaction_types
+      reaction_types << "readinglist" unless public_reaction_types.include?("readinglist")
+      where(category: reaction_types)
     end
 
     # @param user [User] the user who might be spamming the system
@@ -127,6 +150,7 @@ class Reaction < ApplicationRecord
   # - reaction is negative
   # - receiver is the same user as the one who reacted
   # - reaction status is marked invalid
+  # - reaction is not in a category that should be notified
   def skip_notification_for?(_receiver)
     reactor_id = case reactable
                  when User
@@ -135,7 +159,7 @@ class Reaction < ApplicationRecord
                    reactable.user_id
                  end
 
-    (status == "invalid") || points.negative? || (user_id == reactor_id)
+    !should_notify? || (status == "invalid") || points.negative? || (user_id == reactor_id)
   end
 
   def reaction_on_organization_article?
@@ -150,6 +174,14 @@ class Reaction < ApplicationRecord
 
   def reaction_category
     ReactionCategory[category.to_sym]
+  end
+
+  def readable_date
+    if created_at.year == Time.current.year
+      I18n.l(created_at, format: :short)
+    else
+      I18n.l(created_at, format: :short_with_yy)
+    end
   end
 
   private
@@ -170,18 +202,6 @@ class Reaction < ApplicationRecord
     Reactions::BustReactableCacheWorker.new.perform(id)
   end
 
-  def update_reactable_without_delay
-    Reactions::UpdateRelevantScoresWorker.new.perform(id)
-  end
-
-  def reading_time
-    reactable.reading_time if category == "readinglist"
-  end
-
-  def viewable_by
-    user_id
-  end
-
   def assign_points
     self.points = CalculateReactionPoints.call(self)
   end
@@ -194,7 +214,7 @@ class Reaction < ApplicationRecord
   end
 
   def negative_reaction_from_untrusted_user?
-    return if user&.any_admin? || user&.id == Settings::General.mascot_user_id
+    return false if user&.any_admin? || user&.id == Settings::General.mascot_user_id
 
     negative? && !user.trusted?
   end
@@ -215,5 +235,9 @@ class Reaction < ApplicationRecord
 
     Users::RecordFieldTestEventWorker
       .perform_async(user_id, AbExperiment::GoalConversionHandler::USER_CREATES_ARTICLE_REACTION_GOAL)
+  end
+
+  def should_notify?
+    ReactionCategory.notifiable.include?(category.to_sym)
   end
 end

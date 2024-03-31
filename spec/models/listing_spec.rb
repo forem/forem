@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Listing, type: :model do
+RSpec.describe Listing do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:listing) { create(:listing, user: user) }

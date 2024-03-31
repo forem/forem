@@ -32,7 +32,7 @@ class SoundcloudTag < LiquidTagBase
   end
 
   def valid_link?(link)
-    (link =~ %r{\Ahttps://soundcloud\.com/([a-zA-Z0-9_\-]){3,25}/(sets/)?([a-zA-Z0-9_\-]){3,255}\Z})
+    (link =~ %r{\Ahttps://soundcloud\.com/([a-zA-Z0-9_-]){3,25}/(sets/)?([a-zA-Z0-9_-]){3,255}\Z})
       &.zero?
   end
 

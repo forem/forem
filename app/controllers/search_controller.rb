@@ -46,6 +46,7 @@ class SearchController < ApplicationController
     :user_id,
     {
       tag_names: [],
+      hidden_tags: [],
       published_at: [:gte]
     },
   ].freeze
@@ -75,6 +76,7 @@ class SearchController < ApplicationController
     render json: { result: result }
   end
 
+  # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   def feed_content
     class_name = feed_params[:class_name].to_s.inquiry
 
@@ -105,6 +107,7 @@ class SearchController < ApplicationController
           user_id: feed_params[:user_id],
           organization_id: feed_params[:organization_id],
           tags: feed_params[:tag_names],
+          hidden_tags: feed_params[:hidden_tags],
           sort_by: params[:sort_by],
           sort_direction: params[:sort_direction],
           page: params[:page],
@@ -112,6 +115,14 @@ class SearchController < ApplicationController
         )
       elsif class_name.Comment?
         Search::Comment.search_documents(
+          page: feed_params[:page],
+          per_page: feed_params[:per_page],
+          sort_by: feed_params[:sort_by],
+          sort_direction: feed_params[:sort_direction],
+          term: feed_params[:search_fields],
+        )
+      elsif class_name.Organization?
+        Search::Organization.search_documents(
           page: feed_params[:page],
           per_page: feed_params[:per_page],
           sort_by: feed_params[:sort_by],
@@ -145,6 +156,7 @@ class SearchController < ApplicationController
       end
     render json: { result: result }
   end
+  # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
 
   def reactions
     # [@rhymes] we're recycling the existing params as we want to change the frontend as

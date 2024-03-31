@@ -5,6 +5,7 @@ import { ArticleFormTitle } from './ArticleFormTitle';
 import { TagInput } from './TagInput';
 import { BasicEditor } from './BasicEditor';
 import { EditorFormattingHelp } from './EditorFormattingHelp';
+import { ArticleTips } from './ArticleTips';
 import { Modal } from '@crayons';
 
 const renderModal = (onClose, title, selector) => {
@@ -60,13 +61,15 @@ export const Help = ({ previewShowing, helpFor, helpPosition, version }) => {
           className="sticky"
           style={{ top: version === 'v1' ? '56px' : helpPosition }}
         >
-          {helpFor === 'article-form-title' && <ArticleFormTitle />}
-          {helpFor === 'tag-input' && <TagInput />}
-
           {version === 'v1' && <BasicEditor openModal={openModal} />}
-
           {(helpFor === 'article_body_markdown' || version === 'v1') && (
             <EditorFormattingHelp openModal={openModal} />
+          )}
+
+          {helpFor === 'article-form-title' && <ArticleFormTitle />}
+          {helpFor === 'tag-input' && <TagInput />}
+          {(helpFor === 'editor-actions' || version === 'v1') && (
+            <ArticleTips />
           )}
         </div>
       )}

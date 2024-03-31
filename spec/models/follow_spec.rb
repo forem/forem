@@ -1,9 +1,11 @@
 require "rails_helper"
 
-RSpec.describe Follow, type: :model do
+RSpec.describe Follow do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:user_2) { create(:user) }
+  let(:suspended_user) { create(:user, :suspended) }
+  let(:spam_user) { create(:user, :spam) }
 
   describe "validations" do
     subject { user.follow(user_2) }
@@ -30,9 +32,16 @@ RSpec.describe Follow, type: :model do
 
   context "when enqueuing jobs" do
     it "enqueues send notification worker" do
+      user.update_column(:badge_achievements_count, 3)
       expect do
         described_class.create(follower: user, followable: user_2)
       end.to change(Follows::SendEmailNotificationWorker.jobs, :size).by(1)
+    end
+
+    it "does not enqueue send notification worker if user has no badge achievements" do
+      expect do
+        described_class.create(follower: user, followable: user_2)
+      end.not_to change(Follows::SendEmailNotificationWorker.jobs, :size)
     end
   end
 
@@ -49,12 +58,45 @@ RSpec.describe Follow, type: :model do
 
     it "sends an email notification" do
       allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+      user.update_column(:badge_achievements_count, 1)
       user_2.notification_setting.update(email_follower_notifications: true)
       expect do
         Sidekiq::Testing.inline! do
           described_class.create!(follower: user, followable: user_2)
         end
       end.to change(EmailMessage, :count).by(1)
+    end
+  end
+
+  describe "scopes" do
+    describe ".non_suspended" do
+      before do
+        user.follow(user_2)
+        user.follow(tag)
+        suspended_user.follow(user_2)
+        spam_user.follow(user_2)
+      end
+
+      it "excludes suspended users from the result", :aggregate_failures do
+        result = described_class.non_suspended(user_2.class.name, user_2.id)
+        expect(result.map(&:follower)).to include(user)
+        expect(result.map(&:follower)).not_to include(suspended_user)
+        expect(result.map(&:follower)).not_to include(spam_user)
+      end
+
+      it "filters by followable type and id", :aggregate_failures do
+        result = described_class.non_suspended("ActsAsTaggableOn::Tag", tag.id)
+        expect(result.map(&:follower)).to include(user)
+        expect(result.map(&:follower)).not_to include(user_2)
+        expect(result.map(&:follower)).not_to include(suspended_user)
+      end
+
+      it "includes only Users in the result" do
+        result = described_class.non_suspended(user_2.class.name, user_2.id)
+        expect(result.map(&:follower).all?(User)).to be(true)
+      end
+
+      # Additional test cases for more edge cases
     end
   end
 end

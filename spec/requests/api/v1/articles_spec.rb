@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::Articles", type: :request do
+RSpec.describe "Api::V1::Articles" do
   let(:organization) { create(:organization) } # not used by every spec but lower times overall
   let(:tag) { create(:tag, name: "discuss") }
   let(:article) { create(:article, featured: true, tags: "discuss") }
@@ -43,13 +43,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
     it "returns correct tag list" do
       get api_articles_path, headers: headers
 
-      expect(response.parsed_body.first["tag_list"]).to be_a_kind_of Array
+      expect(response.parsed_body.first["tag_list"]).to be_a Array
     end
 
     it "returns correct tags" do
       get api_articles_path, headers: headers
 
-      expect(response.parsed_body.first["tags"]).to be_a_kind_of String
+      expect(response.parsed_body.first["tags"]).to be_a String
     end
 
     context "without params" do
@@ -357,13 +357,13 @@ RSpec.describe "Api::V1::Articles", type: :request do
     it "returns correct tag list" do
       get api_article_path(article.id), headers: headers
 
-      expect(response.parsed_body["tag_list"]).to be_a_kind_of String
+      expect(response.parsed_body["tag_list"]).to be_a String
     end
 
     it "returns correct tags" do
       get api_article_path(article.id), headers: headers
 
-      expect(response.parsed_body["tags"]).to be_a_kind_of Array
+      expect(response.parsed_body["tags"]).to be_a Array
     end
 
     it "returns proper article" do
@@ -545,7 +545,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
           newer = create(:article, published: false, published_at: nil, user: user)
         end
         get "/api/articles/me/unpublished", headers: auth_headers
-        expected_order = response.parsed_body.map { |resp| resp["id"] }
+        expected_order = response.parsed_body.pluck("id")
         expect(expected_order).to eq([newer.id, older.id])
       end
 
@@ -553,7 +553,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
         create(:article, user: user)
         create(:article, published: false, published_at: nil, user: user)
         get "/api/articles/me/all", headers: auth_headers
-        expected_order = response.parsed_body.map { |resp| resp["published"] }
+        expected_order = response.parsed_body.pluck("published")
         expect(expected_order).to eq([false, true])
       end
 
@@ -622,6 +622,8 @@ RSpec.describe "Api::V1::Articles", type: :request do
 
     describe "when authorized" do
       let(:default_params) { { body_markdown: "" } }
+      let(:tomorrow) { Date.tomorrow }
+      let(:formatted_date) { tomorrow.strftime("%Y-%m-%d") }
 
       def post_article(**params)
         params = default_params.merge params
@@ -878,6 +880,33 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(Article.find(response.parsed_body["id"]).description).to eq("#{'yoooo' * 20}y...")
       end
 
+      it "creates an articles with published_at in the future" do
+        formatted_published_at = "#{formatted_date} 18:00 MSK"
+        published_at = DateTime.parse(formatted_published_at)
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: formatted_published_at,
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at).to be_present
+        expect(created_article.published_at).to be_within(1.minute).of(published_at)
+      end
+
+      it "creates an article when publushed_at in the future without time is passed" do
+        expect do
+          post_article(
+            title: Faker::Book.title,
+            body_markdown: "yoooo" * 100,
+            published_at: formatted_date,
+          )
+        end.to change(Article, :count).by(1)
+        created_article = Article.find(response.parsed_body["id"])
+        expect(created_article.published_at.strftime("%Y-%m-%d")).to eq(formatted_date)
+      end
+
       it "does not raise an error if article params are missing" do
         expect do
           post api_articles_path, params: {}.to_json, headers: post_headers
@@ -898,6 +927,8 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let(:article)       { create(:article, user: user, published: false, published_at: nil) }
     let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
+    let(:tomorrow)      { Date.tomorrow }
+    let(:formatted_future_time) { "#{tomorrow.strftime('%Y-%m-%d')} 18:00 UTC" }
 
     describe "when unauthorized" do
       it "fails with no api key" do
@@ -949,6 +980,21 @@ RSpec.describe "Api::V1::Articles", type: :request do
         params = { article: { title: "foobar" } }.to_json
         put "/api/articles/#{article.id}", params: params, headers: auth_headers
         expect(response).to have_http_status(:ok)
+      end
+
+      it "lets a super admin update an article's clickbait_score" do
+        user.add_role(:super_admin)
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", clickbait_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.clickbait_score).to eq(0.3)
+      end
+
+      it "does not update clickbait_score for non super-admins" do
+        article = create(:article, user: create(:user))
+        params = { article: { title: "foobar", clickbait_score: 0.3 } }.to_json
+        put "/api/articles/#{article.id}", params: params, headers: auth_headers
+        expect(article.reload.clickbait_score).not_to eq(0.3)
       end
 
       it "does not update title if only given a title because the article has a front matter" do
@@ -1003,6 +1049,27 @@ RSpec.describe "Api::V1::Articles", type: :request do
           )
           article.reload
         end.to change(article, :body_markdown) && change(article, :cached_tag_list)
+      end
+
+      it "does not update the tags if not included in the request" do
+        article.update_column(:cached_tag_list, "meta, discussion")
+        expect do
+          put_article(
+            body_markdown: "something here",
+          )
+          article.reload
+        end.not_to change(article, :cached_tag_list)
+      end
+
+      it "does update the tags if empty string is provided" do
+        article.update_column(:cached_tag_list, "meta, discussion")
+        expect do
+          put_article(
+            body_markdown: "something here",
+            tags: %w[],
+          )
+          article.reload
+        end.to change(article, :cached_tag_list)
       end
 
       it "assigns the article to a new series belonging to the user" do
@@ -1151,6 +1218,41 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(article.reload.organization).to eq(organization)
       end
 
+      it "updates published_at draft => scheduled" do
+        put_article(published_at: formatted_future_time, published: true)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at > Time.current).to be true
+      end
+
+      it "updates published_at sheduled => scheduled" do
+        article.update_columns(published_at: 2.days.from_now, published: true)
+        future_time = DateTime.parse(formatted_future_time)
+        put_article(published_at: formatted_future_time)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(future_time)
+      end
+
+      it "doesn't allow to update published_at of a scheduled article to a past date" do
+        future = 2.days.from_now
+        article.update_columns(published_at: future, published: true)
+        put_article(published_at: "2020-02-02 19:00 UTC")
+        expect(response).to have_http_status(:unprocessable_entity)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(future)
+      end
+
+      # published_at is immutable after publishing
+      it "doesn't update published_at for a published article (but doesn't raise an error)" do
+        time = 1.day.ago
+        article.update_columns(published_at: time, published: true)
+        put_article(published_at: formatted_future_time)
+        expect(response).to have_http_status(:ok)
+        article.reload
+        expect(article.published_at).to be_within(1.minute).of(time)
+      end
+
       it "fails if params are not a Hash" do
         # Not using the nifty put_article helper method because it expects a Hash
         string_params = "this_string_is_definitely_not_a_hash"
@@ -1223,6 +1325,91 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(log.data["action"]).to eq("api_article_unpublish")
         expect(log.data["article_id"]).to eq(published_article.id)
         expect(log.user_id).to eq(user.id)
+      end
+    end
+  end
+
+  describe "GET /api/articles/search" do
+    before { article }
+
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get "/api/articles/search", headers: { origin: origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
+    context "when there is one article returned" do
+      it "has correct keys in the response" do
+        article.update_columns(organization_id: organization.id)
+        get "/api/articles/search"
+
+        index_keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes body_markdown
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array index_keys
+      end
+    end
+
+    context "when there is more than one article returned" do
+      it "has correct keys in the response" do
+        new_article = create(:article)
+        article.update_columns(organization_id: organization.id)
+        new_article.update_columns(organization_id: organization.id)
+
+        get "/api/articles/search"
+
+        keys = %w[
+          type_of id title description cover_image readable_publish_date social_image
+          tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
+          collection_id created_at edited_at crossposted_at published_at last_comment_at
+          published_timestamp user organization flare_tag reading_time_minutes
+        ]
+
+        expect(response.parsed_body.first.keys).to match_array keys
+      end
+    end
+
+    it "supports pagination" do
+      create_list(:article, 2)
+      get "/api/articles/search", params: { page: 1, per_page: 2 }
+      expect(response.parsed_body.length).to eq(2)
+      get "/api/articles/search", params: { page: 2, per_page: 2 }
+      expect(response.parsed_body.length).to eq(1)
+    end
+
+    it "returns flare tag in the response" do
+      get "/api/articles/search"
+      response_article = response.parsed_body.first
+      expect(response_article["flare_tag"]).to be_present
+      expect(response_article["flare_tag"].keys).to eq(%w[name bg_color_hex text_color_hex])
+      expect(response_article["flare_tag"]["name"]).to eq("discuss")
+    end
+
+    context "with regression tests" do
+      it "works if both the social image and the main image are missing" do
+        article.update_columns(social_image: nil, main_image: nil)
+
+        get "/api/articles/search"
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "respects API_PER_PAGE_MAX limit set in ENV variable" do
+        allow(ApplicationConfig).to receive(:[]).and_return(nil)
+        allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+        allow(ApplicationConfig).to receive(:[]).with("API_PER_PAGE_MAX").and_return(2)
+
+        create_list(:article, 3, tags: "discuss", public_reactions_count: 1, score: 1, published: true, featured: true)
+        get "/api/articles/search", params: { per_page: 10 }
+        expect(response.parsed_body.count).to eq(2)
       end
     end
   end

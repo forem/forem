@@ -81,7 +81,6 @@ class ArticlePolicy < ApplicationPolicy
   #       address the at present fundamental assumption regarding "Policies are for authorizing when
   #       you have a user, otherwise let the controller decide."
   #
-  # rubocop:disable Lint/MissingSuper
   #
   # @see even Rubocop thinks this is a bad idea.  But the short-cut gets me unstuck.  I hope there's
   #      enough breadcrumbs to undo this short-cut.
@@ -89,7 +88,6 @@ class ArticlePolicy < ApplicationPolicy
     @user = user
     @record = record
   end
-  # rubocop:enable Lint/MissingSuper
 
   def feed?
     true
@@ -172,21 +170,7 @@ class ArticlePolicy < ApplicationPolicy
 
   def tag_moderator_eligible?
     tag_ids_moderated_by_user = Tag.with_role(:tag_moderator, @user).ids
-    return false unless tag_ids_moderated_by_user.size.positive?
-
-    adjustments = TagAdjustment.where(article_id: @record.id)
-    has_room_for_tags = @record.tag_list.size < MAX_TAG_LIST_SIZE
-    # ensures that mods cannot adjust an already-adjusted tag
-    # "zero?" because intersection has just one integer (0 or 1)
-    has_no_relevant_adjustments = adjustments.pluck(:tag_id).intersection(tag_ids_moderated_by_user).size.zero?
-
-    # tag_mod can add their moderated tags
-    return true if has_room_for_tags && has_no_relevant_adjustments
-
-    authorized_to_adjust = @record.tags.ids.intersection(tag_ids_moderated_by_user).size.positive?
-
-    # tag_mod can remove their moderated tags
-    !has_room_for_tags && has_no_relevant_adjustments && authorized_to_adjust
+    tag_ids_moderated_by_user.size.positive?
   end
 
   def destroy?

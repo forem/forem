@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesFeed", type: :request do
+RSpec.describe "ArticlesFeed" do
   let!(:article) { create(:article) }
 
   it "returns an rss feed with published articles" do

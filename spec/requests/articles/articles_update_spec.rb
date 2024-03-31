@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesUpdate", type: :request do
+RSpec.describe "ArticlesUpdate" do
   let(:organization) { create(:organization) }
   let(:organization2) { create(:organization) }
   let(:user) { create(:user, :org_admin) }
@@ -23,6 +23,15 @@ RSpec.describe "ArticlesUpdate", type: :request do
       article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "yo" }
     }
     expect(article.reload.title).to eq(new_title)
+  end
+
+  it "returns an unprocessable status with invalid params" do
+    put "/articles/#{article.id}", params: {
+      article: { title: "", body_markdown: "Hello World" },
+      format: :json
+    }
+
+    expect(response).to have_http_status(:unprocessable_entity)
   end
 
   it "updates article with front matter params" do
@@ -194,7 +203,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
     # draft => scheduled
     it "sets published_at according to the timezone when updating draft => scheduled" do
-      draft = create(:article, published: false, user_id: user.id, published_at: nil)
+      draft = create(:unpublished_article, user_id: user.id, published_at: nil)
       attributes[:published] = true
       attributes[:timezone] = "America/Mexico_City"
       put "/articles/#{draft.id}", params: { article: attributes }

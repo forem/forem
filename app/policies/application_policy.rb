@@ -70,7 +70,7 @@ class ApplicationPolicy
   def self.require_user_in_good_standing!(user:)
     require_user!(user: user)
 
-    return true unless user.suspended?
+    return true unless user.spam_or_suspended?
 
     raise ApplicationPolicy::UserSuspendedError, I18n.t("policies.application_policy.your_account_is_suspended")
   end
@@ -200,12 +200,6 @@ class ApplicationPolicy
   delegate :support_admin?, to: :user
 
   delegate :super_moderator?, :super_admin?, :any_admin?, :suspended?, to: :user, prefix: true
-
-  alias minimal_admin? user_any_admin?
-  deprecate minimal_admin?: "Deprecating #{self}#minimal_admin?, use #{self}#user_any_admin?"
-
-  alias user_admin? user_super_admin?
-  deprecate minimal_admin?: "Deprecating #{self}#user_admin?, use #{self}#user_super_admin?"
 
   def user_trusted?
     user.has_trusted_role?

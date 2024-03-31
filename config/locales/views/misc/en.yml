@@ -46,6 +46,8 @@ en:
       preview:
         icon: App logo
         text: 'Preview:'
+    mailers:
+      contact_mailto_html: Contact us at <a href="mailto:%{contact_email}">%{contact_email}</a> if there is anything more we can help with.
     onboardings:
       meta:
         title: Welcome to %{community}
@@ -83,6 +85,7 @@ en:
         people: People
         comments: Comments
         my_posts: My posts only
+        organizations: Organizations
         tags: Tags
       sort:
         aria_label: Search result sort options
@@ -113,12 +116,13 @@ en:
         infinity: Infinity
       readers: Readers Summary
       followers: New Followers Summary
-      reactions: "Reactions Summary ❤🦄🔖"
-      comments: "Comments Summary 💬"
+      reactions: "Reactions Summary"
+      comments: "Comments Summary"
       traffic:
-        text: "Traffic Source Summary 🚦"
+        text: "Traffic Source Summary"
         source: Source
         views: Views
+      reactions_history: "Reactions History"
     sticky:
       joined: Joined
       default_cta: Learn more

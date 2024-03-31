@@ -1,0 +1,11 @@
+
+<% if ForemInstance.deployed_at.to_i.positive? && ForemInstance.deployed_at < 2.weeks.ago %>
+  <div class="crayons-notice crayons-notice--<%= ForemInstance.deployed_at < 4.weeks.ago ? "danger" : "warning" %> mb-6">
+    <p class="p-1">
+      It has been <strong><%= time_ago_in_words ForemInstance.deployed_at %></strong> since this Forem was deployed. We recommend you <a href="https://github.com/forem/forem" class="fw-bold">re-deploy from the main branch</a> to stay up-to-date.
+    </p>
+    <p class="p-1 py-2 fs-s">
+      If you stay out of date for too long, it greatly increases the risk that something could go wrong when you try to re-deploy.
+    </p>
+  </div>
+<% end %>

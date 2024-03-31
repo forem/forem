@@ -16,7 +16,7 @@ RSpec.describe AbExperiment do
 
   describe "validate field test experiment configuration" do
     it "only allow at most one active feed_strategy (e.g. an experiment without a winner)" do
-      field_tests = Psych.load(Rails.root.join("config/field_test.yml").read)
+      field_tests = Psych.load(Rails.root.join("config/field_test.yml").read, permitted_classes: [Date])
       active_field_tests = field_tests.fetch("experiments", {})
         .select { |key, values| key.start_with?("feed_strategy") && !values["winner"] }
 

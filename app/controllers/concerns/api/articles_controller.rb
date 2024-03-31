@@ -10,6 +10,11 @@ module Api
       updated_at video_thumbnail_url reading_time
     ].freeze
 
+    ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION = [
+      *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown
+    ].freeze
+    private_constant :ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION
+
     SHOW_ATTRIBUTES_FOR_SERIALIZATION = [
       *INDEX_ATTRIBUTES_FOR_SERIALIZATION, :body_markdown, :processed_html
     ].freeze
@@ -118,6 +123,21 @@ module Api
       end
     end
 
+    def search
+      # I temporarily added a new search endpoint in the interest of getting the chatGPT plugin live without changing
+      # the existing index endpoint. There are some experiments which we want to conduct which I think makes sense on
+      # a new endpoint rather than an existing one. We may want to refactor the index one in the future.
+      @articles = Articles::ApiSearchQuery.call(params)
+
+      # This adds some inconsistency where we omit the body markdown when the response has more than 1 article because
+      # ChatGPT cannot process the long body request.
+      @articles = if @articles.count > 1
+                    @articles.select(INDEX_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  else
+                    @articles.select(ADDITIONAL_SEARCH_ATTRIBUTES_FOR_SERIALIZATION).decorate
+                  end
+    end
+
     private
 
     def per_page_max
@@ -127,9 +147,11 @@ module Api
     def article_params
       allowed_params = [
         :title, :body_markdown, :published, :series,
-        :main_image, :canonical_url, :description, { tags: [] }
+        :main_image, :canonical_url, :description, { tags: [] },
+        :published_at
       ]
       allowed_params << :organization_id if params.dig("article", "organization_id") && allowed_to_change_org_id?
+      allowed_params << :clickbait_score if @user.super_admin?
       params.require(:article).permit(allowed_params)
     end
 

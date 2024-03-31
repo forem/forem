@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/app/listings/categories", type: :request do
+RSpec.describe "/admin/app/listings/categories" do
   let(:get_resource) { get admin_listing_categories_path }
   let(:params) do
     { name: "Computer stuff", cost: 22, rules: "Things computers do",
@@ -47,7 +47,7 @@ RSpec.describe "/admin/app/listings/categories", type: :request do
       it "creates a new listing_category" do
         expect do
           post_resource
-        end.to change { ListingCategory.all.count }.by(1)
+        end.to change(ListingCategory, :count).by(1)
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe "/admin/app/listings/categories", type: :request do
       it "deletes the Listing Category" do
         expect do
           delete admin_listing_category_path(listing_category.id)
-        end.to change { ListingCategory.all.count }.by(-1)
+        end.to change(ListingCategory, :count).by(-1)
         expect(response.body).to redirect_to admin_listing_categories_path
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe "/admin/app/listings/categories", type: :request do
       it "creates a new listing_category" do
         expect do
           post_resource
-        end.to change { ListingCategory.all.count }.by(1)
+        end.to change(ListingCategory, :count).by(1)
       end
     end
 
@@ -113,7 +113,7 @@ RSpec.describe "/admin/app/listings/categories", type: :request do
       it "deletes the Listing Category" do
         expect do
           delete admin_listing_category_path(listing_category.id)
-        end.to change { ListingCategory.all.count }.by(-1)
+        end.to change(ListingCategory, :count).by(-1)
         expect(response.body).to redirect_to admin_listing_categories_path
       end
     end

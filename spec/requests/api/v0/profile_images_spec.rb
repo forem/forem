@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::ProfileImages", type: :request do
+RSpec.describe "Api::V0::ProfileImages" do
   describe "GET /api/profile_images/:username" do
     it "returns 404 if the username is not taken" do
       get api_profile_image_path("invalid-username")

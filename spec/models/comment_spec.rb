@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Comment, type: :model do
+RSpec.describe Comment do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, user: user, commentable: article) }
@@ -27,6 +27,8 @@ RSpec.describe Comment, type: :model do
     end
 
     it do
+      skip "validate_uniqueness_of does not support array. Replace with custom validation"
+
       # rubocop:disable RSpec/NamedSubject
       subject.commentable = article
       subject.user = user
@@ -157,7 +159,7 @@ RSpec.describe Comment, type: :model do
       it "not double wrap an already-linked mention" do
         comment.body_markdown = "Hello <a href='/#{user.username}'>@#{user.username}</a>, you are cool."
         comment.validate!
-        expect(comment.processed_html.scan(/href/).count).to eq(1)
+        expect(comment.processed_html.scan("href").count).to eq(1)
       end
 
       it "does not wrap email mention with username" do
@@ -186,7 +188,6 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?("Hello <a")).to be(true)
       end
 
-      # rubocop:disable RSpec/ExampleLength
       it "shortens long urls without removing formatting", :aggregate_failures do
         long_url = "https://longurl.com/#{'x' * 100}?#{'y' * 100}"
         comment.body_markdown = "Hello #{long_url}"
@@ -325,6 +326,12 @@ RSpec.describe Comment, type: :model do
       expect(comment.title).to eq("[deleted]")
     end
 
+    it "is converted to image text if the comment is image" do
+      comment.body_markdown = "![image](https://myimage.com/image.png)"
+      comment.validate!
+      expect(comment.title).to eq("[image]")
+    end
+
     it "does not contain the wrong encoding" do
       comment.body_markdown = "It's the best post ever. It's so great."
 
@@ -353,57 +360,6 @@ RSpec.describe Comment, type: :model do
     end
   end
 
-  describe ".tree_for" do
-    let!(:other_comment) { create(:comment, commentable: article, user: user) }
-    let!(:child_comment) { create(:comment, commentable: article, parent: comment, user: user) }
-
-    before { comment.update_column(:score, 1) }
-
-    it "returns a full tree" do
-      comments = described_class.tree_for(article)
-      expect(comments).to eq(comment => { child_comment => {} }, other_comment => {})
-    end
-
-    it "returns part of the tree" do
-      comments = described_class.tree_for(article, 1)
-      expect(comments).to eq(comment => { child_comment => {} })
-    end
-
-    context "with sort order" do
-      let!(:new_comment) { create(:comment, commentable: article, user: user, created_at: Date.tomorrow) }
-      let!(:old_comment) { create(:comment, commentable: article, user: user, created_at: Date.yesterday) }
-
-      before { comment }
-
-      it "returns comments in the right order when order is oldest" do
-        comments = described_class.tree_for(article, 0, "oldest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([old_comment.id, other_comment.id, comment.id, new_comment.id])
-      end
-
-      it "returns comments in the right order when order is latest" do
-        comments = described_class.tree_for(article, 0, "latest")
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([new_comment.id, comment.id, other_comment.id, old_comment.id])
-      end
-
-      it "returns comments in the right order when order is top" do
-        comment.update_column(:score, 5)
-        highest_rated_comment = comment
-        new_comment.update_column(:score, 1)
-        lowest_rated_comment = new_comment
-        old_comment.update_column(:score, 3)
-        mid_high_rated_comment = old_comment
-        other_comment.update_column(:score, 2)
-        mid_low_rated_comment = other_comment
-        comments = described_class.tree_for(article, 0)
-
-        comments = comments.map { |key, _| key.id }
-        expect(comments).to eq([highest_rated_comment.id, mid_high_rated_comment.id, mid_low_rated_comment.id, lowest_rated_comment.id]) # rubocop:disable Layout/LineLength
-      end
-    end
-  end
-
   context "when callbacks are triggered after create" do
     let(:comment) { build(:comment, user: user, commentable: article) }
 
@@ -419,14 +375,26 @@ RSpec.describe Comment, type: :model do
       end.to change(Comments::CalculateScoreWorker.jobs, :size).by(1)
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "enqueues a worker to send email" do
       comment.save!
-      child_comment_user = create(:user)
+      child_comment_user = create(:user, badge_achievements_count: 1)
       child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
 
       expect do
         child_comment.save!
       end.to change(Comments::SendEmailNotificationWorker.jobs, :size).by(1)
+    end
+    # rubocop:enable RSpec/ExampleLength
+
+    it "does not send email notification if commenter has no badges" do
+      comment.save!
+      child_comment_user = create(:user, badge_achievements_count: 0)
+      child_comment = build(:comment, parent: comment, user: child_comment_user, commentable: article)
+
+      expect do
+        child_comment.save!
+      end.not_to change(Comments::SendEmailNotificationWorker.jobs, :size)
     end
 
     it "enqueues a worker to bust comment cache" do
@@ -481,6 +449,57 @@ RSpec.describe Comment, type: :model do
       comment.save
       expect(Spam::Handler).to have_received(:handle_comment!).with(comment: comment)
     end
+
+    it "marks score as negative 3 if new user and comment includes htttp" do
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save!
+      expect(comment.score).to eq(-3)
+    end
+
+    it "does not mark as negative 3 if not new user" do
+      user.update_column(:registered_at, 5.days.ago)
+      comment = build(:comment, user: user, commentable: article)
+      comment.body_markdown = "http://example.com this has a link"
+      comment.save
+      expect(comment.score).to eq(0)
+    end
+
+    it "marks score as negative 5 if spam trigger is called" do
+      # Settings::RateLimit.trigger_spam_for?(text: [title, body_markdown].join("\n"))
+      allow(Settings::RateLimit).to receive(:trigger_spam_for?).and_return(true)
+      comment = create(:comment, user: user, commentable: article)
+      expect(comment.score).to eq(-5)
+    end
+  end
+
+  describe "#privileged_reaction_counts" do
+    it "contains correct vomit count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "vomit", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["vomit"]).to eq(1)
+    end
+
+    it "contains correct thumbsup count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "thumbsup", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["thumbsup"]).to eq(1)
+    end
+
+    it "contains correct thumbsdown count" do
+      user = create(:user, :trusted)
+      create(:reaction, reactable: comment, category: "thumbsdown", user: user)
+      counts = comment.privileged_reaction_counts
+      expect(counts["thumbsdown"]).to eq(1)
+    end
+
+    it "returns an empty hash if there are no privileged reactions" do
+      counts = comment.privileged_reaction_counts
+
+      expect(counts).to be_empty
+    end
   end
 
   context "when callbacks are triggered before save" do
@@ -532,6 +551,7 @@ RSpec.describe Comment, type: :model do
       expect(comment.notifications).to be_empty
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "updates the notifications of the descendants with [deleted]" do
       comment = create(:comment, commentable: article)
       child_comment = create(:comment, parent: comment, commentable: article, user: user)
@@ -542,6 +562,7 @@ RSpec.describe Comment, type: :model do
       notification = child_comment.notifications.first
       expect(notification.json_data["comment"]["ancestors"][0]["title"]).to eq("[deleted]")
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 
   context "when callbacks are triggered after destroy" do
@@ -570,6 +591,25 @@ RSpec.describe Comment, type: :model do
     it "returns false if root has been deleted" do
       root_comment.destroy
       expect(comment.reload.root_exists?).to be(false)
+    end
+  end
+
+  describe "#by_staff_account?" do
+    let(:regular_user) { create(:user) }
+    let(:staff_account) { create(:user) }
+    let(:comment) { build(:comment, user: regular_user) }
+    let(:staff_comment) { build(:comment, user: staff_account) }
+
+    before do
+      allow(User).to receive(:staff_account).and_return(staff_account)
+    end
+
+    it "returns true if comment is by the staff account" do
+      expect(staff_comment.by_staff_account?).to be(true)
+    end
+
+    it "returns false if comment is not by the staff account" do
+      expect(comment.by_staff_account?).to be(false)
     end
   end
 end

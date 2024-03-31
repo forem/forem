@@ -13,8 +13,6 @@
 # @note models with `acts_as_taggable_on` declarations (e.g., Article and Listing)
 # @see https://developers.forem.com/technical-overview/architecture/#tags for more discussion
 class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = %w[mod_chat_channel_id].freeze
-
   attr_accessor :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
@@ -33,11 +31,12 @@ class Tag < ActsAsTaggableOn::Tag
   include StringAttributeCleaner.nullify_blanks_for(:alias_for)
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
   HEX_COLOR_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex short_summary badge_id].freeze
 
   belongs_to :badge, optional: true
 
   has_many :articles, through: :taggings, source: :taggable, source_type: "Article"
-  has_many :display_ads, through: :taggings, source: :taggable, source_type: "DisplayAd"
+  has_many :billboards, class_name: "Billboard", through: :taggings, source: :taggable, source_type: "Billboard"
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :social_image, ProfileImageUploader
@@ -56,6 +55,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :calculate_hotness_score
   before_save :mark_as_updated
 
+  after_save :update_suggested_tags, if: :saved_change_to_suggested?
   after_commit :bust_cache
 
   # @note Even though we have a data migration script (see further
@@ -74,6 +74,8 @@ class Tag < ActsAsTaggableOn::Tag
   #       this scope we have a name.
   scope :direct, -> { where(alias_for: [nil, ""]) }
 
+  scope :select_attributes_for_serialization, -> { select(ATTRIBUTES_FOR_SERIALIZATION) }
+
   pg_search_scope :search_by_name,
                   against: :name,
                   using: { tsearch: { prefix: true } }
@@ -81,24 +83,11 @@ class Tag < ActsAsTaggableOn::Tag
   scope :eager_load_serialized_data, -> {}
   scope :supported, -> { where(supported: true) }
 
-  # @return [String]
-  #
-  # @see ApplicationRecord#class_name
-  def class_name
-    self.class.name
-  end
+  scope :suggested_for_onboarding, -> { where(suggested: true) }
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
-  end
-
-  def submission_template_customized(param_0 = nil)
-    submission_template&.gsub("PARAM_0", param_0)
-  end
-
-  def tag_moderator_ids
-    User.with_role(:tag_moderator, self).order(id: :asc).ids
   end
 
   def self.valid_categories
@@ -116,14 +105,6 @@ class Tag < ActsAsTaggableOn::Tag
     find_by(name: word.downcase)&.alias_for.presence || word.downcase
   end
 
-  def validate_name
-    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
-    # [:alnum:] is not used here because it supports diacritical characters.
-    # If we decide to allow diacritics in the future, we should replace the
-    # following regex with [:alnum:].
-    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
-  end
-
   # While this non-end user facing flag is "in play", our goal is to say that when it's "false"
   # we'll preserve existing behavior.  And when true, we're testing out new behavior.  This way we
   # can push up changes and refactor towards improvements without unleashing a large pull request
@@ -139,19 +120,6 @@ class Tag < ActsAsTaggableOn::Tag
   #       remove it.
   def self.favor_accessible_name_for_tag_label?
     FeatureFlag.enabled?(:favor_accessible_name_for_tag_label)
-  end
-
-  # @note In the future we envision always favoring pretty name over the given name.
-  #
-  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
-  def accessible_name
-    return name unless self.class.favor_accessible_name_for_tag_label?
-
-    pretty_name.presence || name
-  end
-
-  def errors_as_sentence
-    errors.full_messages.to_sentence
   end
 
   # @param follower [#id, #class_name] An object who's class "acts_as_follower" (e.g. a User).
@@ -198,6 +166,61 @@ class Tag < ActsAsTaggableOn::Tag
       .joins(:followings)
       .where("followings.follower_id" => follower.id, "followings.follower_type" => follower.class_name)
       .order(hotness_score: :desc)
+  end
+
+  # returns the tags that are followed by the user
+  # @param user [User] the user to check
+  # @param points [Range] the range of explicit points to check for (default is 0 (including 0) to infinity)
+  # @return [ActiveRecord::Relation<Tag>] the tags followed by the user
+  def self.followed_by(user, explicit_points = (0...))
+    joins("INNER JOIN follows ON tags.id = follows.followable_id")
+      .where(follows: { follower_id: user.id, followable_type: "ActsAsTaggableOn::Tag",
+                        explicit_points: explicit_points })
+      .order("follows.points DESC")
+  end
+
+  # returns the tags that are anti-followed (hidden) by the user. It uses the followed_by method
+  # and passes in a range of -infinity to 0 (excluding 0).
+  # @param user [User] the user to check
+  # @return [ActiveRecord::Relation<Tag>] the tags anti-followed by the user (for hidden tags)
+  def self.antifollowed_by(user)
+    followed_by(user, (...0))
+  end
+
+  # @return [String]
+  #
+  # @see ApplicationRecord#class_name
+  def class_name
+    self.class.name
+  end
+
+  def submission_template_customized(param_0 = nil)
+    submission_template&.gsub("PARAM_0", param_0)
+  end
+
+  def tag_moderator_ids
+    User.with_role(:tag_moderator, self).order(id: :asc).ids
+  end
+
+  def validate_name
+    errors.add(:name, I18n.t("errors.messages.too_long", count: 30)) if name.length > 30
+    # [:alnum:] is not used here because it supports diacritical characters.
+    # If we decide to allow diacritics in the future, we should replace the
+    # following regex with [:alnum:].
+    errors.add(:name, I18n.t("errors.messages.contains_prohibited_characters")) unless name.match?(/\A[[:alnum:]]+\z/i)
+  end
+
+  # @note In the future we envision always favoring pretty name over the given name.
+  #
+  # @todo When we "rollout this feature" remove the guard clause and adjust the corresponding spec.
+  def accessible_name
+    return name unless self.class.favor_accessible_name_for_tag_label?
+
+    pretty_name.presence || name
+  end
+
+  def errors_as_sentence
+    errors.full_messages.to_sentence
   end
 
   # What's going on here?  There are times where we want our "Tag" object to have a "points"
@@ -292,5 +315,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   def mark_as_updated
     self.updated_at = Time.current # Acts-as-taggable didn't come with this by default
+  end
+
+  def update_suggested_tags
+    Settings::General.suggested_tags = Tag.suggested_for_onboarding.pluck(:name).join(",")
   end
 end

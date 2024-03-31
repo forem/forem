@@ -1,5 +1,5 @@
 class ImageUploadPolicy < ApplicationPolicy
   def create?
-    !user_suspended?
+    !user.spam_or_suspended?
   end
 end

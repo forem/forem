@@ -37,14 +37,14 @@ class ReactionHandler
   delegate :rate_limiter, to: :current_user
 
   def create
-    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    destroy_contradictory_mod_reactions if %w[Article Comment].include?(reactable_type)
     return noop_result if existing_reaction
 
     create_new_reaction
   end
 
   def toggle
-    destroy_contradictory_mod_reactions if reactable_type == "Article"
+    destroy_contradictory_mod_reactions if %w[Article Comment].include?(reactable_type)
     return handle_existing_reaction if existing_reaction
 
     create_new_reaction
@@ -89,6 +89,8 @@ class ReactionHandler
       rate_limit_reaction_creation
       sink_articles(reaction)
       send_notifications(reaction)
+      record_feed_event(reaction)
+      update_last_reacted_at(reaction)
     end
 
     result.action = "create"
@@ -158,6 +160,13 @@ class ReactionHandler
     Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
   end
 
+  def record_feed_event(reaction)
+    return unless (reaction.visible_to_public? || reaction.category == "readinglist") &&
+      reaction.reactable_type == "Article"
+
+    FeedEvent.record_journey_for(reaction.user, article: reaction.reactable, category: :reaction)
+  end
+
   def rate_article(reaction)
     user_experience_level = current_user.setting.experience_level
     return unless user_experience_level
@@ -175,5 +184,9 @@ class ReactionHandler
 
   def vomit_on_user?
     reactable_type == "User" && category == "vomit"
+  end
+
+  def update_last_reacted_at(reaction)
+    reaction.user.touch(:last_reacted_at)
   end
 end

@@ -1,16 +1,19 @@
 class Page < ApplicationRecord
-  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json].freeze
+  extend UniqueAcrossModels
+  TEMPLATE_OPTIONS = %w[contained full_within_layout nav_bar_included json css txt].freeze
 
   TERMS_SLUG = "terms".freeze
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
   PRIVACY_SLUG = "privacy".freeze
 
+  has_many :billboards, dependent: :nullify
+
   validates :title, presence: true
   validates :description, presence: true
-  validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
-  validates :slug, unique_cross_model_slug: true, if: :slug_changed?
+
+  unique_across_models :slug
 
   before_validation :set_default_template
   before_save :evaluate_markdown
@@ -57,6 +60,12 @@ class Page < ApplicationRecord
     "page_#{slug}"
   end
 
+  def as_json(...)
+    super(...).slice(*%w[id title slug description is_top_level_path landing_page
+                         body_html body_json body_markdown processed_html
+                         social_image template ])
+  end
+
   private
 
   def evaluate_markdown
@@ -73,7 +82,7 @@ class Page < ApplicationRecord
   end
 
   def body_present
-    return unless body_markdown.blank? && body_html.blank? && body_json.blank?
+    return unless body_markdown.blank? && body_html.blank? && body_json.blank? && body_css.blank?
 
     errors.add(:body_markdown, I18n.t("models.page.body_must_exist"))
   end

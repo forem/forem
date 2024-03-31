@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Stories::ArticlesSearchController", type: :request do
+RSpec.describe "Stories::ArticlesSearchController" do
   describe "GET query page" do
     it "renders page with proper header" do
       get "/search?q=hello"

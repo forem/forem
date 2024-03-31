@@ -14,7 +14,7 @@ describe('Follow user from search results', () => {
     );
 
     cy.findByRole('button', { name: 'Edit profile' }).click();
-    cy.findByRole('heading', { name: 'Settings for @admin_mcadmin' });
+    cy.findByRole('heading', { name: '@admin_mcadmin' });
   });
 
   it('Follows and unfollows a user from search results', () => {

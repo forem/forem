@@ -18,6 +18,13 @@ module Search
       serialize results
     end
 
+    def self.serialize(results)
+      Search::NestedUserSerializer
+        .new(results, is_collection: true)
+        .serializable_hash[:data]
+        .pluck(:attributes)
+    end
+
     def initialize(context: nil)
       @scope = scope_with_context(context) if context
       @scope ||= scope_without_context
@@ -50,12 +57,6 @@ module Search
         .order("has_commented DESC")
     end
 
-    def self.serialize(results)
-      Search::NestedUserSerializer
-        .new(results, is_collection: true)
-        .serializable_hash[:data]
-        .pluck(:attributes)
-    end
     private_class_method :serialize
   end
 end

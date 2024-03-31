@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "LiquidEmbeds", type: :request, vcr: { cassette_name: "twitter_client_status_extended" } do
+RSpec.describe "LiquidEmbeds", vcr: { cassette_name: "twitter_client_status_extended" } do
   describe "get /embeds" do
     let(:path) { liquid_embed_path("tweet", args: 1_018_911_886_862_057_472) }
 

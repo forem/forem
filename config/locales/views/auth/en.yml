@@ -20,8 +20,7 @@ en:
       login:
         aria_label: Log in
         text: Log in
-        continue: Continue
-        forgot: I forgot my password
+        forgot: Forgot password?
       provider:
         text: "%{action} with %{provider}"
         login: Continue

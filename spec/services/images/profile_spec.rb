@@ -36,7 +36,7 @@ RSpec.describe Images::Profile, type: :services do
     end
 
     context "when user has no profile_image" do
-      it "returns backup image prefixed with Cloudinary", cloudinary: true do
+      it "returns backup image prefixed with Cloudinary", :cloudinary do
         user = build_stubbed(:user, profile_image: nil)
         correct_prefix = "/c_fill,f_auto,fl_progressive,h_120,q_auto,w_120/"
         expect(described_class.call(user.profile_image_url)).to include(correct_prefix + described_class::BACKUP_LINK)

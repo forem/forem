@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # Regression spec for https://github.com/forem/forem/issues/12444
-RSpec.describe "", type: :request do
+RSpec.describe "" do
   it "does not infinitely redirect", :aggregate_failures do
     organization = create(:organization, username: "test")
     organization.update(username: "not_test")

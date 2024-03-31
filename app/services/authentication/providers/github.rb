@@ -5,23 +5,6 @@ module Authentication
       OFFICIAL_NAME = "GitHub".freeze
       SETTINGS_URL = "https://github.com/settings/applications".freeze
 
-      def new_user_data
-        name = raw_info.name.presence || info.name
-
-        {
-          email: info.email.to_s,
-          github_username: info.nickname,
-          name: name,
-          remote_profile_image_url: Users::SafeRemoteProfileImageUrl.call(info.image.to_s)
-        }
-      end
-
-      def existing_user_data
-        {
-          github_username: info.nickname
-        }
-      end
-
       def self.official_name
         OFFICIAL_NAME
       end
@@ -35,6 +18,23 @@ module Authentication
           provider_name,
           **kwargs,
         )
+      end
+
+      def new_user_data
+        name = raw_info.name.presence || info.name
+
+        {
+          email: info.email.to_s,
+          github_username: info.nickname,
+          name: name,
+          remote_profile_image_url: Images::SafeRemoteProfileImageUrl.call(info.image.to_s)
+        }
+      end
+
+      def existing_user_data
+        {
+          github_username: info.nickname
+        }
       end
 
       protected

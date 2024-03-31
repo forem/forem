@@ -3,17 +3,17 @@ class HtmlVariantPolicy < ApplicationPolicy
     user_any_admin?
   end
 
-  alias show? minimal_admin?
+  alias show? user_any_admin?
 
-  alias edit? minimal_admin?
+  alias edit? user_any_admin?
 
-  alias update? minimal_admin?
+  alias update? user_any_admin?
 
-  alias new? minimal_admin?
+  alias new? user_any_admin?
 
-  alias create? minimal_admin?
+  alias create? user_any_admin?
 
-  alias destroy? minimal_admin?
+  alias destroy? user_any_admin?
 
   def permitted_attributes
     %i[html name published approved target_tag group]

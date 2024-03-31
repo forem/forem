@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "OpenSearch", type: :request do
+RSpec.describe "OpenSearch" do
   let(:user) { create(:user, saw_onboarding: false) }
 
   describe "GET /open-search.xml" do

@@ -6,8 +6,8 @@ end
 # set to true to mask ip addresses
 Ahoy.mask_ips = true
 
-# set to false to switch from cookies to anonymity sets
-Ahoy.cookies = false
+# set to :none to switch from cookies to anonymity sets
+Ahoy.cookies = :none
 
 # set to false to disable geocode tracking
 Ahoy.geocode = false

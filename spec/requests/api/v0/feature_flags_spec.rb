@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::FeatureFlagsController", type: :request do
+RSpec.describe "Api::V0::FeatureFlagsController" do
   let(:flag) { "test_flag" }
   let(:params) { { flag: flag } }
 
@@ -57,7 +57,7 @@ RSpec.describe "Api::V0::FeatureFlagsController", type: :request do
 
       get api_feature_flags_path(flag: flag)
 
-      parsed_response = JSON.parse(response.body)
+      parsed_response = response.parsed_body
       expect(parsed_response[flag]).to be true
     end
   end

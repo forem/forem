@@ -1,5 +1,9 @@
 module Organizations
   class Delete
+    def self.call(...)
+      new(...).call
+    end
+
     def initialize(org)
       @org = org
       @article_ids = org.article_ids
@@ -9,10 +13,6 @@ module Organizations
       delete_notifications
       org.destroy
       articles_sync
-    end
-
-    def self.call(...)
-      new(...).call
     end
 
     private

@@ -1,19 +1,18 @@
 @import '../variables';
 .ltag-github-readme-tag {
   position: relative;
-  border: 1px solid $light-medium-gray;
-  border-radius: 3px;
-  box-shadow: $shadow;
+  border: 1px solid var(--form-border);
+  box-shadow: var(--shadow-smooth);
+  border-radius: var(--radius-auto);
   margin: 1.1em auto 1.3em;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
     sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
   overflow: hidden;
-  max-width: 620px;
   a {
     color: var(--link-branded-color) !important;
   }
   .readme-overview {
-    padding: 0.8em 0.5em;
+    padding: 0.8em calc(0.5em + 0.25vw);
     border-bottom: 1px solid $light-medium-gray;
     h2 {
       font-weight: 400 !important;
@@ -57,7 +56,7 @@
   }
 
   .markdown-body {
-    padding: 0em 0.2em;
+    padding: 0em calc(0.5em + 0.2vw);
     table {
       max-width: 80%;
       margin-left: 10%;

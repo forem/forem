@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::FollowsController", type: :request do
+RSpec.describe "Api::V0::FollowsController" do
   describe "POST /api/follows" do
     it "returns unauthorized if user is not signed in" do
       post "/api/follows", params: { users: [] }
@@ -51,7 +51,7 @@ RSpec.describe "Api::V0::FollowsController", type: :request do
         [tag1, tag2].each { |tag| user.follow(tag) }
       end
 
-      it "returns only the tags the user follows", aggregate_failures: true do
+      it "returns only the tags the user follows", :aggregate_failures do
         get "/api/follows/tags"
         body = JSON.parse(response.body, symbolize_names: true)
         expect(body).to include(tag1_json)

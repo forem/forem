@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
+RSpec.describe "Api::V0::PodcastEpisodes" do
   let(:podcast) { create(:podcast) }
 
   describe "GET /api/podcast_episodes" do
@@ -23,7 +23,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
 
       get api_podcast_episodes_path
 
-      expect(response.parsed_body.map { |e| e["id"] }).not_to include(pe.id.to_s)
+      expect(response.parsed_body.pluck("id")).not_to include(pe.id.to_s)
     end
 
     it "returns correct attributes for an episode", :aggregate_failures do
@@ -58,7 +58,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       pe2 = create(:podcast_episode, published_at: 1.day.from_now, podcast: podcast)
 
       get api_podcast_episodes_path
-      expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe2.id, pe1.id])
+      expect(response.parsed_body.pluck("id")).to eq([pe2.id, pe1.id])
     end
 
     it "supports pagination" do
@@ -97,7 +97,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         create(:podcast_episode, podcast: create(:podcast))
 
         get api_podcast_episodes_path(username: podcast.slug)
-        expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
+        expect(response.parsed_body.pluck("id")).to eq([pe1.id])
       end
 
       it "returns not found if the episode belongs to an unpublished podcast" do

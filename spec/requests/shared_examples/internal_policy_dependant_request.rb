@@ -15,7 +15,7 @@ RSpec.shared_examples "an InternalPolicy dependant request" do |resource|
     end
   end
 
-  context "when user is not an admin", proper_status: true do
+  context "when user is not an admin", :proper_status do
     before do
       sign_in user
       allow(InternalPolicy).to receive(:new).and_call_original

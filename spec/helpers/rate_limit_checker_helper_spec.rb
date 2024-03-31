@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe RateLimitCheckerHelper, type: :helper do
+describe RateLimitCheckerHelper do
   describe "#configurable_rate_limits" do
     it "returns a hash with the right structure" do
       settings_keys = Settings::RateLimit.keys.map(&:to_sym)

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "VideoPlayerShow", type: :request do
+RSpec.describe "VideoPlayerShow" do
   let(:user) { create(:user) }
   let(:video_article) { create(:article, user: user) }
 

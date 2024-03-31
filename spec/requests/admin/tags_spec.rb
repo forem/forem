@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/content_manager/tags", type: :request do
+RSpec.describe "/admin/content_manager/tags" do
   let(:super_admin) { create(:user, :super_admin) }
   let(:tag)         { create(:tag) }
   let(:badge)       { create(:badge) }
@@ -42,7 +42,7 @@ RSpec.describe "/admin/content_manager/tags", type: :request do
     it "creates a new tag" do
       expect do
         post_resource
-      end.to change { Tag.all.count }.by(1)
+      end.to change(Tag, :count).by(1)
       expect(response.body).to redirect_to edit_admin_tag_path(Tag.last)
     end
   end

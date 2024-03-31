@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe VerificationMailer, type: :mailer do
+RSpec.describe VerificationMailer do
   let(:user) { create(:user) }
   let(:from_email_address) { "custom_noreply@forem.com" }
 

@@ -1,12 +1,12 @@
 class MediumArticleRetrievalService
   attr_reader :url
 
-  def initialize(url)
-    @url = url
-  end
-
   def self.call(...)
     new(...).call
+  end
+
+  def initialize(url)
+    @url = url
   end
 
   def call

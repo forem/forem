@@ -12,13 +12,12 @@ describe('Follow user from profile page', () => {
   it('follows and unfollows an organisation', () => {
     cy.intercept('/follows').as('followsRequest');
 
-    cy.findByRole('button', { name: 'Follow organization: Bachmanity' }).as(
-      'followButton',
-    );
+    cy.get('#user-follow-butt').as('followButton');
 
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'false');
 
     cy.get('@followButton').click();
+    cy.wait('@followsRequest');
     // Inner text should now be following
     cy.get('@followButton').should('have.text', 'Following');
     cy.get('@followButton').should('have.attr', 'aria-pressed', 'true');

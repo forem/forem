@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Organizations", type: :request do
+RSpec.describe "Api::V0::Organizations" do
   describe "GET /api/organizations/:username" do
     let(:organization) { create(:organization) }
 

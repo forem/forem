@@ -113,9 +113,9 @@ describe('Invited users', () => {
   const searchForMember = (searchTerm) => {
     cy.findByRole('textbox', {
       name: 'Search invited members by name, email, or username',
-    })
-      .clear()
-      .type(searchTerm);
+    }).as('textbox');
+    cy.get('@textbox').clear();
+    cy.get('@textbox').type(searchTerm);
     cy.findByRole('button', { name: 'Search' }).click();
   };
 

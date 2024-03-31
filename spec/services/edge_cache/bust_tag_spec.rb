@@ -6,8 +6,6 @@ RSpec.describe EdgeCache::BustTag, type: :service do
   let(:paths) do
     [
       "/t/#{tag.name}",
-      "/t/#{tag.name}?i=i",
-      "/t/#{tag.name}/?i=i",
       "/t/#{tag.name}/",
       "/tags",
     ]
@@ -23,7 +21,7 @@ RSpec.describe EdgeCache::BustTag, type: :service do
     allow(tag).to receive(:purge).once
   end
 
-  it "busts the cache" do
+  it "busts the cache", :aggregate_failures do
     described_class.call(tag)
 
     paths.each do |path|

@@ -17,10 +17,11 @@ module EdgeCache
       private_class_method :fastly_purge
 
       def self.urls(path)
-        [
-          URL.url(path),
-          URL.url("#{path}?i=i"),
-        ]
+        [URL.url(path)] << if path.include?("?")
+                             URL.url("#{path}&i=i")
+                           else
+                             URL.url("#{path}?i=i")
+                           end
       end
       private_class_method :urls
     end

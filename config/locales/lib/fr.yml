@@ -37,6 +37,9 @@ fr:
             description: The "Client Secret" portion of the OAuth 2.0 page on the Google Cloud Platform portal
           invite_only:
             description: Only users invited by email can join this community.
+          new_user_status:
+            description: What status do you want to apply to new users?
+            placeholder: Good standing
           providers:
             description: How can users sign in?
           recaptcha_secret:
@@ -89,13 +92,15 @@ fr:
             description: Used as the primary name for your Forem, e.g. DEV, DEV Community, The DEV Community, etc.
             placeholder: New Forem
           staff:
-            description: Account ID which acts as automated 'staff'— used principally for welcome thread.
+            description: Account which acts as automated 'staff'— used principally for welcome thread.
           tagline:
             description: Used in signup modal.
             placeholder: We're a place where coders share, stay up-to-date and grow their careers.
         general:
           ahoy_tracking:
             description: Track visits and events - data is stored in your database. A restart is required for changes to this configuration to take effect.
+          billboard_enabled_countries:
+            description: Countries that can be geotargeted by billboards. Click on a selected country to toggle targeting on a sub-country level.
           contact_email:
             description: Used for contact links. Please provide an email address where users can get in touch with you or your team.
           credit:
@@ -113,6 +118,10 @@ fr:
             description: Google Universal Analytics Tracking ID, e.g. UA-XXXXXXXX-1
           ga_analytics_4:
             description: Google Analytics 4 Measurement ID, e.g. G-XXXXXXXXX
+          cookie_banner_user_context:
+            description: Used to determine whether the cookie banner should be shown based on user context (i.e. logged in or not)
+          coolie_banner_platform_context:
+            description: Used to determine whether the cookie banner should be shown based on platform (i.e. web/mobile)
           hashtag:
             description: Used as the twitter hashtag of the community
             placeholder: '#DEVCommunity'
@@ -136,17 +145,25 @@ fr:
           mascot_image:
             description: Used as the mascot image.
           mascot_user:
-            description: User ID of the Mascot account
+            description: The Mascot account
           meta_keywords:
             description: 'List of valid keywords: comma separated, letters only e.g. engineering, development'
-          onboarding:
-            description: Background for onboarding splash page
+          onboarding_newsletter_content:
+            description: "Use this field to set the title and subtitle for your newsletter offering step. Keep it concise."
+            placeholder: "You can configure image, title and subtitle via markdown"
+          onboarding_newsletter_opt_in_head:
+            description: "Newsletter checkbox heading"
+            placeholder: "E.g., Yes, subscribe me to the weekly newsletter"
+          onboarding_newsletter_opt_in_subhead:
+            description: "Newsletter checkbox subheading"
+            placeholder: "E.g., Rest assured, we respect your privacy. Your email will only be used for our newsletter and won't be shared with others."
+          geos_with_allowed_default_email_opt_in:
+            description: 'List of countries where the default email opt-in is allowed by admin'
+            placeholder: 'List of valid countries: comma separated, letters only e.g. US,CA'
           payment:
             description: 'Used for site-wide web monetization. See: https://github.com/forem/forem/pull/6345'
           periodic:
             description: Determines how often periodic email digests are sent (in days)
-          prefer_manual:
-            description: Always show suggested users as suggested people to follow even when auto-suggestion is available
           sidebar:
             description: Determines which tags are shown on the homepage right-hand sidebar
             placeholder: List of valid, comma-separated tags e.g. help,discuss,explainlikeimfive,meta
@@ -157,9 +174,6 @@ fr:
           tags:
             description: Determines which tags are suggested to new users during onboarding (comma separated, letters only)
             placeholder: 'List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin'
-          users:
-            description: Determines which users are suggested to follow to new users during onboarding (comma separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested
-            placeholder: 'List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana'
           video:
             description: Secret key used to allow AWS video encoding through the VideoStatesController
         rate_limit:
@@ -199,11 +213,25 @@ fr:
           feed_style:
             description: Determines which default feed the users sees (rich content, more minimal, etc.)
             placeholder: basic, rich, or compact
+          cover_image_height:
+            description: Determines the height of cover images, relative to a width of 1000px
+            placeholder: '420'
+          cover_image_fit:
+            description: Determines the cropping strategy for cover images
+            placeholder: crop, limit
           home_feed:
             description: Minimum score needed for a post to show up on the unauthenticated home page.
+          index_minimum_date:
+            description: Minimum date needed for a post to be indexed by search engines (Unix Timestamp).
           index_minimum_score:
             description: Minimum score needed for a post to be indexed by search engines.
           primary_hex:
             description: Determines background/border of buttons etc. Must be dark enough to contrast with white text.
           tag_feed:
             description: Minimum score needed for a post to show up on default tag page.
+          head_content:
+            description: Content that will be appended to the bottom of the head tag on every page (WARNING — This will cache within the page request unevenly. Proceed with care).
+            placeholder: 'Leave empty if you do not want to add anything.'
+          bottom_of_body_content:
+            description: Content that will be appended to the bottom of the body tag on every page (WARNING — This will cache within the page request unevenly. Proceed with care).
+            placeholder: 'Leave empty if you do not want to add anything.'

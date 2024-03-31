@@ -31,7 +31,7 @@ describe('Broadcasts', () => {
         cy.get('button[aria-label="Close"]').click();
       });
 
-      cy.findByRole('heading', { level: 2, name: 'Mock Broadcast' }).should(
+      cy.findByRole('heading', { level: 1, name: 'Mock Broadcast' }).should(
         'be.visible',
       );
     });

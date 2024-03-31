@@ -2,5 +2,5 @@
 fr:
   concerns:
     image_uploads:
-      too_long: filename too long - the max is %{max} characters.
-      is_not_file: invalid file type. Please upload a valid image.
+      too_long: nom de fichier trop long - le maximum est de %{max} caractères.
+      is_not_file: Type de fichier non valide. Veuillez télécharger une image valide.

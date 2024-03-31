@@ -58,6 +58,11 @@
         </button>
       <% end %>
     <% end %>
+  <% elsif @user.identities.enabled.size == 1 %>
+    <div class="grid gap-2">
+      <h3><%= t("views.settings.account.remove.heading") %></h3>
+      <p><%= t("views.settings.account.remove.unable_to_remove") %></p>
+    </div>
   <% end %>
 
   <div class="grid gap-2">

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe FeedbackMessagesHelper, type: :helper do
+RSpec.describe FeedbackMessagesHelper do
   describe "#offender_email_details" do
     it "has the proper subject and body" do
       expect(helper.offender_email_details).to include(

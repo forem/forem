@@ -130,7 +130,7 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         article2.tag_list.add(:ruby)
         article2.save
 
-        expect(described_class.call(tags: %i[beginners ruby]).ids).to match_array([article1.id, article2.id])
+        expect(described_class.call(tags: %i[beginners ruby]).ids).to contain_exactly(article1.id, article2.id)
       end
 
       it "does not return results for partial matches", :aggregate_failures do
@@ -140,6 +140,36 @@ RSpec.describe Homepage::ArticlesQuery, type: :query do
         expect(described_class.call(tags: %i[java]).ids).to be_empty
         expect(described_class.call(tags: %i[asc]).ids).to be_empty
         expect(described_class.call(tags: %i[script]).ids).to be_empty
+      end
+    end
+
+    describe "hidden_tags" do
+      let!(:article1) { create(:article, tags: "twice, first") }
+      let!(:article2) { create(:article, tags: "second, twice") }
+      let!(:article3) { create(:article) }
+
+      it "removes articles matching any hidden_tags" do
+        results = described_class.call(hidden_tags: ["twice"])
+        expect(results).to contain_exactly(article3)
+
+        results = described_class.call(hidden_tags: ["first"])
+        expect(results).not_to include(article1)
+        expect(results).to include(article2)
+
+        results = described_class.call(hidden_tags: ["second"])
+        expect(results).to include(article1)
+        expect(results).not_to include(article2)
+      end
+
+      it "behaves expectedly when hidden_tags is any variety of blank" do
+        results = described_class.call(hidden_tags: [])
+        expect(results).to contain_exactly(article1, article2, article3)
+
+        results = described_class.call(hidden_tags: nil)
+        expect(results).to contain_exactly(article1, article2, article3)
+
+        results = described_class.call(hidden_tags: "")
+        expect(results).to contain_exactly(article1, article2, article3)
       end
     end
 

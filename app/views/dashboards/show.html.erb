@@ -36,11 +36,11 @@
     </div>
 
     <% if @articles.any? %>
-      <%= javascript_packs_with_chunks_tag "dashboardDropdowns", defer: true %>
+      <%= javascript_include_tag "dashboardDropdowns", defer: true %>
       <div class="crayons-card mb-6 mt-3">
         <% @articles.each do |article| %>
           <% if params[:which] == "organization" %>
-            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false %>
+            <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false, article_series: article.collection.present? %>
           <% else %>
             <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
           <% end %>
@@ -55,7 +55,7 @@
       <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1">
         <div>
           <% if Settings::General.mascot_image_url.present? %>
-            <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "imagga_scale") %>
+            <% image_url = Images::Optimizer.call(Settings::General.mascot_image_url, width: 300, crop: "crop") %>
             <%= image_tag(image_url, class: "sloan mb-7", alt: "Mascot image") %>
           <% end %>
           <p class="mb-6"><%= t("views.dashboard.posts.empty.desc") %></p>
@@ -67,3 +67,5 @@
     <% end %>
   </div>
 </main>
+
+<%= javascript_include_tag "archivedPostFilters", "dashboards/convertCoauthorIdsToUsernameInputs", defer: true %>

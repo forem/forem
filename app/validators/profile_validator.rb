@@ -16,7 +16,10 @@ class ProfileValidator < ActiveModel::Validator
     # NOTE: The summary is a base profile field, which we add to all new Forem
     # instances, so it should be safe to validate. The method itself also guards
     # against the field's absence.
-    record.errors.add(:summary, I18n.t("validators.profile_validator.too_long")) if summary_too_long?(record)
+    if summary_too_long?(record)
+      record.errors.add(:base,
+                        message: I18n.t("validators.profile_validator.bio_too_long"))
+    end
 
     ProfileField.all.each do |field|
       attribute = field.attribute_name
@@ -48,11 +51,16 @@ class ProfileValidator < ActiveModel::Validator
 
   def text_area_valid?(record, attribute)
     text = record.public_send(attribute)
+    text = remove_inner_newlines(text)
     text.nil? || text.size <= MAX_TEXT_AREA_LENGTH
   end
 
   def text_field_valid?(record, attribute)
     text = record.public_send(attribute)
     text.nil? || text.size <= MAX_TEXT_FIELD_LENGTH
+  end
+
+  def remove_inner_newlines(text)
+    text.presence && text.tr("\r\n\t", " ").squeeze(" ")
   end
 end

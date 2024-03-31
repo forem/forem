@@ -6,18 +6,14 @@ module Users
       new(...).call
     end
 
-    def initialize(user:, role:, resource_type:, admin:)
+    def initialize(user:, role:, resource_type:)
       @user = user
       @role = role
       @resource_type = resource_type&.safe_constantize
-      @admin = admin
       @response = Response.new(success: false)
     end
 
     def call
-      return response if super_admin_role?(role)
-      return response if user_current_user?(user)
-
       if resource_type && user.remove_role(role, resource_type)
         response.success = true
       elsif user.remove_role(role)
@@ -31,20 +27,6 @@ module Users
 
     private
 
-    attr_reader :user, :role, :resource_type, :admin, :response
-
-    def super_admin_role?(role)
-      return false if role != :super_admin
-
-      response.error_message = I18n.t("services.users.remove_role.remove_super")
-      true
-    end
-
-    def user_current_user?(user)
-      return false if user.id != admin.id
-
-      response.error_message = I18n.t("services.users.remove_role.remove_self")
-      true
-    end
+    attr_reader :user, :role, :resource_type, :response
   end
 end

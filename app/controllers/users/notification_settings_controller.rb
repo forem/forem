@@ -34,18 +34,6 @@ module Users
       redirect_to user_settings_path(:notifications)
     end
 
-    def onboarding_notifications_checkbox_update
-      authorize User
-
-      if params[:notifications]
-        current_user.notification_setting.assign_attributes(params[:notifications].permit(ONBOARDING_ALLOWED_PARAMS))
-      end
-
-      current_user.saw_onboarding = true
-      success = current_user.notification_setting.save
-      render_update_response(success, current_user.notification_setting.errors_as_sentence)
-    end
-
     private
 
     def render_update_response(success, errors = nil)

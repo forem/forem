@@ -8,6 +8,9 @@ module Constants
           ahoy_tracking: {
             description: I18n.t("lib.constants.settings.general.ahoy_tracking.description")
           },
+          billboard_enabled_countries: {
+            description: I18n.t("lib.constants.settings.general.billboard_enabled_countries.description")
+          },
           contact_email: {
             description: I18n.t("lib.constants.settings.general.contact_email.description"),
             placeholder: "hello@example.com"
@@ -41,6 +44,14 @@ module Constants
           ga_analytics_4_id: {
             description: I18n.t("lib.constants.settings.general.ga_analytics_4.description"),
             placeholder: ""
+          },
+          cookie_banner_user_context: {
+            description: I18n.t("lib.constants.settings.general.cookie_banner_user_context.description"),
+            placeholder: "off"
+          },
+          coolie_banner_platform_context: {
+            description: I18n.t("lib.constants.settings.general.coolie_banner_platform_context.description"),
+            placeholder: "off"
           },
           health_check_token: {
             description: I18n.t("lib.constants.settings.general.health.description"),
@@ -86,9 +97,21 @@ module Constants
             description: "",
             placeholder: I18n.t("lib.constants.settings.general.meta_keywords.description")
           },
-          onboarding_background_image: {
-            description: I18n.t("lib.constants.settings.general.onboarding.description"),
-            placeholder: IMAGE_PLACEHOLDER
+          onboarding_newsletter_content: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_content.placeholder")
+          },
+          onboarding_newsletter_opt_in_head: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_head.placeholder")
+          },
+          onboarding_newsletter_opt_in_subhead: {
+            description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.description"),
+            placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.placeholder")
+          },
+          geos_with_allowed_default_email_opt_in: {
+            description: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.description"),
+            placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.placeholder")
           },
           payment_pointer: {
             description: I18n.t("lib.constants.settings.general.payment.description"),
@@ -113,13 +136,6 @@ module Constants
           suggested_tags: {
             description: I18n.t("lib.constants.settings.general.tags.description"),
             placeholder: I18n.t("lib.constants.settings.general.tags.placeholder")
-          },
-          suggested_users: {
-            description: I18n.t("lib.constants.settings.general.users.description"),
-            placeholder: I18n.t("lib.constants.settings.general.users.placeholder")
-          },
-          prefer_manual_suggested_users: {
-            description: I18n.t("lib.constants.settings.general.prefer_manual.description")
           },
           twitter_hashtag: {
             description: I18n.t("lib.constants.settings.general.hashtag.description"),

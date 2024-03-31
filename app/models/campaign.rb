@@ -3,12 +3,6 @@
 class Campaign
   include Singleton
 
-  # Ruby's singleton exposes the instance via a method of the same name, but we
-  # prefer a friendlier name.
-  def self.current
-    instance
-  end
-
   METHODS = %w[
     articles_expiry_time
     articles_require_approval?
@@ -20,6 +14,11 @@ class Campaign
     sidebar_image
     url
   ].freeze
+  # Ruby's singleton exposes the instance via a method of the same name, but we
+  # prefer a friendlier name.
+  def self.current
+    instance
+  end
 
   delegate(*METHODS, to: Settings::Campaign)
 

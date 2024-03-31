@@ -4,10 +4,57 @@ exports[`<Article /> component should render a rich feed 1`] = `
 Object {
   "asFragment": [Function],
   "baseElement": <body>
+    <div
+      aria-hidden="true"
+      class="hidden"
+      id="reaction-category-resources"
+    >
+      <img
+        data-name="Like"
+        data-position="1"
+        data-slug="like"
+        height="18"
+        src="/assets/sparkle-heart.svg"
+        width="18"
+      />
+      <img
+        data-name="Unicorn"
+        data-position="2"
+        data-slug="unicorn"
+        height="18"
+        src="/assets/multi-unicorn.svg"
+        width="18"
+      />
+      <img
+        data-name="Exploding Head"
+        data-position="3"
+        data-slug="exploding_head"
+        height="18"
+        src="/assets/exploding-head.svg"
+        width="18"
+      />
+      <img
+        data-name="Raised Hands"
+        data-position="4"
+        data-slug="raised_hands"
+        height="18"
+        src="/assets/raised-hands.svg"
+        width="18"
+      />
+      <img
+        data-name="Fire"
+        data-position="5"
+        data-slug="fire"
+        height="18"
+        src="/assets/fire.svg"
+        width="18"
+      />
+    </div>
     <div>
       <article
         class="crayons-story cursor-pointer crayons-story--featured"
         data-content-user-id="23289"
+        data-feed-content-id="62407"
         id="featured-story-marker"
       >
         <a
@@ -31,9 +78,8 @@ Object {
               <img
                 alt="Unbranded Home Loan Account"
                 class="crayons-article__cover__image__feed"
-                height="275"
                 src="/images/10.png"
-                width="650"
+                width="1000"
               />
             </a>
           </div>
@@ -277,6 +323,7 @@ Object {
     <article
       class="crayons-story cursor-pointer crayons-story--featured"
       data-content-user-id="23289"
+      data-feed-content-id="62407"
       id="featured-story-marker"
     >
       <a
@@ -300,9 +347,8 @@ Object {
             <img
               alt="Unbranded Home Loan Account"
               class="crayons-article__cover__image__feed"
-              height="275"
               src="/images/10.png"
-              width="650"
+              width="1000"
             />
           </a>
         </div>

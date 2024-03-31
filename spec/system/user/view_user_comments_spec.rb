@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User comments", type: :system do
+RSpec.describe "User comments" do
   let!(:user) { create(:user, username: "user3000") }
   let!(:article) { create(:article, user: user) }
   let!(:comment) { create(:comment, user: user, commentable: create(:article)) }

@@ -5,12 +5,20 @@ module Images
 
       if imgproxy_enabled?
         imgproxy(img_src, **kwargs)
-      elsif cloudinary_enabled?
+      elsif cloudinary_enabled? && !cloudflare_contextually_preferred?(img_src)
         cloudinary(img_src, **kwargs)
+      elsif cloudflare_enabled?
+        cloudflare(img_src, **kwargs)
       else
         img_src
       end
     end
+
+    # Each service has different ways of describing image cropping.
+    # for the ideal croping we want.
+    # Cloudinary uses "fill" and "limit"
+    # Cloudflare uses "cover" and "scale-down" respectively
+    # imgproxy uses "fill" and "fit" respectively
 
     DEFAULT_CL_OPTIONS = {
       type: "fetch",
@@ -23,9 +31,32 @@ module Images
       sign_url: true
     }.freeze
 
+    def self.cloudflare(img_src, **kwargs)
+      template = Addressable::Template.new("https://{domain}/cdn-cgi/image/{options*}/{src}")
+      fit = kwargs[:crop] == "crop" ? "cover" : "scale-down"
+      template.expand(
+        domain: ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"],
+        options: {
+          width: kwargs[:width],
+          height: kwargs[:height],
+          fit: fit,
+          gravity: "auto",
+          format: "auto"
+        },
+        src: extract_suffix_url(img_src),
+      ).to_s
+    end
+
     def self.cloudinary(img_src, **kwargs)
       options = DEFAULT_CL_OPTIONS.merge(kwargs).compact_blank
-
+      imagga = kwargs[:crop] == "crop" && ApplicationConfig["CROP_WITH_IMAGGA_SCALE"].present? && !kwargs[:never_imagga]
+      options[:crop] = if imagga
+                         "imagga_scale" # Legacy setting if admin imagga_scale set
+                       elsif kwargs[:crop] == "crop"
+                         "fill"
+                       else
+                         "limit"
+                       end
       if img_src&.include?(".gif")
         options[:quality] = 66
       end
@@ -38,7 +69,8 @@ module Images
       width: nil,
       max_bytes: 500_000, # Keep everything under half of one MB.
       auto_rotate: true,
-      resizing_type: nil
+      gravity: "sm",
+      resizing_type: "fit"
     }.freeze
 
     def self.imgproxy(img_src, **kwargs)
@@ -49,12 +81,15 @@ module Images
     end
 
     def self.translate_cloudinary_options(options)
-      if options[:crop] == "fill"
-        options[:resizing_type] = "fill"
-      end
+      options[:resizing_type] = if options[:crop] == "crop"
+                                  "fill"
+                                else
+                                  "fit"
+                                end
 
       options[:crop] = nil
       options[:fetch_format] = nil
+      options[:never_imagga] = nil
       options
     end
 
@@ -66,6 +101,10 @@ module Images
       config = Cloudinary.config
 
       config.cloud_name.present? && config.api_key.present? && config.api_secret.present?
+    end
+
+    def self.cloudflare_enabled?
+      ApplicationConfig["CLOUDFLARE_IMAGES_DOMAIN"].present?
     end
 
     def self.get_imgproxy_endpoint
@@ -80,6 +119,23 @@ module Images
         # ie. default imgproxy endpoint is localhost:8080
         ApplicationConfig["IMGPROXY_ENDPOINT"] || "http://localhost:8080"
       end
+    end
+
+    def self.extract_suffix_url(full_url)
+      prefix = "https://#{ApplicationConfig['CLOUDFLARE_IMAGES_DOMAIN']}/cdn-cgi/image"
+      return full_url unless full_url&.starts_with?(prefix)
+
+      uri = URI.parse(full_url)
+      match = uri.path.match(%r{https?.+})
+      CGI.unescape(match[0]) if match
+    end
+
+    # This is a feature-flagged Cloudflare preference for hosted images only — works specifically with S3-hosted image sources.
+    def self.cloudflare_contextually_preferred?(img_src)
+      return false unless cloudflare_enabled?
+      return false unless FeatureFlag.enabled?(:cloudflare_preferred_for_hosted_images)
+
+      img_src&.start_with?("https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com")
     end
   end
 end

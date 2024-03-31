@@ -243,4 +243,15 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(article.decorate.pinned?).to be(true)
     end
   end
+
+  describe "#permit_adjacent_sponsors" do
+    it "returns true if there is a no user id" do
+      expect(described_class.new(nil).permit_adjacent_sponsors?).to be(true)
+    end
+
+    it "returns the false if the author of the article has their setting set to false" do
+      article.user.setting.update(permit_adjacent_sponsors: false)
+      expect(article.decorate.permit_adjacent_sponsors?).to be(false)
+    end
+  end
 end

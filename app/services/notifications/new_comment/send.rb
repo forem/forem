@@ -5,15 +5,15 @@ module Notifications
     class Send
       include ActionView::Helpers::TextHelper
 
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(comment)
         @comment = comment
       end
 
       delegate :user_data, :comment_data, to: Notifications
-
-      def self.call(...)
-        new(...).call
-      end
 
       def call
         return if comment.score.negative?

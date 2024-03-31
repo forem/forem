@@ -1,0 +1,32 @@
+name: CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency: ${{ matrix.environment }}
+    environment: ${{ matrix.environment }}
+
+    strategy:
+      matrix:
+        environment: [ production, staging ]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+      - uses: honeybadger-io/github-notify-deploy-action@v1
+        with:
+          api_key: ${{ secrets.HONEYBADGER_API_KEY_RUBY }}
+        if: matrix.environment == 'production'
+      - uses: honeybadger-io/github-notify-deploy-action@v1
+        with:
+          api_key: ${{ secrets.HONEYBADGER_API_KEY_JAVASCRIPT }}
+        if: matrix.environment == 'production'

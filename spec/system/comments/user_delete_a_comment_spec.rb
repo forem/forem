@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Deleting Comment", type: :system, js: true do
+RSpec.describe "Deleting Comment", js: true do
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
   let(:article) do
@@ -12,7 +12,7 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
     sign_in user
   end
 
-  it "works" do
+  it "returns to article page" do
     visit "/"
     visit "#{comment.path}/delete_confirm"
 

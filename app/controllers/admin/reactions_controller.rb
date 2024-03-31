@@ -7,6 +7,7 @@ module Admin
     def update
       @reaction = Reaction.find(params[:id])
       if @reaction.update(status: params[:status])
+        @reaction.reactable.touch
         Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
         render json: { outcome: "Success" }
       else

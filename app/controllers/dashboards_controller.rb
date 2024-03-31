@@ -17,6 +17,7 @@ class DashboardsController < ApplicationController
 
   LIMIT_PER_PAGE_DEFAULT = 80
   LIMIT_PER_PAGE_MAX = 1000
+
   def show
     fetch_and_authorize_user
     target = @user
@@ -41,6 +42,7 @@ class DashboardsController < ApplicationController
     end
 
     @reactions_count = @articles.sum(&:public_reactions_count)
+    @comments_count = @articles.sum(&:comments_count)
     @page_views_count = @articles.sum(&:page_views_count)
 
     @articles = @articles.includes(:collection).sorting(params[:sort]).decorate
@@ -50,7 +52,7 @@ class DashboardsController < ApplicationController
 
   def following_tags
     fetch_and_authorize_user
-    @followed_tags = follows_for(user: @user, type: "ActsAsTaggableOn::Tag", order_by: :points)
+    @followed_tags = follows_for_tag(user: @user, order_by: :points)
     @collections_count = collections_count(@user)
   end
 
@@ -74,7 +76,7 @@ class DashboardsController < ApplicationController
 
   def followers
     fetch_and_authorize_user
-    @follows = Follow.followable_user(@user.id)
+    @follows = Follow.non_suspended("User", @user.id)
       .includes(:follower).order(created_at: :desc).limit(follows_limit)
     @collections_count = collections_count(@user)
   end
@@ -97,10 +99,23 @@ class DashboardsController < ApplicationController
       .includes(:subscriber).order(created_at: :desc).page(params[:page]).per(100)
   end
 
+  def hidden_tags
+    fetch_and_authorize_user
+    @hidden_tags = follows_for_tag(user: @user, order_by: :explicit_points, explicit_points: (...0))
+    @collections_count = collections_count(@user)
+  end
+
   private
 
   def follows_for(user:, type:, order_by: :created_at)
     user.follows_by_type(type).order(order_by => :desc).includes(:followable).limit(follows_limit)
+  end
+
+  def follows_for_tag(user:, order_by: :created_at, explicit_points: (0...))
+    user.follows_by_type("ActsAsTaggableOn::Tag").order(order_by => :desc)
+      .where(explicit_points: explicit_points)
+      .includes(:followable)
+      .limit(follows_limit)
   end
 
   def set_source

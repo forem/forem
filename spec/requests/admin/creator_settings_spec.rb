@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/creator_settings/new", type: :request do
+RSpec.describe "/creator_settings/new" do
   let!(:current_user) { create(:user, :creator) }
   let!(:non_admin_user) { create(:user) }
   let(:params) do

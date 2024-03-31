@@ -1,5 +1,5 @@
 <% @actor = @article.organization || @article.user %>
-<div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
+<div class="crayons-article-sticky grid gap-4 pb-4 break-word" id="article-show-primary-sticky-nav">
   <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 gap-4 grid" style="border-top-color: <%= Color::CompareHex.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
     <%= render "shared/profile_card_content", actor: @actor, context: "sidebar" %>
   </div>
@@ -55,17 +55,4 @@
   <% end %>
 </div>
 
-<%# cache("article-sidebar-content-#{rand(5)}-#{@article.id}-#{user_signed_in?}-#{(@organization || @user).latest_article_updated_at}", expires_in: 15.minutes) do %>
-  <% sidebar_ad = DisplayAd.for_display("post_sidebar", user_signed_in?, @article.decorate.cached_tag_list_array) %>
-  <% if @article.permit_adjacent_sponsors? && sidebar_ad %>
-    <div class="crayons-article-sticky grid gap-4 break-word pt-3">
-      <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget crayons-post_sidebar_display_ad text-styles"
-           data-display-unit data-id="<%= sidebar_ad.id %>"
-           data-category-click="<%= DisplayAdEvent::CATEGORY_CLICK %>"
-           data-category-impression="<%= DisplayAdEvent::CATEGORY_IMPRESSION %>"
-           data-context-type="<%= DisplayAdEvent::CONTEXT_TYPE_HOME %>">
-        <%= sidebar_ad.processed_html.html_safe %>
-      </div>
-    </div>
-  <% end %>
-<%# end %>
+<div class="crayons-article-sticky grid gap-4 break-word js-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_sidebar) %>"></div>

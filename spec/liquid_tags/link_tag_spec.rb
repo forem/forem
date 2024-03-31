@@ -41,7 +41,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{CGI.escapeHTML(article.title)}</h2>
-            <h3>#{CGI.escapeHTML(article.user.name)} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
+            <h3>#{CGI.escapeHTML(article.user.name)} ・ #{article.readable_publish_date}</h3>
             <div class='ltag__link__taglist'>
               #{tags}
             </div>
@@ -67,7 +67,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
         <a href='#{article.path}' class='ltag__link__link'>
           <div class='ltag__link__content'>
             <h2>#{CGI.escapeHTML(article.title)}</h2>
-            <h3>#{CGI.escapeHTML(article.user.name)} for #{CGI.escapeHTML(article.organization.name)} ・ #{article.readable_publish_date} ・ #{article.reading_time} min read</h3>
+            <h3>#{CGI.escapeHTML(article.user.name)} for #{CGI.escapeHTML(article.organization.name)} ・ #{article.readable_publish_date}</h3>
             <div class='ltag__link__taglist'>
               #{tags}
             </div>
@@ -133,18 +133,6 @@ RSpec.describe LinkTag, type: :liquid_tag do
     expect do
       generate_new_liquid(slug: "https://xkcd.com/2363/")
     end.to raise_error(StandardError)
-  end
-
-  it "renders default reading time of 1 minute for short articles" do
-    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to include("1 min read")
-  end
-
-  it "renders reading time of article lengthy articles" do
-    template = file_fixture("article_long_content.txt").read
-    article = create(:article, user: user, body_markdown: template)
-    liquid = generate_new_liquid(slug: "/#{user.username}/#{article.slug}/")
-    expect(liquid.render).to include("3 min read")
   end
 
   it "renders with a full link with a trailing slash" do

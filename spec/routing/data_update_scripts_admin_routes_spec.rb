@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Data Update Scripts admin routes", type: :routing do
+RSpec.describe "Data Update Scripts admin routes" do
   it "renders the data update scripts admin route if the feature flag is enabled" do
     allow(FeatureFlag).to receive(:enabled?).with(:data_update_scripts).and_return(true)
 

@@ -1,7 +1,7 @@
 require "rails_helper"
 require "sidekiq/testing"
 
-RSpec.describe Notification, type: :model do
+RSpec.describe Notification do
   let(:user)            { create(:user) }
   let(:user2)           { create(:user) }
   let(:user3)           { create(:user) }
@@ -98,6 +98,23 @@ RSpec.describe Notification, type: :model do
             described_class.send_new_follower_notification(user_follows_user2)
           end
         end.to change(user2.notifications, :count).by(1)
+      end
+
+      it "sends as perform_in 60 minutes if follower is new" do
+        user.update_column(:registered_at, 1.day.ago)
+        allow(Notifications::NewFollowerWorker).to receive(:perform_in)
+          .with(60.minutes, anything, anything)
+        described_class.send_new_follower_notification(user_follows_user2)
+        expect(Notifications::NewFollowerWorker).to have_received(:perform_in)
+          .with(60.minutes, anything, anything)
+      end
+
+      it "sends as perform_async if follower is not new" do
+        user.update_column(:registered_at, 7.days.ago)
+        allow(Notifications::NewFollowerWorker).to receive(:perform_async)
+          .with(anything, anything)
+        described_class.send_new_follower_notification(user_follows_user2)
+        expect(Notifications::NewFollowerWorker).to have_received(:perform_async)
       end
 
       it "creates a notification from the follow instance" do

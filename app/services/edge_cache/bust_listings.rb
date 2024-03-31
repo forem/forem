@@ -8,9 +8,7 @@ module EdgeCache
 
       cache_bust = EdgeCache::Bust.new
       cache_bust.call("/listings")
-      cache_bust.call("/listings?i=i")
       cache_bust.call("/listings/#{listing.category}/#{listing.slug}")
-      cache_bust.call("/listings/#{listing.category}/#{listing.slug}?i=i")
       cache_bust.call("/listings/#{listing.category}")
     end
   end

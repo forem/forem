@@ -19,6 +19,9 @@ fr:
         meta:
           title: Purchase Credits
         heading: Purchase credits for @%{name}
+        hook:
+          text_html: Credits are used for %{listings} as well as upcoming products and services.
+          listings: "%{community} listings"
         form:
           amount:
             label: Amount to Purchase

@@ -7,7 +7,7 @@ export default class ReactionController extends Controller {
     url: String,
   };
 
-  updateReaction(status) {
+  updateReaction(status, removeElement = true) {
     const id = this.idValue;
 
     fetch(this.urlValue, {
@@ -15,7 +15,7 @@ export default class ReactionController extends Controller {
       headers: {
         Accept: 'application/json',
         'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
-          .content,
+          ?.content,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
@@ -28,8 +28,16 @@ export default class ReactionController extends Controller {
         .json()
         .then((json) => {
           if (json.outcome === 'Success') {
-            this.element.remove();
-            document.getElementById(`js__reaction__div__hr__${id}`).remove();
+            if (removeElement === true) {
+              this.element.remove();
+              document.getElementById(`js__reaction__div__hr__${id}`).remove();
+            } else {
+              // TODO (#19531): Code Optimisation- avoid reloading entire page for this minor item change.
+              // Once the status of item gets updated in admin/content_manager/articles/<article-id>, we
+              // reload the entire page here. Ideally we should only re-render the item which was updated
+              // but given the case that this feature is used by internal-team, for now its fine.
+              location.reload();
+            }
           } else {
             window.alert(json.error);
           }
@@ -40,12 +48,14 @@ export default class ReactionController extends Controller {
     );
   }
 
-  updateReactionInvalid() {
-    this.updateReaction(this.invalidStatus);
+  updateReactionInvalid(event) {
+    const { removeElement } = event.target.dataset;
+    this.updateReaction(this.invalidStatus, removeElement);
   }
 
-  updateReactionConfirmed() {
-    this.updateReaction(this.confirmedStatus);
+  updateReactionConfirmed(event) {
+    const { removeElement } = event.target.dataset;
+    this.updateReaction(this.confirmedStatus, removeElement);
   }
 
   reactableUserCheck() {

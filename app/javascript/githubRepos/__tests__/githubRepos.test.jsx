@@ -228,14 +228,14 @@ describe('<GithubRepos />', () => {
 
     // No need to test it's contents as this is the <SingleRepo /> component
     // which has it's own tests.
-    expect(repoList).toBeDefined();
+    expect(repoList).toExist();
   });
 
   it('should render with no repositories', () => {
     fetch.mockResponse('[]');
     const { queryByTitle } = render(<GithubRepos />);
 
-    expect(queryByTitle('Loading GitHub repositories')).toBeDefined();
+    expect(queryByTitle('Loading GitHub repositories')).toExist();
   });
 
   it('should render error message when repositories cannot be loaded', async () => {

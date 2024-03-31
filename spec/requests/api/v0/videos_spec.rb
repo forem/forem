@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Videos", type: :request do
+RSpec.describe "Api::V0::Videos" do
   let(:user) { create(:user, created_at: 1.month.ago) }
 
   def create_article(article_params = {})
@@ -69,7 +69,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       get api_videos_path
 
       expected_result = [video_article.id, other_video_article.id]
-      expect(response.parsed_body.map { |a| a["id"] }).to eq(expected_result)
+      expect(response.parsed_body.pluck("id")).to eq(expected_result)
     end
 
     it "supports pagination" do

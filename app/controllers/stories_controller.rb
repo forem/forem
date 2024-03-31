@@ -19,13 +19,13 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index show]
   before_action :set_cache_control_headers, only: %i[index show]
+  before_action :set_user_limit, only: %i[index show]
   before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
 
   def index
     @page = (params[:page] || 1).to_i
-
     return handle_user_or_organization_or_podcast_or_page_index if params[:username]
 
     handle_base_index
@@ -38,14 +38,33 @@ class StoriesController < ApplicationController
       handle_article_show
     elsif (@article = Article.find_by(slug: params[:slug])&.decorate)
       handle_possible_redirect
-    else
-      @podcast = Podcast.available.find_by!(slug: params[:username])
+    elsif (@podcast = Podcast.available.find_by(slug: params[:username]))
       @episode = @podcast.podcast_episodes.available.find_by!(slug: params[:slug])
       handle_podcast_show
+    elsif (@page = Page.find_by(slug: "#{params[:username]}/#{params[:slug]}", is_top_level_path: true))
+      handle_page_display
+    else
+      not_found
     end
   end
 
   private
+
+  # for spam content we need to remove cache control headers to access current_user to check admin access
+  # so that admins could have access to spam articles and profiles
+  def check_admin_access
+    unset_cache_control_headers if user_signed_in?
+    is_admin = user_signed_in? && current_user&.any_admin?
+    not_found unless is_admin
+  end
+
+  def set_user_limit
+    @user_limit = 50
+  end
+
+  def assign_hero_banner
+    @hero_billboard = Billboard.for_display(area: "home_hero", user_signed_in: user_signed_in?)
+  end
 
   def assign_hero_html
     return if Campaign.current.hero_html_variant_name.blank?
@@ -124,6 +143,7 @@ class StoriesController < ApplicationController
   def handle_base_index
     @home_page = true
     assign_feed_stories unless user_signed_in? # Feed fetched async for signed-in users
+    assign_hero_banner
     assign_hero_html
     assign_podcasts
     get_latest_campaign_articles if Campaign.current.show_in_sidebar?
@@ -159,6 +179,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
+    @organization_users = @organization.users.order(badge_achievements_count: :desc)
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -172,6 +193,12 @@ class StoriesController < ApplicationController
     end
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
+
+    check_admin_access if @user.spam?
+
+    if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
+      not_found
+    end
     assign_user_comments
     assign_user_stories
     @list_of = "articles"
@@ -230,7 +257,7 @@ class StoriesController < ApplicationController
     if params[:timeframe].in?(Timeframe::FILTER_TIMEFRAMES)
       @stories = Articles::Feeds::Timeframe.call(params[:timeframe])
     elsif params[:timeframe] == Timeframe::LATEST_TIMEFRAME
-      @stories = Articles::Feeds::Latest.call
+      @stories = Articles::Feeds::Latest.call(minimum_score: Settings::UserExperience.home_feed_minimum_score)
     else
       @default_home_feed = true
       feed = Articles::Feeds::LargeForemExperimental.new(page: @page, tag: params[:tag])
@@ -248,6 +275,8 @@ class StoriesController < ApplicationController
     not_found if permission_denied?
     not_found unless @article.user
 
+    check_admin_access if @article.user.spam?
+
     @pinned_article_id = PinnedArticle.id
 
     @article_show = true
@@ -256,6 +285,9 @@ class StoriesController < ApplicationController
     @user = @article.user
     @organization = @article.organization
     @comments_order = fetch_sort_order
+
+    @comments_count = Comments::Count.call(@article)
+
     if @article.collection
       @collection = @article.collection
 
@@ -286,12 +318,13 @@ class StoriesController < ApplicationController
 
   def assign_user_comments
     comment_count = helpers.comment_count(params[:view])
-    @comments = if @user.comments_count.positive?
-                  @user.comments.where(deleted: false)
-                    .order(created_at: :desc).includes(:commentable).limit(comment_count)
-                else
-                  []
-                end
+    @comments = []
+    return unless user_signed_in? && @user.comments_count.positive?
+
+    @comments = @user.comments.good_quality.where(deleted: false)
+      .order(created_at: :desc)
+      .includes(commentable: [:podcast])
+      .limit(comment_count)
   end
 
   def assign_user_stories
@@ -299,6 +332,7 @@ class StoriesController < ApplicationController
       .limited_column_select
       .order(published_at: :desc).decorate
     @stories = ArticleDecorator.decorate_collection(@user.articles.published
+      .includes(:distinct_reaction_categories)
       .limited_column_select
       .where.not(id: @pinned_stories.map(&:id))
       .order(published_at: :desc).page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
@@ -321,7 +355,7 @@ class StoriesController < ApplicationController
   def redirect_to_lowercase_username
     return unless params[:username]&.match?(/[[:upper:]]/)
 
-    redirect_permanently_to("/#{params[:username].downcase}")
+    redirect_permanently_to(action: :index, username: params[:username].downcase)
   end
 
   def set_user_json_ld

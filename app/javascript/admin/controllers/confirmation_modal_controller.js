@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
 
 const nonRedirectEndpoints = [
   '/admin/content_manager/badge_achievements',
-  '/admin/customization/display_ads',
+  '/admin/customization/billboards',
 ];
 
 const redirectEndpoints = ['/admin/advanced/broadcasts'];

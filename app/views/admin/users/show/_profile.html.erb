@@ -18,7 +18,7 @@
         <h1 class="crayons-title lh-tight">
           <%= @user.name %>
         </h1>
-        <%= render "admin/users/show/profile/status" %>
+        <%= render partial: "admin/users/show/profile/status", locals: { user: @user} %>
       </div>
       <%= render "admin/users/show/profile/actions" %>
     </div>

@@ -18,6 +18,10 @@ module Admin
       @response_template = ResponseTemplate.new
     end
 
+    def edit
+      @response_template = ResponseTemplate.find(params[:id])
+    end
+
     def create
       @response_template = ResponseTemplate.new(permitted_params)
       @response_template.user = find_user_via_identifier params[:response_template][:user_identifier]
@@ -31,10 +35,6 @@ module Admin
         @response_templates = ResponseTemplate.page(params[:page]).per(50)
         render :new
       end
-    end
-
-    def edit
-      @response_template = ResponseTemplate.find(params[:id])
     end
 
     def update

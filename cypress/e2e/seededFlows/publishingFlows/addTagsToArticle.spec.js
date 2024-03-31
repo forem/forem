@@ -38,82 +38,68 @@ describe('Add tags to article', () => {
     cy.clearLocalStorage();
   });
 
-  it('automatically suggests top tags when field is focused', () => {
+  it('properly suggests top tags when field is focused', () => {
+    cy.intercept('search/tags**', exampleSearchResult);
+
     // It is possible in slow running tests that the fetched "top tags" will not be available in the autocomplete before the focus event triggered below.
     // Here we retry the focus event until the combobox expands.
     const focusInputAndGetParentCombobox = ($el) =>
       $el.focus().blur().focus().parents('div');
+
+    // Focus the input automatically return 'top tags'
     cy.findByRole('textbox', { name: 'Add up to 4 tags' })
       .pipe(focusInputAndGetParentCombobox)
       .should('have.attr', 'aria-expanded', 'true');
-
     cy.findByRole('heading', { name: 'Top tags' }).should('exist');
     cy.findByRole('option', { name: '# tagone' }).should('exist');
-    cy.findByRole('option', {
-      name: '# tagtwo tag two short summary',
-    }).should('exist');
-  });
+    cy.findByRole('option', { name: '# tagtwo tag two short summary' }).should(
+      'exist',
+    );
 
-  it("doesn't suggest top tags already added", () => {
+    // User select first tag option
+    // - Check input has 'reset' and still has focus
+    // - Check only the unselected top tag is presented
     cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
     cy.findByRole('option', { name: '# tagone' }).click();
-
-    // Check input has 'reset' and still has focus
     cy.get('@input').should('have.value', '').should('have.focus');
-
     cy.findByRole('heading', { name: 'Top tags' }).should('exist');
-    // Check only the unselected top tag is presented
     cy.findByRole('option', {
       name: '# tagtwo tag two short summary',
     }).should('exist');
     cy.findByRole('option', { name: '# tagone' }).should('not.exist');
-  });
 
-  it('searches and shows suggestions', () => {
-    cy.intercept('search/tags**', exampleSearchResult);
-
+    // User searches for a tag
+    // - Top tags should not be shown when a search starts
     cy.findByRole('textbox', { name: 'Add up to 4 tags' }).type('a');
-
-    // Top tags should not be shown when a search starts
     cy.findByRole('heading', { name: 'Top tags' }).should('not.exist');
     cy.findByRole('option', { name: '# suggestion suggestion summary' }).should(
       'exist',
     );
-  });
 
-  it('displays currently typed text as a suggestion if no suggestions found', () => {
+    // displays currently typed text as a suggestion if no suggestions are returned
+    // - Top tags should not be shown when a search starts
     cy.intercept('search/tags**', { result: [] });
-
     cy.findByRole('textbox', { name: 'Add up to 4 tags' }).type('a');
 
-    // Top tags should not be shown when a search starts
     cy.findByRole('heading', { name: 'Top tags' }).should('not.exist');
-    cy.findByRole('option', { name: '# a' }).should('exist');
+    cy.findByRole('option', { name: '# aa' }).should('exist');
   });
 
   it('selects a tag by clicking, typing a comma or space', () => {
     cy.findByRole('textbox', { name: 'Add up to 4 tags' }).as('input').focus();
-
     cy.findByRole('option', { name: '# tagone' }).click();
-
     cy.findByRole('button', { name: 'Edit tagone' }).should('exist');
     cy.findByRole('button', { name: 'Remove tagone' }).should('exist');
-
     cy.get('@input').type('something,');
-
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
     cy.findByRole('button', { name: 'Remove something' }).should('exist');
-
     cy.get('@input').type('another ');
-
     cy.findByRole('button', { name: 'Edit another' }).should('exist');
     cy.findByRole('button', { name: 'Remove another' }).should('exist');
-  });
 
-  it('selects currently entered text when input blurs', () => {
-    cy.findByRole('textbox', { name: 'Add up to 4 tags' })
-      .type('something')
-      .blur();
+    // selects currently entered text when input blurs
+    cy.get('@input').type('something');
+    cy.get('@input').blur();
 
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
     cy.findByRole('button', { name: 'Remove something' }).should('exist');
@@ -147,11 +133,10 @@ describe('Add tags to article', () => {
     cy.findByRole('button', { name: 'Edit something' }).should('exist');
 
     // Verify input was cleared on selection, then type a backspace and check we're now editing the tag again
-    cy.get('@input')
-      .should('have.focus')
-      .should('have.value', '')
-      .type('{backspace}')
-      .should('have.value', 'something');
+    cy.get('@input').should('have.focus');
+    cy.get('@input').should('have.value', '');
+    cy.get('@input').type('{backspace}');
+    cy.get('@input').should('have.value', 'something');
 
     // When editing the edit/remove buttons should not be present any more
     cy.findByRole('button', { name: 'Edit something' }).should('not.exist');
@@ -208,11 +193,13 @@ describe('Add tags to article', () => {
     cy.findAllByRole('option').should('have.length', 0);
 
     // Try to select by typing a comma, and check nothing happens
-    cy.get('@input').type(',').should('have.value', 'a');
+    cy.get('@input').type(',');
+    cy.get('@input').should('have.value', 'a');
     cy.findByRole('button', { name: 'Edit a' }).should('not.exist');
 
     // Try to select by typing a space, and check nothing happens
-    cy.get('@input').type(' ').should('have.value', 'a');
+    cy.get('@input').type(' ');
+    cy.get('@input').should('have.value', 'a');
     cy.findByRole('button', { name: 'Edit a' }).should('not.exist');
   });
 });

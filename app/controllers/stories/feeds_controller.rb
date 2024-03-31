@@ -4,6 +4,10 @@ module Stories
 
     def show
       @page = (params[:page] || 1).to_i
+      # This most recent test has concluded with a winner. Preserved as a comment awaiting next test
+      # @comments_variant = field_test(:comments_to_display_20240129, participant: @user)
+      @comments_variant = "more_inclusive_recent_good_comments"
+
       @stories = assign_feed_stories
 
       add_pinned_article
@@ -43,7 +47,7 @@ module Stories
                  controller: self,
                  page: @page,
                  tag: params[:tag],
-                 number_of_articles: 25,
+                 number_of_articles: 35,
                )
              end
       Datadog::Tracing.trace("feed.query",
@@ -55,7 +59,8 @@ module Stories
         # weighted strategy has not.  I also don't want to alter the
         # weighted query implementation as it returns a lovely
         # ActiveRecord::Relation.  So this is a compromise.
-        feed.more_comments_minimal_weight_randomized.to_a
+
+        feed.more_comments_minimal_weight_randomized(comments_variant: @comments_variant)
       end
     end
 

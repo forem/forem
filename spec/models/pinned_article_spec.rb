@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PinnedArticle, type: :model do
+RSpec.describe PinnedArticle do
   let(:article) { create(:article) }
 
   describe ".exists?" do

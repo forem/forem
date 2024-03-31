@@ -14,6 +14,13 @@ module Reactions
       case reaction.reactable_type
       when "Article"
         cache_bust.call("/reactions?article_id=#{reaction.reactable_id}")
+        article = reaction.reactable
+
+        # We only want to bust on the creation or deletion of the "first" reaction.
+        # This is logically called *after* creation, but *before* deletion. So "1" is correct in each case.
+        if Reaction.for_articles([reaction.reactable_id]).public_category.size == 1
+          EdgeCache::BustArticle.call(article)
+        end
       when "Comment"
         path = "/reactions?commentable_id=#{reaction.reactable.commentable_id}&" \
                "commentable_type=#{reaction.reactable.commentable_type}"

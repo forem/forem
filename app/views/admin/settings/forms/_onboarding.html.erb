@@ -5,19 +5,6 @@
     <summary class="crayons-subtitle-2 p-6">Onboarding</summary>
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
-        <div class="crayons-field">
-          <%= admin_config_label :onboarding_background_image %>
-          <%= admin_config_description Constants::Settings::General.details[:onboarding_background_image][:description] %>
-          <%= f.text_field :onboarding_background_image,
-                           class: "crayons-textfield",
-                           value: Settings::General.onboarding_background_image,
-                           placeholder: Constants::Settings::General.details[:onboarding_background_image][:placeholder] %>
-          <div class="row mt-2">
-            <div class="col-12">
-              <img alt="onboarding background image" class="img-fluid" src="<%= Settings::General.onboarding_background_image %>" loading="lazy" />
-            </div>
-          </div>
-        </div>
 
         <div class="crayons-field">
           <%= admin_config_label :suggested_tags %>
@@ -29,23 +16,35 @@
         </div>
 
         <div class="crayons-field">
-          <%= admin_config_label :suggested_users %>
-          <%= admin_config_description Constants::Settings::General.details[:suggested_users][:description] %>
-          <%= f.text_field :suggested_users,
-                           class: "crayons-textfield",
-                           value: Settings::General.suggested_users.join(","),
-                           placeholder: Constants::Settings::General.details[:suggested_users][:placeholder] %>
+          <%= admin_config_label :newsletter_step_heading %>
+          <%= admin_config_description Constants::Settings::General.details[:onboarding_newsletter_content][:description] %>
+          <%= f.text_area :onboarding_newsletter_content,
+                          class: "crayons-textfield",
+                          value: Settings::General.onboarding_newsletter_content,
+                          placeholder: Constants::Settings::General.details[:onboarding_newsletter_content][:placeholder] %>
         </div>
 
-        <div class="crayons-field crayons-field--checkbox">
-          <%= f.check_box :prefer_manual_suggested_users, checked: Settings::General.prefer_manual_suggested_users, class: "crayons-checkbox" %>
-          <div class="mt-0">
-            <%= admin_config_label :prefer_manual_suggested_users %>
-            <p class="crayons-field__description">
-            <%= Constants::Settings::General.details[:prefer_manual_suggested_users][:description] %>
-            </p>
-          </div>
-        </div>
+        <div class="crayons-field">
+          <%= admin_config_label Constants::Settings::General.details[:onboarding_newsletter_opt_in_head][:description] %>
+          <%= f.text_field :onboarding_newsletter_opt_in_head,
+                           class: "crayons-textfield",
+                           value: Settings::General.onboarding_newsletter_opt_in_head,
+                           placeholder: Constants::Settings::General.details[:onboarding_newsletter_opt_in_head][:placeholder] %>
+
+          <%= admin_config_label Constants::Settings::General.details[:onboarding_newsletter_opt_in_subhead][:description] %>
+          <%= f.text_field :onboarding_newsletter_opt_in_subhead,
+                           class: "crayons-textfield",
+                           value: Settings::General.onboarding_newsletter_opt_in_subhead,
+                           placeholder: Constants::Settings::General.details[:onboarding_newsletter_opt_in_subhead][:placeholder] %>
+          <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+            <%= admin_config_label Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:description] %>
+            <%= f.text_field :geos_with_allowed_default_email_opt_in,
+                             class: "crayons-textfield",
+                             value: Settings::General.geos_with_allowed_default_email_opt_in,
+                             placeholder: Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:placeholder] %>
+          <% end %>
+       </div>
+
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>

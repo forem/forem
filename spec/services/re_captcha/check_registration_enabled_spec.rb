@@ -9,8 +9,8 @@ RSpec.describe ReCaptcha::CheckRegistrationEnabled, type: :request do
       end
 
       it "is enabled if both site & secret keys present" do
-        allow(Settings::Authentication).to receive(:recaptcha_secret_key).and_return("someSecretKey")
-        allow(Settings::Authentication).to receive(:recaptcha_site_key).and_return("someSiteKey")
+        allow(Settings::Authentication).to receive_messages(recaptcha_secret_key: "someSecretKey",
+                                                            recaptcha_site_key: "someSiteKey")
         expect(described_class.call).to be(true)
       end
 

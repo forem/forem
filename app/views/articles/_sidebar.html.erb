@@ -4,23 +4,13 @@
       <%= render partial: "shared/auth_widget", locals: { tracking_id: "ca_left_sidebar_home_page", source: "left_sidebar" } unless user_signed_in? %>
       <%= render partial: "layouts/main_nav", locals: { context: "sidebar" } %>
       <%= render "layouts/sidebar_tags" %>
-      <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
     <% end %>
-    <% cache("display-area-left-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
-      <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left", user_signed_in?) %>
-      <% if @left_sidebar_ad %>
-        <div class="crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @left_sidebar_ad.id %>">
-          <%= @left_sidebar_ad.processed_html.html_safe %>
-        </div>
-      <% end %>
-    <% end %>
-    <% cache("display-area-left-2-#{rand(5)}-#{user_signed_in?}", expires_in: 5.minutes) do %>
-      <% @second_left_sidebar_ad = DisplayAd.for_display("sidebar_left_2", user_signed_in?) %>
-      <% if @second_left_sidebar_ad %>
-        <div class="mt-4 crayons-card crayons-card--secondary p-3 crayons-sponsorship-widget" data-display-unit data-id="<%= @second_left_sidebar_ad.id %>">
-          <%= @second_left_sidebar_ad.processed_html.html_safe %>
-        </div>
-      <% end %>
+    <div class="js-billboard-container" data-async-url="<%= billboard_path(placement_area: :sidebar_left) %>"></div>
+    <div class="js-billboard-container pt-4" data-async-url="<%= billboard_path(placement_area: :sidebar_left_2) %>"></div>
+    <% cache("footer-modal-#{ForemInstance.deployed_at}-#{Settings::General.admin_action_taken_at&.rfc3339}", expires_in: 24.hours) do %>
+      <%= render "layouts/sidebar_footer" %>
     <% end %>
   </aside>
 </div>
+
+<%= javascript_include_tag "billboard", defer: true %>

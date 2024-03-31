@@ -13,7 +13,7 @@
         <p class="lh-tight"><small class="fs-s color-base-60"><%= time_ago_in_words json_data["article"]["published_at"], scope: :"datetime.distance_in_words_ago" %></small></p>
       </header>
 
-      <%= render "notifications/shared/article_preview", json_data: json_data, notification: notification, context: "default" %>
+      <%= render "notifications/shared/article_preview", notification: notification, context: "default" %>
     <% elsif notification.json_data["comment"] %>
       <h2 class="fs-base fw-normal mb-4">
         <%= message_user_acted_maybe_org(json_data, "views.notifications.mention.comment_html") %>

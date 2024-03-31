@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Profile, type: :model do
+RSpec.describe Profile do
   let(:user) { create(:user) }
   let(:profile) { user.profile }
 
@@ -22,7 +22,7 @@ RSpec.describe Profile, type: :model do
       it "is not valid if the summary is too long and the user is not grandfathered" do
         profile.summary = invalid_summary
         expect(profile).not_to be_valid
-        expect(profile.errors_as_sentence).to eq "Summary is too long"
+        expect(profile.errors_as_sentence).to eq "Bio is too long"
       end
 
       it "is valid if the summary is less than the limit" do
@@ -54,6 +54,16 @@ RSpec.describe Profile, type: :model do
         expect(profile).not_to be_valid
         expect(profile.errors_as_sentence)
           .to include("is too long (maximum is 200 characters)")
+      end
+
+      it "is valid if text contains new-lines within 200 characters" do
+        profile.public_send(
+          text_area_set,
+          "Lorem Ipsum is simply dummy text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy
+text of the printing and typesetting industry\r\nLorem Ipsum is simply dummy text of the printing and",
+        )
+
+        expect(profile).to be_valid
       end
     end
 

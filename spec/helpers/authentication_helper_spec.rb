@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe AuthenticationHelper, type: :helper do
+RSpec.describe AuthenticationHelper do
   let(:user) { create(:user, :with_identity) }
 
   before do

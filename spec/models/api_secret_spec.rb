@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe ApiSecret, type: :model do
+RSpec.describe ApiSecret do
   describe "validations" do
     subject { create(:api_secret) }
 

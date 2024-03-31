@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe PodcastOwnership, type: :model do
+RSpec.describe PodcastOwnership do
   let(:podcast_ownership) { create(:podcast_ownership) }
 
   describe "validations" do

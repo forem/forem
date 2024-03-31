@@ -1,7 +1,7 @@
 require "rails_helper"
 require "requests/shared_examples/internal_policy_dependant_request"
 
-RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
+RSpec.describe "/admin/content_manager/badge_achievements" do
   let(:admin) { create(:user, :super_admin) }
   let!(:badge) { create(:badge, title: "Not 'Hello, world!'") }
   let(:params) do
@@ -28,7 +28,7 @@ RSpec.describe "/admin/content_manager/badge_achievements", type: :request do
     it "successfully creates a badge" do
       expect do
         post_resource
-      end.to change { Badge.all.count }.by(1)
+      end.to change(Badge, :count).by(1)
     end
   end
 

@@ -6,9 +6,7 @@ RSpec.describe EdgeCache::BustPage, type: :service do
   let(:paths) do
     [
       "/page/#{slug}",
-      "/page/#{slug}?i=i",
       "/#{slug}",
-      "/#{slug}?i=i",
     ]
   end
 
@@ -20,7 +18,7 @@ RSpec.describe EdgeCache::BustPage, type: :service do
     end
   end
 
-  it "busts the cache" do
+  it "busts the cache", :aggregate_failures do
     described_class.call(slug)
 
     paths.each do |path|

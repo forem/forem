@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe OpenGraph, type: :service, vcr: true do
+describe OpenGraph, :vcr, type: :service do
   VCR.use_cassette("open_graph") do
     let(:page) { described_class.new("https://github.com/forem") }
   end

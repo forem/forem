@@ -26,7 +26,8 @@ RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
   end
 
   # TODO: [@forem/delightful]: re-enable this once email confirmation is re-enabled
-  xit "returns an error for an email mismatch" do
+  it "returns an error for an email mismatch" do
+    skip "email confirmation disabled"
     source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
     user_subscription_params = { source_type: source.class.name, source_id: source.id,
                                  subscriber_email: "old@email.com" }

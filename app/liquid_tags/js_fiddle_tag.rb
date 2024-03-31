@@ -36,7 +36,7 @@ class JsFiddleTag < LiquidTagBase
       raise StandardError, I18n.t("liquid_tags.js_fiddle_tag.invalid_options")
     end
 
-    validated_options.length.zero? ? "" : validated_options.join(",").concat("/")
+    validated_options.empty? ? "" : validated_options.join(",").concat("/")
   end
 
   def parse_link(link)

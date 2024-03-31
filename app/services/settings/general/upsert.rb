@@ -1,7 +1,7 @@
 module Settings
   class General
     module Upsert
-      PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags suggested_users].freeze
+      PARAMS_TO_BE_CLEANED = %i[sidebar_tags suggested_tags].freeze
       TAG_PARAMS = %w[sidebar_tags suggested_tags].freeze
 
       def self.call(settings)
@@ -26,6 +26,7 @@ module Settings
           settings[param] = settings[param]&.downcase&.delete(" ") if settings[param]
         end
         settings[:credit_prices_in_cents]&.transform_values!(&:to_i)
+        settings[:billboard_enabled_countries]&.transform_values!(&:to_sym)
         settings
       end
 
@@ -34,8 +35,18 @@ module Settings
       def self.create_tags_if_necessary(settings)
         return unless (settings.keys & TAG_PARAMS).any?
 
-        tags = Settings::General.suggested_tags + Settings::General.sidebar_tags
-        Tag.find_or_create_all_with_like_by_name(tags)
+        create_sidebar_tags
+        create_suggested_tags
+      end
+
+      def self.create_sidebar_tags
+        Tag.find_or_create_all_with_like_by_name(Settings::General.sidebar_tags)
+      end
+
+      def self.create_suggested_tags
+        suggested = Tag.find_or_create_all_with_like_by_name(Settings::General.suggested_tags)
+        Tag.where(suggested: true).update_all(suggested: false)
+        Tag.where(id: suggested).update_all(suggested: true)
       end
 
       def self.upload_logo(image)

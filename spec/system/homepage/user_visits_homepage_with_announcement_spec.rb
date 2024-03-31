@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User visits a homepage", type: :system do
+RSpec.describe "User visits a homepage" do
   def expect_broadcast_data(page)
     within ".broadcast-wrapper" do
       expect(page).to have_selector(".broadcast-data")

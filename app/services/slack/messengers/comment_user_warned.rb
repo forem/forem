@@ -8,13 +8,13 @@ module Slack
         Manage commenter - @%<username>s: %<internal_user_url>s
       TEXT
 
+      def self.call(...)
+        new(...).call
+      end
+
       def initialize(comment:)
         @comment = comment
         @user = comment.user
-      end
-
-      def self.call(...)
-        new(...).call
       end
 
       def call

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V1::ReadingList", type: :request do
+RSpec.describe "Api::V1::ReadingList" do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:api_secret) { create(:api_secret, user: user) }

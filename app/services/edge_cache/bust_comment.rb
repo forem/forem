@@ -12,7 +12,6 @@ module EdgeCache
 
       commentable.comments.includes(:user).find_each do |comment|
         cache_bust.call(comment.path)
-        cache_bust.call("#{comment.path}?i=i")
       end
 
       cache_bust.call("#{commentable.path}/comments/*")
@@ -25,8 +24,6 @@ module EdgeCache
       return unless article.decorate.discussion?
 
       cache_bust.call("/")
-      cache_bust.call("/?i=i")
-      cache_bust.call("?i=i")
     end
 
     private_class_method :bust_article_comment

@@ -28,6 +28,6 @@ describe('<Title />', () => {
 
     expect(
       queryByPlaceholderText(/post title/i, { selector: 'textarea' }),
-    ).toBeDefined();
+    ).toExist();
   });
 });

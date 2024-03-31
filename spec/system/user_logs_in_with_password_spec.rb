@@ -5,7 +5,7 @@ RSpec.describe "Authenticating with a password" do
     allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
     fill_in "Email", with: email
     fill_in "Password", with: password
-    click_button "Continue"
+    click_button "Log in"
   end
 
   let(:password) { "p4assw0rd" }

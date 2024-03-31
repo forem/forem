@@ -7,12 +7,12 @@ module Notifications
       delegate :comment_data, to: Notifications
       delegate :article_data, to: Notifications
 
-      def initialize(mention)
-        @mention = mention
-      end
-
       def self.call(...)
         new(...).call
+      end
+
+      def initialize(mention)
+        @mention = mention
       end
 
       def call

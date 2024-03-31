@@ -32,7 +32,7 @@ module Html
       self
     end
 
-    def prefix_all_images(width = 880, synchronous_detail_detection: false)
+    def prefix_all_images(width: 880, synchronous_detail_detection: false, quality: "auto")
       # wrap with Cloudinary or allow if from giphy or githubusercontent.com
       doc = Nokogiri::HTML.fragment(@html)
 
@@ -43,14 +43,15 @@ module Html
         next if allowed_image_host?(src)
 
         if synchronous_detail_detection
-          img["width"], img["height"] = FastImage.size(src, timeout: 10)
+          header = { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" }
+          img["width"], img["height"] = FastImage.size(src, timeout: 10, http_header: header)
         end
 
         img["loading"] = "lazy"
         img["src"] = if Giphy::Image.valid_url?(src)
                        src.gsub("https://media.", "https://i.")
                      else
-                       img_of_size(src, width)
+                       img_of_size(src, width, quality: quality)
                      end
       end
 
@@ -257,8 +258,8 @@ module Html
 
     private
 
-    def img_of_size(source, width = 880)
-      Images::Optimizer.call(source, width: width).gsub(",", "%2C")
+    def img_of_size(source, width = 880, quality: "auto")
+      Images::Optimizer.call(source, width: width, quality: quality).gsub(",", "%2C")
     end
 
     def all_children_are_blank?(node)
@@ -270,8 +271,7 @@ module Html
     end
 
     def allowed_image_host?(src)
-      # GitHub camo image won't parse but should be safe to host direct
-      src.start_with?("https://camo.githubusercontent.com")
+      ImageUri.new(src).allowed?
     end
 
     def user_link_if_exists(mention)

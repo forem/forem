@@ -13,6 +13,7 @@
 
 pre:not(.highlight),
 div.highlight,
+div:not(.highlight) > pre.highlight,
 li pre.highlight,
 blockquote pre.highlight {
   background: var(--syntax-background-color);

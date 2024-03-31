@@ -1,5 +1,7 @@
 require "rails_helper"
 
+# rubocop:disable Layout/LineLength
+
 RSpec.configure do |config|
   # Specify a root folder where Swagger JSON files are generated
   # NOTE: If you"re using the rswag-api to serve API descriptions, you"ll need
@@ -158,15 +160,15 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
         schemas: {
           ArticleFlareTag: {
             description: "Flare tag of the article",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
-              bg_color_hex: { description: "Background color (hexadecimal)", type: :string },
-              text_color_hex: { description: "Text color (hexadecimal)", type: :string }
+              bg_color_hex: { description: "Background color (hexadecimal)", type: :string, nullable: true },
+              text_color_hex: { description: "Text color (hexadecimal)", type: :string, nullable: true }
             }
           },
           ArticleIndex: {
-            description: "Resprentation of an article or post returned in a list",
+            description: "Representation of an article or post returned in a list",
             type: :object,
             properties: {
               type_of: { type: :string },
@@ -204,9 +206,133 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
                          crossposted_at published_at last_comment_at published_timestamp user
                          reading_time_minutes]
           },
+          VideoArticle: {
+            description: "Representation of an Article with video",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              path: { type: :string },
+              cloudinary_video_url: { type: :string },
+              title: { type: :string },
+              user_id: { type: :integer, format: :int64 },
+              video_duration_in_minutes: { type: :string },
+              video_source_url: { type: :string },
+              user: {
+                description: "Author of the article",
+                type: :object,
+                properties: {
+                  name: { type: :string }
+                }
+              }
+            }
+          },
+          Article: {
+            description: "Representation of an Article to be created/updated",
+            type: :object,
+            properties: {
+              article: {
+                type: :object,
+                properties: {
+                  title: { type: :string },
+                  body_markdown: { type: :string },
+                  published: { type: :boolean, default: false },
+                  series: { type: :string, nullable: true },
+                  main_image: { type: :string, nullable: true },
+                  canonical_url: { type: :string, nullable: true },
+                  description: { type: :string },
+                  tags: { type: :string },
+                  organization_id: { type: :integer, nullable: true }
+                }
+              }
+            }
+          },
+          Organization: {
+            description: "Representation of an Organization",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              url: { type: :string },
+              location: { type: :string },
+              joined_at: { type: :string },
+              tech_stack: { type: :string },
+              tag_line: { type: :string, nullable: true },
+              story: { type: :string, nullable: true }
+            }
+          },
+          FollowedTag: {
+            description: "Representation of a followed tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              points: { type: :number, format: :float }
+            },
+            required: %w[id name points]
+          },
+          Tag: {
+            description: "Representation of a tag",
+            type: :object,
+            properties: {
+              id: { description: "Tag id", type: :integer, format: :int64 },
+              name: { type: :string },
+              bg_color_hex: { type: :string, nullable: true },
+              text_color_hex: { type: :string, nullable: true }
+            }
+          },
+          Page: {
+            description: "Representation of a page object",
+            type: :object,
+            properties: {
+              title: { type: :string, description: "Title of the page" },
+              slug: { type: :string, description: "Used to link to this page in URLs, must be unique and URL-safe" },
+              description: { type: :string, description: "For internal use, helps similar pages from one another" },
+              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)",
+                               nullable: true },
+              body_json: { type: :string, description: "For JSON pages, the JSON body", nullable: true },
+              is_top_level_path: { type: :boolean,
+                                   description: "If true, the page is available at '/{slug}' instead of '/page/{slug}', use with caution" },
+              social_image: { type: :object, nullable: true },
+              template: {
+                type: :string, enum: Page::TEMPLATE_OPTIONS, default: "contained",
+                description: "Controls what kind of layout the page is rendered in"
+              }
+            },
+            required: %w[title slug description template]
+          },
+          PodcastEpisodeIndex: {
+            description: "Representation of a podcast episode returned in a list",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int32 },
+              class_name: { type: :string },
+              path: { type: :string, format: "path" },
+              title: { type: :string },
+              image_url: { description: "Podcast episode image url or podcast image url", type: :string, format: :url },
+              podcast: { "$ref": "#/components/schemas/SharedPodcast" }
+            },
+            required: %w[type_of class_name id path title image_url podcast]
+          },
+          ProfileImage: {
+            description: "A profile image object",
+            type: :object,
+            properties: {
+              type_of: { description: "Return profile_image", type: :string },
+              image_of: { description: "Determines the type of the profile image owner (user or organization)",
+                          type: :string },
+              profile_image: { description: "Profile image (640x640)", type: :string },
+              profile_image_90: { description: "Profile image (90x90)", type: :string }
+            }
+          },
           SharedUser: {
             description: "The resource creator",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
@@ -219,13 +345,157 @@ The default maximum value can be overridden by \"API_PER_PAGE_MAX\" environment 
           },
           SharedOrganization: {
             description: "The organization the resource belongs to",
-            type: "object",
+            type: :object,
             properties: {
               name: { type: :string },
               username: { type: :string },
               slug: { type: :string },
               profile_image: { description: "Profile image (640x640)", type: :string, format: :url },
               profile_image_90: { description: "Profile image (90x90)", type: :string, format: :url }
+            }
+          },
+          User: {
+            description: "The representation of a user returned in a list",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string }
+            }
+          },
+          ExtendedUser: {
+            description: "The representation of a user",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string },
+              badge_ids: { type: :array,
+                           items: { type: :integer },
+                           description: "ids of the badges awarded to the user" }
+            }
+          },
+          MyUser: {
+            description: "The representation of a user when accessed by themselves",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id: { type: :integer, format: :int64 },
+              username: { type: :string },
+              name: { type: :string },
+              summary: { type: :string, nullable: true },
+              twitter_username: { type: :string },
+              github_username: { type: :string },
+              email: { type: :string, nullable: true, description: "Email (if user allows displaying email on their profile) or nil" },
+              website_url: { type: :string, nullable: true },
+              location: { type: :string, nullable: true },
+              joined_at: { type: :string },
+              profile_image: { type: :string },
+              badge_ids: { type: :array,
+                           items: { type: :integer },
+                           description: "ids of the badges awarded to the user" },
+              followers_count: { type: :integer }
+            }
+          },
+          SharedPodcast: {
+            description: "The podcast that the resource belongs to",
+            type: :object,
+            properties: {
+              title: { type: :string },
+              slug: { type: :string },
+              image_url: { description: "Podcast image url", type: :string, format: :url }
+            }
+          },
+          Comment: {
+            description: "A Comment on an Article or Podcast Episode",
+            type: :object,
+            properties: {
+              type_of: { type: :string },
+              id_code: { type: :string },
+              created_at: { type: :string, format: "date-time" },
+              image_url: { description: "Podcast image url", type: :string, format: :url }
+            }
+          },
+          UserInviteParam: {
+            description: "User invite parameters",
+            type: :object,
+            properties: {
+              email: { type: :string },
+              name: { type: :string, nullable: true }
+            }
+          },
+          Billboard: {
+            description: "Billboard, aka Widget, ex. Display Ad",
+            type: :object,
+            properties: {
+              id: { type: :integer, description: "The ID of the Billboard" },
+              name: { type: :string, description: "For internal use, helps distinguish ads from one another" },
+              body_markdown: { type: :string, description: "The text (in markdown) of the ad (required)" },
+              approved: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              published: { type: :boolean, description: "Ad must be both published and approved to be in rotation" },
+              organization_id: { type: :integer, description: "Identifies the organization to which the ad belongs", nullable: true },
+              creator_id: { type: :integer, description: "Identifies the user who created the ad.", nullable: true },
+              placement_area: { type: :string, enum: Billboard::ALLOWED_PLACEMENT_AREAS,
+                                description: "Identifies which area of site layout the ad can appear in" },
+              tag_list: { type: :string, description: "Tags on which this ad can be displayed (blank is all/any tags)" },
+              exclude_article_ids: { type: :string,
+                                     nullable: true,
+                                     description: "Articles this ad should *not* appear on (blank means no articles are disallowed, and this ad can appear next to any/all articles). Comma-separated list of integer Article IDs" }, # rubocop:disable Layout/LineLength
+              audience_segment_id: { type: :integer,
+                                     description: "Specifies a specific audience segment who will see this billboard" },
+              audience_segment_type: { type: :string,
+                                       enum: AudienceSegment.type_ofs.keys,
+                                       description: "Specifies a group of users who will see this billboard (must match audience_segment_id if both provided)" },
+              target_geolocations: { type: :array,
+                                     items: { type: :string },
+                                     description: "Locations to show this billboard in (blank means it will be shown in all locations). Specified as a comma-separated list or array of ISO 3166-2 country and optionally region codes)" },
+              display_to: { type: :string, enum: Billboard.display_tos.keys, default: "all",
+                            description: "Potentially limits visitors to whom the ad is visible" },
+              type_of: { type: :string, enum: Billboard.type_ofs.keys, default: "in_house",
+                         description: <<~DESCRIBE
+                           Types of the billboards:
+                           in_house (created by admins),
+                           community (created by an entity, appears on entity's content),
+                           external ( created by an entity, or a non-entity, can appear everywhere)
+                         DESCRIBE
+                }
+            },
+            required: %w[name body_markdown placement_area]
+          },
+          Segment: {
+            description: "A manually managed audience segment",
+            type: "object",
+            properties: {
+              id: { type: :integer, description: "The ID of the segment" },
+              type_of: { type: :string, enum: ["manual"], default: "manual", description: "Marks the segment as manually managed (other types are internal)" },
+              user_count: { type: :integer, description: "The current number of users in the segment" }
+            }
+          },
+          SegmentUserIds: {
+            type: "object",
+            properties: {
+              user_ids: {
+                type: :array,
+                items: { type: :integer },
+                maxItems: 10_000
+              }
             }
           }
         }
@@ -260,3 +530,5 @@ module Rswag
     end
   end
 end
+
+# rubocop:enable Layout/LineLength

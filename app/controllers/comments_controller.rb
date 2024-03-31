@@ -9,12 +9,22 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @comment = Comment.new
     @podcast = Podcast.find_by(slug: params[:username])
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
+
+    if @root_comment
+      # 404 for all low-quality for not signed in
+      not_found if @root_comment.score < Comment::LOW_QUALITY_THRESHOLD && !user_signed_in?
+      set_admin_access
+      # 404 only for < -400 w/o children for all except admins
+      not_found if !@is_admin && @root_comment.score < Comment::HIDE_THRESHOLD && !@root_comment.has_children?
+    end
 
     if @podcast
       @user = @podcast
@@ -30,6 +40,9 @@ class CommentsController < ApplicationController
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
+
   # GET /comments/1
   # GET /comments/1.json
   # GET /comments/1/edit
@@ -56,6 +69,7 @@ class CommentsController < ApplicationController
         render json: { error: I18n.t("comments_controller.create.failure") }, status: :unprocessable_entity
         return
       end
+      record_feed_event
       render partial: "comments/comment", formats: :json
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
@@ -90,7 +104,7 @@ class CommentsController < ApplicationController
     return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
-    authorize response_template, :moderator_create?
+    authorize response_template, :use_template_for_moderator_comment?
 
     moderator = User.find(Settings::General.mascot_user_id)
     @comment = Comment.new(permitted_attributes(Comment))
@@ -152,6 +166,7 @@ class CommentsController < ApplicationController
       render :index
     else
       @commentable = @comment.commentable
+      flash.now[:error] = I18n.t("comments_controller.markdown", error: @commentable.errors_as_sentence)
       render :edit
     end
   rescue StandardError => e
@@ -185,9 +200,8 @@ class CommentsController < ApplicationController
     skip_authorization
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
-      fixed_body_markdown = MarkdownProcessor::Fixer::FixForPreview.call(permitted_body_markdown)
-      parsed_markdown = MarkdownProcessor::Parser.new(fixed_body_markdown, source: Comment.new, user: current_user)
-      processed_html = parsed_markdown.finalize
+      renderer = ContentRenderer.new(permitted_body_markdown, source: self, user: current_user)
+      processed_html = renderer.process.processed_html
     rescue StandardError => e
       processed_html = I18n.t("comments_controller.markdown_html", error: e)
     end
@@ -216,7 +230,7 @@ class CommentsController < ApplicationController
     if success
       @comment&.commentable&.update_column(:any_comments_hidden, true)
       if params[:hide_children] == "1"
-        @comment.descendants.includes(:user, :commentable).each do |c|
+        @comment.descendants.includes(:user, :commentable).find_each do |c|
           c.update(hidden_by_commentable_user: true)
         end
       end
@@ -261,12 +275,30 @@ class CommentsController < ApplicationController
 
   private
 
+  # for spam content we need to remove cache control headers to access current_user to check admin access
+  # so that admins could have access to spam articles, profiles and comments (by direct url)
+  def set_admin_access
+    return unless user_signed_in?
+
+    unset_cache_control_headers
+    @is_admin = current_user&.any_admin?
+  end
+
   def comment_should_be_visible?
     if @article
       @article.published?
     else
       @root_comment
     end
+  end
+
+  def record_feed_event
+    article = @comment.commentable if @comment.commentable.is_a?(Article)
+    return unless article
+
+    FeedEvent.record_journey_for(current_user,
+                                 article: article,
+                                 category: :comment)
   end
 
   def set_user
@@ -308,6 +340,16 @@ class CommentsController < ApplicationController
   def user_blocked?
     return false if current_user.blocked_by_count.zero?
 
-    UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
+    blocked_by_commentable_author = UserBlock.blocking?(@comment.commentable.user_id, current_user.id)
+    blocked_by_comment_author = @comment.parent && UserBlock.blocking?(@comment.parent.user_id, current_user.id)
+
+    blocked_by_commentable_author || blocked_by_comment_author || blocker_upthread?(@comment.parent)
+  end
+
+  def blocker_upthread?(comment)
+    return false unless comment&.parent
+
+    thread_authors_ids = comment.ancestors.pluck(:user_id)
+    UserBlock.exists?(blocker_id: thread_authors_ids, blocked_id: current_user.id)
   end
 end

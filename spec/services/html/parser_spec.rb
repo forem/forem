@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Html::Parser, type: :service do
   it "has the correct raw tag delimiters" do
-    expect(described_class::RAW_TAG_DELIMITERS).to match_array(["{", "}", "raw", "endraw", "----"])
+    expect(described_class::RAW_TAG_DELIMITERS).to contain_exactly("{", "}", "raw", "endraw", "----")
   end
 
   describe "#remove_nested_linebreak_in_list" do
@@ -65,7 +65,7 @@ RSpec.describe Html::Parser, type: :service do
     end
 
     context "when an image is used" do
-      it "wraps the image with Cloudinary", cloudinary: true do
+      it "wraps the image with Cloudinary", :cloudinary do
         html = "<img src='https://image.com/image.jpg'>"
         parsed_html = described_class.new(html).prefix_all_images.html
         expect(parsed_html).to include("https://res.cloudinary.com")
@@ -74,7 +74,7 @@ RSpec.describe Html::Parser, type: :service do
       it "detects height and width" do
         allow(FastImage).to receive(:size).and_return([100, 200])
         html = "<img src='https://image.com/image.jpg'>"
-        parsed_html = described_class.new(html).prefix_all_images(350, synchronous_detail_detection: true).html
+        parsed_html = described_class.new(html).prefix_all_images(width: 350, synchronous_detail_detection: true).html
         expect(parsed_html).to include("height=\"200\"")
       end
     end

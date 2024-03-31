@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "/admin/customization/profile_fields", type: :request do
+RSpec.describe "/admin/customization/profile_fields" do
   let(:admin) { create(:user, :super_admin) }
 
   before do
@@ -45,7 +45,7 @@ RSpec.describe "/admin/customization/profile_fields", type: :request do
     it "creates a profile_field" do
       expect do
         post admin_profile_fields_path, params: { profile_field: new_profile_field }
-      end.to change { ProfileField.all.count }.by(1)
+      end.to change(ProfileField, :count).by(1)
 
       last_profile_field_record = ProfileField.last
       expect(last_profile_field_record.label).to eq(new_profile_field[:label])

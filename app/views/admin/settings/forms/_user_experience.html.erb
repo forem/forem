@@ -5,7 +5,7 @@
     <summary class="crayons-subtitle-2 p-6">User Experience and Brand</summary>
     <div class="p-6 pt-0">
       <fieldset class="grid gap-4">
-        <div class="crayons-fieldx">
+        <div class="crayons-field">
           <%= admin_config_label :feed_style, model: Settings::UserExperience %>
           <%= admin_config_description Constants::Settings::UserExperience.details[:feed_style][:description] %>
           <%= select_tag "settings_user_experience[feed_style]",
@@ -18,6 +18,22 @@
           <%= admin_config_description Constants::Settings::UserExperience.details[:feed_strategy][:description] %>
           <%= select_tag "settings_user_experience[feed_strategy]",
                          options_for_select(Settings::UserExperience::FEED_STRATEGIES, Settings::UserExperience.feed_strategy),
+                         multiple: false,
+                         class: "crayons-select" %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :cover_image_height, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:cover_image_height][:description] %>
+          <%= f.number_field :cover_image_height,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.cover_image_height,
+                             placeholder: Constants::Settings::UserExperience.details[:cover_image_height][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :cover_image_fit, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:cover_image_fit][:description] %>
+          <%= select_tag "settings_user_experience[cover_image_fit]",
+                         options_for_select(Settings::UserExperience::COVER_IMAGE_FITS, Settings::UserExperience.cover_image_fit),
                          multiple: false,
                          class: "crayons-select" %>
         </div>
@@ -44,6 +60,14 @@
                              class: "crayons-textfield",
                              value: Settings::UserExperience.index_minimum_score,
                              placeholder: Constants::Settings::UserExperience.details[:index_minimum_score][:placeholder] %>
+        </div>
+       <div class="crayons-field">
+          <%= admin_config_label :index_minimum_date, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:index_minimum_date][:description] %>
+          <%= f.number_field :index_minimum_date,
+                             class: "crayons-textfield",
+                             value: Settings::UserExperience.index_minimum_date,
+                             placeholder: Constants::Settings::UserExperience.details[:index_minimum_date][:placeholder] %>
         </div>
         <div class="crayons-field">
           <%= admin_config_label :default_font, model: Settings::UserExperience %>
@@ -91,10 +115,35 @@
             </p>
           </div>
         </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :show_mobile_app_banner, checked: Settings::UserExperience.show_mobile_app_banner, class: "crayons-checkbox" %>
+          <div class="mt-0">
+            <%= admin_config_label :show_mobile_app_banner, model: Settings::UserExperience %>
+            <p class="crayons-field__description">
+              Do you want the Forem mobile banner to show on your Forem?
+            </p>
+          </div>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :head_content, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:head_content][:description] %>
+          <%= f.text_area :head_content,
+                          class: "crayons-textfield",
+                          value: Settings::UserExperience.head_content,
+                          placeholder: Constants::Settings::UserExperience.details[:head_content][:placeholder] %>
+        </div>
+        <div class="crayons-field">
+          <%= admin_config_label :bottom_of_body_content, model: Settings::UserExperience %>
+          <%= admin_config_description Constants::Settings::UserExperience.details[:bottom_of_body_content][:description] %>
+          <%= f.text_area :bottom_of_body_content,
+                          class: "crayons-textfield",
+                          value: Settings::UserExperience.bottom_of_body_content,
+                          placeholder: Constants::Settings::UserExperience.details[:bottom_of_body_content][:placeholder] %>
+        </div>
       </fieldset>
       <%= render "update_setting_button", f: f %>
     </div>
   </details>
 <% end %>
 </div>
-<%= javascript_packs_with_chunks_tag "enhanceColorPickers", defer: true %>
+<%= javascript_include_tag "enhanceColorPickers", defer: true %>

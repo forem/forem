@@ -13,8 +13,16 @@ class ReactionCategory
       list.filter_map { |category| category.slug if category.privileged? && category.negative? }
     end
 
+    def for_view
+      list.sort_by(&:position).filter_map { |category| category if category.visible_to_public? }
+    end
+
     def public
       list.sort_by(&:position).filter_map { |category| category.slug if category.visible_to_public? }
+    end
+
+    def notifiable
+      public
     end
 
     def privileged
@@ -63,5 +71,14 @@ class ReactionCategory
 
   def visible_to_public?
     !privileged? && published?
+  end
+
+  def as_json(_options = nil)
+    {
+      slug: slug,
+      name: name,
+      icon: icon,
+      position: position
+    }
   end
 end

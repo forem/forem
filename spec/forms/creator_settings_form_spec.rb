@@ -33,31 +33,31 @@ RSpec.describe CreatorSettingsForm, type: :model do
 
   describe "#save" do
     let(:current_user) { create(:user) }
+    let(:form_data) do
+      { checked_code_of_conduct: true,
+        checked_terms_and_conditions: true,
+        community_name: "Climbing Life",
+        invite_only_mode: false,
+        public: false,
+        logo: "logo.png",
+        primary_brand_color_hex: "#a81adb" }
+    end
 
     after do
-      # prevent changes here from leaking into other tests
       Settings::Community.clear_cache
       Settings::UserExperience.clear_cache
       Settings::Authentication.clear_cache
     end
 
-    # rubocop:disable RSpec/ExampleLength
-    it "saves the updated attributes to the correct Settings values", :aggregate_failures do
+    it "saves the updated attributes to the correct Settings values" do
       # NOTE: override the profile migration hack from rails_helper.rb
       # TODO: remove this once we remove it in rails_helper.rb
       allow(Settings::UserExperience).to receive(:public).and_call_original
-      creator_settings_form = described_class.new(
-        checked_code_of_conduct: true,
-        checked_terms_and_conditions: true,
-        community_name: "Climbing Life",
-        invite_only_mode: false,
-        public: false,
-        primary_brand_color_hex: "#a81adb",
-      )
 
+      creator_settings_form = described_class.new(form_data)
       expect(creator_settings_form.valid?).to be(true)
-      creator_settings_form.save
 
+      creator_settings_form.save
       expect(creator_settings_form.success).to be(true)
       expect(Settings::Community.community_name).to eq("Climbing Life")
       expect(Settings::UserExperience.primary_brand_color_hex).to eq("#a81adb")
@@ -66,6 +66,5 @@ RSpec.describe CreatorSettingsForm, type: :model do
       expect(current_user.checked_code_of_conduct).to be(true)
       expect(current_user.checked_terms_and_conditions).to be(true)
     end
-    # rubocop:enable RSpec/ExampleLength
   end
 end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "ArticlesAdminFeature", type: :request do
+RSpec.describe "ArticlesAdminFeature" do
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:super_admin) { create(:user, :super_admin) }

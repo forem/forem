@@ -2,4 +2,4 @@
 
 exports[`<Toggle /> should render default 1`] = `"<input type=\\"checkbox\\" class=\\"c-toggle\\">"`;
 
-exports[`<Toggle /> should render with additional input props 1`] = `"<input type=\\"checkbox\\" class=\\"example-class\\" disabled=\\"\\">"`;
+exports[`<Toggle /> should render with additional input props 1`] = `"<input type=\\"checkbox\\" disabled=\\"\\" class=\\"example-class\\">"`;

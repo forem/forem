@@ -85,7 +85,8 @@ class OpenGraph
 
   def fetch_html(url)
     Rails.cache.fetch("#{url}_open_graph_html", expires_in: CACHE_EXPIRY_IN_MINUTES.minutes) do
-      Net::HTTP.get(URI(url))
+      response = HTTParty.get(url, headers: { "User-Agent" => "#{Settings::Community.community_name} (#{URL.url})" })
+      response&.body
     end
   end
 
