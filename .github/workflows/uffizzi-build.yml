@@ -38,7 +38,7 @@ jobs:
           file: ./Dockerfile
           target: uffizzi
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=min
 
   render-compose-file:
     name: Render Docker Compose File
