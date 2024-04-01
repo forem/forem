@@ -15,7 +15,7 @@ RSpec.describe "AhoyEmails" do
     context "with a valid signature" do
       it "publishes a click event and returns http ok" do
         # Stub the publish method to prevent external calls
-        controller = an_instance_of(Ahoy::CustomEmailClicksController)
+        controller = an_instance_of(Ahoy::EmailClicksController)
         allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
 
         post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
