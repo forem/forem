@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe "AhoyCustomEmails" do
-  describe "POST /custom_email_clicks" do
+RSpec.describe "AhoyEmails" do
+  describe "POST /email_clicks" do
     let(:token) { "test_token" }
     let(:campaign) { "test_campaign" }
     let(:url) { "http://example.com" }
@@ -18,7 +18,7 @@ RSpec.describe "AhoyCustomEmails" do
         controller = an_instance_of(Ahoy::CustomEmailClicksController)
         allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
 
-        post ahoy_custom_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
 
         expect(response).to have_http_status(:ok)
         expect(AhoyEmail::Utils).to have_received(:publish)
@@ -32,7 +32,7 @@ RSpec.describe "AhoyCustomEmails" do
         # Use a clearly invalid signature
         invalid_signature = "invalid"
 
-        post ahoy_custom_email_clicks_path, params: { t: token, c: campaign, u: url, s: invalid_signature }
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: invalid_signature }
 
         expect(response).to have_http_status(:forbidden)
         expect(response.body).to eq("Invalid signature")

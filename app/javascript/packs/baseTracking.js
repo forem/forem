@@ -198,7 +198,7 @@ function trackEmailClicks() {
         u: decodeURIComponent(urlParams.get('u')),
         s: urlParams.get('s'),
       };
-      window.fetch('/ahoy/custom_email_clicks', {
+      window.fetch('/ahoy/email_clicks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

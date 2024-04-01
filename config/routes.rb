@@ -24,7 +24,7 @@ Rails.application.routes.draw do
 
   # Custom controller for tracking clicks asynchronously
   namespace :ahoy do
-    post "custom_email_clicks", to: "custom_email_clicks#create"
+    post "email_clicks", to: "email_clicks#create"
   end
 
   get "/r/mobile", to: "deep_links#mobile"
