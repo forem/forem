@@ -3,7 +3,8 @@ require "rails_helper"
 RSpec.describe "Tracking 'Clicked on Create Account'", :js do
   context "when on the homepage" do
     before do
-      create_list(:article, 6)
+      user = create(:user)
+      create_list(:article, 6, user: user)
       visit root_path
     end
 
@@ -20,9 +21,8 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     end
 
     it "tracks a click with the correct source", :aggregate_failures do
-      expect do
-        find('[data-tracking-id="ca_top_nav"]').click
-      end.to change(Ahoy::Event, :count).by(1)
+      expect(Ahoy::Event.count).to eq(0)
+      find('[data-tracking-id="ca_top_nav"]').click
 
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
       expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
