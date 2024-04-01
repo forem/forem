@@ -103,6 +103,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "crossposted_at", precision: nil
     t.string "description"
+    t.integer "displayed_comments_count"
     t.datetime "edited_at", precision: nil
     t.boolean "email_digest_eligible", default: true
     t.float "experience_level_rating", default: 5.0
