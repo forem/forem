@@ -35,20 +35,22 @@ jobs:
         with:
           bundler-cache: true
       - name: Copy assets from base branch (if it doesn't exist)
-        uses: actions/cache@v4
-        with:
-          path: |
-            public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
-          restore-keys: ${{ runner.os }}-compiled-assets-v3-
-      - name: Cache pre-compiled assets
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         id: assetscache
         with:
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
+          lookup-only: true
+      - name: Cache pre-compiled assets
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
