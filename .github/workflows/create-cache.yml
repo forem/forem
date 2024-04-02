@@ -2,6 +2,8 @@ name: Create CI cache
 
 on:
   push:
+    branches:
+      - main
 
 jobs:
   install:
