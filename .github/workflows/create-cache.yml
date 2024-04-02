@@ -25,6 +25,6 @@ jobs:
           fail-on-cache-miss: false
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - run: bundle exec rails assets:precompile
