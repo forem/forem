@@ -11,15 +11,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
-      - name: cache compiled assets exist
+      - name: cache compiled assets
         uses: actions/cache@v4
         with:
           fail-on-cache-miss: false
@@ -27,4 +19,12 @@ jobs:
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - run: yarn install --immutable
       - run: bundle exec rails assets:precompile
