@@ -42,6 +42,8 @@ jobs:
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - name: print stuff
+        run: echo "${{steps.assetscache.outputs.cache-primary-key}} ${{steps.assetscache.outputs.cache-matched-key}}"
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
