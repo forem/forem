@@ -34,6 +34,13 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - name: Copy assets from base branch (if it doesn't exist)
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - name: Cache pre-compiled assets
         uses: actions/cache@v4
         id: assetscache
