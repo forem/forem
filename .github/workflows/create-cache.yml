@@ -14,7 +14,7 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: cache compiled assets exist
+      - name: Cache compiled assets
         uses: actions/cache@v4
         with:
           fail-on-cache-miss: false
