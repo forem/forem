@@ -4,6 +4,7 @@ class PagesController < ApplicationController
 
   def show
     params[:slug] = combined_fragmented_slug if params[:slug_0].present?
+    puts "params[:slug]: #{params[:slug]}"
     @page = Page.find_by!(slug: params[:slug])
     not_found_conditions
     set_surrogate_key_header "show-page-#{params[:slug]}"
