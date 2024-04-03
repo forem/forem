@@ -231,6 +231,8 @@ RSpec.describe "/admin/member_manager/users" do
         allow(User).to receive(:find).with(user.id.to_s).and_return(user)
         allow(user).to receive(:send_confirmation_instructions).and_return(false)
 
+        post send_email_confirmation_admin_user_path(user)
+
         expect(response).to redirect_to(admin_user_path(user))
         expect(flash[:danger]).to include("failed")
       end
