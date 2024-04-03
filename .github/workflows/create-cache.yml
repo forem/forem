@@ -14,17 +14,17 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: yarn
-      - run: yarn install --immutable
-      - name: cache compiled assets exist
+      - name: Cache compiled assets
         uses: actions/cache@v4
         with:
           fail-on-cache-miss: false
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+      - run: yarn install --immutable
       - run: bundle exec rails assets:precompile
