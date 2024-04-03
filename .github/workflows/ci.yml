@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       E2E: true
+      RAILS_ENV: development
+      NODE_ENV: development
 
     steps:
       - uses: actions/checkout@v4
@@ -38,7 +40,6 @@ jobs:
         uses: actions/cache@v4
         id: assetscache
         with:
-          fail-on-cache-miss: true
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}

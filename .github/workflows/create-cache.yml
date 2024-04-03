@@ -3,6 +3,7 @@ name: Create CI cache
 on:
   push:
     branches:
+      - main
 
 jobs:
   build-cache:
