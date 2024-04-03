@@ -194,6 +194,12 @@
             <%= t("views.moderations.article.approved") %>
           </label>
         </div>
+        <div class="crayons-field crayons-field--checkbox">
+          <%= f.check_box :email_digest_eligible, id: "email_digest_eligible-#{article.id}", class: "crayons-checkbox" %>
+          <label for="email_digest_eligible-<%= article.id %>" class="crayons-field__label">
+            <%= t("views.moderations.article.email_digest_eligible") %>
+          </label>
+        </div>
       </div>
       <div>
         <button class="c-btn c-btn--secondary"><%= t("views.moderations.article.save") %></button>
