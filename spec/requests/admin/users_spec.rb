@@ -212,6 +212,71 @@ RSpec.describe "/admin/member_manager/users" do
     end
   end
 
+  describe "POST /admin/member_manager/users/:id/send_email_confirmation" do
+    let(:user) { create(:user) }
+    let(:message_delivery) { instance_double(ActionMailer::MessageDelivery) }
+
+    before do
+      allow(ForemInstance).to receive(:smtp_enabled?).and_return(true)
+    end
+
+    context "when interacting via a browser" do
+      it "returns not found for non-existing users" do
+        expect do
+          post send_email_confirmation_admin_user_path(9999)
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "fails sending the confirmation email if an error occurs" do
+        allow(User).to receive(:find).with(user.id.to_s).and_return(user)
+        allow(user).to receive(:send_confirmation_instructions).and_return(false)
+
+        post send_email_confirmation_admin_user_path(user)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:danger]).to include("failed")
+      end
+
+      it "sends the confirmation email successfully" do
+        allow(User).to receive(:find).with(user.id.to_s).and_return(user)
+        allow(user).to receive(:send_confirmation_instructions).and_return(true)
+
+        post send_email_confirmation_admin_user_path(user)
+
+        expect(response).to redirect_to(admin_user_path(user))
+        expect(flash[:success]).to include("sent")
+      end
+    end
+
+    context "when interacting via AJAX" do
+      it "returns not found for non-existing users" do
+        expect do
+          post send_email_confirmation_admin_user_path(9999), xhr: true
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "fails sending the confirmation email if an error occurs" do
+        allow(User).to receive(:find).with(user.id.to_s).and_return(user)
+        allow(user).to receive(:send_confirmation_instructions).and_return(false)
+
+        post send_email_confirmation_admin_user_path(user), xhr: true
+
+        expect(response).to have_http_status(:service_unavailable)
+        expect(response.parsed_body["error"]).to include("failed")
+      end
+
+      it "sends the confirmation email successfully" do
+        allow(User).to receive(:find).with(user.id.to_s).and_return(user)
+        allow(user).to receive(:send_confirmation_instructions).and_return(true)
+
+        post send_email_confirmation_admin_user_path(user), xhr: true
+
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"]).to include("sent")
+      end
+    end
+  end
+
   describe "POST /admin/member_manager/users/:id/verify_email_ownership" do
     let(:mailer) { double }
     let(:message_delivery) { double }
