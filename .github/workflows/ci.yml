@@ -38,6 +38,7 @@ jobs:
         uses: actions/cache@v4
         id: assetscache
         with:
+          fail-on-cache-miss: true
           path: |
             public/assets
           key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
