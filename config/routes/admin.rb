@@ -56,6 +56,7 @@ namespace :admin do
         delete "remove_identity"
         post "send_email"
         post "verify_email_ownership"
+        post "send_email_confirmation"
         patch "unlock_access"
         post "unpublish_all_articles"
       end

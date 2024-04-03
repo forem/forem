@@ -208,6 +208,7 @@ en:
           note_placeholder: "Note text"
           submit: Unpublish all posts
         emails:
+          confirm: Resend confirmation
           empty1: No previous emails found for %{user}.
           empty2: Any emails sent to %{email} will be found here.
           previous: Previous emails (%{num})
@@ -218,6 +219,9 @@ en:
           body: Body
           body_placeholder: What do you want to say?
           send_submit: Send email
+          not_confirmed:
+            subtitle: Email not confirmed
+            desc: "%{user}'s email hasn't been confirmed yet."
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
