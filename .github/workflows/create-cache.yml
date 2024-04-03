@@ -3,13 +3,10 @@ name: Create CI cache
 on:
   push:
     branches:
-      - main
 
 jobs:
   build-cache:
     runs-on: ubuntu-latest
-    env:
-      E2E: true
 
     steps:
       - uses: actions/checkout@v4
