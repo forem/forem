@@ -6,25 +6,31 @@ on:
       - main
 
 jobs:
-  install:
+  build-cache:
     runs-on: ubuntu-latest
+    env:
+      E2E: true
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Cache compiled assets
+      - name: Cache pre-compiled assets
         uses: actions/cache@v4
+        id: assetscache
         with:
-          fail-on-cache-miss: false
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - uses: actions/setup-node@v4
         with:
           node-version-file: '.nvmrc'
           cache: yarn
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - run: yarn install --immutable
+        if: steps.assetscache.outputs.cache-hit != 'true'
       - run: bundle exec rails assets:precompile
+        if: steps.assetscache.outputs.cache-hit != 'true'
