@@ -221,6 +221,9 @@ fr:
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
+          not_confirmed:
+            subtitle: E-mail non confirmé
+            desc: "L'e-mail de %{user} n'a pas encore été confirmé."
           verify: Verify email address
           verified_html: Last verified on %{time}
           reverify: Reverify

@@ -128,6 +128,7 @@ en:
       exported: Data exported to the %{receiver}. The job will complete momentarily.
       email_fail: Email failed to send!
       email_sent: Email sent!
+      confirm_sent: Confirmation email sent!
       verify_sent: Verification email sent!
       full_delete_html: '@%{user} (email: %{email}, user_id: %{id}) has been fully deleted. If this is a GDPR delete, delete them from Mailchimp & Google Analytics and confirm on %{the_page}.'
       no_email: no email
