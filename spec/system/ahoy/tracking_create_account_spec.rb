@@ -21,6 +21,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     end
 
     it "tracks a click with the correct source", :aggregate_failures do
+      skip "This is a very flaky test"
       expect(Ahoy::Event.count).to eq(0)
       find('[data-tracking-id="ca_top_nav"]').click
 

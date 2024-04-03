@@ -1,6 +1,8 @@
-# enable tracking for open, click and UTM params
+click_tracking_enabled = Rails.env.production? ? ENV["AHOY_EMAIL_CLICK_ON"] == "YES" : true
 AhoyEmail.api = false
-AhoyEmail.default_options[:click] = Rails.env.production? ? ENV["AHOY_EMAIL_CLICK_ON"] == "YES" : true
+AhoyEmail.save_token = click_tracking_enabled
+AhoyEmail.subscribers << AhoyEmail::MessageSubscriber if click_tracking_enabled
+AhoyEmail.default_options[:click] = click_tracking_enabled
 AhoyEmail.default_options[:utm_params] = false
 AhoyEmail.default_options[:message] = true
 

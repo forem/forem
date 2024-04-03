@@ -40,7 +40,7 @@ jobs:
         with:
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - uses: actions/setup-node@v4
         with:
@@ -110,7 +110,7 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - uses: actions/setup-node@v4
         with:
@@ -263,7 +263,7 @@ jobs:
           fail-on-cache-miss: true
           path: |
             public/assets
-          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/(fonts|images|javascripts|stylesheets)/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles('app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
           restore-keys: ${{ runner.os }}-compiled-assets-v3-
       - uses: actions/setup-node@v4
         with:
