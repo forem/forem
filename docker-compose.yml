@@ -28,7 +28,6 @@ x-backend: &backend
     - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
   environment: &backend_environment
     <<: *env
-    CHROME_URL: http://chrome:3333
     REDIS_URL: redis://redis:6379/
     DATABASE_URL: postgres://postgres:postgres@postgres:5432
     DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
@@ -55,7 +54,6 @@ services:
       REDIS_URL: redis://redis:6379/
       DATABASE_URL: postgres://postgres:postgres@postgres:5432
       DATABASE_URL_TEST: postgres://postgres:postgres@postgres:5432
-      CHROME_URL: http://chrome:3333
     volumes:
       - ${LOCAL_WORKSPACE_FOLDER:-.}:/workspaces/forem:cached
       - bundle:/usr/local/bundle
