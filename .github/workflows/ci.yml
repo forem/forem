@@ -27,8 +27,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       E2E: true
-      RAILS_ENV: development
-      NODE_ENV: development
 
     steps:
       - uses: actions/checkout@v4
