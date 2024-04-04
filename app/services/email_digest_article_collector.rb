@@ -5,7 +5,6 @@ class EmailDigestArticleCollector
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
   CLICK_LOOKBACK = 30
-  
 
   def initialize(user)
     @user = user
