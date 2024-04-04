@@ -43,6 +43,25 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
+    context  "when it's been less than the set number of digest email days, but the author has a recent click" do
+      before do
+        author = create(:user)
+        user.follow(author)
+        user.update(following_users_count: 1)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: (1.2).days.ago, clicked_at: 1.day.ago)
+      end
+
+      it "will articles when user shouldn't receive any" do
+        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
+          articles = described_class.new(user).articles_to_send
+          expect(articles).not_to be_empty
+        end
+      end
+
+    end
+
     context "when it's been more than the set number of digest email days" do
       before do
         Ahoy::Message.create(mailer: "DigestMailer#digest_email", user_id: user.id,
