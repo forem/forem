@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@master
       - name: Create the .env file
         run: |
-          cp .env.test .env
+          cp .env_sample .env
       - name: Build and Push Image to registry.uffizzi.com ephemeral registry
         uses: docker/build-push-action@v2
         with:
