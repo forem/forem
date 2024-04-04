@@ -59,6 +59,14 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
           expect(articles).not_to be_empty
         end
       end
+
+      it "is, in fact, empty if the Ahoy Message is not clicked" do
+        Ahoy::Message.last.update_column(:clicked_at, nil)
+        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
+          articles = described_class.new(user).articles_to_send
+          expect(articles).to be_empty
+        end
+      end
     end
 
     context "when it's been more than the set number of digest email days" do
