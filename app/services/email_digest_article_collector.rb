@@ -57,15 +57,15 @@ class EmailDigestArticleCollector
 
     lookback = Settings::General.periodic_email_digest.days.ago
     # reduce lookback by 1 if they have a recently opened digest email
-    lookback = lookback - 1 if lookback > 1 && recent_tracked_click?
-    last_email_sent.before? 
+    lookback = (lookback - 1) if lookback > 1 && recent_tracked_click?
+    last_email_sent.before? lookback
   end
 
   def recent_tracked_click?
     @user.email_messages
-        .where(mailer: "DigestMailer#digest_email")
-        .where("sent_at > ?", CLICK_LOOKBACK.days.ago)
-        .where.not(clicked_at: nil).any?
+      .where(mailer: "DigestMailer#digest_email")
+      .where("sent_at > ?", CLICK_LOOKBACK.days.ago)
+      .where.not(clicked_at: nil).any?
   end
 
   def last_email_sent
