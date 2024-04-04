@@ -4,6 +4,7 @@ module Homepage
       cached_tag_list
       comments_count
       crossposted_at
+      displayed_comments_count
       id
       organization_id
       path

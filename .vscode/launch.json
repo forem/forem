@@ -12,16 +12,16 @@
       "type": "node"
     },
     {
-      "type": "edge",
-      "request": "attach",
       "name": "Attach to Edge",
+      "type": "vscode-edge-devtools.debug",
+      "request": "attach",
       "port": 2015,
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "Attach to Chrome",
       "type": "chrome",
       "request": "attach",
-      "name": "Attach to Chrome",
       "port": 9222,
       "webRoot": "${workspaceFolder}/app/javascript/packs"
     },
@@ -73,9 +73,9 @@
       "program": "${workspaceRoot}/bin/cucumber"
     },
     {
+      "name": "Jest Current File",
       "type": "node",
       "request": "launch",
-      "name": "Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": ["${relativeFile}"],
       "console": "integratedTerminal",

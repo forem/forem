@@ -128,6 +128,7 @@ fr:
       exported: Données exportées vers le %{receiver}. Le travail sera terminé dans un instant.
       email_fail: L'envoi de l'e-mail a échoué !
       email_sent: Courriel envoyé !
+      confirm_sent: Courriel de Confirmation Envoyé!
       verify_sent: E-mail de vérification envoyé !
       full_delete_html: "@%{user} (email: %{email}, user_id: %{id}) a été entièrement supprimé. S'il s'agit d'une suppression GDPR, supprimez-les de Mailchimp & Google Analytics et confirmez sur %{the_page}."
       no_email: Aucun e-mail
