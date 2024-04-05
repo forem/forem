@@ -120,6 +120,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: cp .env_sample .env
       - run: bundle exec rails db:test:prepare
       - name: RSpec
         run: bin/knapsack_pro_rspec
@@ -274,6 +275,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
+      - run: cp .env_sample .env
       - run: bundle exec rails db:test:prepare
       - run: yarn cypress install
       - name: cypress
