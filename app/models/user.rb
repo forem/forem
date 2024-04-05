@@ -3,26 +3,27 @@ class User < ApplicationRecord
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
-
   include Images::Profile.for(:profile_image_url)
+  include StringAttributeCleaner.nullify_blanks_for(:email)
 
-  # NOTE: we are using an inline module to keep profile related things together.
-  concerning :Profiles do
+  # only include AlgoliaSearchable if secrets are provided
+  concerning :AlgoliaSearchable do
     included do
-      has_one :profile, dependent: :delete
+      if Settings::Algolia.enabled?
+        include AlgoliaSearch
 
-      # NOTE: There are rare cases were we want to skip this callback, primarily
-      # in tests. `skip_callback` modifies global state, which is not thread-safe
-      # and can cause hard to track down bugs. We use an instance-level attribute
-      # instead. See `spec/factories/profiles.rb` for an example.
-      attr_accessor :_skip_creating_profile
+        algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker do
+          attribute :name, :username, :profile_image_90
+        end
+      end
+    end
 
-      # All new users should automatically have a profile
-      after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
+    class_methods do
+      def trigger_sidekiq_worker(record, action)
+        # AlgoliaIndexWorker.perform_async(record.class.name, record.id, action)
+      end
     end
   end
-
-  include StringAttributeCleaner.nullify_blanks_for(:email)
 
   extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
