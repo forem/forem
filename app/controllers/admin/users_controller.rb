@@ -366,7 +366,6 @@ module Admin
       render json: @users.to_json(only: %i[id name username])
     end
 
-
     def set_user_details
       @organizations = @user.organizations.order(:name)
       @notes = @user.notes.order(created_at: :desc).limit(10)
