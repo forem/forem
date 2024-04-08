@@ -1,3 +1,4 @@
+---
 ar:
   api_secrets_controller:
     generated: 'تم إنشاء مفتاح الـ API الخاص بك: %{secret}'
