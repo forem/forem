@@ -57,7 +57,6 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         Settings::General.periodic_email_digest = 3
         articles = described_class.new(user).articles_to_send
         expect(articles).not_to be_empty
-        end
       end
 
       it "returns nothing if, in fact, empty if the Ahoy Message is not clicked" do
