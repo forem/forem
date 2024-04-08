@@ -1,0 +1,44 @@
+---
+ar:
+  views:
+    liquids:
+      github:
+        view: عرض على GitHub
+      medium:
+        logo: شعار ميديوم
+      poll:
+        show_results: أظهر لي النتائج فقط
+      reddit:
+        author: 'الكاتب: %{author}'
+        see: انظر النص الكامل
+      stackexchange:
+        answer:
+          text_html: "%{answer} بخصوص %{title}"
+          answer: إجابة
+        answers: 'الإجابات: %{count}'
+        comments: 'التعليقات: %{count}'
+        open:
+          answer: فتح الإجابة الكاملة
+          article: فتح المقالة الكاملة
+          question: فتح السؤال الكامل
+      twitter:
+        view: عرض على تويتر
+      user_subscription:
+        confirm:
+          subtitle: تأكيد الاشتراك
+          button_text: تأكيد الاشتراك
+          cancel_text: إلغاء
+          text_html: "ستشارك عنوان بريدك الإلكتروني واسم المستخدم والاسم وعنوان URL لملف تعريفك في %{community} مع %{username}. بمجرد فعل ذلك، لن تتمكن من التراجع عن هذا."
+        logged_out: "يجب عليك تسجيل الدخول أولاً إلى %{community}."
+        sign_in: تسجيل الدخول
+        subscribe:
+          apple:
+            button: اشتراك
+            desc_html: "مرحبًا! يبدو أنه عند إنشاء حسابك في %{community} قمت بالاشتراك باستخدام Apple باستخدام عنوان بريد إلكتروني للتوجيه الخاص. إذا كنت ترغب في الاشتراك، يرجى %{update} أولاً إلى عنوان بريد إلكتروني مختلف."
+            update: تحديث عنوان البريد الإلكتروني في الإعدادات
+          button: اشتراك
+          desc_html: "ستشترك باستخدام عنوان البريد الإلكتروني المرتبط بحسابك في %{community}. لاستخدام عنوان بريد إلكتروني مختلف، يمكنك %{update}."
+          update: تحديث عنوان البريد الإلكتروني في الإعدادات
+      wikipedia:
+        logo: شعار ويكيبيديا
+        view: عرض على ويكيبيديا
