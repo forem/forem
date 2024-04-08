@@ -51,11 +51,17 @@ class EmailDigestArticleCollector
 
   def should_receive_email?
     return true unless last_email_sent
-
+  
     lookback = Settings::General.periodic_email_digest.days.ago
-    # reduce lookback by 1 if they have a recently opened digest email
-    lookback = (lookback - 1) if lookback > 1 && recent_tracked_click?
-    last_email_sent.before? lookback
+
+    # Check if the last email was sent before the lookback period, which means we're clear to send a new one.
+    email_sent_before_lookback = last_email_sent.before? lookback
+    return true if email_sent_before_lookback # No need to do extra recent_tracked_click? if this is true
+
+    # If the last email was sent within the lookback period, ensure there was a click to justify sending a new one.
+    email_sent_recently_with_click = !last_email_sent.before? lookback && recent_tracked_click?
+
+    email_sent_before_lookback || email_sent_recently_with_click
   end
 
   private
