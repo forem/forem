@@ -1,0 +1,33 @@
+---
+ar:
+  mailers:
+    digest_mailer:
+      from: النشرة الإخبارية
+      more_top_posts: المزيد من أفضل المقالات في %{community}
+      more_top_posts_based: المزيد من أفضل المقالات في %{community} استنادًا إلى اهتماماتك
+      more_top_posts_from: مزيد من المشاركات من المجتمع
+      more_trending_posts: المزيد من المقالات الرائجة في %{community}
+      more_trending_posts_picked: المزيد من المقالات الرائجة في %{community} التي تم اختيارها لك
+      other_posts: مقالات أخرى قد تعجبك
+      other_community_posts: مشاركات أخرى من %{community} قد تعجبك
+      other_top_posts: مقالات رائجة أخرى في %{community}
+      other_trending_posts: مقالات رائجة أخرى في %{community}.
+    notify_mailer:
+      account_deleted: "تأكيد حذف الحساب - %{community}"
+      deletion_requested: "طلب حذف الحساب - %{community}"
+      trusted: مبروك! أنت الآن مستخدم موثوق به على %{community}!
+      moderator: "تهانينا! أنت الآن مشرف للوسم #%{tag_name}"
+      new_follower: يتابعك على %{community}
+      new_mention: "%{name} للتو ذكرك على %{type}"
+      org_deleted: "تأكيد حذف المنظمة - %{community}"
+      new_reply: "%{name} رد على %{type} الخاص بك"
+      feedback: شكرًا لتقديمك التقرير عن %{community}
+      export: تم إعداد تصدير محتواك
+      unread_notifications:
+        one: "🔥 لديك إشعار غير مقروء واحد على %{community}"
+        other: "🔥 لديك %{count} إشعارات غير مقروءة على  %{community}"
+      new_badge: لقد تلقيت للتو شارة جديدة
+      video_upload: اكتمل تحميل فيديوك
+    verification_mailer:
+      from: "تحقق من البريد الإلكتروني لـ %{community} <%{email}>"
+      verify_ownership: تحقق من ملكية حسابك على %{community}.
