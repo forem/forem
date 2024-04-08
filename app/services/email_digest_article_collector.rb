@@ -61,6 +61,18 @@ class EmailDigestArticleCollector
     email_sent_before_lookback || email_sent_recently_with_click
   end
 
+  def should_receive_email?
+    return true unless last_email_sent # Send if no emails have ever been sent
+  
+    lookback = Settings::General.periodic_email_digest.days.ago
+  
+    email_sent_before_lookback = last_email_sent < lookback
+  
+    email_sent_during_lookback_without_click = last_email_sent >= lookback && !recent_tracked_click?
+  
+    email_sent_before_lookback && !email_sent_during_lookback_without_click
+  end
+
   private
 
   def recent_tracked_click?
