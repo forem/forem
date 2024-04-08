@@ -86,13 +86,13 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       Settings::General.periodic_email_digest = periodic_email_digest_days
       create(:ahoy_message, user_id: user.id, sent_at: sent_at, clicked_at: clicked_at)
     end
-  
+
     context "when the user clicked the last email within the lookback period" do
       let(:sent_at) { 2.days.ago }
       let(:clicked_at) { 1.day.ago }
-  
+
       it "returns true" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end
@@ -102,7 +102,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:clicked_at) { nil }
   
       it "returns true" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end
@@ -112,7 +112,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:clicked_at) { nil }
   
       it "returns true" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end
@@ -122,7 +122,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:clicked_at) { nil }
   
       it "returns false" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be false
       end
     end
@@ -132,7 +132,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:clicked_at) { nil }
   
       it "returns true because it exactly matches the edge of the period" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       let(:clicked_at) { 30.days.ago }
   
       it "returns true because the click is too old to affect eligibility" do
-        collector = EmailDigestArticleCollector.new(user)
+        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end

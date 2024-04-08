@@ -49,8 +49,6 @@ class EmailDigestArticleCollector
     # rubocop:enable Metrics/BlockLength
   end
 
-  private
-
   def should_receive_email?
     return true unless last_email_sent
 
@@ -59,6 +57,8 @@ class EmailDigestArticleCollector
     lookback = (lookback - 1) if lookback > 1 && recent_tracked_click?
     last_email_sent.before? lookback
   end
+
+  private
 
   def recent_tracked_click?
     @user.email_messages
