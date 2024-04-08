@@ -62,15 +62,26 @@ class EmailDigestArticleCollector
   end
 
   def should_receive_email?
-    return true unless last_email_sent # Send if no emails have ever been sent
+    # If no email has ever been sent, the user should receive an email.
+    return true unless last_email_sent
   
-    lookback = Settings::General.periodic_email_digest.days.ago
+    # Calculate the threshold for when the last email was sent to determine if it's too soon to send another.
+    lookback_threshold = Settings::General.periodic_email_digest.days.ago
   
-    email_sent_before_lookback = last_email_sent < lookback
+    # Determine if the last email was sent within the lookback threshold period.
+    email_sent_within_lookback_period = last_email_sent >= lookback_threshold
   
-    email_sent_during_lookback_without_click = last_email_sent >= lookback && !recent_tracked_click?
+    # Check for any clicks on emails sent within the click lookback period, which might influence sending.
+    email_interaction_within_click_lookback = recent_tracked_click?
   
-    email_sent_before_lookback && !email_sent_during_lookback_without_click
+    # If the last email was sent within the periodic email digest days (lookback period)
+    # and there was no interaction with it, don't send another email.
+    if email_sent_within_lookback_period && !email_interaction_within_click_lookback
+      return false
+    end
+  
+    # If none of the above conditions apply, it's safe to send an email.
+    true
   end
 
   private
