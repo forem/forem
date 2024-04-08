@@ -50,22 +50,21 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         user.update(following_users_count: 1)
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
-                             user_id: user.id, sent_at: (1.2).days.ago, clicked_at: 1.day.ago)
+                             user_id: user.id, sent_at: (2.2).days.ago, clicked_at: 1.day.ago)
       end
 
       it "returns articles when user shouldn't receive any" do
-        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
-          articles = described_class.new(user).articles_to_send
-          expect(articles).not_to be_empty
+        Settings::General.periodic_email_digest = 3
+        articles = described_class.new(user).articles_to_send
+        expect(articles).not_to be_empty
         end
       end
 
-      it "is, in fact, empty if the Ahoy Message is not clicked" do
+      it "returns nothing if, in fact, empty if the Ahoy Message is not clicked" do
         Ahoy::Message.last.update_column(:clicked_at, nil)
-        Timecop.freeze(Settings::General.periodic_email_digest.days.from_now - 1) do
-          articles = described_class.new(user).articles_to_send
-          expect(articles).to be_empty
-        end
+        Settings::General.periodic_email_digest = 3
+        articles = described_class.new(user).articles_to_send
+        expect(articles).to be_empty
       end
     end
 
