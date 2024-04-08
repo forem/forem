@@ -4,6 +4,7 @@ set -euo pipefail
 
 : ${CONTAINER_REPO:="quay.io/forem"}
 : ${CONTAINER_APP:=forem}
+: ${CONTAINER_PLATFORM:="linux/amd64,linux/arm64"}
 
 export DOCKER_BUILDKIT=1
 
@@ -21,7 +22,7 @@ function create_pr_containers {
   # Build the builder image
   echo "Building builder-${PULL_REQUEST} container..."
   docker buildx build --target builder \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                       --label quay.expires-after=8w \
@@ -31,7 +32,7 @@ function create_pr_containers {
   # Build the pull request image
   echo "Building pr-${PULL_REQUEST} container..."
   docker buildx build --target production \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
                       --label quay.expires-after=8w \
@@ -41,7 +42,7 @@ function create_pr_containers {
   # Build the testing image
   echo "Building testing-$"${PULL_REQUEST}" container..."
   docker buildx build --target testing \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder-"${PULL_REQUEST}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":pr-"${PULL_REQUEST}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing-"${PULL_REQUEST}" \
@@ -67,14 +68,14 @@ function create_production_containers {
 
   # Build the builder image
   docker buildx build --target builder \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --build-arg "VCS_REF=${BUILDKITE_COMMIT}" \
                       --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder .
 
   # Build the production image
   docker buildx build --target production \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --build-arg "VCS_REF=${BUILDKITE_COMMIT}" \
@@ -83,7 +84,7 @@ function create_production_containers {
                       --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":latest .
 
   docker buildx build --target production \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --label quay.expires-after=8w \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
@@ -92,7 +93,7 @@ function create_production_containers {
 
   # Build the testing image
   docker buildx build --target testing \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
@@ -101,7 +102,7 @@ function create_production_containers {
 
   # Build the development image
   docker buildx build --target development \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
@@ -131,14 +132,14 @@ function create_release_containers {
 
   # Build the builder image
   docker buildx build --target builder \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --build-arg "VCS_REF=${BUILDKITE_COMMIT}" \
                       --tag "${CONTAINER_REPO}"/"${CONTAINER_APP}":builder .
 
   # Build the production image
   docker buildx build --target production \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --build-arg "VCS_REF=${BUILDKITE_COMMIT}" \
@@ -147,7 +148,7 @@ function create_release_containers {
 
   # Build the testing image
   docker buildx build --target testing \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
@@ -156,7 +157,7 @@ function create_release_containers {
 
   # Build the development image
   docker buildx build --target development \
-                      --platform=linux/amd64,linux/arm64 \
+                      --platform="${CONTAINER_PLATFORM}" \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                       --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":testing \
@@ -168,7 +169,7 @@ function create_release_containers {
   if [ -v BUILDKITE_TAG ] && [ ! -z "${BUILDKITE_TAG}" ]; then
     echo "Buildkite Tag: ${BUILDKITE_TAG}"
     docker buildx build --target production \
-                        --platform=linux/amd64,linux/arm64 \
+                        --platform="${CONTAINER_PLATFORM}" \
                         --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":builder \
                         --cache-from="${CONTAINER_REPO}"/"${CONTAINER_APP}":production \
                         --build-arg "VCS_REF=${BUILDKITE_TAG}" \
