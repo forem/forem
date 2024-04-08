@@ -50,18 +50,6 @@ class EmailDigestArticleCollector
   end
 
   def should_receive_email?
-    return true unless last_email_sent
-  
-    lookback = Settings::General.periodic_email_digest.days.ago
-
-    email_sent_before_lookback = last_email_sent.before?(lookback)
-    return true if email_sent_before_lookback # No need to do extra recent_tracked_click? if this is true
-
-    email_sent_recently_with_click = !last_email_sent.before?(lookback) && recent_tracked_click?
-    email_sent_before_lookback || email_sent_recently_with_click
-  end
-
-  def should_receive_email?
     # If no email has ever been sent, the user should receive an email.
     return true unless last_email_sent
   
