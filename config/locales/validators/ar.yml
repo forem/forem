@@ -1,0 +1,24 @@
+---
+ar:
+  validators:
+    bytesize_validator:
+      non_negative: ": الحد الأقصى يجب أن يكون عددًا صحيحًا غير سالب."
+    color_contrast_validator:
+      must_be_darker: يجب أن يكون أغمق لتحسين الوصولية
+    emoji_only_validator:
+      invalid_emoji: يحتوي على أحرف غير مقبولة أو رموز تعبيرية غير صالحة
+    existing_published_article_id_validator:
+      default: يجب أن يكون معرف المقال المنشور صالحًا
+    profile_validator:
+      bio_too_long: السيرة الذاتية طويلة جدًا
+    cross_model_slug_validator:
+      is_taken: مأخوذ بالفعل
+      is_invalid: غير صالح
+      is_reserved: محجوز
+      too_many_subdirectories: يحتوي على الكثير من الأدلة الفرعية
+    valid_domain_csv_validator:
+      invalid_list_format: يجب أن يكون قائمة بتنسيقات نطاق صالحة، مفصولة بفواصل.
+    iso3166_hash_validator:
+      is_blank: يجب تقديمه
+      invalid_key: يحتوي على رمز غير صالح من ISO 3166-2
+      invalid_value: يجب أن تكون له قيم `:with_regions` أو `:without_regions`
