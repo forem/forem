@@ -1,0 +1,5 @@
+---
+ar:
+  decorators:
+    article_decorator:
+      tagged_with: "موسوم بـ %{cached_tag_list}."
