@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       E2E: true
+      RAILS_ENV: test
+      NODE_ENV: test
 
     steps:
       - uses: actions/checkout@v4
