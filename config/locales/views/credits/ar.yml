@@ -1,0 +1,58 @@
+---
+ar:
+  views:
+    credits:
+      meta:
+        title: الرصيد
+      ledger:
+        class:
+          listing: قائمة
+        category: فئة
+        item: عنصر
+        cost: التكلفة (الرصيد)
+        date: التاريخ
+        misc: عناصر متنوعة
+      listing:
+        create: إنشاء قائمة
+        dashboard: انتقل إلى لوحة قوائم
+      new:
+        meta:
+          title: شراء الرصيد
+        heading: شراء الرصيد لـ @%{name}
+        hook:
+          text_html: يتم استخدام الرصيد لـ %{listings} بالإضافة إلى المنتجات والخدمات القادمة.
+          listings: "قوائم %{community}"
+        form:
+          amount:
+            label: المبلغ للشراء
+            placeholder: أدخل أي مبلغ
+          method:
+            label: طريقة الدفع
+            number: "**** **** **** %{last}"
+            exp: "%{mm}/%{yy}"
+            add: إضافة بطاقة جديدة
+          submit: اكمل الشراء
+          submitting: يتم الإرسال...
+          note_org: "*جميع مسؤولي المنظمة لديهم وصول إلى الرصيد المملوكة من قبل المنظمة"
+        switch:
+          org: التبديل إلى %{name}
+          user: التبديل إلى شراء شخصي
+        status:
+          subtitle:
+            org: كم عدد الرصيد لـ %{name}؟
+            user: كم عدد الرصيد لدي؟
+          desc:
+            org: "%{name} لديها %{count} رصيد."
+            user: لديك %{count} رصيد.
+        how:
+          subtitle: كيف يمكنني كسب الرصيد؟
+          desc_html: يتلقى الأعضاء <strong>5 رصيد</strong> لكل شارة ملفهم الشخصي.
+      purchase: شراء رصيد إضافي
+      tag: 'وسم: %{name}'
+      status:
+        user:
+          one: "لديك %{count} رصيد شخصي للإنفاق"
+          other: "لديك %{count} رصيد شخصي للإنفاق"
+        org_html:
+          one: "%{name} لديها %{num} رصيد للإنفاق"
+          other: "%{name} لديها %{num} رصيد للإنفاق"
