@@ -1,0 +1,236 @@
+---
+ar:
+  helpers:
+    label:
+      listing:
+        body_markdown: "Markdown النص"
+        expires_at: "تاريخ الانتهاء المخصص"
+        location: "الموقع"
+        organization_id: "نشر تحت منظمة"
+        tag_list: "العلامات"
+        title: "العنوان"
+      organization:
+        name: "الاسم"
+        slug: "اسم المستخدم"
+        profile_image: "صورة الملف الشخصي"
+        twitter_username: "اسم مستخدم تويتر"
+        github_username: "اسم مستخدم GitHub"
+        url: "عنوان موقع الويب"
+        tag_line: "الشعار"
+        summary: "الملخص"
+        location: "الموقع"
+        email: "البريد الإلكتروني للدعم"
+        company_size: "حجم الشركة"
+        story: "قصتنا"
+        tech_stack: "تكنولوجيا العلامة التجارية"
+        cta_body_markdown: "نص الزر الداعي للعمل"
+        cta_button_text: "نص الزر"
+        cta_button_url: "عنوان URL الخاص بالزر"
+        proof: "دليل"
+      podcast:
+        android_url: "عنوان URL لتطبيق أندرويد"
+        description: "الوصف"
+        feed_url: "عنوان URL للتغذية"
+        image: "صورة"
+        itunes_url: "عنوان URL ل iTunes"
+        main_color_hex: "اللون الرئيسي بالهكس"
+        overcast_url: "عنوان URL ل Overcast"
+        pattern_image: "صورة النمط"
+        slug: "اسم الرمز"
+        soundcloud_url: "عنوان URL ل Soundcloud"
+        title: "العنوان"
+        twitter_username: "اسم مستخدم تويتر"
+        website_url: "عنوان URL لموقع الويب"
+      response_template:
+        title: "العنوان"
+        content: "نص التعليق (Markdown)"
+      user:
+        name: "الاسم"
+        email: "البريد الإلكتروني"
+        username: "اسم المستخدم"
+        profile_image: "صورة البروفايل"
+      users_notification_setting:
+        email_newsletter: "أرسل لي النشرة الإخبارية الأسبوعية"
+        email_digest_periodic: "أرسل لي ملخصًا دوريًا لأفضل المشاركات لعلاماتي"
+        email_tag_mod_newsletter: "أرسل لي رسائل البريد الإلكتروني لنشرات العلامات"
+        email_community_mod_newsletter: "أرسل لي رسائل البريد الإلكتروني لنشرات مشرفي المجتمع"
+        email_comment_notifications: "أرسل لي بريدًا إلكترونيًا عندما يرد شخص ما على تعليق في سلسلة التعليقات"
+        email_follower_notifications: "أرسل لي بريدًا إلكترونيًا عندما يتابعني شخص ما"
+        email_mention_notifications: "أرسل لي بريدًا إلكترونيًا عندما يُذكر اسمي"
+        email_badge_notifications: "أرسل لي بريدًا إلكترونيًا عندما أحصل على شارة"
+        email_unread_notifications: "أرسل لي تذكيرات من حين لآخر عندما يكون لدي تنبيهات غير مقروءة في %{community}"
+        mobile_mention_notifications: "أرسل لي إشعارًا فوريًا عندما يُذكر اسمي"
+        mobile_comment_notifications: "أرسل لي إشعارًا فوريًا عندما يرد شخص ما على تعليق في سلسلة التعليقات"
+        welcome_notifications: "أرسل لي بيانات من حين لآخر لتحسين تجربتي على %{community}"
+        reaction_notifications: "أرسل إشعارات عندما يتفاعل شخص ما مع محتواي، مثل التعليقات أو الرسائل"
+        mod_roundrobin_notifications: "أرسل لي إشعارات حول نشاط الأعضاء الجدد"
+      users_setting:
+        feed_url: "عنوان URL لتغذية RSS"
+    placeholder:
+      organization:
+        name: "شركة مثال"
+        slug: "اسم المستخدم"
+        url: "https://example.com"
+        location: "فرنسا، تولوز"
+        email: "mail@example.com"
+        company_size: "..."
+        story: "..."
+        tech_stack: "..."
+        cta_body_markdown: "..."
+        cta_button_text: "زيارة موقع Acme"
+        cta_button_url: "https://example.com"
+        proof: "..."
+      response_template:
+        title: "..."
+      user:
+        name: "جون دو"
+        email: "john.doe@example.com"
+        username: "johndoe"
+        feed_url: "https://example.com/feed"
+    application_helper:
+      app_logo: "شعار التطبيق"
+      follow:
+        aria_label:
+          Organization: "متابعة المنظمة: %{name}"
+          Tag: "متابعة العلامة: %{name}"
+          User: "متابعة المستخدم: %{name}"
+          default: "متابعة %{type}: %{name}"
+        text:
+          Organization: "تابع"
+          Tag: "تابع"
+          User: "تابع"
+          default: "تابع"
+      required: "مطلوب"
+      subtitle:
+        week: "أفضل المقالات لهذا الأسبوع"
+        month: "أفضل المقالات لهذا الشهر"
+        year: "أفضل المقالات لهذا العام"
+        infinity: "جميع الرسائل"
+        latest: "أحدث الرسائل"
+      title_text: "%{title} - %{timeframe}"
+    articles_helper:
+      logo: "شعار %{service_name}"
+      most_comments: "معظم التعليقات"
+      most_reactions: "أكثر الردود"
+      most_views: "أكثر العروض"
+      recently_created: "تم الإنشاء مؤخرًا"
+      recently_published: "تم النشر مؤخرًا"
+    authentication_helper:
+      any_of_those: "أي من هذه"
+      email_password: "البريد الإلكتروني وكلمة المرور"
+      reminder:  "تذكير: لقد استخدمت %{method} للتوثيق في حسابك، لذا يرجى استخدام %{dem} لتسجيل الدخول عند الطلب"
+      that: "أن"
+      invite_only: "لا يمكنك القيام بذلك حتى تعطيل وضع 'الدعوة فقط'."
+    comments_helper:
+      ama: "اسألني أي شيء"
+      ask_me_anything: "اسألني أي شيء"
+      author: "المؤلف"
+      nbsp_likes_html:
+        one: "&nbsp;إعجاب"
+        other: "&nbsp;إعجابات"
+    feedback_messages_helper:
+      offender:
+        body: |
+          مرحبًا،
+
+          لقد لاحظنا أنك قد انتهكت شروط استخدام %{community} و/أو مدونة السلوك.
+
+          إذا استمر هذا السلوك، فقد نضطر إلى إيقاف حسابك على %{community}.
+
+          إذا كنت تعتقد أن هناك خطأ، يرجى الرد على هذا البريد الإلكتروني وسنعيد النظر في الأمر.
+
+          فريق %{community}
+        subject: "انتهاك شروط الاستخدام في %{community}"
+      reporter:
+        body: |
+          مرحبًا،
+          شكرًا لإبلاغك عن محتوى قد يكون مخالفًا لشروط استخدام %{community} و/أو مدونة السلوك. نحن نراجع بلاغك وسنتخذ الإجراءات المناسبة.
+          نحن نقدر مساعدتك أثناء سعينا لتعزيز بيئة إيجابية وشاملة للجميع!
+          فريق %{community}
+        subject: "مبلغ %{community}"
+      affected:
+        body: |
+          مرحبًا،
+
+          لقد لاحظنا أن بعض التعليقات (التي قام بها أشخاص آخرون) على رسالتك تنتهك شروط استخدام %{community} و/أو مدونة السلوك. لدينا صفر تسامح لهذه السلوكيات ونتخذ الإجراءات المناسبة.
+
+          شكرًا لك على كونك رائعًا، ولا تتردد في إرسال بريد إلكتروني إلينا لأي سؤال! جميع التعليقات والأفكار مرحب بها لمواصلة تعزيز مجتمع مفتوح وشامل.
+
+          فريق %{community}
+        subject: "إشعار لطيف من %{community}"
+    listing_helper:
+      option:
+        one: "%{cl_name} (%{count} الائتمان)"
+        other: "%{cl_name} (%{count} الائتمانات)"
+    organization_helper:
+      option: "%{org_name} (%{unspent})"
+    rate_limit_checker_helper:
+      day:
+        one: "يوم"
+        other: "أيام"
+      general: "كم من %{thing} يمكن لعضو جديد (%{timeframe} أو أقل) إنشاؤه خلال فترة 5 دقائق؟"
+      published:
+        title: "تحديد الحد لعدد المشاركات المنشورة"
+        description: "كم من المشاركات يمكن إنشاؤها خلال فترة 30 ثانية؟"
+      antispam:
+        title: "تحديد الحد لعدد المشاركات التي يمكن لعضو جديد إنشاؤها"
+      update:
+        title: "تحديد الحد لعدد التحديثات لمقال"
+        description: "كم عدد التحديثات التي يمكن إجراؤها خلال فترة 30 ثانية؟ تحديث وثائق الواجهة البرمجية في حالة التغيير."
+      upload:
+        title: "تحديد الحد لعدد الصور التي يمكن تحميلها"
+        description: "كم عدد الصور التي يمكن تحميلها خلال فترة 30 ثانية؟"
+      user:
+        title: "تحديد الحد لعدد التغييرات التي يمكن لشخص إجراؤها في حسابه"
+        description: "كم من التغييرات يمكن لشخص إجراؤها في حساب مستخدم خلال فترة 30 ثانية؟"
+      follow:
+        title: "تحديد الحد لعدد المتابعين الذي يمكن لشخص متابعتهم في اليوم"
+        description: "كم عدد الأشخاص الذين يمكن متابعتهم في يوم واحد؟"
+      reaction:
+        title: "تحديد الحد لعدد الردود على رسالة أو تعليق"
+        description: "كم مرة يمكن لشخص الرد على رسالة أو تعليق خلال فترة 30 ثانية؟"
+      feedback:
+        title: "تحديد الحد لعدد مرات تقديم تقرير عن إساءة استخدام"
+        description: "كم مرة يمكن لشخص تقديم تقرير عن إساءة استخدام خلال فترة 5 دقائق؟"
+      comment:
+        title: "تحديد الحد لعدد التعليقات التي يمكن إنشاؤها"
+        description: "كم عدد التعليقات التي يمكن لشخص إنشاؤها خلال فترة 30 ثانية؟"
+      comment_antispam:
+        title: "تحديد الحد لعدد التعليقات التي يمكن إنشاؤها بواسطة مستخدم جديد"
+      mention:
+        title: "تحديد الحد لعدد الإشارات @ في رسالة أو تعليق"
+        description: "كم مرة يمكن لشخص توجيه الإشارة @ لمستخدمين آخرين في رسالة أو تعليق؟"
+      listing:
+        title: "تحديد الحد لعدد الإدراجات المنشورة"
+        description: "كم عدد الإعلانات يمكن إنشاؤها خلال فترة دقيقة واحدة؟"
+      organization:
+        title: "تحديد الحد لعدد المنظمات التي يمكن إنشاؤها"
+        description: "كم عدد المنظمات التي يمكن لشخص إنشاؤها خلال فترة 5 دقائق؟"
+      subscription:
+        title: "تحديد الحد لعدد المرات التي يمكن لشخص الاشتراك في قائمة بريدية tag liquide"
+        description: "كم مرة يمكن لشخص الاشتراك في قائمة بريدية خلال فترة 30 ثانية؟"
+      recipient:
+        title: "تحديد الحد لعدد الرسائل العامة التي نرسلها"
+        description: "كم من الرسائل يمكننا إرسالها إلى شخص ما خلال فترة 2 دقيقة؟"
+      confirmation:
+        title: "تحديد الحد لعدد رسائل التأكيد التي نرسلها"
+        description: "كم من المرات يمكننا إرسال رسالة تأكيد إلى شخص ما خلال فترة 2 دقيقة؟"
+      thing:
+        posts: "المشاركات"
+        comments: "التعليقات"
+    settings_helper:
+      advanced: "متقدم"
+      beginner: "مبتدئ"
+      expert: "خبير"
+      mid_level: "مستوى متوسط"
+      novice: "مبتدئ"
+    social_link_helper:
+      n_a: "غير متاح"
+    admin:
+      user_helper:
+        today: "اليوم، %{date}"
+        yesterday: "الأمس، %{date}"
+        org_join: "، "
+        org_overflow:
+          one: "%{orgs} و%{count} آخر"
+          other: "%{orgs} و%{count} آخرين"
