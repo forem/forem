@@ -1,0 +1,71 @@
+---
+ar:
+  views:
+    main:
+      aria_home: "الرئيسية %{community}"
+      header:
+        create_account: إنشاء حساب
+        login: تسجيل الدخول
+        nav:
+          aria_label: قائمة التنقل
+        moderation:
+          aria_label: الاعتدال
+          icon: الاعتدال
+        notifications:
+          aria_label: الإشعارات
+          icon: الإشعارات
+        skip: تخطى إلى المحتوى
+      modal:
+        create_account:
+          aria_label: إنشاء حساب جديد
+          text: إنشاء حساب
+        login:
+          aria_label: تسجيل الدخول
+          text: تسجيل الدخول
+      nav:
+        admin: الإدارة
+        dashboard: لوحة المعلومات
+        placeholder: "..."
+        list: قائمة القراءة
+        moderator_center: مركز الاعتدال
+        other: آخر
+        settings: الإعدادات
+      nav_name:
+        About: حول
+        Code of Conduct: ميثاق السلوك
+        Contact: اتصل بنا
+        FAQ: الأسئلة الشائعة
+        Home: الصفحة الرئيسية
+        Listings: القوائم
+        Podcasts: بودكاست
+        Privacy Policy: سياسة الخصوصية
+        Reading List: قائمة القراءة
+        Tags: الوسوم
+        Terms of use: شروط الاستخدام
+        Videos: فيديوهات
+      side:
+        listings:
+          heading: القوائم
+          all: عرض الكل
+          new: إنشاء قائمة
+        trend: الدليل/المصادر الرائجة
+        recent: الاستعلامات الأخيرة
+      tags:
+        aria_label: تخصيص أولوية الوسم
+        follow: متابعة
+        my_tags: وسومي
+        popular_tags: وسوم شائعة
+      footer:
+        built:
+          text_html: بنيت على %{forem} — البرمجيات %{opensource} التي تشغل %{dev} والمجتمعات الأخرى الشاملة.
+          forem: فورم
+          opensource: مفتوحة المصدر
+          dev: ديف
+        desc_html: "%{community} — %{desc}"
+        logo: شعار فورم
+        powered:
+          text_html: مصنوعة بحب و %{rails}. %{community} <span title="copyright">&copy;</span> %{copyright}.
+          rails: روبي على السكك
+        sidebar_desc_html: "%{community}\n%{desc}"
+      create_post: إنشاء منشور
+      signout: تسجيل الخروج
