@@ -1,0 +1,42 @@
+---
+ar:
+  views:
+    reactions:
+      category:
+        hands: يدين
+        like: إعجاب
+        readinglist: قائمة القراءة
+        thinking: تفكير
+        thumbsup: إبهام لأعلى
+        thumbsdown: إبهام لأسفل
+        unicorn: حصان ذو قرن
+        vomit: علم بالعرق
+        lightbulb: مصباح
+        raised_hands: اليدين المرتفعتان
+        rocket: صاروخ
+        exploding_head: رأس متفجر
+        fire: نار
+      drawer_button: إضافة رد فعل
+      summary:
+        count_html:
+          one: "%{count}%{start}\_رد فعل%{end}"
+          other: "%{count}%{start}\_ردود فعل%{end}"
+        title: الردود
+      like:
+        title: إعجاب
+        aria_label: إعجاب
+        icon: زر القلب المفضل
+        text: إعجاب
+      unicorn:
+        title: حصان ذو قرن
+        aria_label: رد فعل بواسطة حصان ذو قرن
+      readingList:
+        title: حفظ
+        aria_label: إضافة إلى قائمة القراءة
+        icon: زر الحفظ
+        text: حفظ
+      subscribe:
+        title: الاشتراك في التعليقات
+        aria_label: الاشتراك في التعليقات
+        icon: زر الحفظ
+        text: الاشتراك في التعليقات
