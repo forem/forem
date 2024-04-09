@@ -79,8 +79,8 @@ ar:
           one: "%{first} و %{count} آخرين"
           other: "%{first} و %{count} آخرين"
         verb_html:
-          one: "%{start}%{actors} قد ردوا على %{title} بـ%{end} %{reactions}"
-          other: "%{start}%{actors} قد ردوا على %{title} بـ%{end} %{reactions}"
+          one: "%{start}%{actors} قد تفاعلوا على %{title} بـ%{end} %{reactions}"
+          other: "%{start}%{actors} قد تفاعلوا على %{title} بـ%{end} %{reactions}"
         your:
           article: منشورك
           comment: تعليقك
