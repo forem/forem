@@ -144,6 +144,11 @@ module Settings
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
 
+    # Algolia
+    def self.algolia_search_enabled?
+      !Rails.env.production?
+    end
+
     def self.custom_newsletter_configured?
       onboarding_newsletter_content_processed_html.present? &&
         onboarding_newsletter_opt_in_head.present? &&
