@@ -1,0 +1,37 @@
+---
+ar:
+  views:
+    podcasts:
+      meta:
+        title: البودكاستات
+        description: اكتشف البودكاستات التقنية لـ %{member}
+        og:
+          title: البودكاستات على %{community}
+      browse: تصفح
+      heading: البودكاستات
+      close: "×"
+      form:
+        heading: اقترح بودكاست
+        errors:
+          one: 'خطأ واحد أثناء إنشاء البودكاست:'
+          other: "%{count} أخطاء أثناء إنشاء البودكاست:"
+        owner: أنا مالك هذا البودكاست
+        return: "< العودة إلى البودكاستات"
+        suggest: اقتراح
+      list: البودكاستات
+      listen: انقر هنا للتنزيل/الاستماع
+      source: مصدر الحلقة
+      statuses:
+        ssl_failed: فشل التحقق من شهادة SSL أثناء استرداد feed_url للبودكاست
+        unparsable: لم يتمكن من تحليل رابط rss للبودكاست
+        unplayable: قد لا يكون هذا البودكاست قابلاً للتشغيل في المتصفح
+        unreachable: لا يمكن الوصول إلى feed_url للبودكاست
+      speed: 1x
+      tag: بودكاست
+      initializing: تهيئة...
+      unsupported: متصفحك لا يدعم عنصر الصوت.
+      featured_shows: الحلقات المميزة
+      latest_episodes: أحدث الحلقات
+      suggest_a_podcast: اقترح بودكاست
+      view_all_podcasts: عرض جميع البودكاستات
+      follow: تابع
