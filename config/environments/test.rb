@@ -55,7 +55,7 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
-  config.assets.compile = false if ENV["CI"]
+  config.assets.compile = false
 
   # Raise exceptions for disallowed deprecations.
   config.active_support.disallowed_deprecation = :raise

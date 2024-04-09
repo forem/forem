@@ -4,7 +4,7 @@
 
 <% cache(release_adjusted_cache_key("mod-styling")) do %>
   <style>
-    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
+    <%= stylesheet_link_tag "moderator", media: "all" %>
   </style>
 <% end %>
 
