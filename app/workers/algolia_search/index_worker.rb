@@ -1,4 +1,6 @@
 module AlgoliaSearch
+  sidekiq_options queue: :algolia_search, retry: 5
+
   class IndexWorker
     include Sidekiq::Worker
 

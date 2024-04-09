@@ -19,6 +19,7 @@ module AlgoliaSearchable
 
     class_methods do
       def trigger_sidekiq_worker(record, delete)
+        # TODO: check if this get called by banish_user through callback, with test
         AlgoliaSearch::IndexWorker.perform_async(record.class.name, record.id, delete)
       end
     end
