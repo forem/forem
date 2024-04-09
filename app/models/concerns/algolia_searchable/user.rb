@@ -6,14 +6,16 @@ module AlgoliaSearchable
       include AlgoliaSearch
 
       algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker, unless: :bad_actor do
-        attribute :name, :username, :profile_image_90
+        attribute :name, :username
+        attribute :profile_image do
+          # TODO: make sure profile_image_changed? wil work without name clash
+          :profile_image_90
+        end
 
         # might need organizations
         # attribute :organizations do
         #   organizations.map(&:name)
         # end
-
-        attributesForFaceting :username
       end
     end
 
@@ -24,12 +26,10 @@ module AlgoliaSearchable
       end
     end
 
-    # I don't like the profile_image_90 method name
-
     def bad_actor
       # TODO: expand this
       calculated_score.negative? || spammer?
     end
-    alias_method :bad_actor_changed?, :bad_actor
+    alias bad_actor_changed? bad_actor
   end
 end
