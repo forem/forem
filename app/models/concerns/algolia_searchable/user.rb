@@ -30,6 +30,6 @@ module AlgoliaSearchable
       # TODO: expand this
       calculated_score.negative? || spammer?
     end
-    alias bad_actor_changed? bad_actor
+    alias_method :bad_actor_changed?, :bad_actor
   end
 end
