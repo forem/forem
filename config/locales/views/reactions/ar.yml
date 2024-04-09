@@ -16,12 +16,12 @@ ar:
         rocket: صاروخ
         exploding_head: رأس متفجر
         fire: نار
-      drawer_button: إضافة رد فعل
+      drawer_button: إضافة تفاعل
       summary:
         count_html:
-          one: "%{count}%{start}\_رد فعل%{end}"
-          other: "%{count}%{start}\_ردود فعل%{end}"
-        title: الردود
+          one: "%{count}%{start}\_تفاعل%{end}"
+          other: "%{count}%{start}\_تفاعلات%{end}"
+        title: التفاعلات
       like:
         title: إعجاب
         aria_label: إعجاب
@@ -40,3 +40,4 @@ ar:
         aria_label: الاشتراك في التعليقات
         icon: زر الحفظ
         text: الاشتراك في التعليقات
+
