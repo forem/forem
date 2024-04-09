@@ -3,6 +3,7 @@ class User < ApplicationRecord
   rolify after_add: :update_user_roles_cache, after_remove: :update_user_roles_cache
 
   include CloudinaryHelper
+  include AlgoliaSearchable::User
 
   include Images::Profile.for(:profile_image_url)
 
@@ -19,24 +20,6 @@ class User < ApplicationRecord
 
       # All new users should automatically have a profile
       after_create_commit -> { Profile.create(user: self) }, unless: :_skip_creating_profile
-    end
-  end
-
-  concerning :AlgoliaSearchable do
-    included do
-      if Settings::Algolia.enabled?
-        include AlgoliaSearch
-
-        algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker do
-          attribute :name, :username, :profile_image_90
-        end
-      end
-    end
-
-    class_methods do
-      def trigger_sidekiq_worker(record, action)
-        # AlgoliaIndexWorker.perform_async(record.class.name, record.id, action)
-      end
     end
   end
 

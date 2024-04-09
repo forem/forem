@@ -22,6 +22,7 @@ module Moderator
       delete_user_activity
       delete_comments
       delete_articles
+      # user.remove_from_algolia_index
       delete_user_podcasts
       reassign_and_bust_username
       delete_vomit_reactions
