@@ -126,7 +126,7 @@
     "chart.js": "^3.9.1",
     "classnames": "^2.5.1",
     "core-js": "3",
-    "esbuild": "^0.19.10",
+    "esbuild": "^0.19.12",
     "esbuild-plugin-stimulus": "^0.1.5",
     "esbuild-plugin-svgr": "^2.1.0",
     "file-loader": "^6.2.0",
