@@ -1,6 +1,4 @@
-# should be disabled unless keys are set
-#
 AlgoliaSearch.configuration = {
-  application_id: "YourApplicationID",
-  api_key: "YourAPIKey"
+  application_id: Settings::General.algolia_application_id,
+  api_key: Settings::General.algolia_api_key
 }

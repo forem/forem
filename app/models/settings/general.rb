@@ -145,8 +145,12 @@ module Settings
                                        validates: { inclusion: Languages::Detection.codes }
 
     # Algolia
+    setting :algolia_application_id, type: :string, default: ApplicationConfig["ALGOLIA_APPLICATION_ID"]
+    setting :algolia_api_key, type: :string, default: ApplicationConfig["ALGOLIA_API_KEY"]
+    setting :algolia_search_only_api_key, type: :string, default: ApplicationConfig["ALGOLIA_SEARCH_ONLY_API_KEY"]
+
     def self.algolia_search_enabled?
-      !Rails.env.production?
+      algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end
 
     def self.custom_newsletter_configured?
