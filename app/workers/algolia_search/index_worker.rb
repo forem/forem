@@ -1,8 +1,7 @@
 module AlgoliaSearch
-  sidekiq_options queue: :algolia_search, retry: 5
-
   class IndexWorker
     include Sidekiq::Worker
+    sidekiq_options queue: :algolia_search, retry: 5
 
     def perform(klass, id, remove)
       record = klass.constantize

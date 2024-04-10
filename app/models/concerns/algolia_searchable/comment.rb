@@ -38,6 +38,6 @@ module AlgoliaSearchable
     def good_enough
       !hidden_by_commentable_user
     end
-    alias_method good_enough_changed? good_enough
+    alias good_enough_changed? good_enough
   end
 end
