@@ -4,6 +4,7 @@ class EmailDigestArticleCollector
 
   ARTICLES_TO_SEND = "EmailDigestArticleCollector#articles_to_send".freeze
   RESULTS_COUNT = 7 # Winner of digest_count_03_18 field test
+  CLICK_LOOKBACK = 30
 
   def initialize(user)
     @user = user
@@ -48,12 +49,22 @@ class EmailDigestArticleCollector
     # rubocop:enable Metrics/BlockLength
   end
 
-  private
-
   def should_receive_email?
     return true unless last_email_sent
 
-    last_email_sent.before? Settings::General.periodic_email_digest.days.ago
+    email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
+    return false if email_sent_within_lookback_period && !recent_tracked_click?
+  
+    true
+  end
+
+  private
+
+  def recent_tracked_click?
+    @user.email_messages
+      .where(mailer: "DigestMailer#digest_email")
+      .where("sent_at > ?", CLICK_LOOKBACK.days.ago)
+      .where.not(clicked_at: nil).any?
   end
 
   def last_email_sent
