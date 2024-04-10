@@ -1,4 +1,4 @@
 AlgoliaSearch.configuration = {
-  application_id: Settings::General.algolia_application_id,
-  api_key: Settings::General.algolia_api_key
+  application_id: ApplicationConfig["ALGOLIA_APPLICATION_ID"],
+  api_key: ApplicationConfig["ALGOLIA_API_KEY"]
 }

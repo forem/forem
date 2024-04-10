@@ -26,6 +26,11 @@ class Seeder
 
     if klass.none?
       message = ["Creating", count, plural].compact.join(" ")
+      if klass.respond_to?(:algolia_search) && Settings::General.algolia_search_enabled?
+        # TODO: is Settings::General the best place for algolia_search_enabled?
+        puts "  Algolia search enabled, clearing index for #{klass}..."
+        klass.clear_index!
+      end
       puts "  #{@counter}. #{message}."
       yield
     else

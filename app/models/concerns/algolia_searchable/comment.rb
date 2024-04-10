@@ -5,15 +5,18 @@ module AlgoliaSearchable
     included do
       include AlgoliaSearch
 
-      algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker, unless: :good_enough do
+      algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker, if: :good_enough do
         # TODO: make sure all are valid attributes
         attribute :commentable_id, :commentable_type, :path, :readable_publish_date, :parent_id
         attribute :body_html do
           truncate_body_html
         end
 
-        # TODO: does this auto add environment?
-        add_replica "Comment_ordered", inherit: true do
+        attribute :user do
+          { name: user.name, username: user.username, profile_image: user.profile_image_90 }
+        end
+
+        add_replica "Comment_ordered", inherit: true, per_environment: true do
           customRanking ["desc(created_at_i)"]
         end
       end
@@ -36,6 +39,7 @@ module AlgoliaSearchable
     end
 
     def good_enough
+      # TODO: actually idk how _changed would work here.
       !hidden_by_commentable_user
     end
     alias good_enough_changed? good_enough
