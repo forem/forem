@@ -80,70 +80,64 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
   end
 
   describe "#should_receive_email?" do
-    let(:periodic_email_digest_days) { 3 }
+    let(:user) { create(:user) }
+    let(:collector) { described_class.new(user) }
 
     before do
-      Settings::General.periodic_email_digest = periodic_email_digest_days
-      create(:ahoy_message, user_id: user.id, sent_at: sent_at, clicked_at: clicked_at)
+      Settings::General.periodic_email_digest = 3
     end
 
     context "when the user clicked the last email within the lookback period" do
-      let(:sent_at) { 2.days.ago }
-      let(:clicked_at) { 1.day.ago }
+      it "returns true" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 2.days.ago, clicked_at: 1.day.ago)
+        expect(collector.should_receive_email?).to be true
+      end
+    end
 
-      it "returns true" do
-        collector = described_class.new(user)
-        expect(collector.should_receive_email?).to be true
-      end
-    end
-  
     context "when the user has not received any emails" do
-      let(:sent_at) { nil }
-      let(:clicked_at) { nil }
-  
       it "returns true" do
-        collector = described_class.new(user)
         expect(collector.should_receive_email?).to be true
       end
     end
-  
+
     context "when the last email was received outside the periodic email digest days" do
-      let(:sent_at) { 4.days.ago }
-      let(:clicked_at) { nil }
-  
       it "returns true" do
-        collector = described_class.new(user)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 4.days.ago)
         expect(collector.should_receive_email?).to be true
       end
     end
-  
+
     context "when the last email was received within the periodic email digest days without click" do
-      let(:sent_at) { 2.days.ago }
-      let(:clicked_at) { nil }
-  
       it "returns false" do
-        collector = described_class.new(user)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 2.days.ago)
         expect(collector.should_receive_email?).to be false
       end
     end
-  
+
     context "when the last email was received just before the periodic email digest days limit" do
-      let(:sent_at) { 3.days.ago }
-      let(:clicked_at) { nil }
-  
-      it "returns true because it exactly matches the edge of the period" do
-        collector = described_class.new(user)
+      it "returns true" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 3.days.ago)
         expect(collector.should_receive_email?).to be true
       end
     end
-  
+
     context "when the last email was clicked but outside the lookback period" do
-      let(:sent_at) { 31.days.ago }
-      let(:clicked_at) { 30.days.ago }
-  
-      it "returns true because the click is too old to affect eligibility" do
-        collector = described_class.new(user)
+      it "returns true" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 33.days.ago, clicked_at: 32.days.ago)
         expect(collector.should_receive_email?).to be true
+      end
+
+      it "returns false when there is a sent at within the thredhold" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 33.days.ago, clicked_at: 32.days.ago)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+          user_id: user.id, sent_at: 2.days.ago)
+        expect(collector.should_receive_email?).to be false
       end
     end
   end
