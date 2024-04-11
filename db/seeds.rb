@@ -54,7 +54,6 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-# User.clear_index! if Settings::Algolia.enabled
 users_in_random_order = seeder.create_if_none(User, num_users) do
   roles = %i[trusted]
 
