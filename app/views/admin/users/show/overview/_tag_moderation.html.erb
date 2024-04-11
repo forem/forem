@@ -25,6 +25,7 @@
   </ul>
 <% end %>
 
-<div id="tag-moderation-description" class="crayons-notice crayons-notice--warning">
-  <%= t("views.admin.users.overview.tag_mod.notice_html", tag_page: link_to(t("views.admin.users.overview.tag_mod.tag_page"), admin_tags_path, class: "c-link c-link--branded"), user_id: tag.strong(@user.id)) %>
+<div id="tag-moderation-description" class="crayons-notice crayons-notice--warning mt-4">
+  <%= t("views.admin.users.overview.tag_mod.notice_html", tag_page: link_to(t("views.admin.users.overview.tag_mod.tag_page"),
+                                                                            admin_tags_path, class: "c-link c-link--branded"), username: tag.strong(@user.username)) %>
 </div>

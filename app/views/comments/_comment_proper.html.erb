@@ -5,7 +5,7 @@
 
   <div class="inner-comment comment__details">
     <div class="comment__content crayons-card">
-      <% if comment.deleted || decorated_comment.super_low_quality %>
+      <% if comment.deleted || (decorated_comment.super_low_quality && !is_admin) %>
         <div class="p-6 align-center opacity-50 fs-s">
           <span class="js-comment-username">
             <%= t("views.comments.delete.comment_deleted") %>

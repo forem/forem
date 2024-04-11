@@ -10,5 +10,10 @@
     }
   },
   "include": ["./app/javascript/**/*"],
-  "exclude": ["node_modules", "public"]
+  "exclude": [
+    "node_modules",
+    "public",
+    "app/assets/builds",
+    "app/javascript/storybook-static"
+  ]
 }

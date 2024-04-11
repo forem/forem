@@ -12,70 +12,40 @@
       "type": "node"
     },
     {
-      "type": "edge",
-      "request": "attach",
       "name": "Attach to Edge",
+      "type": "vscode-edge-devtools.debug",
+      "request": "attach",
       "port": 2015,
       "webRoot": "${workspaceFolder}"
     },
     {
+      "name": "Attach to Chrome",
       "type": "chrome",
       "request": "attach",
-      "name": "Attach to Chrome",
       "port": 9222,
       "webRoot": "${workspaceFolder}/app/javascript/packs"
     },
     {
-      "name": "Debug Local File",
-      "type": "Ruby",
-      "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}/main.rb"
-    },
-    {
-      "name": "Listen for rdebug-ide",
-      "type": "Ruby",
-      "request": "attach",
-      "cwd": "${workspaceRoot}",
-      "remoteHost": "127.0.0.1",
-      "remotePort": "1234",
-      "remoteWorkspaceRoot": "${workspaceRoot}"
-    },
-    {
-      "name": "Rails server",
-      "type": "Ruby",
-      "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}/bin/rails",
-      "args": ["server"]
+      "name": "Attach to Existing Server",
+      "type": "ruby_lsp",
+      "request": "attach"
     },
     {
       "name": "RSpec - all",
-      "type": "Ruby",
+      "type": "ruby_lsp",
       "request": "launch",
-      "cwd": "${workspaceRoot}",
       "program": "${workspaceRoot}/bin/rspec",
-      "args": ["-I", "${workspaceRoot}"]
     },
     {
       "name": "RSpec - active spec file only",
-      "type": "Ruby",
+      "type": "ruby_lsp",
       "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}/bin/rspec",
-      "args": ["-I", "${workspaceRoot}", "${file}"]
+      "program": "${workspaceRoot}/bin/rspec ${file}",
     },
     {
-      "name": "Cucumber",
-      "type": "Ruby",
-      "request": "launch",
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}/bin/cucumber"
-    },
-    {
+      "name": "Jest Current File",
       "type": "node",
       "request": "launch",
-      "name": "Jest Current File",
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "args": ["${relativeFile}"],
       "console": "integratedTerminal",

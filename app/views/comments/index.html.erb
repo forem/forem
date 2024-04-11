@@ -138,8 +138,9 @@
 
     <div class="comments" id="comment-trees-container">
       <% if @root_comment.present? %>
-        <% cache ["comment_root-view-root_#{user_signed_in?}", @root_comment] do %>
-          <%= nested_comments(tree: Comments::Tree.for_root_comment(@root_comment, include_negative: user_signed_in?), commentable: @commentable, is_view_root: true) %>
+        <% cache ["comment_root-view-root_#{user_signed_in?}-#{@is_admin}", @root_comment] do %>
+          <%= nested_comments(tree: Comments::Tree.for_root_comment(@root_comment, include_negative: user_signed_in?),
+                              commentable: @commentable, is_view_root: true, is_admin: @is_admin) %>
         <% end %>
       <% else %>
         <% Comments::Tree.for_commentable(@commentable, include_negative: user_signed_in?).each do |comment, sub_comments| %>

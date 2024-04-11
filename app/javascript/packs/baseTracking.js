@@ -6,6 +6,7 @@ function initializeBaseTracking() {
   trackGoogleAnalytics3();
   trackGoogleAnalytics4();
   trackCustomImpressions();
+  trackEmailClicks();
 }
 
 // Google Anlytics 3 is deprecated, and mostly not supported, but some sites may still be using it for now.
@@ -185,6 +186,35 @@ function trackCustomImpressions() {
     }
 
   }, 1800)
+}
+
+function trackEmailClicks() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('ahoy_click') === 'true' && urlParams.get('t') && urlParams.get('s') && urlParams.get('u')){
+      const dataBody = {
+        t: urlParams.get('t'),
+        c: urlParams.get('c'),
+        u: decodeURIComponent(urlParams.get('u')),
+        s: urlParams.get('s'),
+      };
+      window.fetch('/ahoy/email_clicks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataBody),
+        credentials: 'same-origin'
+      });
+      // Remove t,c,u,s params and ahoy_click param from url without modifying the history
+      urlParams.delete('t');
+      urlParams.delete('c');
+      urlParams.delete('u');
+      urlParams.delete('s');
+      urlParams.delete('ahoy_click');
+      const newUrl = `${window.location.pathname  }?${  urlParams.toString()}`;
+      window.history.replaceState({}, null, newUrl);
+    }
 }
 
 function showCookieConsentBanner() {
