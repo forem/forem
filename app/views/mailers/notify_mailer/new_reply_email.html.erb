@@ -1,13 +1,81 @@
-<head>
-    <style type="text/css">
-      img {
-        max-width:100%;
-        height:auto;
-        border:none
-      }
-    </style>
-</head>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center">
+      <table style="width:100%;" cellpadding="0" cellspacing="0">
+        <!-- Header -->
+        <tr style="width:100%">
+          <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+            <a href="<%= root_path %>">
+              <% if Settings::General.resized_logo.present? %>
+                <img width="50px" src="<%= Settings::General.resized_logo %>" alt="<%= community_name %>">
+              <% else %>
+                <span>
+                  <%= community_name %>
+                </span>
+              <% end %>
+            </a>
+          </td>
+          <td align="right" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+            <img width="50px" height="auto" src="<%= @user.profile_image_90 %>">
+          </td>
+        </tr>
 
+        <!-- Heading -->
+        <tr>
+          <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+            <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= @comment.user.name %> replied to you on <%= community_name %> </h1>
+          </td>
+        </tr>
+
+        <!-- Subheader -->
+        <tr>
+          <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+            Recent community posts just for you
+          </td>
+        </tr>
+
+
+        <% if ForemInstance.dev_to? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 30px 0 8px;">
+                <p style="margin: 0; font-weight: bold; font-size: 20px;">
+                  Happy coding ❤️
+                </p>
+            </td>
+          </tr>
+        <% end %>
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 20px 0;">
+            <hr style="border-top: 3px solid #0a0a0a;"/>
+          </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">
+            <h2>How to make your Digest better</h2>
+            <% if @user.setting.experience_level.nil? %>
+              <p style="margin: 22px 0; font-size: 16px;">
+                Visit <b><a href="<%= app_url(user_settings_path(:customization)) %>" style="color: #0a0a0a; text-decoration: underline;">your settings</a></b> to enter your experience level to get more relevant posts for you.
+              </p>
+            <% end %>
+            <p style="margin: 22px 0 10px; font-size: 16px;">
+              Visit the <b><a href="<%= app_url(tags_path) %>" style="color: #0a0a0a; text-decoration: underline;">tags page</a></b> to choose which types of content will be featured.
+            </p>
+          </td>
+        </tr>
+
+        <tr>
+          <td bgcolor="#FFFFFF" style="padding: 10px 0;">
+            <hr style="border-top: 3px solid #0a0a0a;"/>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+<!--
 <h2 style="font-size:25px;"><%= link_to(@comment.user.name, user_url(@comment.user)) %> replied to you on <%= community_name %></h2>
 <table>
   <tr>
@@ -27,4 +95,4 @@
       <% end %>
     </td>
   </tr>
-</table>
+</table>-->
