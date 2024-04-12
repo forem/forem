@@ -150,6 +150,7 @@ module Settings
     setting :algolia_search_only_api_key, type: :string, default: ApplicationConfig["ALGOLIA_SEARCH_ONLY_API_KEY"]
 
     def self.algolia_search_enabled?
+      # TODO: actually add an on/off switch for this
       algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
     end
 
