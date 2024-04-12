@@ -16,6 +16,13 @@
           </td>
         </tr>
 
+        <% if @billboards.first.present? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 20px 0;">
+              <%= @billboards.first.processed_html.html_safe %>
+            </td>
+          </tr>
+        <% end %>
         <!-- Articles List -->
         <% @articles.each_with_index do |article, i| %>
           <tr>
@@ -42,6 +49,13 @@
           </td>
         </tr>
 
+        <% if @billboards.second.present? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 20px 0;">
+              <%= @billboards.second.processed_html.html_safe %>
+            </td>
+          </tr>
+        <% end %>
         <!-- Footer -->
         <tr>
           <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">

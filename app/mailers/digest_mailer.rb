@@ -4,6 +4,7 @@ class DigestMailer < ApplicationMailer
   def digest_email
     @user = params[:user]
     @articles = params[:articles]
+    @billboards = params[:billboards]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
 
     subject = generate_title
