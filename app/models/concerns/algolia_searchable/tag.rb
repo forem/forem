@@ -8,7 +8,7 @@ module AlgoliaSearchable
       algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker do
         attribute :name, :pretty_name, :short_summary, :hotness_score
 
-        # TODO: probably sort by hotness_score
+        # TODO: verify if this ranking is preferred
         customRanking ["desc(hotness_score)"]
       end
     end
