@@ -8,12 +8,7 @@ module AlgoliaSearchable
       algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker, unless: :bad_actor do
         attribute :name, :username
         attribute :profile_image do
-          # TODO: make sure profile_image_changed? works without name clash
           profile_image_90
-        end
-
-        add_replica "User_score_asc", inherit: true, per_environment: true do
-          customRanking ["asc(score)"]
         end
       end
     end
@@ -25,12 +20,11 @@ module AlgoliaSearchable
     end
 
     def bad_actor
-      # TODO: expand this
-      score.negative? || spammer?
+      score.negative?
     end
 
     def bad_actor_changed?
-      score_changed? && bad_actor
+      score_changed? && score_was.negative? != score.negative?
     end
   end
 end
