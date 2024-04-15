@@ -12,7 +12,7 @@ RSpec.describe Settings::General do
       it "accepts valid URLs" do
         url_fields.each do |attribute|
           expect do
-            described_class.public_send("#{attribute}=", "https://example.com")
+            described_class.public_send(:"#{attribute}=", "https://example.com")
           end.not_to raise_error
         end
       end
@@ -20,7 +20,7 @@ RSpec.describe Settings::General do
       it "rejects invalid URLs and accepts valid ones", :aggregate_failures do
         url_fields.each do |attribute|
           expect do
-            described_class.public_send("#{attribute}=", "example.com")
+            described_class.public_send(:"#{attribute}=", "example.com")
           end.to raise_error(/is not a valid URL/)
         end
       end
@@ -93,6 +93,28 @@ RSpec.describe Settings::General do
         expect do
           described_class.billboard_enabled_countries = other_countries
         end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    describe "validating algolia settings" do
+      it "only accepts strings" do
+        expect(described_class.get_setting(:algolia_application_id)[:type]).to eq(:string)
+        expect(described_class.get_setting(:algolia_api_key)[:type]).to eq(:string)
+        expect(described_class.get_setting(:algolia_search_only_api_key)[:type]).to eq(:string)
+      end
+    end
+
+    describe "::algolia_search_enabled?" do
+      it "returns true if all algolia settings are present" do
+        described_class.algolia_application_id = "app_id"
+        described_class.algolia_api_key = "api_key"
+        described_class.algolia_search_only_api_key = "search_only_api_key"
+        expect(described_class.algolia_search_enabled?).to be(true)
+      end
+
+      it "returns false if any or all of the algolia settings are missing" do
+        described_class.algolia_application_id = "app_id"
+        expect(described_class.algolia_search_enabled?).to be(false)
       end
     end
   end
