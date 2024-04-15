@@ -8,12 +8,49 @@
             <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
           </td>
         </tr>
-
-        <!-- Subheader -->
         <tr>
-          <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
-            Recent community posts just for you
-          </td>
+          <% case @subheader_variant %>
+          <% when "just_for_you" %>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+              Hey <%= @user.name %>, here are some recent community posts just for you.
+            </td>
+          <% when "just_for_you_with_branding" %>
+            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+              Hey <%= @user.name %>, here are some recent community posts just for you.
+            </td>
+          <% when "get_caught_up" %>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+              Hey <%= @user.name %>, let's get you caught up!
+            </td>
+          <% when "get_caught_up_with_branding" %>
+            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+              Hey <%= @user.name %>, let's get you caught up!
+            </td>
+          <% when "whats_trending" %>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+              Hey <%= @user.name %>, find out what's trending!
+            </td>
+          <% when "whats_trending_with_branding" %>
+            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+              Hey <%= @user.name %>, find out what's trending!
+            </td>
+          <% when "dont_miss_out" %>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+              Hey <%= @user.name %>, don't miss out!
+            </td>
+          <% when "dont_miss_out_with_branding" %>
+            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+              Hey <%= @user.name %>, don't miss out!
+            </td>
+          <% when "base" %>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
+              Recent community posts just for you
+            </td>
+          <% when "base_with_branding" %>
+            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+              Recent community posts just for you
+            </td>
+          <% end %>
         </tr>
 
         <% if @billboards&.first&.present? %>
