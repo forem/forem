@@ -27,6 +27,35 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_subheader_03_18:
+    started_at: 2024-04-15
+    variants:
+      - base
+      - base_with_branding
+      - just_for_you
+      - just_for_you_with_branding
+      - get_caught_up
+      - get_caught_up_with_branding
+      - whats_trending
+      - whats_trending_with_branding
+      - dont_miss_out
+      - dont_miss_out_with_branding
+    weights:
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_count_03_18:
     started_at: 2024-03-18
     ended_at: 2024-03-28
