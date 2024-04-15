@@ -34,7 +34,7 @@ class Billboard < ApplicationRecord
                                             "Fixed Bottom (Individual Post)",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section",
-                                            "Digest Email First"
+                                            "Digest Email First",
                                             "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
