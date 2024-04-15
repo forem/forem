@@ -10,8 +10,14 @@ module Emails
 
       articles = EmailDigestArticleCollector.new(user).articles_to_send
       tags = user.cached_followed_tag_names&.first(12)
-      first_billboard = Billboard.for_display(area: "digest_first", user_id: user.id, user_tags: tags, user_signed_in: true)
-      second_billboard = Billboard.for_display(area: "digest_second", user_id: user.id, user_tags: tags, user_signed_in: true)
+      first_billboard = Billboard.for_display(area: "digest_first",
+                                              user_id: user.id,
+                                              user_tags: tags,
+                                              user_signed_in: true)
+      second_billboard = Billboard.for_display(area: "digest_second",
+                                               user_id: user.id,
+                                               user_tags: tags,
+                                               user_signed_in: true)
       return unless articles.any?
 
       begin

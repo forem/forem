@@ -28,7 +28,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array)
+        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array, billboards: Array)
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
@@ -57,7 +57,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         worker.perform(user.id)
 
         expect(DigestMailer).to have_received(:with) do |args|
-          expect(args[:billboards]).to match_array([bb_1, bb_2])
+          expect(args[:billboards]).to contain_exactly(bb_1, bb_2)
         end
       end
     end
