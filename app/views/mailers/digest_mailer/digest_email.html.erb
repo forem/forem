@@ -16,10 +16,27 @@
           </td>
         </tr>
 
+        <% if @billboards&.first&.present? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 16px 0 4px;">
+              <hr style="border-top: 3px solid #0a0a0a;"/>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 20px 0 12px;">
+              <%= @billboards.first.processed_html.html_safe %>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
+              <hr style="border-top: 3px solid #0a0a0a;"/>
+            </td>
+          </tr>
+        <% end %>
         <!-- Articles List -->
         <% @articles.each_with_index do |article, i| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: <%= i == 0 ? "27" : "17" %>px 0px 0px; text-align: left;">
+            <td bgcolor="#FFFFFF" style="padding: <%= i == 0 ? "27" : "17" %>px 2px 0px; text-align: left;">
               <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
               <p style="margin-top: 5px; font-size: 14px; color: #808080;">
                 <%= truncate(article.description, length: 180) %>
@@ -42,6 +59,19 @@
           </td>
         </tr>
 
+        <% if @billboards&.second&.present? %>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 8px 0 16px;">
+              <%= @billboards.second.processed_html.html_safe %>
+            </td>
+          </tr>
+          <tr>
+            <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
+              <hr style="border-top: 3px solid #0a0a0a;"/>
+            </td>
+          </tr>
+
+        <% end %>
         <!-- Footer -->
         <tr>
           <td bgcolor="#FFFFFF" style="padding: 15px 0; font-size: 16px;">

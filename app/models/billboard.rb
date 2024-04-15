@@ -11,13 +11,16 @@ class Billboard < ApplicationRecord
                                sidebar_right
                                sidebar_right_second
                                sidebar_right_third
-                               feed_first feed_second
+                               feed_first
+                               feed_second
                                feed_third
                                home_hero
                                page_fixed_bottom
                                post_fixed_bottom
                                post_sidebar
-                               post_comments].freeze
+                               post_comments
+                               digest_first
+                               digest_second].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home first position)",
@@ -30,7 +33,9 @@ class Billboard < ApplicationRecord
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
                                             "Sidebar Right (Individual Post)",
-                                            "Below the comment section"].freeze
+                                            "Below the comment section",
+                                            "Digest Email First",
+                                            "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
 

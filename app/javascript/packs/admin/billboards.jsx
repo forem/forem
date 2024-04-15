@@ -151,6 +151,8 @@ document.ready.then(() => {
     'feed_first',
     'feed_second',
     'feed_third',
+    'digest_first',
+    'digest_second',
   ];
 
   if (targetedTagPlacements.includes(select.value)) {
