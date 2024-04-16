@@ -28,7 +28,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
         worker.perform(user.id)
 
-        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array)
+        expect(DigestMailer).to have_received(:with).with(user: user, articles: Array, billboards: Array)
         expect(mailer).to have_received(:digest_email)
         expect(message_delivery).to have_received(:deliver_now)
       end
@@ -47,6 +47,18 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
         worker.perform(user.id)
 
         expect(DigestMailer).not_to have_received(:with)
+      end
+
+      it "includes billboards" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        worker.perform(user.id)
+
+        expect(DigestMailer).to have_received(:with) do |args|
+          expect(args[:billboards]).to contain_exactly(bb_1, bb_2)
+        end
       end
     end
   end
