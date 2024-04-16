@@ -5,6 +5,7 @@ class User < ApplicationRecord
   include CloudinaryHelper
 
   include Images::Profile.for(:profile_image_url)
+  include AlgoliaSearchable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do

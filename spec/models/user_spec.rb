@@ -1022,4 +1022,26 @@ RSpec.describe User do
       end
     end
   end
+
+  describe "Algolia indexing", :algolia do
+    it "indexes the user" do
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      create(:user)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), false)
+    end
+
+    it "does not index the user on update if nothing changed" do
+      user = create(:user)
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      user.save
+      expect(AlgoliaSearch::SearchIndexWorker).not_to have_received(:perform_async)
+    end
+
+    it "updates user index if user has changed" do
+      user = create(:user)
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      user.update(name: "New Name")
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false)
+    end
+  end
 end
