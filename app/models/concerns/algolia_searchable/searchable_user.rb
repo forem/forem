@@ -22,7 +22,13 @@ module AlgoliaSearchable
     end
 
     def bad_actor_changed?
-      score_changed? && score_was.negative? != score.negative?
+      score_changed? && score_changed_between_negative_and_positive?
+    end
+
+    private
+
+    def score_changed_between_negative_and_positive?
+      score_was.negative? != score.negative?
     end
   end
 end
