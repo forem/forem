@@ -1023,25 +1023,54 @@ RSpec.describe User do
     end
   end
 
-  describe "Algolia indexing", :algolia do
-    it "indexes the user" do
+  context "when indexing with Algolia", :algolia do
+    it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:user)
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), false)
     end
 
-    it "does not index the user on update if nothing changed" do
+    it "does not index an existing user on update if nothing changed" do
       user = create(:user)
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       user.save
       expect(AlgoliaSearch::SearchIndexWorker).not_to have_received(:perform_async)
     end
 
-    it "updates user index if user has changed" do
+    it "updates user index if user's name has changed" do
       user = create(:user)
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       user.update(name: "New Name")
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false)
+    end
+
+    describe "#bad_actor" do
+      it "returns false if the user is not a bad actor" do
+        user = build(:user)
+        expect(user.bad_actor).to be(false)
+      end
+
+      it "returns true if the user is a bad actor" do
+        user = build(:user, score: -500)
+        expect(user.bad_actor).to be(true)
+      end
+    end
+
+    describe "#bad_actor_changed?" do
+      it "returns true if score changed and it went between negative and positive" do
+        user = build(:user)
+        user.score = -500
+        expect(user.bad_actor_changed?).to be(true)
+      end
+
+      it "returns false if score changed but it stayed negative or it stayed positive" do
+        user = create(:user, score: -500)
+        user.score = -600
+        expect(user.bad_actor_changed?).to be(false)
+        user = build(:user)
+        user.score = 500
+        expect(user.bad_actor_changed?).to be(false)
+      end
     end
   end
 end
