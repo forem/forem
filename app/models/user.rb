@@ -316,6 +316,7 @@ class User < ApplicationRecord
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
+    AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
   end
 
   def path
