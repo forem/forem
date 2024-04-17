@@ -3,8 +3,6 @@ module AlgoliaSearchable
     extend ActiveSupport::Concern
 
     included do
-      include AlgoliaSearch
-
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor) do
         attribute :name, :username
         attribute :profile_image do
