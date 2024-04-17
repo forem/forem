@@ -1,5 +1,6 @@
 require "rails_helper"
 
+# from https://github.com/algolia/algoliasearch-client-ruby/blob/master/test/algolia/integration/mocks/mock_requester.rb
 class MockRequester
   attr_accessor :requests
 
@@ -24,7 +25,7 @@ class MockRequester
     Algolia::Http::Response.new(
       status: 200,
       body: '{"hits": [], "status": "published"}',
-      headers: {}
+      headers: {},
     )
   end
 
@@ -36,16 +37,14 @@ class MockRequester
     host.protocol + host.url
   end
 end
-
+# rubocop:disable RSpec/AnyInstance
 RSpec.describe AlgoliaSearch::SearchIndexWorker, type: :worker do
   let(:user) { create(:user) }
 
-  before(:all) do
+  before do
     mock_requester = MockRequester.new
-    mock_client = Algolia::Search::Client.new(
-      Algolia::Search::Config.new(AlgoliaSearch.configuration),
-      http_requester: mock_requester
-    )
+    algolia_config = Algolia::Search::Config.new(AlgoliaSearch.configuration)
+    mock_client = Algolia::Search::Client.new(algolia_config, http_requester: mock_requester)
 
     AlgoliaSearch.instance_variable_set(:@client, mock_client)
   end
@@ -57,9 +56,10 @@ RSpec.describe AlgoliaSearch::SearchIndexWorker, type: :worker do
   end
 
   it "index the record in Algolia if record is created" do
-    expect(User).to receive(:find).with(user.id).and_return(user)
-    expect_any_instance_of(User).to receive(:index!)
-
+    allow(User).to receive(:find).with(user.id).and_return(user)
+    allow(user).to receive(:index!)
     described_class.new.perform(user.class.name, user.id, false)
+    expect(user).to have_received(:index!)
   end
 end
+# rubocop:enable RSpec/AnyInstance
