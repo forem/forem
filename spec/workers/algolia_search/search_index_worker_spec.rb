@@ -1,6 +1,6 @@
 require "rails_helper"
 # rubocop:disable RSpec/AnyInstance
-RSpec.describe AlgoliaSearch::SearchIndexWorker, type: :worker do
+RSpec.describe AlgoliaSearch::SearchIndexWorker, :algolia, type: :worker do
   let(:user) { create(:user) }
 
   before do
