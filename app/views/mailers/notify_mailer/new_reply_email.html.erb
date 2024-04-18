@@ -7,7 +7,7 @@
           <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width: 50%">
             <a href="<%= root_path %>">
               <% if Settings::General.resized_logo.present? %>
-                <img width="50px" src="<%= optimized_image_url(Settings::General.resized_logo, width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
+                <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
               <% else %>
                 <span>
                   <%= community_name %>
@@ -18,7 +18,7 @@
           <td align="right" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width:50%;">
           <div width="50px" height="50px" style="width: 50px; height: 50px;">
             <a href="<%= @user.path %>">
-              <img width="50px" height="50px" style="width: 50px; height: 50px;" src="<%= @user.profile_image_url_for(length: 50) %>">
+              <img width="50px" height="50px" style="width: 50px; height: 50px;" src="<%= URL.local_image(@user.profile_image_url_for(length: 50)) %>">
             </a>
             </div>
           </td>
@@ -35,9 +35,19 @@
 
         <!-- Content -->
         <tr>
-          <td bgcolor="#F8F8F8" style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px;">
-            <h2 style="font-size:18px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable&.title || "Content No Longer Available" %></em></h2>
-            <%= @comment.processed_html.html_safe %>
+          <td>
+            <table style="width:100%;" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="width: 30px"></td>
+                <td bgcolor="#F8F8F8" style="padding: 8px; text-align: left; color: #3a3c3d; font-size: 16px; border-radius: 8px;">
+                  <h2 style="font-size:18px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable&.title || "Content No Longer Available" %></em></h2>
+
+                  <%= @truncated_comment %>
+
+                </td>
+                <td style="width: 30px"></td>
+              </tr>
+            </table>
           </td>
         </tr>
 

@@ -7,7 +7,15 @@ class NotifyMailer < ApplicationMailer
   }, only: :feedback_message_resolution_email
 
   def new_reply_email
+
+
     @comment = params[:comment]
+    sanitized_comment = ApplicationController.helpers.sanitize(@comment.processed_html,
+                                                               scrubber: CommentEmailScrubber.new)
+    @truncated_comment = ApplicationController.helpers.truncate(sanitized_comment, length: 500, separator: " ",
+                                                                                   omission: "...", escape: false)
+    return if @truncated_comment.blank?
+
     @user = @comment.parent_user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
