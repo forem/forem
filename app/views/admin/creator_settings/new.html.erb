@@ -1,7 +1,5 @@
 <% if User.with_role(:creator).any? %>
-  <style>
-    <%= Rails.application.assets["setup-mode.css"].to_s.html_safe %>
-  </style>
+  <%= stylesheet_link_tag "setup-mode" %>
 
   <main id="main-content" class="flex flex-1 justify-center flex-col crayons-layout crayons-layout--limited-xs" data-controller="creator-settings">
     <div aria-live="assertive">
