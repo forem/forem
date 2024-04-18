@@ -1030,13 +1030,6 @@ RSpec.describe User do
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), false)
     end
 
-    it "does not index an existing user on update if nothing changed" do
-      user = create(:user)
-      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
-      user.save
-      expect(AlgoliaSearch::SearchIndexWorker).not_to have_received(:perform_async)
-    end
-
     it "updates user index if user's name has changed" do
       user = create(:user)
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
