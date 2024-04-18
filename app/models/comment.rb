@@ -139,7 +139,9 @@ class Comment < ApplicationRecord
 
   def custom_css
     tags_used = MarkdownProcessor::Parser.new(body_markdown).tags_used
-    ActionController::Base.helpers.stylesheet_link_tag(tags_used.map { |tag| "ltags/#{tag}" })
+    return if tags_used.empty?
+
+    ActionController::Base.helpers.stylesheet_link_tag(*tags_used.map { |tag| "ltags/#{tag}" })
   end
 
   def title(length = 80)
