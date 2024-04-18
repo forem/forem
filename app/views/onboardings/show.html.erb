@@ -1,10 +1,8 @@
 <% title t("views.onboardings.meta.title", community: community_name) %>
 
-<style>
-  <% cache(release_adjusted_cache_key("onboarding-css"), expires_in: 10.hours) do %>
-    <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
-  <% end %>
+<%= stylesheet_link_tag "preact/onboarding-modal.css" %>
 
+<style>
   .crayons-header,
   .crayons-footer {
     display: none;

@@ -1,7 +1,5 @@
 # Utilities methods to safely build app wide URLs
 module URL
-  include ActionView::Helpers
-
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end
@@ -96,9 +94,7 @@ module URL
   # @param host [String] (optional) the host for the image URL you'd like to use
   def self.local_image(image_name, host: nil)
     host ||= ActionController::Base.asset_host || url(nil)
-    # ActionController::Base.helpers.image_url(image_name, host: host)
 
-    # instead use image_url helper
     ActionController::Base.helpers.image_url(image_name, host: host)
   end
 

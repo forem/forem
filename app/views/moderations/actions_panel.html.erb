@@ -1,11 +1,5 @@
 <% title t("views.moderations.actions.meta.title", title: @moderatable.title) %>
 
-<% cache(release_adjusted_cache_key("mod-styling")) do %>
-  <style>
-    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
-  </style>
-<% end %>
-
 <%= javascript_include_tag "actionsPanel", defer: true %>
 
 <% author_suspended = @moderatable.user.suspended? %>
