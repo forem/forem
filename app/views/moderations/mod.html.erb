@@ -2,12 +2,6 @@
 
 <%= javascript_include_tag "commentModPage", defer: true %>
 
-<% cache(release_adjusted_cache_key("mod-styling")) do %>
-  <style>
-    <%= stylesheet_link_tag "moderator", media: "all" %>
-  </style>
-<% end %>
-
 <% if flash[:error].present? %>
   <div class="crayons-banner crayons-banner--error" role="alert">
     <%= flash[:error] %>
