@@ -138,9 +138,8 @@ class Comment < ApplicationRecord
   end
 
   def custom_css
-    MarkdownProcessor::Parser.new(body_markdown).tags_used.map do |tag|
-      Rails.application.assets["ltags/#{tag}.css"].to_s
-    end.join
+    tags_used = MarkdownProcessor::Parser.new(body_markdown).tags_used
+    ActionController::Base.helpers.stylesheet_link_tag(tags_used.map { |tag| "ltags/#{tag}" })
   end
 
   def title(length = 80)
