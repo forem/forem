@@ -3,7 +3,7 @@ module AlgoliaSearchable
     extend ActiveSupport::Concern
 
     included do
-      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor) do
+      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor?) do
         attribute :name, :username
         attribute :profile_image do
           profile_image_90
@@ -17,18 +17,8 @@ module AlgoliaSearchable
       end
     end
 
-    def bad_actor
-      score.negative?
-    end
-
-    def bad_actor_changed?
-      score_changed? && score_changed_between_negative_and_positive?
-    end
-
-    private
-
-    def score_changed_between_negative_and_positive?
-      score_was.negative? != score.negative?
+    def bad_actor?
+      score.negative? || banished? || spam_or_suspended?
     end
   end
 end

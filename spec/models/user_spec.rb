@@ -1044,32 +1044,33 @@ RSpec.describe User do
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false)
     end
 
-    describe "#bad_actor" do
-      it "returns false if the user is not a bad actor" do
+    describe "#bad_actor?" do
+      it "returns false to a regular user" do
         user = build(:user)
-        expect(user.bad_actor).to be(false)
+        expect(user.bad_actor?).to be(false)
       end
 
-      it "returns true if the user is a bad actor" do
+      it "returns true if the user has negative score" do
         user = build(:user, score: -500)
-        expect(user.bad_actor).to be(true)
-      end
-    end
-
-    describe "#bad_actor_changed?" do
-      it "returns true if score changed and it went between negative and positive" do
-        user = build(:user)
-        user.score = -500
-        expect(user.bad_actor_changed?).to be(true)
+        expect(user.bad_actor?).to be(true)
       end
 
-      it "returns false if score changed but it stayed negative or it stayed positive" do
-        user = create(:user, score: -500)
-        user.score = -600
-        expect(user.bad_actor_changed?).to be(false)
+      it "returns true if the user has spam role" do
         user = build(:user)
-        user.score = 500
-        expect(user.bad_actor_changed?).to be(false)
+        user.add_role(:spam)
+        expect(user.bad_actor?).to be(true)
+      end
+
+      it "return true if user is suspended" do
+        user = build(:user)
+        user.add_role(:suspended)
+        expect(user.bad_actor?).to be(true)
+      end
+
+      it "return true if user is banished" do
+        user = build(:user)
+        allow(user).to receive(:banished?).and_return(true)
+        expect(user.bad_actor?).to be(true)
       end
     end
   end
