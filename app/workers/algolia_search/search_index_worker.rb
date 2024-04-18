@@ -1,7 +1,7 @@
 module AlgoliaSearch
   class SearchIndexWorker
     include Sidekiq::Worker
-    sidekiq_options queue: :algolia_indexing, retry: 5
+    sidekiq_options queue: :medium_priority, retry: 5, tags: ["algolia"]
 
     def perform(klass, id, remove)
       return unless Settings::General.algolia_search_enabled?
