@@ -3,6 +3,7 @@ require "requests/shared_examples/comment_hide_or_unhide_request"
 
 RSpec.describe "Comments" do
   let(:user) { create(:user) }
+  let(:admin) { create(:user, :admin) }
   let(:article) { create(:article, user: user) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
@@ -29,6 +30,65 @@ RSpec.describe "Comments" do
     it "does not render payment pointer if not set" do
       get "#{article.path}/comments"
       expect(response.body).not_to include "author-payment-pointer"
+    end
+
+    context "when there are comments with different score" do
+      let!(:spam_comment) do
+        create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
+      end
+      let!(:mediocre_comment) do
+        create(:comment, commentable: article, user: user, score: -50, body_markdown: "mediocre-comment")
+      end
+
+      before do
+        create(:comment, commentable: article, user: user, score: -100, body_markdown: "bad-comment")
+        create(:comment, commentable: article, user: user, score: 10, body_markdown: "good-comment")
+      end
+
+      it "displays all comments except for below -400 score for signed in", :aggregate_failures do
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).to include("mediocre-comment")
+        expect(response.body).to include("low quality") # marker
+        expect(response.body).to include("bad-comment")
+        expect(response.body).to include("good-comment")
+        expect(response.body).not_to include("spammer-comment")
+      end
+
+      it "displays deleted message and children of a spam comment for signed in", :aggregate_failures do
+        create(:comment, user: user, parent: spam_comment, commentable: article,
+                         body_markdown: "child-of-a-spam-comment")
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("spammer-comment")
+        expect(response.body).to include("Comment deleted")
+        expect(response.body).to include("child-of-a-spam-comment")
+      end
+
+      it "displays only comments with positive score for signed out user", :aggregate_failures do
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("mediocre-comment")
+        expect(response.body).not_to include("bad-comment")
+        expect(response.body).to include("good-comment")
+        expect(response.body).not_to include("spammer-comment")
+      end
+
+      it "doesn't display children of negative comments for signed out user" do
+        create(:comment, user: user, parent: mediocre_comment, commentable: article,
+                         body_markdown: "child-of-a-negative-comment")
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("child-of-a-negative-comment")
+      end
+    end
+
+    context "when there are child spam comments" do
+      it "hides child spam comment if it has no children" do
+        create(:comment, commentable: article, score: -500, body_markdown: "child-spam-comment", parent: comment)
+        sign_in user
+        get "#{article.path}/comments"
+        expect(response.body).not_to include("child-spam-comment")
+        expect(response.body).not_to include("Comment deleted")
+      end
     end
 
     context "when the comment is a root" do
@@ -161,7 +221,7 @@ RSpec.describe "Comments" do
       end
     end
 
-    context "when the comment is low quality" do
+    context "when the comment is low quality and below hiding threshold" do
       let(:low_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "low-comment")
       end
@@ -172,22 +232,96 @@ RSpec.describe "Comments" do
         end.to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "is displayed as deleted when has children", :aggregate_failures do
+      it "renders success when no children + admin signed in", :aggregate_failures do
+        sign_in admin
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low-comment")
+      end
+
+      it "raises 404 when has children and not signed in" do
         create(:comment, commentable: article, user: user, parent: low_comment,
                          body_markdown: "child of a low-quality comment")
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 when no children + user signed in" do
+        sign_in user
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is displayed as deleted when has children + user signed in", :aggregate_failures do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        sign_in user
         get low_comment.path
         expect(response).to have_http_status(:ok)
         expect(response.body).to include("Comment deleted")
         expect(response.body).to include("child of a low-quality comment")
       end
+
+      it "displays text when there are children + admin signed in", :aggregate_failures do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        sign_in admin
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low-comment")
+        expect(response.body).to include("child of a low-quality comment")
+      end
+
+      it "hides negative children for signed out" do
+        create(:comment, commentable: article, user: user, score: -10, parent: comment,
+                         body_markdown: "low-child of a comment")
+        get comment.path
+        expect(response.body).not_to include("low-child of a comment")
+      end
+    end
+
+    context "when the comment is low quality and above hiding threshold" do
+      let(:low_comment) do
+        create(:comment, commentable: article, user: user, score: -100, body_markdown: "low-comment")
+      end
+
+      it "raises 404 when no children + not signed in" do
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "raises 404 when has children and not signed in" do
+        create(:comment, commentable: article, user: user, parent: low_comment,
+                         body_markdown: "child of a low-quality comment")
+        expect do
+          get low_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "is displayed with a low quality marker when user signed in" do
+        sign_in user
+        get low_comment.path
+        expect(response).to be_successful
+        expect(response.body).to include("low quality")
+      end
     end
 
     context "when the comment is for a podcast's episode" do
-      it "is successful" do
-        podcast_comment = create(:comment, commentable: podcast_episode, user: user)
+      let!(:podcast_comment) { create(:comment, commentable: podcast_episode, user: user) }
 
+      it "is successful" do
         get podcast_comment.path
         expect(response).to have_http_status(:ok)
+      end
+
+      it "raises 404 when low quality" do
+        podcast_comment.update_column(:score, -500)
+        expect do
+          get podcast_comment.path
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
 

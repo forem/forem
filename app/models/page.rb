@@ -6,6 +6,8 @@ class Page < ApplicationRecord
   CODE_OF_CONDUCT_SLUG = "code-of-conduct".freeze
   PRIVACY_SLUG = "privacy".freeze
 
+  has_many :billboards, dependent: :nullify
+
   validates :title, presence: true
   validates :description, presence: true
   validates :template, inclusion: { in: TEMPLATE_OPTIONS }

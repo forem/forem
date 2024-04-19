@@ -145,6 +145,8 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
+                                  presence: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -260,6 +262,10 @@ class User < ApplicationRecord
 
   def self.mascot_account
     find_by(id: Settings::General.mascot_user_id)
+  end
+
+  def good_standing_followers_count
+    Follow.non_suspended("User", id).count
   end
 
   def tag_line
@@ -459,6 +465,7 @@ class User < ApplicationRecord
     to: :authorizer,
   )
   alias suspended suspended?
+  alias spam spam?
   ##############################################################################
   #
   # End Authorization Refactor

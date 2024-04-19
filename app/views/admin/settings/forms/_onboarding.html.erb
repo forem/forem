@@ -36,6 +36,13 @@
                            class: "crayons-textfield",
                            value: Settings::General.onboarding_newsletter_opt_in_subhead,
                            placeholder: Constants::Settings::General.details[:onboarding_newsletter_opt_in_subhead][:placeholder] %>
+          <% if FeatureFlag.enabled?(Geolocation::FEATURE_FLAG) %>
+            <%= admin_config_label Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:description] %>
+            <%= f.text_field :geos_with_allowed_default_email_opt_in,
+                             class: "crayons-textfield",
+                             value: Settings::General.geos_with_allowed_default_email_opt_in,
+                             placeholder: Constants::Settings::General.details[:geos_with_allowed_default_email_opt_in][:placeholder] %>
+          <% end %>
        </div>
 
       </fieldset>

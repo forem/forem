@@ -1,5 +1,6 @@
 class BillboardEventsController < ApplicationMetalController
   include ActionController::Head
+  SIGNUP_SUCCESS_MODIFIER = 25 # One signup is worth 25 clicks
   # No policy needed. All views are for all users
 
   def create
@@ -17,12 +18,13 @@ class BillboardEventsController < ApplicationMetalController
   def update_billboards_data
     billboard_event_id = billboard_event_params[:billboard_id]
 
-    ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 15.minutes) do
+    ThrottledCall.perform("billboards_data_update-#{billboard_event_id}", throttle_for: 25.minutes) do
       @billboard = Billboard.find(billboard_event_id)
 
       num_impressions = @billboard.billboard_events.impressions.sum(:counts_for)
       num_clicks = @billboard.billboard_events.clicks.sum(:counts_for)
-      rate = num_clicks.to_f / num_impressions
+      signup_success = @billboard.billboard_events.signups.sum(:counts_for) * SIGNUP_SUCCESS_MODIFIER
+      rate = (num_clicks + signup_success).to_f / num_impressions
 
       @billboard.update_columns(
         success_rate: rate,
@@ -40,15 +42,5 @@ class BillboardEventsController < ApplicationMetalController
     event_params[:article_id] = params[:article_id] if params[:article_id].present?
     event_params[:geolocation] = client_geolocation
     event_params.slice(:context_type, :category, :billboard_id, :article_id, :geolocation)
-  end
-
-  def client_geolocation
-    # Copied here instead of re-used due to this controller
-    # inhereting from ApplicationMetalController instead of ApplicationController
-    if session_current_user_id
-      request.headers["X-Client-Geo"]
-    else
-      request.headers["X-Cacheable-Client-Geo"]
-    end
   end
 end

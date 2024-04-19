@@ -172,6 +172,46 @@ RSpec.describe "Billboards" do
       end
     end
 
+    context "when the placement area is post_fixed_bottom" do
+      it "contains close button" do
+        billboard = create_billboard(placement_area: "post_fixed_bottom")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_fixed_bottom")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is page_fixed_bottom" do
+      let(:page) { create(:page) }
+
+      it "contains close button" do
+        billboard = create_billboard(placement_area: "page_fixed_bottom", page_id: page.id)
+        get billboard_path(page_id: page.id, placement_area: "page_fixed_bottom")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is feed_first" do
+      it "includes sponsorship-close-trigger when there is a dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first", dismissal_sku: "DISMISS_ME")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+
+      it "does not include sponsorship-close-trigger when there is no dismissal_sku" do
+        billboard = create_billboard(placement_area: "feed_first")
+        get billboard_path(placement_area: "feed_first")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
+    context "when the placement area is post_sidebar" do
+      it "does not contain close button" do
+        billboard = create_billboard(placement_area: "post_sidebar")
+        get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_sidebar")
+        expect(response.body).not_to include "sponsorship-close-trigger-#{billboard.id}"
+      end
+    end
+
     context "when requesting test billboard" do
       let(:admin) { create(:user, :admin) }
       let!(:test_billboard) { create_billboard(id: 123, placement_area: "post_sidebar", approved: false) }
@@ -203,6 +243,21 @@ RSpec.describe "Billboards" do
 
         expect(response).to have_http_status(:ok)
         expect(response.body).not_to include(test_billboard.processed_html)
+      end
+
+      it "does return live billboards for non-admin contexts" do
+        # Create a few live billboards which should not be returned
+        create_list(:billboard, 8, placement_area: "post_sidebar", approved: true, published: true)
+        get article_billboard_path(
+          username: article.username,
+          slug: article.slug,
+          placement_area: "post_sidebar",
+          bb_test_placement_area: "post_sidebar",
+          bb_test_id: billboard.id,
+        )
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(billboard.processed_html)
       end
 
       it "does not return the test billboard for non-admin users" do

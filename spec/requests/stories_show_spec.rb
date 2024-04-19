@@ -100,6 +100,13 @@ RSpec.describe "StoriesShow" do
       expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
+    it "renders proper wrapper content clases" do
+      get article.path
+      expect(response.body)
+        .to include(" #{article.decorate.cached_tag_list_array.map { |tag| "articletag-#{tag}" }.join(' ')}")
+      expect(response.body).to include(" articleuser-#{article.user_id}")
+    end
+
     ###
 
     it "renders date-no-year if article published this year" do

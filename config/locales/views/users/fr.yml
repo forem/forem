@@ -92,5 +92,7 @@ fr:
         placeholder: Enter your message here...
         submit: Send
       social: "%{service} website"
+      spam: Marquer @%{user} comme spam
       unflag: Unflag @%{user}
+      unspam: Définir @%{user} en règle
       website: Personal website

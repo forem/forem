@@ -9,6 +9,8 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
   def index
     skip_authorization
     @comment = Comment.new
@@ -16,9 +18,12 @@ class CommentsController < ApplicationController
 
     @root_comment = Comment.find(params[:id_code].to_i(26)) if params[:id_code].present?
 
-    # hide low quality comments w/o children
-    if @root_comment && @root_comment.decorate.low_quality && !@root_comment.has_children?
-      not_found
+    if @root_comment
+      # 404 for all low-quality for not signed in
+      not_found if @root_comment.score < Comment::LOW_QUALITY_THRESHOLD && !user_signed_in?
+      set_admin_access
+      # 404 only for < -400 w/o children for all except admins
+      not_found if !@is_admin && @root_comment.score < Comment::HIDE_THRESHOLD && !@root_comment.has_children?
     end
 
     if @podcast
@@ -35,6 +40,9 @@ class CommentsController < ApplicationController
 
     set_surrogate_key_header "comments-for-#{@commentable.id}-#{@commentable_type}" if @commentable
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
+
   # GET /comments/1
   # GET /comments/1.json
   # GET /comments/1/edit
@@ -266,6 +274,15 @@ class CommentsController < ApplicationController
   end
 
   private
+
+  # for spam content we need to remove cache control headers to access current_user to check admin access
+  # so that admins could have access to spam articles, profiles and comments (by direct url)
+  def set_admin_access
+    return unless user_signed_in?
+
+    unset_cache_control_headers
+    @is_admin = current_user&.any_admin?
+  end
 
   def comment_should_be_visible?
     if @article

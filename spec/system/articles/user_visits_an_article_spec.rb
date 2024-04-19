@@ -10,23 +10,23 @@ RSpec.describe "Views an article" do
     sign_in user
   end
 
-  it "shows an article", js: true do
+  it "shows an article", :js do
     visit article.path
     expect(page).to have_content(article.title)
   end
 
-  it "shows non-negative comments", js: true do
+  it "shows non-negative comments", :js do
     comments = create_list(:comment, 4, commentable: article)
     admin = create(:user, :admin)
     create(:thumbsdown_reaction, reactable: comments.last, user: admin)
     sidekiq_perform_enqueued_jobs
 
     visit article.path
-    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 4)
+    expect(page).to have_css(".single-comment-node", visible: :visible, count: 4)
 
     sign_out user
     visit article.path
-    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
+    expect(page).to have_css(".single-comment-node", visible: :visible, count: 3)
   end
 
   it "stops a user from moderating an article" do
@@ -54,7 +54,7 @@ RSpec.describe "Views an article" do
     # here
     it "shows the readable publish date" do
       visit article.path
-      expect(page).to have_selector("article time", text: article.readable_publish_date.gsub("  ", " "))
+      expect(page).to have_css("article time", text: article.readable_publish_date.gsub("  ", " "))
     end
 
     it "embeds the published timestamp" do
@@ -82,13 +82,13 @@ RSpec.describe "Views an article" do
       # here
       it "shows the identical readable publish dates in each page" do
         visit first_article.path
-        expect(page).to have_selector("article time", text: first_article.readable_publish_date.gsub("  ", " "))
-        expect(page).to have_selector(".crayons-card--secondary time",
-                                      text: first_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_css("article time", text: first_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_css(".crayons-card--secondary time",
+                                 text: first_article.readable_publish_date.gsub("  ", " "))
         visit second_article.path
-        expect(page).to have_selector("article time", text: second_article.readable_publish_date.gsub("  ", " "))
-        expect(page).to have_selector(".crayons-card--secondary time",
-                                      text: second_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_css("article time", text: second_article.readable_publish_date.gsub("  ", " "))
+        expect(page).to have_css(".crayons-card--secondary time",
+                                 text: second_article.readable_publish_date.gsub("  ", " "))
       end
     end
   end
@@ -116,7 +116,6 @@ RSpec.describe "Views an article" do
       let(:crossposted_article) { create(:article) }
       let(:article2) { create(:article) }
 
-      # rubocop:disable RSpec/ExampleLength
       it "lists the articles in ascending order considering crossposted_at" do
         article1.update_columns(
           collection_id: collection.id,
@@ -151,15 +150,15 @@ RSpec.describe "Views an article" do
     let(:scheduled_article_path) { scheduled_article.path + query_params }
     let(:query_params) { "?preview=#{scheduled_article.password}" }
 
-    it "shows the article edit link for the author", js: true do
+    it "shows the article edit link for the author", :js do
       visit scheduled_article_path
       edit_link = find("a#author-click-to-edit")
       expect(edit_link.matches_style?(display: "inline-block")).to be true
     end
 
-    it "doesn't show the article manage link, even for the author", js: true do
+    it "doesn't show the article manage link, even for the author", :js do
       visit scheduled_article_path
-      expect(page).not_to have_link("article-action-space-manage")
+      expect(page).to have_no_link("article-action-space-manage")
     end
 
     it "doesn't show an article edit link for the non-authorized user" do
@@ -184,7 +183,7 @@ RSpec.describe "Views an article" do
       let(:query_params) { "?preview=#{article.password}" }
       let(:article_user) { user }
 
-      it "shows the article edit link", js: true do
+      it "shows the article edit link", :js do
         visit article_path
         edit_link = find("a#author-click-to-edit")
         expect(edit_link.matches_style?(display: "inline-block")).to be true

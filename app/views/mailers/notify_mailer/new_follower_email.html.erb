@@ -6,7 +6,7 @@
 
 <h2 style="font-size:32px;">
   <a href="<%= user_url(@follower) %>"><%= @follower.name %></a> just followed you 🤗</h2>
-<h3 style="font-weight:600">You now have <%= pluralize(@user.followers_count, "total follower") %>. See all of your recent followers
+<h3 style="font-weight:600">You now have <%= pluralize(@user.good_standing_followers_count, "total follower") %>. See all of your recent followers
   <a href="<%= app_url("/dashboard/user_followers") %>">right here</a>.</h3>
 <p>
   When someone follows you on

@@ -1,0 +1,38 @@
+name: Create CI cache
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-cache:
+    runs-on: ubuntu-latest
+    env:
+      E2E: true
+      RAILS_ENV: test
+      NODE_ENV: test
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Cache pre-compiled assets
+        uses: actions/cache@v4
+        id: assetscache
+        with:
+          path: |
+            public/assets
+          key: ${{ runner.os }}-compiled-assets-v3-${{ hashFiles( 'app/assets/**', 'app/javascript/**', '**/package.json', '**/yarn.lock') }}
+          restore-keys: ${{ runner.os }}-compiled-assets-v3-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: yarn
+        if: steps.assetscache.outputs.cache-hit != 'true'
+      - run: yarn install --immutable
+        if: steps.assetscache.outputs.cache-hit != 'true'
+      - run: bundle exec rails assets:precompile
+        if: steps.assetscache.outputs.cache-hit != 'true'

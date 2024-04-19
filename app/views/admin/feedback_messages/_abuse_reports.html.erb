@@ -36,7 +36,9 @@
               <span>
                 <strong><%= reaction.reactable_type %>:</strong>
                 <a href="<%= reaction.reactable.path %>" target="_blank" rel="noopener"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
-                <% if reaction.reactable_type == "User" && reaction.reactable.spam_or_suspended? %>
+                <% if reaction.reactable_type == "User" && reaction.reactable.spam? %>
+                  <span class="c-indicator c-indicator--danger">Spam</span>
+                <% elsif reaction.reactable_type == "User" && reaction.reactable.suspended? %>
                   <span class="c-indicator c-indicator--danger">Suspended</span>
                 <% end %>
                 <% if reaction.reactable_type == "User" && reaction.reactable.vomited_on? %>

@@ -10,11 +10,11 @@ module Admin
       end
 
       def create
-        user = User.find_by(id: tag_params[:user_id])
+        user = User.find_by(username: tag_params[:username])
         unless user
           flash[:error] =
             I18n.t("errors.messages.general",
-                   errors: I18n.t("admin.tags.moderators_controller.not_found", user_id: tag_params[:user_id]))
+                   errors: I18n.t("admin.tags.moderators_controller.not_found", username: tag_params[:username]))
           return redirect_to edit_admin_tag_path(params[:tag_id])
         end
 
@@ -26,7 +26,7 @@ module Admin
         else
           flash[:error] = I18n.t("errors.messages.general", errors:
             I18n.t("admin.tags.moderators_controller.not_found_or",
-                   user_id: tag_params[:user_id],
+                   user_id: user.id,
                    errors: notification_setting.errors_as_sentence))
         end
         redirect_to edit_admin_tag_path(params[:tag_id])
@@ -58,7 +58,7 @@ module Admin
       private
 
       def tag_params
-        params.require(:tag).permit(:user_id)
+        params.require(:tag).permit(:username, :user_id)
       end
     end
   end

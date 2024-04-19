@@ -139,8 +139,19 @@ module Settings
     setting :onboarding_newsletter_opt_in_head
     setting :onboarding_newsletter_opt_in_subhead
 
+    setting :geos_with_allowed_default_email_opt_in, type: :array, default: %w[]
+
     setting :default_content_language, type: :string, default: "en",
                                        validates: { inclusion: Languages::Detection.codes }
+
+    # Algolia
+    setting :algolia_application_id, type: :string, default: ApplicationConfig["ALGOLIA_APPLICATION_ID"]
+    setting :algolia_api_key, type: :string, default: ApplicationConfig["ALGOLIA_API_KEY"]
+    setting :algolia_search_only_api_key, type: :string, default: ApplicationConfig["ALGOLIA_SEARCH_ONLY_API_KEY"]
+
+    def self.algolia_search_enabled?
+      algolia_application_id.present? && algolia_search_only_api_key.present? && algolia_api_key.present?
+    end
 
     def self.custom_newsletter_configured?
       onboarding_newsletter_content_processed_html.present? &&

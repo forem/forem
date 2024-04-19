@@ -18,8 +18,9 @@ export function onSearchBoxType(event) {
 
 export function selectTag(event) {
   event.preventDefault();
-  const { value, dataset } = event.target;
-  const selectedTag = value ?? dataset.tag;
+  const { value, dataset, skipPushState } = event.target;
+  const selectedTagOrAll = value ?? dataset.tag;
+  const selectedTag = selectedTagOrAll?.match(/all tags/i) ? null : selectedTagOrAll;
   const component = this;
   const { query, statusView } = component.state;
 
@@ -29,6 +30,12 @@ export function selectTag(event) {
     statusView,
     appendItems: false,
   });
+
+  // persist the selected tag in query params
+  if (!skipPushState) {
+    const newQueryParams = selectedTag ? `?selectedTag=${selectedTag}` : '';
+    window.history.pushState(null, null, `/readinglist${newQueryParams}`);
+  }
 }
 
 export function clearSelectedTags(event) {
@@ -41,7 +48,7 @@ export function clearSelectedTags(event) {
 }
 
 // Perform the initial search
-export function performInitialSearch({ searchOptions = {} }) {
+export async function performInitialSearch({ searchOptions = {} }) {
   const component = this;
   const { hitsPerPage } = component.state;
   const dataHash = { page: 0, per_page: hitsPerPage };
@@ -135,3 +142,13 @@ export function loadNextPage() {
     appendItems: true,
   });
 }
+
+export function checkForPersistedTag(availableTags) {
+  // credit: https://stackoverflow.com/a/9870540
+  const params = (new URL(window.location)).searchParams
+  const selectedTag = params.get('selectedTag');
+
+  if (availableTags?.includes(selectedTag)) return selectedTag;
+  return null;
+}
+

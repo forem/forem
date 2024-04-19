@@ -10,6 +10,14 @@ fr:
           no_flags: Article has no flags.
           no_quality_reactions: Article has no quality reactions by trusted users.
           title: Moderator actions
+        noindex:
+          reason: "Non indexé sur les moteurs de recherche: "
+          reasons:
+            unpublished: Non publié
+            below_minimum_score: En dessous du score d'indexation minimum et non présenté
+            below_minimum_date: Publié avant la date d'indexation minimale
+            negative_score: Note négative
+            unknown: Inconnue
       comments:
         flags:
           score: Score affecté par un drapeau particulier
@@ -213,6 +221,9 @@ fr:
           not_verified:
             subtitle: Email not verified
             desc: "%{user}'s email hasn't been verified yet."
+          not_confirmed:
+            subtitle: E-mail non confirmé
+            desc: "L'e-mail de %{user} n'a pas encore été confirmé."
           verify: Verify email address
           verified_html: Last verified on %{time}
           reverify: Reverify
@@ -314,7 +325,7 @@ fr:
             icon: Mod
             desc: "Add a tag that this member can moderate. "
             remove: "Remove tag:"
-            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the user's ID (%{user_id}).
+            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the username (%{username}).
             tag_page: tag's page
         priviliged_actions:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
@@ -355,6 +366,15 @@ fr:
             Open: Open
             Resolved: Resolved
             Invalid: Invalid
+        reputation:
+          change: Changer le modificateur de réputation
+          change_note: Raison du changement
+          desc_html: Cela modifie les points attribués aux réactions données par l'utilisateur, augmentant ou diminuant leur impact sur le score de l'article et du commentaire. Le modificateur de réputation actuel de l'utilisateur est <strong>%{reputation_modifier}</strong>.
+          heading: Changer le modificateur de réputation
+          reputation_modifier: Nouveau modificateur de réputation
+          submit: Changer le modificateur de réputation
+          success: Modification réussie du modificateur de réputation de l'utilisateur en %{reputation_modifier}.
+          error: Échec de la modification du modificateur de réputation de l'utilisateur (sélectionnez entre 0 et 5).
         unpublish_logs:
           subtitle_html: Unpublished by %{user} on %{time}
           posts: "Posts:"

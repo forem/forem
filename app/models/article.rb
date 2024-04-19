@@ -146,6 +146,42 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
+  has_many :more_inclusive_top_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.score" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :recent_good_comments,
+           lambda {
+             where(comments: { score: 8.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :more_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 5.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
+  has_many :most_inclusive_recent_good_comments,
+           lambda {
+             where(comments: { score: 3.. }, ancestry: nil, hidden_by_commentable_user: false, deleted: false)
+               .order("comments.created_at" => :desc)
+           },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
+
   validates :body_markdown, bytesize: {
     maximum: 800.kilobytes,
     too_long: proc { I18n.t("models.article.is_too_long") }
@@ -595,13 +631,20 @@ class Article < ApplicationRecord
   def skip_indexing?
     # should the article be skipped indexed by crawlers?
     # true if unpublished, or spammy,
-    # or low score, not featured, and from a user with no comments
+    # or low score, and not featured
     !published ||
-      (score < Settings::UserExperience.index_minimum_score &&
-       user.comments_count < 1 &&
-       !featured) ||
+      (score < Settings::UserExperience.index_minimum_score && !featured) ||
       published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
+  end
+
+  def skip_indexing_reason
+    return "unpublished" unless published
+    return "negative_score" if score < -1
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
+
+    "unknown"
   end
 
   def privileged_reaction_counts

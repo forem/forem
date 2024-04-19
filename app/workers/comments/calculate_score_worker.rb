@@ -8,10 +8,7 @@ module Comments
       comment = Comment.find_by(id: comment_id)
       return unless comment
 
-      score = BlackBox.comment_quality_score(comment)
-      score -= 500 if comment.user&.spam?
-      comment.update_columns(score: score)
-      comment.root.save! if !comment.is_root? && comment.root_exists?
+      Comments::CalculateScore.call(comment)
     end
   end
 end

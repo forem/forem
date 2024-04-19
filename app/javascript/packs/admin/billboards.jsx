@@ -140,13 +140,19 @@ function clearExcludeIds() {
  */
 document.ready.then(() => {
   const select = document.getElementsByClassName('js-placement-area')[0];
-  const articleSpecificPlacement = ['post_comments', 'post_sidebar'];
+  const articleSpecificPlacement = ['post_comments', 'post_sidebar', 'post_fixed_bottom'];
   const targetedTagPlacements = [
+    'post_fixed_bottom',
     'post_comments',
     'post_sidebar',
+    'sidebar_right',
+    'sidebar_right_second',
+    'sidebar_right_third',
     'feed_first',
     'feed_second',
     'feed_third',
+    'digest_first',
+    'digest_second',
   ];
 
   if (targetedTagPlacements.includes(select.value)) {

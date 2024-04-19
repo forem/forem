@@ -109,6 +109,10 @@ module Constants
             description: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.description"),
             placeholder: I18n.t("lib.constants.settings.general.onboarding_newsletter_opt_in_subhead.placeholder")
           },
+          geos_with_allowed_default_email_opt_in: {
+            description: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.description"),
+            placeholder: I18n.t("lib.constants.settings.general.geos_with_allowed_default_email_opt_in.placeholder")
+          },
           payment_pointer: {
             description: I18n.t("lib.constants.settings.general.payment.description"),
             placeholder: "$pay.somethinglikethis.co/value"

@@ -5,6 +5,8 @@ module MarkdownProcessor
       %r{data:text/html[,;][\sa-z0-9]*}i,
     ].freeze
 
+    CODE_BLOCKS_REGEX = /(~{3}|`{3}|`{2}|`)[\s\S]*?\1/
+
     WORDS_READ_PER_MINUTE = 275.0
 
     # @param content [String] The user input, mix of markdown and liquid.  This might be an
@@ -95,7 +97,8 @@ module MarkdownProcessor
     end
 
     def catch_xss_attempts(markdown)
-      return unless markdown.match?(Regexp.union(BAD_XSS_REGEX))
+      markdown_without_code_blocks = markdown.gsub(CODE_BLOCKS_REGEX, "")
+      return unless markdown_without_code_blocks.match?(Regexp.union(BAD_XSS_REGEX))
 
       raise ArgumentError, I18n.t("services.markdown_processor.parser.invalid_markdown_detected")
     end

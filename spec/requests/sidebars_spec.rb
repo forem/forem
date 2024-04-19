@@ -8,7 +8,6 @@ RSpec.describe "Sidebars" do
       allow(Settings::General).to receive(:sidebar_tags).and_return(["rubymagoo"])
       get "/sidebars/home"
       expect(response.body).to include("rubymagoo")
-      expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
     context "when active discussions exist" do

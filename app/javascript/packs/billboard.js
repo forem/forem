@@ -1,7 +1,8 @@
-import { setupBillboardDropdown } from '../utilities/billboardDropdown';
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import {
   observeBillboards,
   executeBBScripts,
+  implementSpecialBehavior,
 } from './billboardAfterRenderActions';
 
 export async function getBillboard() {
@@ -22,17 +23,22 @@ async function generateBillboard(element) {
   }
 
   if (cookieStatus === 'allowed') {
-    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'  }cookies_allowed=true`;
+    asyncUrl += `${asyncUrl.includes('?') ? '&' : '?'}cookies_allowed=true`;
   }
+
 
   if (asyncUrl) {
     try {
+      // When context is digest we don't show this billboard
+      // This is a hardcoded feature which should become more dynamic later.
+      if (asyncUrl?.includes('post_fixed_bottom') && currentParams?.includes('context=digest')) {
+        return;
+      }
+
       const response = await window.fetch(asyncUrl);
       const htmlContent = await response.text();
-
       const generatedElement = document.createElement('div');
       generatedElement.innerHTML = htmlContent;
-
       element.innerHTML = '';
       element.appendChild(generatedElement);
       element.querySelectorAll('img').forEach((img) => {
@@ -40,8 +46,19 @@ async function generateBillboard(element) {
           this.style.display = 'none';
         };
       });
+      const dismissalSku =
+        element.querySelector('.js-billboard')?.dataset.dismissalSku;
+      if (localStorage && dismissalSku && dismissalSku.length > 0) {
+        const skuArray =
+          JSON.parse(localStorage.getItem('dismissal_skus_triggered')) || [];
+        if (skuArray.includes(dismissalSku)) {
+          element.style.display = 'none';
+          element.innerHTML = '';
+        }
+      }
       executeBBScripts(element);
-      setupBillboardDropdown();
+      implementSpecialBehavior(element);
+      setupBillboardInteractivity();
       // This is called here because the ad is loaded asynchronously.
       // The original code is still in the asset pipeline, so is not importable.
       // This could be refactored to be importable as we continue that migration.
