@@ -7,8 +7,6 @@ class NotifyMailer < ApplicationMailer
   }, only: :feedback_message_resolution_email
 
   def new_reply_email
-
-
     @comment = params[:comment]
     sanitized_comment = ApplicationController.helpers.sanitize(@comment.processed_html,
                                                                scrubber: CommentEmailScrubber.new)
