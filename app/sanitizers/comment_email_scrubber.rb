@@ -6,7 +6,7 @@ class CommentEmailScrubber < Rails::Html::PermitScrubber
   end
 
   def allowed_node?(node)
-    tags.include?(node.name)
+    tags.include?(node.name) && node.children.present?
   end
 
   # The default behavior of PermitScrubber removes the <script> tags

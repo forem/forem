@@ -5,7 +5,7 @@
         <!-- Header -->
         <tr>
           <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width: 50%">
-            <a href="<%= root_path %>">
+            <a href="<%= URL.url("/") %>">
               <% if Settings::General.resized_logo.present? %>
                 <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
               <% else %>
@@ -17,7 +17,7 @@
           </td>
           <td align="right" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width:50%;">
           <div width="50px" height="50px" style="width: 50px; height: 50px;">
-            <a href="<%= @user.path %>">
+            <a href="<%= URL.user(@user) %>">
               <img width="50px" height="50px" style="width: 50px; height: 50px;" src="<%= URL.local_image(@user.profile_image_url_for(length: 50)) %>">
             </a>
             </div>
