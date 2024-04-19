@@ -2305,9 +2305,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@etchteam/storybook-addon-css-variables-theme@npm:^1.5.1":
-  version: 1.5.1
-  resolution: "@etchteam/storybook-addon-css-variables-theme@npm:1.5.1"
+"@etchteam/storybook-addon-css-variables-theme@npm:^1.6.0":
+  version: 1.6.0
+  resolution: "@etchteam/storybook-addon-css-variables-theme@npm:1.6.0"
   dependencies:
     "@storybook/addons": "npm:^7.0.0-beta.49"
     "@storybook/api": "npm:^7.0.0-beta.49"
@@ -2316,14 +2316,11 @@ __metadata:
     "@storybook/core-events": "npm:^7.0.0-beta.49"
     "@storybook/theming": "npm:^7.0.0-beta.49"
     core-js: "npm:^3.0.1"
-    lodash: "npm:^4.17.21"
-    memoizerific: "npm:^1.11.3"
     query-string: "npm:^8.1.0"
-    util-deprecate: "npm:^1.0.2"
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 10c0/9089bf0422a25e51de8bea1ee0823187446bc086fb71455efaa511d38a79501f5dd1385cb3f43fd302829930ea5fe8b462a9e43bfeeea30327abd5b0aa03e834
+  checksum: 10c0/244269484eafaee600dfff7e02e8cc7ce62f85b7b723da2630a64d6fea208bc4d5980a1046dd7b1f97254c459414d79ae10ebb12dfef35eefaad79db019ba828
   languageName: node
   linkType: hard
 
@@ -8983,7 +8980,7 @@ __metadata:
     "@babel/preset-env": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
     "@cypress/code-coverage": "npm:^3.12.30"
-    "@etchteam/storybook-addon-css-variables-theme": "npm:^1.5.1"
+    "@etchteam/storybook-addon-css-variables-theme": "npm:^1.6.0"
     "@faker-js/faker": "npm:^7.6.0"
     "@honeybadger-io/js": "npm:^6.8.3"
     "@hotwired/stimulus": "npm:3.2.2"
