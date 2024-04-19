@@ -3,7 +3,7 @@
 
 // This is a lightweight version of the client, which we should be fine importing regardless of whether it is set up.
 // Could be optimized for optional inclusion in the future.
-const algoliasearch = require('algoliasearch/lite'); 
+import algoliasearch from 'algoliasearch/lite'
 
 function getQueryParams(qs) {
   qs = qs.split('+').join(' ');
@@ -181,7 +181,7 @@ function search(query, filters, sortBy, sortDirection) {
   });
 
   // Run Algolia code only if the ID is live.
-  if (document.body.dataset.algoliaId.length > 0) {
+  if (document.body.dataset.algoliaId?.length > 0) {
     algoliaSearch(searchParams.toString());
     return;
   }
@@ -217,8 +217,10 @@ function search(query, filters, sortBy, sortDirection) {
 
 function algoliaSearch(searchParams) {
   console.log('Algolia is a work in progress. You may want to turn it off if you see this message.') /* eslint-disable-line */
+  console.log(searchParams) /* eslint-disable-line */
   const env = document.querySelector('meta[name="environment"]').content;
-  const client = algoliasearch('I9R7RVI99F', 'a8977b474b0e2511913ec1af0dd5ea59');
+  const {algoliaId, algoliaSearchKey} = document.body.dataset;
+  const client = algoliasearch(algoliaId, algoliaSearchKey);
   const index = client.initIndex(`User_${env}`); // Hardcoded to user for now
   console.log(index) /* eslint-disable-line */
   // This is where we will add the functionality to get search results directly from index with client:
