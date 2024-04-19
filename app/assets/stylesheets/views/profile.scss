@@ -179,3 +179,16 @@
     border-bottom: unset;
   }
 }
+
+.badge-indicator {
+  font-size: var(--fs-s);
+  color: var(--base-0);
+  width: var(--su-6);
+  height: var(--su-6);
+  line-height: var(--su-6);
+  position: absolute;
+  background-color: var(--accent-brand);
+  right: var(--su-1);
+  bottom: -5px;
+  border-radius: 100%;
+}
