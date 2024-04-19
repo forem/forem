@@ -55,6 +55,6 @@ class BadgeAchievement < ApplicationRecord
   end
 
   def single_award_badge?
-    badge.allow_multiple_awards == false
+    badge&.allow_multiple_awards == false
   end
 end
