@@ -82,6 +82,20 @@
       <%= billboard.processed_html.html_safe %>
     </div>
   </div>
+<% elsif billboard.placement_area == "post_body_bottom" %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard body-billboard mb-2 mt-6"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-special="<%= billboard.special_behavior %>"
+    data-article-id="<%= @article&.id %>"
+    data-type-of="<%= billboard.type_of %>">
+    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+    <div class="p-1 pt-3 text-styles text-styles--billboard">
+      <%= billboard.processed_html.html_safe %>
+    </div>
+  </div>
 <% else %>
   <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
