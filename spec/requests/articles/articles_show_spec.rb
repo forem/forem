@@ -272,7 +272,6 @@ RSpec.describe "ArticlesShow" do
       end
     end
 
-
     context "when a mid-comments billboard exists" do
       it "does not render the billboard if there are fewer than 6 root comments" do
         create_list(:comment, 6, commentable: article)
