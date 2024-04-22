@@ -143,7 +143,9 @@ document.ready.then(() => {
   const articleSpecificPlacement = ['post_comments', 'post_sidebar', 'post_fixed_bottom'];
   const targetedTagPlacements = [
     'post_fixed_bottom',
+    'post_body_bottom',
     'post_comments',
+    'post_comments_mid',
     'post_sidebar',
     'sidebar_right',
     'sidebar_right_second',

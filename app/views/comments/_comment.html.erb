@@ -1,6 +1,6 @@
 <% if comment && comment.user %>
-  <% if @current_index > 9 && !@shown_billboard && comment.depth.zero? %>
-    <div class="js-billboard-container pb-6" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments_mid) %>"></div>
+  <% if @current_comment_index.to_i > 6 && !@shown_billboard && comment.depth.zero? %>
+    <div class="js-billboard-container mid-comments-billboard-container pb-6" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_comments_mid) %>"></div>
     <% @shown_billboard = true %>
   <% end %>
   <% if comment.depth < 3 %>
@@ -40,5 +40,5 @@
   <% if comment.depth < 3 %>
     </details>
   <% end %>
-  <% @current_index += 1 if @current_index.present? %>
+  <% @current_comment_index += 1 if @current_comment_index.present? %>
 <% end %>
