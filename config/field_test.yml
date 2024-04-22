@@ -29,6 +29,8 @@
 experiments:
   digest_subheader_03_18:
     started_at: 2024-04-15
+    ended_at: 2024-04-22
+    winner: get_caught_up_with_branding
     variants:
       - base
       - base_with_branding
