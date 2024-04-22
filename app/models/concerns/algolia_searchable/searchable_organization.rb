@@ -16,7 +16,7 @@ module AlgoliaSearchable
 
     class_methods do
       def trigger_sidekiq_worker(record, delete)
-        AlgoliaSearch::IndexWorker.perform_async(record.class.name, record.id, delete)
+        AlgoliaSearch::SearchIndexWorker.perform_async(record.class.name, record.id, delete)
       end
     end
 
