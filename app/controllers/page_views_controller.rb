@@ -15,15 +15,16 @@ class PageViewsController < ApplicationMetalController
   VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS = 10
 
   def create
-    page_view_create_params = params.slice(:article_id, :referrer, :user_agent)
+    page_view_create_params = params.slice(:article_id, :page_id, :referrer, :user_agent)
     if session_current_user_id
       page_view_create_params[:user_id] = session_current_user_id
     else
       page_view_create_params[:counts_for_number_of_views] = VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS
     end
 
-    Articles::UpdatePageViewsWorker.perform_at(
-      2.minutes.from_now,
+    puts "updatespageviewsworker"
+    puts params.inspect
+    Articles::UpdatePageViewsWorker.perform_async(
       page_view_create_params,
     )
 

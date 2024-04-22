@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "PageViews" do
   let(:user) { create(:user, :trusted) }
   let(:article) { create(:article) }
+  let(:page) { create(:page) }
 
   def page_views_post(params)
     sidekiq_perform_enqueued_jobs do
@@ -23,6 +24,15 @@ RSpec.describe "PageViews" do
 
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(1)
+        expect(user.reload.page_views.size).to eq(1)
+        expect(PageView.last.counts_for_number_of_views).to eq(1)
+      end
+
+      it "creates a new page view for pages", :aggregate_failures do
+        page_views_post(page_id: page.id)
+
+        expect(page.reload.page_views.size).to eq(1)
+        expect(page.reload.page_views_count).to eq(1)
         expect(user.reload.page_views.size).to eq(1)
         expect(PageView.last.counts_for_number_of_views).to eq(1)
       end
@@ -74,6 +84,15 @@ RSpec.describe "PageViews" do
 
         expect(article.reload.page_views.size).to eq(1)
         expect(article.reload.page_views_count).to eq(10)
+        expect(user.reload.page_views.size).to eq(0)
+        expect(PageView.last.counts_for_number_of_views).to eq(10)
+      end
+
+      it "creates a new page view for pages", :aggregate_failures do
+        page_views_post(page_id: page.id)
+
+        expect(page.reload.page_views.size).to eq(1)
+        expect(page.reload.page_views_count).to eq(10)
         expect(user.reload.page_views.size).to eq(0)
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end

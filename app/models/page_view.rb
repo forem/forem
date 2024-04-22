@@ -3,12 +3,21 @@
 #       destroy callbacks will be called on this object.
 class PageView < ApplicationRecord
   belongs_to :user, optional: true
-  belongs_to :article
+  belongs_to :article, optional: true
+  belongs_to :page, optional: true
 
   before_create :extract_domain_and_path
   after_create_commit :record_field_test_event
 
+  validate :article_or_page_present
+
   private
+
+  def article_or_page_present
+    return if article.present? ^ page.present?
+
+    errors.add(:base, "PageView must belong to either an Article or a Page, but not both")
+  end
 
   def extract_domain_and_path
     return unless referrer

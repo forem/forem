@@ -149,13 +149,14 @@ function checkUserLoggedIn() {
 function trackCustomImpressions() {
   setTimeout(()=> {
     const ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
+    const PageElement = document.getElementById('page-body');
     const tokenMeta = document.querySelector("meta[name='csrf-token']")
     const isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
     // eslint-disable-next-line no-unused-vars
     const windowBigEnough =  window.innerWidth > 1023
 
     // page view
-    if (ArticleElement && tokenMeta && !isBot) {
+    if ((ArticleElement || PageElement) && tokenMeta && !isBot) {
       // See https://github.com/forem/forem/blob/main/app/controllers/page_views_controller.rb
       //
       // If you change the 10, you should look at the PageViewsController as well.
@@ -164,10 +165,13 @@ function trackCustomImpressions() {
         return;
       }
       const dataBody = {
-        article_id: ArticleElement.dataset.articleId,
+        //article_id: ArticleElement.dataset.articleId,
         referrer: document.referrer,
         user_agent: navigator.userAgent,
       };
+
+      if (ArticleElement) dataBody.article_id = ArticleElement.dataset.articleId;
+      if (PageElement) dataBody.page_id = PageElement.dataset.pageId;
       const csrfToken = tokenMeta.getAttribute('content');
       trackPageView(dataBody, csrfToken);
       let timeOnSiteCounter = 0;

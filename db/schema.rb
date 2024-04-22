@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_08_101038) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_22_145748) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -777,6 +777,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_101038) do
     t.integer "counts_for_number_of_views", default: 1
     t.datetime "created_at", precision: nil, null: false
     t.string "domain"
+    t.bigint "page_id"
     t.string "path"
     t.string "referrer"
     t.integer "time_tracked_in_seconds", default: 15
@@ -785,6 +786,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_08_101038) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
+    t.index ["page_id"], name: "index_page_views_on_page_id"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
