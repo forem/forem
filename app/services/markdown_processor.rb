@@ -57,6 +57,8 @@ module MarkdownProcessor
     SIDEBAR = %w[b br em i p strike strong u].freeze
 
     BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[a b code em i strong u].freeze
+
+    EMAIL_COMMENT = %w[strong em a p span].freeze
   end
 
   # A container module for the allowed attributes in various rendering
@@ -77,5 +79,7 @@ module MarkdownProcessor
     MARKDOWN_PROCESSOR = %w[alt href src].freeze
 
     BADGE_ACHIEVEMENT_CONTEXT_MESSAGE = %w[href name].freeze
+
+    EMAIL_COMMENT = %w[href].freeze
   end
 end

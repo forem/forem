@@ -16,7 +16,7 @@
     <% if article.published %>
       <p class="fs-s color-base-60 js-dashboard-story-details">
         <strong class="fw-medium"><%= t("views.dashboard.article.#{article.scheduled? ? 'scheduled_at' : 'published'}") %></strong>
-        <%= local_date(article.published_timestamp, show_year: article.displayable_published_at.year != Time.current.year) %>
+        <%= local_date(article.published_timestamp, show_year: article.displayable_published_at&.year != Time.current.year) %>
         <% if article.edited? %>
           <strong class="fw-medium pl-2"><%= t("views.dashboard.article.edited") %></strong>
           <%= local_date(article.edited_at, show_year: article.edited_at.year != Time.current.year) %>
@@ -122,7 +122,7 @@
 
             <div class="crayons-field mb-4">
               <label for="user_id" class="crayons-field__label"><%= t("views.dashboard.article.author") %></label>
-              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select #{article_series ? 'disabled': ''}", disabled: article_series } %>
+              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select #{article_series ? 'disabled' : ''}", disabled: article_series } %>
               <%= f.hidden_field :from_dashboard, value: 1 %>
               <% if article_series %>
                   <div class="disabled-info-container">
@@ -137,11 +137,11 @@
                 <label for="co_author_ids" class="crayons-field__label"><%= t("views.dashboard.article.co_authors") %></label>
                 <div class="crayons-field">
                   <%= f.text_field :co_author_ids_list,
-                                  id: "article_#{article.id}_co_author_ids_list",
-                                  class: "article_org_co_author_ids_list",
-                                  data: {
-                                    fetch_users: organization_members_path(organization.username, format: "json")
-                                  } %>
+                                   id: "article_#{article.id}_co_author_ids_list",
+                                   class: "article_org_co_author_ids_list",
+                                   data: {
+                                     fetch_users: organization_members_path(organization.username, format: "json")
+                                   } %>
                 </div>
                 <%= f.hidden_field :from_dashboard, value: 1 %>
               </div>
