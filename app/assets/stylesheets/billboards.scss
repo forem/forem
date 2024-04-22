@@ -88,6 +88,17 @@
   display: none;
 }
 
+.body-billboard {
+  @media (max-width: $breakpoint-s) {
+    margin: 0 -4px 0;
+    padding: 7px 6px !important;
+  }
+  @media (min-width: $breakpoint-m) {
+    margin: 0 -14px 0;
+  }
+
+}
+
 .hero-billboard {
   margin: var(--su-2) 0 0;
   h1,
