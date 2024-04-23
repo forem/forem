@@ -439,4 +439,13 @@ RSpec.describe Organization do
       end
     end
   end
+
+  context "when indexing with Algolia", :algolia do
+    it "indexes the organization on create" do
+      search_index_worker = AlgoliaSearch::SearchIndexWorker
+      allow(search_index_worker).to receive(:perform_async)
+      create(:organization)
+      expect(search_index_worker).to have_received(:perform_async).with("Organization", kind_of(Integer), false)
+    end
+  end
 end

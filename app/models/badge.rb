@@ -10,6 +10,7 @@ class Badge < ApplicationRecord
   validates :description, presence: true
   validates :slug, presence: true
   validates :title, presence: true, uniqueness: true
+  validates :allow_multiple_awards, inclusion: { in: [true, false] }
 
   before_validation :generate_slug
 
