@@ -21,9 +21,10 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     end
 
     it "tracks a click with the correct source", :aggregate_failures do
-      skip "This is a very flaky test"
-      expect(Ahoy::Event.count).to eq(0)
+      allow(Ahoy::EventsController).to receive(:new).and_call_original
       find('[data-tracking-id="ca_top_nav"]').click
+      expect(Ahoy::EventsController).to have_received(:new).once
+      expect(Ahoy::Event.count).to eq(1)
 
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
       expect(Ahoy::Event.last.properties).to include("source", "page", "version", "source" => "top_navbar")
@@ -32,11 +33,14 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
 
   context "when tracking through the modal" do
     it "adds an ahoy event", :aggregate_failures do
+      allow(Ahoy::EventsController).to receive(:new).and_call_original
       article = create(:article, user: create(:user))
       visit article.path
       expect(Ahoy::Event.count).to eq(0)
       find(".follow-action-button").click
       find(".js-global-signup-modal__create-account").click
+
+      expect(Ahoy::EventsController).to have_received(:new).once
 
       expect(page).to have_current_path("/enter?state=new-user")
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
