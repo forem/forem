@@ -4,12 +4,14 @@ class PageViewRollup
                             time_tracked_in_seconds].freeze
 
   class ViewAggregator
-    Compact = Struct.new(:views, :key, :user_id) do
+    Compact = Struct.new(:views, :key, :key_value, :user_id) do
       def to_h
-        super.except(:views).merge({
-                                     counts_for_number_of_views: views.sum(&:counts_for_number_of_views),
-                                     time_tracked_in_seconds: views.sum(&:time_tracked_in_seconds)
-                                   })
+        {
+          key => key_value,
+          :user_id => user_id,
+          :counts_for_number_of_views => views.sum(&:counts_for_number_of_views),
+          :time_tracked_in_seconds => views.sum(&:time_tracked_in_seconds)
+        }
       end
     end
 
@@ -31,7 +33,7 @@ class PageViewRollup
         grouped_by_key.each_pair do |user_id, views|
           next unless views.size > 1
 
-          yield Compact.new(views, key_value, user_id)
+          yield Compact.new(views, @key, key_value, user_id)
         end
       end
     end

@@ -25,8 +25,9 @@ RSpec.describe PageView do
 
       it "is invalid" do
         expect(invalid_page_view).not_to be_valid
-        expect(invalid_page_view.errors[:base]).to include("PageView must belong to either an Article or a Page,
-         but not both")
+        expect(invalid_page_view.errors[:base]).to include(
+          "PageView must belong to either an Article or a Page, but not both",
+        )
       end
     end
   end

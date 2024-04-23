@@ -32,7 +32,7 @@ RSpec.describe "PageViews" do
         page_views_post(page_id: page.id)
 
         expect(page.reload.page_views.size).to eq(1)
-        expect(page.reload.page_views_count).to eq(1)
+        expect(page.reload.page_views.sum(:counts_for_number_of_views)).to eq(1)
         expect(user.reload.page_views.size).to eq(1)
         expect(PageView.last.counts_for_number_of_views).to eq(1)
       end
@@ -92,7 +92,7 @@ RSpec.describe "PageViews" do
         page_views_post(page_id: page.id)
 
         expect(page.reload.page_views.size).to eq(1)
-        expect(page.reload.page_views_count).to eq(10)
+        expect(page.reload.page_views.sum(:counts_for_number_of_views)).to eq(10)
         expect(user.reload.page_views.size).to eq(0)
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end

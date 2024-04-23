@@ -3,6 +3,8 @@ require "rails_helper"
 RSpec.describe PageViewRollup, type: :service do
   let(:article1) { create(:article) }
   let(:article2) { create(:article) }
+  let(:page1) { create(:page) }
+  let(:page2) { create(:page) }
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
 
@@ -71,5 +73,18 @@ RSpec.describe PageViewRollup, type: :service do
     end.to change(PageView, :count).from(4).to(2)
     expect(PageView.pluck(:article_id,
                           :counts_for_number_of_views)).to contain_exactly([article1.id, 2], [article2.id, 2])
+  end
+
+  it "only compacts views of the same page" do
+    create(:page_page_view, page: page1, user: nil, created_at: 2.days.ago)
+    create(:page_page_view, page: page1, user: nil, created_at: 2.days.ago)
+    create(:page_page_view, page: page2, user: nil, created_at: 2.days.ago)
+    create(:page_page_view, page: page2, user: nil, created_at: 2.days.ago)
+
+    expect do
+      described_class.rollup(2.days.ago)
+    end.to change(PageView, :count).from(4).to(2)
+    expect(PageView.pluck(:page_id,
+                          :counts_for_number_of_views)).to contain_exactly([page1.id, 2], [page2.id, 2])
   end
 end
