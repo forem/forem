@@ -22,8 +22,6 @@ class PageViewsController < ApplicationMetalController
       page_view_create_params[:counts_for_number_of_views] = VISITOR_IMPRESSIONS_AGGREGATE_COUNTS_FOR_NUMBER_OF_VIEWS
     end
 
-    puts "updatespageviewsworker"
-    puts params.inspect
     Articles::UpdatePageViewsWorker.perform_async(
       page_view_create_params,
     )
