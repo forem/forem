@@ -211,7 +211,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_19_201108) do
   end
 
   create_table "badges", force: :cascade do |t|
-    t.boolean "allow_multiple_awards", default: false
+    t.boolean "allow_multiple_awards", default: false, null: false
     t.string "badge_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false
