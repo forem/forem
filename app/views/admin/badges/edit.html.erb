@@ -33,6 +33,14 @@
       <%= form.text_field :credits_awarded, class: "crayons-textfield" %>
     </div>
 
+    <div class="crayons-field crayons-field--checkbox ">
+      <%= form.check_box :allow_multiple_awards, class: "crayons-checkbox" %>
+      <%= form.label :allow_multiple_awards, class: "crayons-field__label" do %>
+        Allow multiple awards
+      <p class="crayons-field__description">Allows this badge to be awarded multiple times to the same user</p>
+      <% end %>
+    </div>
+
     <div>
       <%= submit_tag "Update badge", class: "c-btn c-btn--primary" %>
     </div>

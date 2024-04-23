@@ -11,6 +11,7 @@ fr:
       desc: Receive badges for being awesome! Click on a badge to see how you can earn it.
       icon_close: Close
       gotit: Got it
+      indicator: "%{user} a obtenu ce badge %{number} fois."
     campaign:
       subtitle: Stories (%{count})
       view: See all posts
