@@ -17,8 +17,10 @@ class Billboard < ApplicationRecord
                                home_hero
                                page_fixed_bottom
                                post_fixed_bottom
+                               post_body_bottom
                                post_sidebar
                                post_comments
+                               post_comments_mid
                                digest_first
                                digest_second].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
@@ -32,8 +34,10 @@ class Billboard < ApplicationRecord
                                             "Home Hero",
                                             "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
+                                            "Below the post body",
                                             "Sidebar Right (Individual Post)",
                                             "Below the comment section",
+                                            "Midway through the comment section",
                                             "Digest Email First",
                                             "Digest Email Second"].freeze
 
