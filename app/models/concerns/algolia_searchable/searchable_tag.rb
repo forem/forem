@@ -8,7 +8,6 @@ module AlgoliaSearchable
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS) do
         attribute :name, :pretty_name, :short_summary, :hotness_score
 
-        # TODO: verify if this ranking is preferred
         customRanking ["desc(hotness_score)"]
       end
     end
