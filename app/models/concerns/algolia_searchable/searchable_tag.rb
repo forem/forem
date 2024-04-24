@@ -5,7 +5,7 @@ module AlgoliaSearchable
     included do
       include AlgoliaSearch
 
-      algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker do
+      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS) do
         attribute :name, :pretty_name, :short_summary, :hotness_score
 
         # TODO: verify if this ranking is preferred
