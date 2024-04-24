@@ -5889,10 +5889,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ahoy.js@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "ahoy.js@npm:0.4.3"
-  checksum: 10c0/eaacbf267d2094cb80651485af0d58034ec89d48f3755159ec850fb75d62b776222e6e9aa333aeb54d6ba1f0bac58f03653294244f1b01e69458a76fae3c2855
+"ahoy.js@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "ahoy.js@npm:0.4.4"
+  checksum: 10c0/d0e0251beaefc1aed7d4c2b0d5b88972547fd103de98acbe82841377748d7c035f971173dfe41d4ca9e229161b67a3f3eb20a6380b10d92eb1e2767b7979eb2c
   languageName: node
   linkType: hard
 
@@ -9229,7 +9229,7 @@ __metadata:
     "@testing-library/preact-hooks": "npm:^1.1.0"
     "@testing-library/user-event": "npm:^14.5.2"
     "@whitespace/storybook-addon-html": "npm:^5.1.1"
-    ahoy.js: "npm:^0.4.3"
+    ahoy.js: "npm:^0.4.4"
     algoliasearch: "npm:4.23.3"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^28.1.3"
