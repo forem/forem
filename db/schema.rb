@@ -207,11 +207,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_22_145748) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
-    t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
   create_table "badges", force: :cascade do |t|
+    t.boolean "allow_multiple_awards", default: false, null: false
     t.string "badge_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false

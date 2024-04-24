@@ -27,8 +27,35 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_headers_04_22:
+    started_at: 2024-04-22
+    variants:
+      - base
+      - base_without_top_header
+      - base_with_only_first_name
+      - base_with_only_first_name_and_no_top_header
+      - base_with_emoji
+      - base_with_emoji_and_no_top_header
+      - base_with_emoji_and_only_first_name
+      - base_with_emoji_and_only_first_name_and_no_top_header
+    weights:
+      - 30
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_subheader_03_18:
     started_at: 2024-04-15
+    ended_at: 2024-04-22
+    winner: get_caught_up_with_branding
     variants:
       - base
       - base_with_branding
