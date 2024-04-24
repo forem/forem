@@ -230,8 +230,8 @@ function algoliaSearch(searchParams) {
   index
   .search(paramsObj.search_fields)
     .then(({ hits }) => {
-      console.log('Algolia search results:')
-      console.log(hits);
+      console.log('Algolia search results:') /* eslint-disable-line */
+      console.log(hits); /* eslint-disable-line */
       const resultDivs = [];
       const currentUser = userData();
       const currentUserId = currentUser && currentUser.id;
@@ -241,7 +241,7 @@ function algoliaSearch(searchParams) {
         // Add profile_image_90 to story object from profile image if profile_image_90 is not present
         story.profile_image_90 = story.profile_image;
         story.profile_image = { url: story.profile_image }
-        console.log(story)
+        console.log(story) /* eslint-disable-line */
         resultDivs.push(buildArticleHTML(story, currentUserId));
       });
       document.getElementById('substories').innerHTML = resultDivs.join('');
@@ -255,8 +255,8 @@ function algoliaSearch(searchParams) {
       }
     })
   .catch(err => {
-    console.log('Algolia search error:')
-    console.log(err);
+    console.log('Algolia search error:') /* eslint-disable-line */
+    console.log(err); /* eslint-disable-line */
   });
 }
 
