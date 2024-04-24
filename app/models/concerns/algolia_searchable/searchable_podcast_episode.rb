@@ -5,7 +5,7 @@ module AlgoliaSearchable
     included do
       include AlgoliaSearch
 
-      algoliasearch per_environment: true, enqueue: :trigger_sidekiq_worker, if: :published do
+      algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, if: :published) do
         attribute :title, :summary, :path
         attribute :podcast_name do
           podcast.title
