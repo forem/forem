@@ -1,6 +1,7 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
   include PgSearch::Model
+  include AlgoliaSearchable
 
   include Images::Profile.for(:profile_image_url)
 
