@@ -4,36 +4,33 @@ class PageViewRollup
                             time_tracked_in_seconds].freeze
 
   class ViewAggregator
-    Compact = Struct.new(:views, :key, :key_value, :user_id) do
+    Compact = Struct.new(:views, :article_id, :user_id) do
       def to_h
-        {
-          key => key_value,
-          :user_id => user_id,
-          :counts_for_number_of_views => views.sum(&:counts_for_number_of_views),
-          :time_tracked_in_seconds => views.sum(&:time_tracked_in_seconds)
-        }
+        super.except(:views).merge({
+                                     counts_for_number_of_views: views.sum(&:counts_for_number_of_views),
+                                     time_tracked_in_seconds: views.sum(&:time_tracked_in_seconds)
+                                   })
       end
     end
 
-    def initialize(key)
-      @key = key
-      @aggregator = Hash.new do |level1, key_value|
-        level1[key_value] = Hash.new do |level2, user_id|
+    def initialize
+      @aggregator = Hash.new do |level1, article_id|
+        level1[article_id] = Hash.new do |level2, user_id|
           level2[user_id] = []
         end
       end
     end
 
     def <<(view)
-      @aggregator[view.public_send(@key)][view.user_id] << view
+      @aggregator[view.article_id][view.user_id] << view
     end
 
     def each
-      @aggregator.each_pair do |key_value, grouped_by_key|
-        grouped_by_key.each_pair do |user_id, views|
+      @aggregator.each_pair do |article_id, grouped_by_article_id|
+        grouped_by_article_id.each_pair do |user_id, views|
           next unless views.size > 1
 
-          yield Compact.new(views, @key, key_value, user_id)
+          yield Compact.new(views, article_id, user_id)
         end
       end
     end
@@ -55,17 +52,14 @@ class PageViewRollup
 
   def rollup(date)
     created = []
+    fixed_date = date.to_datetime.beginning_of_day
 
-    %i[article_id page_id].each do |key|
-      fixed_date = date.to_datetime.beginning_of_day
-
-      (0..23).each do |hour|
-        start_hour = fixed_date.change(hour: hour)
-        end_hour = fixed_date.change(hour: hour + 1)
-        rows = relation.where.not(key => nil).where(user_id: nil, created_at: start_hour...end_hour)
-        aggregate_into_groups(rows, key).each do |compacted_views|
-          created << compact_records(start_hour, compacted_views)
-        end
+    (0..23).each do |hour|
+      start_hour = fixed_date.change(hour: hour)
+      end_hour = fixed_date.change(hour: hour + 1)
+      rows = relation.where(page_id: nil, user_id: nil, created_at: start_hour...end_hour)
+      aggregate_into_groups(rows).each do |compacted_views|
+        created << compact_records(start_hour, compacted_views)
       end
     end
 
@@ -74,8 +68,8 @@ class PageViewRollup
 
   private
 
-  def aggregate_into_groups(rows, key)
-    aggregator = ViewAggregator.new(key)
+  def aggregate_into_groups(rows)
+    aggregator = ViewAggregator.new
     rows.in_batches.each_record do |event|
       aggregator << event
     end
