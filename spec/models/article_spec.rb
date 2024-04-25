@@ -1677,7 +1677,8 @@ RSpec.describe Article do
     it "indexes the article" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:article)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Article", kind_of(Integer),
+                                                                                     false).once
     end
   end
 end
