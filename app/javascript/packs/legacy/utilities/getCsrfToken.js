@@ -3,7 +3,7 @@
 const MAX_RETRIES = 30;
 const RETRY_INTERVAL = 250;
 
-function getCsrfToken() {
+export function getCsrfToken() {
   var promise = new Promise(function callback(resolve, reject) {
     var i = 0;
     // eslint-disable-next-line consistent-return
@@ -29,3 +29,5 @@ function getCsrfToken() {
   });
   return promise;
 }
+
+window.getCsrfToken = getCsrfToken;

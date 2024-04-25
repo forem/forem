@@ -1,8 +1,9 @@
 /* global localizeTimeElements */
 
 'use strict';
+import { localizeTimeElements } from '../utilities/localDateTime';
 
-function initializeCreditsPage() {
+export function initializeCreditsPage() {
   const datetimes = document.querySelectorAll('.ledger time');
 
   localizeTimeElements(datetimes, {

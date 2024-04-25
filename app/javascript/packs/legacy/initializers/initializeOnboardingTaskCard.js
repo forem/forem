@@ -3,8 +3,9 @@
  * and displays it if the user is created less than a week ago and hasn't closed
  * the task card yet.
  */
+import { userData } from '../utilities/userData';
 
-function initializeOnboardingTaskCard() {
+export function initializeOnboardingTaskCard() {
   if (localStorage.getItem('task-card-closed') === 'yes') {
     return;
   }

@@ -1,4 +1,7 @@
-function initializeLocalStorageRender() {
+import { browserStoreCache } from '../utilities/browserStoreCache';
+import { initializeBillboardVisibility } from './initializeBillboardVisibility';
+
+export function initializeLocalStorageRender() {
   try {
     var userData = browserStoreCache('get');
     if (userData) {

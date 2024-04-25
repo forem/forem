@@ -1,5 +1,8 @@
 /* global checkUserLoggedIn */
 
+import { browserStoreCache } from '../utilities/browserStoreCache';
+import { checkUserLoggedIn } from '../utilities/checkUserLoggedIn';
+
 function removeExistingCSRF() {
   var csrfTokenMeta = document.querySelector("meta[name='csrf-token']");
   var csrfParamMeta = document.querySelector("meta[name='csrf-param']");
@@ -68,6 +71,6 @@ function fetchBaseData() {
     );
 }
 
-function initializeBodyData() {
+export function initializeBodyData() {
   fetchBaseData();
 }

@@ -1,6 +1,7 @@
-import { getInstantClick } from '../topNavigation/utilities';
-import { waitOnBaseData } from '../utilities/waitOnBaseData';
 import { locale } from '@utilities/locale';
+import { getInstantClick } from '../topNavigation/utilities';
+import { showLoginModal } from './legacy/utilities/showLoginModal';
+import { waitOnBaseData } from '../utilities/waitOnBaseData';
 
 /* global showLoginModal  userData  showModalAfterError browserStoreCache */
 

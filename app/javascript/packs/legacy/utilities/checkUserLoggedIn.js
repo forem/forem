@@ -1,4 +1,4 @@
-function checkUserLoggedIn() {
+export function checkUserLoggedIn() {
   const body = document.body;
   if (!body) {
     return false;

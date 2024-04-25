@@ -1,4 +1,4 @@
-function initializeBillboardVisibility() {
+export function initializeBillboardVisibility() {
   var billboards = document.querySelectorAll('[data-display-unit]');
 
   if (billboards && billboards.length == 0) {

@@ -1,5 +1,5 @@
 /* global ahoy */
-function showLoginModal(trackingData) {
+export function showLoginModal(trackingData) {
   window.Forem.showModal({
     title: 'Log in to continue',
     contentSelector: '#global-signup-modal',

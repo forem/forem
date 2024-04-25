@@ -10,7 +10,20 @@
   initializeBroadcast
 */
 
+import { browserStoreCache } from './utilities/browserStoreCache';
+import { initScrolling } from './initializers/initScrolling';
+import {
+  initializeBillboardVisibility,
+} from './initializers/initializeBillboardVisibility';
+import { initializeBodyData } from './initializers/initializeBodyData';
+import { initializeBroadcast } from './initializers/initializeBroadcast';
+import { initializeCommentsPage } from './initializers/initializeCommentsPage';
+import { initializeCreditsPage } from './initializers/initializeCreditsPage';
+import { initializeLocalStorageRender } from './initializers/initializeLocalStorageRender';
+import { initializeOnboardingTaskCard } from './initializers/initializeOnboardingTaskCard';
 import { initializePaymentPointers } from './initializers/initializePaymentPointers';
+import { initializeReadingListIcons } from './initializers/initializeReadingListIcons';
+import { userData } from './utilities/userData';
 
 
 export function initializePage() {

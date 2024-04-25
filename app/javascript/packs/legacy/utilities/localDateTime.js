@@ -49,7 +49,7 @@ function addLocalizedDateTimeToElementsTitles(elements, timestampAttribute) {
   }
 }
 
-function localizeTimeElements(elements, timeOptions) {
+export function localizeTimeElements(elements, timeOptions) {
   for (let i = 0; i < elements.length; i += 1) {
     const element = elements[i];
 

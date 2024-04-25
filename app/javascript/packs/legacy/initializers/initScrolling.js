@@ -534,7 +534,7 @@ function checkIfNearBottomOfPage() {
 /**
  * Initializes the scrolling for the page. It looks for the index-container element and if it exists, it sets up the scrolling.
  */
-function initScrolling() {
+export function initScrolling() {
   var elCheck = document.getElementById('index-container');
 
   if (elCheck) {

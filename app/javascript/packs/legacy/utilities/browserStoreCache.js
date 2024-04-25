@@ -1,6 +1,6 @@
 'use strict';
 
-function browserStoreCache(action, userData) {
+export function browserStoreCache(action, userData) {
   try {
     switch (action) {
       case 'set':

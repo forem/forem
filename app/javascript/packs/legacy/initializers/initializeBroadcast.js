@@ -88,7 +88,7 @@ function renderBroadcast(broadcastElement, data) {
  *
  * @function initializeBroadcast
  */
-function initializeBroadcast() {
+export function initializeBroadcast() {
   const shouldHideBroadcast = window.location.pathname.match(
     /^(?:\/connect|\/new)/,
   );

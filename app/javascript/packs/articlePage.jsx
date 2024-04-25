@@ -1,14 +1,15 @@
 import { h, render } from 'preact';
+import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
+import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
 import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { addFullScreenModeControl } from '../utilities/codeFullscreenModeSwitcher';
-import { initializeDropdown } from '../utilities/dropdownUtils';
-import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 import { embedGists } from '../utilities/gist';
+import { getCsrfToken } from './legacy/utilities/getCsrfToken';
+import { initializeDropdown } from '../utilities/dropdownUtils';
 import { initializeUserSubscriptionLiquidTagContent } from '../liquidTags/userSubscriptionLiquidTag';
-import { trackCommentClicks } from '@utilities/ahoy/trackEvents';
-import { isNativeAndroid, copyToClipboard } from '@utilities/runtime';
-
+import { setupBillboardInteractivity } from '../utilities/billboardInteractivity';
 const animatedImages = document.querySelectorAll('[data-animated="true"]');
+
 if (animatedImages.length > 0) {
   import('@utilities/animatedImageUtils').then(
     ({ initializePausableAnimatedImages }) => {

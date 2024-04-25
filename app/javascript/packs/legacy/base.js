@@ -6,8 +6,11 @@
 import { I18n } from "i18n-js";
 import Honeybadger from '@honeybadger-io/js';
 import ahoy from 'ahoy.js';
-import filterXSS from './lib/xss';
+import { getImageForLink } from './utilities/getImageForLink';
 import { initializePage } from './initializePage';
+import { isTouchDevice } from './utilities/isTouchDevice';
+import { userData } from './utilities/userData';
+import filterXSS from './lib/xss';
 
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;

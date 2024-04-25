@@ -3,8 +3,10 @@
  *
  * @returns true if a touch device, otherwise false.
  */
-function isTouchDevice() {
+export function isTouchDevice() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|DEV-Native-ios/i.test(
     navigator.userAgent,
   );
 }
+
+window.isTouchDevice = isTouchDevice;

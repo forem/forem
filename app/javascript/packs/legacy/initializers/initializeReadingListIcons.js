@@ -4,7 +4,10 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 
-function initializeReadingListIcons() {
+
+import { getCsrfToken } from '../utilities/getCsrfToken';
+
+export function initializeReadingListIcons() {
   setReadingListButtonsState();
   addReadingListCountToHomePage();
 }

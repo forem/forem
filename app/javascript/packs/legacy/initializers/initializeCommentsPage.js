@@ -1,3 +1,6 @@
+import { getCsrfToken } from '../utilities/getCsrfToken';
+import { userData } from '../utilities/userData';
+
 var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17 13l-5 6-5-6h3.125c0-3.314 2.798-6 6.25-6 .17 0 .34.006.506.02-1.787.904-3.006 2.705-3.006 4.78V13H17z" /></svg>`;
 
 /**
@@ -14,7 +17,7 @@ var iconSmallThread = `<svg width="24" height="24" class="crayons-icon" viewBox=
  * @function initializeCommentsPage
  */
 
-function initializeCommentsPage() {
+export function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
     var userStatus = document.body.getAttribute('data-user-status');
