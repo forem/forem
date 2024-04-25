@@ -21,6 +21,7 @@ class Tag < ActsAsTaggableOn::Tag
   # This model doesn't inherit from ApplicationRecord so this has to be included
   include Purgeable
   include PgSearch::Model
+  include AlgoliaSearchable
 
   # @note Even though we have a data migration script (see further
   #       comments below), as of <2022-01-04 Tue> we had 5 tags where
@@ -237,7 +238,7 @@ class Tag < ActsAsTaggableOn::Tag
   # @see Tag#explicit_points
   # @see Tag#implicit_points
   def points
-    (attributes["points"] || @points || 0)
+    attributes["points"] || @points || 0
   end
 
   # @!attribute [rw] explicit_points
