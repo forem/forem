@@ -7,8 +7,12 @@ module AlgoliaSearchable
 
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS) do
         attribute :name, :pretty_name, :short_summary, :hotness_score
+        add_attribute(:timestamp) { created_at.to_i }
 
         customRanking ["desc(hotness_score)"]
+
+        add_replica("Tag_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
+        add_replica("Tag_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
       end
     end
 
