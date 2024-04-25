@@ -1,6 +1,6 @@
 'use strict';
 
-function initializeAllTagEditButtons() {
+export function initializeAllTagEditButtons() {
   var tagEditButton = document.getElementById('tag-edit-button');
   var tagAdminButton = document.getElementById('tag-admin-button');
   var user = userData();

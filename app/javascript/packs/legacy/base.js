@@ -711,6 +711,7 @@ var instantClick
 }(document, location, navigator.userAgent);
 
 window.InstantClick = InstantClick;
+window.instantClick = instantClick;
 
 
 // FUNCTIONAL CODE FOR PAGE

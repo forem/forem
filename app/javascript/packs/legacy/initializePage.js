@@ -13,6 +13,10 @@
 import { browserStoreCache } from './utilities/browserStoreCache';
 import { initScrolling } from './initializers/initScrolling';
 import {
+  initializeAllTagEditButtons,
+} from './initializers/initializeAllTagEditButtons';
+import { initializeBaseUserData } from './initializers/initializeBaseUserData';
+import {
   initializeBillboardVisibility,
 } from './initializers/initializeBillboardVisibility';
 import { initializeBodyData } from './initializers/initializeBodyData';

@@ -1,9 +1,9 @@
 import { locale } from '@utilities/locale';
+import { browserStoreCache } from './legacy/utilities/browserStoreCache';
 import { getInstantClick } from '../topNavigation/utilities';
 import { showLoginModal } from './legacy/utilities/showLoginModal';
+import { showModalAfterError } from '../utilities/showUserAlertModal';
 import { waitOnBaseData } from '../utilities/waitOnBaseData';
-
-/* global showLoginModal  userData  showModalAfterError browserStoreCache */
 
 /**
  * Sets the text content of the button to the correct 'Follow' state

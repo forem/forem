@@ -112,7 +112,7 @@ function setCurrentUserToNavBar(user) {
   }
 }
 
-function initializeBaseUserData() {
+export function initializeBaseUserData() {
   const user = userData();
   setCurrentUserToNavBar(user);
   initializeProfileImage(user);

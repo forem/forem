@@ -1,4 +1,5 @@
 import { browserStoreCache } from '../utilities/browserStoreCache';
+import { initializeBaseUserData } from './initializeBaseUserData';
 import { initializeBillboardVisibility } from './initializeBillboardVisibility';
 
 export function initializeLocalStorageRender() {
