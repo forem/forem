@@ -11,10 +11,7 @@ module AlgoliaSearchable
         end
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :featured_number, :comments_count,
-                  :reaction_counts, :positive_reaction_counts, :path
-        # TODO: what about bookmark status?
-
-        attribute :main_image # TODO: main_image_90 ?
+                  :reaction_counts, :positive_reaction_counts, :path, :main_image
 
         attribute :published_at do
           published_at.to_i
@@ -24,7 +21,6 @@ module AlgoliaSearchable
 
     class_methods do
       def trigger_sidekiq_worker(record, delete)
-        # TODO: umm make sure this get called in the appropriate place
         AlgoliaSearch::SearchIndexWorker.perform_async(record.class.name, record.id, delete)
       end
     end
