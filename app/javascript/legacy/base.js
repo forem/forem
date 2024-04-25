@@ -1,11 +1,13 @@
 //= require_tree ./initializers
 //= require_tree ./utilities
-//= require lib/xss
 //= require initializePage
 //= require utilities/getImageForLink
-//= require @honeybadger-io/js/dist/browser/honeybadger.js
-//= require i18n
-//= require ahoy.js/dist/ahoy.js
+
+import { I18n } from "i18n-js";
+import Honeybadger from '@honeybadger-io/js';
+import ahoy from 'ahoy.js';
+import filterXSS from './lib/xss';
+import { initializePage } from './initializePage';
 
 I18n.defaultLocale = 'en';
 I18n.locale = document.body.dataset.locale;
@@ -704,6 +706,8 @@ var instantClick
   }
 
 }(document, location, navigator.userAgent);
+
+window.InstantClick = InstantClick;
 
 
 // FUNCTIONAL CODE FOR PAGE

@@ -1,4 +1,4 @@
-function initializePaymentPointers() {
+export function initializePaymentPointers() {
   var userPointer = document.getElementById('author-payment-pointer');
   var basePointer = document.getElementById('base-payment-pointer');
   var meta = document.querySelector("meta[name='monetization']");

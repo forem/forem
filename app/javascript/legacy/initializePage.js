@@ -10,14 +10,10 @@
   initializeBroadcast
 */
 
-function callInitializers() {
-  initializePaymentPointers();
-  initializeCommentsPage();
-  initializeCreditsPage();
-  initializeOnboardingTaskCard();
-}
+import { initializePaymentPointers } from './initializers/initializePaymentPointers';
 
-function initializePage() {
+
+export function initializePage() {
   initializeLocalStorageRender();
   initializeBodyData();
 
@@ -37,7 +33,10 @@ function initializePage() {
     }
   }, 1);
 
-  callInitializers();
+  initializePaymentPointers();
+  initializeCommentsPage();
+  initializeCreditsPage();
+  initializeOnboardingTaskCard();
 
   nextPage = 0;
   fetching = false;
