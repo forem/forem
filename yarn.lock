@@ -2101,9 +2101,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@cypress/code-coverage@npm:^3.12.30":
-  version: 3.12.30
-  resolution: "@cypress/code-coverage@npm:3.12.30"
+"@cypress/code-coverage@npm:^3.12.36":
+  version: 3.12.36
+  resolution: "@cypress/code-coverage@npm:3.12.36"
   dependencies:
     "@cypress/webpack-preprocessor": "npm:^6.0.0"
     chalk: "npm:4.1.2"
@@ -2120,7 +2120,7 @@ __metadata:
     babel-loader: ^8.3 || ^9
     cypress: "*"
     webpack: ^4 || ^5
-  checksum: 10c0/4fc8494606f1baaeb41b2fe649686b64fd1ca7c99ed5f4054ed2acfbc5bed0a8133e7c154240c18b45ee233517b0e6805da4f40f38fc893a3c47d3e2eaeeba49
+  checksum: 10c0/2d6fc69151f88c62bdf7d284105d71676dfbe3ce7cfa902ad0698af77af56d35cd250dab80fb571bcb450f0ac371bc0e64285dfb43b4ff2380595d7f660cb04f
   languageName: node
   linkType: hard
 
@@ -5889,10 +5889,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ahoy.js@npm:^0.4.3":
-  version: 0.4.3
-  resolution: "ahoy.js@npm:0.4.3"
-  checksum: 10c0/eaacbf267d2094cb80651485af0d58034ec89d48f3755159ec850fb75d62b776222e6e9aa333aeb54d6ba1f0bac58f03653294244f1b01e69458a76fae3c2855
+"ahoy.js@npm:^0.4.4":
+  version: 0.4.4
+  resolution: "ahoy.js@npm:0.4.4"
+  checksum: 10c0/d0e0251beaefc1aed7d4c2b0d5b88972547fd103de98acbe82841377748d7c035f971173dfe41d4ca9e229161b67a3f3eb20a6380b10d92eb1e2767b7979eb2c
   languageName: node
   linkType: hard
 
@@ -9204,7 +9204,7 @@ __metadata:
     "@babel/plugin-transform-react-jsx": "npm:^7.22.15"
     "@babel/preset-env": "npm:^7.23.3"
     "@babel/preset-typescript": "npm:^7.23.3"
-    "@cypress/code-coverage": "npm:^3.12.30"
+    "@cypress/code-coverage": "npm:^3.12.36"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.6.0"
     "@faker-js/faker": "npm:^7.6.0"
     "@honeybadger-io/js": "npm:^6.8.3"
@@ -9229,7 +9229,7 @@ __metadata:
     "@testing-library/preact-hooks": "npm:^1.1.0"
     "@testing-library/user-event": "npm:^14.5.2"
     "@whitespace/storybook-addon-html": "npm:^5.1.1"
-    ahoy.js: "npm:^0.4.3"
+    ahoy.js: "npm:^0.4.4"
     algoliasearch: "npm:4.23.3"
     autoprefixer: "npm:^10.4.16"
     babel-jest: "npm:^28.1.3"

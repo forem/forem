@@ -1,5 +1,6 @@
 class PodcastEpisode < ApplicationRecord
   include PgSearch::Model
+  include AlgoliaSearchable
 
   acts_as_taggable
 
