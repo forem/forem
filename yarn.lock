@@ -2540,26 +2540,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@honeybadger-io/core@npm:^6.5.1":
-  version: 6.5.1
-  resolution: "@honeybadger-io/core@npm:6.5.1"
+"@honeybadger-io/core@npm:^6.6.0":
+  version: 6.6.0
+  resolution: "@honeybadger-io/core@npm:6.6.0"
   dependencies:
     json-nd: "npm:^1.0.0"
     stacktrace-parser: "npm:^0.1.10"
-  checksum: 10c0/c9f4edf8adea9ba4f47227a018d9a8d503e6862b2e2c8cfe72257dc0368ce0c0ef94009bc9674453889128b5c1a91529a3cf79861bb4bfb3ea41c9e60411a0eb
+  checksum: 10c0/842e13f41eec89c39a0264fec77b72cd157afbc84b885130f704c5cd946fcacbc9b43eeadd5e309bb7073f847c4c690d2f4674929895b139df10e570823e4dad
   languageName: node
   linkType: hard
 
-"@honeybadger-io/js@npm:^6.8.3":
-  version: 6.8.3
-  resolution: "@honeybadger-io/js@npm:6.8.3"
+"@honeybadger-io/js@npm:^6.9.1":
+  version: 6.9.1
+  resolution: "@honeybadger-io/js@npm:6.9.1"
   dependencies:
-    "@honeybadger-io/core": "npm:^6.5.1"
+    "@honeybadger-io/core": "npm:^6.6.0"
     "@types/aws-lambda": "npm:^8.10.89"
     "@types/express": "npm:^4.17.13"
   bin:
     honeybadger-checkins-sync: dist/server/check-ins-sync-exec.js
-  checksum: 10c0/b0e74b88b92ab6f80047e666033d76c3d442386f926feb42d2e5e8b1454c08b4f41db1b0abde4c0e22994e158de916cb6f2512ac78f6aa4f7fdb876a30fff551
+  checksum: 10c0/098c8694706874e91dc8ebcd71463de50175f91ad9b901e24d0f19a66f6549109e8e8a49568241d9b9c955dd96c2a6c5edd6edf9a34cc0e992a7aa123450af8a
   languageName: node
   linkType: hard
 
@@ -9207,7 +9207,7 @@ __metadata:
     "@cypress/code-coverage": "npm:^3.12.36"
     "@etchteam/storybook-addon-css-variables-theme": "npm:^1.6.0"
     "@faker-js/faker": "npm:^7.6.0"
-    "@honeybadger-io/js": "npm:^6.8.3"
+    "@honeybadger-io/js": "npm:^6.9.1"
     "@hotwired/stimulus": "npm:3.2.2"
     "@knapsack-pro/cypress": "npm:^7.4.0"
     "@rails/ujs": "npm:7.1.3"
