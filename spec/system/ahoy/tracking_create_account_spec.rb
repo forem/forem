@@ -1,6 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Tracking 'Clicked on Create Account'", :js do
+  def wait_for_async_events_listener
+    # temp fix for flaky specs
+    sleep 5
+  end
+
   context "when on the homepage" do
     before do
       user = create(:user)
@@ -21,8 +26,8 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     end
 
     it "tracks a click with the correct source", :aggregate_failures do
-      skip "This is a very flaky test"
       expect(Ahoy::Event.count).to eq(0)
+      wait_for_async_events_listener
       find('[data-tracking-id="ca_top_nav"]').click
 
       expect(Ahoy::Event.last.name).to eq("Clicked on Create Account")
@@ -34,6 +39,7 @@ RSpec.describe "Tracking 'Clicked on Create Account'", :js do
     it "adds an ahoy event", :aggregate_failures do
       article = create(:article, user: create(:user))
       visit article.path
+      wait_for_async_events_listener
       expect(Ahoy::Event.count).to eq(0)
       find(".follow-action-button").click
       find(".js-global-signup-modal__create-account").click
