@@ -121,7 +121,7 @@
     "algoliasearch": "4.23.3",
     "autoprefixer": "^10.4.16",
     "babel-plugin-inline-react-svg": "^2.0.2",
-    "babel-plugin-module-resolver": "^5.0.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "babel-preset-preact": "^2.0.0",
     "canvas": "^2.11.0",
     "chart.js": "^3.9.1",
