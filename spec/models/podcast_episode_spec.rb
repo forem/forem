@@ -137,7 +137,7 @@ RSpec.describe PodcastEpisode do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:podcast_episode)
       expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("PodcastEpisode",
-                                                                                     kind_of(Integer), false)
+                                                                                     kind_of(Integer), false).once
     end
   end
 end
