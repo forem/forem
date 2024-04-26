@@ -1,4 +1,3 @@
-import { addSnackbarItem } from '../Snackbar';
 import {
   initializeDropdown,
   getDropdownRepositionListener,
