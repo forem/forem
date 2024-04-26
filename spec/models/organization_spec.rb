@@ -445,7 +445,7 @@ RSpec.describe Organization do
       search_index_worker = AlgoliaSearch::SearchIndexWorker
       allow(search_index_worker).to receive(:perform_async)
       create(:organization)
-      expect(search_index_worker).to have_received(:perform_async).with("Organization", kind_of(Integer), false)
+      expect(search_index_worker).to have_received(:perform_async).with("Organization", kind_of(Integer), false).once
     end
   end
 end
