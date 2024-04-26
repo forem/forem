@@ -1027,7 +1027,8 @@ RSpec.describe User do
     it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
       create(:user)
-      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), false).once
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), 
+false).once
     end
 
     it "updates user index if user's name has changed" do
