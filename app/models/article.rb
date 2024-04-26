@@ -5,6 +5,7 @@ class Article < ApplicationRecord
   include Taggable
   include UserSubscriptionSourceable
   include PgSearch::Model
+  include AlgoliaSearchable
 
   acts_as_taggable_on :tags
   resourcify
