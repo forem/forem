@@ -28,7 +28,7 @@ module AlgoliaSearchable
     end
 
     def bad_comment?
-      comment.score.negative?
+      score.negative?
     end
   end
 end
