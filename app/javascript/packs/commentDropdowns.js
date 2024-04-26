@@ -11,7 +11,7 @@ const handleCopyPermalink = (closeDropdown) => {
     event.preventDefault();
     const permalink = event.target.href;
     copyToClipboard(permalink).then(() => {
-      addSnackbarItem({ message: 'Copied to clipboard' });
+      top.addSnackbarItem({ message: 'Copied to clipboard' });
     });
     closeDropdown();
   };
