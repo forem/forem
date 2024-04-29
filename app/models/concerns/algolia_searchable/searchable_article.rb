@@ -10,12 +10,15 @@ module AlgoliaSearchable
           { name: user.name, username: user.username, profile_image: user.profile_image_90 }
         end
 
-        attribute :title, :tag_list, :reading_time, :score, :featured, :featured_number, :comments_count,
-                  :reaction_counts, :positive_reaction_counts, :path, :main_image
+        attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
+                  :positive_reactions_count, :path, :main_image
 
-        attribute :published_at do
-          published_at.to_i
-        end
+        add_attribute(:published_at) { published_at.to_i }
+        add_attribute(:timestamp) { published_at.to_i }
+
+        add_replica("Article_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
+        add_replica("Article_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
+
       end
     end
 

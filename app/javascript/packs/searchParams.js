@@ -224,7 +224,7 @@ function algoliaSearch(searchParams) {
   const {algoliaId, algoliaSearchKey} = document.body.dataset;
   console.log(paramsObj) /* eslint-disable-line */
   const client = algoliasearch(algoliaId, algoliaSearchKey);
-  const indexName = paramsObj.sort_by ? `${paramsObj.class_name}_timestamp_${paramsObj.sort_direction}_${env}` : `${paramsObj.class_name}_${env}`;
+  const indexName = paramsObj.sort_by ? `${paramsObj.class_name || 'Article'}_timestamp_${paramsObj.sort_direction}_${env}` : `${paramsObj.class_name || 'Article'}_${env}`;
   const index = client.initIndex(indexName); // Hardcoded to user for now
   console.log(index) /* eslint-disable-line */
   // This is where we will add the functionality to get search results directly from index with client:
