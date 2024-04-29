@@ -22,7 +22,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
-      branding: 'default', // Added branding prop
+      branding: 'dark',
     };
     const { container } = render(<Search {...props} />);
 
@@ -35,7 +35,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
-      branding: 'default',
+      branding: 'dark',
     };
 
     const { getByRole } = render(<Search {...props} />);
@@ -47,20 +47,86 @@ describe('<Search />', () => {
     expect(searchInput.getAttribute('autocomplete')).toEqual('off');
   });
 
-  it('should correctly pass the branding prop to the SearchForm', () => {
+  it('should contain text the user entered in the search textbox', async () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
-      branding: 'magoo', // Added branding prop for testing
+      branding: 'dark',
     };
+    const { getByRole, findByRole } = render(<Search {...props} />);
 
-    const { getByTestId } = render(<Search {...props} />);
-    const searchForm = getByTestId('search-form');
+    let searchInput = getByRole('textbox', { name: /search/i });
 
-    expect(searchForm).toHaveAttribute('branding', 'magoo');
+    expect(searchInput.value).toEqual('fish');
+
+    fireEvent.change(searchInput, { target: { value: 'hello' } });
+
+    searchInput = await findByRole('textbox', { name: /search/i });
+
+    expect(searchInput.value).toEqual('hello');
   });
 
-  // Additional tests remain unchanged, ensure to include the `branding` prop where necessary
+  it('should set the search term', async () => {
+    const props = {
+      searchTerm: '',
+      setSearchTerm: jest.fn(),
+      branding: 'light',
+    };
+    const { getByRole } = render(<Search {...props} />);
+
+    const searchInput = getByRole('textbox', { name: /search/i });
+
+    expect(searchInput.value).toEqual('');
+
+    userEvent.type(searchInput, 'hello');
+
+    waitFor(() => {
+      expect(searchInput.value).toEqual('hello');
+      expect(props.setSearchTerm).toHaveBeenCalledWith('hello');
+    });
+  });
+
+  it('should submit the search form', async () => {
+    const props = {
+      searchTerm: '',
+      setSearchTerm: jest.fn(),
+      onSubmitSearch: jest.fn(),
+      branding: 'minimal',
+    };
+    const { getByRole, findByRole } = render(<Search {...props} />);
+
+    let searchInput = getByRole('textbox', { name: /search/i });
+
+    expect(searchInput.value).toEqual('');
+
+    userEvent.type(searchInput, 'hello');
+
+    fireEvent.submit(getByRole('search'));
+
+    searchInput = await findByRole('textbox', { name: /search/i });
+
+    waitFor(() => {
+      expect(searchInput.value).toEqual('hello');
+      expect(props.onSubmitSearch).toHaveBeenCalledWith('hello');
+    });
+  });
+
+  it('should be listening for history state changes', async () => {
+    jest.spyOn(window, 'addEventListener');
+
+    const props = {
+      searchTerm: '',
+      setSearchTerm: jest.fn(),
+      branding: 'default',
+    };
+    render(<Search {...props} />);
+
+    expect(window.addEventListener).toHaveBeenNthCalledWith(
+      1,
+      'popstate',
+      expect.any(Function),
+    );
+  });
 
   it('should stop listening for history state changes when the component is destroyed', async () => {
     jest.spyOn(window, 'removeEventListener');
@@ -68,7 +134,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: '',
       setSearchTerm: jest.fn(),
-      branding: 'default', // Added branding prop
+      branding: 'classic',
     };
     const { unmount } = render(<Search {...props} />);
 
