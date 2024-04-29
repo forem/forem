@@ -18,6 +18,7 @@ en:
     reaction: Reaction
     report_abuse: Report abuse
     search: Search
+    algolia_search: Search powered by Algolia
     success_settings: Successfully updated settings.
     counted_organization:
       one: "%{count} organization"
