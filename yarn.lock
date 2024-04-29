@@ -5058,7 +5058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^18.17.5":
+"@types/node@npm:*":
   version: 18.17.18
   resolution: "@types/node@npm:18.17.18"
   checksum: 10c0/730c6cb4c963c1306afd5a05b37fc2a7e083df3b2c7d81ced5635add301d9ba32ece130876f6915ab14fbfa31bb8d043472c4937da35b39ed75498847a72cead
@@ -7368,7 +7368,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"buffer@npm:^5.6.0":
+"buffer@npm:^5.7.1":
   version: 5.7.1
   resolution: "buffer@npm:5.7.1"
   dependencies:
@@ -8759,19 +8759,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cypress@npm:^13.2.0":
-  version: 13.2.0
-  resolution: "cypress@npm:13.2.0"
+"cypress@npm:^13.7.2":
+  version: 13.7.2
+  resolution: "cypress@npm:13.7.2"
   dependencies:
     "@cypress/request": "npm:^3.0.0"
     "@cypress/xvfb": "npm:^1.2.4"
-    "@types/node": "npm:^18.17.5"
     "@types/sinonjs__fake-timers": "npm:8.1.1"
     "@types/sizzle": "npm:^2.3.2"
     arch: "npm:^2.2.0"
     blob-util: "npm:^2.0.2"
     bluebird: "npm:^3.7.2"
-    buffer: "npm:^5.6.0"
+    buffer: "npm:^5.7.1"
     cachedir: "npm:^2.3.0"
     chalk: "npm:^4.1.0"
     check-more-types: "npm:^2.24.0"
@@ -8789,7 +8788,7 @@ __metadata:
     figures: "npm:^3.2.0"
     fs-extra: "npm:^9.1.0"
     getos: "npm:^3.2.1"
-    is-ci: "npm:^3.0.0"
+    is-ci: "npm:^3.0.1"
     is-installed-globally: "npm:~0.4.0"
     lazy-ass: "npm:^1.6.0"
     listr2: "npm:^3.8.3"
@@ -8808,7 +8807,7 @@ __metadata:
     yauzl: "npm:^2.10.0"
   bin:
     cypress: bin/cypress
-  checksum: 10c0/37f3b7d31bed000f1ae867f4560634af6363cecff4a53916e37c1f0f021821522df0497dc4ed6641bbca83b4de8e54474a14aa8f502436b96b29cf25833edb8a
+  checksum: 10c0/8003d13fe0a551c119e6760d5895d457f6306cb36f0f2db55794bbc83ca19fb19d1e90b392babde71a305cbaa7ce440c5bd4c6c742ac148f72381d71e6093397
   languageName: node
   linkType: hard
 
@@ -9243,7 +9242,7 @@ __metadata:
     core-js: "npm:3"
     css-loader: "npm:^5.2.7"
     cssom: "npm:^0.5.0"
-    cypress: "npm:^13.2.0"
+    cypress: "npm:^13.7.2"
     cypress-failed-log: "npm:^2.10.0"
     cypress-file-upload: "npm:^5.0.8"
     cypress-multi-reporters: "npm:^1.6.4"
@@ -12885,7 +12884,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"is-ci@npm:^3.0.0":
+"is-ci@npm:^3.0.1":
   version: 3.0.1
   resolution: "is-ci@npm:3.0.1"
   dependencies:
