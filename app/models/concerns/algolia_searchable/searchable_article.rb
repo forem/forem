@@ -11,8 +11,7 @@ module AlgoliaSearchable
             username: user.username,
             profile_image: user.profile_image_90,
             id: user.id,
-            profile_image_90: user.profile_image_90}
-          }
+            profile_image_90: user.profile_image_90 }
         end
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,

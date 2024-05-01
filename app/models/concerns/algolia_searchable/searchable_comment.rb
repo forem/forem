@@ -16,8 +16,10 @@ module AlgoliaSearchable
         end
 
         attribute :user do
-          { name: user.name, username: user.username, profile_image: user.profile_image_90, profile_image_90: user.profile_image_90}
-        }
+          { name: user.name,
+            username: user.username,
+            profile_image: user.profile_image_90,
+            profile_image_90: user.profile_image_90 }
         end
 
         add_attribute(:timestamp) { created_at.to_i }
