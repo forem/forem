@@ -29,6 +29,8 @@
 experiments:
   digest_headers_04_22:
     started_at: 2024-04-22
+    ended_at: 2024-05-01
+    winner: base_with_emoji_and_only_first_name
     variants:
       - base
       - base_without_top_header
