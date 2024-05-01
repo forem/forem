@@ -22,6 +22,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
+      branding: 'dark',
     };
     const { container } = render(<Search {...props} />);
 
@@ -34,6 +35,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
+      branding: 'dark',
     };
 
     const { getByRole } = render(<Search {...props} />);
@@ -49,6 +51,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: 'fish',
       setSearchTerm: jest.fn(),
+      branding: 'dark',
     };
     const { getByRole, findByRole } = render(<Search {...props} />);
 
@@ -67,6 +70,7 @@ describe('<Search />', () => {
     const props = {
       searchTerm: '',
       setSearchTerm: jest.fn(),
+      branding: 'light',
     };
     const { getByRole } = render(<Search {...props} />);
 
@@ -87,6 +91,7 @@ describe('<Search />', () => {
       searchTerm: '',
       setSearchTerm: jest.fn(),
       onSubmitSearch: jest.fn(),
+      branding: 'minimal',
     };
     const { getByRole, findByRole } = render(<Search {...props} />);
 
@@ -107,13 +112,12 @@ describe('<Search />', () => {
   });
 
   it('should be listening for history state changes', async () => {
-    // This is an implementation detail, but I want to make sure that this
-    // listener is registered as it affects the UI.
     jest.spyOn(window, 'addEventListener');
 
     const props = {
       searchTerm: '',
       setSearchTerm: jest.fn(),
+      branding: 'default',
     };
     render(<Search {...props} />);
 
@@ -125,13 +129,12 @@ describe('<Search />', () => {
   });
 
   it('should stop listening for history state changes when the component is destroyed', async () => {
-    // This is an implementation detail, but I want to make sure that this
-    // listener is unregistered as it affects the UI.
     jest.spyOn(window, 'removeEventListener');
 
     const props = {
       searchTerm: '',
       setSearchTerm: jest.fn(),
+      branding: 'classic',
     };
     const { unmount } = render(<Search {...props} />);
 

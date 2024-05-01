@@ -61,6 +61,7 @@
         data-cookie-banner-platform-context="<%= j(Settings::General.coolie_banner_platform_context) %>"
         data-algolia-id="<%= j(Settings::General.algolia_application_id) %>"
         data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) %>"
+        data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
         data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
         <%= render "layouts/styles", qualifier: "secondary" %>
