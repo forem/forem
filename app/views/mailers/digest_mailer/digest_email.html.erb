@@ -10,14 +10,14 @@
         </tr>
         <tr>
           <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-            👋 Hey <%= @user.name.split(" ").first %>, let's get you <span style="display:inline-block">caught up!</span>
+            👋 Hey <%= @user.name.split.first %>, let's get you <span style="display:inline-block">caught up!</span>
           </td>
         </tr>
 
         <% if @billboards&.first&.present? %>
           <tr>
             <td bgcolor="#FFFFFF" style="padding: 16px 0 4px;">
-              <hr style="border-top: 3px solid #0a0a0a;"/>
+              <hr style="border-top: 3px solid #0a0a0a;" />
             </td>
           </tr>
           <tr>
@@ -27,18 +27,74 @@
           </tr>
           <tr>
             <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
-              <hr style="border-top: 3px solid #0a0a0a;"/>
+              <hr style="border-top: 3px solid #0a0a0a;" />
             </td>
           </tr>
         <% end %>
         <!-- Articles List -->
         <% @articles.each_with_index do |article, i| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: <%= i == 0 ? "27" : "17" %>px 2px 0px; text-align: left;">
-              <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-              <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                <%= truncate(article.description, length: 180) %>
-              </p>
+            <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "27" : "17" %>px 2px 0px; text-align: left;">
+              <% case @article_design_variant %>
+              <% when "base" %>
+                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                  <%= truncate(article.description, length: 180) %>
+                </p>
+              <% when "base_with_user" %>
+                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                <% if article.cached_user.present? %>
+                  <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
+                    <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
+                    <%= article.cached_user.name %>
+                  </p>
+                <% end %>
+                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                  <%= truncate(article.description, length: 180) %>
+                </p>
+              <% when "base_with_tags" %>
+                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                <p style="margin-top: 6px;margin-bottom: 6px; font-size: 13px; color: #6b6b6b;">
+                  <% article.decorate.cached_tag_list_array.each do |tag| %>
+                    <span style="display:inline-block;background:#e6e6e6;border: 1px solid #dedede;border-radius:3px;padding:1px 4px;margin-right:3px;">#<%= tag %></span>
+                  <% end %>
+                </p>
+                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                  <%= truncate(article.description, length: 180) %>
+                </p>
+              <% when "border" %>
+                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
+                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                    <%= truncate(article.description, length: 180) %>
+                  </p>
+                </div>
+              <% when "border_with_user" %>
+                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
+                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                  <% if article.cached_user.present? %>
+                    <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
+                      <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
+                      <%= article.cached_user.name %>
+                    </p>
+                  <% end %>
+                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                    <%= truncate(article.description, length: 180) %>
+                  </p>
+                </div>
+              <% when "border_with_tags" %>
+                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
+                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
+                  <p style="margin-top: 6px;margin-bottom: 6px; font-size: 13px; color: #6b6b6b;">
+                    <% article.decorate.cached_tag_list_array.each do |tag| %>
+                      <span style="display:inline-block;background:#e6e6e6;border: 1px solid #dedede;border-radius:3px;padding:1px 4px;margin-right:3px;">#<%= tag %></span>
+                    <% end %>
+                  </p>
+                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
+                    <%= truncate(article.description, length: 180) %>
+                  </p>
+                </div>
+              <% end %>
             </td>
           </tr>
         <% end %>
@@ -53,7 +109,7 @@
         <% end %>
         <tr>
           <td bgcolor="#FFFFFF" style="padding: 20px 0;">
-            <hr style="border-top: 3px solid #0a0a0a;"/>
+            <hr style="border-top: 3px solid #0a0a0a;" />
           </td>
         </tr>
 
@@ -65,7 +121,7 @@
           </tr>
           <tr>
             <td bgcolor="#FFFFFF" style="padding: 12px 0 8px;">
-              <hr style="border-top: 3px solid #0a0a0a;"/>
+              <hr style="border-top: 3px solid #0a0a0a;" />
             </td>
           </tr>
 
@@ -87,7 +143,7 @@
 
         <tr>
           <td bgcolor="#FFFFFF" style="padding: 10px 0;">
-            <hr style="border-top: 3px solid #0a0a0a;"/>
+            <hr style="border-top: 3px solid #0a0a0a;" />
           </td>
         </tr>
       </table>
