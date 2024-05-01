@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision"
-    text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd"
-    clip-rule="evenodd" viewBox="0 0 512 509.64">
-    <rect width="24" height="24" rx="115.61" ry="115.61" />
-    <path fill="#fff" fill-rule="nonzero"
-        d="M323.74 148.35h36.12l-78.91 90.2 92.83 122.73h-72.69l-56.93-74.43-65.15 74.43h-36.14l84.4-96.47-89.05-116.46h74.53l51.46 68.04 59.53-68.04zm-12.68 191.31h20.02l-129.2-170.82H180.4l130.66 170.82z" />
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 12 0 C 18.628906 0 24 5.371094 24 12 C 24 18.628906 18.628906 24 12 24 C 5.371094 24 0 18.628906 0 12 C 0 5.371094 5.371094 0 12 0 Z M 12 0 "/>
+<path style=" stroke:none;fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 14.9375 7.386719 L 16.5 7.386719 L 13.082031 11.292969 L 17.105469 16.613281 L 13.953125 16.613281 L 11.488281 13.386719 L 8.664062 16.613281 L 7.097656 16.613281 L 10.753906 12.433594 L 6.894531 7.386719 L 10.125 7.386719 L 12.355469 10.335938 Z M 14.386719 15.675781 L 15.253906 15.675781 L 9.652344 8.273438 L 8.722656 8.273438 Z M 14.386719 15.675781 "/>
+</g>
 </svg>
