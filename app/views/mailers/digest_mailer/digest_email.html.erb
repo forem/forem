@@ -43,10 +43,12 @@
                 </p>
               <% when "base_with_user" %>
                 <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
-                  <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
-                  <%= article.cached_user.name %>
-                </p>
+                <% if article.cached_user.present? %>
+                  <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
+                    <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
+                    <%= article.cached_user.name %>
+                  </p>
+                <% end %>
                 <p style="margin-top: 5px; font-size: 14px; color: #808080;">
                   <%= truncate(article.description, length: 180) %>
                 </p>
@@ -70,10 +72,12 @@
               <% when "border_with_user" %>
                 <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
                   <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                  <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
-                    <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
-                    <%= article.cached_user.name %>
-                  </p>
+                  <% if article.cached_user.present? %>
+                    <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
+                      <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
+                      <%= article.cached_user.name %>
+                    </p>
+                  <% end %>
                   <p style="margin-top: 5px; font-size: 14px; color: #808080;">
                     <%= truncate(article.description, length: 180) %>
                   </p>
