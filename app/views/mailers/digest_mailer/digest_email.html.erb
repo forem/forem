@@ -3,76 +3,16 @@
     <td align="center">
       <table style="width:100%;" cellpadding="0" cellspacing="0">
         <!-- Header -->
-        <% case @headers_variant %>
-        <% when "base" %>
-          <tr>
-            <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-              <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
-            </td>
-          </tr>
-          <tr>
-            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              Hey <%= @user.name %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_without_top_header" %>
-          <tr>
-            <td bgcolor="#F8F8F8" style="margin-top: 6px; display: block; padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              Hey <%= @user.name %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_only_first_name" %>
-          <tr>
-            <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-              <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
-            </td>
-          </tr>
-          <tr>
-            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              Hey <%= @user.name.split(" ").first %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_only_first_name_and_no_top_header" %>
-          <tr>
-            <td bgcolor="#F8F8F8" style="margin-top: 6px; display: block; padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              Hey <%= @user.name.split(" ").first %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_emoji" %>
-          <tr>
-            <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-              <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
-            </td>
-          </tr>
-          <tr>
-            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              👋 Hey <%= @user.name %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_emoji_and_no_top_header" %>
-          <tr>
-            <td bgcolor="#F8F8F8" style="margin-top: 6px; display: block; padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              👋 Hey <%= @user.name %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_emoji_and_only_first_name" %>
-          <tr>
-            <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-              <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
-            </td>
-          </tr>
-          <tr>
-            <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              👋 Hey <%= @user.name.split(" ").first %>, let's get you caught up!
-            </td>
-          </tr>
-        <% when "base_with_emoji_and_only_first_name_and_no_top_header" %>
-          <tr>
-            <td bgcolor="#F8F8F8" style="margin-top: 6px; display: block; padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
-              👋 Hey <%= @user.name.split(" ").first %>, let's get you caught up!
-            </td>
-          </tr>
-        <% end %>
+        <tr>
+          <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+            <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= community_name %> Digest </h1>
+          </td>
+        </tr>
+        <tr>
+          <td bgcolor="#F8F8F8" style="padding: 14px; text-align: center; color: #3a3c3d; font-size: 16px;border-radius: 12px; border: 3px solid <%= Settings::UserExperience.primary_brand_color_hex %>; font-weight: bold;">
+            👋 Hey <%= @user.name.split(" ").first %>, let's get you <span style="display:inline-block">caught up!</span>
+          </td>
+        </tr>
 
         <% if @billboards&.first&.present? %>
           <tr>
