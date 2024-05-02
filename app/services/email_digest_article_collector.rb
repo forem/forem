@@ -22,7 +22,7 @@ class EmailDigestArticleCollector
                    experience_level_rating_max = experience_level_rating + 4
 
                    @user.followed_articles
-                     .select(:title, :description, :path, :cached_user)
+                     .select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
@@ -33,7 +33,7 @@ class EmailDigestArticleCollector
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
-                   Article.select(:title, :description, :path, :cached_user)
+                   Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
                      .featured
