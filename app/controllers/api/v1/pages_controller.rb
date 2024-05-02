@@ -15,14 +15,20 @@ module Api
       end
 
       def create
-        @page = Page.new permitted_params
+        @page = Page.new permitted_params.except(:social_image)
+        if permitted_params[:social_image].present?
+          @page.remote_social_image_url = permitted_params[:social_image][:url]
+        end
         result = @page.save
         render json: @page, status: (result ? :ok : :unprocessable_entity)
       end
 
       def update
         @page = Page.find(params[:id])
-        result = @page.update permitted_params
+        if permitted_params[:social_image].present?
+          @page.remote_social_image_url = permitted_params[:social_image][:url]
+        end
+        result = @page.update permitted_params.except(:social_image)
         render json: @page, status: (result ? :ok : :unprocessable_entity)
       end
 
@@ -40,7 +46,7 @@ module Api
 
       def permitted_params
         params.permit(*%i[title slug description is_top_level_path
-                          body_json body_markdown body_html body_css social_image template])
+                          body_json body_markdown body_html body_css social_image template], social_image: [:url])
       end
     end
   end
