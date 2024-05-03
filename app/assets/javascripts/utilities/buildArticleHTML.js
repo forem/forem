@@ -86,7 +86,7 @@ function buildArticleHTML(article, currentUserId = null) {
     return parsedDocument.body.innerHTML;
   }
 
-  if (article && article.class_name === 'User') {
+  if (article && article.class_name === 'User' && article.user === undefined) { // Represents different return values for how users are fetched.
     const html = `
       <article class="crayons-story">
         <div class="crayons-story__body flex items-start gap-2">
