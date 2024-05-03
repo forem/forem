@@ -243,7 +243,6 @@ function algoliaSearch(searchParams) {
         story.class_name = paramsObj.class_name;
         story.id = story.objectID;
         // Add profile_image_90 to story object from profile image if profile_image_90 is not present
-        console.log(story)
         resultDivs.push(buildArticleHTML(story, currentUserId));
       });
       document.getElementById('substories').innerHTML = resultDivs.join('');
