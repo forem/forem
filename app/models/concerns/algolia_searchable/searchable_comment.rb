@@ -6,7 +6,7 @@ module AlgoliaSearchable
       include AlgoliaSearch
 
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_comment?) do
-        attribute :commentable_id, :commentable_type, :path, :parent_id
+        attribute :commentable_id, :commentable_type, :path, :parent_id, :title
         attribute :body do
           title
         end
@@ -16,8 +16,15 @@ module AlgoliaSearchable
         end
 
         attribute :user do
-          { name: user.name, username: user.username, profile_image: user.profile_image_90 }
+          { name: user.name,
+            username: user.username,
+            profile_image: user.profile_image_90,
+            profile_image_90: user.profile_image_90 }
         end
+
+        add_attribute(:timestamp) { created_at.to_i }
+        add_replica("Comment_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
+        add_replica("Comment_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
       end
     end
 

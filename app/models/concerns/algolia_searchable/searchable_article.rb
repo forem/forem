@@ -7,18 +7,21 @@ module AlgoliaSearchable
 
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, if: :indexable) do
         attribute :user do
-          { name: user.name, username: user.username, profile_image: user.profile_image_90 }
+          { name: user.name,
+            username: user.username,
+            profile_image: user.profile_image_90,
+            id: user.id,
+            profile_image_90: user.profile_image_90 }
         end
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
-                  :positive_reactions_count, :path, :main_image
+                  :positive_reactions_count, :path, :main_image, :user_id
 
         add_attribute(:published_at) { published_at.to_i }
+        add_attribute(:readable_publish_date) { readable_publish_date }
         add_attribute(:timestamp) { published_at.to_i }
-
         add_replica("Article_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Article_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
-
       end
     end
 

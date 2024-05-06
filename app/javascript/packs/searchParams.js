@@ -181,7 +181,7 @@ function search(query, filters, sortBy, sortDirection) {
   });
 
   // Run Algolia code only if the ID is live.
-  if (document.body.dataset.algoliaId?.length > 0) {
+  if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS')) {
     algoliaSearch(searchParams.toString());
     return;
   }
@@ -243,9 +243,6 @@ function algoliaSearch(searchParams) {
         story.class_name = paramsObj.class_name;
         story.id = story.objectID;
         // Add profile_image_90 to story object from profile image if profile_image_90 is not present
-        story.profile_image_90 = story.profile_image;
-        story.profile_image = { url: story.profile_image }
-        console.log(story) /* eslint-disable-line */
         resultDivs.push(buildArticleHTML(story, currentUserId));
       });
       document.getElementById('substories').innerHTML = resultDivs.join('');

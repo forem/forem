@@ -86,6 +86,45 @@ function buildArticleHTML(article, currentUserId = null) {
     return parsedDocument.body.innerHTML;
   }
 
+  if (article && article.class_name === 'User' && article.user === undefined) { // Represents different return values for how users are fetched.
+    const html = `
+      <article class="crayons-story">
+        <div class="crayons-story__body flex items-start gap-2">
+          <a href="${article.username}" class="crayons-podcast-episode__cover">
+            <img src="${article.profile_image.url}" alt="" loading="lazy" />
+          </a>
+          <div>
+            <h3 class="crayons-subtitle-2 lh-tight py-1">
+              <a href="${article.username}" class="c-link"> ${article.name} </a>
+            </h3>
+            <p class="crayons-story__slug-segment">@${article.username}</p>
+            ${
+              article.summary
+                ? `<div class="truncate-at-3 top-margin-4">${article.summary}</div>`
+                : ''
+            }
+          </div>
+          <div class="print-hidden" style="margin-left: auto">
+            <button class="crayons-btn follow-action-button whitespace-nowrap follow-user w-100" data-info=''>Follow</button>
+          </div>
+        </div>
+      </article>
+    `;
+
+    const parser = new DOMParser();
+    const parsedDocument = parser.parseFromString(html, 'text/html');
+    parsedDocument.querySelector('img').alt = article.name;
+    parsedDocument.querySelector('button').dataset.info = JSON.stringify({
+      id: article.id,
+      name: article.name,
+      className: 'User',
+      style: 'full',
+    });
+
+    return parsedDocument.body.innerHTML;
+  }
+
+
   if (article) {
     var container = document.getElementById('index-container');
 

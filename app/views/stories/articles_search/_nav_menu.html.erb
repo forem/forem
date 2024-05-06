@@ -22,4 +22,7 @@
     <%= t("views.search.nav.my_posts") %>
   </a></li>
   <% end %>
+  <% if Settings::General.display_algolia_branding %>
+    <li class="ml-2 mt-3 fw-bold"><a href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral" target="_blank">Powered by Algolia</a></li>
+  <% end %>
 </ul>
