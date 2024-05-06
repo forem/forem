@@ -13,6 +13,10 @@ module AlgoliaSearchable
         attribute :podcast_image do
           profile_image_url
         end
+
+        add_attribute(:timestamp) { published_at.to_i }
+        add_replica("PodcastEpisode_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
+        add_replica("PodcastEpisode_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
       end
     end
 
