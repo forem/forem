@@ -721,7 +721,7 @@ GEM
     rexml (3.2.6)
     rice (4.1.0)
     rolify (6.0.1)
-    rouge (4.2.0)
+    rouge (4.2.1)
     rpush (7.0.1)
       activesupport (>= 5.2)
       jwt (>= 1.5.6)
