@@ -216,17 +216,12 @@ function search(query, filters, sortBy, sortDirection) {
 }
 
 function algoliaSearch(searchParams) {
-  console.log('Algolia is a work in progress. You may want to turn it off if you see this message.') /* eslint-disable-line */
-  // console.log(searchParams) /* eslint-disable-line */
-  // const queryParams = getQueryParams(searchParams);
   const paramsObj = getQueryParams(searchParams);
   const env = document.querySelector('meta[name="environment"]').content;
   const {algoliaId, algoliaSearchKey} = document.body.dataset;
-  console.log(paramsObj) /* eslint-disable-line */
   const client = algoliasearch(algoliaId, algoliaSearchKey);
   const indexName = paramsObj.sort_by ? `${paramsObj.class_name || 'Article'}_timestamp_${paramsObj.sort_direction}_${env}` : `${paramsObj.class_name || 'Article'}_${env}`;
   const index = client.initIndex(indexName); // Hardcoded to user for now
-  console.log(index) /* eslint-disable-line */
   // This is where we will add the functionality to get search results directly from index with client:
   index
     .search(paramsObj.search_fields, {
@@ -234,8 +229,6 @@ function algoliaSearch(searchParams) {
       page: paramsObj.page,
     })
     .then(({ hits }) => {
-      console.log('Algolia search results:') /* eslint-disable-line */
-      console.log(hits); /* eslint-disable-line */
       const resultDivs = [];
       const currentUser = userData();
       const currentUserId = currentUser && currentUser.id;
