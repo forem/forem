@@ -1,10 +1,10 @@
 <div class="m:gap-4 hidden m:grid js-user-info">
   <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}-#{@user.organization_info_updated_at}", expires_in: 2.days do %>
-    <% if @user.badge_achievements_count.positive? && @user.badge_achievements_count <= 4 %>
+    <% if @user.badge_achievements_count.positive? && @user.badge_achievements_count <= 6 %>
       <%= render partial: "users/badges_area", locals: {
             grouped_badges: @grouped_badges,
             count: @user.badge_achievements_count,
-            limit: 4,
+            limit: 6,
             show_heading: true,
             grid_class: "grid-cols-3 s:grid-cols-4 m:grid-cols-2"
           } %>

@@ -123,7 +123,7 @@
 
         <%= render "users/metadata" %>
 
-        <% if @user.badge_achievements_count >= 5 %>
+        <% if @user.badge_achievements_count >= 7 %>
           <%= render partial: "users/badges_area", locals: {
                 grouped_badges: @grouped_badges,
                 count: @user.badge_achievements_count,
