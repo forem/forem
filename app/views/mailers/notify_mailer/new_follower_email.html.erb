@@ -1,14 +1,47 @@
-<% num_followers_past_days = Follow.followable_user(@user.id).where("created_at > ?", 24.hours.ago).size %>
+<%= render 'mailers/notify_mailer/email_header' do %>
+  <table style="width:100%;" cellpadding="0" cellspacing="0">
+    <!-- Heading -->
+    <tr>
+      <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+        <h1 style="margin: 0; font-size: 24px; color: #333;">
+          <%= @follower.name %></a> just followed you on <%= community_name %>
+        </h1>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <img style="border-radius:100%;" width="150px"
+          src="<%= optimized_image_url(URL.local_image(@follower.profile_image), width: 150)%>"
+          alt="<%= @follower.name %> profile image">
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 24px 8px; text-align: center;">
+        <a style="background:<%= Settings::UserExperience.primary_brand_color_hex %>;color:white;padding:8px 30px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:4px;font-size:20px"
+          href='<%= URL.user(@follower) %>'>
+          View their profile
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 24px 8px">
+        <table style="width:100%;" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="width: 30px"></td>
+            <td bgcolor="#F8F8F8"
+              style="padding: 8px; text-align: center; color: #3a3c3d; font-size: 16px; border-radius: 8px;">
+              <h3 style="font-weight:600">You now have <%= pluralize(@user.good_standing_followers_count, "total follower"
+                  ) %>.
+                  <p>
+                    When someone follows you on <%= community_name %>, your posts will be prioritized in their feed and
+                      notifications. The perks of popularity I suppose.
+                  </p>
 
-<% if num_followers_past_days.positive? %>
-  <h3 style="font-weight:600;font-size:0.95em;color:#3ac1b4">You have <%= num_followers_past_days %> new <%= community_name %> followers in the past day!</h3>
+            </td>
+            <td style="width: 30px"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
 <% end %>
-
-<h2 style="font-size:32px;">
-  <a href="<%= user_url(@follower) %>"><%= @follower.name %></a> just followed you 🤗</h2>
-<h3 style="font-weight:600">You now have <%= pluralize(@user.good_standing_followers_count, "total follower") %>. See all of your recent followers
-  <a href="<%= app_url("/dashboard/user_followers") %>">right here</a>.</h3>
-<p>
-  When someone follows you on
-  <a href="<%= app_url %>"><%= community_name %></a>, your posts will be prioritized in their feed and notifications. The perks of popularity I suppose.
-</p>

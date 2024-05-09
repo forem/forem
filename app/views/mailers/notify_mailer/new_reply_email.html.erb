@@ -1,65 +1,37 @@
-<table width="100%" cellpadding="0" cellspacing="0">
-  <tr>
-    <td align="center">
-      <table style="width:100%;" cellpadding="0" cellspacing="0">
-        <!-- Header -->
-        <tr>
-          <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width: 50%">
-            <a href="<%= URL.url("/") %>">
-              <% if Settings::General.resized_logo.present? %>
-                <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
-              <% else %>
-                <span>
-                  <%= community_name %>
-                </span>
-              <% end %>
-            </a>
-          </td>
-          <td align="right" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width:50%;">
-          <div width="50px" height="50px" style="width: 50px; height: 50px;">
-            <a href="<%= URL.user(@user) %>">
-              <img width="50px" height="50px" style="width: 50px; height: 50px;" src="<%= URL.local_image(@user.profile_image_url_for(length: 50)) %>">
-            </a>
-            </div>
-          </td>
-        </tr>
-      </table>
+<%= render 'mailers/notify_mailer/email_header' do %>
+  <table style="width:100%;" cellpadding="0" cellspacing="0">
+    <!-- Heading -->
+    <tr>
+      <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
+        <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= @comment.user.name %> replied to you on <%= community_name %> </h1>
+      </td>
+    </tr>
 
-      <table style="width:100%;" cellpadding="0" cellspacing="0">
-        <!-- Heading -->
-        <tr>
-          <td align="center" bgcolor="#FFFFFF" style="padding: 25px 2px 35px;">
-            <h1 style="margin: 0; font-size: 24px; color: #333;"> <%= @comment.user.name %> replied to you on <%= community_name %> </h1>
-          </td>
-        </tr>
+    <!-- Content -->
+    <tr>
+      <td>
+        <table style="width:100%;" cellpadding="0" cellspacing="0">
+          <tr>
+            <td style="width: 30px"></td>
+            <td bgcolor="#F8F8F8" style="padding: 8px; text-align: left; color: #3a3c3d; font-size: 16px; border-radius: 8px;">
+              <h2 style="font-size:18px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable&.title || "Content No Longer Available" %></em></h2>
 
-        <!-- Content -->
-        <tr>
-          <td>
-            <table style="width:100%;" cellpadding="0" cellspacing="0">
-              <tr>
-                <td style="width: 30px"></td>
-                <td bgcolor="#F8F8F8" style="padding: 8px; text-align: left; color: #3a3c3d; font-size: 16px; border-radius: 8px;">
-                  <h2 style="font-size:18px;color:rgb(107, 107, 107)">re: <em><%= @comment.commentable&.title || "Content No Longer Available" %></em></h2>
+              <%= @truncated_comment %>
 
-                  <%= @truncated_comment %>
+            </td>
+            <td style="width: 30px"></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-                </td>
-                <td style="width: 30px"></td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-
-        <!-- CTA -->
-        <tr>
-          <td style="padding: 16px 8px; text-align: center;">
-            <a style="background:<%= Settings::UserExperience.primary_brand_color_hex %>;color:white;padding:8px 30px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:4px;font-size:20px" href='<%= comment_url(@comment) %>'>
-            View reply
-            </a> 
-          </td>
-        </tr>
-      </table>
-    </td>
-  </tr>
-</table>
+    <!-- CTA -->
+    <tr>
+      <td style="padding: 16px 8px; text-align: center;">
+        <a style="background:<%= Settings::UserExperience.primary_brand_color_hex %>;color:white;padding:8px 30px;border-radius:6px;text-decoration:none;display:inline-block;margin-top:4px;font-size:20px" href='<%= comment_url(@comment) %>'>
+        View reply
+        </a> 
+      </td>
+    </tr>
+  </table>
+<% end %>

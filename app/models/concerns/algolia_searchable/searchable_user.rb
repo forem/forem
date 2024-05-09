@@ -5,9 +5,12 @@ module AlgoliaSearchable
     included do
       algoliasearch(**DEFAULT_ALGOLIA_SETTINGS, unless: :bad_actor?) do
         attribute :name, :username
-        attribute :profile_image do
-          profile_image_90
-        end
+
+        add_attribute(:profile_image) { { url: profile_image_90 } }
+        # add_attribute(:profile_image_90) { profile_image_90 }
+        add_attribute(:timestamp) { registered_at.to_i }
+        add_replica("User_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
+        add_replica("User_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
       end
     end
 

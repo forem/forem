@@ -181,7 +181,7 @@ function search(query, filters, sortBy, sortDirection) {
   });
 
   // Run Algolia code only if the ID is live.
-  if (document.body.dataset.algoliaId?.length > 0) {
+  if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS')) {
     algoliaSearch(searchParams.toString());
     return;
   }
@@ -216,22 +216,42 @@ function search(query, filters, sortBy, sortDirection) {
 }
 
 function algoliaSearch(searchParams) {
-  console.log('Algolia is a work in progress. You may want to turn it off if you see this message.') /* eslint-disable-line */
-  console.log(searchParams) /* eslint-disable-line */
+  const paramsObj = getQueryParams(searchParams);
   const env = document.querySelector('meta[name="environment"]').content;
   const {algoliaId, algoliaSearchKey} = document.body.dataset;
   const client = algoliasearch(algoliaId, algoliaSearchKey);
-  const index = client.initIndex(`User_${env}`); // Hardcoded to user for now
-  console.log(index) /* eslint-disable-line */
+  const indexName = paramsObj.sort_by ? `${paramsObj.class_name || 'Article'}_timestamp_${paramsObj.sort_direction}_${env}` : `${paramsObj.class_name || 'Article'}_${env}`;
+  const index = client.initIndex(indexName); // Hardcoded to user for now
   // This is where we will add the functionality to get search results directly from index with client:
-  // index
-  // .search('test')
-  // .then(({ hits }) => {
-  //   console.log(hits);
-  // })
-  // .catch(err => {
-  //   console.log(err);
-  // });
+  index
+    .search(paramsObj.search_fields, {
+      hitsPerPage: paramsObj.per_page,
+      page: paramsObj.page,
+    })
+    .then(({ hits }) => {
+      const resultDivs = [];
+      const currentUser = userData();
+      const currentUserId = currentUser && currentUser.id;
+      hits.forEach((story) => {
+        story.class_name = paramsObj.class_name;
+        story.id = story.objectID;
+        // Add profile_image_90 to story object from profile image if profile_image_90 is not present
+        resultDivs.push(buildArticleHTML(story, currentUserId));
+      });
+      document.getElementById('substories').innerHTML = resultDivs.join('');
+      initializeReadingListIcons();
+      document
+        .getElementById('substories')
+        .classList.add('search-results-loaded');
+      if (hits.length === 0) {
+        document.getElementById('substories').innerHTML =
+          '<div class="p-9 align-center crayons-card">No results match that query</div>';
+      }
+    })
+  .catch(err => {
+    console.log('Algolia search error:') /* eslint-disable-line */
+    console.log(err); /* eslint-disable-line */
+  });
 }
 
 const waitingOnSearch = setInterval(() => {

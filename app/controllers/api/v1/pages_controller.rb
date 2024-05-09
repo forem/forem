@@ -39,8 +39,11 @@ module Api
       end
 
       def permitted_params
+        if params[:social_image].present? && params[:social_image][:url].present?
+          params[:remote_social_image_url] = params[:social_image][:url]
+        end
         params.permit(*%i[title slug description is_top_level_path
-                          body_json body_markdown body_html body_css social_image template])
+                          body_json body_markdown body_html body_css remote_social_image_url template])
       end
     end
   end
