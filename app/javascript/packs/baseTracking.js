@@ -165,7 +165,6 @@ function trackCustomImpressions() {
         return;
       }
       const dataBody = {
-        //article_id: ArticleElement.dataset.articleId,
         referrer: document.referrer,
         user_agent: navigator.userAgent,
       };
