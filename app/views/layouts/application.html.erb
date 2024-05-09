@@ -59,8 +59,8 @@
         data-ga-tracking="<%= j(Settings::General.ga_tracking_id) %>"
         data-cookie-banner-user-context="<%= j(Settings::General.cookie_banner_user_context) %>"
         data-cookie-banner-platform-context="<%= j(Settings::General.coolie_banner_platform_context) %>"
-        data-algolia-id="<%= j(Settings::General.algolia_application_id) %>"
-        data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) %>"
+        data-algolia-id="<%= j(Settings::General.algolia_application_id) if feature_flag_enabled?(:algolia_frontend) %>"
+        data-algolia-search-key="<%= j(Settings::General.algolia_search_only_api_key) if feature_flag_enabled?(:algolia_frontend) %>"
         data-algolia-display="<%= j(Settings::General.display_algolia_branding) %>"
         data-ga4-tracking-id="<%= j(Settings::General.ga_analytics_4_id) %>">
         <%# Repeat of stylesheets in <head> to fix rendering glitch: https://github.com/forem/forem/issues/12377 %>
