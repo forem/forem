@@ -1014,7 +1014,7 @@ end
 ##############################################################################
 
 seeder.create_if_none(Badge) do
-  7.times do |t|
+  13.times do |t|
     Badge.create!(
       title: "#{Faker::Lorem.word} #{rand(100)} #{t}",
       description: "#{Faker::Lorem.sentence} #{rand(100)}",

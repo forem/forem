@@ -1,19 +1,22 @@
 <div class="crayons-card crayons-card--secondary">
-  <header class="crayons-card__header">
-    <h3 class="crayons-subtitle-3"><%= t("views.badges.heading") %></h3>
-  </header>
+  <% if defined?(show_heading) ? show_heading : true %>
+    <header class="crayons-card__header">
+      <h3 class="crayons-subtitle-3"><%= t("views.badges.heading") %></h3>
+    </header>
+  <% end %>
 
   <div class="crayons-card__body">
-    <div class="grid gap-4 grid-cols-3 s:grid-cols-4 m:grid-cols-2 align-center items-center js-profile-badges">
-      <% achievements.group_by(&:badge_id).each_with_index do |(badge_id, badge_achievements), i| %>
+    <% grid_class ||= "grid-cols-3 s:grid-cols-4 m:grid-cols-2" %>
+    <div class="grid gap-4 <%= grid_class %> align-center items-center js-profile-badges">
+      <% grouped_badges.each_with_index do |(badge_id, badge_achievements), i| %>
       <% achievement = badge_achievements.first %>
         <div role="button" onclick="window.Forem.showModal({size: 'medium', showHeader: false, contentSelector: '#badge-<%= achievement.badge_id %>', overlay: true})"
            title="<%= achievement.badge_title %>"
            class="js-profile-badge <% if i >= limit %>hidden<% end %> relative">
           <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
                alt="<%= achievement.badge_title %>"
-               class="mx-auto max-w-75 h-auto align-middle"
-               style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1;"
+               class="mx-auto w-75 h-auto align-middle"
+               style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1; max-width: 80px;"
                loading="lazy" />
           <% if badge_achievements.length > 1 %><div class="badge-indicator" title="<%= t("views.badges.indicator", user: @user.name, number: badge_achievements.length) %>"><%= badge_achievements.length %></div><% end %>
         </div>
@@ -24,9 +27,9 @@
       <% end %>
     </div>
 
-    <% if limit > 1 && count > limit %>
+    <% if limit > 1 && grouped_badges.size > limit %>
       <button type="button"
-              class="crayons-btn crayons-btn--ghost-brand crayons-btn--s w-100 js-profile-badges-trigger">
+              class="crayons-btn crayons-btn--ghost-brand crayons-btn--s w-100 mt-3 js-profile-badges-trigger">
         <%= t("views.badges.all", count: count) %>
       </button>
     <% end %>
