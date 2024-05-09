@@ -24,6 +24,7 @@ class PageViewsController < ApplicationMetalController
 
     Articles::UpdatePageViewsWorker.perform_at(
       2.minutes.from_now,
+      page_view_create_params,
     )
 
     head :ok
