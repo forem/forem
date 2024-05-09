@@ -915,7 +915,7 @@ GEM
       activerecord (>= 5.2)
     terminal-table (3.0.2)
       unicode-display_width (>= 1.1.1, < 3)
-    terser (1.2.2)
+    terser (1.2.0)
       execjs (>= 0.3.0, < 3)
     test-prof (1.3.3)
     thor (1.3.1)
