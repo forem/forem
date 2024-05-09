@@ -1,0 +1,31 @@
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr>
+    <td align="center">
+      <table style="width:100%;" cellpadding="0" cellspacing="0">
+        <!-- Header -->
+        <tr>
+          <td align="left" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width: 50%">
+            <a href="<%= URL.url("/") %>">
+              <% if Settings::General.resized_logo.present? %>
+                <img width="50px" src="<%= optimized_image_url(URL.local_image(Settings::General.resized_logo), width: 50, fetch_format: "png")%>" alt="<%= community_name %>">
+              <% else %>
+                <span>
+                  <%= community_name %>
+                </span>
+              <% end %>
+            </a>
+          </td>
+          <td align="right" bgcolor="#FFFFFF" style="padding: 25px 2px 35px; width:50%;">
+          <div width="50px" height="50px" style="width: 50px; height: 50px;">
+            <a href="<%= URL.user(@user) %>">
+              <img width="50px" height="50px" style="width: 50px; height: 50px; border-radius: 100%;" src="<%= URL.local_image(@user.profile_image_url_for(length: 50)) %>">
+            </a>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+    <%= yield %>
+    </td>
+  </tr>
+</table>

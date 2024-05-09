@@ -4,6 +4,7 @@ class Comment < ApplicationRecord
 
   include PgSearch::Model
   include Reactable
+  include AlgoliaSearchable
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000)
 

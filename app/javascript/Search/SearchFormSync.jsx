@@ -67,9 +67,11 @@ export function SearchFormSync() {
     };
   });
 
+  const branding = document.body.dataset.algoliaDisplay === 'true' ? 'algolia' : 'default';
+
   return (
     <Fragment>
-      <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} branding={branding} />
       {mobileSearchContainer &&
         createPortal(
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />,

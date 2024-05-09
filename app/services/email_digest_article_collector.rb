@@ -22,7 +22,7 @@ class EmailDigestArticleCollector
                    experience_level_rating_max = experience_level_rating + 4
 
                    @user.followed_articles
-                     .select(:title, :description, :path)
+                     .select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
@@ -33,7 +33,7 @@ class EmailDigestArticleCollector
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
-                   Article.select(:title, :description, :path)
+                   Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
                      .featured
@@ -54,7 +54,7 @@ class EmailDigestArticleCollector
 
     email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
     return false if email_sent_within_lookback_period && !recent_tracked_click?
-  
+
     true
   end
 

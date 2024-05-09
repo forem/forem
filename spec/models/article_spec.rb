@@ -1672,4 +1672,13 @@ RSpec.describe Article do
       expect(article.skip_indexing_reason).to eq("unknown")
     end
   end
+
+  context "when indexing with Algolia", :algolia do
+    it "indexes the article" do
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      create(:article)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Article", kind_of(Integer),
+                                                                                     false).once
+    end
+  end
 end
