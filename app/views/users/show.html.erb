@@ -125,12 +125,12 @@
 
         <% if @user.badge_achievements_count >= 5 %>
           <%= render partial: "users/badges_area", locals: {
-            grouped_badges: @grouped_badges,
-            count: @user.badge_achievements_count,
-            limit: 12,
-            show_heading: false,
-            grid_class: "grid-cols-6 s:grid-cols-8 m:grid-cols-12"
-          } %>
+                grouped_badges: @grouped_badges,
+                count: @user.badge_achievements_count,
+                limit: 12,
+                show_heading: false,
+                grid_class: "grid-cols-#{[@user.badge_achievements_count, 6].min} s:grid-cols-#{[@user.badge_achievements_count, 8].min} m:grid-cols-#{[@user.badge_achievements_count, 12].min}"
+              } %>
         <% end %>
 
         <div class="p-3 block m:hidden js-user-info-trigger-wrapper">

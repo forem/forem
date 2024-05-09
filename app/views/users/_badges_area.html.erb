@@ -15,8 +15,8 @@
            class="js-profile-badge <% if i >= limit %>hidden<% end %> relative">
           <img src="<%= optimized_image_url(achievement.badge_image_url, width: 180) %>"
                alt="<%= achievement.badge_title %>"
-               class="mx-auto max-w-75 h-auto align-middle"
-               style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1;"
+               class="mx-auto w-75 h-auto align-middle"
+               style="object-fit: contain; cursor: pointer; width: 100%; aspect-ratio: 1 / 1; max-width: 80px;"
                loading="lazy" />
           <% if badge_achievements.length > 1 %><div class="badge-indicator" title="<%= t("views.badges.indicator", user: @user.name, number: badge_achievements.length) %>"><%= badge_achievements.length %></div><% end %>
         </div>
