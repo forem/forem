@@ -19,7 +19,7 @@ describe('User Profile', () => {
 
         cy.get('.js-user-info').contains('Organizations').should('be.visible');
 
-        cy.get('.js-user-info').contains('Badges').should('be.visible');
+        cy.get('.js-profile-badges').should('be.visible');
 
         cy.get('.js-user-info')
           .contains('posts published')
