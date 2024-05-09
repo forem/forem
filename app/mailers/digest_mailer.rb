@@ -7,7 +7,6 @@ class DigestMailer < ApplicationMailer
     @billboards = params[:billboards]
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
 
-    @article_design_variant = field_test(:digest_articles_design_05_02, participant: @user)
     subject = generate_title
 
     # set sendgrid category in the header using smtp api

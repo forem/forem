@@ -27,8 +27,33 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_article_ordering_05_09:
+    started_at: 2024-05-09
+    variants:
+      - base
+      - more_weight_on_feed_success
+      - much_more_weight_on_feed_success
+      - more_weight_on_clickbait
+      - much_more_weight_on_clickbait
+      - more_weight_on_comments
+      - much_more_weight_on_comments
+    weights:
+      - 40
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_articles_design_05_02:
     started_at: 2024-05-02
+    ended_at: 2024-05-09
+    winner: border
     variants:
       - base
       - base_with_user

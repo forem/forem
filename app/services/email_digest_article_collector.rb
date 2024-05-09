@@ -12,7 +12,25 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    order = Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score) DESC")
+    order_variant = field_test(:digest_article_ordering_05_09, participant: @user)
+    order = case order_variant
+            when "base"
+              Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score) DESC")
+            when "more_weight_on_feed_success"
+              Arel.sql("((score * (feed_success_score + 0.2)) - clickbait_score) DESC")
+            when "much_more_weight_on_feed_success"
+              Arel.sql("((score * (feed_success_score + 0.3)) - clickbait_score) DESC")
+            when "more_weight_on_clickbait"
+              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 0.5)) DESC")
+            when "much_more_weight_on_clickbait"
+              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 0.8)) DESC")
+            when "more_weight_on_comments"
+              Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score + comment_score) DESC")
+            when "much_more_weight_on_comments"
+              Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score + (comment_score * 2)) DESC")
+            else
+              Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score) DESC")
+            end
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
