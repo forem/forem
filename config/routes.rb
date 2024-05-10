@@ -17,6 +17,16 @@ Rails.application.routes.draw do
     delete "/sign_out", to: "devise/sessions#destroy"
   end
 
+  # This route makes default Ahoy Email redirect URLs available to us
+  # However, we monkeypatch this behavior in config/initializers/ahoy_email.rb so this
+  # routes is not currently where emails pass through.
+  mount AhoyEmail::Engine => "/ahoy"
+
+  # Custom controller for tracking clicks asynchronously
+  namespace :ahoy do
+    post "email_clicks", to: "email_clicks#create"
+  end
+
   get "/r/mobile", to: "deep_links#mobile"
   get "/.well-known/apple-app-site-association", to: "deep_links#aasa"
 
@@ -116,6 +126,10 @@ Rails.application.routes.draw do
     end
     resources :comment_mutes, only: %i[update]
     resources :users, only: %i[index show], defaults: { format: :json } do # internal API
+      member do
+        put "spam", to: "users#toggle_spam"
+        delete "spam", to: "users#toggle_spam"
+      end
       collection do
         resources :devices, only: %i[create destroy]
       end
@@ -245,6 +259,10 @@ Rails.application.routes.draw do
     post "users/api_secrets", to: "api_secrets#create", as: :users_api_secrets
     delete "users/api_secrets/:id", to: "api_secrets#destroy", as: :users_api_secret
     post "users/update_password", to: "users#update_password", as: :user_update_password
+
+    # Internal Admin API
+    # put "/users/:id/spam", to: "users#toggle_spam", as: :user_toggle_spam
+    # delete "/users/:id/spam", to: "users#toggle_spam", as: :user_toggle_spam
 
     # The priority is based upon order of creation: first created -> highest priority.
     # See how all your routes lay out with "rake routes".

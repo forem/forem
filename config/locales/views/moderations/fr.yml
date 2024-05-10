@@ -147,6 +147,7 @@ fr:
         latest_html: <strong>Récent</strong> montre tous les posts dans l'ordre chronologique, indépendamment de s'ils ont été examinés ou non.
       article:
         approved: Approuvée
+        email_digest_eligible: Éligible pour Digest
         author_id: Identifiant de l'auteur
         comments: commentaires
         contains_video: Contient une vidéo
@@ -180,6 +181,8 @@ fr:
         tag: Guide de modération des étiquettes
         terms_and_conditions: Conditions générales d'utilisation
         trusted: Guide de l'utilisateur de confiance
+        following_tags: Following tags
+        moderating_tags: Moderating tags
       author: Auteur
       comments:
         view_comment: Voir le commentaire

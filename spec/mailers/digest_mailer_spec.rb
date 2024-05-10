@@ -33,5 +33,15 @@ RSpec.describe DigestMailer do
       expect(smtpapi_header).to have_key("category")
       expect(smtpapi_header["category"]).to include("Digest Email")
     end
+
+    it "includes billboard html in body" do
+      bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+      bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+      email = described_class.with(user: user, articles: [article], billboards: [bb_1, bb_2]).digest_email
+
+      expect(email.body.encoded).to include(bb_1.processed_html)
+      expect(email.body.encoded).to include(bb_2.processed_html)
+    end
   end
 end

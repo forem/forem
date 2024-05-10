@@ -14,7 +14,7 @@ RSpec.describe "Creator config edit", js: true do
       find("summary", text: "Authentication").click
 
       Authentication::Providers.available_providers.each do |provider|
-        element = find(".config-authentication__item--label", text: /#{provider.official_name}/i)
+        element = find(".config-authentication__item--label", text: provider.official_name)
         expect(element).not_to be_nil
       end
     end

@@ -15,12 +15,19 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
+    data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
     <div class="crayons-story__body">
-      <div class="crayons-story__top">
+      <div class="crayons-story__top flex">
         <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+        <% if billboard.dismissal_sku.present? %>
+          <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+            class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
+              <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+          </button>
+        <% end %>
       </div>
       <div class="crayons-story__indention-billboard">
         <div class="text-styles text-styles--billboard">
@@ -35,20 +42,7 @@
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
     data-context-type="<%= data_context_type %>"
-    data-special="<%= billboard.special_behavior %>"
-    data-article-id="<%= @article&.id %>"
-    data-type-of="<%= billboard.type_of %>">
-    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
-    <div class="p-1 text-styles text-styles--billboard">
-      <%= billboard.processed_html.html_safe %>
-    </div>
-  </div>
-<% elsif billboard.placement_area == "post_fixed_bottom" %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
-    data-display-unit data-id="<%= billboard.id %>"
-    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
-    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
-    data-context-type="<%= data_context_type %>"
+    data-dismissal-sku="<%= billboard.dismissal_sku %>"
     data-special="<%= billboard.special_behavior %>"
     data-article-id="<%= @article&.id %>"
     data-type-of="<%= billboard.type_of %>">
@@ -60,6 +54,45 @@
       </button>
     </div>
     <div class="p-1 text-styles text-styles--billboard">
+      <%= billboard.processed_html.html_safe %>
+    </div>
+  </div>
+<% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-dismissal-sku="<%= billboard.dismissal_sku %>"
+    data-special="<%= billboard.special_behavior %>"
+    <% if billboard.placement_area == "post_fixed_bottom" && @article.present? %>
+      data-article-id="<%= @article&.id %>"
+    <% else %>
+      data-page-id="<%= @page&.id %>"
+    <% end %>
+    data-type-of="<%= billboard.type_of %>">
+    <div class="flex">
+      <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+      <button id="sponsorship-close-trigger-<%= billboard.id %>" aria-controls="sponsorship-close-<%= billboard.id %>"
+        class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon">
+          <%= crayons_icon_tag("x", class: "pointer-events-none", title: t("billboard.menu.close")) %>
+      </button>
+    </div>
+    <div class="p-1 text-styles text-styles--billboard">
+      <%= billboard.processed_html.html_safe %>
+    </div>
+  </div>
+<% elsif billboard.placement_area == "post_body_bottom" %>
+  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard body-billboard mb-2 mt-6"
+    data-display-unit data-id="<%= billboard.id %>"
+    data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
+    data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
+    data-context-type="<%= data_context_type %>"
+    data-special="<%= billboard.special_behavior %>"
+    data-article-id="<%= @article&.id %>"
+    data-type-of="<%= billboard.type_of %>">
+    <%= render partial: "shared/billboard_header", locals: { billboard: billboard } %>
+    <div class="p-1 pt-3 text-styles text-styles--billboard">
       <%= billboard.processed_html.html_safe %>
     </div>
   </div>

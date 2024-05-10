@@ -5,6 +5,7 @@ class Article < ApplicationRecord
   include Taggable
   include UserSubscriptionSourceable
   include PgSearch::Model
+  include AlgoliaSearchable
 
   acts_as_taggable_on :tags
   resourcify
@@ -636,6 +637,15 @@ class Article < ApplicationRecord
       (score < Settings::UserExperience.index_minimum_score && !featured) ||
       published_at.to_i < Settings::UserExperience.index_minimum_date.to_i ||
       score < -1
+  end
+
+  def skip_indexing_reason
+    return "unpublished" unless published
+    return "negative_score" if score < -1
+    return "below_minimum_score" if score < Settings::UserExperience.index_minimum_score && !featured
+    return "below_minimum_date" if published_at.to_i < Settings::UserExperience.index_minimum_date.to_i
+
+    "unknown"
   end
 
   def privileged_reaction_counts

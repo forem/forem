@@ -409,14 +409,15 @@ export class ArticleForm extends Component {
   };
 
   switchHelpContext = (event, override = null) => {
-    const id = override || event.target.id;
-    this.setState({
-      ...this.setCommonProps({
-        helpFor: id,
-        helpPosition: event.target.getBoundingClientRect().y,
-      }),
-    });
-  };
+    if (!this.state.previewShowing) {
+      const id = override || event.target.id;
+      this.setState({
+        ...this.setCommonProps({
+          helpFor: id,
+          helpPosition: event.target.getBoundingClientRect().y,
+        }),
+      });
+  }};
 
   render() {
     const {

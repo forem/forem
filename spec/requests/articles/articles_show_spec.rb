@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
   let(:article) { create(:article, user: user, published: true, organization: organization) }
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
@@ -146,6 +147,13 @@ RSpec.describe "ArticlesShow" do
         get article.path
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
+
+    it "renders successfully for admins", :aggregate_failures do
+      sign_in admin_user
+      get article.path
+      expect(response).to be_successful
+      expect(response.body).to include("Spam")
+    end
   end
 
   context "when user signed in" do
@@ -217,6 +225,17 @@ RSpec.describe "ArticlesShow" do
         expect(response.body).to include("Child comment")
         expect(response.body).to include("Comment deleted") # instead of the low quality one
       end
+
+      it "displays comments count w/o including super low-quality ones" do
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"3\">(3)</span>")
+      end
+
+      it "displays includes spam comments in comments count if they have children" do
+        create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
+        get article.path
+        expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
+      end
     end
 
     context "when user not signed in" do
@@ -236,6 +255,50 @@ RSpec.describe "ArticlesShow" do
         create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
         get article.path
         expect(response.body).not_to include("Child comment")
+      end
+    end
+
+    context "when below post billboard exists" do
+      it "does not render when it is below long article threshold" do
+        article.update_column(:body_markdown, "a" * 888)
+        get article.path
+        expect(response.body).not_to include("body-billboard-container")
+      end
+
+      it "renders when it is above long article threshold" do
+        article.update_column(:body_markdown, "a" * 901)
+        get article.path
+        expect(response.body).to include("body-billboard-container")
+      end
+    end
+
+    context "when a mid-comments billboard exists" do
+      it "does not render the billboard if there are fewer than 6 root comments" do
+        create_list(:comment, 6, commentable: article)
+        get article.path
+        expect(response.body).not_to include("mid-comments-billboard-container")
+      end
+
+      it "renders the billboard if there are 6 or more root comments" do
+        create_list(:comment, 7, commentable: article)
+        get article.path
+        expect(response.body).to include("mid-comments-billboard-container")
+      end
+
+      it "does not render the billboard when the first comment has too few children" do
+        create(:comment, commentable: article, score: 100)
+        create_list(:comment, 4, commentable: article, parent: Comment.last)
+        create(:comment, commentable: article, score: 2)
+        get article.path
+        expect(response.body).not_to include("mid-comments-billboard-container")
+      end
+
+      it "renders the billboard when the first comment has enough children" do
+        create(:comment, commentable: article, score: 100)
+        create_list(:comment, 5, commentable: article, parent: Comment.last)
+        create(:comment, commentable: article, score: 2)
+        get article.path
+        expect(response.body).to include("mid-comments-billboard-container")
       end
     end
   end

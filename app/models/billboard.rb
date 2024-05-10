@@ -4,20 +4,25 @@ class Billboard < ApplicationRecord
   resourcify
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :audience_segment, optional: true
+  belongs_to :page, optional: true
 
-  # rubocop:disable Layout/LineLength
   ALLOWED_PLACEMENT_AREAS = %w[sidebar_left
                                sidebar_left_2
                                sidebar_right
                                sidebar_right_second
                                sidebar_right_third
-                               feed_first feed_second
+                               feed_first
+                               feed_second
                                feed_third
                                home_hero
+                               page_fixed_bottom
                                post_fixed_bottom
+                               post_body_bottom
                                post_sidebar
-                               post_comments].freeze
-  # rubocop:enable Layout/LineLength
+                               post_comments
+                               post_comments_mid
+                               digest_first
+                               digest_second].freeze
   ALLOWED_PLACEMENT_AREAS_HUMAN_READABLE = ["Sidebar Left (First Position)",
                                             "Sidebar Left (Second Position)",
                                             "Sidebar Right (Home first position)",
@@ -27,9 +32,14 @@ class Billboard < ApplicationRecord
                                             "Home Feed Second",
                                             "Home Feed Third",
                                             "Home Hero",
+                                            "Fixed Bottom (Page)",
                                             "Fixed Bottom (Individual Post)",
+                                            "Below the post body",
                                             "Sidebar Right (Individual Post)",
-                                            "Below the comment section"].freeze
+                                            "Below the comment section",
+                                            "Midway through the comment section",
+                                            "Digest Email First",
+                                            "Digest Email Second"].freeze
 
   HOME_FEED_PLACEMENTS = %w[feed_first feed_second feed_third].freeze
 
@@ -79,7 +89,8 @@ class Billboard < ApplicationRecord
 
   self.table_name = "display_ads"
 
-  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil, location: nil, cookies_allowed: false)
+  def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
+                       location: nil, cookies_allowed: false, page_id: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -91,6 +102,7 @@ class Billboard < ApplicationRecord
       organization_id: article&.organization_id,
       permit_adjacent_sponsors: permit_adjacent,
       user_id: user_id,
+      page_id: page_id,
       user_tags: user_tags,
       location: location,
       cookies_allowed: cookies_allowed,
