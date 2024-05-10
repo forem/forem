@@ -9290,6 +9290,7 @@ __metadata:
     postcss-preset-env: "npm:^7.8.2"
     postscribe: "npm:^2.0.8"
     preact: "npm:^10.20.2"
+    prettier: "npm:^2.8.8"
     prop-types: "npm:^15.8.1"
     rails-erb-loader: "npm:^5.5.2"
     react-colorful: "npm:^5.6.1"
@@ -17613,6 +17614,15 @@ __metadata:
   bin:
     prettier: bin-prettier.js
   checksum: 10c0/b9f434af2f25a37aad0b133894827e980885eb8bf317444c9dde0401ed2c7f463f9996d691f5ee5a0a4450ab46a894cd6557516b561e2522821522ce1f4c6668
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.8.8":
+  version: 2.8.8
+  resolution: "prettier@npm:2.8.8"
+  bin:
+    prettier: bin-prettier.js
+  checksum: 10c0/463ea8f9a0946cd5b828d8cf27bd8b567345cf02f56562d5ecde198b91f47a76b7ac9eae0facd247ace70e927143af6135e8cf411986b8cb8478784a4d6d724a
   languageName: node
   linkType: hard
 
