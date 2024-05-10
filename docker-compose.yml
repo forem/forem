@@ -63,7 +63,6 @@ services:
       - rails_cache:/workspaces/forem/tmp/cache
       - assets:/workspaces/forem/public/assets
       - node_modules:/workspaces/forem/node_modules
-      - builds:/workspaces/forem/app/assets/builds
       - history:/usr/local/hist
       - ${LOCAL_WORKSPACE_FOLDER:-.}/.dockerdev/.psqlrc:/root/.psqlrc:ro
       - /var/run/docker.sock:/var/run/docker-host.sock
