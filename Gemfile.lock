@@ -293,7 +293,7 @@ GEM
       net-http-persistent (~> 4.0)
     faraday-retry (2.1.0)
       faraday (~> 2.0)
-    fastimage (2.3.0)
+    fastimage (2.3.1)
     fastly (3.0.2)
     feedjira (3.2.3)
       loofah (>= 2.3.1, < 3)
