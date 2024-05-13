@@ -17,9 +17,9 @@ class EmailDigestArticleCollector
             when "base"
               Arel.sql("((score * (feed_success_score + 0.1)) - clickbait_score) DESC")
             when "more_weight_on_feed_success"
-              Arel.sql("((score * (feed_success_score + 0.2)) - clickbait_score) DESC")
+              Arel.sql("((score * ((feed_success_score + 0.1) * 2)) - clickbait_score) DESC")
             when "much_more_weight_on_feed_success"
-              Arel.sql("((score * (feed_success_score + 0.3)) - clickbait_score) DESC")
+              Arel.sql("((score * ((feed_success_score + 0.1) * 5)) - clickbait_score) DESC")
             when "more_weight_on_clickbait"
               Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 0.5)) DESC")
             when "much_more_weight_on_clickbait"
