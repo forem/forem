@@ -351,4 +351,38 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       end
     end
   end
+
+  context "when considering browser context" do
+    let!(:all_browsers_ad) { create_billboard browser_context: :all_browsers }
+    let!(:mobile_in_app_ad) { create_billboard browser_context: :mobile_in_app }
+    let!(:mobile_web_ad) { create_billboard browser_context: :mobile_web }
+    let!(:desktop_ad) { create_billboard browser_context: :desktop }
+
+    it "filters ads based on user_agent string for mobile in-app context" do
+      filtered = filter_billboards(user_agent: "DEV-Native-ios")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+
+      filtered = filter_billboards(user_agent: "DEV-Native-android")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad)
+      expect(filtered).not_to include(mobile_web_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for mobile web context" do
+      filtered = filter_billboards(user_agent: "Mobile Safari")
+      expect(filtered).to include(all_browsers_ad, mobile_web_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, desktop_ad)
+    end
+
+    it "filters ads based on user_agent string for desktop context" do
+      filtered = filter_billboards(user_agent: "Windows NT 10.0; Win64; x64")
+      expect(filtered).to include(all_browsers_ad, desktop_ad)
+      expect(filtered).not_to include(mobile_in_app_ad, mobile_web_ad)
+    end
+
+    it "includes all ads for unknown user_agent contexts" do
+      filtered = filter_billboards(user_agent: "SomeUnknownBrowser/1.0")
+      expect(filtered).to include(all_browsers_ad, mobile_in_app_ad, mobile_web_ad, desktop_ad)
+    end
+  end
 end
