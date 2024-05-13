@@ -228,7 +228,6 @@ function algoliaSearch(searchParams) {
       hitsPerPage: paramsObj.per_page,
       queryType: 'prefixNone',  // Disable prefix searches
       page: paramsObj.page,
-      ranking: ['exact', 'attribute', 'words', 'proximity', 'custom'],  // Prioritize exact matches in ranking
     })
     .then(({ hits }) => {
       const resultDivs = [];
