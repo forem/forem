@@ -9,7 +9,6 @@ RSpec.describe "users/show" do
       allow(view).to receive(:feed_style_preference).and_return("basic")
     end
     assign(:user, user)
-    assign(:badges_limit, 6)
     assign(:stories, [])
     assign(:comments, [])
     assign(:pinned_stories, [])

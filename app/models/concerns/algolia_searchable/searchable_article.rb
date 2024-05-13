@@ -14,11 +14,14 @@ module AlgoliaSearchable
             profile_image_90: user.profile_image_90 }
         end
 
+        searchableAttributes %w[title tag_list body user]
+
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
                   :positive_reactions_count, :path, :main_image, :user_id
 
         add_attribute(:published_at) { published_at.to_i }
         add_attribute(:readable_publish_date) { readable_publish_date }
+        add_attribute(:body) { processed_html.first(1000) }
         add_attribute(:timestamp) { published_at.to_i }
         add_replica("Article_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Article_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }

@@ -1,4 +1,6 @@
 {
-  "rubyLsp.rubyVersionManager": "auto",
-  "rubyLsp.formatter": "rubocop",
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "auto"
+  },
+  "rubyLsp.formatter": "rubocop"
 }

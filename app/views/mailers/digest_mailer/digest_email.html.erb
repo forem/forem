@@ -34,67 +34,13 @@
         <!-- Articles List -->
         <% @articles.each_with_index do |article, i| %>
           <tr>
-            <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "27" : "17" %>px 2px 0px; text-align: left;">
-              <% case @article_design_variant %>
-              <% when "base" %>
+            <td bgcolor="#FFFFFF" style="padding: <%= i.zero? ? "27" : "17" %>px 0px 0px; text-align: left;">
+              <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
                 <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
                 <p style="margin-top: 5px; font-size: 14px; color: #808080;">
                   <%= truncate(article.description, length: 180) %>
                 </p>
-              <% when "base_with_user" %>
-                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                <% if article.cached_user.present? %>
-                  <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
-                    <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
-                    <%= article.cached_user.name %>
-                  </p>
-                <% end %>
-                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                  <%= truncate(article.description, length: 180) %>
-                </p>
-              <% when "base_with_tags" %>
-                <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                <p style="margin-top: 6px;margin-bottom: 6px; font-size: 13px; color: #6b6b6b;">
-                  <% article.decorate.cached_tag_list_array.each do |tag| %>
-                    <span style="display:inline-block;background:#e6e6e6;border: 1px solid #dedede;border-radius:3px;padding:1px 4px;margin-right:3px;">#<%= tag %></span>
-                  <% end %>
-                </p>
-                <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                  <%= truncate(article.description, length: 180) %>
-                </p>
-              <% when "border" %>
-                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
-                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                    <%= truncate(article.description, length: 180) %>
-                  </p>
-                </div>
-              <% when "border_with_user" %>
-                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
-                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                  <% if article.cached_user.present? %>
-                    <p style="margin-top: 8px;margin-bottom: 3px; font-size: 14px; color: #6b6b6b;font-weight:700;margin-left:-2px;">
-                      <img alt="<%= article.cached_user.name %> logo" src="<%= article.cached_user.profile_image_90 %>" style="height:18px;width:18px;border-radius:100px;vertical-align:-4px;border:1px solid #808080;" loading="lazy" />
-                      <%= article.cached_user.name %>
-                    </p>
-                  <% end %>
-                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                    <%= truncate(article.description, length: 180) %>
-                  </p>
-                </div>
-              <% when "border_with_tags" %>
-                <div style="border:2px solid #0a0a0a;border-radius:12px;padding:12px 12px 3px;">
-                  <a href="<%= article_url(article) %>?context=digest" style="font-weight: bold; color:#0a0a0a; font-size: 16px;display:block;"><%= article.title.strip %></a>
-                  <p style="margin-top: 6px;margin-bottom: 6px; font-size: 13px; color: #6b6b6b;">
-                    <% article.decorate.cached_tag_list_array.each do |tag| %>
-                      <span style="display:inline-block;background:#e6e6e6;border: 1px solid #dedede;border-radius:3px;padding:1px 4px;margin-right:3px;">#<%= tag %></span>
-                    <% end %>
-                  </p>
-                  <p style="margin-top: 5px; font-size: 14px; color: #808080;">
-                    <%= truncate(article.description, length: 180) %>
-                  </p>
-                </div>
-              <% end %>
+              </div>
             </td>
           </tr>
         <% end %>
