@@ -52,15 +52,8 @@ RSpec.describe "Editing A Comment", :js do
 
       click_on(class: "comment__dropdown-trigger")
       click_link_or_button("Edit")
-      assert_updated
-    end
-  end
-
-  context "when user edits via direct path (no referer)" do
-    it "cancels to the article page" do
-      user.reload
-      visit "#{comment.path}/edit"
       expect(page).to have_link("Dismiss")
+      assert_updated
     end
   end
 end

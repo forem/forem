@@ -14,9 +14,9 @@
       <form accept-charset="UTF-8" method="get" action="<%= search_path %>" role="search">
         <div class="crayons-fields crayons-fields--horizontal">
           <div class="crayons-field flex-1 relative">
-            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="off" />
+            <input class="crayons-header--search-input crayons-textfield js-search-input" type="text" id="nav-search" name="q" placeholder="<%= t(Settings::General.display_algolia_branding ? "views.search.algolia_placeholder" : "views.search.placeholder") %>" autocomplete="off" />
             <button type="submit" aria-label="<%= t("views.search.icon.aria_label") %>" class="c-btn c-btn--icon-alone absolute inset-px left-auto mt-0 py-0">
-              <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
+              <%= crayons_icon_tag(Settings::General.display_algolia_branding ? :algolia : :search, aria_hidden: true, title: t("views.search.icon.title")) %>
             </button>
           </div>
         </div>

@@ -19,4 +19,10 @@ class DeviseMailer < Devise::Mailer
     super(record, token, opts.merge(headers))
   end
   # rubocop:enable Style/OptionHash
+
+  def confirmation_instructions(record, token, opts = {})
+    @name = record.name
+    opts[:subject] = "#{@name}, confirm your #{Settings::Community.community_name} account"
+    super
+  end
 end

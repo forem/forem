@@ -9,6 +9,7 @@ module Admin
       add_org_credits remove_org_credits
       organization_id identity_id
       credit_action credit_amount
+      reputation_modifier
     ].freeze
 
     EMAIL_ALLOWED_PARAMS = %i[
@@ -76,6 +77,30 @@ module Admin
       add_note if user_params[:new_note]
 
       redirect_to admin_user_path(params[:id])
+    end
+
+    def reputation_modifier
+      @user = User.find(params[:id])
+      reputation_modifier_value = user_params[:reputation_modifier]
+      note_content = if user_params[:new_note].present?
+                       "Changed user's reputation modifier to #{reputation_modifier_value}. " \
+                         "Reason: #{user_params[:new_note]}"
+                     else
+                       "Changed user's reputation modifier to #{reputation_modifier_value}."
+                     end
+      if @user.update(reputation_modifier: reputation_modifier_value)
+        Note.create(
+          author_id: current_user.id,
+          noteable_id: @user.id,
+          noteable_type: "User",
+          reason: "reputation_modifier_change",
+          content: note_content,
+        )
+        flash[:success] = I18n.t("views.admin.users.reputation.success", reputation_modifier: reputation_modifier_value)
+      else
+        flash[:error] = I18n.t("views.admin.users.reputation.error")
+      end
+      redirect_to admin_user_path(@user)
     end
 
     def destroy
@@ -283,6 +308,33 @@ module Admin
           render json: { error: I18n.t("admin.users_controller.parameter_missing") },
                  content_type: "application/json",
                  status: :unprocessable_entity
+        end
+      end
+    end
+
+    def send_email_confirmation
+      @user = User.find(params[:id])
+      if @user.send_confirmation_instructions
+        respond_to do |format|
+          message = I18n.t("admin.users_controller.confirm_sent")
+
+          format.html do
+            flash[:success] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { result: message }, content_type: "application/json" }
+        end
+      else
+        message = I18n.t("admin.users_controller.email_fail")
+
+        respond_to do |format|
+          format.html do
+            flash[:danger] = message
+            redirect_back(fallback_location: admin_user_path(params[:id]))
+          end
+
+          format.js { render json: { error: message }, content_type: "application/json", status: :service_unavailable }
         end
       end
     end

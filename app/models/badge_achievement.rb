@@ -14,7 +14,7 @@ class BadgeAchievement < ApplicationRecord
 
   counter_culture :user, column_name: "badge_achievements_count"
 
-  validates :badge_id, uniqueness: { scope: :user_id }
+  validates :badge_id, uniqueness: { scope: :user_id, if: :single_award_badge? }
 
   before_validation :render_rewarding_context_message_html
   after_create :award_credits
@@ -52,5 +52,9 @@ class BadgeAchievement < ApplicationRecord
     return if badge.credits_awarded.zero?
 
     Credit.add_to(user, badge.credits_awarded)
+  end
+
+  def single_award_badge?
+    badge&.allow_multiple_awards == false
   end
 end

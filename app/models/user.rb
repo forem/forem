@@ -5,6 +5,7 @@ class User < ApplicationRecord
   include CloudinaryHelper
 
   include Images::Profile.for(:profile_image_url)
+  include AlgoliaSearchable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -145,6 +146,8 @@ class User < ApplicationRecord
   validates :spent_credits_count, presence: true
   validates :subscribed_to_user_subscriptions_count, presence: true
   validates :unspent_credits_count, presence: true
+  validates :reputation_modifier, numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: 5 },
+                                  presence: true
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
@@ -313,6 +316,7 @@ class User < ApplicationRecord
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
+    AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
   end
 
   def path
@@ -463,6 +467,7 @@ class User < ApplicationRecord
     to: :authorizer,
   )
   alias suspended suspended?
+  alias spam spam?
   ##############################################################################
   #
   # End Authorization Refactor

@@ -612,4 +612,13 @@ RSpec.describe Comment do
       expect(comment.by_staff_account?).to be(false)
     end
   end
+
+  context "when indexing with Algolia", :algolia do
+    it "indexes on create" do
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      create(:comment)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("Comment", kind_of(Integer), 
+false).once
+    end
+  end
 end

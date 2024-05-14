@@ -148,6 +148,7 @@ en:
         latest_html: <strong>Latest</strong> shows all posts in chronological order regardless of whether they have been scrutinized. 
       article:
         approved: Approved
+        email_digest_eligible: Digest Eligible
         author_id: Author ID
         comments: comments
         contains_video: Contains video

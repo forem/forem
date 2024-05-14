@@ -1,11 +1,6 @@
 {
-  "ruby.useBundler": true,
-  "ruby.useLanguageServer": true,
-  "ruby.lint": {
-    "rubocop": {
-      "useBundler": true
-    }
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "auto"
   },
-  "ruby.format": "rubocop",
-  "ruby.intellisense": "rubyLocate"
+  "rubyLsp.formatter": "rubocop"
 }

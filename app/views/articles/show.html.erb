@@ -195,6 +195,9 @@
                        collection: @collection,
                        articles: @collection_articles %>
           <% end %>
+          <% if @article.long_markdown? %>
+            <div class="js-billboard-container body-billboard-container" data-async-url="<%= article_billboard_path(username: @article.username, slug: @article.slug, placement_area: :post_body_bottom) %>"></div>
+          <% end %>
         </div>
         <%= render "articles/full_comment_area" %>
 
