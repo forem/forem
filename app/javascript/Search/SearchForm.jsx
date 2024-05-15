@@ -7,26 +7,26 @@ import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
 import algoliasearch from 'algoliasearch/lite';
 
-export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, ref) => {
-  const { algoliaId, algoliaSearchKey } = document.body.dataset;
-  const client = algoliasearch(algoliaId, algoliaSearchKey);
-  const index = client.initIndex('Article_production');
+export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding, algoliaId, algoliaSearchKey }, ref) => {
+  const env = 'production';
+  const client = algoliaId ? algoliasearch(algoliaId, algoliaSearchKey) : null;
+  const index = client ? client.initIndex(`Article_${env}`) : null;
   const [inputValue, setInputValue] = useState(searchTerm);
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
   const suggestionsRef = useRef();
 
-  // Fetch suggestions from Algolia
+  // Fetch suggestions from Algolia if client is initialized
   useEffect(() => {
-    if (inputValue) {
+    if (inputValue && index) {
       index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
         setSuggestions(hits); // Assuming 'title' is the field to display
       });
     } else {
       setSuggestions([]);
     }
-  }, [inputValue]);
+  }, [inputValue, index]);
 
   // Handle input changes
   const handleInputChange = (e) => {
