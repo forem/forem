@@ -7,9 +7,8 @@ import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
 import algoliasearch from 'algoliasearch/lite';
 
-
 export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, ref) => {
-  const {algoliaId, algoliaSearchKey} = document.body.dataset;
+  const { algoliaId, algoliaSearchKey } = document.body.dataset;
   const client = algoliasearch(algoliaId, algoliaSearchKey);
   const index = client.initIndex('Article_production');
   const [inputValue, setInputValue] = useState(searchTerm);
@@ -22,8 +21,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
   useEffect(() => {
     if (inputValue) {
       index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
-        console.log(hits)
-        setSuggestions(hits);  // Assuming 'title' is the field to display
+        setSuggestions(hits); // Assuming 'title' is the field to display
       });
     } else {
       setSuggestions([]);
@@ -40,8 +38,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
   // Handle keyboard navigation and selection
   const handleKeyDown = (e) => {
     if (activeSuggestionIndex !== -1) {
-      InstantClick.preload('/doyle_abe/an-instant-in-the-wind-voluptates-qui-5e5m');
-      // InstantClick.preload(suggestions[activeSuggestionIndex].path);
+      InstantClick.preload(suggestions[activeSuggestionIndex].path);
     }
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -56,11 +53,23 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
       setInputValue(suggestions[activeSuggestionIndex].title);
       setShowSuggestions(false);
       setActiveSuggestionIndex(-1);
-      InstantClick.display('/doyle_abe/an-instant-in-the-wind-voluptates-qui-5e5m');
-      // InstantClick.preload(suggestions[activeSuggestionIndex].path);
-      // InstantClick.display(suggestions[activeSuggestionIndex].path);
+      InstantClick.display(suggestions[activeSuggestionIndex].path);
     }
   };
+
+  // Handle clicks outside the dropdown
+  const handleClickOutside = (event) => {
+    if (suggestionsRef.current && !suggestionsRef.current.contains(event.target) && !ref.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <form
@@ -89,13 +98,14 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
             onChange={handleInputChange}
             onFocus={() => {
               document.getElementById('search-typeahead').classList.remove('hidden');
-              setShowSuggestions(true)}
-            }
+              setShowSuggestions(true);
+            }}
             onKeyDown={handleKeyDown}
           />
-          {(showSuggestions && suggestions.length > 0) && (
+          {showSuggestions && algoliaId && algoliaId.length > 0 && suggestions.length > 0 && (
             <ul id="search-typeahead" className="crayons-header--search-typeahead" ref={suggestionsRef}>
               {suggestions.map((suggestion, index) => (
+                // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
                 <li
                   key={index}
                   className={index === activeSuggestionIndex ? 'crayons-header--search-typeahead-item-selected' : ''}
@@ -103,7 +113,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
                 >
                   <a href={suggestion.path}>
                     <div class='crayons-header--search-typeahead-item-preheader'>
-                      @{suggestion.user.username }
+                      @{suggestion.user.username}
                     </div>
                     <strong>{suggestion.title}</strong>
                     <div class='crayons-header--search-typeahead-item-subheader'>
@@ -113,7 +123,10 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding }, 
                 </li>
               ))}
               <div class="crayons-header--search-typeahead-footer">
-                Powered by Algolia
+                <span>
+                  Displaying Posts — Submit search to filter by Users, Comments, etc.
+                </span>
+                <a href="https://www.algolia.com/developers/?utm_source=devto&utm_medium=referral">Powered by Algolia</a>
               </div>
             </ul>
           )}
