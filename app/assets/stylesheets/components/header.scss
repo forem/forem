@@ -34,7 +34,7 @@
 
 // Search bar
 .crayons-header--search {
-  max-width: 420px;
+  max-width: 680px;
   flex: 1 auto;
   margin: 0 var(--su-2);
   display: none;
@@ -42,6 +42,83 @@
   @media (min-width: $breakpoint-m) {
     margin: 0 var(--su-4);
     display: block;
+  }
+  .crayons-header--search-input {
+    padding-left: 40px;
+    padding-right: 142px;
+  }  
+}
+
+.crayons-header--search-typeahead {
+  border: 1px solid var(--base-20);
+  border-radius: var(--radius);
+  background: var(--card-bg);
+  position: absolute;
+  box-shadow: var(--shadow-smooth);
+  top: 41px;
+  left: 0;
+  right: 0;
+  li {
+    padding: 8px;
+    border-bottom: 1px solid var(--base-3);
+    &:first-child {
+      border-top-left-radius: var(--radius);
+      border-top-right-radius: var(--radius);
+    }
+    &:hover {
+      background: var(--base-10);
+    }
+    &.crayons-header--search-typeahead-item-selected {
+      background: var(--base-20);
+    }
+    strong {
+      color: var(--body-color);
+      display: block;
+    }
+    .crayons-header--search-typeahead-item-preheader {
+      font-size: 12px;
+      color: var(--base-60);
+    }
+    .crayons-header--search-typeahead-item-subheader {
+      font-size: 12px;
+      color: var(--base-60);
+    }
+  }
+  .crayons-header--search-typeahead-footer {
+    background: var(--base-10);
+    font-size: 13px;
+    border-top: 1px solid var(--card-border);
+    border-bottom-right-radius: var(--radius);
+    border-bottom-left-radius: var(--radius);
+    padding: 12px 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    span {
+      font-size: 14px;
+    }
+    a {
+      color: var(--body-color);
+      font-weight: bold;
+      padding-left: 4px;
+    }
+  }
+}
+
+.crayons-header--search-brand-indicator {
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  display: block;
+  font-size:13px;
+  color: var(--base-60);
+  background: var(--form-bg);
+  padding-left:3px;
+  svg {
+    fill: var(--base-60);
+    height: 14px;
+    width:14px;
+    vertical-align: -2px;
   }
 }
 

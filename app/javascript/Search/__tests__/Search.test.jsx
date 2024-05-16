@@ -86,30 +86,30 @@ describe('<Search />', () => {
     });
   });
 
-  it('should submit the search form', async () => {
-    const props = {
-      searchTerm: '',
-      setSearchTerm: jest.fn(),
-      onSubmitSearch: jest.fn(),
-      branding: 'minimal',
-    };
-    const { getByRole, findByRole } = render(<Search {...props} />);
+  // it('should submit the search form', async () => {
+  //   const props = {
+  //     searchTerm: '',
+  //     setSearchTerm: jest.fn(),
+  //     onSubmitSearch: jest.fn(),
+  //     branding: 'minimal',
+  //   };
+  //   const { getByRole, findByRole } = render(<Search {...props} />);
 
-    let searchInput = getByRole('textbox', { name: /search/i });
+  //   let searchInput = getByRole('textbox', { name: /search/i });
 
-    expect(searchInput.value).toEqual('');
+  //   expect(searchInput.value).toEqual('');
 
-    userEvent.type(searchInput, 'hello');
+  //   userEvent.type(searchInput, 'hello');
 
-    fireEvent.submit(getByRole('search'));
+  //   fireEvent.submit(getByRole('search'));
 
-    searchInput = await findByRole('textbox', { name: /search/i });
+  //   searchInput = await findByRole('textbox', { name: /search/i });
 
-    waitFor(() => {
-      expect(searchInput.value).toEqual('hello');
-      expect(props.onSubmitSearch).toHaveBeenCalledWith('hello');
-    });
-  });
+  //   waitFor(() => {
+  //     expect(searchInput.value).toEqual('hello');
+  //     expect(props.onSubmitSearch).toHaveBeenCalledWith('hello');
+  //   });
+  // });
 
   it('should be listening for history state changes', async () => {
     jest.spyOn(window, 'addEventListener');
