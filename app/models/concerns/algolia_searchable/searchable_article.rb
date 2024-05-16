@@ -17,7 +17,7 @@ module AlgoliaSearchable
         searchableAttributes %w[title tag_list body user]
 
         attribute :title, :tag_list, :reading_time, :score, :featured, :comments_count,
-                  :positive_reactions_count, :path, :main_image, :user_id
+                  :positive_reactions_count, :path, :main_image, :user_id, :public_reactions_count
 
         add_attribute(:published_at) { published_at.to_i }
         add_attribute(:readable_publish_date) { readable_publish_date }
