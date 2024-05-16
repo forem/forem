@@ -43,6 +43,10 @@
     margin: 0 var(--su-4);
     display: block;
   }
+  .crayons-header--search-input {
+    padding-left: 40px;
+    padding-right: 142px;
+  }  
 }
 
 .crayons-header--search-typeahead {
@@ -98,6 +102,23 @@
       font-weight: bold;
       padding-left: 4px;
     }
+  }
+}
+
+.crayons-header--search-brand-indicator {
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  display: block;
+  font-size:13px;
+  color: var(--base-60);
+  background: var(--form-bg);
+  padding-left:3px;
+  svg {
+    fill: var(--base-60);
+    height: 14px;
+    width:14px;
+    vertical-align: -2px;
   }
 }
 
