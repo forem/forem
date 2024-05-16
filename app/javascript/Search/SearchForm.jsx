@@ -91,7 +91,7 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding, al
             className="crayons-header--search-input crayons-textfield"
             type="text"
             name="q"
-            placeholder={`${locale(branding === 'algolia' ? 'core.algolia_search' : 'core.search')}...`}
+            placeholder={`${locale('core.search')}...`}
             autoComplete="off"
             aria-label="Search term"
             value={inputValue}
@@ -131,10 +131,13 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding, al
           )}
           <Button
             type="submit"
-            icon={branding === 'algolia' ? AlgoliaIcon : SearchIcon}
-            className="absolute inset-px left-auto mt-0 py-0"
+            icon={SearchIcon}
+            className="absolute inset-px right-auto mt-0 py-0"
             aria-label="Search"
           />
+          <a class="crayons-header--search-brand-indicator">
+                Powered by <AlgoliaIcon /> Algolia
+            </a>
         </div>
       </div>
     </form>
