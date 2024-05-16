@@ -226,6 +226,7 @@ function algoliaSearch(searchParams) {
   index
     .search(paramsObj.search_fields, {
       hitsPerPage: paramsObj.per_page,
+      queryType: 'prefixNone',  // Disable prefix searches
       page: paramsObj.page,
     })
     .then(({ hits }) => {

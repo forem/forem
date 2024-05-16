@@ -123,9 +123,20 @@
 
         <%= render "users/metadata" %>
 
-        <div class="p-3 pt-0 block m:hidden js-user-info-trigger-wrapper">
-          <button type="button" class="crayons-btn crayons-btn--outlined w-100 js-user-info-trigger"><%= t("views.users.more", user: @user.username) %></button>
+        <% if @user.badge_achievements_count >= 7 %>
+          <%= render partial: "users/badges_area", locals: {
+                grouped_badges: @grouped_badges,
+                count: @user.badge_achievements_count,
+                limit: 12,
+                show_heading: false,
+                grid_class: "grid-cols-#{[@user.badge_achievements_count, 6].min} s:grid-cols-#{[@user.badge_achievements_count, 8].min} m:grid-cols-#{[@user.badge_achievements_count, 12].min}"
+              } %>
+        <% end %>
+
+        <div class="p-3 block m:hidden js-user-info-trigger-wrapper">
+          <button type="button" class="my-3 crayons-btn crayons-btn--outlined w-100 js-user-info-trigger"><%= t("views.users.more", user: @user.username) %></button>
         </div>
+
       </header>
     </div>
   </div>
