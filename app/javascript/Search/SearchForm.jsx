@@ -1,11 +1,11 @@
 import { h } from 'preact';
 import { forwardRef, useState, useEffect, useRef } from 'preact/compat';
 import PropTypes from 'prop-types';
+import algoliasearch from 'algoliasearch/lite';
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
 import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
-import algoliasearch from 'algoliasearch/lite';
 
 export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding, algoliaId, algoliaSearchKey }, ref) => {
   const env = 'production';
@@ -109,7 +109,6 @@ export const SearchForm = forwardRef(({ searchTerm, onSubmitSearch, branding, al
                 <li
                   key={index}
                   className={index === activeSuggestionIndex ? 'crayons-header--search-typeahead-item-selected' : ''}
-                  onMouseDown={() => handleSuggestionClick(suggestion)}
                 >
                   <a href={suggestion.path}>
                     <div class='crayons-header--search-typeahead-item-preheader'>
