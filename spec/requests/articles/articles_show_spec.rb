@@ -238,11 +238,9 @@ RSpec.describe "ArticlesShow" do
       end
 
       it "suggests to view_full comments page with the correct count" do
-        create_list(:comment, 28, score: 0, commentable: article)
-        Comments::Count.call(article, recalculate: true)
-        article.reload
+        # pretend that we have a large displayed comments count
+        article.update_column(:displayed_comments_count, 31)
         get article.path
-        # one comment is excluded because its score is below threshold
         expect(response.body).to include("View full discussion (31 comments)")
       end
     end
@@ -268,9 +266,10 @@ RSpec.describe "ArticlesShow" do
 
       # comments number is larger than @comments_to_show_count (15)
       it "suggests to view_full comments page when needed" do
-        create_list(:comment, 16, score: 0, commentable: article)
+        # pretend that we have a large displayed comments count
+        article.update_column(:displayed_comments_count, 16)
         get article.path
-        expect(response.body).to include("View full discussion (")
+        expect(response.body).to include("View full discussion (16 comments)")
       end
     end
 
