@@ -3,7 +3,10 @@ require "rails_helper"
 RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, :admin) }
-  let(:article) { create(:article, user: user, published: true, organization: organization, tag_list: "javascript, html") }
+  let(:article) do
+    create(:article, user: user, published: true, organization: organization,
+                     tag_list: "javascript, html")
+  end
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
   let(:text) { doc.at('script[type="application/ld+json"]').text }
