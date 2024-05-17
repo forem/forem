@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "ArticlesShow" do
   let(:user) { create(:user) }
   let(:admin_user) { create(:user, :admin) }
-  let(:article) { create(:article, user: user, published: true, organization: organization) }
+  let(:article) { create(:article, user: user, published: true, organization: organization, tag_list: "javascript, html") }
   let(:organization) { create(:organization) }
   let(:doc) { Nokogiri::HTML(response.body) }
   let(:text) { doc.at('script[type="application/ld+json"]').text }
@@ -236,6 +236,15 @@ RSpec.describe "ArticlesShow" do
         get article.path
         expect(response.body).to include("<span class=\"js-comments-count\" data-comments-count=\"5\">(5)</span>")
       end
+
+      it "suggests to view_full comments page with the correct count" do
+        create_list(:comment, 28, score: 0, commentable: article)
+        Comments::Count.call(article, recalculate: true)
+        article.reload
+        get article.path
+        # one comment is excluded because its score is below threshold
+        expect(response.body).to include("View full discussion (31 comments)")
+      end
     end
 
     context "when user not signed in" do
@@ -255,6 +264,13 @@ RSpec.describe "ArticlesShow" do
         create(:comment, score: 0, commentable: article, parent: spam_comment, body_markdown: "Child comment")
         get article.path
         expect(response.body).not_to include("Child comment")
+      end
+
+      # comments number is larger than @comments_to_show_count (15)
+      it "suggests to view_full comments page when needed" do
+        create_list(:comment, 16, score: 0, commentable: article)
+        get article.path
+        expect(response.body).to include("View full discussion (")
       end
     end
 
