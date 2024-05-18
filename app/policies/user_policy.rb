@@ -39,7 +39,6 @@ class UserPolicy < ApplicationPolicy
     name
     password
     password_confirmation
-    payment_pointer
     permit_adjacent_sponsors
     profile_image
     text_color_hex
