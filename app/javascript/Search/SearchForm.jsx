@@ -113,9 +113,10 @@ export const SearchForm = forwardRef(
               value={inputValue}
               onChange={handleInputChange}
               onFocus={() => {
-                document
-                  .getElementById('search-typeahead')
-                  .classList.remove('hidden');
+                const typeahead = document.getElementById('search-typeahead');
+                if (typeahead) {
+                  typeahead.classList.remove('hidden');
+                }
                 setShowSuggestions(true);
               }}
               onKeyDown={handleKeyDown}
