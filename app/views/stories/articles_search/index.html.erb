@@ -3,7 +3,7 @@
 <% end %>
 <div id="query-wrapper"></div>
 
-<main id="main-content">
+<main id="main-content" class="main-search-page">
   <div id="index-container"
       class="crayons-layout crayons-layout--header-inside crayons-layout--limited-l crayons-layout--2-cols"
       data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
@@ -15,8 +15,8 @@
         <form accept-charset="UTF-8" method="get" action="/search" role="search">
           <div class="crayons-fields crayons-fields--horizontal">
             <div class="crayons-field flex-1 relative">
-              <input class="crayons-textfield" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
-              <button type="submit" aria-label="Search" class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-rounded absolute right-2 bottom-0 top-0 m-1">
+              <input class="crayons-textfield landing-search-input" type="text" name="q" placeholder="<%= t("views.search.placeholder") %>" autocomplete="on" />
+              <button type="submit" aria-label="Search" class="c-btn c-btn--icon-alone absolute inset-px right-auto mt-0 py-0">
                 <%= crayons_icon_tag(:search, aria_hidden: true, title: t("views.search.icon.title")) %>
               </button>
             </div>
