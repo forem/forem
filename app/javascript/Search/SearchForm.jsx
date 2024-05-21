@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { forwardRef, useState, useEffect, useRef } from 'preact/compat';
+import { forwardRef, useState, useEffect, useRef, useMemo } from 'preact/compat';
 import PropTypes from 'prop-types';
 import algoliasearch from 'algoliasearch/lite';
 import { locale } from '../utilities/locale';
@@ -13,17 +13,14 @@ export const SearchForm = forwardRef(
     ref,
   ) => {
     const env = 'production';
-    const client = algoliaId
-      ? algoliasearch(algoliaId, algoliaSearchKey)
-      : null;
-    const index = client ? client.initIndex(`Article_${env}`) : null;
+    const client = useMemo(() => (algoliaId ? algoliasearch(algoliaId, algoliaSearchKey) : null), [algoliaId, algoliaSearchKey]);
+    const index = useMemo(() => (client ? client.initIndex(`Article_${env}`) : null), [client]);
     const [inputValue, setInputValue] = useState(searchTerm);
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
 
-    // Fetch suggestions from Algolia if client is initialized
     useEffect(() => {
       if (inputValue && index) {
         index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
