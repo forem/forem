@@ -20,6 +20,7 @@ function getQueryParams(qs) {
 }
 
 const params = getQueryParams(document.location.search);
+let algoliaSearchCompleted = false;
 
 function searchMain(substories, loadingHTML) {
   const query = filterXSS(params.q);
@@ -181,8 +182,9 @@ function search(query, filters, sortBy, sortDirection) {
   });
 
   // Run Algolia code only if the ID is live.
-  if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS')) {
+  if (document.body.dataset.algoliaId?.length > 0 && !searchParams.toString().includes('MY_POSTS') && !algoliaSearchCompleted) {
     algoliaSearch(searchParams.toString());
+    algoliaSearchCompleted = true;
     return;
   }
 
