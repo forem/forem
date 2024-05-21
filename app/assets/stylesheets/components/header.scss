@@ -49,6 +49,12 @@
   }  
 }
 
+.main-search-page {
+  .crayons-textfield {
+    padding-left: 40px;
+  }
+}
+
 .crayons-header--search-typeahead {
   border: 1px solid var(--base-20);
   border-radius: var(--radius);

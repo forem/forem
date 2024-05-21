@@ -152,12 +152,6 @@ fr:
           referential_html: Replace self-referential links with %{community}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on %{community} if available. This is primarily meant for folks migrating their entire blog onto %{community}.</p>
           save: Save Feed Settings
           submit: Submit Feed Settings
-        web_monetization:
-          header: Web monetization
-          receive_payments: 'Receive micropayments for time spent reading your posts directly.'
-          learn_more: Learn more
-          payment_pointer: Payment Pointer
-          save_settings: Save Web Monetization Settings
       finalize_html: You have requested a change to %{email}. Check your inbox for the verification link to finalize the change.
       for_html: Settings for %{name}
       group:
