@@ -18,7 +18,6 @@ fr:
     reaction: Réaction
     report_abuse: Signaler un abus
     search: Recherche
-    algolia_search: Recherche par Algolia
     success_settings: Successfully updated settings.
     counted_organization:
       one: "%{count} organisation"

@@ -77,7 +77,6 @@ en:
       heading: Search results%{for}
       for: " for %{query}"
       placeholder: Search...
-      algolia_placeholder: Search powered by Algolia...
       icon:
         aria_label: Search
         title: Search

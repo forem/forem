@@ -1,8 +1,8 @@
 <div class="align-center">
-  <% if @comments_to_show_count && @article.comments_count > @comments_to_show_count %>
+  <% if @comments_to_show_count && @comments_count > @comments_to_show_count %>
     <div class="mb-4">
       <a class="crayons-btn crayons-btn--secondary w-100" href="<%= @article.path %>/comments">
-        <%= t("views.comments.parent.view_full", count: @article.comments_count) %>
+        <%= t("views.comments.parent.view_full", count: @comments_count) %>
       </a>
     </div>
   <% end %>

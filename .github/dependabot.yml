@@ -1,0 +1,38 @@
+version: 2
+updates:
+  # RubyGems dependency updates (typically for Rails and other Ruby gems)
+  - package-ecosystem: "bundler" # for RubyGems
+    directory: "/" # path to the directory containing the Gemfile
+    schedule:
+      interval: "weekly" # frequency of update checks
+      day: "monday" # specify the day to check for updates
+      time: "04:00" # specify the time of day (in UTC) to check for updates
+    open-pull-requests-limit: 5 # limit the number of open pull requests
+    labels:
+      - "dependencies" # label to assign to pull requests
+      - "ruby"
+    milestone: 1 # ID of the milestone to assign to the pull requests if needed
+
+  # Yarn dependency updates (for JavaScript packages)
+  - package-ecosystem: "yarn" # for Yarn packages
+    directory: "/" # path to the directory containing the package.json and yarn.lock files
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "javascript"
+    milestone: 1
+
+  # Configuration for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+      day: "first" # first day of the month
+      time: "04:00"
+    labels:
+      - "dependencies"
+      - "github-actions"

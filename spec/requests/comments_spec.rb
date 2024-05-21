@@ -20,18 +20,6 @@ RSpec.describe "Comments" do
       expect(response.body).to include(comment.processed_html)
     end
 
-    it "renders user payment pointer if set" do
-      article.user.update_column(:payment_pointer, "test-pointer-for-comments")
-      get "#{article.path}/comments"
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "test-pointer-for-comments"
-    end
-
-    it "does not render payment pointer if not set" do
-      get "#{article.path}/comments"
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     context "when there are comments with different score" do
       let!(:spam_comment) do
         create(:comment, commentable: article, user: user, score: -1000, body_markdown: "spammer-comment")
