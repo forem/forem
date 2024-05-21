@@ -1,8 +1,6 @@
 <main id="main-content">
 <% title @user.name %>
 
-<%= render "shared/payment_pointer", user: @user %>
-
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
   <% if @user.score.negative? || @user.spam_or_suspended? %>

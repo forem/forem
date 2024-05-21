@@ -65,18 +65,6 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("/feed/#{user.username}")
     end
 
-    it "renders user payment pointer if set" do
-      user.update_column(:payment_pointer, "test-payment-pointer")
-      get "/#{user.username}"
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "test-payment-pointer"
-    end
-
-    it "does not render payment pointer if not set" do
-      get "/#{user.username}"
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     it "renders sidebar profile field elements in sidebar" do
       create(:profile_field, label: "whoaaaa", display_area: "left_sidebar")
       get "/#{user.username}"
