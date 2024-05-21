@@ -51,7 +51,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id", "exclude_article_ids", "dismissal_sku",
+                          "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
@@ -71,7 +71,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published",
                           "success_rate", "tag_list", "type_of", "updated_at",
-                          "creator_id", "exclude_article_ids", "dismissal_sku",
+                          "creator_id", "exclude_article_ids", "dismissal_sku", "browser_context",
                           "audience_segment_type", "audience_segment_id", "page_id",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
                           "priority", "weight", "target_geolocations", "requires_cookies", "special_behavior")
