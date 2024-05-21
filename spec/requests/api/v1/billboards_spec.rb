@@ -136,7 +136,7 @@ RSpec.describe "Api::V1::Billboards" do
                           "clicks_count", "created_at", "display_to", "id",
                           "impressions_count", "name", "organization_id",
                           "placement_area", "processed_html", "published", "dismissal_sku",
-                          "success_rate", "tag_list", "type_of", "updated_at",
+                          "success_rate", "tag_list", "type_of", "updated_at", "browser_context",
                           "creator_id", "exclude_article_ids", "requires_cookies", "page_id",
                           "audience_segment_type", "audience_segment_id", "special_behavior",
                           "custom_display_label", "template", "render_mode", "preferred_article_ids",
