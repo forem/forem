@@ -105,7 +105,7 @@ RSpec.describe "UserProfiles" do
         expect(response.body).to include("bad_comment")
       end
 
-      it "displayes info for low quality comments for admins" do
+      it "displays info for low quality comments for admins" do
         sign_in admin_user
         get user.path
         expect(response.body).to include("Low quality comment, displayed only for admins")
