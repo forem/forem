@@ -26,7 +26,12 @@
     <% end %>
     <% @comments.each do |comment| %>
       <% if comment.commentable.present? && comment.commentable.published && !comment.deleted %>
-        <a href="<%= comment.path %>" class="profile-comment-row ">
+        <% if comment.decorate.low_quality %>
+          <h4 class="ml-3 mt-3 c-indicator c-indicator--danger c-indicator--relaxed">
+            <%= t("views.users.comments.low_quality") %>
+          </h4>
+        <% end %>
+        <a href="<%= comment.path %>" class="profile-comment-row">
           <h4 class="fw-bold fs-base m-0 mb-1">
             <%= comment.commentable.title %>
           </h4>

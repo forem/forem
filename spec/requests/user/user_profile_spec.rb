@@ -4,6 +4,7 @@ RSpec.describe "UserProfiles" do
   let(:user) { create(:user) }
   let(:organization) { create(:organization) }
   let(:current_user) { create(:user) }
+  let(:admin_user) { create(:user, :admin) }
 
   describe "GET /:username" do
     it "renders to appropriate page" do
@@ -88,12 +89,26 @@ RSpec.describe "UserProfiles" do
         create(:comment, user: user, score: -401, body_markdown: "bad_comment")
       end
 
-      it "displays good standing comments", :aggregate_failures do
+      it "displays good standing comments, hide low score comments", :aggregate_failures do
         sign_in current_user
         get user.path
         expect(response.body).to include("nice_comment")
         expect(response.body).not_to include("low_comment")
         expect(response.body).not_to include("bad_comment")
+      end
+      
+      it "displays all comments (good standing + low score) for admins", :aggregate_failures do
+        sign_in admin_user
+        get user.path
+        expect(response.body).to include("nice_comment")
+        expect(response.body).to include("low_comment")
+        expect(response.body).to include("bad_comment")
+      end
+
+      it "displayes info for low quality comments for admins" do
+        sign_in admin_user
+        get user.path
+        expect(response.body).to include("Low quality comment, displayed only for admins")
       end
 
       it "doesn't display any comments for not signed in user", :aggregate_failures do
@@ -191,7 +206,6 @@ RSpec.describe "UserProfiles" do
     # rubocop:disable RSpec/NestedGroups
     describe "not found and no index behaviour" do
       let(:spam_user) { create(:user, :spam) }
-      let(:admin_user) { create(:user, :admin) }
 
       it "raises not found for banished users" do
         banishable_user = create(:user)

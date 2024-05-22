@@ -18,6 +18,7 @@ en:
         last:
           one: Last %{count} comments
           other: Last %{count} comments
+        low_quality: Low quality comment, displayed only for admins
         recent: Recent comments
         view: View all activity
         view_all:

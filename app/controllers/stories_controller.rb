@@ -52,10 +52,23 @@ class StoriesController < ApplicationController
 
   # for spam content we need to remove cache control headers to access current_user to check admin access
   # so that admins could have access to spam articles and profiles
-  def check_admin_access
+  def check_admin_access_old
     unset_cache_control_headers if user_signed_in?
     is_admin = user_signed_in? && current_user&.any_admin?
     not_found unless is_admin
+  end
+
+  def check_admin_access
+    not_found unless @is_admin
+  end
+
+  def set_is_admin
+    unless user_signed_in?
+      @is_admin = false
+      return
+    end
+    unset_cache_control_headers
+    @is_admin = current_user&.any_admin?
   end
 
   def set_user_limit
@@ -194,6 +207,7 @@ class StoriesController < ApplicationController
     not_found if @user.username.include?("spam_") && @user.decorate.fully_banished?
     not_found unless @user.registered
 
+    set_is_admin
     check_admin_access if @user.spam?
 
     if !user_signed_in? && (@user.suspended? && @user.has_no_published_content?)
@@ -312,10 +326,12 @@ class StoriesController < ApplicationController
     @comments = []
     return unless user_signed_in? && @user.comments_count.positive?
 
-    @comments = @user.comments.good_quality.where(deleted: false)
+    @comments = @user.comments.where(deleted: false)
       .order(created_at: :desc)
       .includes(commentable: [:podcast])
       .limit(comment_count)
+
+    @comments = @comments.good_quality unless @is_admin
   end
 
   def assign_user_stories
