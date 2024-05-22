@@ -103,6 +103,20 @@ RSpec.describe "UserProfiles" do
       end
     end
 
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true)
+        create(:article, user: user, score: -500, title: "Spam Article", published: true)
+      end
+
+      it "displays articles with good and bad score", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).to include("Spam Article")
+      end
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path
