@@ -20,7 +20,7 @@ class ArticleImageUploader < BaseUploader
     store!(temp_file)
 
     # Important: Ensure you return the URL of the uploaded file
-    stored_file_url = self.url  # This should return the actual URL where the file is stored
+    stored_file_url = self.url # This should return the actual URL where the file is stored
 
     # Cleanup
     temp_file.close
