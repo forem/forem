@@ -305,8 +305,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     end
   end
 
-  describe "confirms flag reactions when adding the spam role" do
-    # to remove profile header cache
+  describe "busts user profile header cache when adding the spam role" do
     it "touches profile" do
       spam_user = create(:user)
       profile = instance_double(Profile)
