@@ -80,6 +80,7 @@ module Moderator
         remove_notifications
         resolve_spam_reports
         confirm_flag_reactions
+        user.profile.touch
       when "Super Moderator"
         assign_elevated_role_to_user(user, :super_moderator)
         TagModerators::AddTrustedRole.call(user)
