@@ -96,7 +96,6 @@ RSpec.describe "UserProfiles" do
         expect(response.body).not_to include("low_comment")
         expect(response.body).not_to include("bad_comment")
       end
-      
       it "displays all comments (good standing + low score) for admins", :aggregate_failures do
         sign_in admin_user
         get user.path
