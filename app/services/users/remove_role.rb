@@ -19,6 +19,7 @@ module Users
       elsif user.remove_role(role)
         response.success = true
       end
+      user.profile.touch
       response
     rescue StandardError => e
       response.error_message = I18n.t("services.users.remove_role.error", e_message: e.message)
