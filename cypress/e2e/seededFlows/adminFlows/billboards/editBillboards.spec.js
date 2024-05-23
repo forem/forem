@@ -146,6 +146,9 @@ describe('Billboards Form', () => {
       });
 
       it('should generate errors if some or all of the input is invalid', () => {
+        cy.findByRole('combobox', { name: 'Placement Area:' }).select(
+          'Sidebar Right (Individual Post)',
+        );
         cy.findByRole('textbox', { name: 'Target Geolocations:' }).type(
           'US-NY, MX-CMX',
         );
