@@ -475,6 +475,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_132708) do
     t.boolean "approved", default: false
     t.integer "audience_segment_id"
     t.text "body_markdown"
+    t.integer "browser_context", default: 0, null: false
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false

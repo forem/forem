@@ -56,6 +56,7 @@ class Billboard < ApplicationRecord
   enum render_mode: { forem_markdown: 0, raw: 1 }
   enum template: { authorship_box: 0, plain: 1 }
   enum :special_behavior, { nothing: 0, delayed: 1 }
+  enum :browser_context, { all_browsers: 0, desktop: 1, mobile_web: 2, mobile_in_app: 3 }
 
   belongs_to :organization, optional: true
   has_many :billboard_events, foreign_key: :display_ad_id, inverse_of: :billboard, dependent: :destroy
@@ -90,7 +91,7 @@ class Billboard < ApplicationRecord
   self.table_name = "display_ads"
 
   def self.for_display(area:, user_signed_in:, user_id: nil, article: nil, user_tags: nil,
-                       location: nil, cookies_allowed: false, page_id: nil)
+                       location: nil, cookies_allowed: false, page_id: nil, user_agent: nil)
     permit_adjacent = article ? article.permit_adjacent_sponsors? : true
 
     billboards_for_display = Billboards::FilteredAdsQuery.call(
@@ -106,6 +107,7 @@ class Billboard < ApplicationRecord
       user_tags: user_tags,
       location: location,
       cookies_allowed: cookies_allowed,
+      user_agent: user_agent,
     )
 
     case rand(99) # output integer from 0-99
