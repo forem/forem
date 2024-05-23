@@ -12,6 +12,20 @@ module Redcarpet
         super(code, language.to_s.downcase)
       end
 
+      def image(link, title, alt_text)
+        # Check if the URL is an image and process accordingly
+        if %r{\Ahttps?://}.match?(link)
+          modified_url = MediaStore.find_by(original_url: link)&.output_url || link
+          title_attr = title ? %( title="#{title}") : ""
+          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
+          %(<img src="#{modified_url}"#{title_attr}#{alt_text_attr}/>)
+        else
+          title_attr = title ? %( title="#{title}") : ""
+          alt_text_attr = alt_text ? %( alt="#{alt_text}") : ""
+          %(<img src="#{link}"#{title_attr}#{alt_text_attr}/>)
+        end
+      end
+
       def link(link, _title, content)
         # Probably not the best fix but it does it's job of preventing
         # a nested links.

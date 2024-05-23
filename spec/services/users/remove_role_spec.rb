@@ -35,4 +35,14 @@ RSpec.describe Users::RemoveRole, type: :service do
 
     expect(role_removal.success).to be false
   end
+
+  # to update profile header cache
+  it "touches users profile" do
+    user = create(:user, :spam)
+    profile = instance_double(Profile)
+    allow(user).to receive(:profile).and_return(profile)
+    allow(profile).to receive(:touch)
+    described_class.call(user: user, role: :spam, resource_type: nil)
+    expect(profile).to have_received(:touch)
+  end
 end
