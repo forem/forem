@@ -50,18 +50,12 @@ class StoriesController < ApplicationController
 
   private
 
-  # for spam content we need to remove cache control headers to access current_user to check admin access
-  # so that admins could have access to spam articles and profiles
-  def check_admin_access_old
-    unset_cache_control_headers if user_signed_in?
-    is_admin = user_signed_in? && current_user&.any_admin?
-    not_found unless is_admin
-  end
-
   def check_admin_access
     not_found unless @is_admin
   end
 
+  # for spam content we need to remove cache control headers to access current_user to check admin access
+  # so that admins could have access to spam articles and profiles
   def set_is_admin
     unless user_signed_in?
       @is_admin = false
@@ -280,7 +274,10 @@ class StoriesController < ApplicationController
     not_found if permission_denied?
     not_found unless @article.user
 
-    check_admin_access if @article.user.spam?
+    if @article.user.spam?
+      set_is_admin
+      check_admin_access
+    end
 
     @pinned_article_id = PinnedArticle.id
 
