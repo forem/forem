@@ -1,4 +1,4 @@
-require 'open-uri'
+require "open-uri"
 class ArticleImageUploader < BaseUploader
   def store_dir
     "uploads/articles/"
