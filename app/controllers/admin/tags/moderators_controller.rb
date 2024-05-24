@@ -24,8 +24,8 @@ module Admin
         else
           flash[:error] = I18n.t("errors.messages.general", errors:
             I18n.t("admin.tags.moderators_controller.not_found_or",
-                 user_id: user.id,
-                 errors: result.errors))
+                   user_id: user.id,
+                   errors: result.errors))
         end
         redirect_to edit_admin_tag_path(params[:tag_id])
       end
