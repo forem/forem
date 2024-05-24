@@ -1,5 +1,7 @@
 module TagModerators
   class Add
+    Result = Struct.new(:success?, :errors, keyword_init: true)
+
     def self.call(user_id, tag_id)
       new(user_id, tag_id).call
     end
@@ -11,15 +13,22 @@ module TagModerators
 
     def call
       user = User.find(user_id)
-      tag = Tag.find(tag_id)
-      add_tag_mod_role(user, tag)
-      ::TagModerators::AddTrustedRole.call(user)
-      tag.update(supported: true) unless tag.supported?
+      notification_setting = user.notification_setting
+      if notification_setting.update(email_tag_mod_newsletter: true)
+        tag = Tag.find(tag_id)
+        add_tag_mod_role(user, tag)
+        ::TagModerators::AddTrustedRole.call(user)
+        tag.update(supported: true) unless tag.supported?
 
-      NotifyMailer
-        .with(user: user, tag: tag)
-        .tag_moderator_confirmation_email
-        .deliver_now
+        NotifyMailer
+          .with(user: user, tag: tag)
+          .tag_moderator_confirmation_email
+          .deliver_now
+
+        Result.new(success?: true)
+      else
+        Result.new(success?: false, errors: notification_setting.errors_as_sentence)
+      end
     end
 
     private

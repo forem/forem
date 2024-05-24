@@ -25,4 +25,18 @@ RSpec.describe TagModerators::Add, type: :service do
     described_class.call(user.id, unsupported_tag.id)
     expect(unsupported_tag.reload.supported?).to be true
   end
+
+  it "returns success when needed" do
+    result = described_class.call(user.id, tag.id)
+    expect(result.success?).to be true
+  end
+
+  it "returns error when notification setting is not updated" do
+    setting = instance_double(Users::NotificationSetting, update: false, errors_as_sentence: "invalid values")
+    double_user = instance_double(User, notification_setting: setting, id: -1)
+    allow(User).to receive(:find).with(double_user.id).and_return(double_user)
+    result = described_class.call(double_user.id, tag.id)
+    expect(result.success?).to be false
+    expect(result.errors).to eq("invalid values")
+  end
 end
