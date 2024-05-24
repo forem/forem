@@ -174,6 +174,27 @@ module Admin
       Credits::Manage.call(@user, credit_params)
     end
 
+    def add_tag_mod_role
+      user = User.find(params[:id])
+      tag = Tag.find_by(name: params[:tag_name])
+
+      unless tag
+        flash[:error] = "tag not found" # I18n.t("errors.messages.general")
+        return redirect_to admin_user_path(user.id)
+      end
+
+      result = TagModerators::Add.call(user.id, tag.id)
+      if result.success?
+        flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
+      else
+        flash[:error] = I18n.t("errors.messages.general", errors:
+          I18n.t("admin.tags.moderators_controller.not_found_or",
+               user_id: user.id,
+               errors: result.errors))
+      end
+      redirect_to admin_user_path(user.id)
+    end
+
     def export_data
       user = User.find(params[:id])
       send_to_admin = params[:send_to_admin].to_boolean
