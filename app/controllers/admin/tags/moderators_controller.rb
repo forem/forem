@@ -20,7 +20,7 @@ module Admin
 
         notification_setting = user.notification_setting
         if notification_setting.update(email_tag_mod_newsletter: true)
-          TagModerators::Add.call([user.id], [params[:tag_id]])
+          TagModerators::Add.call(user.id, params[:tag_id])
           flash[:success] =
             I18n.t("admin.tags.moderators_controller.added", username: user.username)
         else
