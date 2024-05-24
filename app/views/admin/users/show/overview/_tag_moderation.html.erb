@@ -24,6 +24,12 @@
     <% end %>
   </ul>
 <% end %>
+<%= form_with url: add_tag_mod_role_admin_user_path(@user.id), scope: :user, method: :post, local: true, html: { class: "" } do |f| %>
+  <div class="crayons-field w-50 my-4">
+    <%= f.text_field :tag_name, placeholder: "Tag name", size: 50, required: true, class: "crayons-textfield w-auto mr-3", autocomplete: "off" %>
+    <%= f.submit "Create tag mod role", class: "crayons-btn" %>
+  </div>
+<% end %>
 
 <div id="tag-moderation-description" class="crayons-notice crayons-notice--warning mt-4">
   <%= t("views.admin.users.overview.tag_mod.notice_html", tag_page: link_to(t("views.admin.users.overview.tag_mod.tag_page"),

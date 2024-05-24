@@ -207,6 +207,26 @@ RSpec.describe "Admin::Users" do
     end
   end
 
+  context "when adding tag moderator role" do
+    let(:tag) { create(:tag, name: "ruby") }
+
+    it "adds role", :aggregate_failures do
+      params = { user: { tag_name: tag.name } }
+      post add_tag_mod_role_admin_user_path(user.id), params: params
+      user.reload
+      expect(user.tag_moderator?(tag: tag)).to be true
+      expect(response).to redirect_to(admin_user_path(user.id))
+    end
+
+    it "displays tag not found message", :aggregate_failures do
+      tag_name = "su#{tag.name}per"
+      params = { user: { tag_name: tag_name } }
+      post add_tag_mod_role_admin_user_path(user.id), params: params
+      expect(flash[:error]).to include("Error: Tag \"#{tag_name}\" was not found")
+      expect(response).to redirect_to(admin_user_path(user.id))
+    end
+  end
+
   context "when deleting user" do
     def create_mention
       comment = create(
