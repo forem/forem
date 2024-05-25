@@ -15,12 +15,7 @@ module Users
     end
 
     def call
-      resource = if resource_id
-                   resource_type.find(resource_id)
-                 else
-                   resource_type
-                 end
-
+      resource = resource_id ? resource_type.find(resource_id) : resource_type
       if resource && user.remove_role(role, resource)
         response.success = true
       elsif user.remove_role(role)
