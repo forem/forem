@@ -205,6 +205,31 @@ RSpec.describe "Admin::Users" do
       expect(user.single_resource_admin_for?(Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
+
+    it "removes tag mod role (resource_type and resource_id passed)" do
+      tag = create(:tag)
+      role = user.add_role(:tag_moderator, tag)
+
+      expect do
+        delete admin_user_path(user.id),
+               params: { user_id: user.id, role_id: role.id, resource_type: "Tag", resource_id: tag.id }
+      end.to change(user.roles, :count).by(-1)
+    end
+
+    it "doesn't remove other tag mod role" do
+      tag = create(:tag)
+      tag2 = create(:tag)
+      role = user.add_role(:tag_moderator, tag)
+      role = user.add_role(:tag_moderator, tag2)
+
+      expect do
+        delete admin_user_path(user.id),
+               params: { user_id: user.id, role_id: role.id, resource_type: "Tag", resource_id: tag.id }
+      end.to change(user.roles, :count).by(-1)
+
+      user.reload
+      expect(user.tag_moderator?(tag: tag2)).to be true
+    end
   end
 
   context "when adding tag moderator role" do

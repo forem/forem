@@ -108,14 +108,13 @@ module Admin
       role = Role.find(params[:role_id])
       authorize(role, :remove_role?)
 
-      resource_type = params[:resource_type]
-
       @user = User.find(params[:user_id])
 
       response = ::Users::RemoveRole.call(
         user: @user,
         role: role.name,
-        resource_type: resource_type,
+        resource_type: params[:resource_type],
+        resource_id: params[:resource_id],
       )
 
       if response.success

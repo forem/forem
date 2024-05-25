@@ -328,7 +328,7 @@ en:
             icon: Mod
             desc: "Add a tag that this member can moderate. "
             remove: "Remove tag:"
-            notice_html: Adding tags for moderation is currently only possible through a particular %{tag_page}, by providing the username (%{username}).
+            notice_html: Adding tags for moderation is also possible through a particular %{tag_page}, by providing the username (%{username}).
             tag_page: tag's page
         priviliged_actions:
           description: The user flags affect the scores of articles and comments. Each valid or open user flag further reduces the score of the article and comment.
