@@ -12,6 +12,7 @@ RSpec.describe "rendering locals in a partial" do
              commentable: article,
              is_view_root: true,
              is_childless: true,
+             is_admin: false,
              subtree_html: ""
 
       expect(rendered).to match(/crayons-notice crayons-notice--warning low-quality-comment-marker/)

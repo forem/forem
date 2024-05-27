@@ -34,6 +34,7 @@ class BillboardsController < ApplicationController
         user_tags: user_tags,
         cookies_allowed: cookies_allowed?,
         location: client_geolocation,
+        user_agent: request.user_agent,
       )
 
       if @billboard && !session_current_user_id

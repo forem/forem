@@ -65,18 +65,6 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("/feed/#{user.username}")
     end
 
-    it "renders user payment pointer if set" do
-      user.update_column(:payment_pointer, "test-payment-pointer")
-      get "/#{user.username}"
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "test-payment-pointer"
-    end
-
-    it "does not render payment pointer if not set" do
-      get "/#{user.username}"
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     it "renders sidebar profile field elements in sidebar" do
       create(:profile_field, label: "whoaaaa", display_area: "left_sidebar")
       get "/#{user.username}"
@@ -112,6 +100,20 @@ RSpec.describe "UserProfiles" do
         get user.path
         expect(response.body).not_to include("nice_comment")
         expect(response.body).not_to include("bad_comment")
+      end
+    end
+
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true)
+        create(:article, user: user, score: -500, title: "Spam Article", published: true)
+      end
+
+      it "displays articles with good and bad score", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).to include("Spam Article")
       end
     end
 

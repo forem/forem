@@ -1,9 +1,9 @@
 <span class="ml-3 whitespace-nowrap" title="<%= t("views.admin.users.status_title") %>">
   <span class="screen-reader-only"><%= t("views.admin.users.status_reader") %></span>
-  <% if user.suspended? %>
-    <span data-testid="user-status" class="c-indicator c-indicator--danger c-indicator--relaxed"><%= t("views.admin.users.statuses.Suspended") %></span>
-  <% elsif user.spam? %>
+  <% if user.spam? %>
     <span data-testid="user-status" class="c-indicator c-indicator--danger c-indicator--relaxed"><%= t("views.admin.users.statuses.Spam") %></span>
+  <% elsif user.suspended? %>
+    <span data-testid="user-status" class="c-indicator c-indicator--danger c-indicator--relaxed"><%= t("views.admin.users.statuses.Suspended") %></span>
   <% elsif user.warned? %>
     <span data-testid="user-status" class="c-indicator c-indicator--warning c-indicator--relaxed"><%= t("views.admin.users.statuses.Warned") %></span>
   <% elsif user.comment_suspended? %>

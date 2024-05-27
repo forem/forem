@@ -57,7 +57,7 @@ module Admin
 
     def handle_article_cache
       article = Article.find(params[:bust_article].to_i)
-      article.touch(:last_commented_at)
+      article.touch(:last_comment_at)
       EdgeCache::BustArticle.call(article)
     end
 

@@ -269,6 +269,14 @@ RSpec.describe Images::Optimizer, type: :service do
       )
       expect(cloudflare_url).to eq("https://#{cloudfare_domain}/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/")
     end
+
+    it "outputs the proper url when a cloudflare domain is passed instead of nesting" do
+      cloudflare_url = described_class.cloudflare(
+        "https://images.example.com/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}",
+        width: 821, height: 420,
+      )
+      expect(cloudflare_url).to eq("https://images.example.com/cdn-cgi/image/width=821,height=420,fit=scale-down,gravity=auto,format=auto/#{CGI.escape(image_url)}")
+    end
   end
 
   describe "#cloudinary_enabled?" do
@@ -335,21 +343,22 @@ RSpec.describe Images::Optimizer, type: :service do
     let(:aws_bucket_name) { "mybucket" }
     let(:hosted_image_url) { "https://#{aws_bucket_name}.s3.amazonaws.com/path/to/image.jpg" }
     let(:non_hosted_image_url) { "https://example.com/path/to/image.jpg" }
-  
+
     before do
       allow(ApplicationConfig).to receive(:[]).with("AWS_BUCKET_NAME").and_return(aws_bucket_name)
+      allow(ApplicationConfig).to receive(:[]).with("CLOUDFLARE_IMAGES_DOMAIN").and_return("cloudflareimage.com")
     end
-  
+
     context "when cloudflare is enabled and feature flag is on" do
       before do
         allow(described_class).to receive(:cloudflare_enabled?).and_return(true)
         allow(FeatureFlag).to receive(:enabled?).with(:cloudflare_preferred_for_hosted_images).and_return(true)
       end
-  
+
       it "returns true for hosted images" do
         expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(true)
       end
-  
+
       it "returns false for non-hosted images" do
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)
       end
@@ -359,7 +368,7 @@ RSpec.describe Images::Optimizer, type: :service do
       before do
         allow(described_class).to receive(:cloudflare_enabled?).and_return(false)
       end
-  
+
       it "returns false regardless of image source" do
         expect(described_class.cloudflare_contextually_preferred?(hosted_image_url)).to be(false)
         expect(described_class.cloudflare_contextually_preferred?(non_hosted_image_url)).to be(false)

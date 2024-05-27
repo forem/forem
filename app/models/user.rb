@@ -5,6 +5,7 @@ class User < ApplicationRecord
   include CloudinaryHelper
 
   include Images::Profile.for(:profile_image_url)
+  include AlgoliaSearchable
 
   # NOTE: we are using an inline module to keep profile related things together.
   concerning :Profiles do
@@ -26,14 +27,6 @@ class User < ApplicationRecord
 
   extend UniqueAcrossModels
   USERNAME_MAX_LENGTH = 30
-  # follow the syntax in https://interledger.org/rfcs/0026-payment-pointers/#payment-pointer-syntax
-  PAYMENT_POINTER_REGEXP = %r{
-    \A                # start
-    \$                # starts with a dollar sign
-    ([a-zA-Z0-9\-.])+ # matches the hostname (ex ilp.uphold.com)
-    (/[\x20-\x7F]+)?  # optional forward slash and identifier with printable ASCII characters
-    \z
-  }x
 
   RECENTLY_ACTIVE_LIMIT = 10_000
 
@@ -138,7 +131,6 @@ class User < ApplicationRecord
   validates :following_users_count, presence: true
   validates :name, length: { in: 1..100 }, presence: true
   validates :password, length: { in: 8..100 }, allow_nil: true
-  validates :payment_pointer, format: PAYMENT_POINTER_REGEXP, allow_blank: true
   validates :rating_votes_count, presence: true
   validates :reactions_count, presence: true
   validates :sign_in_count, presence: true
@@ -231,7 +223,6 @@ class User < ApplicationRecord
 
   # make sure usernames are not empty, to be able to use the database unique index
   before_validation :set_username
-  before_validation :strip_payment_pointer
   before_create :create_users_settings_and_notification_settings_records
   after_update :refresh_auto_audience_segments
   before_destroy :remove_from_mailchimp_newsletters, prepend: true
@@ -315,6 +306,7 @@ class User < ApplicationRecord
     calculated_score = (badge_achievements_count * 10) + user_reaction_points
     calculated_score -= 500 if spam?
     update_column(:score, calculated_score)
+    AlgoliaSearch::SearchIndexWorker.perform_async(self.class.name, id, false)
   end
 
   def path
@@ -465,6 +457,7 @@ class User < ApplicationRecord
     to: :authorizer,
   )
   alias suspended suspended?
+  alias spam spam?
   ##############################################################################
   #
   # End Authorization Refactor
@@ -687,10 +680,6 @@ class User < ApplicationRecord
     return true if password == password_confirmation
 
     errors.add(:password, I18n.t("models.user.password_not_matched"))
-  end
-
-  def strip_payment_pointer
-    self.payment_pointer = payment_pointer.strip if payment_pointer
   end
 
   def confirmation_required?

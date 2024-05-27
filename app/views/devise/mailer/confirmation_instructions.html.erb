@@ -1,7 +1,7 @@
 <% if @user.creator? %>
   <%= render partial: "creator_confirmation_instructions", locals: { url: confirmation_url(@resource, confirmation_token: @token) } %>
 <% else %>
-  <p>Welcome <%= @email %>!</p>
+  <p>Welcome <%= @name %>!</p>
 
   <p>You can confirm your account email through the link below:</p>
 

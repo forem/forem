@@ -185,12 +185,6 @@ RSpec.describe User do
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
       it { is_expected.to allow_value("AcMe_1").for(:username) }
 
-      it { is_expected.not_to allow_value("$example.com/value\x1F").for(:payment_pointer) }
-      it { is_expected.not_to allow_value("example.com/value").for(:payment_pointer) }
-      it { is_expected.to allow_value(" $example.com/value ").for(:payment_pointer) }
-      it { is_expected.to allow_value(nil).for(:payment_pointer) }
-      it { is_expected.to allow_value("").for(:payment_pointer) }
-
       it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
       it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
       it { is_expected.to validate_length_of(:password).is_at_most(100).is_at_least(8) }
@@ -1019,6 +1013,52 @@ RSpec.describe User do
       it "does not call SocialImageWorker.perform_async" do
         user.save
         expect(Images::SocialImageWorker).not_to have_received(:perform_async)
+      end
+    end
+  end
+
+  context "when indexing with Algolia", :algolia do
+    it "indexes the user on create" do
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      create(:user)
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", kind_of(Integer), 
+false).once
+    end
+
+    it "updates user index if user's name has changed" do
+      user = create(:user)
+      allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
+      user.update(name: "New Name")
+      expect(AlgoliaSearch::SearchIndexWorker).to have_received(:perform_async).with("User", user.id, false).once
+    end
+
+    describe "#bad_actor?" do
+      it "returns false to a regular user" do
+        user = build(:user)
+        expect(user.bad_actor?).to be(false)
+      end
+
+      it "returns true if the user has negative score" do
+        user = build(:user, score: -500)
+        expect(user.bad_actor?).to be(true)
+      end
+
+      it "returns true if the user has spam role" do
+        user = build(:user)
+        user.add_role(:spam)
+        expect(user.bad_actor?).to be(true)
+      end
+
+      it "return true if user is suspended" do
+        user = build(:user)
+        user.add_role(:suspended)
+        expect(user.bad_actor?).to be(true)
+      end
+
+      it "return true if user is banished" do
+        user = build(:user)
+        allow(user).to receive(:banished?).and_return(true)
+        expect(user.bad_actor?).to be(true)
       end
     end
   end

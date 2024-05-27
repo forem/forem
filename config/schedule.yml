@@ -128,7 +128,7 @@ daily_home_cache_bust:
     - "/"
 send_email_digest:
   description: "Sends the email digest to users (runs at 11:30 UTC on Wednesday, Thursday, Friday, and Saturday)"
-  cron: "30 11 * * 3,4,5,6"
+  cron: "30 11 * * 1,2,3,4,5"
   class: "Emails::EnqueueDigestWorker"
 remove_old_notifications:
   description: "Deletes old notifications from the database (runs daily at 05:00 UTC)"

@@ -5,7 +5,7 @@ exports[`asyncUserStatusCheck user **is** suspended **does** badge the user 1`] 
     <div class=\\"profile-header__details\\" data-url=\\"/users/123\\" data-status-checked=\\"true\\">
       <div class=\\"js-username-container\\">
         <h1 class=\\"crayons-title\\">User Hasaname</h1>
-       <span data-testid=\\"user-status\\" class=\\"ml-3 c-indicator c-indicator--danger c-indicator--relaxed\\">Suspended</span></div>
+      <span data-testid=\\"user-status\\" class=\\"ml-3 c-indicator c-indicator--danger c-indicator--relaxed\\">Suspended</span></div>
       <p class=\\"\\">Animi et qui. Voluptatum voluptas omnis. Libero voluptatem cum. Unde.</p>
 
       <div class=\\"profile-header__meta\\">

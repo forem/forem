@@ -147,6 +147,7 @@ fr:
         latest_html: <strong>Récent</strong> montre tous les posts dans l'ordre chronologique, indépendamment de s'ils ont été examinés ou non.
       article:
         approved: Approuvée
+        email_digest_eligible: Éligible pour Digest
         author_id: Identifiant de l'auteur
         comments: commentaires
         contains_video: Contient une vidéo
