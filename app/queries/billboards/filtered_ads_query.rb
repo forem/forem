@@ -155,10 +155,8 @@ module Billboards
       # Always match in-house-type ads
       types_matching << :in_house
 
-      # If the article is an organization's article (non-nil organization_id),
-      # or if the current_user has opted-out of sponsors,
-      # then do not show external ads
-      if @organization_id.blank? && @permit_adjacent_sponsors
+      # If the author or current_user has opted out of seeing adjacent sponsors, do not show them
+      if @permit_adjacent_sponsors
         types_matching << :external
       end
 

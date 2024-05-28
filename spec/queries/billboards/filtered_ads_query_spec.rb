@@ -176,7 +176,7 @@ RSpec.describe Billboards::FilteredAdsQuery, type: :query do
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: no_ads_org.id
-      expect(filtered).to contain_exactly(in_house_ad)
+      expect(filtered).to contain_exactly(in_house_ad, external_ad, other_external)
       expect(filtered).not_to include(other_community)
 
       filtered = filter_billboards organization_id: nil
