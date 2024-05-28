@@ -167,7 +167,7 @@ export class FollowTags extends Component {
 
   render() {
     const { prev, currentSlideIndex, slidesCount } = this.props;
-    const { selectedTags, allTags, email_digest_periodic, article } = this.state;
+    const { selectedTags, allTags, email_digest_periodic } = this.state;
     const canSkip = selectedTags.length === 0;
     return (
       <div
