@@ -37,7 +37,7 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "home_hero" %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship crayons-story__billboard hero-billboard js-billboard"
+  <div class="crayons-card crayons-card--secondary crayons-bb crayons-story__billboard hero-billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -58,7 +58,7 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "post_fixed_bottom" || billboard.placement_area == "page_fixed_bottom" %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
+  <div class="crayons-card crayons-card--secondary crayons-bb popover-billboard crayons-story__billboard js-billboard fixed bottom-0 left-0 right-0"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -83,7 +83,7 @@
     </div>
   </div>
 <% elsif billboard.placement_area == "post_body_bottom" %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard body-billboard mb-2 mt-6"
+  <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard body-billboard mb-2 mt-6"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
@@ -97,7 +97,7 @@
     </div>
   </div>
 <% else %>
-  <div class="crayons-card crayons-card--secondary crayons-sponsorship billboard js-billboard"
+  <div class="crayons-card crayons-card--secondary crayons-bb billboard js-billboard"
     data-display-unit data-id="<%= billboard.id %>"
     data-category-click="<%= BillboardEvent::CATEGORY_CLICK %>"
     data-category-impression="<%= BillboardEvent::CATEGORY_IMPRESSION %>"
