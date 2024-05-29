@@ -76,8 +76,6 @@ function trackGoogleAnalytics4() {
       }
       if (wait > 85) {
         clearInterval(waitingOnGA4);
-        //The gem we're using server-side (Staccato) is not yet compatible with the Google Analytics 4 tracking code.
-        //More details: https://github.com/tpitale/staccato/issues/97 %>
         fallbackActivityRecording();
       }
     }, 25);
@@ -101,8 +99,8 @@ function fallbackActivityRecording() {
     user_language: navigator.language,
     referrer: document.referrer,
     user_agent: navigator.userAgent,
-    viewport_size: `${h  }x${  w}`,
-    screen_resolution: `${screenH  }x${  screenW}`,
+    viewport_size: `${h}x${w}`,
+    screen_resolution: `${screenH}x${screenW}`,
     document_title: document.title,
     document_encoding: document.characterSet,
     document_path: location.pathname + location.search,
