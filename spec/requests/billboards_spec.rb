@@ -151,7 +151,7 @@ RSpec.describe "Billboards" do
 
       it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-        expect(response.body).to include "crayons-sponsorship__header relative"
+        expect(response.body).to include "crayons-bb__header relative"
       end
 
       it "includes custom_display_label if set" do
@@ -168,7 +168,7 @@ RSpec.describe "Billboards" do
 
       it "includes authorship box html" do
         get article_billboard_path(username: article.username, slug: article.slug, placement_area: "post_comments")
-        expect(response.body).not_to include "crayons-sponsorship__header relative"
+        expect(response.body).not_to include "crayons-bb__header relative"
       end
     end
 
