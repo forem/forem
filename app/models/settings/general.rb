@@ -30,6 +30,7 @@ module Settings
     # Analytics and tracking
     setting :ga_tracking_id, type: :string, default: ApplicationConfig["GA_TRACKING_ID"]
     setting :ga_analytics_4_id, type: :string, default: ApplicationConfig["GA_ANALYTICS_4_ID"]
+    setting :ga_api_secret, type: :string, default: ApplicationConfig["GA_API_SECRET"]
     setting :cookie_banner_user_context, type: :string, default: "off", validates: {
       inclusion: { in: BANNER_USER_CONFIGS }
     }
