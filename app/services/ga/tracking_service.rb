@@ -9,14 +9,14 @@ module Ga
       @client_id = client_id
     end
 
-    def track_event(event_name, params = {})
+    def track_event(event_name, params = {}) # rubocop:disable Style/OptionHash
       payload = {
         client_id: @client_id,
         events: [
           {
             name: event_name,
             params: params
-          }
+          },
         ]
       }
 

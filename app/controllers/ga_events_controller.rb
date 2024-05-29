@@ -10,9 +10,10 @@ class GaEventsController < ApplicationController
     if Settings::General.ga_analytics_4_id.present? && Settings::General.ga_api_secret.present?
       json = JSON.parse(request.raw_post)
       user_id = user_signed_in? ? current_user.id : nil
-      client_id = generate_anonymous_client_id(json)
-
-      tracking_service = Ga::TrackingService.new(Settings::General.ga_analytics_4_id, Settings::General.ga_api_secret, client_id)
+      client_id = generate_anonymous_client_id
+      tracking_service = Ga::TrackingService.new(Settings::General.ga_analytics_4_id,
+                                                 Settings::General.ga_api_secret,
+                                                 client_id)
       tracking_service.track_event("page_view", event_params(json, user_id))
     end
     render body: nil
@@ -20,7 +21,7 @@ class GaEventsController < ApplicationController
 
   private
 
-  def generate_anonymous_client_id(json)
+  def generate_anonymous_client_id
     client_id = cookies[:client_id] || "#{scrambled_ip[0..12]}.#{SecureRandom.uuid}"
     cookies[:client_id] = { value: client_id, expires: 1.year.from_now }
     client_id
