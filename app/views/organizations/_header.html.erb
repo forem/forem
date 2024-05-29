@@ -61,8 +61,8 @@
                 <%= crayons_icon_tag(:github, title: t("views.organizations.github.icon")) %>
               </a>
             <% end %>
-            <% if @user.profile.website_url.present? %>
-              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
+            <% if @user&.profile&.website_url.present? %>
+              <a href="<%= @user&.profile&.website_url %>" target="_blank" rel="noopener nofollow me" class="px-1 align-middle inline-block">
                 <%= crayons_icon_tag("external-link", title: t("views.organizations.external.icon")) %>
               </a>
             <% end %>
