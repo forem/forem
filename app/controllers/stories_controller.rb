@@ -180,6 +180,9 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     @organization_users = @organization.users.order(badge_achievements_count: :desc)
+    if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
+      not_found
+    end
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
