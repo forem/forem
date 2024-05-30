@@ -7,7 +7,7 @@ end %>
 
 <nav class="mb-4 <% unless user_signed_in? %>mt-4<% end %>" data-testid="main-nav" aria-label="<%= community_name %>">
   <ul class="default-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
-    <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:default_nav_ids]).ordered, as: :link, cached: true %>
+    <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:default_nav_ids]).ordered, as: :link %>
   </ul>
 </nav>
 
@@ -20,7 +20,7 @@ end %>
       <%= t("views.main.nav.other") %>
     </h2>
     <ul class="other-navigation-links sidebar-navigation-links spec-sidebar-navigation-links">
-      <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:other_nav_ids]).ordered, as: :link, cached: true %>
+      <%= render partial: "layouts/sidebar_nav_link", collection: NavigationLink.where(id: navigation_links[:other_nav_ids]).ordered, as: :link %>
     </ul>
   </nav>
 <% end %>
