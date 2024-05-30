@@ -436,7 +436,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
-      @user.profile.website_url,
+      @user&.profile&.website_url,
     ].compact_blank
   end
 
