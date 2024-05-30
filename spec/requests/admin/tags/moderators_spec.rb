@@ -28,6 +28,14 @@ RSpec.describe "/admin/content_manager/tags/:id/moderator" do
       expect(response).to redirect_to(edit_admin_tag_path(tag.id))
       expect(flash[:error]).to include("Username \"any_username\" was not found")
     end
+
+    it "displays error message when notification settings are not updated" do
+      result = instance_double(TagModerators::Add::Result, success?: false, errors: "invalid setting")
+      allow(TagModerators::Add).to receive(:call).with(user.id, tag.id.to_s).and_return(result)
+
+      post admin_tag_moderator_path(tag.id), params: { tag_id: tag.id, tag: { username: user.username } }
+      expect(flash[:error]).to include("or their account has errors: invalid setting")
+    end
   end
 
   describe "DELETE /admin/content_manager/tags/:id/moderator" do

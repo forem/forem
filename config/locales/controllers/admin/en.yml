@@ -143,6 +143,7 @@ en:
       updated_json: Success! %{username} has been updated.
       credits_added: Credits have been added!
       credits_removed: Credits have been removed.
+      tag_not_found: 'Tag "%{tag_name}" was not found'
     welcome_controller:
       thread_content: |
         ---

@@ -18,16 +18,14 @@ module Admin
           return redirect_to edit_admin_tag_path(params[:tag_id])
         end
 
-        notification_setting = user.notification_setting
-        if notification_setting.update(email_tag_mod_newsletter: true)
-          TagModerators::Add.call([user.id], [params[:tag_id]])
-          flash[:success] =
-            I18n.t("admin.tags.moderators_controller.added", username: user.username)
+        result = TagModerators::Add.call(user.id, params[:tag_id])
+        if result.success?
+          flash[:success] = I18n.t("admin.tags.moderators_controller.added", username: user.username)
         else
           flash[:error] = I18n.t("errors.messages.general", errors:
             I18n.t("admin.tags.moderators_controller.not_found_or",
                    user_id: user.id,
-                   errors: notification_setting.errors_as_sentence))
+                   errors: result.errors))
         end
         redirect_to edit_admin_tag_path(params[:tag_id])
       end
