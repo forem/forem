@@ -94,8 +94,7 @@ describe('EmailPreferencesForm', () => {
   });
 
   it('should show the reconsideration prompt when the checkbox is not checked', async () => {
-    const { getByText, findByLabelText } = renderEmailPreferencesForm();
-    const checkbox = await findByLabelText(/receive weekly newsletter/i);
+    const { getByText } = renderEmailPreferencesForm();
     const finishButton = getByText('Finish');
 
     fireEvent.click(finishButton);
@@ -124,8 +123,7 @@ describe('EmailPreferencesForm', () => {
   });
 
   it('should handle "Count me in" button click in the reconsideration prompt', async () => {
-    const { getByText, findByLabelText } = renderEmailPreferencesForm();
-    const checkbox = await findByLabelText(/receive weekly newsletter/i);
+    const { getByText } = renderEmailPreferencesForm();
     const finishButton = getByText('Finish');
 
     fireEvent.click(finishButton);
