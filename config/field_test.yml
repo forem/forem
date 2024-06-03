@@ -27,8 +27,29 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_article_ordering_05_31:
+    started_at: 2024-05-31
+    variants:
+      - base
+      - more_weight_on_clickbait
+      - much_more_weight_on_clickbait
+      - much_much_more_weight_on_clickbait
+      - much_much_much_more_weight_on_clickbait
+    weights:
+      - 60
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_article_ordering_05_20:
     started_at: 2024-05-20
+    ended_at: 2024-05-31
+    winner: more_weight_on_clickbait
     variants:
       - base
       - more_weight_on_clickbait
