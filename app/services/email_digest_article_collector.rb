@@ -58,6 +58,11 @@ class EmailDigestArticleCollector
                      .limit(RESULTS_COUNT)
                  end
 
+      # Pop second article to front if the first article is the same as the last email
+      if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
+        articles = articles[1..] + [articles.first]
+      end
+
       articles.length < 3 ? [] : articles
     end
     # rubocop:enable Metrics/BlockLength
@@ -65,6 +70,7 @@ class EmailDigestArticleCollector
 
   def should_receive_email?
     return true unless last_email_sent
+    return true if (last_email_sent < 8.hours.ago) && last_email_clicked?
 
     email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
     return false if email_sent_within_lookback_period && !recent_tracked_click?
@@ -81,6 +87,10 @@ class EmailDigestArticleCollector
       .where.not(clicked_at: nil).any?
   end
 
+  def last_email_clicked?
+    @user.email_messages.where(mailer: "DigestMailer#digest_email").last&.clicked_at.present?
+  end
+
   def last_email_sent
     @last_email_sent ||=
       @user.email_messages
@@ -88,11 +98,17 @@ class EmailDigestArticleCollector
         .maximum(:sent_at)
   end
 
+  def last_email_includes_title_in_subject?(title)
+    @user.email_messages
+      .where(mailer: "DigestMailer#digest_email")
+      .last&.subject&.include?(title)
+  end
+
   def cutoff_date
     a_few_days_ago = 7.days.ago.utc
     return a_few_days_ago unless last_email_sent
 
-    [a_few_days_ago, (last_email_sent - 12.hours)].max
+    [a_few_days_ago, (last_email_sent - 18.hours)].max
   end
 
   def user_has_followings?
