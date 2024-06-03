@@ -66,7 +66,7 @@ class EmailDigestArticleCollector
   def should_receive_email?
     return true unless last_email_sent
 
-    email_sent_within_lookback_period = last_email_sent >= (Settings::General.periodic_email_digest.days.ago - 6.hours)
+    email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
     return false if email_sent_within_lookback_period && !recent_tracked_click?
 
     true
