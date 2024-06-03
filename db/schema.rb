@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_23_132708) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -1409,6 +1409,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_23_132708) do
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
+    t.text "content_preferences_input"
+    t.datetime "content_preferences_updated_at"
     t.datetime "created_at", null: false
     t.boolean "display_announcements", default: true, null: false
     t.boolean "display_email_on_profile", default: false, null: false
