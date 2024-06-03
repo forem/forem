@@ -28,9 +28,11 @@ module Users
     validates :feed_referential_link, inclusion: { in: [true, false] }
     validates :feed_url, length: { maximum: 500 }, allow_nil: true
     validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
+    validates :content_preferences_input, length: { maximum: 1250 }, allow_nil: true
 
     validate :validate_feed_url, if: :feed_url_changed?
 
+    before_update :update_content_preferences_updated_at_if_changed
     after_update :refresh_auto_audience_segments
 
     def resolved_font_name
@@ -51,6 +53,12 @@ module Users
       errors.add(:feed_url, I18n.t("models.users.setting.invalid_rss")) unless valid
     rescue StandardError => e
       errors.add(:feed_url, e.message)
+    end
+
+    def update_content_preferences_updated_at_if_changed
+      return unless content_preferences_input.present? && content_preferences_input_changed?
+
+      self.content_preferences_updated_at = Time.current
     end
   end
 end

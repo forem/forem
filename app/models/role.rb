@@ -1,6 +1,7 @@
 class Role < ApplicationRecord
   ROLES = %w[
     admin
+    augmented
     codeland_admin
     comment_suspended
     creator

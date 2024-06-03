@@ -137,6 +137,10 @@ module Authorizer
       has_role?(:spam)
     end
 
+    def augmented?
+      has_role?(:augmented)
+    end
+
     def spam_or_suspended?
       has_any_role?(:spam, :suspended)
     end
