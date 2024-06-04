@@ -3,7 +3,7 @@ class EmailDigest
     new(users, starting_id, ending_id).send_periodic_digest_email
   end
 
-  def initialize(users = [], starting_id = nil, ending_id = nil)
+  def initialize(users = [], starting_id = 1, ending_id = 50_000_000)
     @users = users.empty? ? get_users(starting_id, ending_id) : users
   end
 
