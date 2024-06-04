@@ -11,7 +11,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(articles.length).to eq(3)
       end
 
-      it "marks as not ready if there isn't atleast 3 articles" do
+      it "marks as not ready if there isn't at least 3 articles" do
         create_list(:article, 2, public_reactions_count: 40, score: 40)
         articles = described_class.new(user).articles_to_send
         expect(articles).to be_empty
@@ -77,6 +77,33 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(digest2.size).to eq 0
       end
     end
+
+    context "when the last email included the title of the first article" do
+      it "bumps the second article to the front" do
+        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 25.hours.ago,
+                             clicked_at: 20.hours.ago,
+                             subject: articles.first.title)
+        result = described_class.new(user).articles_to_send
+
+        expect(result.first.title).to eq articles.second.title
+        expect(result.last.title).to eq articles.first.title
+      end
+    end
+
+    context "when the last email does not include the title of any articles" do
+      it "makes first article come first" do
+        articles = create_list(:article, 5, public_reactions_count: 40, featured: true, score: 40)
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 25.hours.ago,
+                             clicked_at: 20.hours.ago,
+                             subject: "Some other title magoo")
+        result = described_class.new(user).articles_to_send
+
+        expect(result.first.title).to eq articles.first.title
+      end
+    end
   end
 
   describe "#should_receive_email?" do
@@ -132,12 +159,20 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         expect(collector.should_receive_email?).to be true
       end
 
-      it "returns false when there is a sent at within the thredhold" do
+      it "returns false when there is a sent at within the threshold" do
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 33.days.ago, clicked_at: 32.days.ago)
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
                              user_id: user.id, sent_at: 2.days.ago)
         expect(collector.should_receive_email?).to be false
+      end
+    end
+
+    context "when the user clicked the last email" do
+      it "marks 'should send email' as yes" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 2.days.ago, clicked_at: 1.day.ago)
+        expect(collector.should_receive_email?).to be true
       end
     end
   end

@@ -65,18 +65,6 @@ RSpec.describe "UserProfiles" do
       expect(response.body).not_to include("/feed/#{user.username}")
     end
 
-    it "renders user payment pointer if set" do
-      user.update_column(:payment_pointer, "test-payment-pointer")
-      get "/#{user.username}"
-      expect(response.body).to include "author-payment-pointer"
-      expect(response.body).to include "test-payment-pointer"
-    end
-
-    it "does not render payment pointer if not set" do
-      get "/#{user.username}"
-      expect(response.body).not_to include "author-payment-pointer"
-    end
-
     it "renders sidebar profile field elements in sidebar" do
       create(:profile_field, label: "whoaaaa", display_area: "left_sidebar")
       get "/#{user.username}"
@@ -112,6 +100,20 @@ RSpec.describe "UserProfiles" do
         get user.path
         expect(response.body).not_to include("nice_comment")
         expect(response.body).not_to include("bad_comment")
+      end
+    end
+
+    context "when has articles" do
+      before do
+        create(:article, user: user, title: "Super Article", published: true)
+        create(:article, user: user, score: -500, title: "Spam Article", published: true)
+      end
+
+      it "displays articles with good and bad score", :aggregate_failures do
+        sign_in current_user
+        get user.path
+        expect(response.body).to include("Super Article")
+        expect(response.body).to include("Spam Article")
       end
     end
 
@@ -160,6 +162,54 @@ RSpec.describe "UserProfiles" do
       it "does not render feed link if no stories" do
         get organization.path
         expect(response.body).not_to include("/feed/#{organization.slug}")
+      end
+
+      it "shows noindex when org has no articles" do
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "shows noindex when org has articles with negative total score" do
+        create(:article, organization_id: organization.id, score: 2)
+        create(:article, organization_id: organization.id, score: -4)
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "shows noindex when org has only articles with no score" do
+        create(:article, organization_id: organization.id, score: 0)
+        get organization.path
+        expect(response.body).to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "does not show noindex when org has articles with positive score" do
+        create(:article, organization_id: organization.id, score: 4)
+        get organization.path
+        expect(response.body).not_to include("<meta name=\"robots\" content=\"noindex\">")
+      end
+
+      it "raises not found if articles have 0 total score and org users have negative total score" do
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 0)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        expect { get organization.path }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it "does not raise not found if articles have positive total score even if users have negative total score" do
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 1)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        get organization.path
+        expect(response).to be_successful
+      end
+
+      it "does not raise not found if user signed in" do
+        sign_in current_user
+        user.update_column(:score, -1)
+        create(:article, organization_id: organization.id, score: 0)
+        create(:organization_membership, user_id: user.id, organization_id: organization.id)
+        get organization.path
+        expect(response).to be_successful
       end
     end
 

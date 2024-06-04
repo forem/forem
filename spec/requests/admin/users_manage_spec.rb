@@ -205,6 +205,51 @@ RSpec.describe "Admin::Users" do
       expect(user.single_resource_admin_for?(Broadcast)).to be true
       expect(request.flash["success"]).to include("successfully removed from the user!")
     end
+
+    it "removes tag mod role (resource_type and resource_id passed)" do
+      tag = create(:tag)
+      role = user.add_role(:tag_moderator, tag)
+
+      expect do
+        delete admin_user_path(user.id),
+               params: { user_id: user.id, role_id: role.id, resource_type: "Tag", resource_id: tag.id }
+      end.to change(user.roles, :count).by(-1)
+    end
+
+    it "doesn't remove other tag mod role" do
+      tag = create(:tag)
+      tag2 = create(:tag)
+      role = user.add_role(:tag_moderator, tag)
+      role = user.add_role(:tag_moderator, tag2)
+
+      expect do
+        delete admin_user_path(user.id),
+               params: { user_id: user.id, role_id: role.id, resource_type: "Tag", resource_id: tag.id }
+      end.to change(user.roles, :count).by(-1)
+
+      user.reload
+      expect(user.tag_moderator?(tag: tag2)).to be true
+    end
+  end
+
+  context "when adding tag moderator role" do
+    let(:tag) { create(:tag, name: "ruby") }
+
+    it "adds role", :aggregate_failures do
+      params = { user: { tag_name: tag.name } }
+      post add_tag_mod_role_admin_user_path(user.id), params: params
+      user.reload
+      expect(user.tag_moderator?(tag: tag)).to be true
+      expect(response).to redirect_to(admin_user_path(user.id))
+    end
+
+    it "displays tag not found message", :aggregate_failures do
+      tag_name = "su#{tag.name}per"
+      params = { user: { tag_name: tag_name } }
+      post add_tag_mod_role_admin_user_path(user.id), params: params
+      expect(flash[:error]).to include("Error: Tag \"#{tag_name}\" was not found")
+      expect(response).to redirect_to(admin_user_path(user.id))
+    end
   end
 
   context "when deleting user" do

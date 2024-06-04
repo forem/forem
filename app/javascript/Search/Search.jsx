@@ -110,7 +110,7 @@ export class Search extends Component {
     searchBox.select();
   };
 
-  render({ searchTerm, branding }) {
+  render({ searchTerm, branding, algoliaId, algoliaSearchKey }) {
     return (
       <Fragment>
         <KeyboardShortcuts
@@ -123,6 +123,8 @@ export class Search extends Component {
           searchTerm={searchTerm}
           onSubmitSearch={this.submit}
           branding={branding}
+          algoliaId={algoliaId}
+          algoliaSearchKey={algoliaSearchKey}
           ref={this.searchInputRef}
         />
       </Fragment>

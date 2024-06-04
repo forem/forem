@@ -190,6 +190,34 @@ RSpec.describe MarkdownProcessor::Parser, type: :service do
     end
   end
 
+  describe "image URL processing" do
+    let(:original_url) { "https://example.com/image.jpg" }
+    let(:modified_url) { "https://modified.com/image.jpg" }
+
+    before do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(double(output_url: modified_url)) # rubocop:disable RSpec/VerifiedDoubles
+    end
+
+    it "replaces the image URL in the HTML but not in the Markdown" do
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(modified_url)
+      expect(rendered_html).not_to include(original_url)
+      expect(markdown).to include(original_url)
+    end
+
+    it "falls back to the original URL if no modified URL is found" do
+      allow(MediaStore).to receive(:find_by).with(original_url: original_url)
+        .and_return(nil)
+      markdown = "![alt text](#{original_url})"
+      rendered_html = generate_and_parse_markdown(markdown)
+
+      expect(rendered_html).to include(original_url)
+    end
+  end
+
   describe "mentions" do
     let(:user) { build_stubbed(:user) }
 

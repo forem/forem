@@ -9,8 +9,12 @@ module Admin
     }.with_indifferent_access.freeze
 
     def index
-      @organizations = Organization.simple_name_match(params[:search].presence)
-        .page(params[:page]).per(PER_PAGE_MAX)
+      @organizations = Organization.page(params[:page]).per(PER_PAGE_MAX)
+      @organizations = if params[:search].present?
+                         @organizations.simple_name_match(params[:search].presence)
+                       else
+                         @organizations.order("created_at DESC")
+                       end
     end
 
     def show

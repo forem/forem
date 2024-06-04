@@ -1,24 +1,24 @@
-<div class="crayons-sponsorship__header relative">
+<div class="crayons-bb__header relative">
   <% if (billboard.organization_id? || billboard.custom_display_label.present?) && (billboard.type_of == "community" || billboard.type_of == "external") %>
     <div class="flex">
       <% if billboard.custom_display_label.present? %>
-        <div class="crayons-sponsorship__title"><%= billboard.custom_display_label %></div>
+        <div class="crayons-bb__title"><%= billboard.custom_display_label %></div>
       <% else %>
         <a href="<%= billboard.organization.path %>" target="_blank" rel="noopener" class="flex">
-          <img width="24" height="24" class="radius-default crayons-sponsorship__image" src="<%= billboard.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
-          <div class="crayons-sponsorship__title ml-2 fs-s fw-medium"><%= billboard.organization.name %></div>
+          <img width="24" height="24" class="radius-default crayons-bb__image" src="<%= billboard.organization.profile_image_url_for(length: 64) %>" alt="profile" loading="lazy" />
+          <div class="crayons-bb__title ml-2 fs-s fw-medium"><%= billboard.organization.name %></div>
         </a>
       <% end %>
       <% if billboard.type_of == "external" %>
-        <span class="crayons-sponsorship__indicator c-indicator c-indicator--subtle c-indicator--round fs-2xs fw-medium ml-2 py-1 px-2"><%= I18n.t("billboard.promoted") %></span>
+        <span class="crayons-bb__indicator c-indicator c-indicator--subtle c-indicator--round fs-2xs fw-medium ml-2 py-1 px-2"><%= I18n.t("billboard.promoted") %></span>
       <% end %>
     </div>
   <% else %>
-    <div class="crayons-sponsorship__title"><%= billboard.custom_display_label.presence || Settings::Community.community_name %></div>
+    <div class="crayons-bb__title"><%= billboard.custom_display_label.presence || Settings::Community.community_name %></div>
   <% end %>
 
   <button id="sponsorship-dropdown-trigger-<%= billboard.id %>" aria-controls="sponsorship-dropdown-<%= billboard.id %>" aria-expanded="false" aria-haspopup="true"
-    class="dropBtn crayons-sponsorship__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
+    class="dropBtn crayons-bb__dropdown crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon"
     aria-label="<%= t("billboard.menu.aria_label") %>">
       <%= crayons_icon_tag("small-overflow-horizontal", class: "pointer-events-none", title: t("billboard.menu.icon")) %>
   </button>
