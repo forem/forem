@@ -136,7 +136,7 @@ class UserDecorator < ApplicationDecorator
 
   # Returns the users profile summary or a placeholder text
   def profile_summary
-    profile.summary.presence || DEFAULT_PROFILE_SUMMARY.call
+    profile&.summary.presence || DEFAULT_PROFILE_SUMMARY.call
   end
 
   delegate :display_sponsors, to: :setting
