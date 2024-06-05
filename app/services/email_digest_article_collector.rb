@@ -70,7 +70,8 @@ class EmailDigestArticleCollector
 
   def should_receive_email?
     return true unless last_email_sent
-    return true if (last_email_sent < 8.hours.ago) && last_email_clicked?
+    return false if last_email_sent > 18.hours.ago
+    return true if last_email_clicked?
 
     email_sent_within_lookback_period = last_email_sent >= Settings::General.periodic_email_digest.days.ago
     return false if email_sent_within_lookback_period && !recent_tracked_click?

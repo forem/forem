@@ -168,11 +168,31 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
       end
     end
 
-    context "when the user clicked the last email" do
-      it "marks 'should send email' as yes" do
+    context "when the last email sent is more than 18 hours ago" do
+      it "sends if last email clicked" do
         Ahoy::Message.create(mailer: "DigestMailer#digest_email",
-                             user_id: user.id, sent_at: 2.days.ago, clicked_at: 1.day.ago)
+                             user_id: user.id, sent_at: 19.hours.ago, clicked_at: 1.day.ago)
         expect(collector.should_receive_email?).to be true
+      end
+
+      it "does not send if last email is not clicked" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 19.hours.ago, clicked_at: nil)
+        expect(collector.should_receive_email?).to be false
+      end
+    end
+
+    context "when the last email sent is less than 18 hours ago" do
+      it "does not send if last email is clicked" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 17.hours.ago, clicked_at: 12.hours.ago)
+        expect(collector.should_receive_email?).to be false
+      end
+
+      it "does not send if last email clicked is false" do
+        Ahoy::Message.create(mailer: "DigestMailer#digest_email",
+                             user_id: user.id, sent_at: 17.hours.ago, clicked_at: nil)
+        expect(collector.should_receive_email?).to be false
       end
     end
   end
