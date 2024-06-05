@@ -25,6 +25,21 @@ RSpec.describe "AhoyEmails" do
           .with(:click,
                 hash_including(token: token, campaign: campaign, url: url, controller: controller))
       end
+
+      it "Records billboard event if params[:bb] present" do
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        # Stub the publish method to prevent external calls
+        controller = an_instance_of(Ahoy::EmailClicksController)
+        allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
+
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature, bb: bb_1.id }
+
+        expect(response).to have_http_status(:ok)
+        expect(AhoyEmail::Utils).to have_received(:publish)
+          .with(:click,
+                hash_including(token: token, campaign: campaign, url: url, controller: controller))
+        expect(BillboardEvent.where(billboard_id: bb_1.id, category: "click").size).to be(1)
+      end
     end
 
     context "with an invalid signature" do

@@ -11,6 +11,7 @@ module Ahoy
         controller: self
       }
       AhoyEmail::Utils.publish(:click, data)
+      track_billboard if params[:bb].present?
       head :ok # Renders a blank response with a 200 OK status
     end
 
@@ -29,7 +30,16 @@ module Ahoy
     end
 
     def ahoy_params
-      params.permit(:t, :c, :u, :s)
+      params.permit(:t, :c, :u, :s, :bb)
+    end
+
+    def track_billboard
+      BillboardEvent.create(billboard_id: ahoy_params[:bb].to_i,
+                            category: "click",
+                            user_id: current_user&.id,
+                            context_type: "email")
+    rescue StandardError => e
+      Rails.logger.error "Error processing billboard click: #{e.message}"
     end
   end
 end

@@ -14,7 +14,7 @@ module AhoyEmail
     protected
 
     # rubocop:disable Metrics/CyclomaticComplexity
-    def track_links
+    def track_links # rubocop:disable Metrics/PerceivedComplexity
       return unless html_part?
 
       part = message.html_part || message
