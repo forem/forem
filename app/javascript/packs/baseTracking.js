@@ -195,6 +195,7 @@ function trackEmailClicks() {
         c: urlParams.get('c'),
         u: decodeURIComponent(urlParams.get('u')),
         s: urlParams.get('s'),
+        bb: urlParams.get('bb'),
       };
       window.fetch('/ahoy/email_clicks', {
         method: 'POST',
@@ -210,6 +211,7 @@ function trackEmailClicks() {
       urlParams.delete('u');
       urlParams.delete('s');
       urlParams.delete('ahoy_click');
+      urlParams.delete('bb');
       const newUrl = `${window.location.pathname  }?${  urlParams.toString()}`;
       window.history.replaceState({}, null, newUrl);
     }
