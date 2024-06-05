@@ -24,7 +24,7 @@ module Emails
         DigestMailer.with(user: user, articles: articles.to_a, billboards: [first_billboard, second_billboard])
           .digest_email.deliver_now
 
-        event_params = { user_id: user.id, context_type: "email", category: "impression"}
+        event_params = { user_id: user.id, context_type: "email", category: "impression" }
         BillboardEvent.create(event_params.merge(billboard_id: first_billboard.id)) if first_billboard.present?
         BillboardEvent.create(event_params.merge(billboard_id: second_billboard.id)) if second_billboard.present?
       rescue StandardError => e
