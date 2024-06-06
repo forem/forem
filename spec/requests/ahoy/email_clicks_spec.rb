@@ -41,6 +41,22 @@ RSpec.describe "AhoyEmails" do
         expect(BillboardEvent.where(billboard_id: bb_1.id, category: "click").size).to be(1)
         expect(bb_1.reload.clicks_count).to be(1)
       end
+
+      it "records feed event if article with url path exists" do
+        article = create(:article)
+        url = URL.article(article)
+        signature = AhoyEmail::Utils.signature(token: token, campaign: campaign, url: url)
+        controller = an_instance_of(Ahoy::EmailClicksController)
+        allow(AhoyEmail::Utils).to receive(:publish).and_return(true)
+
+        post ahoy_email_clicks_path, params: { t: token, c: campaign, u: url, s: signature }
+
+        expect(response).to have_http_status(:ok)
+        expect(AhoyEmail::Utils).to have_received(:publish)
+          .with(:click,
+                hash_including(token: token, campaign: campaign, url: url, controller: controller))
+        expect(FeedEvent.where(article_id: article.id, category: "click", context_type: "email").size).to be(1)
+      end
     end
 
     context "with an invalid signature" do

@@ -12,6 +12,7 @@ module Ahoy
       }
       AhoyEmail::Utils.publish(:click, data)
       track_billboard if params[:bb].present?
+      record_feed_event if @url.present?
       head :ok # Renders a blank response with a 200 OK status
     end
 
@@ -55,6 +56,20 @@ module Ahoy
         clicks_count: num_clicks,
         impressions_count: num_impressions,
       )
+    end
+
+    def record_feed_event
+      path = URI.parse(@url).path
+      article = Article.find_by(path: path)
+      return unless article
+
+      FeedEvent.create(article_id: article.id,
+                       user_id: current_user&.id,
+                       article_position: 1,
+                       category: "click",
+                       context_type: "email")
+    rescue StandardError => e
+      Rails.logger.error "Error processing feed click: #{e.message}"
     end
   end
 end
