@@ -39,6 +39,7 @@ RSpec.describe "AhoyEmails" do
           .with(:click,
                 hash_including(token: token, campaign: campaign, url: url, controller: controller))
         expect(BillboardEvent.where(billboard_id: bb_1.id, category: "click").size).to be(1)
+        expect(bb_1.reload.clicks_count).to be(1)
       end
     end
 
