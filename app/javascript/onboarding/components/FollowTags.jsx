@@ -17,6 +17,7 @@ export class FollowTags extends Component {
     this.state = {
       allTags: [],
       selectedTags: [],
+      article: null,
       email_digest_periodic: emailState,
     };
   }
@@ -25,7 +26,13 @@ export class FollowTags extends Component {
     fetch('/onboarding/tags')
       .then((response) => response.json())
       .then((data) => {
-        this.setState({ allTags: data });
+        const newState = { allTags: data };
+        if (localStorage && localStorage.getItem('onboarding_article')) {
+          const article = JSON.parse(localStorage.getItem('onboarding_article'));
+          newState.article = article;
+          newState.selectedTags = data.filter((tag) => article.tags.includes(tag.name));
+        }
+        this.setState(newState);
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -142,11 +149,26 @@ export class FollowTags extends Component {
     return <p className="color-base-60 fs-base">{followingStatus}</p>;
   }
 
+  renderArticleContent() {
+    const { article } = this.state;
+    if (!article) {
+      return '';
+    }
+    if (article) {
+      return (
+        <div class='py-2 fs-xs color-base-70' style='line-height: 125% !important'>
+          <em>
+            Tags improve your feed. Please leave reactions to further improve your feed. To get started, a "like" reaction has been added to the post <strong>{article.title}</strong>. Feel free to undo it later.
+          </em>
+        </div>
+      );
+    }
+  }
+
   render() {
     const { prev, currentSlideIndex, slidesCount } = this.props;
     const { selectedTags, allTags, email_digest_periodic } = this.state;
     const canSkip = selectedTags.length === 0;
-
     return (
       <div
         data-testid="onboarding-follow-tags"
@@ -211,6 +233,7 @@ export class FollowTags extends Component {
                 );
               })}
             </div>
+            {this.renderArticleContent()}
           </div>
           <span class="onboarding-content-separator" />
           <div

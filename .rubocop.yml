@@ -963,7 +963,7 @@ RSpec/MultipleExpectations:
   Max: 8
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations
 
-RSpec/Rails/AvoidSetupHook:
+RSpecRails/AvoidSetupHook:
   Description: Checks that tests use RSpec `before` hook over Rails `setup` method.
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/Rails/AvoidSetupHook

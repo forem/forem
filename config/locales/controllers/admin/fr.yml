@@ -143,6 +143,7 @@ fr:
       updated_json: Succès ! %{username} a été mis à jour.
       credits_added: Les crédits ont été ajoutés !
       credits_removed: Les crédits ont été supprimés.
+      tag_not_found: 'Tag "%{tag_name}" non trouvée'
     welcome_controller:
       thread_content: |
         ---

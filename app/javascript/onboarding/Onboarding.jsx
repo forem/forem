@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { FocusTrap } from '../shared/components/focusTrap';
+import { postReactions } from '../actionsPanel/services/reactions.js';
 import { EmailPreferencesForm } from './components/EmailPreferencesForm';
 import { FollowTags } from './components/FollowTags';
 import { FollowUsers } from './components/FollowUsers';
@@ -41,8 +42,11 @@ export class Onboarding extends Component {
       this.setState({
         currentSlide: nextSlide,
       });
-    } else if (localStorage && localStorage.getItem('last_interacted_billboard')) {
-      const obj = JSON.parse(localStorage.getItem('last_interacted_billboard'))
+    } else if (
+      localStorage &&
+      localStorage.getItem('last_interacted_billboard')
+    ) {
+      const obj = JSON.parse(localStorage.getItem('last_interacted_billboard'));
       if (obj.path && obj.time && Date.parse(obj.time) > Date.now() - 900000) {
         window.location.href = obj.path;
       } else {
@@ -67,8 +71,10 @@ export class Onboarding extends Component {
     if (!localStorage || !localStorage.getItem('last_interacted_billboard')) {
       return;
     }
-    const dataBody = JSON.parse(localStorage.getItem('last_interacted_billboard'));
-  
+    const dataBody = JSON.parse(
+      localStorage.getItem('last_interacted_billboard'),
+    );
+
     if (dataBody && dataBody['billboard_event']) {
       dataBody['billboard_event']['category'] = 'signup';
 
@@ -83,6 +89,32 @@ export class Onboarding extends Component {
         body: JSON.stringify(dataBody),
         credentials: 'same-origin',
       });
+    }
+
+    if (
+      dataBody &&
+      dataBody['billboard_event'] &&
+      dataBody['billboard_event']['article_id']
+    ) {
+      window
+        .fetch(`/api/articles/${dataBody['billboard_event']['article_id']}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.id) {
+            localStorage.setItem('onboarding_article', JSON.stringify(data));
+            postReactions({
+              reactable_type: 'Article',
+              category: 'like',
+              reactable_id: data.id,
+            });
+          }
+        });
     }
   }
   // TODO: Update main element id to enable skip link. See issue #1153.

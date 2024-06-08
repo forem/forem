@@ -15,14 +15,39 @@
   <ul class="flex flex-wrap gap-2 mb-4">
     <% moderated_tags.each do |role| %>
       <li>
-        <%# You can't currently remove a tag from this view %>
-        <button class="c-pill cursor-default" aria-disabled="true" aria-describedby="tag-moderation-description" style="--icon-right-color: var(--color-secondary); --icon-right-color-hover: var(--accent-danger);" type="button">
-          <span class="screen-reader-only"><%= t("views.admin.users.overview.tag_mod.remove") %></span>
-          #<%= role.resource_name.to_s %>
-        </button>
+        <% if policy(role).remove_role? %>
+          <% confirm_dialog = if role.super_admin?
+                                t("views.admin.users.overview.roles.remove_confirm_super_admin")
+                              else
+                                t("views.admin.users.overview.roles.remove_confirm")
+                              end %>
+          <%= button_to url_for(action: :destroy, user_id: @user.id, role_id: role.id, resource_type: role.resource_type, resource_id: role.resource_id),
+                                method: :delete, data: { confirm: confirm_dialog }, class: "c-pill c-pill--action-icon" do %>
+
+            <span class="screen-reader-only"><%= t("views.admin.users.overview.tag_mod.remove") %></span>
+            #<%= role.resource_name.to_s %>
+
+            <%= crayons_icon_tag(:x, class: "c-pill__action-icon", aria_hidden: true, width: 18, height: 18) %>
+          <% end %>
+        <% else %>
+          <button
+            class="c-pill c-pill--description-icon crayons-tooltip__activator cursor-help"
+            type="button"
+            aria-disabled="true">
+            <%= crayons_icon_tag(:lock, class: "c-pill__description-icon", aria_hidden: true, width: 18, height: 18) %>
+            #<%= role.resource_name.to_s %>
+            <span data-testid="tooltip" class="crayons-tooltip__content"><%= t("views.admin.users.overview.roles.locked") %></span>
+          </button>
+        <% end %>
       </li>
     <% end %>
   </ul>
+<% end %>
+<%= form_with url: add_tag_mod_role_admin_user_path(@user.id), scope: :user, method: :post, local: true, html: { class: "" } do |f| %>
+  <div class="crayons-field w-50 my-4">
+    <%= f.text_field :tag_name, placeholder: "One tag name", size: 50, required: true, class: "crayons-textfield w-auto mr-3", autocomplete: "off" %>
+    <%= f.submit "Create tag mod role", class: "crayons-btn" %>
+  </div>
 <% end %>
 
 <div id="tag-moderation-description" class="crayons-notice crayons-notice--warning mt-4">

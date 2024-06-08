@@ -7,6 +7,7 @@ module Users
     ALLOWED_PARAMS = %i[config_theme
                         config_font
                         config_navbar
+                        content_preferences_input
                         display_announcements
                         display_sponsors
                         editor_version

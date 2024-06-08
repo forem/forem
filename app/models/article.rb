@@ -363,7 +363,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds,
+           :published_at, :crossposted_at, :description, :reading_time, :video_duration_in_seconds, :score,
            :last_comment_at, :main_image_height)
   }
 

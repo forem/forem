@@ -434,6 +434,7 @@ class User < ApplicationRecord
     :administrative_access_to?,
     :any_admin?,
     :auditable?,
+    :augmented?,
     :banished?,
     :comment_suspended?,
     :limited?,

@@ -102,11 +102,11 @@
               </a>
             <% end %>
 
-            <% if @user.profile.website_url.present? %>
-              <a href="<%= @user.profile.website_url %>" target="_blank" rel="noopener me <%= "ugc" unless @user.trusted? %>" class="profile-header__meta__item">
+            <% if @user&.profile&.website_url.present? %>
+              <a href="<%= @user&.profile&.website_url %>" target="_blank" rel="noopener me <%= "ugc" unless @user.trusted? %>" class="profile-header__meta__item">
                 <%= crayons_icon_tag("external-link", class: "mr-2 shrink-0", title: t("views.users.website")) %>
                 <span>
-                  <%= @user.profile.website_url %>
+                  <%= @user&.profile&.website_url %>
                 </span>
               </a>
             <% end %>

@@ -1,10 +1,10 @@
 class EmailDigest
-  def self.send_periodic_digest_email(users = [])
-    new(users).send_periodic_digest_email
+  def self.send_periodic_digest_email(users = [], starting_id = 1, ending_id = 50_000_000)
+    new(users, starting_id, ending_id).send_periodic_digest_email
   end
 
-  def initialize(users = [])
-    @users = users.empty? ? get_users : users
+  def initialize(users = [], starting_id = 1, ending_id = 50_000_000)
+    @users = users.empty? ? get_users(starting_id, ending_id) : users
   end
 
   def send_periodic_digest_email
@@ -24,9 +24,10 @@ class EmailDigest
 
   private
 
-  def get_users
+  def get_users(starting_id, ending_id)
     User.registered.joins(:notification_setting)
       .where(notification_setting: { email_digest_periodic: true })
       .where.not(email: "")
+      .where("users.id >= ? AND users.id <= ?", starting_id, ending_id)
   end
 end

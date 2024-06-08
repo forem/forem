@@ -60,6 +60,17 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
           expect(args[:billboards]).to contain_exactly(bb_1, bb_2)
         end
       end
+
+      it "creates billboard events when billboards are present" do
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
+        bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
+
+        worker.perform(user.id)
+
+        expect(BillboardEvent.where(billboard_id: bb_1.id, category: "impression").size).to be(1)
+        expect(BillboardEvent.where(billboard_id: bb_2.id, category: "impression").size).to be(1)
+      end
     end
   end
 end
