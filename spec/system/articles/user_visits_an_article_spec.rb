@@ -10,6 +10,12 @@ RSpec.describe "Views an article" do
     sign_in user
   end
 
+  it "stops a user from moderating an article" do
+    # TODO: @maetromac this spec must run first to pass. Due to the usage of RequestStore, there's a false positive
+    # with EdgeSafetyCheck. Reason is yet to be determined.
+    expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
+  end
+
   it "shows an article", :js do
     visit article.path
     expect(page).to have_content(article.title)
@@ -27,10 +33,6 @@ RSpec.describe "Views an article" do
     sign_out user
     visit article.path
     expect(page).to have_css(".single-comment-node", visible: :visible, count: 3)
-  end
-
-  it "stops a user from moderating an article" do
-    expect { visit("/#{user.username}/#{article.slug}/mod") }.to raise_error(Pundit::NotAuthorizedError)
   end
 
   describe "sticky nav sidebar" do

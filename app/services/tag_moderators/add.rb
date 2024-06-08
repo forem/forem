@@ -1,18 +1,21 @@
 module TagModerators
   class Add
-    def self.call(user_ids, tag_ids)
-      new(user_ids, tag_ids).call
+    Result = Struct.new(:success?, :errors, keyword_init: true)
+
+    def self.call(user_id, tag_id)
+      new(user_id, tag_id).call
     end
 
-    def initialize(user_ids, tag_ids)
-      @user_ids = user_ids
-      @tag_ids = tag_ids
+    def initialize(user_id, tag_id)
+      @user_id = user_id
+      @tag_id = tag_id
     end
 
     def call
-      user_ids.each_with_index do |user_id, index|
-        user = User.find(user_id)
-        tag = Tag.find(tag_ids[index])
+      user = User.find(user_id)
+      notification_setting = user.notification_setting
+      if notification_setting.update(email_tag_mod_newsletter: true)
+        tag = Tag.find(tag_id)
         add_tag_mod_role(user, tag)
         ::TagModerators::AddTrustedRole.call(user)
         tag.update(supported: true) unless tag.supported?
@@ -21,12 +24,16 @@ module TagModerators
           .with(user: user, tag: tag)
           .tag_moderator_confirmation_email
           .deliver_now
+
+        Result.new(success?: true)
+      else
+        Result.new(success?: false, errors: notification_setting.errors_as_sentence)
       end
     end
 
     private
 
-    attr_accessor :user_ids, :tag_ids
+    attr_accessor :user_id, :tag_id
 
     def add_tag_mod_role(user, tag)
       unless user.notification_setting.email_tag_mod_newsletter?

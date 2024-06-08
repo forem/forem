@@ -119,7 +119,7 @@ RSpec.describe "StoriesIndex" do
 
       get "/"
       expect(response.body).to include(billboard.processed_html).or(include(second_billboard.processed_html))
-      expect(response.body).to include("crayons-card crayons-card--secondary crayons-sponsorship").once
+      expect(response.body).to include("crayons-card crayons-card--secondary crayons-bb").once
       expect(response.body).to include("sponsorship-dropdown-trigger-").once
     end
 

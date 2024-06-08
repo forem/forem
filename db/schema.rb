@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -207,11 +207,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "user_id", null: false
-    t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
   end
 
   create_table "badges", force: :cascade do |t|
+    t.boolean "allow_multiple_awards", default: false, null: false
     t.string "badge_image"
     t.datetime "created_at", precision: nil, null: false
     t.integer "credits_awarded", default: 0, null: false
@@ -475,6 +475,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.boolean "approved", default: false
     t.integer "audience_segment_id"
     t.text "body_markdown"
+    t.integer "browser_context", default: 0, null: false
     t.string "cached_tag_list"
     t.integer "clicks_count", default: 0
     t.datetime "created_at", precision: nil, null: false
@@ -659,6 +660,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.bigint "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+  end
+
+  create_table "media_stores", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "media_type", default: 0, null: false
+    t.string "original_url", null: false
+    t.string "output_url", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_url"], name: "index_media_stores_on_original_url", unique: true
   end
 
   create_table "mentions", force: :cascade do |t|
@@ -1386,7 +1396,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "role_id"
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.bigint "user_id"
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
   end
@@ -1397,6 +1409,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_06_173309) do
     t.integer "config_homepage_feed", default: 0, null: false
     t.integer "config_navbar", default: 0, null: false
     t.integer "config_theme", default: 0, null: false
+    t.text "content_preferences_input"
+    t.datetime "content_preferences_updated_at"
     t.datetime "created_at", null: false
     t.boolean "display_announcements", default: true, null: false
     t.boolean "display_email_on_profile", default: false, null: false

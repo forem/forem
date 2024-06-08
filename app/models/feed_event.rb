@@ -19,10 +19,12 @@ class FeedEvent < ApplicationRecord
   CONTEXT_TYPE_HOME = "home".freeze
   CONTEXT_TYPE_SEARCH = "search".freeze
   CONTEXT_TYPE_TAG = "tag".freeze
+  CONTEXT_TYPE_EMAIL = "email".freeze
   VALID_CONTEXT_TYPES = [
     CONTEXT_TYPE_HOME,
     CONTEXT_TYPE_SEARCH,
     CONTEXT_TYPE_TAG,
+    CONTEXT_TYPE_EMAIL,
   ].freeze
   DEFAULT_TIMEBOX = 5.minutes.freeze
 

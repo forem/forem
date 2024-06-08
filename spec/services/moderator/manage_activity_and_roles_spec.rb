@@ -305,6 +305,17 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     end
   end
 
+  describe "busts user profile header cache when adding the spam role" do
+    it "touches profile" do
+      spam_user = create(:user)
+      profile = instance_double(Profile)
+      allow(spam_user).to receive(:profile).and_return(profile)
+      allow(profile).to receive(:touch)
+      manage_roles_for(spam_user, user_status: "Spam")
+      expect(profile).to have_received(:touch)
+    end
+  end
+
   describe "removes notifications when adding the spam role" do
     let(:nice_article) { create(:article, user: user) }
     let(:spam_user) { create(:user) }

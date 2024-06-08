@@ -52,6 +52,7 @@ namespace :admin do
         post "export_data"
         post "full_delete"
         patch "user_status"
+        post "add_tag_mod_role"
         post "merge"
         delete "remove_identity"
         post "send_email"

@@ -86,7 +86,24 @@
     }
     img {
       width: 100%;
+      aspect-ratio: 800 / 279;
+      object-fit: cover;
     }
+  }
+
+  .onboarding-inner-popover {
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: var(--su-4);
+    padding-top: calc(13vh - 20px);
+    position:absolute;
+    left: calc(10px + 1vw);
+    right: calc(10px + 1vw);
+    bottom: calc(10px + 6vw);
+    top: calc(10px + 6vw);
+    z-index:100;
+    text-align: center;
+    overflow: auto;
   }
 
   .onboarding_newsletter_opt_in_head {

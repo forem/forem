@@ -35,6 +35,8 @@ class BaseUploader < CarrierWave::Uploader::Base
       image = yield(image) if block_given?
       image
     end
+  rescue StandardError => e
+    Rails.logger.error("Error stripping EXIF data: #{e}")
   end
 
   def validate_frame_count

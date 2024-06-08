@@ -65,6 +65,28 @@ RSpec.describe Users::Setting do
       end
     end
 
+    describe "#content_preferences_input" do
+      it "updates content_preferences_updated_at if changed" do
+        setting.content_preferences_input = "New content preferences"
+        setting.save
+        expect(setting.content_preferences_updated_at).to be_within(1.second).of(Time.current)
+      end
+
+      it "does not update content_preferences_updated_at if empty" do
+        setting.content_preferences_input = ""
+        setting.save
+        expect(setting.content_preferences_updated_at).to eq setting.content_preferences_updated_at_before_last_save
+      end
+
+      it "does not update if not changed" do
+        setting.content_preferences_input = "New content preferences"
+        setting.save
+        setting.content_preferences_input = "New content preferences"
+        setting.save
+        expect(setting.content_preferences_updated_at).to eq setting.content_preferences_updated_at_before_last_save
+      end
+    end
+
     describe "#config_font" do
       it "accepts valid font" do
         setting.config_font = 4

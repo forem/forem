@@ -180,6 +180,9 @@ class StoriesController < ApplicationController
       .order(published_at: :desc).page(@page).per(8))
     @organization_article_index = true
     @organization_users = @organization.users.order(badge_achievements_count: :desc)
+    if !user_signed_in? && @organization_users.sum(:score).negative? && @stories.sum(&:score) <= 0
+      not_found
+    end
     set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
@@ -207,17 +210,8 @@ class StoriesController < ApplicationController
 
     assign_user_github_repositories
 
-    # @badges_limit is here and is set to 6 because it determines how many badges we will display
-    # on Profile sidebar widget. If user has more badges, we hide them and let them be revealed
-    # by clicking "See more" button (because we want to save space etc..). But why 6 exactly?
-    # To make that widget look good:
-    #   - On desktop it will have 3 rows, each row with 2 badges.
-    #   - On mobile it will have 2 rows, each row with 3 badges.
-    # So it's always 6. If we make it higher or lower number, we would have to sacrifice UI:
-    #   - Let's say it's `4`. On mobile it would display two rows: 1st with 3 badges and
-    # 2nd with 1 badge (!) <-- and that would look off.
-    @badges_limit = 6
-    @profile = @user.profile.decorate
+    @grouped_badges = @user.badge_achievements.order(id: :desc).includes(:badge).group_by(&:badge_id)
+    @profile = @user&.profile&.decorate
     @is_user_flagged = Reaction.where(user_id: session_current_user_id, reactable: @user).any?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
@@ -445,7 +439,7 @@ class StoriesController < ApplicationController
     [
       @user.twitter_username.present? ? "https://twitter.com/#{@user.twitter_username}" : nil,
       @user.github_username.present? ? "https://github.com/#{@user.github_username}" : nil,
-      @user.profile.website_url,
+      @user&.profile&.website_url,
     ].compact_blank
   end
 

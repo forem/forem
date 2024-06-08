@@ -81,7 +81,7 @@ module Settings
         end
 
         # Setter
-        define_singleton_method("#{key}=") do |value|
+        define_singleton_method(:"#{key}=") do |value|
           var_name = key
 
           record = find_by(var: var_name) || new(var: var_name)
@@ -111,7 +111,7 @@ module Settings
         return unless type == :boolean
 
         # Predicate method for booleans
-        define_singleton_method("#{key}?") { __send__(key) }
+        define_singleton_method(:"#{key}?") { __send__(key) }
       end
 
       def convert_string_to_value_type(type, value, separator: nil)

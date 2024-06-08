@@ -153,6 +153,29 @@ RSpec.describe "Api::V1::Pages" do
       expect(response).to have_http_status(:success)
       expect(Page).not_to exist(page.id)
     end
+
+    context "when providing a social image url" do
+      let(:image_url) { "https://example.com/image.jpg" }
+      let(:mocked_image_file) { Images::ProfileImageGenerator.call }
+      # forced binary encoding to avoid encoding issues
+      let(:mocked_image_data) { mocked_image_file.read.force_encoding("BINARY") }
+
+      before do
+        stub_request(:get, image_url).to_return(body: mocked_image_data, headers: { "Content-Type" => "image/png" })
+      end
+
+      it "creates a page with a social image" do
+        post_params[:social_image] = { url: image_url }
+        post api_pages_path, params: post_params.to_json, headers: auth_header
+        expect(response).to have_http_status(:success)
+
+        page = Page.find_by(title: post_params[:title])
+        expect(page.social_image).to be_present
+
+        uploaded_image_data = page.social_image.read.force_encoding("BINARY")
+        expect(uploaded_image_data).to eq(mocked_image_data)
+      end
+    end
   end
 
   it "retrieves all pages and renders the collection as json" do
