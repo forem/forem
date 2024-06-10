@@ -37,7 +37,7 @@ class SidebarsController < ApplicationController
   def cached_recent_pageview_article_ids
     Rails.cache.fetch("recent_pageviews_#{current_user.id}", expires_in: 1.hour) do
       PageView.where(user_id: current_user.id)
-        .order("created_at DESC").limit(20).pluck(:article_id)
+        .order("created_at DESC").limit(30).pluck(:article_id)
     end
   end
 end
