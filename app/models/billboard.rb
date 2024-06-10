@@ -49,6 +49,7 @@ class Billboard < ApplicationRecord
   LOW_IMPRESSION_COUNT = 1_000
   RANDOM_RANGE_MAX_FALLBACK = 5
   NEW_AND_PRIORITY_RANGE_MAX_FALLBACK = 35
+  NEW_ONLY_RANGE_MAX_FALLBACK = 40
 
   attribute :target_geolocations, :geolocation_array
   enum display_to: { all: 0, logged_in: 1, logged_out: 2 }, _prefix: true
@@ -87,6 +88,7 @@ class Billboard < ApplicationRecord
                      }
 
   scope :seldom_seen, ->(area) { where("impressions_count < ?", low_impression_count(area)).or(where(priority: true)) }
+  scope :new_only, ->(area) { where("impressions_count < ?", low_impression_count(area)) }
 
   self.table_name = "display_ads"
 
@@ -122,6 +124,9 @@ class Billboard < ApplicationRecord
       # if there are none of those, causing an extra query, but that shouldn't happen very often).
       relation = billboards_for_display.seldom_seen(area)
       weighted_random_selection(relation, article&.id) || billboards_for_display.sample
+    when (new_and_priority_range_max(area)..new_only_range_max(area)) # 5% by default
+      # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
+      billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
@@ -200,6 +205,13 @@ class Billboard < ApplicationRecord
     selected_number = ApplicationConfig["SELDOM_SEEN_MAX_FOR_#{placement_area.upcase}"] ||
       ApplicationConfig["SELDOM_SEEN_MAX"] ||
       NEW_AND_PRIORITY_RANGE_MAX_FALLBACK
+    selected_number.to_i
+  end
+
+  def self.new_only_range_max(placement_area)
+    selected_number = ApplicationConfig["NEW_ONLY_MAX_FOR_#{placement_area.upcase}"] ||
+      ApplicationConfig["NEW_ONLY_MAX"] ||
+      NEW_ONLY_RANGE_MAX_FALLBACK
     selected_number.to_i
   end
 
