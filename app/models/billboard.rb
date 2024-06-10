@@ -126,7 +126,7 @@ class Billboard < ApplicationRecord
       weighted_random_selection(relation, article&.id) || billboards_for_display.sample
     when (new_and_priority_range_max(area)..new_only_range_max(area)) # 5% by default
       # Here we sample from only billboards with fewer than 1000 impressions (with a fallback
-      billboards_for_display.new_only(area).sample
+      billboards_for_display.new_only(area).sample || billboards_for_display.limit(rand(1..15)).sample
     else # large range, 65%
 
       # Ads that get engagement have a higher "success rate", and among this category, we sample from the top 15 that
