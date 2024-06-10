@@ -25,8 +25,19 @@ class SidebarsController < ApplicationController
       .where(language: languages)
       .or(Article.featured.published.where("published_at > ?", 1.week.ago)
         .with_at_least_home_feed_minimum_score)
+      .or(Article.where(id: cached_recent_pageview_article_ids).published
+        .where("published_at > ?", 1.week.ago)
+        .where("comments_count > ?", 1)
+          .with_at_least_home_feed_minimum_score)
       .order("last_comment_at DESC")
       .limit(5)
       .pluck(:path, :title, :comments_count, :created_at)
+  end
+
+  def cached_recent_pageview_article_ids
+    Rails.cache.fetch("recent_pageviews_#{current_user.id}", expires_in: 1.hour) do
+      PageView.where(user_id: current_user.id)
+        .order("created_at DESC").limit(30).pluck(:article_id)
+    end
   end
 end
