@@ -27,6 +27,28 @@
 ################################################################################
 ################################################################################
 experiments:
+  active_discussions_count:
+    started_at: 2024-06-11
+    variants:
+      - count_4
+      - count_5
+      - count_6
+      - count_7
+      - count_8
+      - count_10
+    weights:
+      - 6
+      - 50
+      - 11
+      - 11
+      - 11
+      - 11
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_article_ordering_06_11:
     started_at: 2024-06-11
     variants:
