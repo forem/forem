@@ -12,20 +12,20 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    order_variant = field_test(:digest_article_ordering_05_31, participant: @user)
+    order_variant = field_test(:digest_article_ordering_06_11, participant: @user)
     order = case order_variant
             when "base"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 1.1)) DESC")
-            when "more_weight_on_clickbait"
               Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 2)) DESC")
-            when "much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 4)) DESC")
-            when "much_much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 6)) DESC")
-            when "much_much_much_more_weight_on_clickbait"
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 8)) DESC")
+            when "more_weight_on_feed_success_score"
+              Arel.sql("((score * ((feed_success_score * 2) + 0.1)) - (clickbait_score * 2)) DESC")
+            when "much_more_weight_on_feed_success_score"
+              Arel.sql("((score * ((feed_success_score * 3) + 0.1)) - (clickbait_score * 2)) DESC")
+            when "much_much_more_weight_on_feed_success_score"
+              Arel.sql("((score * ((feed_success_score * 5) + 0.1)) - (clickbait_score * 2)) DESC")
+            when "much_much_much_more_weight_on_feed_success_score"
+              Arel.sql("((score * ((feed_success_score * 10) + 0.1)) - (clickbait_score * 2)) DESC")
             else
-              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 1.1) DESC")
+              Arel.sql("((score * (feed_success_score + 0.1)) - (clickbait_score * 2)) DESC")
             end
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
@@ -47,15 +47,16 @@ class EmailDigestArticleCollector
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
+                   tags = @user.cached_followed_tag_names_or_recent_tags
                    Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
-                     .featured
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
                      .where("score > ?", 15)
                      .order(order)
                      .limit(RESULTS_COUNT)
+                     .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
                  end
 
       # Pop second article to front if the first article is the same as the last email
