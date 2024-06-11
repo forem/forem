@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <% if user_signed_in? && current_page?(root_path) %>
+      <link rel="prefetch" href="/stories/feed/?page=1">
+      <link rel="prefetch" href="/billboards/feed_first">
+      <link rel="prefetch" href="/billboards/feed_second">
+      <link rel="prefetch" href="/billboards/feed_third">
+      <link rel="prefetch" href="/sidebars/home">
+    <% end %>
     <meta charset="utf-8">
     <% title = yield(:title) %>
     <title><%= title || community_name.to_s %></title>
