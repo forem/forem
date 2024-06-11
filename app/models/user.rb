@@ -328,6 +328,18 @@ class User < ApplicationRecord
       .union(Article.where(user_id: cached_following_users_ids))
   end
 
+  def cached_followed_tag_names_or_recent_tags
+    followed_tags = cached_followed_tag_names
+    return followed_tags if followed_tags.any?
+
+    ### pluck cached_tag_list for articles with most recent page views. Page views have a user_id and article_id
+    ### cached_tag_list is a comma-separated string of tag names on the article
+
+    cached_recent_pageview_article_ids = page_views.order("created_at DESC").limit(6).pluck(:article_id)
+    tags = Article.where(id: cached_recent_pageview_article_ids).pluck(:cached_tag_list).split(",").flatten.uniq.reject(&:empty?)
+    tags + %w[career productivity ai git] # These are highly DEV-specific. Should be refactored later to be configurable.
+  end
+
   def cached_following_users_ids
     cache_key = "user-#{id}-#{last_followed_at}-#{following_users_count}/following_users_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
