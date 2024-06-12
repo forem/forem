@@ -2,9 +2,6 @@ class CardTag < Liquid::Block
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/card".freeze
-
-  
-
   def render(_context)
     ApplicationController.render(
       partial: PARTIAL,
