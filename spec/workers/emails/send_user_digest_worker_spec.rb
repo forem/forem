@@ -8,6 +8,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
     u
   end
   let(:author) { create(:user) }
+  let(:tag) { create(:tag) }
   let(:mailer) { double }
   let(:message_delivery) { double }
 
@@ -21,10 +22,13 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
 
   describe "perform" do
     context "when there's articles to be sent" do
-      before { user.follow(author) }
+      before do
+        user.follow(author)
+        user.follow(tag)
+      end
 
       it "send digest email when there are at least 3 hot articles" do
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
 
         worker.perform(user.id)
 
@@ -42,7 +46,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
       end
 
       it "does not send email when user is not registered" do
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
         user.update_column(:registered, false)
         worker.perform(user.id)
 
@@ -50,7 +54,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
       end
 
       it "includes billboards" do
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
         bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
         bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
 
@@ -62,7 +66,7 @@ RSpec.describe Emails::SendUserDigestWorker, type: :worker do
       end
 
       it "creates billboard events when billboards are present" do
-        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20, tag_list: [tag.name])
         bb_1 = create(:billboard, placement_area: "digest_first", published: true, approved: true)
         bb_2 = create(:billboard, placement_area: "digest_second", published: true, approved: true)
 

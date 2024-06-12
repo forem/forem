@@ -30,7 +30,7 @@ class EmailDigestArticleCollector
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
-      articles = if user_has_followings?
+      articles = if @user.cached_followed_tag_names.size > 3
                    experience_level_rating = @user.setting.experience_level || 5
                    experience_level_rating_min = experience_level_rating - 4
                    experience_level_rating_max = experience_level_rating + 4

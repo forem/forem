@@ -70,6 +70,7 @@ RSpec.describe EmailDigestArticleCollector, type: :service do
         user.follow(author)
         user.update(following_users_count: 1)
         create_list(:article, 3, user_id: author.id, public_reactions_count: 40, score: 40)
+        user.follow(Article.last.tags.first)
       end
 
       it "evaluates that user is ready to receive an email" do
