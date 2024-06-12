@@ -3,9 +3,7 @@ class CardTag < Liquid::Block
 
   PARTIAL = "liquids/card".freeze
 
-  def initialize(_tag_name, options, _parse_context)
-    super
-  end
+  
 
   def render(_context)
     ApplicationController.render(
