@@ -398,21 +398,36 @@ module Admin
     private
 
     def index_for_html
-      @users = Admin::UsersQuery.call(
-        relation: User.registered,
-        search: params[:search],
-        role: params[:role],
-        roles: params[:roles],
-        statuses: params[:statuses],
-        joining_start: params[:joining_start],
-        joining_end: params[:joining_end],
-        date_format: params[:date_format],
-        organizations: params[:organizations],
-      ).page(params[:page]).per(50)
-
+      @users = if filters_present?(params)
+                 Admin::UsersQuery.call(
+                   relation: User.registered,
+                   search: params[:search],
+                   role: params[:role],
+                   roles: params[:roles],
+                   statuses: params[:statuses],
+                   joining_start: params[:joining_start],
+                   joining_end: params[:joining_end],
+                   date_format: params[:date_format],
+                   organizations: params[:organizations],
+                 ).page(params[:page]).per(50)
+               else
+                 User.registered.select(:id, :name, :username, :email, :registered, :last_comment_at,
+                                        :last_article_at, :latest_article_updated_at, :last_reacted_at,
+                                        :profile_updated_at, :last_moderation_notification, :last_notification_activity,
+                                        :registered_at, :unspent_credits_count)
+                   .order(created_at: :desc)
+                   .page(params[:page]).per(50)
+               end
       @organization_limit = 3
       @organizations = Organization.order(name: :desc)
       @earliest_join_date = User.first.registered_at.to_s
+    end
+
+    def filters_present?(params)
+      params.keys.any? do |key|
+        expected_keys = %w[search role roles statuses joining_start joining_end date_format organizations]
+        expected_keys.include?(key) && params[key].present?
+      end
     end
 
     def index_for_json
