@@ -30,7 +30,7 @@ class EmailDigestArticleCollector
     instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
-      articles = if @user.cached_followed_tag_names.size > 3
+      articles = if @user.cached_followed_tag_names.any?
                    experience_level_rating = @user.setting.experience_level || 5
                    experience_level_rating_min = experience_level_rating - 4
                    experience_level_rating_max = experience_level_rating + 4
@@ -53,7 +53,7 @@ class EmailDigestArticleCollector
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
-                     .where("score > ?", 15)
+                     .where("score > ?", 11)
                      .order(order)
                      .limit(RESULTS_COUNT)
                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
