@@ -327,8 +327,27 @@ experiments:
       - user_views_pages_on_at_least_nine_different_days_within_two_weeks
 
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
+  feed_strategy_starting_20240616:
+    started_at: 2024-06-16
+    variants:
+      - 20240604-variant-c
+      - 20240616-variant-a
+      - 20240616-variant-b
+      - 20240616-variant-c
+    weights:
+      - 70
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   feed_strategy_starting_20240604:
     started_at: 2024-06-04
+    ended_at: 2024-06-16
+    winner: 20240604-variant-c
     variants:
       - 20240214-variant-b
       - 20240604-variant-a
@@ -344,7 +363,6 @@ experiments:
       - user_creates_article_reaction
       - user_views_pages_on_at_least_two_different_days_within_a_week
       - user_views_pages_on_at_least_four_different_days_within_a_week
-
   feed_strategy_starting_20240214:
     started_at: 2024-02-14
     ended_at: 2024-6-04
