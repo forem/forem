@@ -53,7 +53,7 @@ class EmailDigestArticleCollector
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
                      .not_authored_by(@user.id)
-                     .where("score > ?", 15)
+                     .where("score > ?", 11)
                      .order(order)
                      .limit(RESULTS_COUNT)
                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
