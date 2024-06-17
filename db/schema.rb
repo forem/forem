@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
+ActiveRecord::Schema[7.0].define(version: 2024_06_17_141922) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "ltree"
@@ -171,6 +171,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_06_03_143820) do
     t.index ["hotness_score", "comments_count"], name: "index_articles_on_hotness_score_and_comments_count"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["language"], name: "index_articles_on_language"
+    t.index ["organic_page_views_past_month_count"], name: "index_articles_on_organic_page_views_past_month_count"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
