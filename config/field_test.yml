@@ -27,6 +27,25 @@
 ################################################################################
 ################################################################################
 experiments:
+  digest_article_ordering_06_17:
+    started_at: 2024-06-17
+    variants:
+      - base
+      - more_weight_on_feed_success_score
+      - much_more_weight_on_feed_success_score
+      - much_much_more_weight_on_feed_success_score
+      - much_much_much_more_weight_on_feed_success_score
+    weights:
+      - 60
+      - 10
+      - 10
+      - 10
+      - 10
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   active_discussions_count:
     started_at: 2024-06-11
     variants:
@@ -51,6 +70,8 @@ experiments:
       - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_article_ordering_06_11:
     started_at: 2024-06-11
+    ended_at: 2024-06-17
+    winner: much_much_much_more_weight_on_feed_success_score
     variants:
       - base
       - more_weight_on_feed_success_score
