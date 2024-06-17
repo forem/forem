@@ -336,8 +336,10 @@ class User < ApplicationRecord
     ### cached_tag_list is a comma-separated string of tag names on the article
 
     cached_recent_pageview_article_ids = page_views.order("created_at DESC").limit(6).pluck(:article_id)
-    tags = Article.where(id: cached_recent_pageview_article_ids).pluck(:cached_tag_list).split(",").flatten.uniq.reject(&:empty?)
-    tags + %w[career productivity ai git] # These are highly DEV-specific. Should be refactored later to be configurable.
+    tags = Article.where(id: cached_recent_pageview_article_ids).pluck(:cached_tag_list)
+      .map { |list| list.split(", ") }
+      .flatten.uniq.reject(&:empty?)
+    tags + %w[career productivity ai git] # These are highly DEV-specific. Should be refactored later to be config'd
   end
 
   def cached_following_users_ids
