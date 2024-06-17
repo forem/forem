@@ -328,7 +328,7 @@ experiments:
 
   # NOTE: Our feed strategy testing experiment must begin with "feed_strategy"
   feed_strategy_starting_20240616:
-    started_at: 2024-06-16
+    started_at: 2024-06-17
     variants:
       - 20240604-variant-c
       - 20240616-variant-a
