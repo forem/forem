@@ -20,7 +20,7 @@ module Tags
     private
 
     def suggested_tags
-      @suggested_tags ||= Tag.suggested_for_onboarding
+      @suggested_tags ||= Tag.suggested_for_onboarding.order("hotness_score DESC")
     end
 
     def suggested_for_onboarding_or_supported
