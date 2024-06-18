@@ -1017,6 +1017,21 @@ RSpec.describe User do
     end
   end
 
+  context "when profile doesn't exist" do
+    it "creates a profile on user creation" do
+      user = create(:user)
+      expect(user.profile).to be_present
+    end
+
+    it "creates a profile on update if the profile has been deleted" do
+      user = create(:user)
+      user.profile.destroy
+      user.reload
+      user.update(name: "New Name")
+      expect(user.profile).to be_present
+    end
+  end
+
   context "when indexing with Algolia", :algolia do
     it "indexes the user on create" do
       allow(AlgoliaSearch::SearchIndexWorker).to receive(:perform_async)
