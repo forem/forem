@@ -47,12 +47,12 @@ class EmailDigestArticleCollector
                      .order(order)
                      .limit(RESULTS_COUNT)
                  else
-                   tags = user.cached_followed_tag_names_or_recent_tags
+                   tags = @user.cached_followed_tag_names_or_recent_tags
                    Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
                      .published
                      .where("published_at > ?", cutoff_date)
                      .where(email_digest_eligible: true)
-                     .not_authored_by(user.id)
+                     .not_authored_by(@user.id)
                      .where("score > ?", 11)
                      .order(order)
                      .limit(RESULTS_COUNT)
