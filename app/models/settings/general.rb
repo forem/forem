@@ -55,6 +55,7 @@ module Settings
 
     setting :original_logo, type: :string
     setting :resized_logo, type: :string
+    setting :resized_logo_aspect_ratio, type: :string
 
     setting :enable_video_upload, type: :boolean, default: false
 
