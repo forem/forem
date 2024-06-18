@@ -232,7 +232,6 @@ class User < ApplicationRecord
 
   after_save :create_conditional_autovomits
   after_save :generate_social_images
-  after_save :create_profile_if_not_exists
   after_commit :subscribe_to_mailchimp_newsletter
   after_commit :bust_cache
 
@@ -632,13 +631,6 @@ class User < ApplicationRecord
   def create_users_settings_and_notification_settings_records
     self.setting = Users::Setting.create
     self.notification_setting = Users::NotificationSetting.create
-  end
-
-  # This is a fallback in case the profile does not exist for any reason
-  def create_profile_if_not_exists
-    return if profile.present?
-
-    Profile.create(user: self)
   end
 
   def send_welcome_notification
