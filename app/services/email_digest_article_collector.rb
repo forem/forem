@@ -59,6 +59,20 @@ class EmailDigestArticleCollector
                      .merge(Article.featured.or(Article.cached_tagged_with_any(tags)))
                  end
 
+      # Fallback if there are not enough articles
+      if articles.length < 3
+        articles = Article.select(:title, :description, :path, :cached_user, :cached_tag_list)
+          .published
+          .where("published_at > ?", cutoff_date)
+          .where(email_digest_eligible: true)
+          .not_authored_by(@user.id)
+          .order(order)
+          .limit(RESULTS_COUNT)
+        if @user.cached_antifollowed_tag_names.any?
+          articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
+        end
+      end
+
       # Pop second article to front if the first article is the same as the last email
       if articles.any? && last_email_includes_title_in_subject?(articles.first.title)
         articles = articles[1..] + [articles.first]
