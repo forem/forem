@@ -68,6 +68,9 @@ class EmailDigestArticleCollector
           .not_authored_by(@user.id)
           .order(order)
           .limit(RESULTS_COUNT)
+          if @user.cached_antifollowed_tag_names.any?
+            articles = articles.not_cached_tagged_with_any(@user.cached_antifollowed_tag_names)
+          end
       end
 
       # Pop second article to front if the first article is the same as the last email
