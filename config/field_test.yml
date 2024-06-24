@@ -26,7 +26,28 @@
 #
 ################################################################################
 ################################################################################
+
 experiments:
+  active_discussion_ordering_06_24:
+    started_at: 2024-06-24
+    variants:
+      - base
+      - last_comment_plus_comment_score
+      - last_comment_plus_comment_score_capped
+      - last_comment_plus_comment_score_double
+      - last_comment_plus_comment_score_double_capped
+    weights:
+      - 60
+      - 12
+      - 12
+      - 8
+      - 8
+    goals:
+      - user_creates_pageview
+      - user_creates_article_reaction
+      - user_creates_comment
+      - user_views_pages_on_at_least_two_different_days_within_a_week
+      - user_views_pages_on_at_least_four_different_days_within_a_week
   digest_article_ordering_06_17:
     started_at: 2024-06-17
     variants:
@@ -48,6 +69,8 @@ experiments:
       - user_views_pages_on_at_least_four_different_days_within_a_week
   active_discussions_count:
     started_at: 2024-06-11
+    ended_at: 2024-06-24
+    winner: count_8
     variants:
       - count_4
       - count_5

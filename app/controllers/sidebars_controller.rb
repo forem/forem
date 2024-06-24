@@ -1,4 +1,5 @@
 class SidebarsController < ApplicationController
+  ACTIVE_DISCUSSION_LIMIT = 8
   layout false
 
   def show
@@ -17,8 +18,21 @@ class SidebarsController < ApplicationController
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
-    variant = field_test(:active_discussions_count, participant: current_user)
-    limit_count = variant.split("_").last.to_i
+    order_variant = field_test(:active_discussion_ordering_06_24, participant: @user)
+    order = case order_variant
+            when "base"
+              Arel.sql("last_comment_at DESC")
+            when "last_comment_plus_comment_score"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * comment_score) DESC")
+            when "last_comment_plus_comment_score_capped"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 100)) DESC")
+            when "last_comment_plus_comment_score_double"
+              Arel.sql("last_comment_at + (INTERVAL '2 minute' * comment_score) DESC")
+            when "last_comment_plus_comment_score_double_capped"
+              Arel.sql("last_comment_at + (INTERVAL '2 minute' * LEAST(comment_score, 100)) DESC")
+            else
+              Arel.sql("last_comment_at DESC")
+            end
     @active_discussions = Article.published
       .where("published_at > ?", 1.week.ago)
       .where("comments_count > ?", 0)
@@ -31,8 +45,8 @@ class SidebarsController < ApplicationController
         .where("published_at > ?", 1.week.ago)
         .where("comments_count > ?", 1)
           .with_at_least_home_feed_minimum_score)
-      .order("last_comment_at DESC")
-      .limit(limit_count)
+      .order(order)
+      .limit(ACTIVE_DISCUSSION_LIMIT)
       .pluck(:path, :title, :comments_count, :created_at)
   end
 
