@@ -13,6 +13,7 @@ class AbExperiment
     USER_CREATES_PAGEVIEW_GOAL = "user_creates_pageview".freeze
     USER_CREATES_COMMENT_GOAL = "user_creates_comment".freeze
     USER_CREATES_ARTICLE_REACTION_GOAL = "user_creates_article_reaction".freeze
+    USER_CREATES_EMAIL_FEED_EVENT_GOAL = "user_creates_email_feed_event".freeze
 
     def self.call(...)
       new(...).call
@@ -56,7 +57,7 @@ class AbExperiment
       when USER_CREATES_ARTICLE_REACTION_GOAL
         convert_reaction_goal(experiment: experiment, experiment_start_date: experiment_start_date)
       else
-        field_test_converted(experiment, participant: user, goal: goal) # base single comment goal.
+        field_test_converted(experiment, participant: user, goal: goal) # When there is only a single goal.
       end
     end
 

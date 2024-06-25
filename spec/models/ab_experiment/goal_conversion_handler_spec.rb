@@ -297,5 +297,22 @@ RSpec.describe AbExperiment::GoalConversionHandler do
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
+
+    context "with user who is part of field test and user_creates_email_feed_event goal" do
+      let(:goal) { described_class::USER_CREATES_EMAIL_FEED_EVENT_GOAL }
+      let(:article) { create(:article, :past, past_published_at: 2.days.ago, user_id: user.id) }
+
+      before do
+        field_test(AbExperiment::CURRENT_FEED_STRATEGY_EXPERIMENT, participant: user)
+      end
+
+      it "records a conversio for click", :aggregate_failures do
+        handler.call
+        expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
+        expect(FieldTest::Event.last.name).to eq(goal)
+        expect(FieldTest::Event.all.size).to be(1)
+      end
+
+    end
   end
 end
