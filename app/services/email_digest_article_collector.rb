@@ -12,22 +12,20 @@ class EmailDigestArticleCollector
 
   def articles_to_send
     # rubocop:disable Metrics/BlockLength
-    order_variant = field_test(:digest_article_ordering_06_17, participant: @user)
+    order_variant = field_test(:digest_article_ordering_06_25, participant: @user)
     order = case order_variant
             when "base"
-              Arel.sql("((score * ((feed_success_score * 10) + 0.1)) - (clickbait_score * 2)) DESC")
-            when "more_weight_on_feed_success_score"
               Arel.sql("((score * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
-            when "much_more_weight_on_feed_success_score"
-              Arel.sql("((score * ((feed_success_score * 15) + 0.1)) - (clickbait_score * 2)) DESC")
-            when "much_much_more_weight_on_feed_success_score"
-              Arel.sql("((score * ((feed_success_score * 20) + 0.1)) - (clickbait_score * 2)) DESC")
-            when "much_much_much_more_weight_on_feed_success_score"
-              Arel.sql("((score * ((feed_success_score * 25) + 0.1)) - (clickbait_score * 2)) DESC")
+            when "more_comment_score"
+              Arel.sql("((score * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2) + comment_score) DESC")
+            when "much_more_comment_score"
+              Arel.sql("((score * ((feed_success_score * 15) + 0.1)) - (clickbait_score * 2) + (comment_score * 5)) DESC") # rubocop:disable Layout/LineLength
+            when "much_much_more_comment_score"
+              Arel.sql("((score * ((feed_success_score * 20) + 0.1)) - (clickbait_score * 2) + (comment_score * 15)) DESC") # rubocop:disable Layout/LineLength
             else
-              Arel.sql("((score * ((feed_success_score * 10) + 0.1)) - (clickbait_score * 2)) DESC")
+              Arel.sql("((score * ((feed_success_score * 12) + 0.1)) - (clickbait_score * 2)) DESC")
             end
-    instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
+instrument ARTICLES_TO_SEND, tags: { user_id: @user.id } do
       return [] unless should_receive_email?
 
       articles = if @user.cached_followed_tag_names.any?
@@ -65,6 +63,7 @@ class EmailDigestArticleCollector
           .published
           .where("published_at > ?", cutoff_date)
           .where(email_digest_eligible: true)
+          .where("score > ?", 11)
           .not_authored_by(@user.id)
           .order(order)
           .limit(RESULTS_COUNT)
