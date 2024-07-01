@@ -397,7 +397,6 @@ experiments:
       - 20240701-variant-a
       - 20240701-variant-b
       - 20240701-variant-c
-    winner: 20240701-variant-c
     weights:
       - 70
       - 10
