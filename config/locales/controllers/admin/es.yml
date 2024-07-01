@@ -1,0 +1,158 @@
+---
+es:
+  admin:
+    articles_controller:
+      saved: ¡Artículo guardado!
+      pinned: ¡Artículo anclado!
+      unpinned: ¡Artículo desanclado!
+    badge_achievements_controller:
+      deleted: ¡Logro de insignia eliminado!
+      rewarded: Se están otorgando insignias. La tarea finalizará en breve.
+      congrats: ¡Felicidades!
+      award: Por favor, elige una insignia para otorgar
+      wrong: Algo salió mal.
+    badges_controller:
+      created: ¡Insignia creada!
+      updated: ¡Insignia actualizada!
+    broadcasts_controller:
+      created: ¡Transmisión creada!
+      deleted: ¡Transmisión eliminada!
+      updated: ¡Transmisión actualizada!
+      wrong: Algo salió mal al eliminar la transmisión.
+    bulk_assign_role_controller:
+      role_assigment: Rol %{role} asignado al usuario.
+      role_blank: Por favor, elige un rol para agregar.
+      success_message: Se están agregando roles. La tarea finalizará en breve.
+    consumer_apps_controller:
+      created: '¡%{app} ha sido creada!'
+      deleted: '¡%{app} ha sido eliminada!'
+      updated: '¡%{app} ha sido actualizada!'
+      wrong: Algo salió mal al eliminar %{app}.
+    billboards_controller:
+      created: ¡Cartelera creada!
+      deleted: ¡Cartelera eliminada!
+      updated: ¡Cartelera actualizada!
+      wrong: Algo salió mal al eliminar la cartelera.
+    gdpr_delete_requests_controller:
+      deleted: Marcado como eliminado con éxito
+    extensions_controller:
+      update_success: Las extensiones se han actualizado.
+    html_variants_controller:
+      fork: '%{name} FORK-%{rand}'
+      created: ¡Variante HTML creada!
+      deleted: ¡Variante HTML eliminada!
+      updated: ¡Variante HTML actualizada!
+      wrong: Algo salió mal al eliminar la variante HTML.
+    invitations_controller:
+      duplicate: 'La invitación no se envió. Ya hay un usuario registrado con el correo electrónico: %{email}'
+      create_success: La invitación se ha enviado al correo del usuario.
+      destroy_success: Invitación cancelada para %{email}.
+      resend_success: Invitación reenviada a %{email}.
+    listing_categories_controller:
+      created: ¡Categoría de listado creada!
+      updated: ¡Categoría de listado actualizada!
+      deleted: ¡Categoría de listado eliminada!
+    listings_controller:
+      updated: Listado actualizado con éxito
+      destroyed: "'%{title}' fue eliminado exitosamente"
+      no_credit: No hay créditos disponibles suficientes
+    mods_controller:
+      trusted: '¡%{username} ahora tiene un rol de Confianza!'
+    navigation_links_controller:
+      deleted: Enlace de navegación %{link} eliminado
+      created: 'Enlace de navegación creado con éxito: %{link}'
+      updated: 'Enlace de navegación actualizado con éxito: %{link}'
+    organization_memberships_controller:
+      not_exist: 'La organización #%{org_id} no existe.'
+      wrong: Algo salió mal al eliminar al usuario de %{org}
+      added: Usuario agregado con éxito a %{org}
+      removed: Usuario eliminado con éxito de %{org}
+      updated: Usuario actualizado con éxito a %{type}
+    organizations_controller:
+      credit_updated: Créditos actualizados con éxito
+      deletion_scheduled: 'La eliminación de la organización "%{organization_name}" está programada.'
+      error: 'No se pudo eliminar tu organización, %{organization_name}: %{error}.'
+    pages_controller:
+      updated: Página actualizada con éxito.
+      created: Página creada con éxito.
+      deleted: Página eliminada con éxito.
+      code_of_conduct:
+        title: Código de Conducta
+        description: Una página que describe cómo comportarse en esta plataforma
+      privacy_policy:
+        title: Política de Privacidad
+        description: Una página que describe la política de privacidad
+      terms_of_use:
+        title: Términos de Uso
+        description: Una página que describe los términos de uso de la aplicación
+    podcasts_controller:
+      new_owner_added: ¡Nuevo propietario añadido!
+      no_such_user: No hay tal usuario
+      scheduled: "La obtención de episodios del podcast estaba programada (%{title}, #%{id})"
+      updated: Podcast actualizado
+    profile_field_groups_controller:
+      deleted: Grupo %{group} eliminado
+      updated: Grupo %{group} actualizado
+      created: 'Grupo creado con éxito: %{group}'
+    profile_fields_controller:
+      created: Campo de perfil %{field} creado
+      deleted: Campo de perfil %{field} eliminado
+      updated: Campo de perfil %{field} actualizado
+    response_templates_controller:
+      saved: 'Plantilla de respuesta: "%{title}" guardada exitosamente.'
+      updated: La plantilla de respuesta "%{title}" fue actualizada.
+      deleted: La plantilla de respuesta "%{title}" fue eliminada.
+    secrets_controller:
+      not_in_vault: No en el almacén
+      updated: La clave secreta %{key} se actualizó con éxito en el almacén.
+      value: '%{first8}******'
+    settings_controller:
+      confirmation: Mi nombre de usuario es @%{username} y esta acción es 100% segura y apropiada.
+    spaces_controller:
+      update_success: El espacio ha sido actualizado.
+    tags:
+      moderators_controller:
+        not_found: 'El ID de usuario #%{user_id} no se encontró'
+        not_found_or: 'El ID de usuario #%{user_id} no se encontró, o su cuenta tiene errores: %{errors}'
+        removed: '@%{username} - ID #%{user_id} fue eliminado como moderador de etiquetas.'
+        added: '%{username} fue agregado como moderador de etiquetas!'
+      tags_controller:
+        created: '¡%{tag_name} ha sido creada!'
+        updated: '¡La etiqueta %{tag_name} se ha actualizado correctamente!'
+        update_fail: 'La actualización de la etiqueta falló: %{errors}'
+    tools_controller:
+      article_busted: 'El artículo #%{article} fue desacreditado con éxito'
+      user_busted: 'El usuario #%{user} fue desacreditado con éxito'
+      link_busted: '%{link} fue desacreditado con éxito'
+    users_controller:
+      exported: Datos exportados a %{receiver}. La tarea se completará en breve.
+      email_fail: ¡Error al enviar el correo electrónico!
+      email_sent: ¡Correo electrónico enviado!
+      verify_sent: ¡Correo electrónico de verificación enviado!
+      full_delete_html: '@%{user} (correo electrónico: %{email}, ID de usuario: %{id}) ha sido completamente eliminado. Si esto es una eliminación GDPR, elimínelo de Mailchimp y Google Analytics y confirme en %{the_page}.'
+      no_email: sin correo electrónico
+      parameter_missing: ¡Se requieren tanto el asunto como el cuerpo!
+      role_removed: 'Rol: %{role} ha sido eliminado con éxito del usuario!'
+      identity_removed: La identidad de %{provider} se eliminó correctamente y se respaldó.
+      the_page: la página
+      banished: Este usuario está siendo desterrado en segundo plano. La tarea se completará pronto.
+      unlocked: ¡Cuenta de usuario desbloqueada!
+      unpublished: Las publicaciones se están despublicando en segundo plano. La tarea se completará pronto.
+      updated: El usuario ha sido actualizado
+      updated_json: ¡Éxito! %{username} ha sido actualizado.
+      credits_added: ¡Se han agregado créditos!
+      credits_removed: Se han eliminado créditos.
+    welcome_controller:
+      thread_content: |
+        ---
+        title: Hilo de bienvenida - v0
+        published: false
+        description: ¡Preséntate a la comunidad!
+        tags: bienvenida
+        ---
+
+        ¡Hola! ¡Bienvenido/a a %{community}!
+
+        ![BIENVENIDO A INTERNET](https://slack-imgs.com/?c=1&url=http%3A%2F%2Fmedia0.giphy.com%2Fmedia%2FzhbrTTpmSCYog%2Fgiphy-downsized.gif)
+
+        ¡Deja un comentario abajo para presentarte a la comunidad!✌️
