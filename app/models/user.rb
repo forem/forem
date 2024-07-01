@@ -77,6 +77,7 @@ class User < ApplicationRecord
   has_many :mentions, dependent: :delete_all
   has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :delete_all
   has_many :notification_subscriptions, dependent: :delete_all
+  # TODO: user notification list
   has_many :notifications, dependent: :delete_all
   has_many :offender_feedback_messages, class_name: "FeedbackMessage",
                                         inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify

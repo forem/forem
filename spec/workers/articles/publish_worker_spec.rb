@@ -89,6 +89,19 @@ RSpec.describe Articles::PublishWorker, type: :worker do
       end.to change(Notification, :count).by(2)
     end
 
+     it "does not create a notification for each users with new-post-notification setting = false" do
+      user2.notification_setting.new_post_notifications = false
+      old_article = create(:article, user: article.user, published: false)
+      old_article.published = true
+
+      # article2.user.save()
+      allow(Notification).to receive(:upsert_all)
+      expect do
+        sidekiq_perform_enqueued_jobs(only: Notifications::NotifiableActionWorker) do
+          worker.perform
+        end
+      end.to change(Notification, :count).by(0)
+    end
     it "creates a ContextNotification for each article" do
       article2
       article.user.follow(article2.user)

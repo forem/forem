@@ -753,6 +753,7 @@ RSpec.describe "NotificationsIndex" do
         get "/notifications"
       end
 
+      # TODO : test for new_post notification
       it "renders the proper message", :aggregate_failures do
         expect(response.body).to include "made a new post"
         renders_article_path(article)

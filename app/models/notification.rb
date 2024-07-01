@@ -12,7 +12,9 @@ class Notification < ApplicationRecord
 
   before_create :mark_notified_at_time
 
+  # TODO: scope related to new_post notifications for published
   scope :for_published_articles, -> { where(notifiable_type: "Article", action: "Published") }
+  scope :no_published_articles, -> { where.not(notifiable_type: "Article") }
   scope :for_comments, -> { where(notifiable_type: "Comment", action: nil) } # nil action means "not a reaction"
   scope :for_mentions, -> { where(notifiable_type: "Mention") }
 
@@ -57,6 +59,7 @@ class Notification < ApplicationRecord
       Mentions::CreateAll.call(notifiable)
 
       # Kicks off a worker to send any notifications about the post being published, if necessary.
+      # TODO new_post notfiication send "published" status
       Notification.send_to_followers(notifiable, "Published")
     end
 

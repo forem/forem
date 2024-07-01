@@ -3,6 +3,7 @@ module Notifications
     def create
       render plain: "" && return unless current_user
 
+      # TODO: notification controller read
       current_user.notifications.unread.update_all(read: true)
       current_user.touch(:last_notification_activity)
 
