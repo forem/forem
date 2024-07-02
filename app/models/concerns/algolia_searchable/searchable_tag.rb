@@ -9,7 +9,9 @@ module AlgoliaSearchable
         attribute :name, :pretty_name, :short_summary, :hotness_score, :supported, :rules_html, :bg_color_hex
 
         attribute :badge do
-          { badge_image: ApplicationController.helpers.optimized_image_url(badge&.badge_image_url, width: 64) }
+          { badge_image: {
+            url: ApplicationController.helpers.optimized_image_url(badge&.badge_image_url, width: 64)
+          } }
         end
 
         add_attribute(:timestamp) { created_at.to_i }
@@ -18,6 +20,8 @@ module AlgoliaSearchable
 
         add_replica("Tag_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Tag_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
+
+        attributesForFaceting ["searchable(supported)"]
       end
     end
 
