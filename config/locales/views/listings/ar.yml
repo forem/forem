@@ -1,0 +1,81 @@
+---
+ar:
+  views:
+    listings:
+      meta:
+        description: "قائمة %{community}"
+      heading: الإعلانات
+      back: العودة
+      delete:
+        subtitle: هل أنت متأكد أنك تريد حذف هذا الإعلان؟
+        description:
+          text_html: لا يمكنك التراجع عن هذا الإجراء، ربما ترغب فقط في %{action} بدلاً من ذلك؟
+          edit: تحرير
+          unpublish: الغاء النشر
+        edit: تحرير
+        submit: حذف
+        unpublish: الغاء النشر
+      edit:
+        heading: تحرير الإعلان
+        bump:
+          subtitle: ارفع إعلانك
+          button: رفع الإعلان
+          description: يمكنك رفع إعلانك بنفس سعر الإعلان الأصلي
+          last: 'آخر نشر/رفع: %{date}'
+        notice: يمكنك فقط تحرير العنوان/النص/العلامات في المسودات أو خلال الساعات الأولى الـ 24 من نشر الإعلان أو رفعه
+        not_published:
+          text_html: هذا الإعلان غير %{not} منشور.
+          aside_html: هذا الإعلان غير %{not} منشور
+          not: غير
+        publish: نشر الإعلان
+        unpublish: الغاء نشر الإعلان
+        update: تحديث الإعلان
+        update_draft: تحديث المسودة
+      to_edit: تعديل
+      errors:
+        one: 'هناك خطأ واحد منع حفظ هذا الإعلان:'
+        other: "%{count} أخطاء منعت حفظ هذا الإعلان:"
+      expired: هذا الإعلان قد انتهى صلاحيته.
+      form:
+        body_markdown:
+          description: الحد الأقصى 400 حرف، 12 كسرة سطر، لا تُسمح بالصور، *تشجيع استخدام Markdown*. يرجى تضمين وسيلة اتصال إذا لزم الأمر.
+          placeholder: "..."
+        category:
+          label: الفئة
+          placeholder: طلب مشاركة مؤتمر (1 رصيد)
+          summary: تفاصيل/قواعد الفئة
+        expiry:
+          description: إذا كانت مطبقة للأحداث الزمنية، المواعيد النهائية، الخ.
+        location:
+          description: الحد الأقصى 32 حرفًا، نص عادي
+          label: الموقع (إذا كانت مطبقة للأحداث، الخ)
+          placeholder: نيويورك
+        no_credit: تحتاج إلى رصيد واحد على الأقل لإنشاء إعلان.
+        organization:
+          description: النشر نيابة عن المؤسسة يستهلك رصيد المؤسسة.
+          none: لا شيء
+        publish: نشر الإعلان
+        purchase: شراء الرصيد
+        save: حفظ المسودة
+        save_notice: لن يتم خصم الرصيد لحفظ المسودة.
+        tags:
+          placeholder: إضافة ما يصل إلى 8 علامات...
+        title:
+          placeholder: الحد الأقصى 128 حرفًا، نص عادي
+      nav:
+        aria_label: الإعلانات
+        create: إنشاء
+        manage: إدارة
+      new:
+        meta:
+          title: إعلان جديد
+        heading: إنشاء إعلان للمجتمع
+        buy: شراء المزيد
+        disclaimer:
+          subtitle: تنويه
+          description1: قد يقوم مسؤولو %{community} بتعديل العلامات والفئات لضمان الدقة. قد نقوم أيضًا بإزالة الإعلانات غير المناسبة وإرجاع الأموال.
+          description2: تنتهي صلاحية الإعلانات بعد 30 يومًا من نشرها أو "رفعها".
+        organization: رصيد المؤسسة
+        personal: رصيد شخصي
+      preview_icon: شعار DEV
+       

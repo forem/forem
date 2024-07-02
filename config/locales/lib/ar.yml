@@ -1,0 +1,270 @@
+---
+ar:
+  lib:
+    constants:
+      settings:
+        authentication:
+          allowed:
+            description: "تقييد التسجيل للبريد الإلكتروني فقط؟ (قائمة مفصولة بفواصل)"
+            placeholder: "dev.to، forem.com، codenewbie.org"
+          apple_client:
+            description: "رمز "App Bundle" لخدمة المصادقة المكونة في بوابة مطوري Apple"
+          apple_key:
+            description: "رمز الـ 'Key ID' من خدمة المصادقة المكونة في بوابة مطوري Apple"
+          apple_pem:
+            description: "مفتاح 'PEM' من خدمة المصادقة المكونة في بوابة مطوري Apple"
+          apple_team:
+            description: "معرف 'Team ID' لحساب مطوري Apple الخاص بك"
+          blocked:
+            description: "منع التسجيل من النطاقات المحددة؟ (قائمة مفصولة بفواصل)"
+          display_list:
+            description: "هل تريد عرض قائمة النطاقات المسموح بها أم إبقائها خاصة؟"
+          facebook_key:
+            description: "الجزء 'App ID' من الإعدادات الأساسية في صفحة التطبيق على بوابة مطوري Facebook"
+          facebook_secret:
+            description: "الجزء 'App Secret' من الإعدادات الأساسية في صفحة التطبيق على بوابة مطوري Facebook"
+          forem_key:
+            description: "مفتاح Forem"
+          forem_secret:
+            description: "سر Forem"
+          github_key:
+            description: "الجزء 'Client ID' من بوابة تطبيقات GitHub OAuth"
+          github_secret:
+            description: "الجزء 'Client Secret' من بوابة تطبيقات GitHub OAuth"
+          google_key:
+            description: "الجزء 'Client ID' من صفحة OAuth 2.0 على بوابة Google Cloud Platform"
+          google_secret:
+            description: "الجزء 'Client Secret' من صفحة OAuth 2.0 على بوابة Google Cloud Platform"
+          invite_only:
+            description: "يمكن للمستخدمين المدعوين فقط عبر البريد الإلكتروني الانضمام إلى هذا المجتمع."
+          new_user_status:
+            description: "ما هو الحالة التي ترغب في تطبيقها على المستخدمين الجدد؟"
+            placeholder: "حسن السلوك"
+          providers:
+            description: "كيف يمكن للمستخدمين تسجيل الدخول؟"
+          recaptcha_secret:
+            description: "إضافة المفتاح السري لـ Google reCAPTCHA، والذي يستخدم للإبلاغ عن الإساءة"
+            placeholder: "ما هو المفتاح السري لـ Google reCAPTCHA؟"
+          recaptcha_site:
+            description: "إضافة مفتاح الموقع لـ Google reCAPTCHA، والذي يستخدم للإبلاغ عن الإساءة"
+            placeholder: "ما هو مفتاح الموقع لـ Google reCAPTCHA؟"
+          require_recaptcha:
+            description: "سيتعين على الأشخاص ملء كابتشا عند إنشاء حساب جديد في مجتمعك"
+          twitter_key:
+            description: "الجزء 'API key' من مفاتيح المستهلك في بوابة مطوري Twitter."
+          twitter_secret:
+            description: "الجزء 'API secret key' من مفاتيح المستهلك في بوابة مطوري Twitter."
+        campaign:
+          articles_approval:
+            placeholder: "هل تظهر قصص الحملات على الشريط الجانبي بموافقة؟"
+          articles_expiry:
+            description: "تحديد وقت انتهاء الصلاحية للمقالات (بالأسابيع) لعرضها في الشريط الجانبي للحملة"
+          call_to_action:
+            description: "يملأ هذا النص زر الدعوة إلى العمل على الشريط الجانبي للحملة"
+            placeholder: "شارك مشروعك"
+          display_name:
+            description: "يتم عرض هذا النص في إشارة إلى الحملة في العناوين، إلخ."
+            placeholder: "حملتي العظيمة"
+          featured:
+            description: "المنشورات التي سيتم عرضها في الشريط الجانبي للحملة بأي علامات (مفصولة بفواصل، أحرف فقط)"
+            placeholder: 'قائمة العلامات للحملة: مفصولة بفواصل، أحرف فقط مثل shecoded,theycoded'
+          hero_html:
+            description: "اسم المتغير 'HtmlVariant' البطل"
+          sidebar_enabled:
+            placeholder: "هل تم تمكين الشريط الجانبي للحملة أم لا"
+          sidebar_image:
+            placeholder: "يستخدم في أعلى الشريط الجانبي للحملة"
+          url:
+            description: "https://url.com/lander"
+            placeholder: "عنوان URL لصورة الشريط الجانبي للحملة"
+        community:
+          copyright:
+            description: "يُستخدم لوضع علامة على العام الذي تم فيه بدء Forem هذا."
+          description:
+            description: "يُستخدم في علامات الوصف الفارغة وما إلى ذلك."
+            placeholder: "مجتمع رائع للأشخاص الطيبين والمرحبين."
+          emoji:
+            description: "يُستخدم في عناوين العلامات عبر الموقع جنبًا إلى جنب مع اسم المجتمع"
+          member:
+            description: "يُستخدم لتحديد ما يُطلق على العضو، على سبيل المثال المطور، الهواة الخ"
+            placeholder: "مستخدم"
+          name:
+            description: "يُستخدم كالاسم الرئيسي لـ Forem الخاص بك، على سبيل المثال DEV، DEV Community، The DEV Community، إلخ."
+            placeholder: "Forem جديد"
+          staff:
+            description: "الحساب الذي يعمل كـ 'موظف' تلقائيًا — يستخدم في المقام الأول لموضوع الترحيب."
+          tagline:
+            description: "يُستخدم في نافذة تسجيل الدخول."
+            placeholder: "نحن مكان يشارك فيه المبرمجون، يبقون على اطلاع ويطورون مهنهم."
+        general:
+          ahoy_tracking:
+            description: "تتبع الزيارات والأحداث - يتم تخزين البيانات في قاعدة البيانات الخاصة بك. يتطلب إعادة تشغيل لإجراء تغييرات على هذا التكوين."
+          billboard_enabled_countries:
+            description: "البلدان التي يمكن استهدافها جغرافيًا من خلال لافتات إعلانية. انقر على بلد محدد لتبديل استهداف على مستوى البلد الفرعي."
+          contact_email:
+            description: "يُستخدم لروابط الاتصال. يرجى تقديم عنوان بريد إلكتروني يمكن للمستخدمين الاتصال به أو بفريقك."
+          credit:
+            large:
+              description: "السعر لشراء الرصيد الكبير (100 - 999 رصيد)."
+            medium:
+              description: "السعر لشراء الرصيد المتوسط (10 - 99 رصيد)."
+            small:
+              description: "السعر لشراء الرصيد الصغير (<10 رصيد)."
+            xlarge:
+              description: "السعر لشراء الرصيد الإضافي الكبير (1000 رصيد أو أكثر)."
+          favicon:
+            description: "يُستخدم كرمز موقع الويب"
+          ga_tracking:
+            description: "معرّف التتبع الشامل لجوجل، على سبيل المثال UA-XXXXXXXX-1"
+          ga_analytics_4:
+            description: "معرّف تحليلات Google 4، على سبيل المثال G-XXXXXXXXX"
+          cookie_banner_user_context:
+            description: "يُستخدم لتحديد ما إذا كان يجب عرض لافتة الكوكيز استنادًا إلى سياق المستخدم (مسجل الدخول أم لا)"
+          coolie_banner_platform_context:
+            description: "يُستخدم لتحديد ما إذا كان يجب عرض لافتة الكوكيز استنادًا إلى المنصة (موقع الويب/الهاتف المحمول)"
+          hashtag:
+            description: "يُستخدم كوسم تويتر للمجتمع"
+            placeholder: '#مجتمعDEV'
+          health:
+            description: "يُستخدم للمصادقة مع نقاط النهاية الخاصة بك لفحص الصحة."
+            placeholder: "رمز مرور آمن"
+          logo_png:
+            description: "يُستخدم كشعار ثانوي في أماكن مثل نماذج تسجيل الدخول، والتوجيه، ورموز التطبيق على Apple. الحد الأدنى الموصى به هو 512x512 بكسل"
+          logo_svg:
+            description: "هذا هو الشعار المستخدم حاليًا في الزاوية اليسرى العليا من Forem الخاص بك. ومع ذلك، بعد الإصدار سيتم إلغاء تشغيله لصالح الشعار أعلاه."
+          mailchimp_api:
+            description: "مفتاح الواجهة البرمجية لـ Mailchimp المستخدم للاتصال بحساب Mailchimp. يمكن العثور عليه في الجزء الخلفي من Mailchimp"
+          mailchimp_mod:
+            description: "معرّف نشرة إخبارية مشرفي المجتمع"
+          mailchimp_news:
+            description: "معرّف النشرة الرئيسية، والمعروف أيضًا باسم معرّف الجمهور"
+          mailchimp_tag_mod:
+            description: "معرّف نشرة إخبارية مشرفي الوسم"
+          main_social:
+            description: "يُستخدم كصورة رئيسية في الشبكات الاجتماعية و OpenGraph. نسبة جانبية موصى بها هي 16:9 (600x337 بكسل، 1200x675 بكسل)"
+          mascot_image:
+            description: "يُستخدم كصورة الأعلام."
+          mascot_user:
+            description: "حساب الأعلام"
+          meta_keywords:
+            description: "قائمة الكلمات الرئيسية الصالحة: مفصولة بفواصل، أحرف فقط مثل engineering، development"
+          onboarding_newsletter_content:
+            description: "استخدم هذا الحقل لتعيين العنوان والعنوان الفرعي لعرض النشرة الإخبارية. اجعله موجزًا."
+            placeholder: "يمكنك تكوين الصورة والعنوان والعنوان الفرعي عبر علامات التنسيق"
+          onboarding_newsletter_opt_in_head:
+            description: "عنوان خانة اختيار النشرة الإخبارية"
+            placeholder: "على سبيل المثال، نعم، اشتركني في النشرة الأسبوعية"
+          onboarding_newsletter_opt_in_subhead:
+            description: "عنوان فرعي لخانة اختيار النشرة الإخبارية"
+            placeholder: "على سبيل المثال، كن على يقين، نحن نحترم خصوصيتك. سيتم استخدام بريدك الإلكتروني فقط لنشرتنا ولن يتم مشاركته مع الآخرين."
+          geos_with_allowed_default_email_opt_in:
+            description: "قائمة البلدان التي يسمح فيها الاشتراك الافتراضي في البريد الإلكتروني حسب الإداري"
+            placeholder: "قائمة البلدان الصالحة: مفصولة بفواصل، أحرف فقط مثل الولايات المتحدة، كندا"
+          payment:
+            description: "يُستخدم للربح من الويب على مستوى الموقع. انظر: https://github.com/forem/forem/pull/6345"
+          periodic:
+            description: "يُحدد مدى تكرار إرسال ملخصات البريد الإلكتروني الدورية (بالأيام)"
+          sidebar:
+            description: "يُحدد العلامات التي يتم عرضها في شريط الجانب الأيمن للصفحة الرئيسية"
+            placeholder: "قائمة العلامات الصالحة، مفصولة بفواصل، مثل المساعدة، النقاش، أو شرح مثل أنا خمس سنوات"
+          stripe_api:
+            description: "المفتاح السري Stripe لاستقبال المدفوعات. انظر: https://stripe.com/docs/keys"
+          stripe_key:
+            description: "المفتاح العام Stripe لاستقبال المدفوعات. انظر: https://stripe.com/docs/keys"
+          tags:
+            description: "يُحدد العلامات التي يُقترحها النظام للمستخدمين الجدد أثناء التسجيل (مفصولة بفواصل، أحرف فقط)"
+            placeholder: "قائمة العلامات الصالحة: مفصولة بفواصل، أحرف فقط مثل المبتدئين، الجافا سكريبت، روبي، سويفت، كوتلن"
+          video:
+            description: "المفتاح السري المستخدم للسماح بترميز الفيديو عبر AWS من خلال VideoStatesController"
+        rate_limit:
+          new_days:
+            description: "عدد الأيام التي يُعتبر فيها المستخدم جديدًا. الافتراضي هو 3 أيام، ولكن يمكنك تعطيل هذا تمامًا من خلال إدخال 0."
+          spam:
+            description: "عبارات فردية (غير حساسة لحالة الأحرف) التي تُثير إنذارات البريد المزعج، مفصولة بفواصل."
+            placeholder: "سيارات مستعملة بالقرب منك، هاك Pokemon Go"
+        smtp:
+          address:
+            description: "عنوان خادم البريد الإلكتروني البعيد"
+            placeholder: "على سبيل المثال smtp.gmail.com"
+          authentication:
+            description: "إذا كان خادم البريد الخاص بك يتطلب المصادقة، فيجب عليك تحديد نوع المصادقة هنا"
+            placeholder: "على سبيل المثال plain، login، cram_md5"
+          domain:
+            description: "نطاق البريد الإلكتروني الخاص بك"
+            placeholder: "على سبيل المثال yourdomain.com"
+          enable_starttls_auto:
+            description: "إذا كانت الاتصالات SMTP يجب أن تبدأ تلقائيًا بشكل تشفيري (فيما يتعلق بـ: اتصالات SMTP)"
+          password:
+            description: "كلمة المرور الخاصة بحساب البريد الإلكتروني البعيد"
+            placeholder: "كلمة المرور الخاصة بك"
+          port:
+            description: "منفذ خادم البريد الإلكتروني البعيد"
+            placeholder: "على سبيل المثال 587"
+          sender_email:
+            description: "البريد الإلكتروني الذي سيظهر فيه البريد الإلكتروني الصادر"
+            placeholder: "على سبيل المثال no-reply@yourdomain.com"
+          user_name:
+            description: "اسم المستخدم الذي يستخدم للمصادقة على خادم البريد الإلكتروني البعيد"
+            placeholder: "اسم المستخدم الخاص بك"
+  models:
+    community:
+      attributes:
+        banner_html:
+          name: "الشريط العلوي"
+        base_path:
+          name: "المسار الأساسي"
+        custom_settings:
+          name: "الإعدادات المخصصة"
+        featured_tags:
+          name: "العلامات المميزة"
+        full_path:
+          name: "المسار الكامل"
+        host:
+          name: "المضيف"
+        join_instructions:
+          name: "تعليمات الانضمام"
+        moderation_rules:
+          name: "قواعد التأديب"
+        name:
+          name: "الاسم"
+        navigation_links:
+          name: "روابط التنقل"
+        organization:
+          name: "المنظمة"
+        recent_tags:
+          name: "العلامات الحديثة"
+        root:
+          name: "الجذر"
+        settings:
+          name: "الإعدادات"
+        site:
+          name: "الموقع"
+        tagline:
+          name: "العنوان"
+        top_tags:
+          name: "العلامات الأعلى"
+        twitter_handle:
+          name: "اسم المستخدم على تويتر"
+        type:
+          name: "النوع"
+        updated_at:
+          name: "تاريخ التحديث"
+        usage_text:
+          name: "نص الاستخدام"
+      show:
+        homepage_welcome_message:
+          name: "رسالة ترحيب الصفحة الرئيسية"
+        page_not_found:
+          name: "صفحة غير موجودة"
+        profile:
+          name: "الملف الشخصي"
+        settings:
+          name: "الإعدادات"
+      title:
+        name: "عنوان"
+  views:
+    activerecord:
+      attributes:
+        community:
+          site_admin_email:
+            name: "البريد الإلكتروني لمسؤول الموقع"
