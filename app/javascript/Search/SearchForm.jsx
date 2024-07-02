@@ -1,11 +1,12 @@
 import { h } from 'preact';
-import { forwardRef, useState, useEffect, useRef, useMemo } from 'preact/compat';
+import { forwardRef, useState, useEffect, useRef, useMemo, useCallback } from 'preact/compat';
 import PropTypes from 'prop-types';
 import algoliasearch from 'algoliasearch/lite';
 import { locale } from '../utilities/locale';
 import { ButtonNew as Button } from '@crayons';
 import SearchIcon from '@images/search.svg';
 import AlgoliaIcon from '@images/algolia.svg';
+import { debounceAction } from '@utilities/debounceAction';
 
 export const SearchForm = forwardRef(
   (
@@ -21,15 +22,20 @@ export const SearchForm = forwardRef(
     const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
     const suggestionsRef = useRef();
 
-    useEffect(() => {
-      if (inputValue && index) {
-        index.search(inputValue, { hitsPerPage: 5 }).then(({ hits }) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debouncedSearch = useCallback(debounceAction((value) => {
+      if (value && index) {
+        index.search(value, { hitsPerPage: 5 }).then(({ hits }) => {
           setSuggestions(hits); // Assuming 'title' is the field to display
         });
       } else {
         setSuggestions([]);
       }
-    }, [inputValue, index]);
+    }, 250), [index]);
+
+    useEffect(() => {
+      debouncedSearch(inputValue);
+    }, [inputValue, debouncedSearch]);
 
     // Handle input changes
     const handleInputChange = (e) => {
