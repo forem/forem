@@ -21,7 +21,7 @@ module AlgoliaSearchable
         add_replica("Tag_timestamp_desc", per_environment: true) { customRanking ["desc(timestamp)"] }
         add_replica("Tag_timestamp_asc", per_environment: true) { customRanking ["asc(timestamp)"] }
 
-        attributesForFaceting ['searchable(supported)']
+        attributesForFaceting ["searchable(supported)"]
       end
     end
 

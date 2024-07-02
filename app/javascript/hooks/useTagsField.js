@@ -2,7 +2,7 @@ import { useEffect, useState } from 'preact/hooks';
 import algoliasearch from 'algoliasearch/lite'
 import { fetchSearch } from '@utilities/search';
 
-const env = document.querySelector('meta[name="environment"]').content;
+const env = document.querySelector('meta[name="environment"]')?.content;
 const {algoliaId, algoliaSearchKey} = document.body.dataset;
 const algoliaClient = algoliasearch(algoliaId, algoliaSearchKey);
 const algoliaIndex = algoliaClient.initIndex(`Tag_${env}`);
