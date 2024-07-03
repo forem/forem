@@ -31,7 +31,7 @@ export const SearchForm = forwardRef(
       } else {
         setSuggestions([]);
       }
-    }, 250), [index]);
+    }, 200), [index]);
 
     useEffect(() => {
       debouncedSearch(inputValue);
