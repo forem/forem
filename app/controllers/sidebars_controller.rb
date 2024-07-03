@@ -18,20 +18,20 @@ class SidebarsController < ApplicationController
     tag_names = current_user.cached_followed_tag_names
     languages = current_user.languages.pluck(:language)
     languages = [I18n.default_locale.to_s] if languages.empty?
-    order_variant = field_test(:active_discussion_ordering_06_24, participant: @user)
+    order_variant = field_test(:active_discussion_ordering_07_03, participant: @user)
     order = case order_variant
             when "base"
-              Arel.sql("last_comment_at DESC")
-            when "last_comment_plus_comment_score"
-              Arel.sql("last_comment_at + (INTERVAL '1 minute' * comment_score) DESC")
-            when "last_comment_plus_comment_score_capped"
               Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 100)) DESC")
-            when "last_comment_plus_comment_score_double"
-              Arel.sql("last_comment_at + (INTERVAL '2 minute' * comment_score) DESC")
-            when "last_comment_plus_comment_score_double_capped"
-              Arel.sql("last_comment_at + (INTERVAL '2 minute' * LEAST(comment_score, 100)) DESC")
+            when "last_comment_plus_comment_score_capped_25"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 25)) DESC")
+            when "last_comment_plus_comment_score_capped_50"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 50)) DESC")
+            when "last_comment_plus_comment_score_capped_80"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 80)) DESC")
+            when "last_comment_plus_comment_score_capped_120"
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 120)) DESC")
             else
-              Arel.sql("last_comment_at DESC")
+              Arel.sql("last_comment_at + (INTERVAL '1 minute' * LEAST(comment_score, 100)) DESC")
             end
     @active_discussions = Article.published
       .where("published_at > ?", 1.week.ago)
